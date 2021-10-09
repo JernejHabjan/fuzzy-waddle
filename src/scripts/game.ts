@@ -1,6 +1,6 @@
 import "phaser";
-import MainScene from "./scenes/mainScene";
-import PreloadScene from "./scenes/preloadScene";
+import MainScene from "./scenes/first/mainScene";
+import PreloadScene from "./scenes/first/preloadScene";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;

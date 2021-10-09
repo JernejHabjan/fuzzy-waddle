@@ -1,13 +1,15 @@
-import { Scenes } from "./scenes";
-import { CreateSceneFromObjectConfig } from "../phaser/phaser";
+import { Scenes } from "../scenes";
+import { CreateSceneFromObjectConfig } from "../../phaser/phaser";
+import { AssetsFirst } from "./assets";
 
 export default class PreloadScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   constructor() {
-    super({ key: "PreloadScene" });
+    super({ key: Scenes.PreloadScene });
   }
 
   preload() {
-    this.load.image("phaser-logo", "assets/img/phaser-logo.png");
+    this.load.image(AssetsFirst.loader, "assets/demoscene/birdy-nam-nam-loader.png");
+    this.load.image(AssetsFirst.click, "assets/demoscene/birdy-nam-nam-click.png");
   }
 
   create() {
