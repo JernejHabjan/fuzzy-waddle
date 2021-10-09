@@ -8,8 +8,8 @@ export default class PreloadScene extends Phaser.Scene implements CreateSceneFro
   }
 
   preload() {
-    this.load.image(AssetsFirst.loader, "assets/demoscene/birdy-nam-nam-loader.png");
-    this.load.image(AssetsFirst.click, "assets/demoscene/birdy-nam-nam-click.png");
+    this.load.image(AssetsFirst.loader, "assets/img/birdy-nam-nam-loader.png");
+    this.load.image(AssetsFirst.click, "assets/img/birdy-nam-nam-click.png");
   }
 
   create() {

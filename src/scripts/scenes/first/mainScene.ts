@@ -41,9 +41,37 @@ export default class MainScene extends Phaser.Scene implements CreateSceneFromOb
   startDemo() {
     this.loadImage.setVisible(false);
 
-    new PhaserLogo(this, this.cameras.main.width / 2, 0);
+    const phaserLogo = new PhaserLogo(this, this.cameras.main.width / 2, 400);
     this.fpsText = new FpsText(this);
     new VersionText(this);
+
+    // const platforms = this.physics.add.staticGroup();
+    //
+    // platforms.create(400, 568, "ground").setScale(2).refreshBody();
+    //
+    // platforms.create(600, 400, "ground");
+    // platforms.create(50, 250, "ground");
+    // platforms.create(750, 220, "ground");
+    //
+    // const circle = this.add.circle(200, phaserLogo.height + 20, 80, 0x6666ff);
+    // circle.setInteractive().on("pointerdown", () => {
+    //   circle.set(-400);
+    // });
+
+    // if (circle.body) {
+    //   (circle.body as Phaser.Physics.Arcade.Body).setCollideWorldBounds(true);
+    // }
+    // (circle.body as Phaser.Physics.Arcade.Body).setBounce(0.6, 0);
+    //(circle.body as Phaser.Physics.Arcade.Body).setInteractive();
+    //.on("pointerdown", () => {
+    //  this.setVelocityY(-400);
+    //});
+
+    //this.physics.add.existing(circle);
+    //this.physics.world.enable(circle);
+    // this.physics.world.enable(circle);
+
+    // this.physics.add.collider(phaserLogo, circle);
 
     this.track.once("play", () => {
       // this.bird.anims.playAfterDelay("lay", 2250);
