@@ -1,5 +1,8 @@
 export enum Scenes {
+  // Logo
   "PreloadScene" = "PreloadScene",
-  "MainScene" = "MainScene",
-  "BirdyScene" = "BirdyScene"
+  "MainSceneLogo" = "MainSceneLogo",
+
+  // First
+  "MainSceneFirst" = "MainSceneFirst"
 }

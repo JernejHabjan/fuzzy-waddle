@@ -1,6 +1,6 @@
 import { Scenes } from "../scenes";
 import { CreateSceneFromObjectConfig } from "../../phaser/phaser";
-import { AssetsFirst } from "./assets";
+import { AssetsLogo } from "./assets";
 
 export default class PreloadScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   constructor() {
@@ -8,12 +8,13 @@ export default class PreloadScene extends Phaser.Scene implements CreateSceneFro
   }
 
   preload() {
-    this.load.image(AssetsFirst.loader, "assets/img/birdy-nam-nam-loader.png");
-    this.load.image(AssetsFirst.click, "assets/img/birdy-nam-nam-click.png");
+    this.load
+      .image(AssetsLogo.loader, "assets/img/birdy-nam-nam-loader.png")
+      .image(AssetsLogo.click, "assets/img/birdy-nam-nam-click.png");
   }
 
   create() {
-    this.scene.start(Scenes.MainScene);
+    this.scene.start(Scenes.MainSceneLogo);
 
     /**
      * This is how you would dynamically import the mainScene class (with code splitting),

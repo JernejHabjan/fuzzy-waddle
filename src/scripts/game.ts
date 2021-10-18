@@ -1,6 +1,7 @@
 import "phaser";
-import MainScene from "./scenes/first/mainScene";
-import PreloadScene from "./scenes/first/preloadScene";
+import PreloadScene from "./scenes/logo/preload-scene";
+import MainSceneFirst from "./scenes/first/mainSceneFirst";
+import MainSceneLogo from "./scenes/logo/main-scene-logo";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
@@ -15,7 +16,7 @@ const config: Phaser.Types.Core.GameConfig = {
     width: DEFAULT_WIDTH,
     height: DEFAULT_HEIGHT
   },
-  scene: [PreloadScene, MainScene],
+  scene: [PreloadScene, MainSceneLogo],
   physics: {
     default: "arcade",
     arcade: {
@@ -25,6 +26,21 @@ const config: Phaser.Types.Core.GameConfig = {
   }
 };
 
+const configFirstGame = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 300 },
+      debug: false
+    }
+  },
+  scene: [MainSceneFirst]
+};
+
 window.addEventListener("load", () => {
   const game = new Phaser.Game(config);
+  // const game = new Phaser.Game(configFirstGame);
 });

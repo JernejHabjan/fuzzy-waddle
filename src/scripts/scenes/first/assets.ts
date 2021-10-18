@@ -1,10 +1,7 @@
 export enum AssetsFirst {
-  "phaserLogo" = "phaser-logo",
-  "loader" = "loader",
-  "click" = "click",
-  "jungle" = "jungle"
+  "sky" = "sky",
+  "ground" = "ground",
+  "star" = "star",
+  "bomb" = "bomb",
+  "dude" = "dude"
 }
-
-export const SceneConfig = {
-  allowAudio: false
-};

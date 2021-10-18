@@ -1,19 +1,19 @@
-const path = require('path')
-const { merge } = require('webpack-merge')
-const common = require('./webpack.common')
+// const path = require('path')
+const { merge } = require("webpack-merge");
+const common = require("./webpack.common");
 // const WebpackObfuscator = require('webpack-obfuscator')
 
 const prod = {
-  mode: 'production',
+  mode: "production",
   output: {
-    filename: '[name].[contenthash].bundle.js',
-    chunkFilename: '[name].[contenthash].chunk.js'
+    filename: "[name].[contenthash].bundle.js",
+    chunkFilename: "[name].[contenthash].chunk.js"
   },
   optimization: {
     splitChunks: {
       cacheGroups: {
         commons: {
-          filename: '[name].[contenthash].bundle.js'
+          filename: "[name].[contenthash].bundle.js"
         }
       }
     }
@@ -29,6 +29,7 @@ const prod = {
     //   ['vendors.*.js', 'sw.js']
     // )
   ]
-}
+};
 
-module.exports = merge(common, prod)
+// noinspection JSCheckFunctionSignatures
+module.exports = merge(common, prod);
