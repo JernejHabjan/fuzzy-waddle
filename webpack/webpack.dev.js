@@ -5,7 +5,13 @@ const dev = {
   mode: "development",
   devtool: "inline-source-map",
   devServer: {
-    open: true
+    open: false,
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false
+      }
+    }
   }
 };
 
