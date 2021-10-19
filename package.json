@@ -18,7 +18,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{js,ts}": [
+    "*.{js,ts,html}": [
       "eslint --fix",
       "prettier --write"
     ],
@@ -85,6 +85,7 @@
     "workbox-webpack-plugin": "^6.3.0"
   },
   "dependencies": {
+    "eslint-plugin-html": "^6.2.0",
     "phaser": "^3.55.2"
   }
 }
