@@ -11,13 +11,19 @@
     "lint": "npm-run-all --parallel lint:*",
     "lint:css": "stylelint ./**/*.{css,scss,sass,html} --ignore-path .gitignore",
     "lint:ts": "eslint . --ignore-path .gitignore",
-    "lint-fix": "eslint --quiet --fix --ignore-path .gitignore",
+    "lint-fix": "npm-run-all --parallel lint-fix:*",
+    "lint-fix:css": "stylelint --fix \"*.{html,css}\"",
+    "lint-fix:ts": "eslint --quiet --fix --ignore-path .gitignore",
     "test": "jest",
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{css,js,json,md,yml,ts,html}": [
+    "*.{js,ts}": [
       "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{html,css}": [
+      "stylelint --fix",
       "prettier --write"
     ]
   },
