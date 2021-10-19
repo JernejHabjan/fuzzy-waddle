@@ -1,4 +1,4 @@
-import { SomeTestClass } from "../../src/scripts/scenes/just-test-class";
+import { SomeTestClass } from "../scripts/scenes/just-test-class";
 
 describe("Testing is working", () => {
   it("should work", () => {
