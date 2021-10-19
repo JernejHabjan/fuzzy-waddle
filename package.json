@@ -11,11 +11,15 @@
     "lint": "npm-run-all --parallel lint:*",
     "lint:css": "stylelint ./**/*.{css,scss,sass,html} --ignore-path .gitignore",
     "lint:ts": "eslint . --ignore-path .gitignore",
+    "lint-fix": "eslint --quiet --fix --ignore-path .gitignore",
     "test": "jest",
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{css,js,json,md,yml,ts}": "eslint --fix"
+    "*.{css,js,json,md,yml,ts,html}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "keywords": [
     "Phaser",
