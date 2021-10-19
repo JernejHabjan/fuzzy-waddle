@@ -14,9 +14,9 @@ export interface CreateSceneFromObjectConfig {
   /**
    * Any additional properties, which will be copied to the Scene after it's created (except `data` or `sys`).
    */
-  extend?: any;
+  extend?: unknown;
   /**
    * Any values, which will be merged into the Scene's Data Manager store.
    */
-  "extend.data"?: any;
+  "extend.data"?: unknown;
 }
