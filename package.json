@@ -1,6 +1,6 @@
 {
   "name": "phaser-project-template",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Phaser 3 starter template with TypeScript and webpack.",
   "homepage": "https://github.com/JernejHabjan/fuzzy-waddle#readme.md",
   "main": "index.js",
