@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: Lint commits
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
         - uses: wagoid/commitlint-github-action@v4
