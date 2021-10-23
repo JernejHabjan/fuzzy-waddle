@@ -52,20 +52,25 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      ["@semantic-release/npm", {
-        "npmPublish": false,
-        "tarballDir": "dist"
-      }],
-      ["@semantic-release/github", {
-        "assets": "dist/*.tgz"
-      }]
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false,
+          "tarballDir": "dist"
+        }
+      ],
+      "@semantic-release/git",
+      [
+        "@semantic-release/github",
+        {
+          "assets": "dist/*.tgz"
+        }
+      ]
     ]
   },
   "license": "MIT",
   "devDependencies": {
-    "@semantic-release/commit-analyzer": "^9.0.1",
-    "@semantic-release/github": "^8.0.1",
-    "@semantic-release/release-notes-generator": "^10.0.2",
+    "@semantic-release/git": "^10.0.0",
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
