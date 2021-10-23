@@ -40,6 +40,9 @@ jobs:
           branch: gh-pages
           folder: dist
 
+      - name: Zip Packages for GitHub deploy
+        run: npm run zip
+
       - name: Release notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

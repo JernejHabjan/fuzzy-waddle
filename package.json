@@ -16,6 +16,7 @@
     "lint-fix:ts": "eslint --quiet --fix --ignore-path .gitignore",
     "test": "jest",
     "prepare": "husky install",
+    "zip": "bestzip dist/bundle.zip dist/*",
     "semantic-release": "semantic-release"
   },
   "lint-staged": {
@@ -56,7 +57,7 @@
       [
         "@semantic-release/github",
         {
-          "assets": "dist/*.tgz"
+          "assets": "dist/bundle.zip"
         }
       ]
     ]
@@ -67,6 +68,7 @@
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
+    "bestzip": "^2.2.0",
     "copy-webpack-plugin": "^9.0.1",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
