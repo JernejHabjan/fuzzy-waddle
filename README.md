@@ -186,10 +186,6 @@ Making a multiplayer game? Check out [geckos.io](https://github.com/geckosio/gec
 - [Official Phaser 3 Examples](http://labs.phaser.io/)
 - [Notes of Phaser 3](https://rexrainbow.github.io/phaser3-rex-notes/docs/site/index.html)
 
-## Credits
-
-A huge thank you to Rich [@photonstorm](https://github.com/photonstorm) for creating Phaser
-
 ## License
 
 The MIT License (MIT) 2021 - [Yannick Deubel](https://github.com/yandeu). Please have a look at the [LICENSE](LICENSE) for more details.
