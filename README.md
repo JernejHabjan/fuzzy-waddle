@@ -50,7 +50,11 @@ Some game made in typescript
 - Includes Phaser 3 TypeScript typings
 - For development and production builds
 - Adds a webpack ContentHash to the JavaScript files (in production)
-
+- Linting code and pre-commit lint fix
+- Testing using jest
+- Enforce conventional commits with commitlint and husky
+- Use semantic release to update package version and create GitHub release
+- Push release to GitHub pages
 ## Preview
 
 This is what you get after installing this template. A simple and clean starter template written in TypeScript. [Try it!](https://s3.eu-central-1.amazonaws.com/phaser3-typescript/starter-template/index.html)
