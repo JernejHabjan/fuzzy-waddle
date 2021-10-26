@@ -26,6 +26,7 @@ const config: Phaser.Types.Core.GameConfig = {
   }
 };
 
+// noinspection JSUnusedLocalSymbols
 const configFirstGame = {
   type: Phaser.AUTO,
   width: 800,
@@ -41,6 +42,7 @@ const configFirstGame = {
 };
 
 window.addEventListener("load", () => {
+  // noinspection JSUnusedLocalSymbols
   const game = new Phaser.Game(config);
   // const game = new Phaser.Game(configFirstGame);
 });

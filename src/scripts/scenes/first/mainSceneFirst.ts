@@ -153,6 +153,7 @@ export default class MainSceneFirst extends Phaser.Scene implements CreateSceneF
     }
   }
 
+  // noinspection JSUnusedLocalSymbols
   hitBomb(player: Phaser.Physics.Arcade.Sprite, bomb: Phaser.Physics.Arcade.Sprite) {
     this.physics.pause();
 
