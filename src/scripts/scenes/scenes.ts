@@ -4,5 +4,10 @@ export enum Scenes {
   "MainSceneLogo" = "MainSceneLogo",
 
   // First
-  "MainSceneFirst" = "MainSceneFirst"
+  "MainSceneFirst" = "MainSceneFirst",
+
+  // Dungeon
+  "PreloadSceneDungeon" = "PreloadSceneDungeon",
+  "MainSceneDungeon" = "MainSceneDungeon",
+  "DungeonUi" = "DungeonUi"
 }
