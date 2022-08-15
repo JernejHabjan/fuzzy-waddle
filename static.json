@@ -1,0 +1,11 @@
+{
+  "root": "dist/apps/fuzzy-waddle/",
+  "routes": {
+    "/**/*.html": "index.html"
+  },
+  "proxies": {
+    "/api/": {
+      "origin": "https://fuzzy-waddle.herokuapp.com/api/"
+    }
+  }
+}
