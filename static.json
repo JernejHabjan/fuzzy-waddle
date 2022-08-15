@@ -1,5 +1,5 @@
 {
-  "root": "dist/apps/fuzzy-waddle/",
+  "root": "dist/apps/client/",
   "routes": {
     "/**/*.html": "index.html"
   },
