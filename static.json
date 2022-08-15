@@ -5,7 +5,7 @@
   },
   "proxies": {
     "/api/": {
-      "origin": "https://fuzzy-waddle.herokuapp.com/api/"
+      "origin": "https://fuzzy-waddle-api.herokuapp.com/api/"
     }
   }
 }
