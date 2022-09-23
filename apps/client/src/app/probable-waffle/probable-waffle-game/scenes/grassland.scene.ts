@@ -17,19 +17,26 @@ export default class GrasslandScene
   }
 
   preload() {
-    this.load.setBaseURL('https://labs.phaser.io');
-    this.load.image('sky', 'assets/skies/space3.png');
-    this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-    this.load.image('red', 'assets/particles/red.png');
+    this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
+    this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
+    this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
+
+    this.load.image('tiles', 'assets/probable-waffle/tilesets/iso-64x64-outside.png');
+    this.load.image('tiles2', 'assets/probable-waffle/tilesets/iso-64x64-building.png');
+    this.load.tilemapTiledJSON('map', 'assets/probable-waffle/tilemaps/start-small.json');
+
+    // big map
+    // this.load.tilemapTiledJSON('map', 'https://labs.phaser.io/assets/tilemaps/iso/isorpg.json');
+
   }
 
   create() {
-    this.sky = this.add.image(
+   /*this.sky = this.add.image(
       this.scale.width / 2,
       this.scale.height / 2,
       'sky'
     );
-    this.sky.setScale(4, 4);
+    this.sky.setScale(4, 4);*/
 
     const particles = this.add.particles('red');
 
@@ -58,10 +65,25 @@ export default class GrasslandScene
       })
     );
 
-    this.cameras.main.setZoom(1.5);
-    this.cameras.main.setBounds(0, 0, this.scale.width, this.scale.height);
+    // this.cameras.main.setZoom(1.5);
+    // this.cameras.main.setBounds(0, 0, this.scale.width, this.scale.height);
 
     this.scale.on(Phaser.Scale.Events.RESIZE, this.resize, this);
+
+
+    const map = this.add.tilemap('map');
+
+    // console.log(map);
+
+    const tileset1 = map.addTilesetImage('iso-64x64-outside', 'tiles') as Phaser.Tilemaps.Tileset;
+    const tileset2 = map.addTilesetImage('iso-64x64-building', 'tiles2') as Phaser.Tilemaps.Tileset;
+
+    const layer1 = map.createLayer('Tile Layer 1', [ tileset1, tileset2 ]);
+    // const layer2 = map.createLayer('Tile Layer 2', [ tileset1, tileset2 ]);
+    // const layer3 = map.createLayer('Tile Layer 3', [ tileset1, tileset2 ]);
+    // const layer4 = map.createLayer('Tile Layer 4', [ tileset1, tileset2 ]);
+    // const layer5 = map.createLayer('Tile Layer 5', [ tileset1, tileset2 ]);
+
 
     this.input.on(Phaser.Input.Events.GAMEOBJECT_DOWN,
       (
