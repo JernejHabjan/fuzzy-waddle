@@ -8,14 +8,21 @@ import { MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
 import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
 import { TileCenterOptions, TileLayerConfig } from '../types/tile-types';
+import { MultiSelectionHandler } from '../input/multi-selection.handler';
+import { Subscription } from 'rxjs';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
-  private logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   private inputHandler!: InputHandler;
   private scaleHandler!: ScaleHandler;
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
+  private multiSelectionHandler!: MultiSelectionHandler;
 
+  // todo move this somewhere else
+  // used for selection
+  private objects: Phaser.GameObjects.Sprite[] = [];
+  private selectionPreviewSub!: Subscription;
+  private selectionEventSub!: Subscription;
   constructor() {
     super({ key: Scenes.GrasslandScene });
   }
@@ -49,7 +56,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       })
     );
 
-    this.cameras.main.setZoom(2);
+    // this.cameras.main.setZoom(2);
 
     const { tileMapLayer, mapSizeInfo } = this.createMap();
 
@@ -103,6 +110,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tileMapLayer, mapSizeInfo);
+    this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
+    this.subscribeToSelectionEvents();
     this.destroyListener();
   }
 
@@ -150,6 +159,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.scaleHandler.destroy();
       this.cursorHandler.destroy();
       this.tilemapInputHandler.destroy();
+      this.multiSelectionHandler.destroy();
+      this.selectionPreviewSub.unsubscribe();
+      this.selectionEventSub.unsubscribe();
     });
   }
 
@@ -157,11 +169,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     const tileCenter = this.getTileCenter(tile.getCenterX(), tile.getCenterY(), mapSizeInfo, { centerSprite: true });
 
     // create object
-    const sprite = this.add.image(tileCenter.x, tileCenter.y, 'atlas', 'blue_ball');
+    const sprite = this.add.sprite(tileCenter.x, tileCenter.y, 'atlas', 'blue_ball');
     // todo set object depth!
     sprite.setInteractive();
     // todo temp
     sprite.setScale(1, 1);
+    this.objects.push(sprite);
   }
 
   private getTileCenter(
@@ -214,5 +227,30 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         tile.depth = tileCenter.y + ty + layerOffset;
       }
     }
+  }
+
+  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Phaser.GameObjects.Sprite[] {
+    return this.objects.filter((s: Phaser.GameObjects.Sprite) => {
+      const bounds = s.getBounds();
+      return this.multiSelectionHandler.overlapsBounds(rect, bounds);
+    });
+  }
+  private subscribeToSelectionEvents() {
+    // todo move this
+    this.selectionPreviewSub = this.multiSelectionHandler.onPreview.subscribe((rect) => {
+      const selected = this.getObjectsUnderSelectionRectangle(rect);
+      // tint all selected with blue
+      selected.forEach((s) => {
+        s.setTint(0x0000ff);
+      });
+    });
+    // todo move this
+    this.selectionEventSub = this.multiSelectionHandler.onSelect.subscribe((rect) => {
+      const selected = this.getObjectsUnderSelectionRectangle(rect);
+      // tint all selected with red
+      selected.forEach((s) => {
+        s.setTint(0xff0000);
+      });
+    });
   }
 }
