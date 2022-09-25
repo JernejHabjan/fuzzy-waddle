@@ -7,7 +7,7 @@ import { ScaleHandler } from '../scale/scale.handler';
 import { MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
 import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
-import { TileCenterOptions } from '../types/tile-types';
+import { TileCenterOptions, TileLayerConfig } from '../types/tile-types';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
@@ -53,8 +53,20 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     const { tileMapLayer, mapSizeInfo } = this.createMap();
 
-    this.createLayer(mapSizeInfo, 0); // layer 0
-    this.createLayer(mapSizeInfo, 1); // layer 1
+    this.createLayer(
+      mapSizeInfo,
+      [
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-55.png', x: 7, y: 4 }
+      ],
+      0
+    ); // layer 0
+    this.createLayer(
+      mapSizeInfo,
+      [{ texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 }],
+      1
+    ); // layer 1
 
     this.placeSpriteOnTilemapTile(tileMapLayer.getTileAt(0, 0), mapSizeInfo);
 
@@ -169,7 +181,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     return new Phaser.Math.Vector2(centerX, centerY);
   }
 
-  private createLayer(mapSizeInfo: MapSizeInfo, layer: number) {
+  private createLayer(mapSizeInfo: MapSizeInfo, tileLayerConfig: TileLayerConfig[], layer: number) {
     const layerOffset = layer * mapSizeInfo.tileHeight;
     const tileWidth = mapSizeInfo.tileWidth;
     const tileHeight = mapSizeInfo.tileHeight;
@@ -187,15 +199,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
+        const layerConfig = tileLayerConfig.find((r) => r.x === x && r.y === y);
+        if (!layerConfig) {
+          continue;
+        }
+
         const tx = (x - y) * tileWidthHalf;
         const ty = (x + y) * tileHeightHalf;
 
-        const tile = this.add.image(
-          tileCenter.x + tx,
-          tileCenter.y + ty,
-          'iso-64x64-building-atlas',
-          'iso-64x64-building-0'
-        );
+        const tile = this.add.image(tileCenter.x + tx, tileCenter.y + ty, layerConfig.texture, layerConfig.frame);
         // todo temp
         //tile.setScale(0.2, 0.2);
 
