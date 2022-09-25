@@ -5,11 +5,13 @@ import { CreateSceneFromObjectConfig } from '../interfaces/scene-config.interfac
 import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
 import { MapSizeInfo } from '../const/map-size.info';
+import { CursorHandler } from '../input/cursor.handler';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   private inputHandler!: InputHandler;
   private scaleHandler!: ScaleHandler;
+  private cursorHandler!: CursorHandler;
 
   private tileWidth!: number; // todo move to separate class?
   private tileHeight!: number; // todo move to separate class?
@@ -87,6 +89,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     );
 
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
+    this.cursorHandler = new CursorHandler(this.input);
     this.destroyListener();
   }
 
@@ -135,6 +138,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.input.off(Phaser.Input.Events.GAME_OUT);
       this.input.off(Phaser.Input.Events.POINTER_WHEEL);
       this.inputHandler.destroy();
+      this.scaleHandler.destroy();
+      this.cursorHandler.destroy();
     });
   }
 
@@ -161,7 +166,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.logo = this.physics.add.image(0, 0, 'logo');
     // input enabled
-    this.logo.setInteractive();
+    this.logo.setInteractive({cursor: CursorHandler.penCursor});
 
     this.logo.setVelocity(100, 200);
     this.logo.setBounce(1, 1);
