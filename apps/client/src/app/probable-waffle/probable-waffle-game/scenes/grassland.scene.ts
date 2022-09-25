@@ -7,6 +7,7 @@ import { ScaleHandler } from '../scale/scale.handler';
 import { MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
 import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
+import { TileCenterOptions } from '../types/tile-types';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
@@ -22,13 +23,19 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   preload() {
     this.load.atlas(
       'atlas',
-      'assets/probable-waffle/atlas/megaset-2.png',
-      'assets/probable-waffle/atlas/megaset-2.json'
+      'assets/probable-waffle/atlas/megaset-0.png',
+      'assets/probable-waffle/atlas/megaset-0.json'
     );
 
     this.load.image('tiles', 'assets/probable-waffle/atlas/iso-64x64-outside.png');
     this.load.image('tiles2', 'assets/probable-waffle/atlas/iso-64x64-building.png');
     this.load.tilemapTiledJSON('map', 'assets/probable-waffle/tilemaps/start-small.json');
+
+    this.load.atlas(
+      'iso-64x64-building-atlas',
+      'assets/probable-waffle/atlas/iso-64x64-building.png',
+      'assets/probable-waffle/atlas/iso-64x64-building.json'
+    );
 
     // big map
     // this.load.tilemapTiledJSON('map', 'https://labs.phaser.io/assets/tilemaps/iso/isorpg.json');
@@ -46,7 +53,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     const { tileMapLayer, mapSizeInfo } = this.createMap();
 
-    this.placeObjectOnTilemapTile(tileMapLayer.getTileAt(2, 2), mapSizeInfo);
+    this.createLayer(mapSizeInfo, 0); // layer 0
+    this.createLayer(mapSizeInfo, 1); // layer 1
+
+    this.placeSpriteOnTilemapTile(tileMapLayer.getTileAt(0, 0), mapSizeInfo);
 
     this.input.on(
       Phaser.Input.Events.GAMEOBJECT_DOWN,
@@ -131,14 +141,66 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private placeObjectOnTilemapTile(tile: Phaser.Tilemaps.Tile, mapSizeInfo: MapSizeInfo) {
-    // get coordinates of tile
-    const centerX = tile.getCenterX();
-    const centerY = tile.getCenterY() - mapSizeInfo.tileHeight / 2; // note this offset
+  private placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile, mapSizeInfo: MapSizeInfo) {
+    const tileCenter = this.getTileCenter(tile.getCenterX(), tile.getCenterY(), mapSizeInfo, { centerSprite: true });
 
     // create object
-    const hotDog = this.add.image(centerX, centerY, 'atlas', 'hotdog');
-    hotDog.setInteractive();
-    hotDog.setScale(0.2, 0.2);
+    const sprite = this.add.image(tileCenter.x, tileCenter.y, 'atlas', 'blue_ball');
+    // todo set object depth!
+    sprite.setInteractive();
+    // todo temp
+    sprite.setScale(1, 1);
+  }
+
+  private getTileCenter(
+    x: number,
+    y: number,
+    mapSizeInfo: MapSizeInfo,
+    tileCenterOptions: TileCenterOptions = null
+  ): Phaser.Math.Vector2 {
+    const centerX = x;
+    const centerY =
+      y +
+      (tileCenterOptions?.offset
+        ? -tileCenterOptions.offset
+        : tileCenterOptions?.centerSprite
+        ? mapSizeInfo.tileHeight / 2
+        : 0);
+    return new Phaser.Math.Vector2(centerX, centerY);
+  }
+
+  private createLayer(mapSizeInfo: MapSizeInfo, layer: number) {
+    const layerOffset = layer * mapSizeInfo.tileHeight;
+    const tileWidth = mapSizeInfo.tileWidth;
+    const tileHeight = mapSizeInfo.tileHeight;
+
+    const tileWidthHalf = tileWidth / 2;
+    const tileHeightHalf = tileHeight / 2;
+
+    const mapWidth = mapSizeInfo.width;
+    const mapHeight = mapSizeInfo.height;
+
+    // not offsetting, because we're placing block tiles there
+    const tileCenter = this.getTileCenter(mapSizeInfo.tileWidth / 2, mapSizeInfo.tileWidth / 2, mapSizeInfo, {
+      offset: layerOffset
+    });
+
+    for (let y = 0; y < mapHeight; y++) {
+      for (let x = 0; x < mapWidth; x++) {
+        const tx = (x - y) * tileWidthHalf;
+        const ty = (x + y) * tileHeightHalf;
+
+        const tile = this.add.image(
+          tileCenter.x + tx,
+          tileCenter.y + ty,
+          'iso-64x64-building-atlas',
+          'iso-64x64-building-0'
+        );
+        // todo temp
+        //tile.setScale(0.2, 0.2);
+
+        tile.depth = tileCenter.y + ty + layerOffset;
+      }
+    }
   }
 }
