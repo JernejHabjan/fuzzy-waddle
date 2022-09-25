@@ -21,6 +21,9 @@ export default class GrasslandScene
     this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
     this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
 
+    this.load.atlas('atlas', 'https://labs.phaser.io/assets/atlas/megaset-2.png', 'https://labs.phaser.io/assets/atlas/megaset-2.json');
+
+
     this.load.image('tiles', 'assets/probable-waffle/tilesets/iso-64x64-outside.png');
     this.load.image('tiles2', 'assets/probable-waffle/tilesets/iso-64x64-building.png');
     this.load.tilemapTiledJSON('map', 'assets/probable-waffle/tilemaps/start-small.json');
@@ -84,6 +87,9 @@ export default class GrasslandScene
     // const layer4 = map.createLayer('Tile Layer 4', [ tileset1, tileset2 ]);
     // const layer5 = map.createLayer('Tile Layer 5', [ tileset1, tileset2 ]);
 
+
+    const hotdog = this.add.image(100, 200, 'atlas','hotdog');
+    hotdog.setScale(0.2, 0.2);
 
     this.input.on(Phaser.Input.Events.GAMEOBJECT_DOWN,
       (
