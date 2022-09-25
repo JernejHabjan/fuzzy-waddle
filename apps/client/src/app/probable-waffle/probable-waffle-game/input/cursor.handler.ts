@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 
 export class CursorHandler {
   public static readonly penCursor = 'url(https://labs.phaser.io/assets/input/cursors/pen.cur), pointer';
-  private input!: Phaser.Input.InputPlugin;
+  private input: Phaser.Input.InputPlugin;
 
   constructor(input: Phaser.Input.InputPlugin) {
   this.input = input;

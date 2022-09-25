@@ -6,16 +6,14 @@ import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
 import { MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
+import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   private inputHandler!: InputHandler;
   private scaleHandler!: ScaleHandler;
   private cursorHandler!: CursorHandler;
-
-  private tileWidth!: number; // todo move to separate class?
-  private tileHeight!: number; // todo move to separate class?
-  private heightInPixels!: number; // todo move to separate class?
+  private tilemapInputHandler!: TilemapInputHandler;
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -51,7 +49,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.cameras.main.setZoom(2);
 
     this.createStartupObjects();
-    const mapSizeInfo = this.createMap();
+    const { tileMapLayer, mapSizeInfo } = this.createMap();
     this.createObjects();
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
@@ -90,6 +88,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this.input);
+    this.tilemapInputHandler = new TilemapInputHandler(this.input, tileMapLayer, mapSizeInfo);
     this.destroyListener();
   }
 
@@ -103,7 +102,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     // todo this.activeBuildings?.forEach(portal => portal.toggleRadiusVisible(false));
   }
 
-  private createMap(): MapSizeInfo {
+  private createMap(): {
+    tileMapLayer: Phaser.Tilemaps.TilemapLayer;
+    mapSizeInfo: MapSizeInfo;
+  } {
     const map = this.add.tilemap('map');
 
     // console.log(map);
@@ -111,18 +113,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     const tileset1 = map.addTilesetImage('iso-64x64-outside', 'tiles') as Phaser.Tilemaps.Tileset;
     const tileset2 = map.addTilesetImage('iso-64x64-building', 'tiles2') as Phaser.Tilemaps.Tileset;
 
-    const layer1 = map.createLayer('Tile Layer 1', [tileset1, tileset2]);
-    // const layer2 = map.createLayer('Tile Layer 2', [ tileset1, tileset2 ]);
-    // const layer3 = map.createLayer('Tile Layer 3', [ tileset1, tileset2 ]);
-    // const layer4 = map.createLayer('Tile Layer 4', [ tileset1, tileset2 ]);
-    // const layer5 = map.createLayer('Tile Layer 5', [ tileset1, tileset2 ]);
-
-    this.tileWidth = map.tileWidth;
-    this.tileHeight = map.tileHeight;
-
-    this.heightInPixels = map.heightInPixels;
-
-    return new MapSizeInfo(map.width, map.height, map.tileWidth, map.tileHeight);
+    const tileMapLayer = map.createLayer('Tile Layer 1', [tileset1, tileset2]) as Phaser.Tilemaps.TilemapLayer;
+    return {
+      tileMapLayer,
+      mapSizeInfo: new MapSizeInfo(map.width, map.height, map.tileWidth, map.tileHeight)
+    };
   }
 
   override update(time: number, delta: number) {
@@ -140,6 +135,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.inputHandler.destroy();
       this.scaleHandler.destroy();
       this.cursorHandler.destroy();
+      this.tilemapInputHandler.destroy();
     });
   }
 
@@ -166,7 +162,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.logo = this.physics.add.image(0, 0, 'logo');
     // input enabled
-    this.logo.setInteractive({cursor: CursorHandler.penCursor});
+    this.logo.setInteractive({ cursor: CursorHandler.penCursor });
 
     this.logo.setVelocity(100, 200);
     this.logo.setBounce(1, 1);
