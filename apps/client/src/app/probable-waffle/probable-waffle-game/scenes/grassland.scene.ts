@@ -10,6 +10,7 @@ import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
 import { TileCenterOptions, TileLayerConfig } from '../types/tile-types';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
 import { Subscription } from 'rxjs';
+import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
@@ -17,6 +18,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
   private multiSelectionHandler!: MultiSelectionHandler;
+  private minimapTextureHelper!: MinimapTextureHelper;
 
   // todo move this somewhere else
   // used for selection
@@ -111,6 +113,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tileMapLayer, mapSizeInfo);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
+    this.minimapTextureHelper = new MinimapTextureHelper(this);
     this.subscribeToSelectionEvents();
     this.destroyListener();
   }
@@ -146,6 +149,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   override update(time: number, delta: number) {
     super.update(time, delta);
     this.inputHandler.update(time, delta);
+    this.minimapTextureHelper.update(this.objects);
   }
 
   private destroyListener() {
