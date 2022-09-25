@@ -1,4 +1,25 @@
-<div style="position: absolute; top: 0; width: 100%">
- <!-- <button (click)="leave()">Leave</button>
-  <button (click)="emitEvent()">Speed up logo</button> -->
+<div style="position: absolute; top: 0; height: 100%; width: 100px">
+  <ng-container *ngIf="collapsed; else expanded">
+    <button (click)="collapsed = false">Expand</button>
+  </ng-container>
+
+  <ng-template #expanded>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: bisque;
+      "
+    >
+      <button (click)="collapsed = true" style="margin-bottom: 10px">Collapse</button>
+      <button (click)="leave()">Leave</button>
+      <div style='margin-top:10px;'>Selection</div>
+      <button (click)="deselectTile()">Deselect Tile</button>
+      <button (click)="tile1()">Tile 1</button>
+      <button (click)="tile2()">Tile 2</button>
+    </div>
+  </ng-template>
 </div>

@@ -1,10 +1,13 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
+import { Subject } from 'rxjs';
 
 export class TilemapInputHandler {
   private input: Phaser.Input.InputPlugin;
   private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
   private mapSizeInfo: MapSizeInfo;
+
+  onTileSelected = new Subject<Phaser.Tilemaps.Tile>();
 
   constructor(input: Phaser.Input.InputPlugin, tilemapLayer: Phaser.Tilemaps.TilemapLayer, mapSizeInfo: MapSizeInfo) {
     this.input = input;
@@ -30,6 +33,7 @@ export class TilemapInputHandler {
         previousTile = foundTile;
         foundTile.tint = 0xff0000;
         console.log('foundTile tile', foundTile.x, foundTile.y);
+        this.onTileSelected.next(foundTile);
       }
     });
   }

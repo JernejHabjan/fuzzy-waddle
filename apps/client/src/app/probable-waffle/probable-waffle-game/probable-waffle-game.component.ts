@@ -11,6 +11,7 @@ import {probableWaffleGameConfig} from "./const/game-config";
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   gameRef!: Phaser.Game;
+  collapsed = false;
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
@@ -31,5 +32,17 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   leave() {
     this.router.navigate(['probable-waffle/levels']);
+  }
+
+  deselectTile() {
+    SceneCommunicatorService.tileEmitterSubject.next(null);
+  }
+
+  tile1() {
+    SceneCommunicatorService.tileEmitterSubject.next(4);
+  }
+
+  tile2() {
+    SceneCommunicatorService.tileEmitterSubject.next(5);
   }
 }

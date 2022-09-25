@@ -23,6 +23,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private objects: Phaser.GameObjects.Sprite[] = [];
   private selectionPreviewSub!: Subscription;
   private selectionEventSub!: Subscription;
+  private tileSelectedSub!: Subscription;
+  private tileToBeReplaced: number | null = null; // todo should be moved
   constructor() {
     super({ key: Scenes.GrasslandScene });
   }
@@ -53,12 +55,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       SceneCommunicatorService.testEmitterSubject.subscribe((nr) => {
         console.log('event received', nr);
         // this.logo.setVelocity(100 * nr, 200 * nr);
-      })
+      }),
+      SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
+        this.tileToBeReplaced = tileNr;
+      }),
     );
 
     // this.cameras.main.setZoom(2);
 
-    const { tileMapLayer, mapSizeInfo } = this.createMap();
+    const { tilemapLayer, mapSizeInfo } = this.createMap();
 
     this.createLayer(
       mapSizeInfo,
@@ -75,7 +80,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       1
     ); // layer 1
 
-    this.placeSpriteOnTilemapTile(tileMapLayer.getTileAt(0, 0), mapSizeInfo);
+    this.placeSpriteOnTilemapTile(tilemapLayer.getTileAt(0, 0), mapSizeInfo);
 
     this.input.on(
       Phaser.Input.Events.GAMEOBJECT_DOWN,
@@ -109,7 +114,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this.input);
-    this.tilemapInputHandler = new TilemapInputHandler(this.input, tileMapLayer, mapSizeInfo);
+    this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer, mapSizeInfo);
+    this.subscribeToTileMapSelectEvents(tilemapLayer);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.subscribeToSelectionEvents();
     this.destroyListener();
@@ -126,19 +132,17 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private createMap(): {
-    tileMapLayer: Phaser.Tilemaps.TilemapLayer;
+    tilemapLayer: Phaser.Tilemaps.TilemapLayer;
     mapSizeInfo: MapSizeInfo;
   } {
     const map = this.add.tilemap('map');
-
-    // console.log(map);
 
     const tileset1 = map.addTilesetImage('iso-64x64-outside', 'tiles') as Phaser.Tilemaps.Tileset;
     const tileset2 = map.addTilesetImage('iso-64x64-building', 'tiles2') as Phaser.Tilemaps.Tileset;
 
     const tileMapLayer = map.createLayer('Tile Layer 1', [tileset1, tileset2]) as Phaser.Tilemaps.TilemapLayer;
     return {
-      tileMapLayer,
+      tilemapLayer: tileMapLayer,
       mapSizeInfo: new MapSizeInfo(map.width, map.height, map.tileWidth, map.tileHeight)
     };
   }
@@ -162,6 +166,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.multiSelectionHandler.destroy();
       this.selectionPreviewSub.unsubscribe();
       this.selectionEventSub.unsubscribe();
+      this.tileSelectedSub.unsubscribe();
     });
   }
 
@@ -251,6 +256,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       selected.forEach((s) => {
         s.setTint(0xff0000);
       });
+    });
+  }
+
+  private subscribeToTileMapSelectEvents(tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
+    this.tileSelectedSub = this.tilemapInputHandler.onTileSelected.subscribe((tile) => {
+      // replace tile
+      if(this.tileToBeReplaced !== null){
+        tilemapLayer.replaceByIndex(tile.index, this.tileToBeReplaced, tile.x, tile.y,1,1);
+      }
     });
   }
 }

@@ -1,7 +1,9 @@
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 
 export class SceneCommunicatorService {
   static testEmitterSubject: BehaviorSubject<number>;
+  static tileEmitterSubject: Subject<number|null>;
+
   static subscriptions: Subscription[] = [];
 
   static setup() {
@@ -10,6 +12,7 @@ export class SceneCommunicatorService {
     SceneCommunicatorService.testEmitterSubject = new BehaviorSubject<number>(
       1
     );
+    SceneCommunicatorService.tileEmitterSubject = new Subject<number|null>();
   }
 
   static unsubscribe() {
