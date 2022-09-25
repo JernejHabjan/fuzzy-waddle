@@ -26,8 +26,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       'assets/probable-waffle/atlas/megaset-2.json'
     );
 
-    this.load.image('tiles', 'assets/probable-waffle/tilesets/iso-64x64-outside.png');
-    this.load.image('tiles2', 'assets/probable-waffle/tilesets/iso-64x64-building.png');
+    this.load.image('tiles', 'assets/probable-waffle/atlas/iso-64x64-outside.png');
+    this.load.image('tiles2', 'assets/probable-waffle/atlas/iso-64x64-building.png');
     this.load.tilemapTiledJSON('map', 'assets/probable-waffle/tilemaps/start-small.json');
 
     // big map
