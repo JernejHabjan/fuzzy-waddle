@@ -12,6 +12,7 @@ import {probableWaffleGameConfig} from "./const/game-config";
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   gameRef!: Phaser.Game;
   collapsed = false;
+  nrReplacedTiles = 3;
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
@@ -22,6 +23,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     SceneCommunicatorService.setup();
+    this.nrReplacedTilesChanged();
 
     this.gameRef = new Phaser.Game(probableWaffleGameConfig);
   }
@@ -44,5 +46,9 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   tile2() {
     SceneCommunicatorService.tileEmitterSubject.next(5);
+  }
+
+  nrReplacedTilesChanged(){
+    SceneCommunicatorService.tileEmitterNrSubject.next(this.nrReplacedTiles);
   }
 }

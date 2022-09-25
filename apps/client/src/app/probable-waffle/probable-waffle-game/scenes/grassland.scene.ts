@@ -262,9 +262,20 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private subscribeToTileMapSelectEvents(tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
     this.tileSelectedSub = this.tilemapInputHandler.onTileSelected.subscribe((tile) => {
       // replace tile
-      if(this.tileToBeReplaced !== null){
-        tilemapLayer.replaceByIndex(tile.index, this.tileToBeReplaced, tile.x, tile.y,1,1);
-      }
+      this.tileReplacement(tilemapLayer, tile);
     });
+  }
+
+
+  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer,tile: Phaser.Tilemaps.Tile) {
+    if(this.tileToBeReplaced !== null){
+      const tilesToReplace = SceneCommunicatorService.tileEmitterNrSubject.getValue();
+      // get neighbors of tile
+      const from = Math.floor(tilesToReplace/2);
+      const neighbors = tilemapLayer.getTilesWithin(tile.x - from , tile.y- from, tilesToReplace, tilesToReplace);
+      neighbors.forEach((t) => {
+        tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y,1,1);
+      })
+    }
   }
 }

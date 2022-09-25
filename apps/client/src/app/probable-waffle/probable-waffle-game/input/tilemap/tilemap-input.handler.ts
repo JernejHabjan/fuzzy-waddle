@@ -17,7 +17,6 @@ export class TilemapInputHandler {
   }
 
   private setupCursor() {
-    let previousTile: Phaser.Tilemaps.Tile;
     this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
       const { worldX, worldY } = pointer;
 
@@ -26,13 +25,12 @@ export class TilemapInputHandler {
 
       const foundTile = this.tilemapLayer.getTileAtWorldXY(searchedWorldX, searchedWorldY) as Phaser.Tilemaps.Tile;
 
-      if (previousTile) {
-        previousTile.tint = 0xffffff;
-      }
+      //if (previousTile) {
+      //  previousTile.tint = 0xffffff;
+      //}
       if (foundTile) {
-        previousTile = foundTile;
-        foundTile.tint = 0xff0000;
-        console.log('foundTile tile', foundTile.x, foundTile.y);
+        //foundTile.tint = 0xff0000;
+        //console.log('foundTile tile', foundTile.x, foundTile.y);
         this.onTileSelected.next(foundTile);
       }
     });

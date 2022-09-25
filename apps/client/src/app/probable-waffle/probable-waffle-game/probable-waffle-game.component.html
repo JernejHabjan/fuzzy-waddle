@@ -17,6 +17,7 @@
       <button (click)="collapsed = true" style="margin-bottom: 10px">Collapse</button>
       <button (click)="leave()">Leave</button>
       <div style='margin-top:10px;'>Selection</div>
+      <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)='nrReplacedTilesChanged()' />
       <button (click)="deselectTile()">Deselect Tile</button>
       <button (click)="tile1()">Tile 1</button>
       <button (click)="tile2()">Tile 2</button>
