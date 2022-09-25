@@ -20,14 +20,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   preload() {
-    this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
-    this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
-    this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
-
     this.load.atlas(
       'atlas',
-      'https://labs.phaser.io/assets/atlas/megaset-2.png',
-      'https://labs.phaser.io/assets/atlas/megaset-2.json'
+      'assets/probable-waffle/atlas/megaset-2.png',
+      'assets/probable-waffle/atlas/megaset-2.json'
     );
 
     this.load.image('tiles', 'assets/probable-waffle/tilesets/iso-64x64-outside.png');
@@ -48,23 +44,18 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.cameras.main.setZoom(2);
 
-    this.createStartupObjects();
     const { tileMapLayer, mapSizeInfo } = this.createMap();
-    this.createObjects();
 
-    this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
+    this.placeObjectOnTilemapTile(tileMapLayer.getTileAt(2, 2), mapSizeInfo);
 
     this.input.on(
       Phaser.Input.Events.GAMEOBJECT_DOWN,
       (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) => {
         console.log(Phaser.Input.Events.GAMEOBJECT_DOWN, pointer, gameObject);
 
-        this.cameras.main.startFollow(gameObject);
-        // todo if (gameObject instanceof BasePortal) {
-        // todo   this.hideAllRadiusCircles();
-        // todo   gameObject.toggleRadiusVisible(true);
-        // todo   this.portalSelectedSubject$.next(gameObject);
-        // todo }
+        if (gameObject instanceof Phaser.GameObjects.Sprite || gameObject instanceof Phaser.GameObjects.Image) {
+          gameObject.setTint(0xff0000);
+        }
       }
     );
 
@@ -72,7 +63,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       if (pointer.rightButtonDown()) {
         console.log('right pointer down');
 
-        this.cameras.main.stopFollow();
+        // this.cameras.main.stopFollow();
       }
     });
 
@@ -86,6 +77,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this
     );
 
+    this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tileMapLayer, mapSizeInfo);
@@ -139,35 +131,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private createObjects() {
-    const hotdog = this.add.image(100, 200, 'atlas', 'hotdog');
-    hotdog.setScale(0.2, 0.2);
-  }
+  private placeObjectOnTilemapTile(tile: Phaser.Tilemaps.Tile, mapSizeInfo: MapSizeInfo) {
+    // get coordinates of tile
+    const centerX = tile.getCenterX();
+    const centerY = tile.getCenterY() - mapSizeInfo.tileHeight / 2; // note this offset
 
-  private createStartupObjects() {
-    /*this.sky = this.add.image(
-     this.scale.width / 2,
-     this.scale.height / 2,
-     'sky'
-   );
-   this.sky.setScale(4, 4);*/
-
-    const particles = this.add.particles('red');
-
-    const emitter = particles.createEmitter({
-      speed: 100,
-      scale: { start: 1, end: 0 },
-      blendMode: 'ADD'
-    });
-
-    this.logo = this.physics.add.image(0, 0, 'logo');
-    // input enabled
-    this.logo.setInteractive({ cursor: CursorHandler.penCursor });
-
-    this.logo.setVelocity(100, 200);
-    this.logo.setBounce(1, 1);
-    this.logo.setCollideWorldBounds(true);
-
-    emitter.startFollow(this.logo);
+    // create object
+    const hotDog = this.add.image(centerX, centerY, 'atlas', 'hotdog');
+    hotDog.setInteractive();
+    hotDog.setScale(0.2, 0.2);
   }
 }
