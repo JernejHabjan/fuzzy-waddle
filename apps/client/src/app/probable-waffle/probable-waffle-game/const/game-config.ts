@@ -18,7 +18,7 @@ export const probableWaffleGameConfig: Phaser.Types.Core.GameConfig = {
   disableContextMenu: true,
   backgroundColor: '#222',
   scale: {
-    mode: Phaser.Scale.FIT
+    mode: Phaser.Scale.RESIZE
   },
   fps: {
     target: 60,
