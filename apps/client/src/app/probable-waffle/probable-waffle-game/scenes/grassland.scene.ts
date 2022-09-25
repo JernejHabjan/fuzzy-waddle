@@ -124,7 +124,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   override update(time: number, delta: number) {
     super.update(time, delta);
-    this.inputHandler.updateCamera(time, delta);
+    this.inputHandler.update(time, delta);
   }
 
   private destroyListener() {
