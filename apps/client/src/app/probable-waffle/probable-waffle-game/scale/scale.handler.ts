@@ -24,13 +24,17 @@ export class ScaleHandler {
     this.scaleManager.on(Phaser.Scale.Events.RESIZE, this.resize, this);
   }
 
-  /**
-   * todo this needs to be improved
-   */
   setupBounds(centerOn: boolean = false) {
-    const cameraBoundX = this.mainCamera.width / 2 + this.mapSizeInfo.tileWidth / 2;
-    const cameraBoundY = this.mainCamera.height / 2 + this.mapSizeInfo.heightInPixels / 2;
-    this.mainCamera.setBounds(-cameraBoundX, -(cameraBoundY * 0.66), cameraBoundX * 2, cameraBoundY * 2, centerOn);
+    const xOffset = this.mapSizeInfo.tileWidth / 2;
+    const yOffset = this.mapSizeInfo.tileHeight;
+
+    this.mainCamera.setBounds(
+      -this.mapSizeInfo.widthInPixels / 2 + xOffset,
+      yOffset,
+      this.mapSizeInfo.widthInPixels,
+      this.mapSizeInfo.heightInPixels,
+      centerOn
+    );
   }
 
   /**

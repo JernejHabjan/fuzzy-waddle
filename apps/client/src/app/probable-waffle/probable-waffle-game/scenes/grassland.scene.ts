@@ -58,10 +58,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       }),
       SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
         this.tileToBeReplaced = tileNr;
-      }),
+      })
     );
-
-    // this.cameras.main.setZoom(2);
 
     const { tilemapLayer, mapSizeInfo } = this.createMap();
 
@@ -266,16 +264,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-
-  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer,tile: Phaser.Tilemaps.Tile) {
-    if(this.tileToBeReplaced !== null){
+  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tile: Phaser.Tilemaps.Tile) {
+    if (this.tileToBeReplaced !== null) {
       const tilesToReplace = SceneCommunicatorService.tileEmitterNrSubject.getValue();
       // get neighbors of tile
-      const from = Math.floor(tilesToReplace/2);
-      const neighbors = tilemapLayer.getTilesWithin(tile.x - from , tile.y- from, tilesToReplace, tilesToReplace);
+      const from = Math.floor(tilesToReplace / 2);
+      const neighbors = tilemapLayer.getTilesWithin(tile.x - from, tile.y - from, tilesToReplace, tilesToReplace);
       neighbors.forEach((t) => {
-        tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y,1,1);
-      })
+        tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y, 1, 1);
+      });
     }
   }
 }
