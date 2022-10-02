@@ -23,14 +23,9 @@ export class MultiSelectionHandler {
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer) {
-    // todo not working correctly for different zoom than 1
-    // todo initial camera scroll is set by "this.mainCamera.setBounds"
-    this.selection.x = (pointer.x + this.mainCamera.scrollX) * this.mainCamera.zoom;
-    this.selection.y = (pointer.y + this.mainCamera.scrollY) * this.mainCamera.zoom;
-
-    console.log("zoom is", this.mainCamera.zoom);
+    this.selection.x = pointer.worldX;
+    this.selection.y = pointer.worldY;
     this.selectionRect = null;
-    console.log('handle pointer down', pointer.x, pointer.y);
   }
 
   private handlePointerUp() {
@@ -46,9 +41,10 @@ export class MultiSelectionHandler {
     if (!pointer.isDown) {
       return;
     }
-    // todo not working correctly for different zoom than 1
-    const dx = (pointer.x - pointer.prevPosition.x) * this.mainCamera.zoom;
-    const dy = (pointer.y - pointer.prevPosition.y) * this.mainCamera.zoom;
+
+    const prevWorldPosition = this.mainCamera.getWorldPoint(pointer.prevPosition.x, pointer.prevPosition.y);
+    const dx = pointer.worldX - prevWorldPosition.x;
+    const dy = pointer.worldY - prevWorldPosition.y;
 
     this.selection.width += dx;
     this.selection.height += dy;
