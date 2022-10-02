@@ -4,23 +4,6 @@
   </ng-container>
 
   <ng-template #expanded>
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        justify-content: stretch;
-        border-radius: 10px;
-        overflow: hidden;
-        background-color: bisque;
-      "
-    >
-      <button (click)="collapsed = true" style="margin-bottom: 10px">Collapse</button>
-      <button (click)="leave()">Leave</button>
-      <div style='margin-top:10px;'>Selection</div>
-      <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)='nrReplacedTilesChanged()' />
-      <button (click)="deselectTile()">Deselect Tile</button>
-      <button (click)="tile1()">Tile 1</button>
-      <button (click)="tile2()">Tile 2</button>
-    </div>
+    <fuzzy-waddle-editor-drawer (drawerCollapsed)='collapsed=true'></fuzzy-waddle-editor-drawer>
   </ng-template>
 </div>

@@ -1,0 +1,24 @@
+<div
+  style="
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: bisque;
+  "
+>
+  <button (click)="drawerCollapsed.emit(true)" style="margin-bottom: 10px">Collapse</button>
+  <button (click)="leave()">Leave</button>
+  <div style="margin-top: 10px">Selection</div>
+  <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)="nrReplacedTilesChanged()" />
+  <button (click)="deselectTile()">Deselect Tile</button>
+  <button (click)="removeTile()">Remove Tile</button>
+  <div *ngIf="outsideAtlasFrames" class="tile-scroll-selector">
+    <fuzzy-waddle-tile-selector
+      *ngFor="let frame of outsideAtlasFrames; let i = index"
+      [frameWithMeta]="frame"
+      [tileId]="i + 1"
+    ></fuzzy-waddle-tile-selector>
+  </div>
+</div>

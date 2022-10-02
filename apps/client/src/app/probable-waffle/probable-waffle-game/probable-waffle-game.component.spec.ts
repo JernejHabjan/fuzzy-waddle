@@ -11,17 +11,7 @@ describe('ProbableWaffleGameComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ProbableWaffleGameComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({ id: 123 }) // todo needs to be changed later
-          }
-        }
-      ],
-      imports: [RouterTestingModule]
-    }).compileComponents();
+      declarations: [ProbableWaffleGameComponent]}).compileComponents();
 
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
     component = fixture.componentInstance;

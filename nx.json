@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "fuzzy-waddle",
   "affected": {
-    "defaultBase": "master"
+    "defaultBase": "develop"
   },
   "cli": {
     "packageManager": "npm"
@@ -18,21 +18,14 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ],
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
         "accessToken": "MWY4OTY5MjQtZjc2ZC00ZDQ0LTg2ZDItMDYxZDkyNGYyNDNifHJlYWQtd3JpdGU="
       }
     }
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     }
   },
   "generators": {
