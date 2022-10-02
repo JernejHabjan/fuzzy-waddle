@@ -10,6 +10,7 @@ import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
 import { TileCenterOptions, TileLayerConfig } from '../types/tile-types';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
 import { Subscription } from 'rxjs';
+import { js as EasyStar } from 'easystarjs';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
@@ -78,7 +79,53 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       1
     ); // layer 1
 
-    this.placeSpriteOnTilemapTile(tilemapLayer.getTileAt(0, 0), mapSizeInfo);
+    const ball1XY = { x: 0, y: 0 };
+    this.placeSpriteOnTilemapTile(tilemapLayer.getTileAt(ball1XY.x, ball1XY.y), mapSizeInfo);
+
+    const easyStar = new EasyStar();
+    const navigationEnd = { x: 4, y: 0 }; // todo hardcoded for now
+    const grid = tilemapLayer.layer.data.map((row) => row.map((tile) => tile.index));
+    easyStar.setGrid(grid);
+    easyStar.setAcceptableTiles([1]); // todo hardcoded to green tiles now
+    easyStar.enableDiagonals();
+    easyStar.findPath(ball1XY.x, ball1XY.y, navigationEnd.x, navigationEnd.y, (path) => {
+      if (path === null) {
+        console.log('Path was not found.');
+      } else {
+        const getTileCenterByPath = (path: { x: number; y: number }): Phaser.Math.Vector2 => {
+          const center = this.getTileCenterByTilemapTileXY(path.x, path.y, tilemapLayer, mapSizeInfo, {
+            centerSprite: true
+          });
+          if (center == null) {
+            throw new Error('center is null');
+          }
+          return center;
+        };
+
+        // draw straight line from start to end colored red
+        let graphics = this.add.graphics();
+        graphics.lineStyle(2, 0xff0000, 1);
+        graphics.beginPath();
+        let tileCenter = getTileCenterByPath(path[0]);
+        graphics.moveTo(tileCenter.x, tileCenter.y);
+        tileCenter = getTileCenterByPath(path[path.length - 1]);
+        graphics.lineTo(tileCenter.x, tileCenter.y);
+        graphics.strokePath();
+
+        // draw phaser line from one point to the next
+        graphics = this.add.graphics();
+        graphics.lineStyle(2, 0xffffff, 1);
+        graphics.beginPath();
+        tileCenter = getTileCenterByPath(path[0]);
+        graphics.moveTo(tileCenter.x, tileCenter.y);
+        for (let i = 1; i < path.length; i++) {
+          tileCenter = getTileCenterByPath(path[i]);
+          graphics.lineTo(tileCenter.x, tileCenter.y);
+        }
+        graphics.strokePath();
+      }
+    });
+    easyStar.calculate();
 
     this.input.on(
       Phaser.Input.Events.GAMEOBJECT_DOWN,
@@ -168,7 +215,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile, mapSizeInfo: MapSizeInfo) {
+  private placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile, mapSizeInfo: MapSizeInfo): Phaser.GameObjects.Sprite {
     const tileCenter = this.getTileCenter(tile.getCenterX(), tile.getCenterY(), mapSizeInfo, { centerSprite: true });
 
     // create object
@@ -178,6 +225,21 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     // todo temp
     sprite.setScale(1, 1);
     this.objects.push(sprite);
+    return sprite;
+  }
+
+  private getTileCenterByTilemapTileXY(
+    x: number,
+    y: number,
+    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
+    mapSizeInfo: MapSizeInfo,
+    tileCenterOptions: TileCenterOptions = null
+  ): Phaser.Math.Vector2 | null {
+    const currentTile = tilemapLayer.getTileAt(x, y);
+    if (!currentTile) {
+      return null;
+    }
+    return this.getTileCenter(currentTile.getCenterX(), currentTile.getCenterY(), mapSizeInfo, tileCenterOptions);
   }
 
   private getTileCenter(
