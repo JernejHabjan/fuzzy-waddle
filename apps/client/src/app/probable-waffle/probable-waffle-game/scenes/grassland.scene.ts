@@ -80,7 +80,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers();
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer, mapSizeInfo);
-    this.manualTileInputHandler = new ManualTileInputHandler(this.input, manualLayers, mapSizeInfo);
+    this.manualTileInputHandler = new ManualTileInputHandler(this.input, tilemapLayer, manualLayers, mapSizeInfo);
     this.subscribeToTileMapSelectEvents(tilemapLayer);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.subscribeToSelectionEvents();

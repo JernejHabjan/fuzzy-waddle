@@ -1,17 +1,24 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
 import { Subject } from 'rxjs';
-import { ManualTile, ManualTilesHelper } from '../../manual-tiles/manual-tiles.helper';
+import { ManualTile } from '../../manual-tiles/manual-tiles.helper';
 
 export class ManualTileInputHandler {
   private input: Phaser.Input.InputPlugin;
+  private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
   private mapSizeInfo: MapSizeInfo;
 
   onTileSelected: Subject<ManualTile> = new Subject<ManualTile>();
   private manualLayers: ManualTile[][];
 
-  constructor(input: Phaser.Input.InputPlugin, manualLayers: ManualTile[][], mapSizeInfo: MapSizeInfo) {
+  constructor(
+    input: Phaser.Input.InputPlugin,
+    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
+    manualLayers: ManualTile[][],
+    mapSizeInfo: MapSizeInfo
+  ) {
     this.input = input;
+    this.tilemapLayer = tilemapLayer;
     this.manualLayers = manualLayers;
     this.mapSizeInfo = mapSizeInfo;
     this.setupCursor();
@@ -38,9 +45,7 @@ export class ManualTileInputHandler {
   }
 
   private getTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
-    // todo this shoud be working as WorldToTileXY from phaser
-
-    throw new Error('not implemented');
+    const pointerToTileXY = this.tilemapLayer.worldToTileXY(worldX, worldY, true);
 
     // search in all layers, starting from the last
     for (let i = this.manualLayers.length - 1; i >= 0; i--) {
@@ -48,7 +53,8 @@ export class ManualTileInputHandler {
       // search in the layer if tile x,y match the worldX, worldY
       for (let j = 0; j < layer.length; j++) {
         const tile = layer[j];
-        if (tile.x === worldX && tile.y === worldY) {
+
+        if (tile.x - tile.clickableZ === pointerToTileXY.x && tile.y - tile.clickableZ === pointerToTileXY.y) {
           return tile;
         }
       }

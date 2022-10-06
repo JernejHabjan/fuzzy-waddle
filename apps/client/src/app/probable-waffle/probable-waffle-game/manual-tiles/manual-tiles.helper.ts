@@ -5,9 +5,14 @@ import { TilemapHelper } from '../tilemap/tilemap.helper';
 
 export interface ManualTile {
   gameObjectImage: Phaser.GameObjects.Image;
+  // tile index in the layer
   x: number;
+  // tile index in the layer
   y: number;
+  // layer depth (starting with 0)
   z: number;
+  // layer depth + 1 - used for checking where tile is clickable // todo fix for stairs
+  clickableZ: number;
   texture: string;
   frame: string;
   depth: number;
@@ -56,9 +61,10 @@ export class ManualTilesHelper {
 
         manualTilesLayer.push({
           gameObjectImage: tile,
-          x: tile.x,
-          y: tile.y,
+          x,
+          y,
           z: layer,
+          clickableZ: layer + 1,
           texture: layerConfig.texture,
           frame: layerConfig.frame,
           depth: tile.depth
