@@ -65,7 +65,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.bindSceneCommunicator();
 
     const { tilemapLayer, mapSizeInfo } = this.createMap();
-    this.createAdditionalLayers(mapSizeInfo);
+    // not displaying additional tilemap layers for now as z-index is incorrect for them anyway
+    // this.createAdditionalLayers(mapSizeInfo);
     this.createSprites(tilemapLayer, mapSizeInfo);
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
@@ -201,6 +202,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     );
     this.objects.push(ballSprite);
 
-    this.pathfinder.find(ball1XY, { x: 4, y: 0 }, tilemapLayer, mapSizeInfo);
+    // removing navigation for now
+    // this.pathfinder.find(ball1XY, { x: 4, y: 0 }, tilemapLayer, mapSizeInfo);
   }
 }
