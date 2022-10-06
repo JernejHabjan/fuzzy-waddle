@@ -7,10 +7,11 @@ import { ScaleHandler } from '../scale/scale.handler';
 import { MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
 import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
-import { TileCenterOptions, TileLayerConfig } from '../types/tile-types';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
 import { Subscription } from 'rxjs';
-import { js as EasyStar } from 'easystarjs';
+import { TilemapHelper } from '../tilemap/tilemap.helper';
+import { Pathfinder } from '../navigation/pathfinder';
+import { OtherInputHandler } from '../input/other-input.handler';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
@@ -18,6 +19,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
   private multiSelectionHandler!: MultiSelectionHandler;
+  private tilemapHelper!: TilemapHelper;
+  private pathfinder!: Pathfinder;
+  private otherInputHandler!: OtherInputHandler;
 
   // todo move this somewhere else
   // used for selection
@@ -26,6 +30,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private selectionEventSub!: Subscription;
   private tileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
+
   constructor() {
     super({ key: Scenes.GrasslandScene });
   }
@@ -51,129 +56,28 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     // this.load.tilemapTiledJSON('map', 'https://labs.phaser.io/assets/tilemaps/iso/isorpg.json');
   }
 
+  init() {
+    this.tilemapHelper = new TilemapHelper(this);
+    this.pathfinder = new Pathfinder(this);
+  }
+
   create() {
-    SceneCommunicatorService.subscriptions.push(
-      SceneCommunicatorService.testEmitterSubject.subscribe((nr) => {
-        console.log('event received', nr);
-        // this.logo.setVelocity(100 * nr, 200 * nr);
-      }),
-      SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
-        this.tileToBeReplaced = tileNr;
-      })
-    );
+    this.bindSceneCommunicator();
 
     const { tilemapLayer, mapSizeInfo } = this.createMap();
-
-    this.createLayer(
-      mapSizeInfo,
-      [
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-55.png', x: 7, y: 4 }
-      ],
-      0
-    ); // layer 0
-    this.createLayer(
-      mapSizeInfo,
-      [{ texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 }],
-      1
-    ); // layer 1
-
-    const ball1XY = { x: 0, y: 0 };
-    this.placeSpriteOnTilemapTile(tilemapLayer.getTileAt(ball1XY.x, ball1XY.y), mapSizeInfo);
-
-    const easyStar = new EasyStar();
-    const navigationEnd = { x: 4, y: 0 }; // todo hardcoded for now
-    const grid = tilemapLayer.layer.data.map((row) => row.map((tile) => tile.index));
-    easyStar.setGrid(grid);
-    easyStar.setAcceptableTiles([1]); // todo hardcoded to green tiles now
-    easyStar.enableDiagonals();
-    easyStar.findPath(ball1XY.x, ball1XY.y, navigationEnd.x, navigationEnd.y, (path) => {
-      if (path === null) {
-        console.log('Path was not found.');
-      } else {
-        const getTileCenterByPath = (path: { x: number; y: number }): Phaser.Math.Vector2 => {
-          const center = this.getTileCenterByTilemapTileXY(path.x, path.y, tilemapLayer, mapSizeInfo, {
-            centerSprite: true
-          });
-          if (center == null) {
-            throw new Error('center is null');
-          }
-          return center;
-        };
-
-        // draw straight line from start to end colored red
-        let graphics = this.add.graphics();
-        graphics.lineStyle(2, 0xff0000, 1);
-        graphics.beginPath();
-        let tileCenter = getTileCenterByPath(path[0]);
-        graphics.moveTo(tileCenter.x, tileCenter.y);
-        tileCenter = getTileCenterByPath(path[path.length - 1]);
-        graphics.lineTo(tileCenter.x, tileCenter.y);
-        graphics.strokePath();
-
-        // draw phaser line from one point to the next
-        graphics = this.add.graphics();
-        graphics.lineStyle(2, 0xffffff, 1);
-        graphics.beginPath();
-        tileCenter = getTileCenterByPath(path[0]);
-        graphics.moveTo(tileCenter.x, tileCenter.y);
-        for (let i = 1; i < path.length; i++) {
-          tileCenter = getTileCenterByPath(path[i]);
-          graphics.lineTo(tileCenter.x, tileCenter.y);
-        }
-        graphics.strokePath();
-      }
-    });
-    easyStar.calculate();
-
-    this.input.on(
-      Phaser.Input.Events.GAMEOBJECT_DOWN,
-      (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) => {
-        console.log(Phaser.Input.Events.GAMEOBJECT_DOWN, pointer, gameObject);
-
-        if (gameObject instanceof Phaser.GameObjects.Sprite || gameObject instanceof Phaser.GameObjects.Image) {
-          gameObject.setTint(0xff0000);
-        }
-      }
-    );
-
-    this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
-      if (pointer.rightButtonDown()) {
-        console.log('right pointer down');
-
-        // this.cameras.main.stopFollow();
-      }
-    });
-
-    this.input.on(
-      Phaser.Input.Events.GAME_OUT,
-      () => {
-        // todo if (this.portalPlaceholder) {
-        // todo   this.hidePortalPlaceholder();
-        // todo }
-      },
-      this
-    );
+    this.createAdditionalLayers(mapSizeInfo);
+    this.createSprites(tilemapLayer, mapSizeInfo);
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
+    this.otherInputHandler = new OtherInputHandler(this.input);
+    this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers();
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer, mapSizeInfo);
     this.subscribeToTileMapSelectEvents(tilemapLayer);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.subscribeToSelectionEvents();
     this.destroyListener();
-  }
-
-  hidePortalPlaceholder(): void {
-    // todo this.portalPlaceholder.destroyEnemy();
-    // todo this.portalPlaceholder = null;
-    // todo this.portalElementSelectedSubject$.next(null);
-  }
-
-  hideAllRadiusCircles(): void {
-    // todo this.activeBuildings?.forEach(portal => portal.toggleRadiusVisible(false));
   }
 
   private createMap(): {
@@ -192,6 +96,23 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     };
   }
 
+  private createAdditionalLayers(mapSizeInfo: MapSizeInfo) {
+    this.tilemapHelper.createLayer(
+      mapSizeInfo,
+      [
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-55.png', x: 7, y: 4 }
+      ],
+      0
+    ); // layer 0
+    this.tilemapHelper.createLayer(
+      mapSizeInfo,
+      [{ texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 }],
+      1
+    ); // layer 1
+  }
+
   override update(time: number, delta: number) {
     super.update(time, delta);
     this.inputHandler.update(time, delta);
@@ -205,6 +126,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.input.off(Phaser.Input.Events.GAME_OUT);
       this.input.off(Phaser.Input.Events.POINTER_WHEEL);
       this.inputHandler.destroy();
+      this.otherInputHandler.destroy();
       this.scaleHandler.destroy();
       this.cursorHandler.destroy();
       this.tilemapInputHandler.destroy();
@@ -213,85 +135,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.selectionEventSub.unsubscribe();
       this.tileSelectedSub.unsubscribe();
     });
-  }
-
-  private placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile, mapSizeInfo: MapSizeInfo): Phaser.GameObjects.Sprite {
-    const tileCenter = this.getTileCenter(tile.getCenterX(), tile.getCenterY(), mapSizeInfo, { centerSprite: true });
-
-    // create object
-    const sprite = this.add.sprite(tileCenter.x, tileCenter.y, 'atlas', 'blue_ball');
-    // todo set object depth!
-    sprite.setInteractive();
-    // todo temp
-    sprite.setScale(1, 1);
-    this.objects.push(sprite);
-    return sprite;
-  }
-
-  private getTileCenterByTilemapTileXY(
-    x: number,
-    y: number,
-    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
-    mapSizeInfo: MapSizeInfo,
-    tileCenterOptions: TileCenterOptions = null
-  ): Phaser.Math.Vector2 | null {
-    const currentTile = tilemapLayer.getTileAt(x, y);
-    if (!currentTile) {
-      return null;
-    }
-    return this.getTileCenter(currentTile.getCenterX(), currentTile.getCenterY(), mapSizeInfo, tileCenterOptions);
-  }
-
-  private getTileCenter(
-    x: number,
-    y: number,
-    mapSizeInfo: MapSizeInfo,
-    tileCenterOptions: TileCenterOptions = null
-  ): Phaser.Math.Vector2 {
-    const centerX = x;
-    const centerY =
-      y +
-      (tileCenterOptions?.offset
-        ? -tileCenterOptions.offset
-        : tileCenterOptions?.centerSprite
-        ? mapSizeInfo.tileHeight / 2
-        : 0);
-    return new Phaser.Math.Vector2(centerX, centerY);
-  }
-
-  private createLayer(mapSizeInfo: MapSizeInfo, tileLayerConfig: TileLayerConfig[], layer: number) {
-    const layerOffset = layer * mapSizeInfo.tileHeight;
-    const tileWidth = mapSizeInfo.tileWidth;
-    const tileHeight = mapSizeInfo.tileHeight;
-
-    const tileWidthHalf = tileWidth / 2;
-    const tileHeightHalf = tileHeight / 2;
-
-    const mapWidth = mapSizeInfo.width;
-    const mapHeight = mapSizeInfo.height;
-
-    // not offsetting, because we're placing block tiles there
-    const tileCenter = this.getTileCenter(mapSizeInfo.tileWidth / 2, mapSizeInfo.tileWidth / 2, mapSizeInfo, {
-      offset: layerOffset
-    });
-
-    for (let y = 0; y < mapHeight; y++) {
-      for (let x = 0; x < mapWidth; x++) {
-        const layerConfig = tileLayerConfig.find((r) => r.x === x && r.y === y);
-        if (!layerConfig) {
-          continue;
-        }
-
-        const tx = (x - y) * tileWidthHalf;
-        const ty = (x + y) * tileHeightHalf;
-
-        const tile = this.add.image(tileCenter.x + tx, tileCenter.y + ty, layerConfig.texture, layerConfig.frame);
-        // todo temp
-        //tile.setScale(0.2, 0.2);
-
-        tile.depth = tileCenter.y + ty + layerOffset;
-      }
-    }
   }
 
   private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Phaser.GameObjects.Sprite[] {
@@ -336,5 +179,28 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y, 1, 1);
       });
     }
+  }
+
+  private bindSceneCommunicator() {
+    SceneCommunicatorService.subscriptions.push(
+      SceneCommunicatorService.testEmitterSubject.subscribe((nr) => {
+        console.log('event received', nr);
+        // this.logo.setVelocity(100 * nr, 200 * nr);
+      }),
+      SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
+        this.tileToBeReplaced = tileNr;
+      })
+    );
+  }
+
+  private createSprites(tilemapLayer: Phaser.Tilemaps.TilemapLayer, mapSizeInfo: MapSizeInfo) {
+    const ball1XY = { x: 0, y: 0 };
+    const ballSprite = this.tilemapHelper.placeSpriteOnTilemapTile(
+      tilemapLayer.getTileAt(ball1XY.x, ball1XY.y),
+      mapSizeInfo
+    );
+    this.objects.push(ballSprite);
+
+    this.pathfinder.find(ball1XY, { x: 4, y: 0 }, tilemapLayer, mapSizeInfo);
   }
 }
