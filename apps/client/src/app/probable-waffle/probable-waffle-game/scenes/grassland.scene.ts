@@ -12,14 +12,18 @@ import { Subscription } from 'rxjs';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Pathfinder } from '../navigation/pathfinder';
 import { OtherInputHandler } from '../input/other-input.handler';
+import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.handler';
+import { ManualTile, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
   private scaleHandler!: ScaleHandler;
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
+  private manualTileInputHandler!: ManualTileInputHandler;
   private multiSelectionHandler!: MultiSelectionHandler;
   private tilemapHelper!: TilemapHelper;
+  private manualTilesHelper!: ManualTilesHelper;
   private pathfinder!: Pathfinder;
   private otherInputHandler!: OtherInputHandler;
 
@@ -29,6 +33,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private selectionPreviewSub!: Subscription;
   private selectionEventSub!: Subscription;
   private tileSelectedSub!: Subscription;
+  private manualTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
 
   constructor() {
@@ -58,6 +63,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   init() {
     this.tilemapHelper = new TilemapHelper(this);
+    this.manualTilesHelper = new ManualTilesHelper(this);
     this.pathfinder = new Pathfinder(this);
   }
 
@@ -65,8 +71,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.bindSceneCommunicator();
 
     const { tilemapLayer, mapSizeInfo } = this.createMap();
-    // not displaying additional tilemap layers for now as z-index is incorrect for them anyway
-    // this.createAdditionalLayers(mapSizeInfo);
+    const manualLayers = this.createAdditionalLayers(mapSizeInfo);
     this.createSprites(tilemapLayer, mapSizeInfo);
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
@@ -75,6 +80,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers();
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer, mapSizeInfo);
+    this.manualTileInputHandler = new ManualTileInputHandler(this.input, manualLayers, mapSizeInfo);
     this.subscribeToTileMapSelectEvents(tilemapLayer);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.subscribeToSelectionEvents();
@@ -97,8 +103,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     };
   }
 
-  private createAdditionalLayers(mapSizeInfo: MapSizeInfo) {
-    this.tilemapHelper.createLayer(
+  private createAdditionalLayers(mapSizeInfo: MapSizeInfo): ManualTile[][] {
+    const layer0 = this.manualTilesHelper.createLayer(
       mapSizeInfo,
       [
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
@@ -106,12 +112,13 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-55.png', x: 7, y: 4 }
       ],
       0
-    ); // layer 0
-    this.tilemapHelper.createLayer(
+    );
+    const layer1 = this.manualTilesHelper.createLayer(
       mapSizeInfo,
       [{ texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 }],
       1
-    ); // layer 1
+    );
+    return [layer0, layer1];
   }
 
   override update(time: number, delta: number) {
@@ -126,15 +133,18 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.input.off(Phaser.Input.Events.POINTER_DOWN);
       this.input.off(Phaser.Input.Events.GAME_OUT);
       this.input.off(Phaser.Input.Events.POINTER_WHEEL);
+      // todo these components should handle their own destroy on shutdown
       this.inputHandler.destroy();
       this.otherInputHandler.destroy();
       this.scaleHandler.destroy();
       this.cursorHandler.destroy();
       this.tilemapInputHandler.destroy();
+      this.manualTileInputHandler.destroy();
       this.multiSelectionHandler.destroy();
       this.selectionPreviewSub.unsubscribe();
       this.selectionEventSub.unsubscribe();
       this.tileSelectedSub.unsubscribe();
+      this.manualTileSelectedSub.unsubscribe();
     });
   }
 
@@ -167,6 +177,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.tileSelectedSub = this.tilemapInputHandler.onTileSelected.subscribe((tile) => {
       // replace tile
       this.tileReplacement(tilemapLayer, tile);
+    });
+
+    this.manualTileSelectedSub = this.manualTileInputHandler.onTileSelected.subscribe((tile) => {
+      console.log('manual tile selected', tile.x, tile.y, tile.z);
+      tile.gameObjectImage.tint = 0xff0000;
     });
   }
 

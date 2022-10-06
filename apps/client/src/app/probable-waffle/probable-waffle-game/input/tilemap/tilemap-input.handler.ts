@@ -7,7 +7,7 @@ export class TilemapInputHandler {
   private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
   private mapSizeInfo: MapSizeInfo;
 
-  onTileSelected = new Subject<Phaser.Tilemaps.Tile>();
+  onTileSelected: Subject<Phaser.Tilemaps.Tile> = new Subject<Phaser.Tilemaps.Tile>();
 
   constructor(input: Phaser.Input.InputPlugin, tilemapLayer: Phaser.Tilemaps.TilemapLayer, mapSizeInfo: MapSizeInfo) {
     this.input = input;
