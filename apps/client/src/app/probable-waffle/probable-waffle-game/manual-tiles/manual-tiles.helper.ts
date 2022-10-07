@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../const/map-size.info';
-import { TileLayerConfig } from '../types/tile-types';
+import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
+import { Vector2Simple } from '../math/intersection';
 
 export interface ManualTile {
   gameObjectImage: Phaser.GameObjects.Image;
@@ -11,11 +12,14 @@ export interface ManualTile {
   y: number;
   // layer depth (starting with 0)
   z: number;
-  // layer depth + 1 - used for checking where tile is clickable // todo fix for stairs
+  // layer depth + 1
   clickableZ: number;
   texture: string;
   frame: string;
   depth: number;
+
+  // for stairs
+  manualRectangleInputInterceptor: Phaser.Geom.Polygon | null;
 }
 
 export class ManualTilesHelper {
@@ -47,15 +51,18 @@ export class ManualTilesHelper {
 
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
-        const layerConfig = tileLayerConfig.find((r) => r.x === x && r.y === y);
-        if (!layerConfig) {
+        const tileConfig = tileLayerConfig.find((r) => r.x === x && r.y === y);
+        if (!tileConfig) {
           continue;
         }
 
         const tx = (x - y) * tileWidthHalf;
         const ty = (x + y) * tileHeightHalf;
 
-        const tile = this.scene.add.image(tileCenter.x + tx, tileCenter.y + ty, layerConfig.texture, layerConfig.frame);
+        const worldX = tileCenter.x + tx;
+        const worldY = tileCenter.y + ty;
+
+        const tile = this.scene.add.image(worldX, worldY, tileConfig.texture, tileConfig.frame);
 
         tile.depth = tileCenter.y + ty + layerOffset;
 
@@ -65,12 +72,79 @@ export class ManualTilesHelper {
           y,
           z: layer,
           clickableZ: layer + 1,
-          texture: layerConfig.texture,
-          frame: layerConfig.frame,
-          depth: tile.depth
+          texture: tileConfig.texture,
+          frame: tileConfig.frame,
+          depth: tile.depth,
+          manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, mapSizeInfo, tileConfig.slopeDir)
         });
       }
     }
     return manualTilesLayer;
+  }
+
+  /**
+   * Slopes like stairs
+   */
+  private getSlopeDir(
+    worldXY: Vector2Simple,
+    mapSizeInfo: MapSizeInfo,
+    slopeDir?: SlopeDirection
+  ): Phaser.Geom.Polygon | null {
+    const tileWidth = mapSizeInfo.tileWidth;
+    let manualRectangleInputInterceptor: Phaser.Geom.Polygon | null = null;
+    switch (slopeDir) {
+      case SlopeDirection.SouthEast:
+        manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
+          tileWidth / 2,
+          0,
+          0,
+          tileWidth * 0.25,
+          tileWidth / 2,
+          tileWidth,
+          tileWidth,
+          tileWidth * 0.75
+        ]);
+        break;
+      case SlopeDirection.SouthWest:
+        manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
+          tileWidth / 2,
+          0,
+          tileWidth,
+          tileWidth * 0.25,
+          tileWidth / 2,
+          tileWidth,
+          0,
+          tileWidth * 0.75
+        ]);
+        break;
+      case SlopeDirection.NorthWest:
+      case SlopeDirection.NorthEast:
+        throw new Error('Not implemented');
+    }
+    if (manualRectangleInputInterceptor !== null) {
+      this.applyPositionModifierToRectangleInputInterceptor(worldXY, manualRectangleInputInterceptor, mapSizeInfo);
+    }
+    return manualRectangleInputInterceptor;
+  }
+
+  /**
+   * So click on the sloped tile is detected correctly
+   */
+  private applyPositionModifierToRectangleInputInterceptor(
+    worldXY: Vector2Simple,
+    manualRectangleInputInterceptor: Phaser.Geom.Polygon,
+    mapSizeInfo: MapSizeInfo
+  ) {
+    // displace the rectangle by world position
+    for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {
+      manualRectangleInputInterceptor.points[i].x += worldXY.x;
+      manualRectangleInputInterceptor.points[i].y += worldXY.y;
+    }
+
+    // displace the rectangle a bit to the left and top by center offset
+    for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {
+      manualRectangleInputInterceptor.points[i].x -= mapSizeInfo.tileWidth / 2;
+      manualRectangleInputInterceptor.points[i].y -= mapSizeInfo.tileWidth / 2;
+    }
   }
 }

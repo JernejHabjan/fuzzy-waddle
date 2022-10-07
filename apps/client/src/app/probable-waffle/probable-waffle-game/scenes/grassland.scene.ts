@@ -14,6 +14,7 @@ import { Pathfinder } from '../navigation/pathfinder';
 import { OtherInputHandler } from '../input/other-input.handler';
 import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.handler';
 import { ManualTile, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
+import { SlopeDirection } from '../types/tile-types';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
@@ -80,7 +81,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers();
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer, mapSizeInfo);
-    this.manualTileInputHandler = new ManualTileInputHandler(this.input, tilemapLayer, manualLayers, mapSizeInfo);
+    this.manualTileInputHandler = new ManualTileInputHandler(this, this.input, tilemapLayer, manualLayers, mapSizeInfo);
     this.subscribeToTileMapSelectEvents(tilemapLayer);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.subscribeToSelectionEvents();
@@ -109,13 +110,35 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       [
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-55.png', x: 7, y: 4 }
+        {
+          texture: 'iso-64x64-building-atlas',
+          frame: 'iso-64x64-building-55.png',
+          x: 7,
+          y: 4,
+          slopeDir: SlopeDirection.SouthEast
+        },
+        {
+          texture: 'iso-64x64-building-atlas',
+          frame: 'iso-64x64-building-54.png',
+          x: 8,
+          y: 8,
+          slopeDir: SlopeDirection.SouthWest
+        }
       ],
       0
     );
     const layer1 = this.manualTilesHelper.createLayer(
       mapSizeInfo,
-      [{ texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 }],
+      [
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
+        {
+          texture: 'iso-64x64-building-atlas',
+          frame: 'iso-64x64-building-55.png',
+          x: 6,
+          y: 4,
+          slopeDir: SlopeDirection.SouthEast
+        }
+      ],
       1
     );
     return [layer0, layer1];
