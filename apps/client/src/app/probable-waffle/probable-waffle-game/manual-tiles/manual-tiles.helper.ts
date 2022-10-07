@@ -79,7 +79,41 @@ export class ManualTilesHelper {
         });
       }
     }
+    this.drawLayerLines(mapSizeInfo, tileLayerConfig, layer); // todo remove from here
     return manualTilesLayer;
+  }
+
+  drawLayerLines(mapSizeInfo: MapSizeInfo, tileLayerConfig: TileLayerConfig[], layer: number): void {
+    const layerOffset = layer * mapSizeInfo.tileHeight;
+    const tileWidth = mapSizeInfo.tileWidth;
+    const tileHeight = mapSizeInfo.tileHeight;
+
+    const tileWidthHalf = tileWidth / 2;
+    const tileHeightHalf = tileHeight / 2;
+
+    const mapWidth = mapSizeInfo.width;
+    const mapHeight = mapSizeInfo.height;
+
+    // not offsetting, because we're placing block tiles there
+    const tileCenter = TilemapHelper.getTileCenter(mapSizeInfo.tileWidth / 2, mapSizeInfo.tileWidth / 2, mapSizeInfo, {
+      offset: layerOffset
+    });
+
+    for (let y = 0; y < mapHeight; y++) {
+      const txStart = (0 - y) * tileWidthHalf;
+      const tyStart = (0 + y) * tileHeightHalf;
+      const txEnd = (mapWidth - 1 - y) * tileWidthHalf;
+      const tyEnd = (mapWidth - 1 + y) * tileHeightHalf;
+      const graphics = this.scene.add.graphics();
+
+      const worldXStart = tileCenter.x + txStart;
+      const worldYStart = tileCenter.y + tyStart;
+      const worldXEnd = tileCenter.x + txEnd;
+      const worldYEnd = tileCenter.y + tyEnd;
+      graphics.lineStyle(1, 0x00ff00, 1);
+
+      graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
+    }
   }
 
   /**
