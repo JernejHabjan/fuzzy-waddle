@@ -19,11 +19,20 @@ export class Pathfinder {
     return center;
   }
 
-  find(from: Vector2Simple, to: Vector2Simple, tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
+  find(
+    from: Vector2Simple,
+    to: Vector2Simple,
+    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
+    callback: (tileCenters: { x: number; y: number }[]) => void
+  ) {
     const easyStar = new EasyStar();
     const grid = tilemapLayer.layer.data.map((row: Phaser.Tilemaps.Tile[]) => row.map((tile) => tile.index));
     easyStar.setGrid(grid);
-    easyStar.setAcceptableTiles([1]); // todo hardcoded to green tiles now
+
+    // const get distinct tile indexes from grid
+    const tileIndexes: number[] = [...new Set(grid.flat())];
+
+    easyStar.setAcceptableTiles(tileIndexes); // todo hardcoded to all tiles now
     easyStar.enableDiagonals();
     easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
       if (path === null) {
@@ -45,11 +54,18 @@ export class Pathfinder {
         graphics.beginPath();
         tileCenter = Pathfinder.getTileCenterByPath(path[0], tilemapLayer);
         graphics.moveTo(tileCenter.x, tileCenter.y);
-        for (let i = 1; i < path.length; i++) {
-          tileCenter = Pathfinder.getTileCenterByPath(path[i], tilemapLayer);
+
+        const allTileCentersWithoutFirst = path.map((path) => Pathfinder.getTileCenterByPath(path, tilemapLayer));
+        allTileCentersWithoutFirst.shift();
+
+        for (let i = 0; i < path.length - 1; i++) {
+          tileCenter = allTileCentersWithoutFirst[i];
           graphics.lineTo(tileCenter.x, tileCenter.y);
         }
         graphics.strokePath();
+
+        // callback
+        callback(allTileCentersWithoutFirst);
       }
     });
     easyStar.calculate();

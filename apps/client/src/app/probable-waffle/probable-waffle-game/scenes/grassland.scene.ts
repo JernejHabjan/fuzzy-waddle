@@ -40,6 +40,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;
   private editorLayerNr = 0;
   private manualLayers!: ManualTileLayer[];
+  private selected: Phaser.GameObjects.Sprite[] = [];
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -82,8 +83,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
-    this.otherInputHandler = new OtherInputHandler(this.input);
-    this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers();
+    this.otherInputHandler = new OtherInputHandler(this.input, this.pathfinder, tilemapLayer);
+    this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers(this.selected);
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer);
     this.manualTileInputHandler = new ManualTileInputHandler(this, this.input, tilemapLayer, this.manualLayers);
@@ -217,9 +218,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
     // todo move this
     this.selectionEventSub = this.multiSelectionHandler.onSelect.subscribe((rect) => {
-      const selected = this.getObjectsUnderSelectionRectangle(rect);
+      // clear selected array
+      this.selected.splice(0, this.selected.length);
+      this.selected.push(...this.getObjectsUnderSelectionRectangle(rect));
       // tint all selected with red
-      selected.forEach((s) => {
+      this.selected.forEach((s) => {
         s.setTint(0xff0000);
       });
     });
