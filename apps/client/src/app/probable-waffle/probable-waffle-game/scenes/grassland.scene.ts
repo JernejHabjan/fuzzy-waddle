@@ -4,7 +4,7 @@ import { SceneCommunicatorService } from '../event-emitters/scene-communicator.s
 import { CreateSceneFromObjectConfig } from '../interfaces/scene-config.interface';
 import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
-import { MapSizeInfo } from '../const/map-size.info';
+import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
 import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
@@ -35,6 +35,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private selectionEventSub!: Subscription;
   private tileSelectedSub!: Subscription;
   private manualTileSelectedSub!: Subscription;
+  private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
   private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;
   private editorLayerNr = 0;
@@ -75,15 +76,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.bindSceneCommunicator();
 
     const tilemapLayer = this.createMap();
-    this.manualLayers = this.createAdditionalLayers();
+    this.manualLayers = this.createEmptyLayers();
+    this.placeAdditionalItemsOnManualLayers(this.manualLayers);
     this.createSprites(tilemapLayer);
-
-    this.placeAdditionalTilesOnLayer((this.manualLayers.find((l) => l.z === 1) as ManualTileLayer).tiles, 1, {
-      x: 3,
-      y: 0,
-      texture: 'iso-64x64-building-atlas',
-      frame: 'iso-64x64-building-0.png'
-    });
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
@@ -109,8 +104,20 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     return tileMapLayer;
   }
 
-  private createAdditionalLayers(): ManualTileLayer[] {
-    const layer0 = this.manualTilesHelper.createLayer(
+  private createEmptyLayers(): ManualTileLayer[] {
+    const layers: ManualTileLayer[] = [];
+    for (let i = 0; i < MapDefinitions.nrLayers; i++) {
+      layers.push({
+        z: i,
+        tiles: []
+      });
+    }
+    return layers;
+  }
+
+  private placeAdditionalItemsOnManualLayers(layers: ManualTileLayer[]): void {
+    this.manualTilesHelper.addItemsToLayer(
+      layers,
       [
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
@@ -131,7 +138,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       ],
       0
     );
-    const layer1 = this.manualTilesHelper.createLayer(
+    this.manualTilesHelper.addItemsToLayer(
+      layers,
       [
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
         {
@@ -144,14 +152,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       ],
       1
     );
-
-    return [layer0, layer1];
   }
 
   /**
    * called by editor. Ensures to destroy tiles before creating new one
    */
-  private placeAdditionalTilesOnLayer(manualTilesLayer: ManualTile[], layer: number, tileConfig: TileLayerConfig) {
+  private replaceTilesOnLayer(manualTilesLayer: ManualTile[], layer: number, tileConfig: TileLayerConfig) {
     const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
       offset: layer * MapSizeInfo.info.tileHeight
     });
@@ -190,6 +196,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.selectionEventSub.unsubscribe();
       this.tileSelectedSub.unsubscribe();
       this.manualTileSelectedSub.unsubscribe();
+      this.onEditorTileSelectedSub.unsubscribe();
     });
   }
 
@@ -225,14 +232,44 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
 
     this.manualTileSelectedSub = this.manualTileInputHandler.onTileSelected.subscribe((tile) => {
-      console.log('manual tile selected', tile.tileConfig.x, tile.tileConfig.y, tile.z);
+      // console.log('manual tile selected', tile.tileConfig.x, tile.tileConfig.y, tile.z);
       tile.gameObjectImage.tint = 0xff0000;
     });
+
+    this.onEditorTileSelectedSub = this.manualTileInputHandler.onEditorTileSelected.subscribe((possibleCoords) => {
+      const maxLayerZ = this.manualLayers[this.manualLayers.length - 1].z;
+      if (
+        this.tileToBeReplaced !== null &&
+        this.editorLayerNr !== null &&
+        this.editorLayerNr >= 0 &&
+        this.editorLayerNr <= maxLayerZ
+      ) {
+        const correctLayer = possibleCoords.find((c) => c.z === this.editorLayerNr);
+        if (correctLayer) {
+          const tiles = (this.manualLayers.find((l) => l.z === this.editorLayerNr) as ManualTileLayer).tiles;
+
+          // offset by 2, so it's displayed correctly
+          const offset = this.editorLayerNr * 2;
+          // todo take this into account:
+          // todo this.nrTilesToReplace
+          this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
+            x: correctLayer.tileXY.x + offset,
+            y: correctLayer.tileXY.y + offset,
+            texture: 'iso-64x64-building-atlas',
+            frame: 'iso-64x64-building-0.png' // todo take into account this.tileToBeReplaced and possible slopeDir
+          });
+        }
+      }
+    });
+  }
+
+  private get nrTilesToReplace(): number {
+    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
   }
 
   private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tile: Phaser.Tilemaps.Tile) {
     if (this.tileToBeReplaced !== null) {
-      const tilesToReplace = SceneCommunicatorService.tileEmitterNrSubject.getValue();
+      const tilesToReplace = this.nrTilesToReplace;
       // get neighbors of tile
       const from = Math.floor(tilesToReplace / 2);
       const neighbors = tilemapLayer.getTilesWithin(tile.x - from, tile.y - from, tilesToReplace, tilesToReplace);

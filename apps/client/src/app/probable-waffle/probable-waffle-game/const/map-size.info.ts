@@ -12,3 +12,7 @@ export class MapSizeInfo {
     this.tileHeightHalf = tileHeight / 2;
   }
 }
+
+export class MapDefinitions {
+  static nrLayers = 3;
+}

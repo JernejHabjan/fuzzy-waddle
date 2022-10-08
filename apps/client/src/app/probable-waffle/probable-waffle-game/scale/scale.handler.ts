@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { MapSizeInfo } from '../const/map-size.info';
+import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
 
 export class ScaleHandler {
   private readonly mainCamera: Phaser.Cameras.Scene2D.Camera;
@@ -22,11 +22,13 @@ export class ScaleHandler {
     const xOffset = MapSizeInfo.info.tileWidthHalf;
     const yOffset = MapSizeInfo.info.tileHeight;
 
+    const layersOffsetY = MapSizeInfo.info.tileHeight * MapDefinitions.nrLayers;
+
     this.mainCamera.setBounds(
       -MapSizeInfo.info.widthInPixels / 2 + xOffset,
-      yOffset,
+      yOffset - layersOffsetY,
       MapSizeInfo.info.widthInPixels,
-      MapSizeInfo.info.heightInPixels,
+      MapSizeInfo.info.heightInPixels + layersOffsetY,
       centerOn
     );
   }

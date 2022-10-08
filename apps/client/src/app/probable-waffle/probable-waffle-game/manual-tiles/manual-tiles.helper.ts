@@ -32,8 +32,7 @@ export class ManualTilesHelper {
   /**
    * Generated layer is not of type tilemap layer, but individual tiles
    */
-  createLayer(tileLayerConfig: TileLayerConfig[], layer: number): ManualTileLayer {
-    const manualTilesLayer: ManualTile[] = [];
+  addItemsToLayer(layers: ManualTileLayer[], tileLayerConfig: TileLayerConfig[], layer: number): void {
     const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
       offset: layer * MapSizeInfo.info.tileHeight
     });
@@ -45,10 +44,14 @@ export class ManualTilesHelper {
           continue;
         }
 
-        this.placeTileOnLayer(manualTilesLayer, layer, tileConfig, tileCenter);
+        this.placeTileOnLayer(
+          (layers.find((l) => l.z === layer) as ManualTileLayer).tiles,
+          layer,
+          tileConfig,
+          tileCenter
+        );
       }
     }
-    return { z: layer, tiles: manualTilesLayer };
   }
 
   placeTileOnLayer(
@@ -66,7 +69,7 @@ export class ManualTilesHelper {
     const tile = this.scene.add.image(worldX, worldY, tileConfig.texture, tileConfig.frame);
 
     const layerOffset = layer * MapSizeInfo.info.tileHeight;
-    tile.depth = tileCenter.y + ty + layerOffset;
+    tile.depth = tileCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
 
     manualTilesLayer.push({
       gameObjectImage: tile,
@@ -101,6 +104,11 @@ export class ManualTilesHelper {
     return linesGroup;
   }
 
+  /**
+   * TODO
+   * Fix line drawing so z index will work on correct plane.
+   * This means we'll have to draw short lines and set their z index correctly (same way as in {@link placeTileOnLayer})
+   */
   private drawGridLines(
     group: Phaser.GameObjects.Group,
     axisModifier: 1 | -1,

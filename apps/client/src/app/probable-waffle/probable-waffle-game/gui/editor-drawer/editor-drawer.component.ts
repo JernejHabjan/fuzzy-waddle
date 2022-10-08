@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SceneCommunicatorService } from '../../event-emitters/scene-communicator.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AtlasLoaderService, FrameWithMeta } from './atlas-loader.service';
+import { MapDefinitions } from '../../const/map-size.info';
 
 @Component({
   selector: 'fuzzy-waddle-editor-drawer',
@@ -9,6 +10,7 @@ import { AtlasLoaderService, FrameWithMeta } from './atlas-loader.service';
   styleUrls: ['./editor-drawer.component.scss']
 })
 export class EditorDrawerComponent implements OnInit {
+  MapDefinitions = MapDefinitions;
   nrReplacedTiles = 1;
   layerNr = 1; // todo for test defaults to layer 1
   @Output() drawerCollapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -43,5 +45,13 @@ export class EditorDrawerComponent implements OnInit {
 
   leave() {
     this.router.navigate(['probable-waffle/levels']);
+  }
+
+  saveMap() {
+    // todo
+  }
+
+  loadMap() {
+    // todo
   }
 }

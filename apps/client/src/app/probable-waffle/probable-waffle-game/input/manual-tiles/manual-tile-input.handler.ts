@@ -1,8 +1,12 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
 import { Subject } from 'rxjs';
-import { Intersection } from '../../math/intersection';
+import { Intersection, Vector2Simple } from '../../math/intersection';
 import { ManualTile, ManualTileLayer } from '../../manual-tiles/manual-tiles.helper';
+export interface PossibleClickCoords {
+  z: number;
+  tileXY: Vector2Simple;
+}
 
 export class ManualTileInputHandler {
   private scene: Phaser.Scene;
@@ -10,7 +14,8 @@ export class ManualTileInputHandler {
   private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
 
   onTileSelected: Subject<ManualTile> = new Subject<ManualTile>();
-  private manualLayers: ManualTileLayer[];
+  onEditorTileSelected: Subject<PossibleClickCoords[]> = new Subject<PossibleClickCoords[]>();
+  private readonly manualLayers: ManualTileLayer[];
 
   constructor(
     scene: Phaser.Scene,
@@ -22,17 +27,18 @@ export class ManualTileInputHandler {
     this.input = input;
     this.tilemapLayer = tilemapLayer;
     this.manualLayers = manualLayers;
-    this.setupCursor();
+    this.existingTileSelectedListener();
+    this.allTileSelectedListener();
   }
 
-  private setupCursor() {
+  private existingTileSelectedListener() {
     this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
       const { worldX, worldY } = pointer;
 
       const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
       const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-      const foundTile = this.getTileAtWorldXY(searchedWorldX, searchedWorldY);
+      const foundTile = this.geExistingTileAtWorldXY(searchedWorldX, searchedWorldY);
 
       //if (previousTile) {
       //  previousTile.tint = 0xffffff;
@@ -45,22 +51,50 @@ export class ManualTileInputHandler {
     });
   }
 
-  private getTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
+  private allTileSelectedListener() {
+    this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
+      const { worldX, worldY } = pointer;
+
+      const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
+      const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+
+      const pointerToTileXY = this.tilemapLayer.worldToTileXY(searchedWorldX, searchedWorldY, true);
+
+      const possibleCoords: PossibleClickCoords[] = [];
+      for (const manualLayer of this.manualLayers) {
+        const tileX = pointerToTileXY.x - manualLayer.z;
+        const tileY = pointerToTileXY.y - manualLayer.z;
+        if (
+          -(manualLayer.z * MapSizeInfo.info.tileWidth) <= tileX &&
+          tileX <= MapSizeInfo.info.width &&
+          -(manualLayer.z * MapSizeInfo.info.tileHeight) <= tileY &&
+          tileY <= MapSizeInfo.info.height
+        ) {
+          possibleCoords.push({
+            z: manualLayer.z,
+            tileXY: { x: tileX, y: tileY }
+          });
+        }
+      }
+      this.onEditorTileSelected.next(possibleCoords);
+    });
+  }
+
+  private geExistingTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
     const pointerToTileXY = this.tilemapLayer.worldToTileXY(worldX, worldY, true);
+    const clickPointToTileWorldXY = {
+      x: worldX + MapSizeInfo.info.tileWidthHalf,
+      y: worldY + MapSizeInfo.info.tileWidthHalf
+    };
 
     // search in all layers, starting from the last
     for (let i = this.manualLayers.length - 1; i >= 0; i--) {
-      const layer = this.manualLayers[i].tiles;
+      const tiles = this.manualLayers[i].tiles;
       // search in the layer if tile x,y match the worldX, worldY
-      for (let j = 0; j < layer.length; j++) {
-        const tile = layer[j];
+      for (let j = 0; j < tiles.length; j++) {
+        const tile = tiles[j];
 
         if (tile.manualRectangleInputInterceptor) {
-          const clickPointToTileWorldXY = {
-            x: worldX + MapSizeInfo.info.tileWidthHalf,
-            y: worldY + MapSizeInfo.info.tileWidthHalf
-          };
-
           this.drawDebugPolygon(tile.manualRectangleInputInterceptor);
           this.drawDebugPoint(clickPointToTileWorldXY);
 
