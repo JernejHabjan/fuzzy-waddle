@@ -141,6 +141,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       ],
       1
     );
+
+    // todo this.manualTilesHelper.drawLayerLines(mapSizeInfo, 0); // todo remove from here
+    // todo this.manualTilesHelper.drawLayerLines(mapSizeInfo, 1); // todo remove from here
+
     return [layer0, layer1];
   }
 

@@ -79,11 +79,10 @@ export class ManualTilesHelper {
         });
       }
     }
-    this.drawLayerLines(mapSizeInfo, tileLayerConfig, layer); // todo remove from here
     return manualTilesLayer;
   }
 
-  drawLayerLines(mapSizeInfo: MapSizeInfo, tileLayerConfig: TileLayerConfig[], layer: number): void {
+  drawLayerLines(mapSizeInfo: MapSizeInfo, layer: number): void {
     const layerOffset = layer * mapSizeInfo.tileHeight;
     const tileWidth = mapSizeInfo.tileWidth;
     const tileHeight = mapSizeInfo.tileHeight;
@@ -99,19 +98,31 @@ export class ManualTilesHelper {
       offset: layerOffset
     });
 
-    for (let y = 0; y < mapHeight; y++) {
-      const txStart = (0 - y) * tileWidthHalf;
-      const tyStart = (0 + y) * tileHeightHalf;
-      const txEnd = (mapWidth - 1 - y) * tileWidthHalf;
-      const tyEnd = (mapWidth - 1 + y) * tileHeightHalf;
-      const graphics = this.scene.add.graphics();
+    this.drawGridLines(-1, mapWidth, mapHeight, tileWidthHalf, tileHeightHalf, tileCenter);
+    this.drawGridLines(1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenter);
+  }
+
+  private drawGridLines(
+    axisModifier: 1 | -1,
+    firstAxis: number,
+    secondAxis: number,
+    tileWidthHalf: number,
+    tileHeightHalf: number,
+    tileCenter: Vector2Simple
+  ): void {
+    for (let y = 0; y < firstAxis + 1; y++) {
+      const txStart = -1 * axisModifier * y * tileWidthHalf;
+      const tyStart = y * tileHeightHalf;
+      const txEnd = axisModifier * (secondAxis - y) * tileWidthHalf;
+      const tyEnd = (secondAxis + y) * tileHeightHalf;
 
       const worldXStart = tileCenter.x + txStart;
       const worldYStart = tileCenter.y + tyStart;
       const worldXEnd = tileCenter.x + txEnd;
       const worldYEnd = tileCenter.y + tyEnd;
-      graphics.lineStyle(1, 0x00ff00, 1);
 
+      const graphics = this.scene.add.graphics();
+      graphics.lineStyle(1, 0x00ff00, 1);
       graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
     }
   }
