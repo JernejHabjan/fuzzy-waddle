@@ -9,9 +9,14 @@
   "
 >
   <button (click)="drawerCollapsed.emit(true)" style="margin-bottom: 10px">Collapse</button>
-  <button (click)="leave()">Leave</button>
+  <button (click)="leave()" style="margin-bottom: 10px">Leave</button>
+  <button (click)="saveMap()">Save map</button>
+  <button (click)="loadMap()">Load map</button>
   <div style="margin-top: 10px">Selection</div>
-  <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)="nrReplacedTilesChanged()" />
+  <div>Current layer:</div>
+  <input type="number" [(ngModel)]="layerNr" (ngModelChange)="layerNrChanged()" min="0" [max]="MapDefinitions.nrLayers" />
+  <div>Replace tile nr:</div>
+  <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)="nrReplacedTilesChanged()"min='1' [max]='5' />
   <button (click)="deselectTile()">Deselect Tile</button>
   <button (click)="removeTile()">Remove Tile</button>
   <div *ngIf="outsideAtlasFrames" class="tile-scroll-selector">

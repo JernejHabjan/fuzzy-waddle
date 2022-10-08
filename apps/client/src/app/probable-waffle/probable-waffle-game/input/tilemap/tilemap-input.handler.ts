@@ -5,14 +5,12 @@ import { Subject } from 'rxjs';
 export class TilemapInputHandler {
   private input: Phaser.Input.InputPlugin;
   private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
-  private mapSizeInfo: MapSizeInfo;
 
-  onTileSelected = new Subject<Phaser.Tilemaps.Tile>();
+  onTileSelected: Subject<Phaser.Tilemaps.Tile> = new Subject<Phaser.Tilemaps.Tile>();
 
-  constructor(input: Phaser.Input.InputPlugin, tilemapLayer: Phaser.Tilemaps.TilemapLayer, mapSizeInfo: MapSizeInfo) {
+  constructor(input: Phaser.Input.InputPlugin, tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
     this.input = input;
     this.tilemapLayer = tilemapLayer;
-    this.mapSizeInfo = mapSizeInfo;
     this.setupCursor();
   }
 
@@ -20,8 +18,8 @@ export class TilemapInputHandler {
     this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
       const { worldX, worldY } = pointer;
 
-      const searchedWorldX = worldX - this.mapSizeInfo.tileWidth / 2;
-      const searchedWorldY = worldY - this.mapSizeInfo.tileWidth / 2; // note tileWidth and not height
+      const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
+      const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
       const foundTile = this.tilemapLayer.getTileAtWorldXY(searchedWorldX, searchedWorldY) as Phaser.Tilemaps.Tile;
 

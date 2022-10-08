@@ -22,8 +22,4 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
     this.gameRef = new Phaser.Game(probableWaffleGameConfig);
   }
-
-  emitEvent() {
-    SceneCommunicatorService.testEmitterSubject.next(10);
-  }
 }

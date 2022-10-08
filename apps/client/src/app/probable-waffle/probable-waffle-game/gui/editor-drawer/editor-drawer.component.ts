@@ -1,7 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SceneCommunicatorService } from '../../event-emitters/scene-communicator.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Atlas, AtlasLoaderService, FrameWithMeta } from './atlas-loader.service';
+import { AtlasLoaderService, FrameWithMeta } from './atlas-loader.service';
+import { MapDefinitions } from '../../const/map-size.info';
 
 @Component({
   selector: 'fuzzy-waddle-editor-drawer',
@@ -9,7 +10,9 @@ import { Atlas, AtlasLoaderService, FrameWithMeta } from './atlas-loader.service
   styleUrls: ['./editor-drawer.component.scss']
 })
 export class EditorDrawerComponent implements OnInit {
-  nrReplacedTiles = 3;
+  MapDefinitions = MapDefinitions;
+  nrReplacedTiles = 1;
+  layerNr = 1; // todo for test defaults to layer 1
   @Output() drawerCollapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
   outsideAtlasFrames: FrameWithMeta[] | null = null;
 
@@ -17,6 +20,7 @@ export class EditorDrawerComponent implements OnInit {
 
   ngOnInit(): void {
     this.nrReplacedTilesChanged();
+    this.layerNrChanged();
     this.loadOutsideAtlas();
   }
 
@@ -31,11 +35,23 @@ export class EditorDrawerComponent implements OnInit {
     SceneCommunicatorService.tileEmitterNrSubject.next(this.nrReplacedTiles);
   }
 
+  layerNrChanged() {
+    SceneCommunicatorService.layerEmitterSubject.next(this.layerNr);
+  }
+
   loadOutsideAtlas() {
     this.atlasLoaderService.load().then((frames) => (this.outsideAtlasFrames = frames));
   }
 
   leave() {
     this.router.navigate(['probable-waffle/levels']);
+  }
+
+  saveMap() {
+    // todo
+  }
+
+  loadMap() {
+    // todo
   }
 }
