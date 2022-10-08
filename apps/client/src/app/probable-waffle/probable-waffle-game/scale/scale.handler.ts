@@ -22,7 +22,7 @@ export class ScaleHandler {
     const xOffset = MapSizeInfo.info.tileWidthHalf;
     const yOffset = MapSizeInfo.info.tileHeight;
 
-    const layersOffsetY = MapSizeInfo.info.tileHeight * MapDefinitions.nrLayers;
+    const layersOffsetY = MapSizeInfo.info.tileHeight * (MapDefinitions.nrLayers + 1);
 
     this.mainCamera.setBounds(
       -MapSizeInfo.info.widthInPixels / 2 + xOffset,

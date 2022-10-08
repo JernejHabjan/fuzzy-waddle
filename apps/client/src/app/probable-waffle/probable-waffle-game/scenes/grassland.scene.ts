@@ -106,7 +106,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   private createEmptyLayers(): ManualTileLayer[] {
     const layers: ManualTileLayer[] = [];
-    for (let i = 0; i < MapDefinitions.nrLayers; i++) {
+    for (let i = 0; i <= MapDefinitions.nrLayers; i++) {
       layers.push({
         z: i,
         tiles: []
