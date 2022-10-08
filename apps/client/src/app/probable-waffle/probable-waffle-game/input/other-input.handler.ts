@@ -3,11 +3,18 @@ import { Pathfinder } from '../navigation/pathfinder';
 import { MapSizeInfo } from '../const/map-size.info';
 
 export class OtherInputHandler {
+  private scene: Phaser.Scene;
   private input: Phaser.Input.InputPlugin;
   private pathfinder: Pathfinder;
   private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
 
-  constructor(input: Phaser.Input.InputPlugin, pathfinder: Pathfinder, tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
+  constructor(
+    scene: Phaser.Scene,
+    input: Phaser.Input.InputPlugin,
+    pathfinder: Pathfinder,
+    tilemapLayer: Phaser.Tilemaps.TilemapLayer
+  ) {
+    this.scene = scene; // todo temp because of tweens
     this.input = input;
     this.pathfinder = pathfinder;
     this.tilemapLayer = tilemapLayer;
@@ -55,12 +62,28 @@ export class OtherInputHandler {
               this.tilemapLayer,
               (tileCenters) => {
                 // move sprite to tile centers with delay
-                tileCenters.forEach((tileCenter, index) => {
-                  setTimeout(() => {
-                    gameObject.x = tileCenter.x;
-                    gameObject.y = tileCenter.y;
-                  }, index * 500);
-                });
+                // create phaser tweens
+
+                // todo this needs to be improved - this is hacky
+                const addTween = (tileCenters: { x: number; y: number }[], i: number) => {
+                  if (i >= tileCenters.length) {
+                    return;
+                  }
+                  this.scene.tweens.add({
+                    targets: gameObject,
+                    x: tileCenters[i].x,
+                    y: tileCenters[i].y,
+                    duration: 1000,
+                    ease: 'Power1',
+                    yoyo: false,
+                    repeat: 0,
+                    onComplete: () => {
+                      addTween(tileCenters, i + 1);
+                    }
+                  });
+                };
+
+                addTween(tileCenters, 0);
               }
             );
           }
