@@ -6,20 +6,20 @@ import { Vector2Simple } from '../math/intersection';
 
 export interface ManualTile {
   gameObjectImage: Phaser.GameObjects.Image;
-  // tile index in the layer
-  x: number;
-  // tile index in the layer
-  y: number;
   // layer depth (starting with 0)
   z: number;
   // layer depth + 1
   clickableZ: number;
-  texture: string;
-  frame: string;
   depth: number;
+  tileConfig: TileLayerConfig;
 
   // for stairs
   manualRectangleInputInterceptor: Phaser.Geom.Polygon | null;
+}
+
+export interface ManualTileLayer {
+  z: number;
+  tiles: ManualTile[];
 }
 
 export class ManualTilesHelper {
@@ -32,77 +32,77 @@ export class ManualTilesHelper {
   /**
    * Generated layer is not of type tilemap layer, but individual tiles
    */
-  createLayer(mapSizeInfo: MapSizeInfo, tileLayerConfig: TileLayerConfig[], layer: number): ManualTile[] {
+  createLayer(tileLayerConfig: TileLayerConfig[], layer: number): ManualTileLayer {
     const manualTilesLayer: ManualTile[] = [];
-    const layerOffset = layer * mapSizeInfo.tileHeight;
-    const tileWidth = mapSizeInfo.tileWidth;
-    const tileHeight = mapSizeInfo.tileHeight;
-
-    const tileWidthHalf = tileWidth / 2;
-    const tileHeightHalf = tileHeight / 2;
-
-    const mapWidth = mapSizeInfo.width;
-    const mapHeight = mapSizeInfo.height;
-
-    // not offsetting, because we're placing block tiles there
-    const tileCenter = TilemapHelper.getTileCenter(mapSizeInfo.tileWidth / 2, mapSizeInfo.tileWidth / 2, mapSizeInfo, {
-      offset: layerOffset
+    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
+      offset: layer * MapSizeInfo.info.tileHeight
     });
 
-    for (let y = 0; y < mapHeight; y++) {
-      for (let x = 0; x < mapWidth; x++) {
+    for (let y = 0; y < MapSizeInfo.info.height; y++) {
+      for (let x = 0; x < MapSizeInfo.info.width; x++) {
         const tileConfig = tileLayerConfig.find((r) => r.x === x && r.y === y);
         if (!tileConfig) {
           continue;
         }
 
-        const tx = (x - y) * tileWidthHalf;
-        const ty = (x + y) * tileHeightHalf;
-
-        const worldX = tileCenter.x + tx;
-        const worldY = tileCenter.y + ty;
-
-        const tile = this.scene.add.image(worldX, worldY, tileConfig.texture, tileConfig.frame);
-
-        tile.depth = tileCenter.y + ty + layerOffset;
-
-        manualTilesLayer.push({
-          gameObjectImage: tile,
-          x,
-          y,
-          z: layer,
-          clickableZ: layer + 1,
-          texture: tileConfig.texture,
-          frame: tileConfig.frame,
-          depth: tile.depth,
-          manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, mapSizeInfo, tileConfig.slopeDir)
-        });
+        this.placeTileOnLayer(manualTilesLayer, layer, tileConfig, tileCenter);
       }
     }
-    return manualTilesLayer;
+    return { z: layer, tiles: manualTilesLayer };
   }
 
-  drawLayerLines(mapSizeInfo: MapSizeInfo, layer: number): void {
-    const layerOffset = layer * mapSizeInfo.tileHeight;
-    const tileWidth = mapSizeInfo.tileWidth;
-    const tileHeight = mapSizeInfo.tileHeight;
+  placeTileOnLayer(
+    manualTilesLayer: ManualTile[],
+    layer: number,
+    tileConfig: TileLayerConfig,
+    tileCenter: Vector2Simple
+  ): void {
+    const tx = (tileConfig.x - tileConfig.y) * MapSizeInfo.info.tileWidthHalf;
+    const ty = (tileConfig.x + tileConfig.y) * MapSizeInfo.info.tileHeightHalf;
+
+    const worldX = tileCenter.x + tx;
+    const worldY = tileCenter.y + ty;
+
+    const tile = this.scene.add.image(worldX, worldY, tileConfig.texture, tileConfig.frame);
+
+    const layerOffset = layer * MapSizeInfo.info.tileHeight;
+    tile.depth = tileCenter.y + ty + layerOffset;
+
+    manualTilesLayer.push({
+      gameObjectImage: tile,
+      z: layer,
+      tileConfig,
+      clickableZ: layer + 1,
+      depth: tile.depth,
+      manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileConfig.slopeDir)
+    });
+  }
+
+  drawLayerLines(layer: number): Phaser.GameObjects.Group {
+    const layerOffset = layer * MapSizeInfo.info.tileHeight;
+    const tileWidth = MapSizeInfo.info.tileWidth;
+    const tileHeight = MapSizeInfo.info.tileHeight;
 
     const tileWidthHalf = tileWidth / 2;
     const tileHeightHalf = tileHeight / 2;
 
-    const mapWidth = mapSizeInfo.width;
-    const mapHeight = mapSizeInfo.height;
+    const mapWidth = MapSizeInfo.info.width;
+    const mapHeight = MapSizeInfo.info.height;
 
     // not offsetting, because we're placing block tiles there
-    const tileCenter = TilemapHelper.getTileCenter(mapSizeInfo.tileWidth / 2, mapSizeInfo.tileWidth / 2, mapSizeInfo, {
+    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
       offset: layerOffset
     });
 
-    this.drawGridLines(-1, mapWidth, mapHeight, tileWidthHalf, tileHeightHalf, tileCenter);
-    this.drawGridLines(1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenter);
+    const linesGroup = this.scene.add.group();
+
+    this.drawGridLines(linesGroup, -1, mapWidth, mapHeight, tileWidthHalf, tileHeightHalf, tileCenter);
+    this.drawGridLines(linesGroup, 1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenter);
+    return linesGroup;
   }
 
   private drawGridLines(
+    group: Phaser.GameObjects.Group,
     axisModifier: 1 | -1,
     firstAxis: number,
     secondAxis: number,
@@ -124,18 +124,15 @@ export class ManualTilesHelper {
       const graphics = this.scene.add.graphics();
       graphics.lineStyle(1, 0x00ff00, 1);
       graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
+      group.add(graphics);
     }
   }
 
   /**
    * Slopes like stairs
    */
-  private getSlopeDir(
-    worldXY: Vector2Simple,
-    mapSizeInfo: MapSizeInfo,
-    slopeDir?: SlopeDirection
-  ): Phaser.Geom.Polygon | null {
-    const tileWidth = mapSizeInfo.tileWidth;
+  private getSlopeDir(worldXY: Vector2Simple, slopeDir?: SlopeDirection): Phaser.Geom.Polygon | null {
+    const tileWidth = MapSizeInfo.info.tileWidth;
     let manualRectangleInputInterceptor: Phaser.Geom.Polygon | null = null;
     switch (slopeDir) {
       case SlopeDirection.SouthEast:
@@ -167,7 +164,7 @@ export class ManualTilesHelper {
         throw new Error('Not implemented');
     }
     if (manualRectangleInputInterceptor !== null) {
-      this.applyPositionModifierToRectangleInputInterceptor(worldXY, manualRectangleInputInterceptor, mapSizeInfo);
+      this.applyPositionModifierToRectangleInputInterceptor(worldXY, manualRectangleInputInterceptor);
     }
     return manualRectangleInputInterceptor;
   }
@@ -177,8 +174,7 @@ export class ManualTilesHelper {
    */
   private applyPositionModifierToRectangleInputInterceptor(
     worldXY: Vector2Simple,
-    manualRectangleInputInterceptor: Phaser.Geom.Polygon,
-    mapSizeInfo: MapSizeInfo
+    manualRectangleInputInterceptor: Phaser.Geom.Polygon
   ) {
     // displace the rectangle by world position
     for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {
@@ -188,8 +184,8 @@ export class ManualTilesHelper {
 
     // displace the rectangle a bit to the left and top by center offset
     for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {
-      manualRectangleInputInterceptor.points[i].x -= mapSizeInfo.tileWidth / 2;
-      manualRectangleInputInterceptor.points[i].y -= mapSizeInfo.tileWidth / 2;
+      manualRectangleInputInterceptor.points[i].x -= MapSizeInfo.info.tileWidthHalf;
+      manualRectangleInputInterceptor.points[i].y -= MapSizeInfo.info.tileWidthHalf;
     }
   }
 }

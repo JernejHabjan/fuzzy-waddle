@@ -5,4 +5,11 @@ export enum SlopeDirection {
   SouthWest = 2,
   NorthWest = 3
 }
-export type TileLayerConfig = { texture: string; frame: string; x: number; y: number; slopeDir?: SlopeDirection };
+export type TileLayerConfig = {
+  texture: string;
+  frame: string;
+  // tile index in the layer (starting with 0)
+  x: number;
+  y: number;
+  slopeDir?: SlopeDirection;
+};

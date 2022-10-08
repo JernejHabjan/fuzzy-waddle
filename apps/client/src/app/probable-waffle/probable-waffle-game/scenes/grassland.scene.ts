@@ -13,8 +13,8 @@ import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Pathfinder } from '../navigation/pathfinder';
 import { OtherInputHandler } from '../input/other-input.handler';
 import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.handler';
-import { ManualTile, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
-import { SlopeDirection } from '../types/tile-types';
+import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
+import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
@@ -36,6 +36,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private tileSelectedSub!: Subscription;
   private manualTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
+  private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;
+  private editorLayerNr = 0;
+  private manualLayers!: ManualTileLayer[];
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -71,42 +74,43 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   create() {
     this.bindSceneCommunicator();
 
-    const { tilemapLayer, mapSizeInfo } = this.createMap();
-    const manualLayers = this.createAdditionalLayers(mapSizeInfo);
-    this.createSprites(tilemapLayer, mapSizeInfo);
+    const tilemapLayer = this.createMap();
+    this.manualLayers = this.createAdditionalLayers();
+    this.createSprites(tilemapLayer);
 
-    this.scaleHandler = new ScaleHandler(this.cameras, this.scale, mapSizeInfo);
+    this.placeAdditionalTilesOnLayer((this.manualLayers.find((l) => l.z === 1) as ManualTileLayer).tiles, 1, {
+      x: 3,
+      y: 0,
+      texture: 'iso-64x64-building-atlas',
+      frame: 'iso-64x64-building-0.png'
+    });
+
+    this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
     this.otherInputHandler = new OtherInputHandler(this.input);
     this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers();
     this.cursorHandler = new CursorHandler(this.input);
-    this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer, mapSizeInfo);
-    this.manualTileInputHandler = new ManualTileInputHandler(this, this.input, tilemapLayer, manualLayers, mapSizeInfo);
+    this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer);
+    this.manualTileInputHandler = new ManualTileInputHandler(this, this.input, tilemapLayer, this.manualLayers);
     this.subscribeToTileMapSelectEvents(tilemapLayer);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.subscribeToSelectionEvents();
     this.destroyListener();
   }
 
-  private createMap(): {
-    tilemapLayer: Phaser.Tilemaps.TilemapLayer;
-    mapSizeInfo: MapSizeInfo;
-  } {
+  private createMap(): Phaser.Tilemaps.TilemapLayer {
     const map = this.add.tilemap('map');
 
     const tileset1 = map.addTilesetImage('iso-64x64-outside', 'tiles') as Phaser.Tilemaps.Tileset;
     const tileset2 = map.addTilesetImage('iso-64x64-building', 'tiles2') as Phaser.Tilemaps.Tileset;
 
     const tileMapLayer = map.createLayer('Tile Layer 1', [tileset1, tileset2]) as Phaser.Tilemaps.TilemapLayer;
-    return {
-      tilemapLayer: tileMapLayer,
-      mapSizeInfo: new MapSizeInfo(map.width, map.height, map.tileWidth, map.tileHeight)
-    };
+    MapSizeInfo.info = new MapSizeInfo(map.width, map.height, map.tileWidth, map.tileHeight);
+    return tileMapLayer;
   }
 
-  private createAdditionalLayers(mapSizeInfo: MapSizeInfo): ManualTile[][] {
+  private createAdditionalLayers(): ManualTileLayer[] {
     const layer0 = this.manualTilesHelper.createLayer(
-      mapSizeInfo,
       [
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
@@ -128,7 +132,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       0
     );
     const layer1 = this.manualTilesHelper.createLayer(
-      mapSizeInfo,
       [
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
         {
@@ -142,10 +145,25 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       1
     );
 
-    // todo this.manualTilesHelper.drawLayerLines(mapSizeInfo, 0); // todo remove from here
-    // todo this.manualTilesHelper.drawLayerLines(mapSizeInfo, 1); // todo remove from here
-
     return [layer0, layer1];
+  }
+
+  /**
+   * called by editor. Ensures to destroy tiles before creating new one
+   */
+  private placeAdditionalTilesOnLayer(manualTilesLayer: ManualTile[], layer: number, tileConfig: TileLayerConfig) {
+    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
+      offset: layer * MapSizeInfo.info.tileHeight
+    });
+    const existingTileOnLayer = manualTilesLayer.find(
+      (tile) => tile.tileConfig.x === tileConfig.x && tile.tileConfig.y === tileConfig.y && tile.z === layer
+    );
+    if (existingTileOnLayer) {
+      manualTilesLayer.splice(manualTilesLayer.indexOf(existingTileOnLayer), 1);
+      existingTileOnLayer.gameObjectImage.destroy(true);
+    }
+
+    this.manualTilesHelper.placeTileOnLayer(manualTilesLayer, layer, tileConfig, tileCenter);
   }
 
   override update(time: number, delta: number) {
@@ -207,7 +225,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
 
     this.manualTileSelectedSub = this.manualTileInputHandler.onTileSelected.subscribe((tile) => {
-      console.log('manual tile selected', tile.x, tile.y, tile.z);
+      console.log('manual tile selected', tile.tileConfig.x, tile.tileConfig.y, tile.z);
       tile.gameObjectImage.tint = 0xff0000;
     });
   }
@@ -226,22 +244,31 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   private bindSceneCommunicator() {
     SceneCommunicatorService.subscriptions.push(
-      SceneCommunicatorService.testEmitterSubject.subscribe((nr) => {
-        console.log('event received', nr);
-        // this.logo.setVelocity(100 * nr, 200 * nr);
-      }),
       SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
         this.tileToBeReplaced = tileNr;
+        this.drawLayerLines();
+      }),
+      SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
+        this.editorLayerNr = layerNr;
+        this.drawLayerLines();
       })
     );
   }
 
-  private createSprites(tilemapLayer: Phaser.Tilemaps.TilemapLayer, mapSizeInfo: MapSizeInfo) {
+  private drawLayerLines() {
+    if (this.currentLayerLinesGroup !== null) {
+      // remove all lines from group
+      this.currentLayerLinesGroup.clear(true, true);
+      this.currentLayerLinesGroup.destroy();
+    }
+    if (this.tileToBeReplaced !== null) {
+      this.currentLayerLinesGroup = this.manualTilesHelper.drawLayerLines(this.editorLayerNr);
+    }
+  }
+
+  private createSprites(tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
     const ball1XY = { x: 0, y: 0 };
-    const ballSprite = this.tilemapHelper.placeSpriteOnTilemapTile(
-      tilemapLayer.getTileAt(ball1XY.x, ball1XY.y),
-      mapSizeInfo
-    );
+    const ballSprite = this.tilemapHelper.placeSpriteOnTilemapTile(tilemapLayer.getTileAt(ball1XY.x, ball1XY.y));
     this.objects.push(ballSprite);
 
     // removing navigation for now

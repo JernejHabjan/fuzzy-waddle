@@ -5,17 +5,11 @@ export class ScaleHandler {
   private readonly mainCamera: Phaser.Cameras.Scene2D.Camera;
   private scaleManager: Phaser.Scale.ScaleManager;
   private cameras: Phaser.Cameras.Scene2D.CameraManager;
-  private mapSizeInfo: MapSizeInfo;
 
-  constructor(
-    cameras: Phaser.Cameras.Scene2D.CameraManager,
-    scaleManager: Phaser.Scale.ScaleManager,
-    mapSizeInfo: MapSizeInfo
-  ) {
+  constructor(cameras: Phaser.Cameras.Scene2D.CameraManager, scaleManager: Phaser.Scale.ScaleManager) {
     this.cameras = cameras;
     this.mainCamera = cameras.main;
     this.scaleManager = scaleManager;
-    this.mapSizeInfo = mapSizeInfo;
     this.setupBounds(true); // todo now center for dev
     this.setupResizeListener();
   }
@@ -25,14 +19,14 @@ export class ScaleHandler {
   }
 
   setupBounds(centerOn: boolean = false) {
-    const xOffset = this.mapSizeInfo.tileWidth / 2;
-    const yOffset = this.mapSizeInfo.tileHeight;
+    const xOffset = MapSizeInfo.info.tileWidthHalf;
+    const yOffset = MapSizeInfo.info.tileHeight;
 
     this.mainCamera.setBounds(
-      -this.mapSizeInfo.widthInPixels / 2 + xOffset,
+      -MapSizeInfo.info.widthInPixels / 2 + xOffset,
       yOffset,
-      this.mapSizeInfo.widthInPixels,
-      this.mapSizeInfo.heightInPixels,
+      MapSizeInfo.info.widthInPixels,
+      MapSizeInfo.info.heightInPixels,
       centerOn
     );
   }

@@ -5,8 +5,7 @@ import { ProbableWaffleGameComponent } from './probable-waffle-game.component';
 const routes: Routes = [
   {
     path: '',
-    component: ProbableWaffleGameComponent,
-
+    component: ProbableWaffleGameComponent
   },
   { path: '**', redirectTo: '/' }
 ];

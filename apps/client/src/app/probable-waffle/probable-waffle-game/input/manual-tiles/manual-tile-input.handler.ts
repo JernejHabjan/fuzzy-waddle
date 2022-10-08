@@ -2,29 +2,26 @@ import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
 import { Subject } from 'rxjs';
 import { Intersection } from '../../math/intersection';
-import { ManualTile } from '../../manual-tiles/manual-tiles.helper';
+import { ManualTile, ManualTileLayer } from '../../manual-tiles/manual-tiles.helper';
 
 export class ManualTileInputHandler {
   private scene: Phaser.Scene;
   private input: Phaser.Input.InputPlugin;
   private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
-  private mapSizeInfo: MapSizeInfo;
 
   onTileSelected: Subject<ManualTile> = new Subject<ManualTile>();
-  private manualLayers: ManualTile[][];
+  private manualLayers: ManualTileLayer[];
 
   constructor(
     scene: Phaser.Scene,
     input: Phaser.Input.InputPlugin,
     tilemapLayer: Phaser.Tilemaps.TilemapLayer,
-    manualLayers: ManualTile[][],
-    mapSizeInfo: MapSizeInfo
+    manualLayers: ManualTileLayer[]
   ) {
     this.scene = scene; // todo for test
     this.input = input;
     this.tilemapLayer = tilemapLayer;
     this.manualLayers = manualLayers;
-    this.mapSizeInfo = mapSizeInfo;
     this.setupCursor();
   }
 
@@ -32,8 +29,8 @@ export class ManualTileInputHandler {
     this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
       const { worldX, worldY } = pointer;
 
-      const searchedWorldX = worldX - this.mapSizeInfo.tileWidth / 2;
-      const searchedWorldY = worldY - this.mapSizeInfo.tileWidth / 2; // note tileWidth and not height
+      const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
+      const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
       const foundTile = this.getTileAtWorldXY(searchedWorldX, searchedWorldY);
 
@@ -53,15 +50,15 @@ export class ManualTileInputHandler {
 
     // search in all layers, starting from the last
     for (let i = this.manualLayers.length - 1; i >= 0; i--) {
-      const layer = this.manualLayers[i];
+      const layer = this.manualLayers[i].tiles;
       // search in the layer if tile x,y match the worldX, worldY
       for (let j = 0; j < layer.length; j++) {
         const tile = layer[j];
 
         if (tile.manualRectangleInputInterceptor) {
           const clickPointToTileWorldXY = {
-            x: worldX + this.mapSizeInfo.tileWidth / 2,
-            y: worldY + this.mapSizeInfo.tileWidth / 2
+            x: worldX + MapSizeInfo.info.tileWidthHalf,
+            y: worldY + MapSizeInfo.info.tileWidthHalf
           };
 
           this.drawDebugPolygon(tile.manualRectangleInputInterceptor);
@@ -75,7 +72,10 @@ export class ManualTileInputHandler {
             return tile;
           }
         } else {
-          if (tile.x - tile.clickableZ === pointerToTileXY.x && tile.y - tile.clickableZ === pointerToTileXY.y) {
+          if (
+            tile.tileConfig.x - tile.clickableZ === pointerToTileXY.x &&
+            tile.tileConfig.y - tile.clickableZ === pointerToTileXY.y
+          ) {
             return tile;
           }
         }

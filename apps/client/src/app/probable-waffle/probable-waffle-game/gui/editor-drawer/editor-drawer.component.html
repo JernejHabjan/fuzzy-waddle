@@ -11,6 +11,9 @@
   <button (click)="drawerCollapsed.emit(true)" style="margin-bottom: 10px">Collapse</button>
   <button (click)="leave()">Leave</button>
   <div style="margin-top: 10px">Selection</div>
+  <div>Current layer:</div>
+  <input type="number" [(ngModel)]="layerNr" (ngModelChange)="layerNrChanged()" />
+  <div>Replace tile nr:</div>
   <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)="nrReplacedTilesChanged()" />
   <button (click)="deselectTile()">Deselect Tile</button>
   <button (click)="removeTile()">Remove Tile</button>

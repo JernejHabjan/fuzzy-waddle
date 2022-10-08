@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../const/map-size.info';
-import { TileCenterOptions, TileLayerConfig } from '../types/tile-types';
+import { TileCenterOptions } from '../types/tile-types';
+import { Vector2Simple } from '../math/intersection';
 
 export class TilemapHelper {
   private scene: Phaser.Scene; // todo should not be used like this
@@ -9,39 +10,33 @@ export class TilemapHelper {
     this.scene = scene;
   }
 
-  static getTileCenter(
-    x: number,
-    y: number,
-    mapSizeInfo: MapSizeInfo,
-    tileCenterOptions: TileCenterOptions = null
-  ): Phaser.Math.Vector2 {
+  static getTileCenter(x: number, y: number, tileCenterOptions: TileCenterOptions = null): Vector2Simple {
     const centerX = x;
     const centerY =
       y +
       (tileCenterOptions?.offset
         ? -tileCenterOptions.offset
         : tileCenterOptions?.centerSprite
-        ? mapSizeInfo.tileHeight / 2
+        ? MapSizeInfo.info.tileHeight / 2
         : 0);
-    return new Phaser.Math.Vector2(centerX, centerY);
+    return { x: centerX, y: centerY };
   }
 
   static getTileCenterByTilemapTileXY(
     x: number,
     y: number,
     tilemapLayer: Phaser.Tilemaps.TilemapLayer,
-    mapSizeInfo: MapSizeInfo,
     tileCenterOptions: TileCenterOptions = null
-  ): Phaser.Math.Vector2 | null {
+  ): Vector2Simple | null {
     const currentTile = tilemapLayer.getTileAt(x, y);
     if (!currentTile) {
       return null;
     }
-    return this.getTileCenter(currentTile.getCenterX(), currentTile.getCenterY(), mapSizeInfo, tileCenterOptions);
+    return this.getTileCenter(currentTile.getCenterX(), currentTile.getCenterY(), tileCenterOptions);
   }
 
-  placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile, mapSizeInfo: MapSizeInfo): Phaser.GameObjects.Sprite {
-    const tileCenter = TilemapHelper.getTileCenter(tile.getCenterX(), tile.getCenterY(), mapSizeInfo, {
+  placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile): Phaser.GameObjects.Sprite {
+    const tileCenter = TilemapHelper.getTileCenter(tile.getCenterX(), tile.getCenterY(), {
       centerSprite: true
     });
 
