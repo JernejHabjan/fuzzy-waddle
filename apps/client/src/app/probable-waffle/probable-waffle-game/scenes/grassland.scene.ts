@@ -6,7 +6,7 @@ import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
 import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
-import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
+import { TilemapInputHandler, TileSelectedData } from '../input/tilemap/tilemap-input.handler';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
 import { Subscription } from 'rxjs';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
@@ -83,7 +83,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
-    this.otherInputHandler = new OtherInputHandler(this, this.input, this.pathfinder, tilemapLayer);
+    const navigationGrid = tilemapLayer.layer.data.map((row: Phaser.Tilemaps.Tile[]) => row.map((tile) => tile.index));
+    this.otherInputHandler = new OtherInputHandler(this, this.input, this.pathfinder, navigationGrid);
     this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers(this.selected);
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer);
@@ -229,9 +230,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private subscribeToTileMapSelectEvents(tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
-    this.tileSelectedSub = this.tilemapInputHandler.onTileSelected.subscribe((tile) => {
+    this.tileSelectedSub = this.tilemapInputHandler.onTileSelected.subscribe((tileSelectedData) => {
       // replace tile
-      this.tileReplacement(tilemapLayer, tile);
+      this.tileReplacement(tilemapLayer, tileSelectedData);
     });
 
     this.manualTileSelectedSub = this.manualTileInputHandler.onTileSelected.subscribe((tile) => {
@@ -270,12 +271,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     return SceneCommunicatorService.tileEmitterNrSubject.getValue();
   }
 
-  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tile: Phaser.Tilemaps.Tile) {
+  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tileSelectedData: TileSelectedData) {
     if (this.tileToBeReplaced !== null) {
       const tilesToReplace = this.nrTilesToReplace;
       // get neighbors of tile
       const from = Math.floor(tilesToReplace / 2);
-      const neighbors = tilemapLayer.getTilesWithin(tile.x - from, tile.y - from, tilesToReplace, tilesToReplace);
+      const neighbors = tilemapLayer.getTilesWithin(tileSelectedData.tileXY.x - from, tileSelectedData.tileXY.y - from, tilesToReplace, tilesToReplace);
       neighbors.forEach((t) => {
         tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y, 1, 1);
       });

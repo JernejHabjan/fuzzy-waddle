@@ -24,16 +24,10 @@ export class TilemapHelper {
   }
 
   static getTileCenterByTilemapTileXY(
-    x: number,
-    y: number,
-    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
+    tileXY:Vector2Simple,
     tileCenterOptions: TileCenterOptions = null
   ): Vector2Simple | null {
-    const currentTile = tilemapLayer.getTileAt(x, y);
-    if (!currentTile) {
-      return null;
-    }
-    return this.getTileCenter(currentTile.getCenterX(), currentTile.getCenterY(), tileCenterOptions);
+    return this.getTileCenter(IsoHelper.getCenterX(tileXY.x,tileXY.y),  IsoHelper.getCenterY(tileXY.x,tileXY.y), tileCenterOptions);
   }
 
   placeSpriteOnTileXY(tileXY:Vector2Simple): Phaser.GameObjects.Sprite {

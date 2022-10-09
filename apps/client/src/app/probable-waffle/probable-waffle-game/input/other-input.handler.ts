@@ -7,18 +7,18 @@ export class OtherInputHandler {
   private scene: Phaser.Scene;
   private input: Phaser.Input.InputPlugin;
   private pathfinder: Pathfinder;
-  private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
+  private navigationGrid: number[][];
 
   constructor(
     scene: Phaser.Scene,
     input: Phaser.Input.InputPlugin,
     pathfinder: Pathfinder,
-    tilemapLayer: Phaser.Tilemaps.TilemapLayer
+    navigationGrid: number[][]
   ) {
     this.scene = scene; // todo temp because of tweens
     this.input = input;
     this.pathfinder = pathfinder;
-    this.tilemapLayer = tilemapLayer;
+    this.navigationGrid = navigationGrid;
   }
 
   bindOtherPossiblyUsefulInputHandlers(selected: Phaser.GameObjects.Sprite[]) {
@@ -56,7 +56,7 @@ export class OtherInputHandler {
             this.pathfinder.find(
               { x: objectTileXY.x, y: objectTileXY.y },
               { x: pointerToTileXY.x, y: pointerToTileXY.y },
-              this.tilemapLayer,
+              this.navigationGrid,
               (tileCenters) => {
                 // move sprite to tile centers with delay
                 // create phaser tweens

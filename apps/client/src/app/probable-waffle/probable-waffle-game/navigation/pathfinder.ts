@@ -9,8 +9,8 @@ export class Pathfinder {
     this.scene = scene;
   }
 
-  private static getTileCenterByPath(path: Vector2Simple, tilemapLayer: Phaser.Tilemaps.TilemapLayer): Vector2Simple {
-    const center = TilemapHelper.getTileCenterByTilemapTileXY(path.x, path.y, tilemapLayer, {
+  private static getTileCenterByPath(path: Vector2Simple): Vector2Simple {
+    const center = TilemapHelper.getTileCenterByTilemapTileXY(path,  {
       centerSprite: true
     });
     if (center == null) {
@@ -22,15 +22,14 @@ export class Pathfinder {
   find(
     from: Vector2Simple,
     to: Vector2Simple,
-    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
+    navigationGrid: number[][],
     callback: (tileCenters: { x: number; y: number }[]) => void
   ) {
     const easyStar = new EasyStar();
-    const grid = tilemapLayer.layer.data.map((row: Phaser.Tilemaps.Tile[]) => row.map((tile) => tile.index));
-    easyStar.setGrid(grid);
+    easyStar.setGrid(navigationGrid);
 
     // const get distinct tile indexes from grid
-    const tileIndexes: number[] = [...new Set(grid.flat())];
+    const tileIndexes: number[] = [...new Set(navigationGrid.flat())];
 
     easyStar.setAcceptableTiles(tileIndexes); // todo hardcoded to all tiles now
     easyStar.enableDiagonals();
@@ -42,9 +41,9 @@ export class Pathfinder {
         let graphics = this.scene.add.graphics();
         graphics.lineStyle(2, 0xff0000, 1);
         graphics.beginPath();
-        let tileCenter = Pathfinder.getTileCenterByPath(path[0], tilemapLayer);
+        let tileCenter = Pathfinder.getTileCenterByPath(path[0]);
         graphics.moveTo(tileCenter.x, tileCenter.y);
-        tileCenter = Pathfinder.getTileCenterByPath(path[path.length - 1], tilemapLayer);
+        tileCenter = Pathfinder.getTileCenterByPath(path[path.length - 1]);
         graphics.lineTo(tileCenter.x, tileCenter.y);
         graphics.strokePath();
 
@@ -52,10 +51,10 @@ export class Pathfinder {
         graphics = this.scene.add.graphics();
         graphics.lineStyle(2, 0xffffff, 1);
         graphics.beginPath();
-        tileCenter = Pathfinder.getTileCenterByPath(path[0], tilemapLayer);
+        tileCenter = Pathfinder.getTileCenterByPath(path[0]);
         graphics.moveTo(tileCenter.x, tileCenter.y);
 
-        const allTileCentersWithoutFirst = path.map((path) => Pathfinder.getTileCenterByPath(path, tilemapLayer));
+        const allTileCentersWithoutFirst = path.map((path) => Pathfinder.getTileCenterByPath(path));
         allTileCentersWithoutFirst.shift();
 
         for (let i = 0; i < path.length - 1; i++) {
