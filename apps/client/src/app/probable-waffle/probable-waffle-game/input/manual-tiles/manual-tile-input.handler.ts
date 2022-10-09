@@ -3,6 +3,7 @@ import { MapSizeInfo } from '../../const/map-size.info';
 import { Subject } from 'rxjs';
 import { Intersection, Vector2Simple } from '../../math/intersection';
 import { ManualTile, ManualTileLayer } from '../../manual-tiles/manual-tiles.helper';
+import { IsoHelper } from '../../iso/iso-helper';
 export interface PossibleClickCoords {
   z: number;
   tileXY: Vector2Simple;
@@ -11,7 +12,6 @@ export interface PossibleClickCoords {
 export class ManualTileInputHandler {
   private scene: Phaser.Scene;
   private input: Phaser.Input.InputPlugin;
-  private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
 
   onTileSelected: Subject<ManualTile> = new Subject<ManualTile>();
   onEditorTileSelected: Subject<PossibleClickCoords[]> = new Subject<PossibleClickCoords[]>();
@@ -20,12 +20,10 @@ export class ManualTileInputHandler {
   constructor(
     scene: Phaser.Scene,
     input: Phaser.Input.InputPlugin,
-    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
     manualLayers: ManualTileLayer[]
   ) {
     this.scene = scene; // todo for test
     this.input = input;
-    this.tilemapLayer = tilemapLayer;
     this.manualLayers = manualLayers;
     this.existingTileSelectedListener();
     this.allTileSelectedListener();
@@ -58,7 +56,7 @@ export class ManualTileInputHandler {
       const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
       const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-      const pointerToTileXY = this.tilemapLayer.worldToTileXY(searchedWorldX, searchedWorldY, true);
+      const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
       const possibleCoords: PossibleClickCoords[] = [];
       for (const manualLayer of this.manualLayers) {
@@ -81,7 +79,7 @@ export class ManualTileInputHandler {
   }
 
   private geExistingTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
-    const pointerToTileXY = this.tilemapLayer.worldToTileXY(worldX, worldY, true);
+    const pointerToTileXY = IsoHelper.isometricWorldToTileXY(worldX, worldY, true);
     const clickPointToTileWorldXY = {
       x: worldX + MapSizeInfo.info.tileWidthHalf,
       y: worldY + MapSizeInfo.info.tileWidthHalf

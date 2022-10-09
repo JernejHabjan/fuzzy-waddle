@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { Pathfinder } from '../navigation/pathfinder';
 import { MapSizeInfo } from '../const/map-size.info';
+import { IsoHelper } from '../iso/iso-helper';
 
 export class OtherInputHandler {
   private scene: Phaser.Scene;
@@ -41,15 +42,11 @@ export class OtherInputHandler {
         const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
         const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-        const pointerToTileXY = this.tilemapLayer.worldToTileXY(searchedWorldX, searchedWorldY, true);
+        const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
         const spriteOffset = MapSizeInfo.info.tileHeight / 2; // todo should be joined with getTileCenter fn
         selected.forEach((gameObject) => {
-          const objectTileXY = this.tilemapLayer.worldToTileXY(
-            gameObject.x - MapSizeInfo.info.tileWidthHalf,
-            gameObject.y - spriteOffset - MapSizeInfo.info.tileWidthHalf,
-            true
-          );
+          const objectTileXY = IsoHelper.isometricWorldToTileXY(gameObject.x - MapSizeInfo.info.tileWidthHalf,gameObject.y - spriteOffset - MapSizeInfo.info.tileWidthHalf, true);
           if (
             0 <= pointerToTileXY.x &&
             pointerToTileXY.x <= MapSizeInfo.info.width &&

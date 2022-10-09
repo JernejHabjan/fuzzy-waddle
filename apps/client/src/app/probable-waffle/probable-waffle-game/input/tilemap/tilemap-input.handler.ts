@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
 import { Subject } from 'rxjs';
+import { IsoHelper } from '../../iso/iso-helper';
 
 export class TilemapInputHandler {
   private input: Phaser.Input.InputPlugin;
@@ -8,7 +9,8 @@ export class TilemapInputHandler {
 
   onTileSelected: Subject<Phaser.Tilemaps.Tile> = new Subject<Phaser.Tilemaps.Tile>();
 
-  constructor(input: Phaser.Input.InputPlugin, tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
+  constructor(input: Phaser.Input.InputPlugin,
+              tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
     this.input = input;
     this.tilemapLayer = tilemapLayer;
     this.setupCursor();
@@ -21,13 +23,15 @@ export class TilemapInputHandler {
       const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
       const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-      const foundTile = this.tilemapLayer.getTileAtWorldXY(searchedWorldX, searchedWorldY) as Phaser.Tilemaps.Tile;
+      const tileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY,true)
+
+      const foundTile = this.tilemapLayer.getTileAt(tileXY.x, tileXY.y) as Phaser.Tilemaps.Tile;
 
       //if (previousTile) {
       //  previousTile.tint = 0xffffff;
       //}
       if (foundTile) {
-        //foundTile.tint = 0xff0000;
+        // foundTile.tint = 0xff0000;
         //console.log('foundTile tile', foundTile.x, foundTile.y);
         this.onTileSelected.next(foundTile);
       }
