@@ -79,7 +79,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     const tilemapLayer = this.createMap();
     this.manualLayers = this.createEmptyLayers();
     this.placeAdditionalItemsOnManualLayers(this.manualLayers);
-    this.createSprites(tilemapLayer);
+    this.createSprites();
 
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
@@ -306,9 +306,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     }
   }
 
-  private createSprites(tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
-    const ball1XY = { x: 0, y: 0 };
-    const ballSprite = this.tilemapHelper.placeSpriteOnTilemapTile(tilemapLayer.getTileAt(ball1XY.x, ball1XY.y));
+  private createSprites() {
+    const ballSprite = this.tilemapHelper.placeSpriteOnTileXY( { x: 1, y: 1 });
     this.objects.push(ballSprite);
 
     // removing navigation for now

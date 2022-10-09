@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../const/map-size.info';
 import { TileCenterOptions } from '../types/tile-types';
 import { Vector2Simple } from '../math/intersection';
+import { IsoHelper } from '../iso/iso-helper';
 
 export class TilemapHelper {
   private scene: Phaser.Scene; // todo should not be used like this
@@ -35,8 +36,8 @@ export class TilemapHelper {
     return this.getTileCenter(currentTile.getCenterX(), currentTile.getCenterY(), tileCenterOptions);
   }
 
-  placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile): Phaser.GameObjects.Sprite {
-    const tileCenter = TilemapHelper.getTileCenter(tile.getCenterX(), tile.getCenterY(), {
+  placeSpriteOnTileXY(tileXY:Vector2Simple): Phaser.GameObjects.Sprite {
+    const tileCenter = TilemapHelper.getTileCenter(IsoHelper.getCenterX(tileXY.x,tileXY.y),  IsoHelper.getCenterY(tileXY.x,tileXY.y), {
       centerSprite: true
     });
 
