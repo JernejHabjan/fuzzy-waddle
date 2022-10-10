@@ -14,65 +14,60 @@ export class ManualTileInputHandler {
   private scene: Phaser.Scene;
   private input: Phaser.Input.InputPlugin;
 
-  onTileSelected: Subject<ManualTile> = new Subject<ManualTile>();
-  onEditorTileSelected: Subject<PossibleClickCoords[]> = new Subject<PossibleClickCoords[]>();
+  // onTileSelected: Subject<ManualTile> = new Subject<ManualTile>();
+  // onEditorTileSelected: Subject<PossibleClickCoords[]> = new Subject<PossibleClickCoords[]>();
   private readonly manualLayers: ManualTileLayer[];
 
   constructor(scene: Phaser.Scene, input: Phaser.Input.InputPlugin, manualLayers: ManualTileLayer[]) {
     this.scene = scene; // todo for test
     this.input = input;
     this.manualLayers = manualLayers;
-    this.existingTileSelectedListener();
-    this.allTileSelectedListener();
   }
 
-  private existingTileSelectedListener() {
-    this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
-      const { worldX, worldY } = pointer;
+  /**
+   * returns true if the tile was found and selected
+   */
+  existingTileSelected(pointer: Phaser.Input.Pointer): ManualTile | null {
+    const { worldX, worldY } = pointer;
 
-      const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
-      const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+    const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
+    const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-      const foundTile = this.geExistingTileAtWorldXY(searchedWorldX, searchedWorldY);
+    const foundTile = this.geExistingTileAtWorldXY(searchedWorldX, searchedWorldY);
 
-      //if (previousTile) {
-      //  previousTile.tint = 0xffffff;
-      //}
-      if (foundTile) {
-        //foundTile.tint = 0xff0000;
-        //console.log('foundTile tile', foundTile.x, foundTile.y);
-        this.onTileSelected.next(foundTile);
-      }
-    });
+    return foundTile;
   }
 
-  private allTileSelectedListener() {
-    this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
-      const { worldX, worldY } = pointer;
+  /**
+   * Searches through all layers if there's a tile that can be clicked at the given worldX, worldY
+   * returns true if some coordinates exist and event was emitted
+   */
+  searchPossibleTileCoordinates(pointer: Phaser.Input.Pointer): PossibleClickCoords[] {
+    const { worldX, worldY } = pointer;
 
-      const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
-      const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+    const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
+    const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-      const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
+    const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
-      const possibleCoords: PossibleClickCoords[] = [];
-      for (const manualLayer of this.manualLayers) {
-        const tileX = pointerToTileXY.x - manualLayer.z;
-        const tileY = pointerToTileXY.y - manualLayer.z;
-        if (
-          -(manualLayer.z * MapSizeInfo.info.tileWidth) <= tileX &&
-          tileX <= MapSizeInfo.info.width &&
-          -(manualLayer.z * MapSizeInfo.info.tileHeight) <= tileY &&
-          tileY <= MapSizeInfo.info.height
-        ) {
-          possibleCoords.push({
-            z: manualLayer.z,
-            tileXY: { x: tileX, y: tileY }
-          });
-        }
+    const possibleCoords: PossibleClickCoords[] = [];
+    for (const manualLayer of this.manualLayers) {
+      const tileX = pointerToTileXY.x - manualLayer.z;
+      const tileY = pointerToTileXY.y - manualLayer.z;
+      if (
+        -(manualLayer.z * MapSizeInfo.info.tileWidth) <= tileX &&
+        tileX <= MapSizeInfo.info.width &&
+        -(manualLayer.z * MapSizeInfo.info.tileHeight) <= tileY &&
+        tileY <= MapSizeInfo.info.height
+      ) {
+        possibleCoords.push({
+          z: manualLayer.z,
+          tileXY: { x: tileX, y: tileY }
+        });
       }
-      this.onEditorTileSelected.next(possibleCoords);
-    });
+    }
+    // this.onEditorTileSelected.next(possibleCoords); // todo later remove this event emitter
+    return possibleCoords;
   }
 
   private geExistingTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
@@ -131,7 +126,7 @@ export class ManualTileInputHandler {
   }
 
   destroy() {
-    this.input.off(Phaser.Input.Events.POINTER_UP);
+    // this.input.off(Phaser.Input.Events.POINTER_UP);
   }
 
   private drawDebugPoint(clickPoint: { x: number; y: number }) {

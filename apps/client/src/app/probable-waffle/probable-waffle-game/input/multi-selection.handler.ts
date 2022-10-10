@@ -37,10 +37,12 @@ export class MultiSelectionHandler {
     this.selectionRect = null;
   }
 
-  private handlePointerUp() {
-    this.onSelect.next(this.selectionRect as Phaser.Geom.Rectangle);
+  private handlePointerUp(pointer: Phaser.Input.Pointer) {
+    if (!pointer.rightButtonReleased()) {
+      this.onSelect.next(this.selectionRect as Phaser.Geom.Rectangle);
 
-    this.hideSelectionRectangle();
+      this.hideSelectionRectangle();
+    }
   }
 
   private handlePointerMove(pointer: Phaser.Input.Pointer) {

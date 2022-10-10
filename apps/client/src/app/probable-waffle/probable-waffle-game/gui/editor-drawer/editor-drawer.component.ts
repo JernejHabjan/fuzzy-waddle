@@ -44,6 +44,7 @@ export class EditorDrawerComponent implements OnInit {
   }
 
   selectAtlas(tilesetName: string, atlasFrame: AtlasFrame) {
+    // todo make sure to border the selected atlas
     SceneCommunicatorService.atlasEmitterSubject.next({ tilesetName, atlasFrame: atlasFrame });
   }
 

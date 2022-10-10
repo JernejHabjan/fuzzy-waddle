@@ -22,6 +22,7 @@ export class TileSelectorComponent {
   }
 
   selectTile() {
+    // todo make sure to border the selected tile
     SceneCommunicatorService.tileEmitterSubject.next(this.frameWithMeta.id);
   }
 }
