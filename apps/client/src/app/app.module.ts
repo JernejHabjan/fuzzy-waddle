@@ -9,7 +9,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     HttpClientModule,
     // app routing module must be included last, as it contains the wildcard route
     AppRoutingModule

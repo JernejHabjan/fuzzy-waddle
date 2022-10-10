@@ -3,7 +3,7 @@
     {{ collapsedEditor ? 'Expand' : 'Collapse' }}
   </button>
 
-  <div [@collapse]="collapsedEditor" style="pointer-events: all">
+  <div *ngIf="!collapsedEditor" style="pointer-events: all">
     <fuzzy-waddle-editor-drawer></fuzzy-waddle-editor-drawer>
   </div>
 </div>
