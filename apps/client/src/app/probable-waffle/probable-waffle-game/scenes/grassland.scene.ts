@@ -379,6 +379,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       }),
       SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
         this.atlasToBePlaced = atlas;
+        this.drawLayerLines();
       })
     );
   }
@@ -389,7 +390,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.currentLayerLinesGroup.clear(true, true);
       this.currentLayerLinesGroup.destroy();
     }
-    if (this.tileToBeReplaced !== null) {
+    if (this.tileToBeReplaced !== null || this.atlasToBePlaced !== null) {
       this.currentLayerLinesGroup = this.manualTilesHelper.drawLayerLines(this.editorLayerNr);
     }
   }
