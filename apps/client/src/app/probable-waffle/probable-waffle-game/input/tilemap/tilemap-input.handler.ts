@@ -32,6 +32,8 @@ export class TilemapInputHandler {
 
       const tileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
+
+      // todo replace this with static FN from LayerHelper
       const foundTile = this.tilemapLayer.getTileAt(tileXY.x, tileXY.y) as Phaser.Tilemaps.Tile;
 
       //if (previousTile) {

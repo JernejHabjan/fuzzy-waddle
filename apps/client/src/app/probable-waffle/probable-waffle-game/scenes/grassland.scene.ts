@@ -53,18 +53,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       'assets/probable-waffle/atlas/megaset-0.json'
     );
 
-    this.load.image('tiles', 'assets/probable-waffle/atlas/iso-64x64-outside.png');
-    this.load.image('tiles2', 'assets/probable-waffle/atlas/iso-64x64-building.png');
-    this.load.tilemapTiledJSON('map', 'assets/probable-waffle/tilemaps/start-small.json');
+    this.load.image('iso-64x64-outside', 'assets/probable-waffle/atlas/iso-64x64-outside.png');
+    this.load.image('iso-64x64-building', 'assets/probable-waffle/atlas/iso-64x64-building.png');
+    this.load.tilemapTiledJSON('map', MapDefinitions.mapJson);
 
     this.load.atlas(
       'iso-64x64-building-atlas',
       'assets/probable-waffle/atlas/iso-64x64-building.png',
       'assets/probable-waffle/atlas/iso-64x64-building.json'
     );
-
-    // big map
-    // this.load.tilemapTiledJSON('map', 'https://labs.phaser.io/assets/tilemaps/iso/isorpg.json');
   }
 
   init() {
@@ -98,12 +95,20 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private createMap(): Phaser.Tilemaps.TilemapLayer {
     const map = this.add.tilemap('map');
 
-    const tileset1 = map.addTilesetImage('iso-64x64-outside', 'tiles') as Phaser.Tilemaps.Tileset;
-    const tileset2 = map.addTilesetImage('iso-64x64-building', 'tiles2') as Phaser.Tilemaps.Tileset;
+    const tileSetImages: Phaser.Tilemaps.Tileset[] = []; // todo remove array?
+    map.tilesets.forEach((tileSet) => {
+      tileSetImages.push(map.addTilesetImage(tileSet.name, tileSet.name) as Phaser.Tilemaps.Tileset);
+    });
 
-    const tileMapLayer = map.createLayer('Tile Layer 1', [tileset1, tileset2]) as Phaser.Tilemaps.TilemapLayer;
-    MapSizeInfo.info = new MapSizeInfo(map.width, map.height, map.tileWidth, map.tileHeight);
-    return tileMapLayer;
+    // const tilemapLayer = map.createBlankLayer('layer 2', tileSets, 0, 0, 200, 200) as Phaser.Tilemaps.TilemapLayer;
+    const tilemapLayer = map.createLayer(map.layers[0].name, tileSetImages) as Phaser.Tilemaps.TilemapLayer;
+    MapSizeInfo.info = new MapSizeInfo(
+      tilemapLayer.width / map.tileWidth,
+      tilemapLayer.height / map.tileHeight,
+      map.tileWidth,
+      map.tileHeight
+    );
+    return tilemapLayer;
   }
 
   private createEmptyLayers(): ManualTileLayer[] {
@@ -121,18 +126,18 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.manualTilesHelper.addItemsToLayer(
       layers,
       [
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 }, // todo use index instead
+        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 }, // todo use index instead
         {
-          texture: 'iso-64x64-building-atlas',
-          frame: 'iso-64x64-building-55.png',
+          texture: 'iso-64x64-building-atlas', // todo remove atlas. index is used instead
+          frame: 'iso-64x64-building-55.png', // todo use index instead
           x: 7,
           y: 4,
           slopeDir: SlopeDirection.SouthEast
         },
         {
-          texture: 'iso-64x64-building-atlas',
-          frame: 'iso-64x64-building-54.png',
+          texture: 'iso-64x64-building-atlas', // todo remove atlas. index is used instead
+          frame: 'iso-64x64-building-54.png', // todo use index instead
           x: 8,
           y: 8,
           slopeDir: SlopeDirection.SouthWest
@@ -145,8 +150,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       [
         { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
         {
-          texture: 'iso-64x64-building-atlas',
-          frame: 'iso-64x64-building-55.png',
+          texture: 'iso-64x64-building-atlas', // todo remove atlas. index is used instead
+          frame: 'iso-64x64-building-55.png', // todo use index instead
           x: 6,
           y: 4,
           slopeDir: SlopeDirection.SouthEast
@@ -248,6 +253,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         this.editorLayerNr >= 0 &&
         this.editorLayerNr <= maxLayerZ
       ) {
+        if (this.editorLayerNr === 0) {
+          // todo for now not placing stuff on layer 0
+          return;
+        }
+
         const correctLayer = possibleCoords.find((c) => c.z === this.editorLayerNr);
         if (correctLayer) {
           const tiles = (this.manualLayers.find((l) => l.z === this.editorLayerNr) as ManualTileLayer).tiles;
@@ -276,7 +286,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       const tilesToReplace = this.nrTilesToReplace;
       // get neighbors of tile
       const from = Math.floor(tilesToReplace / 2);
-      const neighbors = tilemapLayer.getTilesWithin(tileSelectedData.tileXY.x - from, tileSelectedData.tileXY.y - from, tilesToReplace, tilesToReplace);
+      const neighbors = tilemapLayer.getTilesWithin(
+        tileSelectedData.tileXY.x - from,
+        tileSelectedData.tileXY.y - from,
+        tilesToReplace,
+        tilesToReplace
+      );
       neighbors.forEach((t) => {
         tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y, 1, 1);
       });
@@ -308,7 +323,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private createSprites() {
-    const ballSprite = this.tilemapHelper.placeSpriteOnTileXY( { x: 1, y: 1 });
+    const ballSprite = this.tilemapHelper.placeSpriteOnTileXY({ x: 1, y: 1 });
     this.objects.push(ballSprite);
 
     // removing navigation for now

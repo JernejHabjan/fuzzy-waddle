@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SceneCommunicatorService } from '../../event-emitters/scene-communicator.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AtlasLoaderService, FrameWithMeta } from './atlas-loader.service';
+import { AtlasFrameWithMeta, AtlasLoaderService } from './atlas-loader.service';
 import { MapDefinitions } from '../../const/map-size.info';
 
 @Component({
@@ -14,7 +14,7 @@ export class EditorDrawerComponent implements OnInit {
   nrReplacedTiles = 1;
   layerNr = 1; // todo for test defaults to layer 1
   @Output() drawerCollapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
-  outsideAtlasFrames: FrameWithMeta[] | null = null;
+  atlasFrames: AtlasFrameWithMeta[] | null = null;
 
   constructor(private route: ActivatedRoute, private router: Router, private atlasLoaderService: AtlasLoaderService) {}
 
@@ -40,7 +40,7 @@ export class EditorDrawerComponent implements OnInit {
   }
 
   loadOutsideAtlas() {
-    this.atlasLoaderService.load().then((frames) => (this.outsideAtlasFrames = frames));
+    this.atlasLoaderService.load().then((frames) => (this.atlasFrames = frames));
   }
 
   leave() {

@@ -15,4 +15,8 @@ export class MapSizeInfo {
 
 export class MapDefinitions {
   static nrLayers = 3;
+
+  static mapJson = "assets/probable-waffle/tilemaps/start-small.json";
+  // big map
+  // static mapJson = "https://labs.phaser.io/assets/tilemaps/iso/isorpg.json";
 }

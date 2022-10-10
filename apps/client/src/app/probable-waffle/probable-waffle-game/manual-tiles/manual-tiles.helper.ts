@@ -13,6 +13,9 @@ export interface ManualTile {
   depth: number;
   tileConfig: TileLayerConfig;
 
+  // atlas index
+  index: number; // todo
+
   // for stairs
   manualRectangleInputInterceptor: Phaser.Geom.Polygon | null;
 }
@@ -77,6 +80,7 @@ export class ManualTilesHelper {
       tileConfig,
       clickableZ: layer + 1,
       depth: tile.depth,
+      index: 0, // todo
       manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileConfig.slopeDir)
     });
   }

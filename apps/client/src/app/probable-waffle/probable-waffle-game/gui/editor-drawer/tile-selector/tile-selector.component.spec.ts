@@ -13,10 +13,8 @@ describe('TileSelectorComponent', () => {
 
     fixture = TestBed.createComponent(TileSelectorComponent);
     component = fixture.componentInstance;
-    const atlasUrl = 'assets/probable-waffle/atlas/iso-64x64-outside.json';
-
     component.frameWithMeta = {
-      filename: atlasUrl,
+      filename: "cube-1.png",
       frame: {
         y: 0,
         x: 0,
@@ -25,6 +23,7 @@ describe('TileSelectorComponent', () => {
       }
     };
     component.tileId = 0;
+    component.textureName = 'iso-64x64-outside';
     fixture.detectChanges();
   });
 
