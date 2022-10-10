@@ -33,13 +33,13 @@
  </tile>
  <tile id="54">
   <properties>
-   <property name="slope-direction" value="south-east"/>
+   <property name="slope-direction" type="int" propertytype="slope-direction" value="1"/>
    <property name="step-height" type="int" value="16"/>
   </properties>
  </tile>
  <tile id="55">
   <properties>
-   <property name="slope-direction" value="south-west"/>
+   <property name="slope-direction" type="int" propertytype="slope-direction" value="2"/>
    <property name="step-height" type="int" value="16"/>
   </properties>
  </tile>
