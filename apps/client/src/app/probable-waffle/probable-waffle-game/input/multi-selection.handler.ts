@@ -20,6 +20,9 @@ export class MultiSelectionHandler {
     this.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.input.on(Phaser.Input.Events.POINTER_UP, this.handlePointerUp, this);
+    this.input.on(Phaser.Input.Events.GAME_OUT, () => {
+      this.hideSelectionRectangle();
+    });
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer) {
@@ -28,13 +31,16 @@ export class MultiSelectionHandler {
     this.selectionRect = null;
   }
 
-  private handlePointerUp() {
+  private hideSelectionRectangle() {
     this.selection.width = 0;
     this.selection.height = 0;
+    this.selectionRect = null;
+  }
 
+  private handlePointerUp() {
     this.onSelect.next(this.selectionRect as Phaser.Geom.Rectangle);
 
-    this.selectionRect = null;
+    this.hideSelectionRectangle();
   }
 
   private handlePointerMove(pointer: Phaser.Input.Pointer) {
@@ -81,5 +87,6 @@ export class MultiSelectionHandler {
     this.input.off(Phaser.Input.Events.POINTER_DOWN);
     this.input.off(Phaser.Input.Events.POINTER_MOVE);
     this.input.off(Phaser.Input.Events.POINTER_UP);
+    this.input.off(Phaser.Input.Events.GAME_OUT);
   }
 }

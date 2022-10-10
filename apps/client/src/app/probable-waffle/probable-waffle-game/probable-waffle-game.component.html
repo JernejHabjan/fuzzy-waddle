@@ -1,9 +1,9 @@
-<div style="position: absolute; top: 0; height: 100%; width: 100px">
-  <button (click)="collapsedEditor = !collapsedEditor">
+<div style="position: absolute; top: 0; height: 100%; width: 100px; pointer-events: none">
+  <button (click)="collapsedEditor = !collapsedEditor" style="pointer-events: all">
     {{ collapsedEditor ? 'Expand' : 'Collapse' }}
   </button>
 
-  <div [@collapse]="collapsedEditor">
+  <div [@collapse]="collapsedEditor" style="pointer-events: all">
     <fuzzy-waddle-editor-drawer></fuzzy-waddle-editor-drawer>
   </div>
 </div>
@@ -18,13 +18,14 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: start;
+    align-items: flex-end;
+    pointer-events: none;
   "
 >
-  <div *ngIf="!collapsedSelectionBar">
+  <div *ngIf="!collapsedSelectionBar" style="pointer-events: all">
     <fuzzy-waddle-selection-display></fuzzy-waddle-selection-display>
   </div>
-  <button (click)="collapsedSelectionBar = !collapsedSelectionBar">
+  <button (click)="collapsedSelectionBar = !collapsedSelectionBar" style="pointer-events: all">
     {{ collapsedSelectionBar ? 'Expand selection' : 'Collapse selection' }}
   </button>
 </div>
