@@ -156,23 +156,23 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private placeAdditionalItemsOnManualLayers(layers: ManualTileLayer[]): void {
-    const building0Index = 161;
-    const building54Index = 215;
-    const building55Index = 216;
+    const buildingCubeIndex = 137;
+    const buildingStairsSouthWestIndex = 191;
+    const buildingStairsSouthEastIndex = 192;
     this.manualTilesHelper.addItemsToLayer(
       layers,
       this.mappedTilesetsToAtlases,
       [
-        { tileIndex: building0Index, x: 5, y: 4 },
-        { tileIndex: building0Index, x: 6, y: 4 },
+        { tileIndex: buildingCubeIndex, x: 5, y: 4 },
+        { tileIndex: buildingCubeIndex, x: 6, y: 4 },
         {
-          tileIndex: building55Index,
+          tileIndex: buildingStairsSouthEastIndex,
           x: 7,
           y: 4,
           slopeDir: SlopeDirection.SouthEast
         },
         {
-          tileIndex: building54Index,
+          tileIndex: buildingStairsSouthWestIndex,
           x: 8,
           y: 8,
           slopeDir: SlopeDirection.SouthWest
@@ -184,9 +184,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       layers,
       this.mappedTilesetsToAtlases,
       [
-        { tileIndex: building0Index, x: 5, y: 4 },
+        { tileIndex: buildingCubeIndex, x: 5, y: 4 },
         {
-          tileIndex: building55Index,
+          tileIndex: buildingStairsSouthEastIndex,
           x: 6,
           y: 4,
           slopeDir: SlopeDirection.SouthEast
