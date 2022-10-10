@@ -16,6 +16,12 @@ import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.
 import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
 
+export interface TilemapToAtlasMap {
+  imageSuffix: string | null;
+  imageName: string | null;
+  atlasName: string | null;
+}
+
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
   private scaleHandler!: ScaleHandler;
@@ -41,6 +47,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private editorLayerNr = 0;
   private manualLayers!: ManualTileLayer[];
   private selected: Phaser.GameObjects.Sprite[] = [];
+  // now we can access atlas frames by tileset.firstgid + tile.index
+  private mappedTilesetsToAtlases!: TilemapToAtlasMap[];
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -53,15 +61,18 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       'assets/probable-waffle/atlas/megaset-0.json'
     );
 
-    this.load.image('iso-64x64-outside', 'assets/probable-waffle/atlas/iso-64x64-outside.png');
-    this.load.image('iso-64x64-building', 'assets/probable-waffle/atlas/iso-64x64-building.png');
-    this.load.tilemapTiledJSON('map', MapDefinitions.mapJson);
+    MapDefinitions.mapAtlases.forEach((atlas) => {
+      // used by this.scene.add.image(...
+      this.load.atlas(
+        `${atlas}${MapDefinitions.atlasSuffix}`,
+        `assets/probable-waffle/atlas/${atlas}.png`,
+        `assets/probable-waffle/atlas/${atlas}.json`
+      );
+      // used by addTilesetImage
+      this.load.image(atlas, `assets/probable-waffle/atlas/${atlas}.png`);
+    });
 
-    this.load.atlas(
-      'iso-64x64-building-atlas',
-      'assets/probable-waffle/atlas/iso-64x64-building.png',
-      'assets/probable-waffle/atlas/iso-64x64-building.json'
-    );
+    this.load.tilemapTiledJSON('map', MapDefinitions.mapJson);
   }
 
   init() {
@@ -74,6 +85,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.bindSceneCommunicator();
 
     const tilemapLayer = this.createMap();
+    this.mappedTilesetsToAtlases = this.mapTilesetsToAtlases(tilemapLayer.tileset);
     this.manualLayers = this.createEmptyLayers();
     this.placeAdditionalItemsOnManualLayers(this.manualLayers);
     this.createSprites();
@@ -95,7 +107,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private createMap(): Phaser.Tilemaps.TilemapLayer {
     const map = this.add.tilemap('map');
 
-    const tileSetImages: Phaser.Tilemaps.Tileset[] = []; // todo remove array?
+    const tileSetImages: Phaser.Tilemaps.Tileset[] = [];
     map.tilesets.forEach((tileSet) => {
       tileSetImages.push(map.addTilesetImage(tileSet.name, tileSet.name) as Phaser.Tilemaps.Tileset);
     });
@@ -111,6 +123,27 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     return tilemapLayer;
   }
 
+  private mapTilesetsToAtlases(tilesets: Phaser.Tilemaps.Tileset[]): TilemapToAtlasMap[] {
+    const tilesetAtlasNameMapper: TilemapToAtlasMap[] = [];
+    tilesets.forEach((tileset) => {
+      let i = tilesetAtlasNameMapper.length;
+      for (i; i < tileset.firstgid; i++) {
+        tilesetAtlasNameMapper.push({ imageName: null, atlasName: null, imageSuffix: null });
+      }
+      const atlasTexture = this.textures.get(tileset.name + MapDefinitions.atlasSuffix);
+
+      const frames = atlasTexture.getFrameNames();
+      // push to array
+      frames.forEach((frameName) => {
+        // split frameName by "." and get 2 variables
+        const [imageName, imageSuffix] = frameName.split('.');
+        tilesetAtlasNameMapper.push({ imageName, imageSuffix, atlasName: tileset.name });
+      });
+    });
+
+    return tilesetAtlasNameMapper;
+  }
+
   private createEmptyLayers(): ManualTileLayer[] {
     const layers: ManualTileLayer[] = [];
     for (let i = 0; i <= MapDefinitions.nrLayers; i++) {
@@ -123,21 +156,23 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private placeAdditionalItemsOnManualLayers(layers: ManualTileLayer[]): void {
+    const building0Index = 161;
+    const building54Index = 215;
+    const building55Index = 216;
     this.manualTilesHelper.addItemsToLayer(
       layers,
+      this.mappedTilesetsToAtlases,
       [
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 }, // todo use index instead
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 }, // todo use index instead
+        { tileIndex: building0Index, x: 5, y: 4 },
+        { tileIndex: building0Index, x: 6, y: 4 },
         {
-          texture: 'iso-64x64-building-atlas', // todo remove atlas. index is used instead
-          frame: 'iso-64x64-building-55.png', // todo use index instead
+          tileIndex: building55Index,
           x: 7,
           y: 4,
           slopeDir: SlopeDirection.SouthEast
         },
         {
-          texture: 'iso-64x64-building-atlas', // todo remove atlas. index is used instead
-          frame: 'iso-64x64-building-54.png', // todo use index instead
+          tileIndex: building54Index,
           x: 8,
           y: 8,
           slopeDir: SlopeDirection.SouthWest
@@ -147,11 +182,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     );
     this.manualTilesHelper.addItemsToLayer(
       layers,
+      this.mappedTilesetsToAtlases,
       [
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
+        { tileIndex: building0Index, x: 5, y: 4 },
         {
-          texture: 'iso-64x64-building-atlas', // todo remove atlas. index is used instead
-          frame: 'iso-64x64-building-55.png', // todo use index instead
+          tileIndex: building55Index,
           x: 6,
           y: 4,
           slopeDir: SlopeDirection.SouthEast
@@ -176,7 +211,13 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       existingTileOnLayer.gameObjectImage.destroy(true);
     }
 
-    this.manualTilesHelper.placeTileOnLayer(manualTilesLayer, layer, tileConfig, tileCenter);
+    this.manualTilesHelper.placeTileOnLayer(
+      manualTilesLayer,
+      this.mappedTilesetsToAtlases,
+      layer,
+      tileConfig,
+      tileCenter
+    );
   }
 
   override update(time: number, delta: number) {
@@ -269,8 +310,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
           this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
             x: correctLayer.tileXY.x + offset,
             y: correctLayer.tileXY.y + offset,
-            texture: 'iso-64x64-building-atlas',
-            frame: 'iso-64x64-building-0.png' // todo take into account this.tileToBeReplaced and possible slopeDir
+            tileIndex: this.tileToBeReplaced
           });
         }
       }

@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
-import { MapSizeInfo } from '../const/map-size.info';
+import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
 import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
+import { TilemapToAtlasMap } from '../scenes/grassland.scene';
 
 export interface ManualTile {
   gameObjectImage: Phaser.GameObjects.Image;
@@ -35,7 +36,12 @@ export class ManualTilesHelper {
   /**
    * Generated layer is not of type tilemap layer, but individual tiles
    */
-  addItemsToLayer(layers: ManualTileLayer[], tileLayerConfig: TileLayerConfig[], layer: number): void {
+  addItemsToLayer(
+    layers: ManualTileLayer[],
+    tilemapToAtlasMap: TilemapToAtlasMap[],
+    tileLayerConfig: TileLayerConfig[],
+    layer: number
+  ): void {
     const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
       offset: layer * MapSizeInfo.info.tileHeight
     });
@@ -47,18 +53,15 @@ export class ManualTilesHelper {
           continue;
         }
 
-        this.placeTileOnLayer(
-          (layers.find((l) => l.z === layer) as ManualTileLayer).tiles,
-          layer,
-          tileConfig,
-          tileCenter
-        );
+        const tilesOnCorrectLayer = (layers.find((l) => l.z === layer) as ManualTileLayer).tiles;
+        this.placeTileOnLayer(tilesOnCorrectLayer, tilemapToAtlasMap, layer, tileConfig, tileCenter);
       }
     }
   }
 
   placeTileOnLayer(
     manualTilesLayer: ManualTile[],
+    tilemapToAtlasMap: TilemapToAtlasMap[],
     layer: number,
     tileConfig: TileLayerConfig,
     tileCenter: Vector2Simple
@@ -69,20 +72,29 @@ export class ManualTilesHelper {
     const worldX = tileCenter.x + tx;
     const worldY = tileCenter.y + ty;
 
-    const tile = this.scene.add.image(worldX, worldY, tileConfig.texture, tileConfig.frame);
+    const atlasMap = tilemapToAtlasMap[tileConfig.tileIndex];
 
-    const layerOffset = layer * MapSizeInfo.info.tileHeight;
-    tile.depth = tileCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
+    if (atlasMap.atlasName !== null && atlasMap.imageName !== null) {
+      const tile = this.scene.add.image(
+        worldX,
+        worldY,
+        atlasMap.atlasName + MapDefinitions.atlasSuffix,
+        `${atlasMap.imageName}.${atlasMap.imageSuffix}`
+      );
 
-    manualTilesLayer.push({
-      gameObjectImage: tile,
-      z: layer,
-      tileConfig,
-      clickableZ: layer + 1,
-      depth: tile.depth,
-      index: 0, // todo
-      manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileConfig.slopeDir)
-    });
+      const layerOffset = layer * MapSizeInfo.info.tileHeight;
+      tile.depth = tileCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
+
+      manualTilesLayer.push({
+        gameObjectImage: tile,
+        z: layer,
+        tileConfig,
+        clickableZ: layer + 1,
+        depth: tile.depth,
+        index: tileConfig.tileIndex,
+        manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileConfig.slopeDir)
+      });
+    }
   }
 
   drawLayerLines(layer: number): Phaser.GameObjects.Group {

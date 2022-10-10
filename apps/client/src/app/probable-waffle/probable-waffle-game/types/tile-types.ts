@@ -6,10 +6,9 @@ export enum SlopeDirection {
   NorthWest = 3
 }
 export type TileLayerConfig = {
-  texture: string;
-  frame: string;
+  tileIndex: number;
   // tile index in the layer (starting with 0)
   x: number;
   y: number;
-  slopeDir?: SlopeDirection;
+  slopeDir?: SlopeDirection; // todo this needs to be extracted directly from atlas map
 };

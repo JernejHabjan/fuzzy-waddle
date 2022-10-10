@@ -46,7 +46,11 @@ export class OtherInputHandler {
 
         const spriteOffset = MapSizeInfo.info.tileHeight / 2; // todo should be joined with getTileCenter fn
         selected.forEach((gameObject) => {
-          const objectTileXY = IsoHelper.isometricWorldToTileXY(gameObject.x - MapSizeInfo.info.tileWidthHalf,gameObject.y - spriteOffset - MapSizeInfo.info.tileWidthHalf, true);
+          const objectTileXY = IsoHelper.isometricWorldToTileXY(
+            gameObject.x - MapSizeInfo.info.tileWidthHalf,
+            gameObject.y - spriteOffset - MapSizeInfo.info.tileWidthHalf,
+            true
+          );
           if (
             0 <= pointerToTileXY.x &&
             pointerToTileXY.x <= MapSizeInfo.info.width &&
@@ -71,7 +75,7 @@ export class OtherInputHandler {
                     x: tileCenters[i].x,
                     y: tileCenters[i].y,
                     duration: 1000,
-                    ease: 'Power1',
+                    ease: Phaser.Math.Easing.Sine.InOut,
                     yoyo: false,
                     repeat: 0,
                     onComplete: () => {

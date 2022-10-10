@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TileSelectorComponent } from './tile-selector.component';
+import { MapDefinitions } from '../../../const/map-size.info';
 
 describe('TileSelectorComponent', () => {
   let component: TileSelectorComponent;
@@ -14,7 +15,7 @@ describe('TileSelectorComponent', () => {
     fixture = TestBed.createComponent(TileSelectorComponent);
     component = fixture.componentInstance;
     component.frameWithMeta = {
-      filename: "cube-1.png",
+      filename: 'cube-1.png',
       frame: {
         y: 0,
         x: 0,
@@ -23,7 +24,7 @@ describe('TileSelectorComponent', () => {
       }
     };
     component.tileId = 0;
-    component.textureName = 'iso-64x64-outside';
+    component.textureName = MapDefinitions.atlasOutside;
     fixture.detectChanges();
   });
 
