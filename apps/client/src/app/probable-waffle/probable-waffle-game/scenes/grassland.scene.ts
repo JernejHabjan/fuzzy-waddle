@@ -118,7 +118,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       tileSetImages.push(map.addTilesetImage(tileSet.name, tileSet.name) as Phaser.Tilemaps.Tileset);
     });
 
-    // const tilemapLayer = map.createBlankLayer('layer 2', tileSets, 0, 0, 200, 200) as Phaser.Tilemaps.TilemapLayer;
+    // const tilemapLayer = map.createBlankLayer('layer 2', tileSetImages, 0, 0, 100, 100) as Phaser.Tilemaps.TilemapLayer;
     const tilemapLayer = map.createLayer(map.layers[0].name, tileSetImages) as Phaser.Tilemaps.TilemapLayer;
     MapSizeInfo.info = new MapSizeInfo(
       tilemapLayer.width / map.tileWidth,

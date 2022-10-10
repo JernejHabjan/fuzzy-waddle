@@ -121,15 +121,14 @@ export class ManualTilesHelper {
 
     const linesGroup = this.scene.add.group();
 
-    this.drawGridLines(linesGroup, -1, mapWidth, mapHeight, tileWidthHalf, tileHeightHalf, tileCenter);
-    this.drawGridLines(linesGroup, 1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenter);
+    this.drawGridLines(linesGroup, -1, mapWidth, mapHeight, tileWidthHalf, tileHeightHalf, tileCenter, layer);
+    this.drawGridLines(linesGroup, 1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenter, layer);
     return linesGroup;
   }
 
   /**
-   * TODO
-   * Fix line drawing so z index will work on correct plane.
-   * This means we'll have to draw short lines and set their z index correctly (same way as in {@link placeTileOnLayer})
+   * Working drawing so z index works on correct plane.
+   * This means have to draw short lines and set their z index correctly (same way as in {@link placeTileOnLayer})
    */
   private drawGridLines(
     group: Phaser.GameObjects.Group,
@@ -138,23 +137,34 @@ export class ManualTilesHelper {
     secondAxis: number,
     tileWidthHalf: number,
     tileHeightHalf: number,
-    tileCenter: Vector2Simple
+    tileCenter: Vector2Simple,
+    layer: number
   ): void {
+    const color = new Phaser.Display.Color();
+
     for (let y = 0; y < firstAxis + 1; y++) {
-      const txStart = -1 * axisModifier * y * tileWidthHalf;
-      const tyStart = y * tileHeightHalf;
-      const txEnd = axisModifier * (secondAxis - y) * tileWidthHalf;
-      const tyEnd = (secondAxis + y) * tileHeightHalf;
+      // draw line secondAxis times
+      for (let x = 1; x < secondAxis + 1; x++) {
+        const txStart = -1 * axisModifier * (x - y - 1) * tileWidthHalf;
+        const tyStart = (x + y - 1) * tileHeightHalf;
 
-      const worldXStart = tileCenter.x + txStart;
-      const worldYStart = tileCenter.y + tyStart;
-      const worldXEnd = tileCenter.x + txEnd;
-      const worldYEnd = tileCenter.y + tyEnd;
+        const txEnd = -1 * axisModifier * (x - y) * tileWidthHalf;
+        const tyEnd = (x + y) * tileHeightHalf;
 
-      const graphics = this.scene.add.graphics();
-      graphics.lineStyle(1, 0x00ff00, 1);
-      graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
-      group.add(graphics);
+        const worldXStart = tileCenter.x + txStart;
+        const worldYStart = tileCenter.y + tyStart;
+        const worldXEnd = tileCenter.x + txEnd;
+        const worldYEnd = tileCenter.y + tyEnd;
+
+        const graphics = this.scene.add.graphics();
+        color.random(50);
+        graphics.lineStyle(1, color.color, 1);
+        graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
+
+        graphics.depth = ManualTilesHelper.getDepth({ x: x - 1, y: y - 1 }, tileCenter, layer);
+
+        group.add(graphics);
+      }
     }
   }
 
