@@ -12,3 +12,8 @@ export type TileLayerConfig = {
   y: number;
   slopeDir?: SlopeDirection; // todo this needs to be extracted directly from atlas map
 };
+
+export interface TilePossibleProperties {
+  stepHeight?: number;
+  slopeDir?: SlopeDirection;
+}

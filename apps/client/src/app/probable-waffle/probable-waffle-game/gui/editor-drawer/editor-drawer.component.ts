@@ -1,9 +1,11 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SceneCommunicatorService } from '../../event-emitters/scene-communicator.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AtlasFrameWithMeta, AtlasLoaderService } from './atlas-loader.service';
+import { AtlasFrameWithMeta, AtlasLoaderService, FrameWithMeta } from './atlas-loader.service';
 import { MapDefinitions } from '../../const/map-size.info';
+import { TileTypes } from '../../manual-tiles/tile-types';
 
+export type TileType = 'flat' | 'water' | 'slopes' | 'blocks' | 'other';
 @Component({
   selector: 'fuzzy-waddle-editor-drawer',
   templateUrl: './editor-drawer.component.html',
@@ -16,7 +18,17 @@ export class EditorDrawerComponent implements OnInit {
   @Output() drawerCollapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
   atlasFrames: AtlasFrameWithMeta[] | null = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private atlasLoaderService: AtlasLoaderService) {}
+  tileTypes: { tileType: TileType; fn: (frameWithMeta: FrameWithMeta) => boolean }[] = [
+    { tileType: 'flat', fn: TileTypes.getWalkableHeight0 },
+    { tileType: 'water', fn: TileTypes.getWalkableWater },
+    { tileType: 'slopes', fn: TileTypes.getWalkableSlopes },
+    { tileType: 'blocks', fn: TileTypes.getWalkableHeightBlock },
+    { tileType: 'other', fn: TileTypes.getOtherTiles }
+  ];
+  selectedType: { tileType: TileType; fn: (frameWithMeta: FrameWithMeta) => boolean };
+  constructor(private route: ActivatedRoute, private router: Router, private atlasLoaderService: AtlasLoaderService) {
+    this.selectedType = this.tileTypes[0];
+  }
 
   ngOnInit(): void {
     this.nrReplacedTilesChanged();

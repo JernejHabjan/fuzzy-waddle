@@ -14,7 +14,6 @@ export class TileSelectorComponent {
     this.src = `assets/probable-waffle/atlas/${this._textureName}.png`;
   }
   @Input() frameWithMeta!: FrameWithMeta;
-  @Input() tileId!: number;
   private _textureName!: string;
   src: string | null = null;
   get fileName(): string {
@@ -23,6 +22,6 @@ export class TileSelectorComponent {
   }
 
   selectTile() {
-    SceneCommunicatorService.tileEmitterSubject.next(this.tileId);
+    SceneCommunicatorService.tileEmitterSubject.next(this.frameWithMeta.id);
   }
 }

@@ -6,9 +6,10 @@ import { ProbableWaffleGameRoutingModule } from './probable-waffle-game-routing.
 import { FormsModule } from '@angular/forms';
 import { EditorDrawerComponent } from './gui/editor-drawer/editor-drawer.component';
 import { TileSelectorComponent } from './gui/editor-drawer/tile-selector/tile-selector.component';
+import { TileSelectorGroupComponent } from './gui/editor-drawer/tile-selector-group/tile-selector-group.component';
 
 @NgModule({
-  declarations: [ProbableWaffleGameComponent, EditorDrawerComponent, TileSelectorComponent],
+  declarations: [ProbableWaffleGameComponent, EditorDrawerComponent, TileSelectorComponent, TileSelectorGroupComponent],
   imports: [CommonModule, FormsModule, ProbableWaffleGameRoutingModule]
 })
 export class ProbableWaffleGameModule {}

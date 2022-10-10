@@ -16,6 +16,10 @@ describe('TileSelectorComponent', () => {
     component = fixture.componentInstance;
     component.frameWithMeta = {
       filename: 'cube-1.png',
+      tileProperties: {
+        stepHeight: 32
+      },
+      id: 1,
       frame: {
         y: 0,
         x: 0,
@@ -23,7 +27,6 @@ describe('TileSelectorComponent', () => {
         h: 0
       }
     };
-    component.tileId = 0;
     component.textureName = MapDefinitions.atlasOutside;
     fixture.detectChanges();
   });
