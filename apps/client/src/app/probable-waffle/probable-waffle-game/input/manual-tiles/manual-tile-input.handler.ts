@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { Intersection, Vector2Simple } from '../../math/intersection';
 import { ManualTile, ManualTileLayer } from '../../manual-tiles/manual-tiles.helper';
 import { IsoHelper } from '../../iso/iso-helper';
+
 export interface PossibleClickCoords {
   z: number;
   tileXY: Vector2Simple;
@@ -17,11 +18,7 @@ export class ManualTileInputHandler {
   onEditorTileSelected: Subject<PossibleClickCoords[]> = new Subject<PossibleClickCoords[]>();
   private readonly manualLayers: ManualTileLayer[];
 
-  constructor(
-    scene: Phaser.Scene,
-    input: Phaser.Input.InputPlugin,
-    manualLayers: ManualTileLayer[]
-  ) {
+  constructor(scene: Phaser.Scene, input: Phaser.Input.InputPlugin, manualLayers: ManualTileLayer[]) {
     this.scene = scene; // todo for test
     this.input = input;
     this.manualLayers = manualLayers;
@@ -105,8 +102,8 @@ export class ManualTileInputHandler {
           }
         } else {
           if (
-            tile.tileConfig.x - tile.clickableZ === pointerToTileXY.x &&
-            tile.tileConfig.y - tile.clickableZ === pointerToTileXY.y
+            tile.tileConfig.tileX - tile.clickableZ === pointerToTileXY.x &&
+            tile.tileConfig.tileY - tile.clickableZ === pointerToTileXY.y
           ) {
             return tile;
           }

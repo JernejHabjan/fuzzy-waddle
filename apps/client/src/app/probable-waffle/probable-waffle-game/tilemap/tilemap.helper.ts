@@ -3,6 +3,7 @@ import { MapSizeInfo } from '../const/map-size.info';
 import { TileCenterOptions } from '../types/tile-types';
 import { Vector2Simple } from '../math/intersection';
 import { IsoHelper } from '../iso/iso-helper';
+import { ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 
 export class TilemapHelper {
   private scene: Phaser.Scene; // todo should not be used like this
@@ -24,23 +25,41 @@ export class TilemapHelper {
   }
 
   static getTileCenterByTilemapTileXY(
-    tileXY:Vector2Simple,
+    tileXY: Vector2Simple,
     tileCenterOptions: TileCenterOptions = null
   ): Vector2Simple | null {
-    return this.getTileCenter(IsoHelper.getCenterX(tileXY.x,tileXY.y),  IsoHelper.getCenterY(tileXY.x,tileXY.y), tileCenterOptions);
+    return this.getTileCenter(
+      IsoHelper.getCenterX(tileXY.x, tileXY.y),
+      IsoHelper.getCenterY(tileXY.x, tileXY.y),
+      tileCenterOptions
+    );
   }
 
-  placeSpriteOnTileXY(tileXY:Vector2Simple): Phaser.GameObjects.Sprite {
-    const tileCenter = TilemapHelper.getTileCenter(IsoHelper.getCenterX(tileXY.x,tileXY.y),  IsoHelper.getCenterY(tileXY.x,tileXY.y), {
-      centerSprite: true
-    });
+  placeSpriteOnTileXY(tileXY: Vector2Simple, texture: string, frame: string, layer: number): Phaser.GameObjects.Sprite {
+    const tileCenter = TilemapHelper.getTileCenter(
+      IsoHelper.getCenterX(tileXY.x, tileXY.y),
+      IsoHelper.getCenterY(tileXY.x, tileXY.y),
+      {
+        centerSprite: true
+      }
+    );
 
     // create object
-    const sprite = this.scene.add.sprite(tileCenter.x, tileCenter.y, 'atlas', 'blue_ball');
+    const sprite = this.scene.add.sprite(tileCenter.x, tileCenter.y, texture, frame);
     // todo set object depth!
     sprite.setInteractive();
     // todo temp
-    sprite.setScale(1, 1);
+    sprite.depth = ManualTilesHelper.getDepth(tileXY, tileCenter, layer);
+
+    this.rescaleSpriteToFitTile(sprite);
     return sprite;
+  }
+
+  private rescaleSpriteToFitTile(sprite: Phaser.GameObjects.Sprite) {
+    // if sprite is larger than 64x64, then we need to scale it down // TODO THIS IS FOR TEST
+    const width = sprite.width;
+    const height = sprite.height;
+    const scale = Math.min(MapSizeInfo.info.tileWidthHalf / width, MapSizeInfo.info.tileHeightHalf / height);
+    sprite.setScale(scale);
   }
 }

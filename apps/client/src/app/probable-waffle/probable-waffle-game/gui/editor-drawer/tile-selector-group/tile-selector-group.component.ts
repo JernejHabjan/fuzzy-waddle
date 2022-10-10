@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AtlasFrameWithMeta, FrameWithMeta } from '../atlas-loader.service';
+import { Component, Input } from '@angular/core';
+import { TileAtlasFrame, TileFrame } from '../atlas-loader.service';
 
 @Component({
   selector: 'fuzzy-waddle-tile-selector-group',
@@ -7,11 +7,11 @@ import { AtlasFrameWithMeta, FrameWithMeta } from '../atlas-loader.service';
   styleUrls: ['./tile-selector-group.component.scss']
 })
 export class TileSelectorGroupComponent {
-  @Input() atlasFrames: AtlasFrameWithMeta[] | null = null;
+  @Input() tileAtlasFrames: TileAtlasFrame[] | null = null;
 
-  @Input() frameWithMetaFilter: (framesWithMeta: FrameWithMeta) => boolean = () => true;
+  @Input() frameWithMetaFilter: (tileFrame: TileFrame) => boolean = () => true;
 
-  getFiltered(framesWithMeta: FrameWithMeta[]): FrameWithMeta[] {
-    return framesWithMeta.filter((frameWithMeta) => this.frameWithMetaFilter(frameWithMeta));
+  getFiltered(tileFrame: TileFrame[]): TileFrame[] {
+    return tileFrame.filter((frameWithMeta) => this.frameWithMetaFilter(frameWithMeta));
   }
 }

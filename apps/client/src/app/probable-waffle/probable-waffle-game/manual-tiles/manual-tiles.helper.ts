@@ -33,6 +33,13 @@ export class ManualTilesHelper {
     this.scene = scene;
   }
 
+  static getDepth(tileXY: Vector2Simple, tileCenter: Vector2Simple, layer: number): number {
+    const layerOffset = layer * MapSizeInfo.info.tileHeight;
+    const ty = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
+    const depth = tileCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
+    return depth;
+  }
+
   /**
    * Generated layer is not of type tilemap layer, but individual tiles
    */
@@ -48,7 +55,7 @@ export class ManualTilesHelper {
 
     for (let y = 0; y < MapSizeInfo.info.height; y++) {
       for (let x = 0; x < MapSizeInfo.info.width; x++) {
-        const tileConfig = tileLayerConfig.find((r) => r.x === x && r.y === y);
+        const tileConfig = tileLayerConfig.find((r) => r.tileX === x && r.tileY === y);
         if (!tileConfig) {
           continue;
         }
@@ -66,8 +73,8 @@ export class ManualTilesHelper {
     tileConfig: TileLayerConfig,
     tileCenter: Vector2Simple
   ): void {
-    const tx = (tileConfig.x - tileConfig.y) * MapSizeInfo.info.tileWidthHalf;
-    const ty = (tileConfig.x + tileConfig.y) * MapSizeInfo.info.tileHeightHalf;
+    const tx = (tileConfig.tileX - tileConfig.tileY) * MapSizeInfo.info.tileWidthHalf;
+    const ty = (tileConfig.tileX + tileConfig.tileY) * MapSizeInfo.info.tileHeightHalf;
 
     const worldX = tileCenter.x + tx;
     const worldY = tileCenter.y + ty;
@@ -82,8 +89,7 @@ export class ManualTilesHelper {
         `${atlasMap.imageName}.${atlasMap.imageSuffix}`
       );
 
-      const layerOffset = layer * MapSizeInfo.info.tileHeight;
-      tile.depth = tileCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
+      tile.depth = ManualTilesHelper.getDepth({ x: tileConfig.tileX, y: tileConfig.tileY }, tileCenter, layer);
 
       manualTilesLayer.push({
         gameObjectImage: tile,

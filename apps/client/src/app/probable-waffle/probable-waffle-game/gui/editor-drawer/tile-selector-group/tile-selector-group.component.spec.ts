@@ -13,7 +13,7 @@ describe('TileSelectorGroupComponent', () => {
 
     fixture = TestBed.createComponent(TileSelectorGroupComponent);
     component = fixture.componentInstance;
-    component.atlasFrames = [];
+    component.tileAtlasFrames = [];
     component.frameWithMetaFilter = () => true;
 
     fixture.detectChanges();

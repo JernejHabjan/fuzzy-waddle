@@ -21,6 +21,7 @@ export class MapDefinitions {
   // static mapJson = "https://labs.phaser.io/assets/tilemaps/iso/isorpg.json";
 
   static atlasSuffix = '-atlas';
+  static atlasMegaset = 'megaset-0';
   static atlasOutside = 'iso-64x64-outside';
   static atlasBuilding = 'iso-64x64-building';
   static mapAtlases = [MapDefinitions.atlasOutside, MapDefinitions.atlasBuilding];

@@ -1,6 +1,10 @@
 import * as Phaser from 'phaser';
 import { Scenes } from './scenes';
-import { SceneCommunicatorService } from '../event-emitters/scene-communicator.service';
+import {
+  AtlasEmitValue,
+  GameObjectSelection,
+  SceneCommunicatorService
+} from '../event-emitters/scene-communicator.service';
 import { CreateSceneFromObjectConfig } from '../interfaces/scene-config.interface';
 import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
@@ -15,6 +19,7 @@ import { OtherInputHandler } from '../input/other-input.handler';
 import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.handler';
 import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
+import { Vector2Simple } from '../math/intersection';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -44,11 +49,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
   private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;
-  private editorLayerNr = 0;
+  private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
   private manualLayers!: ManualTileLayer[];
   private selected: Phaser.GameObjects.Sprite[] = [];
   // now we can access atlas frames by tileset.firstgid + tile.index
   private mappedTilesetsToAtlases!: TilemapToAtlasMap[];
+  private atlasToBePlaced: AtlasEmitValue | null = null;
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -56,9 +62,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   preload() {
     this.load.atlas(
-      'atlas',
-      'assets/probable-waffle/atlas/megaset-0.png',
-      'assets/probable-waffle/atlas/megaset-0.json'
+      MapDefinitions.atlasMegaset + MapDefinitions.atlasSuffix,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.png`,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.json`
     );
 
     MapDefinitions.mapAtlases.forEach((atlas) => {
@@ -163,18 +169,18 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       layers,
       this.mappedTilesetsToAtlases,
       [
-        { tileIndex: buildingCubeIndex, x: 5, y: 4 },
-        { tileIndex: buildingCubeIndex, x: 6, y: 4 },
+        { tileIndex: buildingCubeIndex, tileX: 5, tileY: 4 },
+        { tileIndex: buildingCubeIndex, tileX: 6, tileY: 4 },
         {
           tileIndex: buildingStairsSouthEastIndex,
-          x: 7,
-          y: 4,
+          tileX: 7,
+          tileY: 4,
           slopeDir: SlopeDirection.SouthEast
         },
         {
           tileIndex: buildingStairsSouthWestIndex,
-          x: 8,
-          y: 8,
+          tileX: 8,
+          tileY: 8,
           slopeDir: SlopeDirection.SouthWest
         }
       ],
@@ -184,11 +190,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       layers,
       this.mappedTilesetsToAtlases,
       [
-        { tileIndex: buildingCubeIndex, x: 5, y: 4 },
+        { tileIndex: buildingCubeIndex, tileX: 5, tileY: 4 },
         {
           tileIndex: buildingStairsSouthEastIndex,
-          x: 6,
-          y: 4,
+          tileX: 6,
+          tileY: 4,
           slopeDir: SlopeDirection.SouthEast
         }
       ],
@@ -204,7 +210,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       offset: layer * MapSizeInfo.info.tileHeight
     });
     const existingTileOnLayer = manualTilesLayer.find(
-      (tile) => tile.tileConfig.x === tileConfig.x && tile.tileConfig.y === tileConfig.y && tile.z === layer
+      (tile) =>
+        tile.tileConfig.tileX === tileConfig.tileX && tile.tileConfig.tileY === tileConfig.tileY && tile.z === layer
     );
     if (existingTileOnLayer) {
       manualTilesLayer.splice(manualTilesLayer.indexOf(existingTileOnLayer), 1);
@@ -272,6 +279,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       this.selected.forEach((s) => {
         s.setTint(0xff0000);
       });
+
+      // extract sprite frame name
+      const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => {
+        return {
+          name: s.frame.name
+        };
+      });
+      SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
     });
   }
 
@@ -288,33 +303,47 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.onEditorTileSelectedSub = this.manualTileInputHandler.onEditorTileSelected.subscribe((possibleCoords) => {
       const maxLayerZ = this.manualLayers[this.manualLayers.length - 1].z;
-      if (
-        this.tileToBeReplaced !== null &&
-        this.editorLayerNr !== null &&
-        this.editorLayerNr >= 0 &&
-        this.editorLayerNr <= maxLayerZ
-      ) {
-        if (this.editorLayerNr === 0) {
-          // todo for now not placing stuff on layer 0
-          return;
-        }
-
+      if (this.editorLayerNr !== null && this.editorLayerNr >= 0 && this.editorLayerNr <= maxLayerZ) {
         const correctLayer = possibleCoords.find((c) => c.z === this.editorLayerNr);
         if (correctLayer) {
           const tiles = (this.manualLayers.find((l) => l.z === this.editorLayerNr) as ManualTileLayer).tiles;
 
           // offset by 2, so it's displayed correctly
           const offset = this.editorLayerNr * 2;
-          // todo take this into account:
-          // todo this.nrTilesToReplace
-          this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
-            x: correctLayer.tileXY.x + offset,
-            y: correctLayer.tileXY.y + offset,
-            tileIndex: this.tileToBeReplaced
+
+          if (this.editorLayerNr > 0) {
+            // todo take this into account:
+            // todo this.nrTilesToReplace
+            // todo for now not placing stuff on layer 0
+            if (this.tileToBeReplaced !== null) {
+              this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
+                tileX: correctLayer.tileXY.x + offset,
+                tileY: correctLayer.tileXY.y + offset,
+                tileIndex: this.tileToBeReplaced
+              });
+            }
+          }
+
+          // todo
+          this.placeAtlasOnCoords({
+            x: correctLayer.tileXY.x + this.editorLayerNr,
+            y: correctLayer.tileXY.y + this.editorLayerNr
           });
         }
       }
     });
+  }
+
+  private placeAtlasOnCoords(tileXY: Vector2Simple) {
+    if (this.atlasToBePlaced) {
+      const ballSprite = this.tilemapHelper.placeSpriteOnTileXY(
+        tileXY,
+        this.atlasToBePlaced.tilesetName + MapDefinitions.atlasSuffix,
+        this.atlasToBePlaced.atlasFrame.filename,
+        this.editorLayerNr
+      );
+      this.objects.push(ballSprite);
+    }
   }
 
   private get nrTilesToReplace(): number {
@@ -339,7 +368,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private bindSceneCommunicator() {
-    SceneCommunicatorService.subscriptions.push(
+    SceneCommunicatorService.addSubscription(
       SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
         this.tileToBeReplaced = tileNr;
         this.drawLayerLines();
@@ -347,6 +376,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
         this.editorLayerNr = layerNr;
         this.drawLayerLines();
+      }),
+      SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
+        this.atlasToBePlaced = atlas;
       })
     );
   }
@@ -363,7 +395,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private createSprites() {
-    const ballSprite = this.tilemapHelper.placeSpriteOnTileXY({ x: 1, y: 1 });
+    const ballSprite = this.tilemapHelper.placeSpriteOnTileXY(
+      { x: 1, y: 1 },
+      MapDefinitions.atlasMegaset + MapDefinitions.atlasSuffix,
+      'blue_ball',
+      0
+    );
     this.objects.push(ballSprite);
 
     // removing navigation for now

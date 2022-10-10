@@ -4,15 +4,15 @@
     flex-direction: column;
     justify-content: stretch;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: auto;
+    max-height: 100%;
     background-color: bisque;
   "
 >
-  <button (click)="drawerCollapsed.emit(true)" style="margin-bottom: 10px">Collapse</button>
   <button (click)="leave()" style="margin-bottom: 10px">Leave</button>
   <button (click)="saveMap()">Save map</button>
   <button (click)="loadMap()">Load map</button>
-  <div style="margin-top: 10px">Selection</div>
+  <div class="extra-margin">Selection</div>
   <div>Current layer:</div>
   <input
     type="number"
@@ -25,10 +25,17 @@
   <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)="nrReplacedTilesChanged()" min="1" [max]="5" />
   <button (click)="deselectTile()">Deselect Tile</button>
   <button (click)="removeTile()">Remove Tile</button>
-  <div style="margin-top: 10px">Tiles</div>
+  <div class="extra-margin">Tiles</div>
   <button *ngFor="let type of tileTypes" (click)="selectedType = type">{{ type.tileType }}</button>
   <fuzzy-waddle-tile-selector-group
-    [atlasFrames]="atlasFrames"
+    [tileAtlasFrames]="tileAtlasFrames"
     [frameWithMetaFilter]="selectedType.fn"
   ></fuzzy-waddle-tile-selector-group>
+
+  <div class="extra-margin">Sprites</div>
+  <div *ngFor="let spriteAtlas of spriteAtlases" class='atlas-map-scroll-selector'>
+    <div *ngFor="let atlasFrame of spriteAtlas.atlas.frames">
+      <button (click)="selectAtlas(spriteAtlas.tilesetName,atlasFrame)" style='word-break: break-word;'>{{ formatAtlasFileName(atlasFrame.filename) }}</button>
+    </div>
+  </div>
 </div>

@@ -4,17 +4,17 @@ import { firstValueFrom } from 'rxjs';
 import { MapDefinitions } from '../../const/map-size.info';
 import { TilePossibleProperties } from '../../types/tile-types';
 
-export interface AtlasFrameWithMeta {
+export interface TileAtlasFrame {
   tilesetName: string;
   firstgid: number; // with what index does this tileset start
-  framesWithMeta: FrameWithMeta[];
+  tileFrame: TileFrame[];
 }
 
-export interface TileFrame {
+export interface AtlasFrame {
   filename: string;
   frame: Frame;
 }
-export interface FrameWithMeta extends TileFrame {
+export interface TileFrame extends AtlasFrame {
   id: number;
   tileProperties: TilePossibleProperties;
 }
@@ -25,8 +25,8 @@ interface Frame {
   w: number;
   h: number;
 }
-interface Atlas {
-  frames: TileFrame[];
+export interface Atlas {
+  frames: AtlasFrame[];
   meta: unknown;
 }
 
@@ -36,14 +36,26 @@ interface TileProperties {
   value: string;
 }
 
+interface Tile {
+  id: number;
+  properties: TileProperties[];
+}
+
+interface Tileset {
+  name: string;
+  firstgid: number;
+  tilecount: number;
+  tiles: Tile[];
+}
+
 interface MapJson {
   layers: unknown[];
-  tilesets: {
-    name: string;
-    firstgid: number;
-    tilecount: number;
-    tiles: { id: number; properties: TileProperties[] }[];
-  }[];
+  tilesets: Tileset[];
+}
+
+export interface AtlasJsonWrapper {
+  tilesetName: string;
+  atlas: Atlas;
 }
 
 @Injectable({
@@ -53,38 +65,54 @@ export class AtlasLoaderService {
   constructor(private httpClient: HttpClient) {}
 
   /**
-   * Todo it'd be better to use loaded jsons from game
+   * Todo it'd be better to use loaded jsons from game reference
    */
-  load(): Promise<AtlasFrameWithMeta[]> {
-    return firstValueFrom(this.httpClient.get<MapJson>(MapDefinitions.mapJson)).then((atlas) => {
-      const promises = atlas.tilesets.map((tileset) => {
-        return firstValueFrom(this.httpClient.get<Atlas>(`assets/probable-waffle/atlas/${tileset.name}.json`)).then(
-          (atlas) => {
-            const filteredFrames: FrameWithMeta[] = [];
-            tileset.tiles.forEach((tile) => {
-              // tile properties to dict
-              const tileProperties: TilePossibleProperties = {};
-              tile.properties.forEach((property) => {
-                tileProperties[property.name as keyof TilePossibleProperties] = property.value as any;
-              });
+  async loadMap(): Promise<TileAtlasFrame[]> {
+    const mapJson = await this.loadMapJson();
+    const promises = mapJson.tilesets.map(async (tileset) => {
+      const atlasJson = await this.loadAtlasJson(tileset.name);
 
-              const tileFrame = atlas.frames[tile.id];
-              filteredFrames.push({
-                ...tileFrame,
-                id: tile.id + tileset.firstgid,
-                tileProperties
-              });
-            });
-
-            return {
-              tilesetName: tileset.name,
-              firstgid: tileset.firstgid,
-              framesWithMeta: filteredFrames
-            } as AtlasFrameWithMeta;
-          }
-        );
-      });
-      return Promise.all(promises);
+      return {
+        tilesetName: tileset.name,
+        firstgid: tileset.firstgid,
+        tileFrame: this.extractTileFrames(tileset, atlasJson.atlas)
+      } as TileAtlasFrame;
     });
+    return Promise.all(promises);
+  }
+
+  async loadAtlasJson(tilesetName: string): Promise<AtlasJsonWrapper> {
+    return {
+      tilesetName,
+      atlas: await firstValueFrom(this.httpClient.get<Atlas>(`assets/probable-waffle/atlas/${tilesetName}.json`))
+    };
+  }
+
+  private loadMapJson(): Promise<MapJson> {
+    return firstValueFrom(this.httpClient.get<MapJson>(MapDefinitions.mapJson));
+  }
+
+  private extractTileFrames(tileset: Tileset, atlas: Atlas): TileFrame[] {
+    const filteredFrames: TileFrame[] = [];
+    tileset.tiles.forEach((tile) => {
+      const tileFrame = atlas.frames[tile.id];
+      filteredFrames.push({
+        ...tileFrame,
+        id: tile.id + tileset.firstgid,
+        tileProperties: this.extractTileProperties(tile)
+      });
+    });
+    return filteredFrames;
+  }
+
+  /**
+   * convert tile properties to TilePossibleProperties dictionary
+   */
+  private extractTileProperties(tile: Tile): TilePossibleProperties {
+    const tileProperties: TilePossibleProperties = {};
+    tile.properties.forEach((property) => {
+      tileProperties[property.name as keyof TilePossibleProperties] = property.value as any;
+    });
+    return tileProperties;
   }
 }
