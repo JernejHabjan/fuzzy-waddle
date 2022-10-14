@@ -8,7 +8,7 @@ import { TileAtlasFrame, TileFrame } from '../atlas-loader.service';
 })
 export class TileSelectorGroupComponent {
   @Input() tileAtlasFrames: TileAtlasFrame[] | null = null;
-
+  @Input() selectedTile: number |null = null;
   @Input() frameWithMetaFilter: (tileFrame: TileFrame) => boolean = () => true;
 
   getFiltered(tileFrame: TileFrame[]): TileFrame[] {

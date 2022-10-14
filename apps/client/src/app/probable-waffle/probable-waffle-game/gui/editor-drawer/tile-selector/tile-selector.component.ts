@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { SceneCommunicatorService } from '../../../event-emitters/scene-communicator.service';
 import { TileFrame } from '../atlas-loader.service';
+import { SceneCommunicatorService } from '../../../event-emitters/scene-communicator.service';
 
 @Component({
   selector: 'fuzzy-waddle-tile-selector',
@@ -14,6 +14,7 @@ export class TileSelectorComponent {
     this.src = `assets/probable-waffle/atlas/${this._textureName}.png`;
   }
   @Input() frameWithMeta!: TileFrame;
+  @Input() selectedTile: number |null = null;
   private _textureName!: string;
   src: string | null = null;
   get fileName(): string {

@@ -26,6 +26,10 @@ export class MultiSelectionHandler {
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer) {
+    if (!pointer.leftButtonDown()) {
+      return;
+    }
+
     this.selection.x = pointer.worldX;
     this.selection.y = pointer.worldY;
     this.selectionRect = null;
@@ -46,7 +50,7 @@ export class MultiSelectionHandler {
   }
 
   private handlePointerMove(pointer: Phaser.Input.Pointer) {
-    if (!pointer.isDown) {
+    if (!pointer.leftButtonDown()) {
       return;
     }
 

@@ -23,19 +23,25 @@
   />
   <div>Replace tile nr:</div>
   <input type="number" [(ngModel)]="nrReplacedTiles" (ngModelChange)="nrReplacedTilesChanged()" min="1" [max]="5" />
-  <button (click)="deselectTile()">Deselect Tile</button>
   <button (click)="removeTile()">Remove Tile</button>
   <div class="extra-margin">Tiles</div>
   <button *ngFor="let type of tileTypes" (click)="selectedType = type">{{ type.tileType }}</button>
   <fuzzy-waddle-tile-selector-group
+    [selectedTile]="selectedTile"
     [tileAtlasFrames]="tileAtlasFrames"
     [frameWithMetaFilter]="selectedType.fn"
   ></fuzzy-waddle-tile-selector-group>
 
   <div class="extra-margin">Sprites</div>
-  <div *ngFor="let spriteAtlas of spriteAtlases" class='atlas-map-scroll-selector'>
+  <div *ngFor="let spriteAtlas of spriteAtlases" class="atlas-map-scroll-selector">
     <div *ngFor="let atlasFrame of spriteAtlas.atlas.frames">
-      <button (click)="selectAtlas(spriteAtlas.tilesetName,atlasFrame)" style='word-break: break-word;'>{{ formatAtlasFileName(atlasFrame.filename) }}</button>
+      <button
+        (click)="selectAtlas(spriteAtlas.tilesetName, atlasFrame)"
+        [class.selected]="selectedAtlas === atlasFrame"
+        style="word-break: break-word"
+      >
+        {{ formatAtlasFileName(atlasFrame.filename) }}
+      </button>
     </div>
   </div>
 </div>

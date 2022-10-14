@@ -148,6 +148,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
             });
           }
 
+          // deselect in editor
+          if (this.atlasToBePlaced) {
+            SceneCommunicatorService.atlasEmitterSubject.next(null);
+          }
+          // deselect in editor
+          if (this.tileToBeReplaced) {
+            SceneCommunicatorService.tileEmitterSubject.next(null);
+          }
+
           this.otherInputHandler.rightPointerDown(pointer, this.selected);
         } else {
           if (gameObjectsUnderCursor.length) {
@@ -157,6 +166,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
               }
             }
           } else {
+            // deselect all sprites
+            // todo this.selected.forEach((sprite) => sprite.clearTint());
+
+
             // todo reduce all these tile input handlers
             const possibleCoordsFound = this.manualTileInputHandler.searchPossibleTileCoordinates(pointer);
 
@@ -431,6 +444,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
         this.tileToBeReplaced = tileNr;
         this.atlasToBePlaced = null; // stop placing atlas
+        this.selected = [];
         this.drawLayerLines();
       }),
       SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
@@ -440,6 +454,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
         this.atlasToBePlaced = atlas;
         this.tileToBeReplaced = null; // stop placing tile
+        this.selected = [];
         this.drawLayerLines();
       })
     );
@@ -450,6 +465,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       // remove all lines from group
       this.currentLayerLinesGroup.clear(true, true);
       this.currentLayerLinesGroup.destroy();
+      this.currentLayerLinesGroup = null;
     }
     if (this.tileToBeReplaced !== null || this.atlasToBePlaced !== null) {
       this.currentLayerLinesGroup = this.manualTilesHelper.drawLayerLines(this.editorLayerNr);

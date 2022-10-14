@@ -1,5 +1,5 @@
-<button (click)="selectTile()" *ngIf='src'>
-  <div>{{fileName}}</div>
+<button (click)="selectTile()" *ngIf="src" [class.selected]="selectedTile === frameWithMeta.id">
+  <div>{{ fileName }}</div>
   <!-- https://stackoverflow.com/a/37487480/5909875 -->
   <div
     [ngStyle]="{
