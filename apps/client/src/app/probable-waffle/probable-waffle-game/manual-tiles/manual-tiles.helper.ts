@@ -163,6 +163,7 @@ export class ManualTilesHelper {
         graphics.lineStyle(1, color.color, 1);
         graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
 
+        // minus 1 because we're starting for loops from top of the layer (+1 tile width and height)
         graphics.depth = ManualTilesHelper.getDepth({ x: x - 1, y: y - 1 }, tileCenter, layer);
 
         group.add(graphics);
