@@ -18,13 +18,14 @@ import { Pathfinder } from '../navigation/pathfinder';
 import { OtherInputHandler } from '../input/other-input.handler';
 import { ManualTileInputHandler, PossibleClickCoords } from '../input/manual-tiles/manual-tile-input.handler';
 import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
-import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
+import { SlopeDirection, TileLayerConfig, TilePossibleProperties } from '../types/tile-types';
 import { Vector2Simple } from '../math/intersection';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
   imageName: string | null;
   atlasName: string | null;
+  tileProperties: TilePossibleProperties | null;
 }
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
@@ -53,7 +54,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private manualLayers!: ManualTileLayer[];
   private selected: Phaser.GameObjects.Sprite[] = [];
   // now we can access atlas frames by tileset.firstgid + tile.index
-  private mappedTilesetsToAtlases!: TilemapToAtlasMap[];
+  private mappedTilesetsToAtlasesWithProperties!: TilemapToAtlasMap[];
   private atlasToBePlaced: AtlasEmitValue | null = null;
   private warningText: Phaser.GameObjects.Text | null = null;
 
@@ -92,7 +93,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.bindSceneCommunicator();
 
     const tilemapLayer = this.createMap();
-    this.mappedTilesetsToAtlases = this.mapTilesetsToAtlases(tilemapLayer.tileset);
+    this.mappedTilesetsToAtlasesWithProperties = this.mapTilesetsToAtlasesAndExtractProperties(tilemapLayer.tileset);
     this.manualLayers = this.createEmptyLayers();
     this.placeAdditionalItemsOnManualLayers(this.manualLayers);
     this.createSprites();
@@ -169,20 +170,22 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
             // deselect all sprites
             // todo this.selected.forEach((sprite) => sprite.clearTint());
 
-
             // todo reduce all these tile input handlers
-            const possibleCoordsFound = this.manualTileInputHandler.searchPossibleTileCoordinates(pointer);
 
-            this.possibleCoordSelected(possibleCoordsFound);
-            if (possibleCoordsFound.length) {
-              const existingTileSelected = this.manualTileInputHandler.existingTileSelected(pointer);
-              if (existingTileSelected) {
-                this.selectedTileFromManualTileLayer(existingTileSelected);
-              } else {
-                const existingTileOnTilemapSelected =
-                  this.tilemapInputHandler.selectTileFromTilemapUnderCursor(pointer);
-                if (existingTileOnTilemapSelected) {
-                  this.replaceTileOnTilemap(tilemapLayer, existingTileOnTilemapSelected);
+            if (this.tileShouldBePlacedOnTilemap(this.tileToBeReplaced)) {
+              const existingTileOnTilemapSelected = this.tilemapInputHandler.selectTileFromTilemapUnderCursor(pointer);
+              if (existingTileOnTilemapSelected) {
+                this.replaceTileOnTilemap(tilemapLayer, existingTileOnTilemapSelected);
+              }
+            } else {
+              const possibleCoordsFound = this.manualTileInputHandler.searchPossibleTileCoordinates(pointer);
+              this.possibleCoordSelected(possibleCoordsFound);
+              if (possibleCoordsFound.length) {
+                const existingTileSelected = this.manualTileInputHandler.existingTileSelected(pointer);
+                if (existingTileSelected) {
+                  this.selectedTileFromManualTileLayer(existingTileSelected);
+                } else {
+                  // console.log('no action');
                 }
               }
             }
@@ -192,21 +195,30 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     );
   }
 
-  private mapTilesetsToAtlases(tilesets: Phaser.Tilemaps.Tileset[]): TilemapToAtlasMap[] {
+  private tileShouldBePlacedOnTilemap(tileToBeReplaced: number | null): boolean {
+    if (!tileToBeReplaced) return false;
+    const atlasMap = this.mappedTilesetsToAtlasesWithProperties[tileToBeReplaced];
+    if (!atlasMap.tileProperties) return false;
+    const tileProperties = atlasMap.tileProperties as TilePossibleProperties;
+    return tileProperties.stepHeight === 0 && this.editorLayerNr === 0;
+  }
+
+  private mapTilesetsToAtlasesAndExtractProperties(tilesets: Phaser.Tilemaps.Tileset[]): TilemapToAtlasMap[] {
     const tilesetAtlasNameMapper: TilemapToAtlasMap[] = [];
     tilesets.forEach((tileset) => {
       let i = tilesetAtlasNameMapper.length;
       for (i; i < tileset.firstgid; i++) {
-        tilesetAtlasNameMapper.push({ imageName: null, atlasName: null, imageSuffix: null });
+        tilesetAtlasNameMapper.push({ imageName: null, atlasName: null, imageSuffix: null, tileProperties: null });
       }
       const atlasTexture = this.textures.get(tileset.name + MapDefinitions.atlasSuffix);
 
       const frames = atlasTexture.getFrameNames();
       // push to array
-      frames.forEach((frameName) => {
+      frames.forEach((frameName,i) => {
         // split frameName by "." and get 2 variables
         const [imageName, imageSuffix] = frameName.split('.');
-        tilesetAtlasNameMapper.push({ imageName, imageSuffix, atlasName: tileset.name });
+        const tileProperties = (tileset.tileProperties as TilePossibleProperties[])[i];
+        tilesetAtlasNameMapper.push({ imageName, imageSuffix, atlasName: tileset.name, tileProperties });
       });
     });
 
@@ -230,7 +242,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     const buildingStairsSouthEastIndex = 192;
     this.manualTilesHelper.addItemsToLayer(
       layers,
-      this.mappedTilesetsToAtlases,
+      this.mappedTilesetsToAtlasesWithProperties,
       [
         { tileIndex: buildingCubeIndex, tileX: 5, tileY: 4 },
         { tileIndex: buildingCubeIndex, tileX: 6, tileY: 4 },
@@ -251,7 +263,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     );
     this.manualTilesHelper.addItemsToLayer(
       layers,
-      this.mappedTilesetsToAtlases,
+      this.mappedTilesetsToAtlasesWithProperties,
       [
         { tileIndex: buildingCubeIndex, tileX: 5, tileY: 4 },
         {
@@ -283,7 +295,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     this.manualTilesHelper.placeTileOnLayer(
       manualTilesLayer,
-      this.mappedTilesetsToAtlases,
+      this.mappedTilesetsToAtlasesWithProperties,
       layer,
       tileConfig,
       tileCenter
@@ -325,6 +337,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
     });
   }
+
   private subscribeToSelectionEvents() {
     // todo move this
     this.selectionPreviewSub = this.multiSelectionHandler.onPreview.subscribe((rect) => {
@@ -378,21 +391,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       if (correctLayer) {
         const tiles = (this.manualLayers.find((l) => l.z === this.editorLayerNr) as ManualTileLayer).tiles;
 
-        // offset by 2, so it's displayed correctly
-        const offset = this.editorLayerNr * 2;
-
-        if (this.editorLayerNr > 0) {
-          // todo this is a hack, should be fixed
-          // todo take this into account:
-          // todo this.nrTilesToReplace
-          // todo for now not placing stuff on layer 0
-          if (this.tileToBeReplaced !== null) {
-            this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
-              tileX: correctLayer.tileXY.x + offset,
-              tileY: correctLayer.tileXY.y + offset,
-              tileIndex: this.tileToBeReplaced
-            });
-          }
+        if (this.tileToBeReplaced !== null) {
+          this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
+            tileX: correctLayer.tileXY.x,
+            tileY: correctLayer.tileXY.y,
+            tileIndex: this.tileToBeReplaced
+          });
         }
 
         if (this.atlasToBePlaced) {
@@ -436,6 +440,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       neighbors.forEach((t) => {
         tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y, 1, 1);
       });
+      console.log('tilemap tile replaced');
     }
   }
 

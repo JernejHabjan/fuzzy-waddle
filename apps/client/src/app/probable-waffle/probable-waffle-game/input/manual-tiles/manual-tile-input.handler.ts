@@ -52,13 +52,13 @@ export class ManualTileInputHandler {
 
     const possibleCoords: PossibleClickCoords[] = [];
     for (const manualLayer of this.manualLayers) {
-      const tileX = pointerToTileXY.x - manualLayer.z;
-      const tileY = pointerToTileXY.y - manualLayer.z;
+      const tileX = pointerToTileXY.x + manualLayer.z;
+      const tileY = pointerToTileXY.y + manualLayer.z;
       if (
-        -(manualLayer.z * MapSizeInfo.info.tileWidth) <= tileX &&
-        tileX <= MapSizeInfo.info.width &&
-        -(manualLayer.z * MapSizeInfo.info.tileHeight) <= tileY &&
-        tileY <= MapSizeInfo.info.height
+        -manualLayer.z <= pointerToTileXY.x &&
+        pointerToTileXY.x < MapSizeInfo.info.width - manualLayer.z &&
+        -manualLayer.z <= pointerToTileXY.y &&
+        pointerToTileXY.y < MapSizeInfo.info.height - manualLayer.z
       ) {
         possibleCoords.push({
           z: manualLayer.z,

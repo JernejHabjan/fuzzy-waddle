@@ -100,6 +100,8 @@ export class ManualTilesHelper {
         index: tileConfig.tileIndex,
         manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileConfig.slopeDir)
       });
+      console.log("placed manual tile")
+
     }
   }
 
