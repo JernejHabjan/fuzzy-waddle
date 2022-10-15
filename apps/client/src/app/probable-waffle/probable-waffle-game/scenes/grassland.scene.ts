@@ -171,11 +171,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
           if (this.warningText) {
             this.warningText.destroy(true);
           }
-          if (this.editorLayerNr > 0) {
-            this.warningText = this.add.text(-100, 0, 'Note that nav works only on layer 0 now', {
-              fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-            });
-          }
+          this.warningText = this.add.text(-100, 0, 'Note that nav z index checks only last node now', {
+            fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
+          });
 
           this.deselectPlacementInEditor();
 
