@@ -42,3 +42,5 @@ Thumbs.db
 
 # tiled
 *.tiled-session
+
+migrations.json
