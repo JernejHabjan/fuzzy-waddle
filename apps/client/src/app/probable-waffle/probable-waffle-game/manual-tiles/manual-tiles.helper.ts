@@ -1,18 +1,21 @@
 import * as Phaser from 'phaser';
 import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
-import { SlopeDirection, TilePossibleProperties } from '../types/tile-types';
+import { SlopeDirection, TileIndexProperties, TileLayerProperties } from '../types/tile-types';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { TilemapToAtlasMap } from '../scenes/grassland.scene';
 import { TilePlacementData, TileWorldData } from '../input/tilemap/tilemap-input.handler';
 
-export interface ManualTile {
+export interface ManualTile extends TilePlacementWorldWithProperties {
   gameObjectImage: Phaser.GameObjects.Image;
-  tileWorldData: TileWorldData;
-  properties: TilePossibleProperties;
 
   // for stairs
   manualRectangleInputInterceptor: Phaser.Geom.Polygon | null;
+}
+
+export interface TilePlacementWorldWithProperties {
+  tileWorldData: TileWorldData;
+  tileLayerProperties: TileLayerProperties;
 }
 
 export interface ManualTileLayer {
@@ -27,60 +30,77 @@ export class ManualTilesHelper {
     this.scene = scene;
   }
 
-  static getDepth(tileXY: Vector2Simple, tileCenter: Vector2Simple, layer: number): number {
+  static getDepth(tileXY: Vector2Simple, tileWorldXYCenter: Vector2Simple, layer: number): number {
     const layerOffset = layer * MapSizeInfo.info.tileHeight;
     const ty = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
-    const depth = tileCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
+    const depth = tileWorldXYCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
     return depth;
   }
 
+  placeTilesOnLayer(
+    layers: ManualTileLayer[],
+    tilemapToAtlasMap: TilemapToAtlasMap[],
+    data: { tilePlacementData: TilePlacementData; tileIndexProperties: TileIndexProperties }[]
+  ): void {
+    data.forEach((d) => {
+      this.placeTileOnLayer(layers, tilemapToAtlasMap, d.tilePlacementData, d.tileIndexProperties);
+    });
+  }
   placeTileOnLayer(
     layers: ManualTileLayer[],
     tilemapToAtlasMap: TilemapToAtlasMap[],
     tilePlacementData: TilePlacementData,
-    tileProperties: TilePossibleProperties
+    tileIndexProperties: TileIndexProperties
   ): void {
     const manualTilesLayer = (layers.find((l) => l.z === tilePlacementData.z) as ManualTileLayer).tiles;
 
+    // TODO REPLACE THIS WITH TilemapHelper.getTileWorldCenterByTilemapTileXY(tileXY,... ???
     const tx = (tilePlacementData.tileXY.x - tilePlacementData.tileXY.y) * MapSizeInfo.info.tileWidthHalf;
     const ty = (tilePlacementData.tileXY.x + tilePlacementData.tileXY.y) * MapSizeInfo.info.tileHeightHalf;
 
-    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
-      offset: tilePlacementData.z * MapSizeInfo.info.tileHeight
-    });
+    const byLayerOffsetInPx = tilePlacementData.z * MapSizeInfo.info.tileHeight;
+    const tileWorldCenter = TilemapHelper.adjustTileWorldWithVerticalOffset(
+      { x: MapSizeInfo.info.tileWidthHalf, y: MapSizeInfo.info.tileWidthHalf },
+      {
+        offsetInPx: byLayerOffsetInPx
+      }
+    );
+    const worldCenterXY: Vector2Simple = { x: tileWorldCenter.x + tx, y: tileWorldCenter.y + ty };
 
-    const worldX = tileCenter.x + tx;
-    const worldY = tileCenter.y + ty;
-
-    const atlasMap = tilemapToAtlasMap[tilePlacementData.index];
+    const atlasMap = tilemapToAtlasMap[tileIndexProperties.tileIndex];
 
     if (atlasMap.atlasName !== null && atlasMap.imageName !== null) {
       const tile = this.scene.add.image(
-        worldX,
-        worldY,
+        worldCenterXY.x,
+        worldCenterXY.y,
         atlasMap.atlasName + MapDefinitions.atlasSuffix,
         `${atlasMap.imageName}.${atlasMap.imageSuffix}`
       );
 
-      tile.depth = ManualTilesHelper.getDepth(tilePlacementData.tileXY, tileCenter, tilePlacementData.z);
+      tile.depth = ManualTilesHelper.getDepth(tilePlacementData.tileXY, worldCenterXY, tilePlacementData.z);
+
+      const tileProperties = atlasMap.tileProperties;
 
       manualTilesLayer.push({
         gameObjectImage: tile,
         tileWorldData: {
           tileXY: tilePlacementData.tileXY,
-          worldXY: { x: worldX, y: worldY },
-          z: tilePlacementData.z,
-          index: tilePlacementData.index
+          worldXY: worldCenterXY,
+          z: tilePlacementData.z
         },
-        properties: tileProperties,
-        manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileProperties.slopeDir)
+        tileLayerProperties: {
+          tileIndex: tileIndexProperties.tileIndex,
+          slopeDir: tileProperties?.slopeDir,
+          stepHeight: tileProperties?.stepHeight
+        },
+        manualRectangleInputInterceptor: this.getSlopeDir(worldCenterXY, tileProperties?.slopeDir)
       });
       console.log('placed manual tile');
     }
   }
 
   drawLayerLines(layer: number): Phaser.GameObjects.Group {
-    const layerOffset = layer * MapSizeInfo.info.tileHeight;
+    const byLayerOffset = layer * MapSizeInfo.info.tileHeight;
     const tileWidth = MapSizeInfo.info.tileWidth;
     const tileHeight = MapSizeInfo.info.tileHeight;
 
@@ -91,14 +111,26 @@ export class ManualTilesHelper {
     const mapHeight = MapSizeInfo.info.height;
 
     // not offsetting, because we're placing block tiles there
-    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
-      offset: layerOffset
-    });
+    const tileCenterOffset = TilemapHelper.adjustTileWorldWithVerticalOffset(
+      { x: MapSizeInfo.info.tileWidthHalf, y: MapSizeInfo.info.tileHeight },
+      {
+        offsetInPx: byLayerOffset
+      }
+    );
 
     const linesGroup = this.scene.add.group();
 
-    this.drawGridLines(linesGroup, -1, mapWidth, mapHeight, tileWidthHalf, tileHeightHalf, tileCenter, layer);
-    this.drawGridLines(linesGroup, 1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenter, layer);
+    this.drawLayerGridLines(
+      linesGroup,
+      -1,
+      mapWidth,
+      mapHeight,
+      tileWidthHalf,
+      tileHeightHalf,
+      tileCenterOffset,
+      layer
+    );
+    this.drawLayerGridLines(linesGroup, 1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenterOffset, layer);
     return linesGroup;
   }
 
@@ -106,14 +138,14 @@ export class ManualTilesHelper {
    * Working drawing so z index works on correct plane.
    * This means have to draw short lines and set their z index correctly (same way as in {@link placeTileOnLayer})
    */
-  private drawGridLines(
+  private drawLayerGridLines(
     group: Phaser.GameObjects.Group,
     axisModifier: 1 | -1,
     firstAxis: number,
     secondAxis: number,
     tileWidthHalf: number,
     tileHeightHalf: number,
-    tileCenter: Vector2Simple,
+    tileCenterOffset: Vector2Simple,
     layer: number
   ): void {
     const color = new Phaser.Display.Color();
@@ -127,18 +159,16 @@ export class ManualTilesHelper {
         const txEnd = -1 * axisModifier * (x - y) * tileWidthHalf;
         const tyEnd = (x + y) * tileHeightHalf;
 
-        const worldXStart = tileCenter.x + txStart;
-        const worldYStart = tileCenter.y + tyStart;
-        const worldXEnd = tileCenter.x + txEnd;
-        const worldYEnd = tileCenter.y + tyEnd;
+        const worldStart: Vector2Simple = { x: tileCenterOffset.x + txStart, y: tileCenterOffset.y + tyStart };
+        const worldEnd: Vector2Simple = { x: tileCenterOffset.x + txEnd, y: tileCenterOffset.y + tyEnd };
 
         const graphics = this.scene.add.graphics();
         color.random(50);
         graphics.lineStyle(1, color.color, 1);
-        graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
+        graphics.lineBetween(worldStart.x, worldStart.y, worldEnd.x, worldEnd.y);
 
         // minus 1 because we're starting for loops from top of the layer (+1 tile width and height)
-        graphics.depth = ManualTilesHelper.getDepth({ x: x - 1, y: y - 1 }, tileCenter, layer);
+        graphics.depth = ManualTilesHelper.getDepth({ x: x - 1, y: y - 1 }, tileCenterOffset, layer);
 
         group.add(graphics);
       }
@@ -152,7 +182,7 @@ export class ManualTilesHelper {
     const tileWidth = MapSizeInfo.info.tileWidth;
     let manualRectangleInputInterceptor: Phaser.Geom.Polygon | null = null;
     switch (slopeDir) {
-      case SlopeDirection.SouthEast:
+      case SlopeDirection.SouthWest:
         manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
           tileWidth / 2,
           0,
@@ -164,7 +194,7 @@ export class ManualTilesHelper {
           tileWidth * 0.75
         ]);
         break;
-      case SlopeDirection.SouthWest:
+      case SlopeDirection.SouthEast:
         manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
           tileWidth / 2,
           0,
@@ -202,7 +232,7 @@ export class ManualTilesHelper {
     // displace the rectangle a bit to the left and top by center offset
     for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {
       manualRectangleInputInterceptor.points[i].x -= MapSizeInfo.info.tileWidthHalf;
-      manualRectangleInputInterceptor.points[i].y -= MapSizeInfo.info.tileWidthHalf;
+      manualRectangleInputInterceptor.points[i].y -= MapSizeInfo.info.tileHeight;
     }
   }
 }

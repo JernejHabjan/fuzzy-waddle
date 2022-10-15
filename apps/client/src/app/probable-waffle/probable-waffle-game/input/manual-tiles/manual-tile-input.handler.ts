@@ -1,8 +1,7 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
-import { Subject } from 'rxjs';
 import { Intersection, Vector2Simple } from '../../math/intersection';
-import { ManualTile, ManualTileLayer } from '../../manual-tiles/manual-tiles.helper';
+import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../../manual-tiles/manual-tiles.helper';
 import { IsoHelper } from '../../iso/iso-helper';
 
 export interface PossibleClickCoords {
@@ -27,8 +26,7 @@ export class ManualTileInputHandler {
   /**
    * returns true if the tile was found and selected
    */
-  getManualTileOnWorldXY(worldXY:Vector2Simple): ManualTile | null {
-
+  getManualTileOnWorldXY(worldXY: Vector2Simple): ManualTile | null {
     const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
     const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
@@ -41,7 +39,7 @@ export class ManualTileInputHandler {
    * Searches through all layers if there's a tile that can be clicked at the given worldX, worldY
    * returns true if some coordinates exist and event was emitted
    */
-  searchPossibleTileCoordinates(worldXY:Vector2Simple): PossibleClickCoords[] {
+  searchPossibleTileCoordinates(worldXY: Vector2Simple): PossibleClickCoords[] {
     const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
     const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
@@ -95,8 +93,8 @@ export class ManualTileInputHandler {
         } else {
           const offsetBecauseOfHeight = 1; // todo clickable height
           if (
-            tile.tileWorldData.tileXY.x - (tile.tileWorldData.z +offsetBecauseOfHeight) === pointerToTileXY.x &&
-            tile.tileWorldData.tileXY.y - (tile.tileWorldData.z +offsetBecauseOfHeight) === pointerToTileXY.y
+            tile.tileWorldData.tileXY.x - (tile.tileWorldData.z + offsetBecauseOfHeight) === pointerToTileXY.x &&
+            tile.tileWorldData.tileXY.y - (tile.tileWorldData.z + offsetBecauseOfHeight) === pointerToTileXY.y
           ) {
             return tile;
           }
@@ -120,14 +118,14 @@ export class ManualTileInputHandler {
     }
     graphics.closePath();
     graphics.strokePath();
-    graphics.depth = 1000;
+    graphics.depth = 10000;
   }
 
   destroy() {
     // this.input.off(Phaser.Input.Events.POINTER_UP);
   }
 
-  private drawDebugPoint(clickPoint: { x: number; y: number }) {
+  private drawDebugPoint(clickPoint: Vector2Simple) {
     const graphics = this.scene.add.graphics({ x: 0, y: 0 });
 
     graphics.lineStyle(2, 0x00ff00);

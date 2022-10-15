@@ -16,35 +16,42 @@ export class IsoHelper {
     return { x, y };
   }
 
-  static isometricTileToWorldXY(tileX: number, tileY: number): Vector2Simple {
-    const x = (tileX - tileY) * MapSizeInfo.info.tileWidthHalf;
-    const y = (tileX + tileY) * MapSizeInfo.info.tileHeightHalf;
+  static isometricTileToWorldXY(tileXY: Vector2Simple): Vector2Simple {
+    const x = (tileXY.x - tileXY.y) * MapSizeInfo.info.tileWidthHalf;
+    const y = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
 
     return { x, y };
   }
 
-  static getLeft(tileX: number, tileY: number): number {
-    const point = IsoHelper.isometricTileToWorldXY(tileX, tileY);
+  static getWorldLeft(tileXY: Vector2Simple): number {
+    const point = IsoHelper.isometricTileToWorldXY(tileXY);
     return point.x;
   }
 
-  static getRight(tileX: number, tileY: number): number {
-    return IsoHelper.getLeft(tileX, tileY) + MapSizeInfo.info.tileWidth;
+  static getWorldRight(tileXY: Vector2Simple): number {
+    return IsoHelper.getWorldLeft(tileXY) + MapSizeInfo.info.tileWidth;
   }
 
-  static getTop(tileX: number, tileY: number): number {
-    const point = IsoHelper.isometricTileToWorldXY(tileX, tileY);
+  static getWorldTop(tileXY: Vector2Simple): number {
+    const point = IsoHelper.isometricTileToWorldXY(tileXY);
     return point.y;
   }
 
-  static getBottom(tileX: number, tileY: number): number {
-    return IsoHelper.getTop(tileX, tileY) + MapSizeInfo.info.tileHeight *2;
+  static getWorldBottom(tileXY: Vector2Simple): number {
+    return IsoHelper.getWorldTop(tileXY) + MapSizeInfo.info.tileHeight * 2;
   }
 
-  static getCenterX(tileX: number, tileY: number): number {
-    return (IsoHelper.getLeft(tileX, tileY) + IsoHelper.getRight(tileX, tileY)) / 2;
+  static getWorldCenterX(tileXY: Vector2Simple): number {
+    return (IsoHelper.getWorldLeft(tileXY) + IsoHelper.getWorldRight(tileXY)) / 2;
   }
-  static getCenterY(tileX: number, tileY: number): number {
-    return (IsoHelper.getTop(tileX, tileY) + IsoHelper.getBottom(tileX, tileY)) / 2;
+  static getWorldCenterY(tileXY: Vector2Simple): number {
+    return (IsoHelper.getWorldTop(tileXY) + IsoHelper.getWorldBottom(tileXY)) / 2;
+  }
+
+  static getWorldCenterXY(tileXY: Vector2Simple): Vector2Simple {
+    return {
+      x: IsoHelper.getWorldCenterX(tileXY),
+      y: IsoHelper.getWorldCenterY(tileXY)
+    };
   }
 }

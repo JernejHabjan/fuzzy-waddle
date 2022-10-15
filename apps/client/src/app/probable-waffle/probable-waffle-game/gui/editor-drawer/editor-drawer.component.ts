@@ -29,7 +29,7 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   ];
   selectedType: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean };
   selectedAtlas: AtlasFrame | null = null;
-  selectedTile: number|null = null;
+  selectedTile: number | null = null;
   private emitterSubjectSubscription?: Subscription;
   private atlasEmitterSubscription?: Subscription;
 
@@ -84,7 +84,7 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   }
 
   private listenToSelectionEvents() {
-    this.emitterSubjectSubscription = SceneCommunicatorService.tileEmitterSubject.subscribe(tileId => {
+    this.emitterSubjectSubscription = SceneCommunicatorService.tileEmitterSubject.subscribe((tileId) => {
       this.selectedTile = tileId;
     });
     this.atlasEmitterSubscription = SceneCommunicatorService.atlasEmitterSubject.subscribe((a) => {
@@ -96,5 +96,4 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
     this.emitterSubjectSubscription?.unsubscribe();
     this.atlasEmitterSubscription?.unsubscribe();
   }
-
 }

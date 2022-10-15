@@ -1,4 +1,4 @@
-export type TileCenterOptions = { centerSprite?: boolean; offset?: number } | null;
+export type TileCenterOptions = { centerOfTile?: boolean; offsetInPx?: number } | null;
 export enum SlopeDirection {
   NorthEast = 0,
   SouthEast = 1,
@@ -11,7 +11,9 @@ export interface TilePossibleProperties {
   slopeDir?: SlopeDirection;
 }
 
-// export interface TileLayerProperties extends TilePossibleProperties{
-//   // tile index in the layer
-//   // todo  ? tileIndex: number;
-// }
+export interface TileIndexProperties {
+  // tile index in the layer
+  tileIndex: number;
+}
+
+export interface TileLayerProperties extends TilePossibleProperties, TileIndexProperties {}

@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 export class ProbableWafflePlaygroundService {
   constructor(private http: HttpClient) {}
 
-  getData(){
+  getData() {
     return this.http.get<Message>('/api/hello');
   }
 }

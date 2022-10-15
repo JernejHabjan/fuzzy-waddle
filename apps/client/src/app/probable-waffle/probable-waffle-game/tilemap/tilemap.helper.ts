@@ -12,44 +12,39 @@ export class TilemapHelper {
     this.scene = scene;
   }
 
-  static getTileCenter(x: number, y: number, tileCenterOptions: TileCenterOptions = null): Vector2Simple {
-    const centerX = x;
-    const centerY =
-      y +
-      (tileCenterOptions?.offset
-        ? -tileCenterOptions.offset
-        : tileCenterOptions?.centerSprite
-        ? MapSizeInfo.info.tileHeight / 2
-        : 0);
-    return { x: centerX, y: centerY };
-  }
-
-  static getTileCenterByTilemapTileXY(
+  static adjustTileWorldWithVerticalOffset(
     tileXY: Vector2Simple,
     tileCenterOptions: TileCenterOptions = null
-  ): Vector2Simple | null {
-    return this.getTileCenter(
-      IsoHelper.getCenterX(tileXY.x, tileXY.y),
-      IsoHelper.getCenterY(tileXY.x, tileXY.y),
-      tileCenterOptions
-    );
+  ): Vector2Simple {
+    if (tileCenterOptions?.offsetInPx) {
+      return { x: tileXY.x, y: tileXY.y - tileCenterOptions.offsetInPx };
+    }
+    if (tileCenterOptions?.centerOfTile) {
+      return { x: tileXY.x, y: tileXY.y + TilemapHelper.tileCenterOffset };
+    }
+    return tileXY;
+  }
+
+  static get tileCenterOffset(): number {
+    return MapSizeInfo.info.tileHeightHalf;
+  }
+
+  static getTileWorldCenterByTilemapTileXY(
+    tileXY: Vector2Simple,
+    tileCenterOptions: TileCenterOptions = null
+  ): Vector2Simple {
+    return this.adjustTileWorldWithVerticalOffset(IsoHelper.getWorldCenterXY(tileXY), tileCenterOptions);
   }
 
   placeSpriteOnTileXY(tileXY: Vector2Simple, texture: string, frame: string, layer: number): Phaser.GameObjects.Sprite {
-    const tileCenter = TilemapHelper.getTileCenter(
-      IsoHelper.getCenterX(tileXY.x, tileXY.y),
-      IsoHelper.getCenterY(tileXY.x, tileXY.y),
-      {
-        centerSprite: true
-      }
-    );
+    const tileWorldXYCenter = TilemapHelper.adjustTileWorldWithVerticalOffset(IsoHelper.getWorldCenterXY(tileXY), {
+      offsetInPx: layer * MapSizeInfo.info.tileHeight - MapSizeInfo.info.tileHeightHalf
+    });
 
     // create object
-    const sprite = this.scene.add.sprite(tileCenter.x, tileCenter.y, texture, frame);
-    // todo set object depth!
+    const sprite = this.scene.add.sprite(tileWorldXYCenter.x, tileWorldXYCenter.y, texture, frame);
     sprite.setInteractive();
-    // todo temp
-    sprite.depth = ManualTilesHelper.getDepth(tileXY, tileCenter, layer);
+    sprite.depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
 
     this.rescaleSpriteToFitTile(sprite);
     return sprite;
