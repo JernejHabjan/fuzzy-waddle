@@ -27,11 +27,10 @@ export class ManualTileInputHandler {
   /**
    * returns true if the tile was found and selected
    */
-  existingTileSelected(pointer: Phaser.Input.Pointer): ManualTile | null {
-    const { worldX, worldY } = pointer;
+  getManualTileOnWorldXY(worldXY:Vector2Simple): ManualTile | null {
 
-    const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
-    const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+    const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
+    const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
     const foundTile = this.geExistingTileAtWorldXY(searchedWorldX, searchedWorldY);
 
@@ -42,11 +41,9 @@ export class ManualTileInputHandler {
    * Searches through all layers if there's a tile that can be clicked at the given worldX, worldY
    * returns true if some coordinates exist and event was emitted
    */
-  searchPossibleTileCoordinates(pointer: Phaser.Input.Pointer): PossibleClickCoords[] {
-    const { worldX, worldY } = pointer;
-
-    const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
-    const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+  searchPossibleTileCoordinates(worldXY:Vector2Simple): PossibleClickCoords[] {
+    const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
+    const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
     const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
@@ -96,9 +93,10 @@ export class ManualTileInputHandler {
             return tile;
           }
         } else {
+          const offsetBecauseOfHeight = 1; // todo clickable height
           if (
-            tile.tileConfig.tileX - tile.clickableZ === pointerToTileXY.x &&
-            tile.tileConfig.tileY - tile.clickableZ === pointerToTileXY.y
+            tile.tileWorldData.tileXY.x - (tile.tileWorldData.z +offsetBecauseOfHeight) === pointerToTileXY.x &&
+            tile.tileWorldData.tileXY.y - (tile.tileWorldData.z +offsetBecauseOfHeight) === pointerToTileXY.y
           ) {
             return tile;
           }

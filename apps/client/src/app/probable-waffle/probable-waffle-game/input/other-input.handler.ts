@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { Pathfinder } from '../navigation/pathfinder';
 import { MapSizeInfo } from '../const/map-size.info';
 import { IsoHelper } from '../iso/iso-helper';
+import { TileWorldData } from './tilemap/tilemap-input.handler';
 
 export class OtherInputHandler {
   private scene: Phaser.Scene;
@@ -21,13 +22,11 @@ export class OtherInputHandler {
     this.navigationGrid = navigationGrid;
   }
 
-  rightPointerDown(pointer: Phaser.Input.Pointer, selected: Phaser.GameObjects.Sprite[]) {
-    const { worldX, worldY } = pointer;
-
-    const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
-    const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
-
-    const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
+  startNav(tileWorldData:TileWorldData, selected: Phaser.GameObjects.Sprite[]) {
+    // const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
+    // const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+//
+    // const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
     const spriteOffset = MapSizeInfo.info.tileHeight / 2; // todo should be joined with getTileCenter fn
     selected.forEach((gameObject) => {
@@ -37,14 +36,14 @@ export class OtherInputHandler {
         true
       );
       if (
-        0 <= pointerToTileXY.x &&
-        pointerToTileXY.x <= MapSizeInfo.info.width &&
-        0 <= pointerToTileXY.y &&
-        pointerToTileXY.y <= MapSizeInfo.info.height
+        0 <= tileWorldData.tileXY.x &&
+        tileWorldData.tileXY.x <= MapSizeInfo.info.width &&
+        0 <= tileWorldData.tileXY.y &&
+        tileWorldData.tileXY.y <= MapSizeInfo.info.height
       ) {
         this.pathfinder.find(
           { x: objectTileXY.x, y: objectTileXY.y },
-          { x: pointerToTileXY.x, y: pointerToTileXY.y },
+          { x: tileWorldData.tileXY.x +tileWorldData.z - 1 , y: tileWorldData.tileXY.y +tileWorldData.z - 1  }, // todo hacky because of walkable index- but it's not on flat ground - read this from tilemap
           this.navigationGrid,
           (tileCenters) => {
             this.moveSpriteToTileCenters(gameObject, tileCenters);
@@ -79,5 +78,7 @@ export class OtherInputHandler {
     addTween(tileCenters, 0);
   }
 
-  destroy() {}
+  destroy() {
+    // todo?
+  }
 }

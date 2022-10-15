@@ -1,14 +1,16 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
-import { Subject } from 'rxjs';
 import { IsoHelper } from '../../iso/iso-helper';
 import { Vector2Simple } from '../../math/intersection';
 
-export interface TileSelectedData {
-  worldXY: Vector2Simple;
+export interface TilePlacementData {
   tileXY: Vector2Simple;
   index: number;
   z: number;
+}
+
+export interface TileWorldData extends TilePlacementData {
+  worldXY: Vector2Simple;
 }
 
 export class TilemapInputHandler {
@@ -26,11 +28,9 @@ export class TilemapInputHandler {
    *
    * Returns true if the tile was found and selected
    */
-  selectTileFromTilemapUnderCursor(pointer: Phaser.Input.Pointer): TileSelectedData | null {
-    const { worldX, worldY } = pointer;
-
-    const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
-    const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+  getTileFromTilemapOnWorldXY(worldXY:Vector2Simple): TileWorldData | null {
+    const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
+    const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
     const tileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
@@ -46,7 +46,7 @@ export class TilemapInputHandler {
       return {
         worldXY: { x: searchedWorldX, y: searchedWorldY },
         tileXY: { x: tileXY.x, y: tileXY.y },
-        z: 0, // todo
+        z: 0,
         index: foundTile.index
       };
     }

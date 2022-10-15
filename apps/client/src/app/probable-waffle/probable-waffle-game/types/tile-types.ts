@@ -5,15 +5,13 @@ export enum SlopeDirection {
   SouthWest = 2,
   NorthWest = 3
 }
-export type TileLayerConfig = {
-  // tile index in the layer
-  tileIndex: number;
-  tileX: number;
-  tileY: number;
-  slopeDir?: SlopeDirection; // todo this needs to be extracted directly from atlas map
-};
 
 export interface TilePossibleProperties {
   stepHeight?: number;
   slopeDir?: SlopeDirection;
 }
+
+// export interface TileLayerProperties extends TilePossibleProperties{
+//   // tile index in the layer
+//   // todo  ? tileIndex: number;
+// }

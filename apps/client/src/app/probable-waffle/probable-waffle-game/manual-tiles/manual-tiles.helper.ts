@@ -1,21 +1,15 @@
 import * as Phaser from 'phaser';
 import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
-import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
+import { SlopeDirection, TilePossibleProperties } from '../types/tile-types';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { TilemapToAtlasMap } from '../scenes/grassland.scene';
+import { TilePlacementData, TileWorldData } from '../input/tilemap/tilemap-input.handler';
 
 export interface ManualTile {
   gameObjectImage: Phaser.GameObjects.Image;
-  // layer depth (starting with 0)
-  z: number;
-  // layer depth + 1
-  clickableZ: number;
-  depth: number;
-  tileConfig: TileLayerConfig;
-
-  // atlas index
-  index: number; // todo
+  tileWorldData: TileWorldData;
+  properties: TilePossibleProperties;
 
   // for stairs
   manualRectangleInputInterceptor: Phaser.Geom.Polygon | null;
@@ -40,46 +34,25 @@ export class ManualTilesHelper {
     return depth;
   }
 
-  /**
-   * Generated layer is not of type tilemap layer, but individual tiles
-   */
-  addItemsToLayer(
+  placeTileOnLayer(
     layers: ManualTileLayer[],
     tilemapToAtlasMap: TilemapToAtlasMap[],
-    tileLayerConfig: TileLayerConfig[],
-    layer: number
+    tilePlacementData: TilePlacementData,
+    tileProperties: TilePossibleProperties
   ): void {
+    const manualTilesLayer = (layers.find((l) => l.z === tilePlacementData.z) as ManualTileLayer).tiles;
+
+    const tx = (tilePlacementData.tileXY.x - tilePlacementData.tileXY.y) * MapSizeInfo.info.tileWidthHalf;
+    const ty = (tilePlacementData.tileXY.x + tilePlacementData.tileXY.y) * MapSizeInfo.info.tileHeightHalf;
+
     const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
-      offset: layer * MapSizeInfo.info.tileHeight
+      offset: tilePlacementData.z * MapSizeInfo.info.tileHeight
     });
-
-    for (let y = 0; y < MapSizeInfo.info.height; y++) {
-      for (let x = 0; x < MapSizeInfo.info.width; x++) {
-        const tileConfig = tileLayerConfig.find((r) => r.tileX === x && r.tileY === y);
-        if (!tileConfig) {
-          continue;
-        }
-
-        const tilesOnCorrectLayer = (layers.find((l) => l.z === layer) as ManualTileLayer).tiles;
-        this.placeTileOnLayer(tilesOnCorrectLayer, tilemapToAtlasMap, layer, tileConfig, tileCenter);
-      }
-    }
-  }
-
-  placeTileOnLayer(
-    manualTilesLayer: ManualTile[],
-    tilemapToAtlasMap: TilemapToAtlasMap[],
-    layer: number,
-    tileConfig: TileLayerConfig,
-    tileCenter: Vector2Simple
-  ): void {
-    const tx = (tileConfig.tileX - tileConfig.tileY) * MapSizeInfo.info.tileWidthHalf;
-    const ty = (tileConfig.tileX + tileConfig.tileY) * MapSizeInfo.info.tileHeightHalf;
 
     const worldX = tileCenter.x + tx;
     const worldY = tileCenter.y + ty;
 
-    const atlasMap = tilemapToAtlasMap[tileConfig.tileIndex];
+    const atlasMap = tilemapToAtlasMap[tilePlacementData.index];
 
     if (atlasMap.atlasName !== null && atlasMap.imageName !== null) {
       const tile = this.scene.add.image(
@@ -89,19 +62,20 @@ export class ManualTilesHelper {
         `${atlasMap.imageName}.${atlasMap.imageSuffix}`
       );
 
-      tile.depth = ManualTilesHelper.getDepth({ x: tileConfig.tileX, y: tileConfig.tileY }, tileCenter, layer);
+      tile.depth = ManualTilesHelper.getDepth(tilePlacementData.tileXY, tileCenter, tilePlacementData.z);
 
       manualTilesLayer.push({
         gameObjectImage: tile,
-        z: layer,
-        tileConfig,
-        clickableZ: layer + 1,
-        depth: tile.depth,
-        index: tileConfig.tileIndex,
-        manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileConfig.slopeDir)
+        tileWorldData: {
+          tileXY: tilePlacementData.tileXY,
+          worldXY: { x: worldX, y: worldY },
+          z: tilePlacementData.z,
+          index: tilePlacementData.index
+        },
+        properties: tileProperties,
+        manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileProperties.slopeDir)
       });
-      console.log("placed manual tile")
-
+      console.log('placed manual tile');
     }
   }
 

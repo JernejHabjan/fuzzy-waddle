@@ -10,7 +10,7 @@ import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
 import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
-import { TilemapInputHandler, TileSelectedData } from '../input/tilemap/tilemap-input.handler';
+import { TilemapInputHandler, TilePlacementData, TileWorldData } from '../input/tilemap/tilemap-input.handler';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
 import { Subscription } from 'rxjs';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
@@ -18,7 +18,7 @@ import { Pathfinder } from '../navigation/pathfinder';
 import { OtherInputHandler } from '../input/other-input.handler';
 import { ManualTileInputHandler, PossibleClickCoords } from '../input/manual-tiles/manual-tile-input.handler';
 import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
-import { SlopeDirection, TileLayerConfig, TilePossibleProperties } from '../types/tile-types';
+import { TilePossibleProperties } from '../types/tile-types';
 import { Vector2Simple } from '../math/intersection';
 
 export interface TilemapToAtlasMap {
@@ -139,6 +139,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         gameObjectsUnderCursor: Phaser.GameObjects.GameObject[],
         event: TouchEvent | MouseEvent
       ) => {
+        const worldXY :Vector2Simple= {x:pointer.worldX, y:pointer.worldY};
         if (pointer.rightButtonReleased()) {
           if (this.warningText) {
             this.warningText.destroy(true);
@@ -158,7 +159,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
             SceneCommunicatorService.tileEmitterSubject.next(null);
           }
 
-          this.otherInputHandler.rightPointerDown(pointer, this.selected);
+          const hasNavigableTile = this.getNavigableTile(worldXY);
+          if(hasNavigableTile){
+            this.otherInputHandler.startNav(hasNavigableTile, this.selected);
+          }
         } else {
           if (gameObjectsUnderCursor.length) {
             for (const gameObject of gameObjectsUnderCursor) {
@@ -173,15 +177,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
             // todo reduce all these tile input handlers
 
             if (this.tileShouldBePlacedOnTilemap(this.tileToBeReplaced)) {
-              const existingTileOnTilemapSelected = this.tilemapInputHandler.selectTileFromTilemapUnderCursor(pointer);
+              const existingTileOnTilemapSelected = this.tilemapInputHandler.getTileFromTilemapOnWorldXY(worldXY);
               if (existingTileOnTilemapSelected) {
                 this.replaceTileOnTilemap(tilemapLayer, existingTileOnTilemapSelected);
               }
             } else {
-              const possibleCoordsFound = this.manualTileInputHandler.searchPossibleTileCoordinates(pointer);
+              const possibleCoordsFound = this.manualTileInputHandler.searchPossibleTileCoordinates(worldXY);
               this.possibleCoordSelected(possibleCoordsFound);
               if (possibleCoordsFound.length) {
-                const existingTileSelected = this.manualTileInputHandler.existingTileSelected(pointer);
+                const existingTileSelected = this.manualTileInputHandler.getManualTileOnWorldXY(worldXY);
                 if (existingTileSelected) {
                   this.selectedTileFromManualTileLayer(existingTileSelected);
                 } else {
@@ -193,6 +197,20 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         }
       }
     );
+  }
+
+
+  private getNavigableTile(worldXY: Vector2Simple):TileWorldData|null{
+    const existingManualTileSelected = this.manualTileInputHandler.getManualTileOnWorldXY(worldXY);
+    if (existingManualTileSelected) {
+      return existingManualTileSelected.tileWorldData;
+    }
+    const existingTileOnTilemapSelected = this.tilemapInputHandler.getTileFromTilemapOnWorldXY(worldXY);
+    if (existingTileOnTilemapSelected) {
+      return existingTileOnTilemapSelected;
+    }
+    return null;
+
   }
 
   private tileShouldBePlacedOnTilemap(tileToBeReplaced: number | null): boolean {
@@ -240,53 +258,43 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     const buildingCubeIndex = 137;
     const buildingStairsSouthWestIndex = 191;
     const buildingStairsSouthEastIndex = 192;
-    this.manualTilesHelper.addItemsToLayer(
+    this.manualTilesHelper.placeTileOnLayer(
       layers,
       this.mappedTilesetsToAtlasesWithProperties,
-      [
-        { tileIndex: buildingCubeIndex, tileX: 5, tileY: 4 },
-        { tileIndex: buildingCubeIndex, tileX: 6, tileY: 4 },
-        {
-          tileIndex: buildingStairsSouthEastIndex,
-          tileX: 7,
-          tileY: 4,
-          slopeDir: SlopeDirection.SouthEast
-        },
-        {
-          tileIndex: buildingStairsSouthWestIndex,
-          tileX: 8,
-          tileY: 8,
-          slopeDir: SlopeDirection.SouthWest
-        }
-      ],
-      0
+      {
+        z: 0,
+        tileXY: { x: 5, y: 4 },
+        index: buildingCubeIndex
+      },
+      {
+        stepHeight:0 // todo
+      }
+
     );
-    this.manualTilesHelper.addItemsToLayer(
-      layers,
-      this.mappedTilesetsToAtlasesWithProperties,
-      [
-        { tileIndex: buildingCubeIndex, tileX: 5, tileY: 4 },
-        {
-          tileIndex: buildingStairsSouthEastIndex,
-          tileX: 6,
-          tileY: 4,
-          slopeDir: SlopeDirection.SouthEast
-        }
-      ],
-      1
-    );
+    //  this.manualTilesHelper.addItemToLayer(
+    //    layers,
+    //    this.mappedTilesetsToAtlasesWithProperties,
+    //    [
+    //      { tileIndex: buildingCubeIndex, tileX: 5, tileY: 4 },
+    //      {
+    //        tileIndex: buildingStairsSouthEastIndex,
+    //        tileX: 6,
+    //        tileY: 4,
+    //        slopeDir: SlopeDirection.SouthEast
+    //      }
+    //    ],
+    //    1
+    //  );
   }
 
   /**
    * called by editor. Ensures to destroy tiles before creating new one
    */
-  private replaceTilesOnLayer(manualTilesLayer: ManualTile[], layer: number, tileConfig: TileLayerConfig) {
-    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
-      offset: layer * MapSizeInfo.info.tileHeight
-    });
+  private replaceTilesOnLayer(manualTilesLayer: ManualTile[], layer: number, tilePlacementData: TilePlacementData) {
+
     const existingTileOnLayer = manualTilesLayer.find(
       (tile) =>
-        tile.tileConfig.tileX === tileConfig.tileX && tile.tileConfig.tileY === tileConfig.tileY && tile.z === layer
+        tile.tileWorldData.tileXY.x === tilePlacementData.tileXY.x && tile.tileWorldData.tileXY.y === tilePlacementData.tileXY.y && tile.tileWorldData.z === layer
     );
     if (existingTileOnLayer) {
       manualTilesLayer.splice(manualTilesLayer.indexOf(existingTileOnLayer), 1);
@@ -294,11 +302,13 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     }
 
     this.manualTilesHelper.placeTileOnLayer(
-      manualTilesLayer,
+      this.manualLayers,
       this.mappedTilesetsToAtlasesWithProperties,
-      layer,
-      tileConfig,
-      tileCenter
+      tilePlacementData,
+      {
+        slopeDir: undefined, // todo
+        stepHeight: 0 // todo
+      }
     );
   }
 
@@ -372,12 +382,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     // });
   }
 
-  private replaceTileOnTilemap(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tileSelectedData: TileSelectedData) {
-    this.tileReplacement(tilemapLayer, tileSelectedData);
+  private replaceTileOnTilemap(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tilePlacementData: TilePlacementData) {
+    this.tileReplacement(tilemapLayer, tilePlacementData);
   }
 
   private selectedTileFromManualTileLayer(tile: ManualTile) {
-    // tile.gameObjectImage.tint = 0xff0000; // todo not used now
+    tile.gameObjectImage.tint = 0xff0000;
   }
 
   /**
@@ -393,9 +403,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
         if (this.tileToBeReplaced !== null) {
           this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
-            tileX: correctLayer.tileXY.x,
-            tileY: correctLayer.tileXY.y,
-            tileIndex: this.tileToBeReplaced
+            tileXY: correctLayer.tileXY,
+            index: this.tileToBeReplaced,
+            z: this.editorLayerNr,
           });
         }
 
@@ -426,14 +436,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     return SceneCommunicatorService.tileEmitterNrSubject.getValue();
   }
 
-  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tileSelectedData: TileSelectedData) {
+  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tilePlacementData: TilePlacementData) {
     if (this.tileToBeReplaced !== null) {
       const tilesToReplace = this.nrTilesToReplace;
       // get neighbors of tile
       const from = Math.floor(tilesToReplace / 2);
       const neighbors = tilemapLayer.getTilesWithin(
-        tileSelectedData.tileXY.x - from,
-        tileSelectedData.tileXY.y - from,
+        tilePlacementData.tileXY.x - from,
+        tilePlacementData.tileXY.y - from,
         tilesToReplace,
         tilesToReplace
       );
