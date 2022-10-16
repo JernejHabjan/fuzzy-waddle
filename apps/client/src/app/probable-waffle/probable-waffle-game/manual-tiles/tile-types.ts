@@ -1,4 +1,5 @@
 import { TileFrame } from '../gui/editor-drawer/atlas-loader.service';
+import { TileDefinitions } from '../const/map-size.info';
 
 export class TileTypes {
   static getWalkableHeight0(frameWithMeta: TileFrame): boolean {
@@ -6,7 +7,7 @@ export class TileTypes {
   }
 
   static getWalkableWater(frameWithMeta: TileFrame): boolean {
-    return frameWithMeta.tileProperties.stepHeight === -16;
+    return frameWithMeta.tileProperties.stepHeight === TileDefinitions.waterHeight;
   }
 
   static getWalkableHeightBlock(frameWithMeta: TileFrame): boolean {

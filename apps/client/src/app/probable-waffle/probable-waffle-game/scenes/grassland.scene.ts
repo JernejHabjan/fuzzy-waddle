@@ -8,7 +8,7 @@ import {
 import { CreateSceneFromObjectConfig } from '../interfaces/scene-config.interface';
 import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
-import { MapDefinitions } from '../const/map-size.info';
+import { MapDefinitions, TileDefinitions } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
 import { TilemapInputHandler, TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
@@ -23,7 +23,7 @@ import { Vector2Simple } from '../math/intersection';
 import { MapPropertiesHelper } from '../map/map-properties-helper';
 import { MapHelper } from '../map/map-helper';
 import { LayerLines } from '../map/layer-lines';
-import { StaticObjectHelper } from '../placable-objects/static-object';
+import { PlacedGameObject, StaticObjectHelper } from '../placable-objects/static-object';
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 
@@ -57,7 +57,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
   private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
-  private selected: Phaser.GameObjects.Sprite[] = [];
+  private selected: PlacedGameObject[] = [];
   private atlasToBePlaced: AtlasEmitValue | null = null;
   private warningText: Phaser.GameObjects.Text | null = null;
   private mapPropertiesHelper!: MapPropertiesHelper;
@@ -100,7 +100,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.mapHelper = new MapHelper();
     this.tilemapHelper = new TilemapHelper(this.mapHelper, this);
     this.mapPropertiesHelper = new MapPropertiesHelper(this.mapHelper, this.textures);
-    this.manualTilesHelper = new ManualTilesHelper(this.mapHelper, this);
+    this.manualTilesHelper = new ManualTilesHelper(this.mapHelper, this, this.tilemapHelper);
     this.staticObjectHelper = new StaticObjectHelper(this.mapHelper, this);
 
     this.dynamicObjectHelper = new DynamicObjectHelper(this.mapHelper, this);
@@ -153,7 +153,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
           (Math.abs(pointer.velocity.x) > allowedPointerVelocity ||
             Math.abs(pointer.velocity.y) > allowedPointerVelocity)
         ) {
-          console.log('deselecting because of pointer velocity');
+          // console.log('deselecting because of pointer velocity');
           this.deselectPlacementInEditor();
         }
       }
@@ -168,12 +168,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       ) => {
         const worldXY: Vector2Simple = { x: pointer.worldX, y: pointer.worldY };
         if (pointer.rightButtonReleased()) {
-          if (this.warningText) {
-            this.warningText.destroy(true);
-          }
-          this.warningText = this.add.text(-100, 0, 'Note that nav z index checks only last node now', {
-            fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-          });
+          // if (this.warningText) {
+          //   this.warningText.destroy(true);
+          // }
+          // this.warningText = this.add.text(-100, 0, 'Note that nav z index checks only last node now', {
+          //   fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
+          // });
 
           this.deselectPlacementInEditor();
 
@@ -194,8 +194,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
             // todo reduce all these tile input handlers
 
-            if (this.tilemapHelper.tileShouldBePlacedOnTilemap(this.tileToBeReplaced, this.editorLayerNr)) {
-              const tileOnTilemap = this.tilemapInputHandler.getTileFromTilemapOnWorldXY(worldXY);
+            const tileOnTilemap = this.tilemapInputHandler.getTileFromTilemapOnWorldXY(worldXY);
+            const removingTile = this.tileToBeReplaced === TileDefinitions.tileRemoveIndex;
+            const removingExistingTile = !!tileOnTilemap && removingTile;
+            if (
+              (removingExistingTile && this.editorLayerNr === 0) ||
+              (!removingTile &&
+                this.tilemapHelper.tileShouldBePlacedOnTilemap(this.tileToBeReplaced, this.editorLayerNr))
+            ) {
               const newTileLayerProperties = {
                 tileIndex: this.tileToBeReplaced
               } as TileIndexProperties;
@@ -203,7 +209,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
                 this.tilemapHelper.replaceTileOnTilemap(tileOnTilemap.tileWorldData, newTileLayerProperties);
               }
             } else {
-              const possibleCoordsFound = this.manualTileInputHandler.searchPossibleTileCoordinatesOnManualLayers(worldXY);
+              const possibleCoordsFound =
+                this.manualTileInputHandler.searchPossibleTileCoordinatesOnManualLayers(worldXY);
               this.possibleCoordSelected(possibleCoordsFound, this.editorLayerNr);
               if (possibleCoordsFound.length) {
                 const existingTileSelected = this.manualTileInputHandler.getManualTileOnWorldXY(worldXY);
@@ -230,7 +237,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       SceneCommunicatorService.tileEmitterSubject.next(null);
     }
   }
-
 
   private placeAdditionalItemsOnManualLayers(): void {
     const buildingCubeIndex = 137;
@@ -286,11 +292,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Phaser.GameObjects.Sprite[] {
+  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): PlacedGameObject[] {
     return this.mapHelper.dynamicObjects.filter((o) => {
       const bounds = o.spriteInstance.getBounds();
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
-    }).map((o) => o.spriteInstance);
+    });
   }
 
   private subscribeToSelectionEvents() {
@@ -303,7 +309,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         o.spriteInstance.clearTint();
       });
       selected.forEach((s) => {
-        s.setTint(0x0000ff);
+        s.spriteInstance.setTint(0x0000ff);
       });
     });
     // todo move this
@@ -314,13 +320,13 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         o.spriteInstance.clearTint();
       });
       this.selected.forEach((s) => {
-        s.setTint(0xff0000);
+        s.spriteInstance.setTint(0xff0000);
       });
 
       // extract sprite frame name
       const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => {
         return {
-          name: s.frame.name
+          name: s.placeableObjectProperties.placeableAtlasProperties.frame
         };
       });
       SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo

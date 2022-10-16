@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
+import { MapDefinitions, MapSizeInfo, TileDefinitions } from '../const/map-size.info';
 import { SlopeDirection, TileIndexProperties, TileLayerProperties } from '../types/tile-types';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
@@ -26,8 +26,11 @@ export interface ManualTileLayer {
 }
 
 export class ManualTilesHelper {
-  constructor(private readonly mapHelper: MapHelper, private readonly scene: Phaser.Scene) {
-  }
+  constructor(
+    private readonly mapHelper: MapHelper,
+    private readonly scene: Phaser.Scene,
+    private readonly tilemapHelper: TilemapHelper
+  ) {}
 
   static getDepth(tileXY: Vector2Simple, tileWorldXYCenter: Vector2Simple, layer: number): number {
     const layerOffset = layer * MapSizeInfo.info.tileHeight;
@@ -35,7 +38,6 @@ export class ManualTilesHelper {
     const depth = tileWorldXYCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
     return depth;
   }
-
 
   createEmptyManualLayers() {
     const layers: ManualTileLayer[] = [];
@@ -45,7 +47,7 @@ export class ManualTilesHelper {
         tiles: []
       });
     }
-    this.mapHelper.manualLayers =  layers;
+    this.mapHelper.manualLayers = layers;
   }
 
   placeTilesOnLayer(
@@ -62,7 +64,13 @@ export class ManualTilesHelper {
     tilePlacementData: TilePlacementData,
     tileIndexProperties: TileIndexProperties
   ): void {
-    const manualTilesLayer = (this.mapHelper.manualLayers.find((l) => l.z === tilePlacementData.z) as ManualTileLayer).tiles;
+    const manualTilesLayer = (this.mapHelper.manualLayers.find((l) => l.z === tilePlacementData.z) as ManualTileLayer)
+      .tiles;
+
+    if (tileIndexProperties.tileIndex === TileDefinitions.tileRemoveIndex) {
+      this.removeManualTileAt(manualTilesLayer, tilePlacementData);
+      return;
+    }
 
     // TODO REPLACE THIS WITH TilemapHelper.getTileWorldCenterByTilemapTileXY(tileXY,... ???
     const tx = (tilePlacementData.tileXY.x - tilePlacementData.tileXY.y) * MapSizeInfo.info.tileWidthHalf;
@@ -78,11 +86,13 @@ export class ManualTilesHelper {
     const worldCenterXY: Vector2Simple = { x: tileWorldCenter.x + tx, y: tileWorldCenter.y + ty };
 
     const atlasMap = tilemapToAtlasMap[tileIndexProperties.tileIndex];
+    const tileProperties = atlasMap.tileProperties;
 
     if (atlasMap.atlasName !== null && atlasMap.imageName !== null) {
-      if(tilePlacementData.z === 0) {
-        // todo
-        console.warn("Remove tile from tilemap here");
+      if (tilePlacementData.z === 0 && tileProperties?.fillsRootHeight) {
+        // make a hole in tilemap, as the tile is blocking the tilemap tile, and it's not visible anyway - OPTIMIZATION
+        this.tilemapHelper.removeTileAt(tilePlacementData);
+        // console.log('Removed tile because of optimization');
       }
 
       const tile = this.scene.add.image(
@@ -93,8 +103,6 @@ export class ManualTilesHelper {
       );
 
       tile.depth = ManualTilesHelper.getDepth(tilePlacementData.tileXY, worldCenterXY, tilePlacementData.z);
-
-      const tileProperties = atlasMap.tileProperties;
 
       manualTilesLayer.push({
         gameObjectImage: tile,
@@ -110,10 +118,28 @@ export class ManualTilesHelper {
         },
         manualRectangleInputInterceptor: this.getSlopeDir(worldCenterXY, tileProperties?.slopeDir)
       });
-      console.log('placed manual tile');
+      // console.log('placed manual tile');
     }
   }
-  
+
+  private removeManualTileAt(manualTilesLayer: ManualTile[], tilePlacementData: TilePlacementData): void {
+    // find it by tilePlacementData in manualTilesLayer and remove it
+
+    const tile = manualTilesLayer.find(
+      (t) =>
+        t.tileWorldData.tileXY.x === tilePlacementData.tileXY.x &&
+        t.tileWorldData.tileXY.y === tilePlacementData.tileXY.y &&
+        t.tileWorldData.z === tilePlacementData.z
+    );
+    if (tile) {
+      tile.gameObjectImage.destroy();
+      // if(tile.manualRectangleInputInterceptor){
+      //   tile.manualRectangleInputInterceptor.destroy();
+      // }
+      manualTilesLayer.splice(manualTilesLayer.indexOf(tile), 1);
+    }
+  }
+
   /**
    * Slopes like stairs
    */
@@ -175,22 +201,21 @@ export class ManualTilesHelper {
     }
   }
 
-  tryPlaceTileOnLayer(possibleCoords: PossibleClickCoords,tileToBeReplaced: number|null, layer: number) :void{
-    if(tileToBeReplaced === null) return;
+  tryPlaceTileOnLayer(possibleCoords: PossibleClickCoords, tileToBeReplaced: number | null, layer: number): void {
+    if (tileToBeReplaced === null) return;
     const tiles = (this.mapHelper.manualLayers.find((l) => l.z === layer) as ManualTileLayer).tiles;
 
-      this.replaceManualTilesOnLayer(
-        tiles,
-        {
-          tileXY: possibleCoords.tileXY,
-          z: layer
-        },
-        {
-          tileIndex: tileToBeReplaced
-        }
-      );
+    this.replaceManualTilesOnLayer(
+      tiles,
+      {
+        tileXY: possibleCoords.tileXY,
+        z: layer
+      },
+      {
+        tileIndex: tileToBeReplaced
+      }
+    );
   }
-
 
   /**
    * called by editor. Ensures to destroy tiles before creating new one
@@ -217,5 +242,4 @@ export class ManualTilesHelper {
       tileIndexProperties
     );
   }
-
 }

@@ -27,3 +27,9 @@ export class MapDefinitions {
   static atlasBuilding = 'iso-64x64-building';
   static mapAtlases = [MapDefinitions.atlasOutside, MapDefinitions.atlasBuilding];
 }
+
+
+export class TileDefinitions{
+  static tileRemoveIndex =-1;
+  static waterHeight = -16;
+}

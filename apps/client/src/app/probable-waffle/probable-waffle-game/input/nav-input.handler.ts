@@ -1,11 +1,11 @@
 import * as Phaser from 'phaser';
 import { Pathfinder } from '../navigation/pathfinder';
 import { MapSizeInfo } from '../const/map-size.info';
-import { IsoHelper } from '../iso/iso-helper';
 import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { MapNavHelper } from '../map/map-nav-helper';
+import { PlacedGameObject } from '../placable-objects/static-object';
 
 export class NavInputHandler {
   constructor(
@@ -18,18 +18,12 @@ export class NavInputHandler {
     return 0 <= tileXY.x && tileXY.x <= MapSizeInfo.info.width && 0 <= tileXY.y && tileXY.y <= MapSizeInfo.info.height;
   }
 
-  startNav(navigableTile: TilePlacementWorldWithProperties, selected: Phaser.GameObjects.Sprite[]) {
-    const spriteOffset = TilemapHelper.tileCenterOffset;
-    selected.forEach(async (gameObject) => {
-      const objectTileXY = IsoHelper.isometricWorldToTileXY(
-        gameObject.x - MapSizeInfo.info.tileWidthHalf,
-        gameObject.y - MapSizeInfo.info.tileWidthHalf - spriteOffset,
-        true
-      );
+  startNav(navigableTile: TilePlacementWorldWithProperties, selected: PlacedGameObject[]) {
+    selected.forEach(async (selection) => {
       if (NavInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
         try {
-          const tileXYPathWithoutFirst = await this.pathfinder.find(
-            objectTileXY, // todo objectTileXY is incorrect as it doesn't take into account z index!!!!
+          const tileXYPath = await this.pathfinder.find(
+            selection.tileWorldData.tileXY,
             {
               x: navigableTile.tileWorldData.tileXY.x,
               y: navigableTile.tileWorldData.tileXY.y
@@ -37,7 +31,7 @@ export class NavInputHandler {
             this.mapNavHelper.getFlattenedGrid
           );
 
-          this.moveSpriteToTileCenters(gameObject, tileXYPathWithoutFirst);
+          this.moveSpriteToTileCenters(selection, tileXYPath);
         } catch (e) {
           console.log(e);
         }
@@ -49,7 +43,8 @@ export class NavInputHandler {
    * todo replace tweens with something else?
    * todo this needs to be improved - this is hacky
    */
-  private moveSpriteToTileCenters(gameObject: Phaser.GameObjects.Sprite, path: TilePlacementWorldWithProperties[]) {
+  private moveSpriteToTileCenters(selection: PlacedGameObject, path: TilePlacementWorldWithProperties[]) {
+    let prevNavTile = path[0];
     const addTween = (i: number) => {
       if (i >= path.length) {
         return;
@@ -60,32 +55,41 @@ export class NavInputHandler {
         centerOfTile: true
       });
 
-      const raised = (currentPathNode.tileLayerProperties?.stepHeight ?? 0) > 0 ? 1 : 0;
-      const offsetLayerAndRaised = currentPathNode.tileWorldData.z + raised;
+      const stepHeightPercentage =
+        (currentPathNode.tileLayerProperties?.stepHeight ?? 0) > 0
+          ? (currentPathNode.tileLayerProperties.stepHeight as number) / MapSizeInfo.info.tileHeight
+          : 0;
+      const offsetLayerAndStepHeight = currentPathNode.tileWorldData.z + stepHeightPercentage;
 
       // make sure to move to correct layer and walkable height
       const tileWorldXYCenterWithOffset = {
         x: tileWorldXYCenter.x,
-        y: tileWorldXYCenter.y - offsetLayerAndRaised * MapSizeInfo.info.tileHeight
+        y: tileWorldXYCenter.y - offsetLayerAndStepHeight * MapSizeInfo.info.tileHeight
       };
       this.scene.tweens.add({
-        targets: gameObject,
+        targets: selection.spriteInstance,
         x: tileWorldXYCenterWithOffset.x,
         y: tileWorldXYCenterWithOffset.y,
-        duration: 1000,
+        duration: 300,
         ease: Phaser.Math.Easing.Sine.InOut,
         yoyo: false,
         repeat: 0,
         onUpdate: () => {
-          gameObject.depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, offsetLayerAndRaised); // todo + walkable height?
+          selection.spriteInstance.depth = ManualTilesHelper.getDepth(
+            currentPathNode.tileWorldData.tileXY,
+            tileWorldXYCenter,
+            Math.max(prevNavTile.tileWorldData.z, currentPathNode.tileWorldData.z) // todo this is a bit hackish
+          );
         },
         onComplete: () => {
+          prevNavTile = currentPathNode;
+          selection.tileWorldData = currentPathNode.tileWorldData; // update selection
           addTween(i + 1);
         }
       });
     };
 
-    addTween(0);
+    addTween(1);
   }
 
   destroy() {

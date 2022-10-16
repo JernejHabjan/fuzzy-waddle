@@ -4,6 +4,7 @@ import { MapHelper } from './map-helper';
 import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
 import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.handler';
 import * as Phaser from 'phaser';
+import { TileLayerProperties } from '../types/tile-types';
 
 export class MapNavHelper {
   constructor(
@@ -28,7 +29,7 @@ export class MapNavHelper {
       });
     });
 
-    return allPlacements
+    return allPlacements;
   }
 
   /**
@@ -36,33 +37,33 @@ export class MapNavHelper {
    */
   getTilemapLayerTilePlacementWithProperties(): TilePlacementWorldWithProperties[][] {
     return this.mapHelper.tilemapLayer.layer.data.map((row: Phaser.Tilemaps.Tile[]) =>
-      row.map((tile) =>
-        ({
-          tileWorldData: {
-            worldXY: { x: tile.pixelX, y: tile.pixelY }, // todo check if this is correct
-            tileXY: { x: tile.x, y: tile.y },
-            z: 0
-          },
-          tileLayerProperties: TilemapInputHandler.defaultTilemapLayerProperties
-        } as TilePlacementWorldWithProperties))
-    )
+      row.map(
+        (tile) =>
+          ({
+            tileWorldData: {
+              worldXY: { x: tile.pixelX, y: tile.pixelY }, // todo check if this is correct
+              tileXY: { x: tile.x, y: tile.y },
+              z: 0
+            },
+            tileLayerProperties: Object.assign(TilemapInputHandler.defaultTilemapLayerProperties, {
+              tileIndex: tile.index
+            } as Partial<TileLayerProperties>)
+          } as TilePlacementWorldWithProperties)
+      )
+    );
   }
 
   /**
    * todo this needs to be removed later as we should be manually updating arrays of static objects
    */
-  getManualLayerTilePlacementWithProperties(): TilePlacementWorldWithProperties[][]{
+  getManualLayerTilePlacementWithProperties(): TilePlacementWorldWithProperties[][] {
     return this.mapHelper.manualLayers.map((layer) =>
-      layer.tiles.map((tile) =>
-        ({
-            tileWorldData: tile.tileWorldData,
-            tileLayerProperties: tile.tileLayerProperties,
-          }
-        )
-      )
+      layer.tiles.map((tile) => ({
+        tileWorldData: tile.tileWorldData,
+        tileLayerProperties: tile.tileLayerProperties
+      }))
     );
   }
-
 
   /**
    * gets the first tile from top-down layer that is navigable. Used when clicking by cursor

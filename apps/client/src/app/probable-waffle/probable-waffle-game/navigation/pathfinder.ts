@@ -1,19 +1,9 @@
-import {
-  BOTTOM as EasyStar_BOTTOM,
-  BOTTOM_LEFT as EasyStar_BOTTOM_LEFT,
-  BOTTOM_RIGHT as EasyStar_BOTTOM_RIGHT,
-  Direction as EasyStar_Direction,
-  js as EasyStar,
-  LEFT as EasyStar_LEFT,
-  RIGHT as EasyStar_RIGHT,
-  TOP as EasyStar_TOP,
-  TOP_LEFT as EasyStar_TOP_LEFT,
-  TOP_RIGHT as EasyStar_TOP_RIGHT
-} from 'easystarjs';
+import { Direction as EasyStar_Direction, js as EasyStar } from 'easystarjs';
 import * as Phaser from 'phaser';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
+import { TileDefinitions } from '../const/map-size.info';
 
 export class Pathfinder {
   constructor(private readonly scene: Phaser.Scene) {}
@@ -37,17 +27,18 @@ export class Pathfinder {
       // const get distinct tile indexes from grid
       const tileIndexes: number[] = [...new Set(navigationGrid.flat())];
 
-      easyStar.setAcceptableTiles(tileIndexes); // todo hardcoded to all tiles now
-      easyStar.setDirectionalCondition(from.x, from.y, [
-        EasyStar_TOP,
-        EasyStar_TOP_RIGHT,
-        EasyStar_RIGHT,
-        EasyStar_BOTTOM_RIGHT,
-        EasyStar_BOTTOM,
-        EasyStar_BOTTOM_LEFT,
-        EasyStar_LEFT,
-        EasyStar_TOP_LEFT
-      ]);
+      // todo hardcoded to all existing tiles now (if -1 then it's removed)
+      easyStar.setAcceptableTiles(tileIndexes.filter((tileIndex) => tileIndex !== TileDefinitions.tileRemoveIndex));
+      // todo easyStar.setDirectionalCondition(from.x, from.y, [
+      //   EasyStar_TOP,
+      //   EasyStar_TOP_RIGHT,
+      //   EasyStar_RIGHT,
+      //   EasyStar_BOTTOM_RIGHT,
+      //   EasyStar_BOTTOM,
+      //   EasyStar_BOTTOM_LEFT,
+      //   EasyStar_LEFT,
+      //   EasyStar_TOP_LEFT
+      // ]);
 
       easyStar.enableDiagonals();
       easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
@@ -55,6 +46,10 @@ export class Pathfinder {
           console.log('Path was not found.');
           reject('Path was not found.');
         } else {
+          if(path.length===0){
+            resolve([]);
+            return;
+          }
           // draw straight line from start to end colored red
           let graphics = this.scene.add.graphics();
           graphics.lineStyle(2, 0xff0000, 1);
@@ -81,12 +76,8 @@ export class Pathfinder {
           }
           graphics.strokePath();
 
-          // callback
-          const tileXYPathWithoutFirst = path.map((path) => path);
-          tileXYPathWithoutFirst.shift();
-
           // map all tileXYPathWithoutFirst to tilePlacementWorldWithProperties
-          const tilePlacementWorldWithPropertiesPath = tileXYPathWithoutFirst.map((tileXY) => navigationGridWithProperties[tileXY.y][tileXY.x]);
+          const tilePlacementWorldWithPropertiesPath = path.map((tileXY) => navigationGridWithProperties[tileXY.y][tileXY.x]);
           resolve(tilePlacementWorldWithPropertiesPath);
         }
       });

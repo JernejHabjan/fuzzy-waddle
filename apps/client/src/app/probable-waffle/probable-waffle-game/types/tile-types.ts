@@ -9,6 +9,12 @@ export enum SlopeDirection {
 export interface TilePossibleProperties {
   stepHeight?: number;
   slopeDir?: SlopeDirection;
+
+  /**
+   * determines if tile has any transparent pixels in the base height.
+   * If yes, we should not remove tilemap tile when placing this tile on it
+   */
+  fillsRootHeight?: boolean;
 }
 
 export interface TileIndexProperties {

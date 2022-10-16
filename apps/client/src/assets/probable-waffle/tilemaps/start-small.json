@@ -27,7 +27,7 @@
  "nextobjectid":1,
  "orientation":"isometric",
  "renderorder":"right-down",
- "tiledversion":"1.9.1",
+ "tiledversion":"1.9.2",
  "tileheight":32,
  "tilesets":[
         {
@@ -50,7 +50,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":1,
                  "properties":[
@@ -59,7 +59,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":2,
                  "properties":[
@@ -68,7 +68,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":3,
                  "properties":[
@@ -77,7 +77,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":4,
                  "properties":[
@@ -86,7 +86,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":5,
                  "properties":[
@@ -95,7 +95,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":6,
                  "properties":[
@@ -104,7 +104,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":7,
                  "properties":[
@@ -113,7 +113,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":8,
                  "properties":[
@@ -122,7 +122,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":9,
                  "properties":[
@@ -132,7 +132,7 @@
                          "value":0
                         }]
                 },
-
+            
                 {
                  "id":10,
                  "properties":[
@@ -141,7 +141,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":11,
                  "properties":[
@@ -150,7 +150,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":12,
                  "properties":[
@@ -159,7 +159,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":13,
                  "properties":[
@@ -168,7 +168,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":14,
                  "properties":[
@@ -177,7 +177,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":15,
                  "properties":[
@@ -186,7 +186,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":16,
                  "properties":[
@@ -195,7 +195,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":17,
                  "properties":[
@@ -204,7 +204,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":18,
                  "properties":[
@@ -213,47 +213,62 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":20,
                  "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"slopeDir",
                          "propertytype":"slopeDir",
                          "type":"int",
                          "value":1
-                        },
+                        }, 
                         {
                          "name":"stepHeight",
                          "type":"int",
                          "value":16
                         }]
                 },
-
+            
                 {
                  "id":21,
                  "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"slopeDir",
                          "propertytype":"slopeDir",
                          "type":"int",
                          "value":2
-                        },
+                        }, 
                         {
                          "name":"stepHeight",
                          "type":"int",
                          "value":16
                         }]
-                },
+                }, 
                 {
                  "id":23,
                  "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"stepHeight",
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":36,
                  "properties":[
@@ -262,7 +277,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":37,
                  "properties":[
@@ -271,7 +286,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":42,
                  "properties":[
@@ -280,7 +295,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":43,
                  "properties":[
@@ -289,7 +304,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":44,
                  "properties":[
@@ -298,7 +313,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":45,
                  "properties":[
@@ -307,7 +322,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":46,
                  "properties":[
@@ -316,7 +331,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":47,
                  "properties":[
@@ -326,7 +341,7 @@
                          "value":32
                         }]
                 },
-
+            
                 {
                  "id":53,
                  "properties":[
@@ -335,7 +350,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":54,
                  "properties":[
@@ -344,7 +359,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":55,
                  "properties":[
@@ -353,7 +368,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":56,
                  "properties":[
@@ -362,7 +377,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":57,
                  "properties":[
@@ -371,7 +386,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":58,
                  "properties":[
@@ -380,7 +395,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":59,
                  "properties":[
@@ -389,7 +404,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":60,
                  "properties":[
@@ -398,7 +413,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":61,
                  "properties":[
@@ -407,7 +422,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":62,
                  "properties":[
@@ -417,7 +432,7 @@
                          "value":-16
                         }]
                 },
-
+            
                 {
                  "id":63,
                  "properties":[
@@ -426,7 +441,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":64,
                  "properties":[
@@ -435,7 +450,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":65,
                  "properties":[
@@ -444,7 +459,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":66,
                  "properties":[
@@ -453,7 +468,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":67,
                  "properties":[
@@ -462,7 +477,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":68,
                  "properties":[
@@ -471,7 +486,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":69,
                  "properties":[
@@ -480,7 +495,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":70,
                  "properties":[
@@ -489,7 +504,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":71,
                  "properties":[
@@ -498,7 +513,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":72,
                  "properties":[
@@ -508,7 +523,7 @@
                          "value":-16
                         }]
                 },
-
+            
                 {
                  "id":73,
                  "properties":[
@@ -517,7 +532,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":74,
                  "properties":[
@@ -526,7 +541,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":75,
                  "properties":[
@@ -535,7 +550,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":76,
                  "properties":[
@@ -544,7 +559,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":77,
                  "properties":[
@@ -553,7 +568,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":78,
                  "properties":[
@@ -562,7 +577,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":79,
                  "properties":[
@@ -571,7 +586,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":80,
                  "properties":[
@@ -580,7 +595,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":81,
                  "properties":[
@@ -589,7 +604,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":82,
                  "properties":[
@@ -599,7 +614,7 @@
                          "value":-16
                         }]
                 },
-
+            
                 {
                  "id":83,
                  "properties":[
@@ -608,7 +623,7 @@
                          "type":"int",
                          "value":-16
                         }]
-                },
+                }, 
                 {
                  "id":84,
                  "properties":[
@@ -619,7 +634,7 @@
                         }]
                 }],
          "tilewidth":64
-        },
+        }, 
         {
          "columns":4,
          "firstgid":137,
@@ -636,11 +651,16 @@
                  "id":0,
                  "properties":[
                         {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"stepHeight",
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":2,
                  "properties":[
@@ -649,7 +669,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":3,
                  "properties":[
@@ -658,7 +678,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":4,
                  "properties":[
@@ -667,7 +687,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":28,
                  "properties":[
@@ -676,7 +696,7 @@
                          "type":"int",
                          "value":32
                         }]
-                },
+                }, 
                 {
                  "id":50,
                  "properties":[
@@ -685,37 +705,47 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":54,
                  "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"slopeDir",
                          "propertytype":"slopeDir",
                          "type":"int",
                          "value":1
-                        },
+                        }, 
                         {
                          "name":"stepHeight",
                          "type":"int",
                          "value":16
                         }]
-                },
+                }, 
                 {
                  "id":55,
                  "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"slopeDir",
                          "propertytype":"slopeDir",
                          "type":"int",
                          "value":2
-                        },
+                        }, 
                         {
                          "name":"stepHeight",
                          "type":"int",
                          "value":16
                         }]
-                },
+                }, 
                 {
                  "id":64,
                  "properties":[
@@ -724,7 +754,7 @@
                          "type":"int",
                          "value":0
                         }]
-                },
+                }, 
                 {
                  "id":65,
                  "properties":[

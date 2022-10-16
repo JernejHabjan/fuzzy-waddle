@@ -1,7 +1,6 @@
 import { MapHelper } from '../map/map-helper';
 import { Scene } from 'phaser';
-import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
-import { AtlasFrame } from '../gui/editor-drawer/atlas-loader.service';
+import { TilePlacementData, TileWorldData } from '../input/tilemap/tilemap-input.handler';
 
 export interface GameObjectPlayer {
   playerNumber: number;
@@ -24,16 +23,10 @@ export interface PlaceableGameObject {
   placeableObjectProperties: PlaceableObjectProperties;
 }
 
-interface PlacedGameObject {
+export interface PlacedGameObject {
+  tileWorldData: TileWorldData;
   spriteInstance: Phaser.GameObjects.Sprite,
   placeableObjectProperties: PlaceableObjectProperties;
-}
-
-// eslint-disable-next-line
-export interface PlacedDynamicGameObject extends PlacedGameObject {
-}
-
-export interface PlacedStaticGameObject extends PlacedGameObject,PlaceableGameObject {
 }
 
 export interface PlayerPlaceableGameObject extends PlaceableGameObject {
