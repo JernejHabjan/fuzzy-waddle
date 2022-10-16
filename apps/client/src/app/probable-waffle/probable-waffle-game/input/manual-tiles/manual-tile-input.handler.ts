@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
 import { Intersection, Vector2Simple } from '../../math/intersection';
-import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../../manual-tiles/manual-tiles.helper';
+import { ManualTile, ManualTileLayer } from '../../manual-tiles/manual-tiles.helper';
 import { IsoHelper } from '../../iso/iso-helper';
+import { DebugShapes } from '../../debug/debug-shapes';
 
 export interface PossibleClickCoords {
   z: number;
@@ -10,17 +11,8 @@ export interface PossibleClickCoords {
 }
 
 export class ManualTileInputHandler {
-  private scene: Phaser.Scene;
-  private input: Phaser.Input.InputPlugin;
 
-  // onTileSelected: Subject<ManualTile> = new Subject<ManualTile>();
-  // onEditorTileSelected: Subject<PossibleClickCoords[]> = new Subject<PossibleClickCoords[]>();
-  private readonly manualLayers: ManualTileLayer[];
-
-  constructor(scene: Phaser.Scene, input: Phaser.Input.InputPlugin, manualLayers: ManualTileLayer[]) {
-    this.scene = scene; // todo for test
-    this.input = input;
-    this.manualLayers = manualLayers;
+  constructor(private readonly scene: Phaser.Scene, private readonly manualLayers: ManualTileLayer[]) {
   }
 
   /**
@@ -30,7 +22,7 @@ export class ManualTileInputHandler {
     const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
     const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-    const foundTile = this.geExistingTileAtWorldXY(searchedWorldX, searchedWorldY);
+    const foundTile = this.geExistingManualTileAtWorldXY(searchedWorldX, searchedWorldY);
 
     return foundTile;
   }
@@ -39,7 +31,7 @@ export class ManualTileInputHandler {
    * Searches through all layers if there's a tile that can be clicked at the given worldX, worldY
    * returns true if some coordinates exist and event was emitted
    */
-  searchPossibleTileCoordinates(worldXY: Vector2Simple): PossibleClickCoords[] {
+  searchPossibleTileCoordinatesOnManualLayers(worldXY: Vector2Simple): PossibleClickCoords[] {
     const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
     const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
@@ -65,7 +57,7 @@ export class ManualTileInputHandler {
     return possibleCoords;
   }
 
-  private geExistingTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
+  private geExistingManualTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
     const pointerToTileXY = IsoHelper.isometricWorldToTileXY(worldX, worldY, true);
     const clickPointToTileWorldXY = {
       x: worldX + MapSizeInfo.info.tileWidthHalf,
@@ -80,8 +72,8 @@ export class ManualTileInputHandler {
         const tile = tiles[j];
 
         if (tile.manualRectangleInputInterceptor) {
-          this.drawDebugPolygon(tile.manualRectangleInputInterceptor);
-          this.drawDebugPoint(clickPointToTileWorldXY);
+          DebugShapes.drawDebugPolygon(this.scene,tile.manualRectangleInputInterceptor);
+          DebugShapes.drawDebugPoint(this.scene,clickPointToTileWorldXY);
 
           const intersects = Intersection.intersectsWithRectangle(
             clickPointToTileWorldXY,
@@ -104,40 +96,10 @@ export class ManualTileInputHandler {
     return null;
   }
 
-  private drawDebugPolygon(polygon: Phaser.Geom.Polygon) {
-    const graphics = this.scene.add.graphics({ x: 0, y: 0 });
-
-    graphics.lineStyle(2, 0xff0000);
-
-    graphics.beginPath();
-
-    graphics.moveTo(polygon.points[0].x, polygon.points[0].y);
-
-    for (let i = 1; i < polygon.points.length; i++) {
-      graphics.lineTo(polygon.points[i].x, polygon.points[i].y);
-    }
-    graphics.closePath();
-    graphics.strokePath();
-    graphics.depth = 10000;
-  }
 
   destroy() {
     // this.input.off(Phaser.Input.Events.POINTER_UP);
   }
 
-  private drawDebugPoint(clickPoint: Vector2Simple) {
-    const graphics = this.scene.add.graphics({ x: 0, y: 0 });
 
-    graphics.lineStyle(2, 0x00ff00);
-
-    graphics.beginPath();
-
-    graphics.moveTo(clickPoint.x, clickPoint.y);
-
-    graphics.lineTo(clickPoint.x + 1, clickPoint.y + 1);
-
-    graphics.closePath();
-    graphics.strokePath();
-    graphics.depth = 1001;
-  }
 }

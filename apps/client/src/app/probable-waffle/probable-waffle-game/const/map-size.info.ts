@@ -16,9 +16,10 @@ export class MapSizeInfo {
 export class MapDefinitions {
   static nrLayers = 3;
 
-  static mapJson = 'assets/probable-waffle/tilemaps/start-small.json';
+  static tilemapMapName = 'map';
+  static tilemapMapJson = 'assets/probable-waffle/tilemaps/start-small.json';
   // big map
-  // static mapJson = "https://labs.phaser.io/assets/tilemaps/iso/isorpg.json";
+  // static tilemapMapJson = "https://labs.phaser.io/assets/tilemaps/iso/isorpg.json";
 
   static atlasSuffix = '-atlas';
   static atlasMegaset = 'megaset-0';

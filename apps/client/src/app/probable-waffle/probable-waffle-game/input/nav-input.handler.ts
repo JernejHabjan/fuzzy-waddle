@@ -5,24 +5,14 @@ import { IsoHelper } from '../iso/iso-helper';
 import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
+import { MapNavHelper } from '../map/map-nav-helper';
 
-export class OtherInputHandler {
-  private scene: Phaser.Scene;
-  private input: Phaser.Input.InputPlugin;
-  private pathfinder: Pathfinder;
-  private navigationGrid: number[][];
-
+export class NavInputHandler {
   constructor(
-    scene: Phaser.Scene,
-    input: Phaser.Input.InputPlugin,
-    pathfinder: Pathfinder,
-    navigationGrid: number[][]
-  ) {
-    this.scene = scene; // todo temp because of tweens
-    this.input = input;
-    this.pathfinder = pathfinder;
-    this.navigationGrid = navigationGrid;
-  }
+    private readonly scene: Phaser.Scene,
+    private readonly pathfinder: Pathfinder,
+    private readonly mapNavHelper: MapNavHelper
+  ) {}
 
   static tileXYWithinMapBounds(tileXY: Vector2Simple): boolean {
     return 0 <= tileXY.x && tileXY.x <= MapSizeInfo.info.width && 0 <= tileXY.y && tileXY.y <= MapSizeInfo.info.height;
@@ -36,24 +26,18 @@ export class OtherInputHandler {
         gameObject.y - MapSizeInfo.info.tileWidthHalf - spriteOffset,
         true
       );
-      if (OtherInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
+      if (NavInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
         try {
           const tileXYPathWithoutFirst = await this.pathfinder.find(
-            objectTileXY,
+            objectTileXY, // todo objectTileXY is incorrect as it doesn't take into account z index!!!!
             {
               x: navigableTile.tileWorldData.tileXY.x,
               y: navigableTile.tileWorldData.tileXY.y
             },
-            this.navigationGrid
+            this.mapNavHelper.getFlattenedGrid
           );
 
-          /**
-           * todo this is hacky - we need to get the height of the tile we are navigating to
-           * we should get stepHeight property for every tile when calling moveSpriteToTileCenters
-           */
-          const raised = (navigableTile.tileLayerProperties?.stepHeight ?? 0) > 0 ? 1 : 0;
-          const offsetLayerAndRaised = navigableTile.tileWorldData.z + raised;
-          this.moveSpriteToTileCenters(gameObject, tileXYPathWithoutFirst, offsetLayerAndRaised);
+          this.moveSpriteToTileCenters(gameObject, tileXYPathWithoutFirst);
         } catch (e) {
           console.log(e);
         }
@@ -65,20 +49,20 @@ export class OtherInputHandler {
    * todo replace tweens with something else?
    * todo this needs to be improved - this is hacky
    */
-  private moveSpriteToTileCenters(
-    gameObject: Phaser.GameObjects.Sprite,
-    tilesXY: Vector2Simple[],
-    // todo this is to be removed when navigationGrid actually contains tile properties, so we can read height and other props when navigating here
-    offsetLayerAndRaised: number
-  ) {
-    const addTween = (tilesXY: Vector2Simple[], i: number) => {
-      if (i >= tilesXY.length) {
+  private moveSpriteToTileCenters(gameObject: Phaser.GameObjects.Sprite, path: TilePlacementWorldWithProperties[]) {
+    const addTween = (i: number) => {
+      if (i >= path.length) {
         return;
       }
-      const tileXY = tilesXY[i];
+      const currentPathNode = path[i];
+      const tileXY = currentPathNode.tileWorldData.tileXY;
       const tileWorldXYCenter = TilemapHelper.getTileWorldCenterByTilemapTileXY(tileXY, {
         centerOfTile: true
       });
+
+      const raised = (currentPathNode.tileLayerProperties?.stepHeight ?? 0) > 0 ? 1 : 0;
+      const offsetLayerAndRaised = currentPathNode.tileWorldData.z + raised;
+
       // make sure to move to correct layer and walkable height
       const tileWorldXYCenterWithOffset = {
         x: tileWorldXYCenter.x,
@@ -96,12 +80,12 @@ export class OtherInputHandler {
           gameObject.depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, offsetLayerAndRaised); // todo + walkable height?
         },
         onComplete: () => {
-          addTween(tilesXY, i + 1);
+          addTween(i + 1);
         }
       });
     };
 
-    addTween(tilesXY, 0);
+    addTween(0);
   }
 
   destroy() {

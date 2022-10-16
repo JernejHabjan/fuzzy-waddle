@@ -47,7 +47,7 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   }
 
   selectAtlas(tilesetName: string, atlasFrame: AtlasFrame) {
-    SceneCommunicatorService.atlasEmitterSubject.next({ tilesetName, atlasFrame: atlasFrame });
+    SceneCommunicatorService.atlasEmitterSubject.next({ tilesetName,  atlasFrame });
   }
 
   nrReplacedTilesChanged() {

@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
-import { MapSizeInfo } from '../../const/map-size.info';
-import { IsoHelper } from '../../iso/iso-helper';
 import { Vector2Simple } from '../../math/intersection';
 import { TilePlacementWorldWithProperties } from '../../manual-tiles/manual-tiles.helper';
+import { MapSizeInfo } from '../../const/map-size.info';
+import { IsoHelper } from '../../iso/iso-helper';
+import { TileLayerProperties } from '../../types/tile-types';
 
 export interface TilePlacementData {
   tileXY: Vector2Simple;
@@ -14,14 +15,7 @@ export interface TileWorldData extends TilePlacementData {
 }
 
 export class TilemapInputHandler {
-  private input: Phaser.Input.InputPlugin;
-  private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
-
-  // onTileSelected: Subject<TileSelectedData> = new Subject<TileSelectedData>();
-
-  constructor(input: Phaser.Input.InputPlugin, tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
-    this.input = input;
-    this.tilemapLayer = tilemapLayer;
+  constructor(private readonly tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
   }
 
   /**
@@ -44,14 +38,20 @@ export class TilemapInputHandler {
           tileXY: { x: tileXY.x, y: tileXY.y },
           z: 0
         },
-        tileLayerProperties: {
-          tileIndex: foundTile.index,
-          stepHeight: 0
-        }
+        tileLayerProperties: TilemapInputHandler.defaultTilemapLayerProperties
       };
     }
     return null;
   }
+
+
+  static get defaultTilemapLayerProperties(): TileLayerProperties {
+    return {
+        tileIndex: 0,
+        stepHeight: 0
+    };
+  }
+
   destroy() {
     // this.input.off(Phaser.Input.Events.POINTER_UP);
   }

@@ -89,7 +89,7 @@ export class AtlasLoaderService {
   }
 
   private loadMapJson(): Promise<MapJson> {
-    return firstValueFrom(this.httpClient.get<MapJson>(MapDefinitions.mapJson));
+    return firstValueFrom(this.httpClient.get<MapJson>(MapDefinitions.tilemapMapJson));
   }
 
   private extractTileFrames(tileset: Tileset, atlas: Atlas): TileFrame[] {

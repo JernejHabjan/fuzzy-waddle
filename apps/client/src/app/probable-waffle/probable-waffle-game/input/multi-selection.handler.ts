@@ -5,13 +5,9 @@ export class MultiSelectionHandler {
   onSelect: Subject<Phaser.Geom.Rectangle> = new Subject();
   onPreview: Subject<Phaser.Geom.Rectangle> = new Subject();
   private selection: Phaser.GameObjects.Rectangle;
-  private input: Phaser.Input.InputPlugin;
-  private mainCamera: Phaser.Cameras.Scene2D.Camera;
   private selectionRect: Phaser.Geom.Rectangle | null = null;
 
-  constructor(scene: Phaser.Scene, input: Phaser.Input.InputPlugin, mainCamera: Phaser.Cameras.Scene2D.Camera) {
-    this.input = input;
-    this.mainCamera = mainCamera;
+  constructor(scene: Phaser.Scene, private readonly input: Phaser.Input.InputPlugin, private readonly mainCamera: Phaser.Cameras.Scene2D.Camera) {
     this.selection = scene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5).setDepth(Phaser.Math.MAX_SAFE_INTEGER);
     this.setupEvents();
   }
