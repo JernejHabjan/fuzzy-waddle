@@ -1,11 +1,25 @@
-import { Direction as EasyStar_Direction, js as EasyStar } from 'easystarjs';
+import {
+  BOTTOM as EasyStar_BOTTOM,
+  BOTTOM_LEFT as EasyStar_BOTTOM_LEFT,
+  BOTTOM_RIGHT as EasyStar_BOTTOM_RIGHT,
+  Direction as EasyStar_Direction,
+  js as EasyStar,
+  LEFT as EasyStar_LEFT,
+  RIGHT as EasyStar_RIGHT,
+  TOP as EasyStar_TOP,
+  TOP_LEFT as EasyStar_TOP_LEFT,
+  TOP_RIGHT as EasyStar_TOP_RIGHT
+} from 'easystarjs';
 import * as Phaser from 'phaser';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
-import { TileDefinitions } from '../const/map-size.info';
+import { MapSizeInfo, TileDefinitions } from '../const/map-size.info';
+import { SlopeDirection } from '../types/tile-types';
 
 export class Pathfinder {
+  private readonly enableDiagonals = true;
+  private readonly maxNavigableStepHeightDiff = 16;
   constructor(private readonly scene: Phaser.Scene) {}
 
   private static getTileWorldCenterByPath(path: Vector2Simple): Vector2Simple {
@@ -14,13 +28,205 @@ export class Pathfinder {
     });
   }
 
-  find(from: Vector2Simple, to: Vector2Simple, navigationGridWithProperties:  TilePlacementWorldWithProperties[][]): Promise<TilePlacementWorldWithProperties[]> {
+  /**
+   * Calculates slope adjustment from current to next tile
+   * This slope adjustment is used to calculate at which height the slope ends
+   */
+  private getSlopeAdjustmentForTile(
+    currentTile: TilePlacementWorldWithProperties,
+    nextTile: TilePlacementWorldWithProperties
+  ): number {
+    const nextTileXY = nextTile.tileWorldData.tileXY;
+    const slopeStepHeightAdjustment = currentTile.tileLayerProperties.stepHeight ?? 0;
+
+    let slopeAdjustment = 0;
+    switch (currentTile.tileLayerProperties.slopeDir) {
+      case SlopeDirection.SouthWest:
+        // if next y is greater than current y, we're going down the slope
+        if (nextTileXY.y === currentTile.tileWorldData.tileXY.y + 1) {
+          slopeAdjustment = -slopeStepHeightAdjustment;
+        } else if (nextTileXY.y === currentTile.tileWorldData.tileXY.y - 1) {
+          slopeAdjustment = slopeStepHeightAdjustment;
+        }
+        break;
+      case SlopeDirection.SouthEast:
+        // if next x is greater than current x, we're going down the slope
+        if (nextTileXY.x === currentTile.tileWorldData.tileXY.x + 1) {
+          slopeAdjustment = -slopeStepHeightAdjustment;
+        } else if (nextTileXY.x === currentTile.tileWorldData.tileXY.x - 1) {
+          slopeAdjustment = slopeStepHeightAdjustment;
+        }
+
+        break;
+      case SlopeDirection.NorthWest:
+        // if next x is smaller than current x, we're going down the slope
+        if (nextTileXY.x + 1 === currentTile.tileWorldData.tileXY.x) {
+          slopeAdjustment = -slopeStepHeightAdjustment;
+        } else if (nextTileXY.x - 1 === currentTile.tileWorldData.tileXY.x) {
+          slopeAdjustment = slopeStepHeightAdjustment;
+        }
+        break;
+      case SlopeDirection.NorthEast:
+        // if next y is smaller than current y, we're going down the slope
+        if (nextTileXY.y + 1 === currentTile.tileWorldData.tileXY.y) {
+          slopeAdjustment = -slopeStepHeightAdjustment;
+        } else if (nextTileXY.y - 1 === currentTile.tileWorldData.tileXY.y) {
+          slopeAdjustment = slopeStepHeightAdjustment;
+        }
+        break;
+    }
+    return slopeAdjustment;
+  }
+
+  private getTileNeighbours = (
+    tile: TilePlacementWorldWithProperties,
+    navigationGridWithProperties: TilePlacementWorldWithProperties[][],
+    options: { includeDiagonals: boolean }
+  ): { neighbours: TilePlacementWorldWithProperties[]; directions: EasyStar_Direction[] } => {
+    const { x, y } = tile.tileWorldData.tileXY;
+    const { includeDiagonals } = options;
+
+    const neighbours: TilePlacementWorldWithProperties[] = [];
+
+    const directions: EasyStar_Direction[] = [];
+
+    const top = navigationGridWithProperties[y - 1]?.[x];
+    const bottom = navigationGridWithProperties[y + 1]?.[x];
+    const left = navigationGridWithProperties[y]?.[x - 1];
+    const right = navigationGridWithProperties[y]?.[x + 1];
+    const topLeft = navigationGridWithProperties[y - 1]?.[x - 1];
+    const topRight = navigationGridWithProperties[y - 1]?.[x + 1];
+    const bottomLeft = navigationGridWithProperties[y + 1]?.[x - 1];
+    const bottomRight = navigationGridWithProperties[y + 1]?.[x + 1];
+
+    const isHeightDifferenceTolerable = (
+      currentTile: TilePlacementWorldWithProperties,
+      nextTile: TilePlacementWorldWithProperties
+    ): boolean => {
+      const currentTileLayer = currentTile.tileWorldData.z;
+      const nextTileLayer = nextTile.tileWorldData.z;
+      const currentTileHeight = currentTileLayer * MapSizeInfo.info.tileHeight;
+      const nextTileHeight = nextTileLayer * MapSizeInfo.info.tileHeight;
+
+      const slopeAdjustmentFrom = this.getSlopeAdjustmentForTile(currentTile, nextTile);
+      const slopeAdjustmentTo = this.getSlopeAdjustmentForTile(nextTile, currentTile);
+
+      const currentTileTotalStepHeight =
+        currentTileHeight + (currentTile.tileLayerProperties.stepHeight ?? 0) + slopeAdjustmentFrom;
+      const nextTotalStepHeight = nextTileHeight + (nextTile.tileLayerProperties.stepHeight ?? 0) + slopeAdjustmentTo;
+
+      const stepHeightDifference = Math.abs(currentTileTotalStepHeight - nextTotalStepHeight);
+      return stepHeightDifference <= this.maxNavigableStepHeightDiff;
+    };
+
+    if (top) {
+      neighbours.push(top);
+      const stepDiffTolerable = isHeightDifferenceTolerable(tile, top);
+      if (stepDiffTolerable) {
+        directions.push(EasyStar_TOP);
+      }
+    }
+    if (bottom) {
+      neighbours.push(bottom);
+      const stepDiffTolerable = isHeightDifferenceTolerable(tile, bottom);
+      if (stepDiffTolerable) {
+        directions.push(EasyStar_BOTTOM);
+      }
+    }
+    if (left) {
+      neighbours.push(left);
+      const stepDiffTolerable = isHeightDifferenceTolerable(tile, left);
+      if (stepDiffTolerable) {
+        directions.push(EasyStar_LEFT);
+      }
+    }
+    if (right) {
+      neighbours.push(right);
+      const stepDiffTolerable = isHeightDifferenceTolerable(tile, right);
+      if (stepDiffTolerable) {
+        directions.push(EasyStar_RIGHT);
+      }
+    }
+    if (includeDiagonals) {
+      if (topLeft) {
+        neighbours.push(topLeft);
+        const stepDiffTolerable = isHeightDifferenceTolerable(tile, topLeft);
+        if (stepDiffTolerable) {
+          directions.push(EasyStar_TOP_LEFT);
+        }
+      }
+      if (topRight) {
+        neighbours.push(topRight);
+        const stepDiffTolerable = isHeightDifferenceTolerable(tile, topRight);
+        if (stepDiffTolerable) {
+          directions.push(EasyStar_TOP_RIGHT);
+        }
+      }
+      if (bottomLeft) {
+        neighbours.push(bottomLeft);
+        const stepDiffTolerable = isHeightDifferenceTolerable(tile, bottomLeft);
+        if (stepDiffTolerable) {
+          directions.push(EasyStar_BOTTOM_LEFT);
+        }
+      }
+      if (bottomRight) {
+        neighbours.push(bottomRight);
+        const stepDiffTolerable = isHeightDifferenceTolerable(tile, bottomRight);
+        if (stepDiffTolerable) {
+          directions.push(EasyStar_BOTTOM_RIGHT);
+        }
+      }
+    }
+    return { neighbours, directions };
+  };
+
+  private extractDirectionalConditionForGrid(
+    easyStar: EasyStar,
+    navigationGridWithProperties: TilePlacementWorldWithProperties[][]
+  ) {
+    navigationGridWithProperties.forEach((row, y) => {
+      row.forEach((tile, x) => {
+        const { directions } = this.getTileNeighbours(tile, navigationGridWithProperties, {
+          includeDiagonals: this.enableDiagonals
+        });
+
+        let nrDirections = directions.length;
+
+        // optimization - don't set directional condition if this is edge/corner tile with all other tiles navigable
+        if (
+          (y === 0 && x === 0) ||
+          (y === 0 && x === row.length - 1) ||
+          (y === navigationGridWithProperties.length - 1 && x === 0) ||
+          (y === navigationGridWithProperties.length - 1 && x === row.length - 1)
+        ) {
+          // corner node
+          nrDirections += this.enableDiagonals ? 5 : 2;
+        } else {
+          if (y === 0 || y === navigationGridWithProperties.length - 1 || x === 0 || x === row.length - 1) {
+            // edge node
+            nrDirections += this.enableDiagonals ? 3 : 1;
+          }
+        }
+
+        if (nrDirections > 0 && (this.enableDiagonals ? nrDirections !== 8 : nrDirections !== 4)) {
+          easyStar.setDirectionalCondition(x, y, directions);
+        }
+      });
+    });
+  }
+
+  find(
+    from: Vector2Simple,
+    to: Vector2Simple,
+    navigationGridWithProperties: TilePlacementWorldWithProperties[][]
+  ): Promise<TilePlacementWorldWithProperties[]> {
     return new Promise<TilePlacementWorldWithProperties[]>((resolve, reject) => {
       const easyStar = new EasyStar();
 
-
       // map only tileIndexes from navigationGrid
-      const navigationGrid = navigationGridWithProperties.map((row) => row.map((tile) => tile.tileLayerProperties.tileIndex));
+      const navigationGrid = navigationGridWithProperties.map((row) =>
+        row.map((tile) => tile.tileLayerProperties.tileIndex)
+      );
 
       easyStar.setGrid(navigationGrid);
 
@@ -29,24 +235,21 @@ export class Pathfinder {
 
       // todo hardcoded to all existing tiles now (if -1 then it's removed)
       easyStar.setAcceptableTiles(tileIndexes.filter((tileIndex) => tileIndex !== TileDefinitions.tileRemoveIndex));
-      // todo easyStar.setDirectionalCondition(from.x, from.y, [
-      //   EasyStar_TOP,
-      //   EasyStar_TOP_RIGHT,
-      //   EasyStar_RIGHT,
-      //   EasyStar_BOTTOM_RIGHT,
-      //   EasyStar_BOTTOM,
-      //   EasyStar_BOTTOM_LEFT,
-      //   EasyStar_LEFT,
-      //   EasyStar_TOP_LEFT
-      // ]);
 
-      easyStar.enableDiagonals();
+      /**
+       * todo this should be only run once grid updates - manualTile + tileLayer + staticObject (buildings)
+       */
+      this.extractDirectionalConditionForGrid(easyStar, navigationGridWithProperties);
+
+      if (this.enableDiagonals) {
+        easyStar.enableDiagonals();
+      }
       easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
         if (!path) {
           console.log('Path was not found.');
           reject('Path was not found.');
         } else {
-          if(path.length===0){
+          if (path.length === 0) {
             resolve([]);
             return;
           }
@@ -77,7 +280,9 @@ export class Pathfinder {
           graphics.strokePath();
 
           // map all tileXYPathWithoutFirst to tilePlacementWorldWithProperties
-          const tilePlacementWorldWithPropertiesPath = path.map((tileXY) => navigationGridWithProperties[tileXY.y][tileXY.x]);
+          const tilePlacementWorldWithPropertiesPath = path.map(
+            (tileXY) => navigationGridWithProperties[tileXY.y][tileXY.x]
+          );
           resolve(tilePlacementWorldWithPropertiesPath);
         }
       });

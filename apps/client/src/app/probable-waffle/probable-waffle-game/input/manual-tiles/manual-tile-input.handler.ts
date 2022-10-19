@@ -11,9 +11,7 @@ export interface PossibleClickCoords {
 }
 
 export class ManualTileInputHandler {
-
-  constructor(private readonly scene: Phaser.Scene, private readonly manualLayers: ManualTileLayer[]) {
-  }
+  constructor(private readonly scene: Phaser.Scene, private readonly manualLayers: ManualTileLayer[]) {}
 
   /**
    * returns true if the tile was found and selected
@@ -72,8 +70,8 @@ export class ManualTileInputHandler {
         const tile = tiles[j];
 
         if (tile.manualRectangleInputInterceptor) {
-          DebugShapes.drawDebugPolygon(this.scene,tile.manualRectangleInputInterceptor);
-          DebugShapes.drawDebugPoint(this.scene,clickPointToTileWorldXY);
+          // DebugShapes.drawDebugPolygon(this.scene,tile.manualRectangleInputInterceptor);
+          // DebugShapes.drawDebugPoint(this.scene,clickPointToTileWorldXY);
 
           const intersects = Intersection.intersectsWithRectangle(
             clickPointToTileWorldXY,
@@ -96,10 +94,7 @@ export class ManualTileInputHandler {
     return null;
   }
 
-
   destroy() {
     // this.input.off(Phaser.Input.Events.POINTER_UP);
   }
-
-
 }

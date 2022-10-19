@@ -7,30 +7,30 @@ export interface GameObjectPlayer {
 }
 
 export interface PlaceableObjectProperties {
-  placeableAtlasProperties:PlaceableAtlasProperties;
+  placeableAtlasProperties: PlaceableAtlasProperties;
 
   // cost: number; // todo
   // walk_directions // todo...
 }
 
-export interface PlaceableAtlasProperties{
-  texture: string, frame: string
+export interface PlaceableAtlasProperties {
+  texture: string;
+  frame: string;
 }
 
-
 export interface PlaceableGameObject {
-  tilePlacementData: TilePlacementData;  // todo what if it spans multiple tiles?
+  tilePlacementData: TilePlacementData; // todo what if it spans multiple tiles?
   placeableObjectProperties: PlaceableObjectProperties;
 }
 
 export interface PlacedGameObject {
   tileWorldData: TileWorldData;
-  spriteInstance: Phaser.GameObjects.Sprite,
+  spriteInstance: Phaser.GameObjects.Sprite;
   placeableObjectProperties: PlaceableObjectProperties;
 }
 
 export interface PlayerPlaceableGameObject extends PlaceableGameObject {
-  belongsToPlayer?:GameObjectPlayer;
+  belongsToPlayer?: GameObjectPlayer;
 }
 
 export class StaticObjectHelper {
@@ -39,9 +39,7 @@ export class StaticObjectHelper {
     this.mapHelper.staticObjects = [];
   }
 
-  placeObjectsOnMap(
-    playerPlaceableGameObjects: PlayerPlaceableGameObject[]
-  ) {
+  placeObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
     // todo
   }
 }

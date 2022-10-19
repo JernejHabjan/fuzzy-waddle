@@ -147,7 +147,7 @@ export class ManualTilesHelper {
     const tileWidth = MapSizeInfo.info.tileWidth;
     let manualRectangleInputInterceptor: Phaser.Geom.Polygon | null = null;
     switch (slopeDir) {
-      case SlopeDirection.SouthWest:
+      case SlopeDirection.SouthEast:
         manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
           tileWidth / 2,
           0,
@@ -159,7 +159,7 @@ export class ManualTilesHelper {
           tileWidth * 0.75
         ]);
         break;
-      case SlopeDirection.SouthEast:
+      case SlopeDirection.SouthWest:
         manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
           tileWidth / 2,
           0,

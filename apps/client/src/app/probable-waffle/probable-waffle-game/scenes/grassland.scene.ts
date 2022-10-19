@@ -242,6 +242,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     const buildingCubeIndex = 137;
     const buildingStairsSouthWestIndex = 191;
     const buildingStairsSouthEastIndex = 192;
+    const waterIndex = 63;
     this.manualTilesHelper.placeTilesOnLayer(this.mapHelper.mappedTilesetsToAtlasesWithProperties, [
       { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
       { tilePlacementData: { tileXY: { x: 6, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
@@ -250,9 +251,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
       },
       {
-        tilePlacementData: { tileXY: { x: 8, y: 8 }, z: 0 },
+        tilePlacementData: { tileXY: { x: 2, y: 4 }, z: 0 },
         tileIndexProperties: { tileIndex: buildingStairsSouthWestIndex }
       },
+      { tilePlacementData: { tileXY: { x: 0, y: 2 }, z: 0 }, tileIndexProperties: { tileIndex: waterIndex } },
 
       // layer 1
       { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
