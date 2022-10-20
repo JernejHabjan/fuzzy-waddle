@@ -2,9 +2,8 @@ import { Vector2Simple } from '../math/intersection';
 import { Scene } from 'phaser';
 import * as Phaser from 'phaser';
 
-export class DebugShapes{
-
-   static drawDebugPoint(scene:Scene,clickPoint: Vector2Simple) {
+export class DebugShapes {
+  static drawDebugPoint(scene: Scene, clickPoint: Vector2Simple) {
     const graphics = scene.add.graphics({ x: 0, y: 0 });
 
     graphics.lineStyle(2, 0x00ff00);
@@ -19,7 +18,6 @@ export class DebugShapes{
     graphics.strokePath();
     graphics.depth = 1001;
   }
-
 
   static drawDebugPolygon(scene: Scene, polygon: Phaser.Geom.Polygon) {
     const graphics = scene.add.graphics({ x: 0, y: 0 });
