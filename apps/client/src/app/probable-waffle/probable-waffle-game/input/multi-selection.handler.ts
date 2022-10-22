@@ -5,13 +5,9 @@ export class MultiSelectionHandler {
   onSelect: Subject<Phaser.Geom.Rectangle> = new Subject();
   onPreview: Subject<Phaser.Geom.Rectangle> = new Subject();
   private selection: Phaser.GameObjects.Rectangle;
-  private input: Phaser.Input.InputPlugin;
-  private mainCamera: Phaser.Cameras.Scene2D.Camera;
   private selectionRect: Phaser.Geom.Rectangle | null = null;
 
-  constructor(scene: Phaser.Scene, input: Phaser.Input.InputPlugin, mainCamera: Phaser.Cameras.Scene2D.Camera) {
-    this.input = input;
-    this.mainCamera = mainCamera;
+  constructor(scene: Phaser.Scene, private readonly input: Phaser.Input.InputPlugin, private readonly mainCamera: Phaser.Cameras.Scene2D.Camera) {
     this.selection = scene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5).setDepth(Phaser.Math.MAX_SAFE_INTEGER);
     this.setupEvents();
   }
@@ -20,35 +16,43 @@ export class MultiSelectionHandler {
     this.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.input.on(Phaser.Input.Events.POINTER_UP, this.handlePointerUp, this);
+    this.input.on(Phaser.Input.Events.GAME_OUT, () => {
+      this.hideSelectionRectangle();
+    });
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer) {
-    // todo not working correctly for different zoom than 1
-    // todo initial camera scroll is set by "this.mainCamera.setBounds"
-    this.selection.x = (pointer.x + this.mainCamera.scrollX) * this.mainCamera.zoom;
-    this.selection.y = (pointer.y + this.mainCamera.scrollY) * this.mainCamera.zoom;
+    if (!pointer.leftButtonDown()) {
+      return;
+    }
 
-    console.log("zoom is", this.mainCamera.zoom);
+    this.selection.x = pointer.worldX;
+    this.selection.y = pointer.worldY;
     this.selectionRect = null;
-    console.log('handle pointer down', pointer.x, pointer.y);
   }
 
-  private handlePointerUp() {
+  private hideSelectionRectangle() {
     this.selection.width = 0;
     this.selection.height = 0;
-
-    this.onSelect.next(this.selectionRect as Phaser.Geom.Rectangle);
-
     this.selectionRect = null;
+  }
+
+  private handlePointerUp(pointer: Phaser.Input.Pointer) {
+    if (!pointer.rightButtonReleased()) {
+      this.onSelect.next(this.selectionRect as Phaser.Geom.Rectangle);
+
+      this.hideSelectionRectangle();
+    }
   }
 
   private handlePointerMove(pointer: Phaser.Input.Pointer) {
-    if (!pointer.isDown) {
+    if (!pointer.leftButtonDown()) {
       return;
     }
-    // todo not working correctly for different zoom than 1
-    const dx = (pointer.x - pointer.prevPosition.x) * this.mainCamera.zoom;
-    const dy = (pointer.y - pointer.prevPosition.y) * this.mainCamera.zoom;
+
+    const prevWorldPosition = this.mainCamera.getWorldPoint(pointer.prevPosition.x, pointer.prevPosition.y);
+    const dx = pointer.worldX - prevWorldPosition.x;
+    const dy = pointer.worldY - prevWorldPosition.y;
 
     this.selection.width += dx;
     this.selection.height += dy;
@@ -85,5 +89,6 @@ export class MultiSelectionHandler {
     this.input.off(Phaser.Input.Events.POINTER_DOWN);
     this.input.off(Phaser.Input.Events.POINTER_MOVE);
     this.input.off(Phaser.Input.Events.POINTER_UP);
+    this.input.off(Phaser.Input.Events.GAME_OUT);
   }
 }

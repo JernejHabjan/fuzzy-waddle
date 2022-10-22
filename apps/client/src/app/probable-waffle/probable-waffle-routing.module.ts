@@ -20,16 +20,14 @@ const routes: Routes = [
       {
         path: 'playground',
         loadChildren: () =>
-          import(
-            './probable-waffle-playground/probable-waffle-playground.module'
-          ).then((m) => m.ProbableWafflePlaygroundModule)
+          import('./probable-waffle-playground/probable-waffle-playground.module').then(
+            (m) => m.ProbableWafflePlaygroundModule
+          )
       },
       {
         path: 'game',
         loadChildren: () =>
-          import('./probable-waffle-game/probable-waffle-game.module').then(
-            (m) => m.ProbableWaffleGameModule
-          )
+          import('./probable-waffle-game/probable-waffle-game.module').then((m) => m.ProbableWaffleGameModule)
       }
     ]
   },

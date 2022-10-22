@@ -1,0 +1,10 @@
+<div *ngIf="tileAtlasFrames" class="tile-scroll-selector">
+  <div *ngFor="let atlasFrame of tileAtlasFrames; let i = index">
+    <fuzzy-waddle-tile-selector
+      *ngFor="let frame of getFiltered(atlasFrame.tileFrame); let j = index"
+      [frameWithMeta]="frame"
+      [selectedTile]='selectedTile'
+      [textureName]="atlasFrame.tilesetName"
+    ></fuzzy-waddle-tile-selector>
+  </div>
+</div>

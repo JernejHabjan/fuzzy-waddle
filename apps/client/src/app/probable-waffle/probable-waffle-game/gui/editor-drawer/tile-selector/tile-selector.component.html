@@ -1,0 +1,12 @@
+<button (click)="selectTile()" *ngIf="src" [class.selected]="selectedTile === frameWithMeta.id">
+  <div>{{ fileName }}</div>
+  <!-- https://stackoverflow.com/a/37487480/5909875 -->
+  <div
+    [ngStyle]="{
+      width: frameWithMeta.frame.w + 'px',
+      height: frameWithMeta.frame.h + 'px',
+      backgroundImage: 'url(' + this.src + ')',
+      backgroundPosition: '-' + frameWithMeta.frame.x + 'px -' + frameWithMeta.frame.y + 'px'
+    }"
+  ></div>
+</button>

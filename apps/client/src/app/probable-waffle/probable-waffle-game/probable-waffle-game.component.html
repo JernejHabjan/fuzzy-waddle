@@ -1,4 +1,31 @@
-<div style="position: absolute; top: 0; width: 100%">
- <!-- <button (click)="leave()">Leave</button>
-  <button (click)="emitEvent()">Speed up logo</button> -->
+<div style="position: absolute; top: 0; height: 100%; width: 100px; pointer-events: none">
+  <button (click)="collapsedEditor = !collapsedEditor" style="pointer-events: all">
+    {{ collapsedEditor ? 'Expand' : 'Collapse' }}
+  </button>
+
+  <div *ngIf="!collapsedEditor" style="pointer-events: all">
+    <fuzzy-waddle-editor-drawer></fuzzy-waddle-editor-drawer>
+  </div>
+</div>
+
+<div
+  style="
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    pointer-events: none;
+  "
+>
+  <div *ngIf="!collapsedSelectionBar" style="pointer-events: all">
+    <fuzzy-waddle-selection-display></fuzzy-waddle-selection-display>
+  </div>
+  <button (click)="collapsedSelectionBar = !collapsedSelectionBar" style="pointer-events: all">
+    {{ collapsedSelectionBar ? 'Expand selection' : 'Collapse selection' }}
+  </button>
 </div>

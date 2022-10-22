@@ -7,11 +7,7 @@ import { ProbableWaffleHomeComponent } from './probable-waffle-home/probable-waf
 import { ProbableWaffleComponent } from './probable-waffle.component';
 
 @NgModule({
-  declarations: [
-    ProbableWaffleLevelsComponent,
-    ProbableWaffleHomeComponent,
-    ProbableWaffleComponent
-  ],
+  declarations: [ProbableWaffleLevelsComponent, ProbableWaffleHomeComponent, ProbableWaffleComponent],
   imports: [CommonModule, ProbableWaffleRoutingModule]
 })
 export class ProbableWaffleModule {}

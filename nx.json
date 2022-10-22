@@ -2,17 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "fuzzy-waddle",
   "affected": {
-    "defaultBase": "master"
-  },
-  "cli": {
-    "packageManager": "npm"
-  },
-  "implicitDependencies": {
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
-    },
-    ".eslintrc.json": "*"
+    "defaultBase": "develop"
   },
   "tasksRunnerOptions": {
     "default": {
@@ -24,7 +14,7 @@
           "test",
           "e2e"
         ],
-        "accessToken": "MWY4OTY5MjQtZjc2ZC00ZDQ0LTg2ZDItMDYxZDkyNGYyNDNifHJlYWQtd3JpdGU="
+        "accessToken": "Yjk5YjY4MzctOTA3MS00ZmUxLWJhMzItYTRiZjViNmRkNGFjfHJlYWQtd3JpdGU="
       }
     }
   },
@@ -32,8 +22,48 @@
     "build": {
       "dependsOn": [
         "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js"
+      ]
+    },
+    "e2e": {
+      "inputs": [
+        "default",
+        "^production"
+      ]
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json"
       ]
     }
+  },
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/.eslintrc.json"
+    ],
+    "sharedGlobals": []
+  },
+  "cli": {
+    "packageManager": "npm"
   },
   "generators": {
     "@nrwl/angular:application": {

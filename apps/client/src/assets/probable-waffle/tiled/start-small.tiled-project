@@ -4,9 +4,21 @@
     ],
     "extensionsPath": "extensions",
     "folders": [
-        "../tilemaps",
-        "../tilesets"
+        "../tilemaps"
     ],
     "propertyTypes": [
+        {
+            "id": 1,
+            "name": "slopeDir",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "NorthEast",
+                "SouthEast",
+                "SouthWest",
+                "NorthWest"
+            ],
+            "valuesAsFlags": false
+        }
     ]
 }

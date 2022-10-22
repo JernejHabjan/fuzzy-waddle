@@ -1,8 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import * as Phaser from 'phaser';
-import {SceneCommunicatorService} from './event-emitters/scene-communicator.service';
-import {probableWaffleGameConfig} from "./const/game-config";
+import { SceneCommunicatorService } from './event-emitters/scene-communicator.service';
+import { probableWaffleGameConfig } from './const/game-config';
 
 @Component({
   selector: 'fuzzy-waddle-probable-waffle-game',
@@ -11,8 +10,8 @@ import {probableWaffleGameConfig} from "./const/game-config";
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   gameRef!: Phaser.Game;
-
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  collapsedEditor = false;
+  collapsedSelectionBar = false;
 
   ngOnDestroy(): void {
     this.gameRef.destroy(true);
@@ -23,13 +22,5 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     SceneCommunicatorService.setup();
 
     this.gameRef = new Phaser.Game(probableWaffleGameConfig);
-  }
-
-  emitEvent() {
-    SceneCommunicatorService.testEmitterSubject.next(10);
-  }
-
-  leave() {
-    this.router.navigate(['probable-waffle/levels']);
   }
 }
