@@ -1,20 +1,38 @@
 import * as Phaser from 'phaser';
 import { Scenes } from './scenes';
-import { SceneCommunicatorService } from '../event-emitters/scene-communicator.service';
+import {
+  AtlasEmitValue,
+  GameObjectSelection,
+  SceneCommunicatorService
+} from '../event-emitters/scene-communicator.service';
 import { CreateSceneFromObjectConfig } from '../interfaces/scene-config.interface';
 import { InputHandler } from '../input/input.handler';
 import { ScaleHandler } from '../scale/scale.handler';
-import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
+import { MapDefinitions, TileDefinitions } from '../const/map-size.info';
 import { CursorHandler } from '../input/cursor.handler';
-import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
+import { TilemapInputHandler, TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { MultiSelectionHandler } from '../input/multi-selection.handler';
 import { Subscription } from 'rxjs';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Pathfinder } from '../navigation/pathfinder';
-import { OtherInputHandler } from '../input/other-input.handler';
-import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.handler';
-import { ManualTile, ManualTileLayer, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
-import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
+import { NavInputHandler } from '../input/nav-input.handler';
+import { ManualTileInputHandler, PossibleClickCoords } from '../input/manual-tiles/manual-tile-input.handler';
+import { ManualTile, ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
+import { TileIndexProperties, TilePossibleProperties } from '../types/tile-types';
+import { Vector2Simple } from '../math/intersection';
+import { MapPropertiesHelper } from '../map/map-properties-helper';
+import { MapHelper } from '../map/map-helper';
+import { LayerLines } from '../map/layer-lines';
+import { PlacedGameObject, StaticObjectHelper } from '../placable-objects/static-object';
+import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
+import { MapNavHelper } from '../map/map-nav-helper';
+
+export interface TilemapToAtlasMap {
+  imageSuffix: string | null;
+  imageName: string | null;
+  atlasName: string | null;
+  tileProperties: TilePossibleProperties | null;
+}
 
 export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
@@ -25,152 +43,226 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private multiSelectionHandler!: MultiSelectionHandler;
   private tilemapHelper!: TilemapHelper;
   private manualTilesHelper!: ManualTilesHelper;
+  private staticObjectHelper!: StaticObjectHelper;
+  private dynamicObjectHelper!: DynamicObjectHelper;
   private pathfinder!: Pathfinder;
-  private otherInputHandler!: OtherInputHandler;
+  private navInputHandler!: NavInputHandler;
 
   // todo move this somewhere else
   // used for selection
-  private objects: Phaser.GameObjects.Sprite[] = [];
   private selectionPreviewSub!: Subscription;
   private selectionEventSub!: Subscription;
   private tileSelectedSub!: Subscription;
   private manualTileSelectedSub!: Subscription;
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
-  private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;
-  private editorLayerNr = 0;
-  private manualLayers!: ManualTileLayer[];
-  private selected: Phaser.GameObjects.Sprite[] = [];
+  private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
+  private selected: PlacedGameObject[] = [];
+  private atlasToBePlaced: AtlasEmitValue | null = null;
+  private warningText: Phaser.GameObjects.Text | null = null;
+  private mapPropertiesHelper!: MapPropertiesHelper;
+  private mapHelper!: MapHelper;
+  private layerLines!: LayerLines;
+  private playerNumber = 1; // todo
+  private mapNavHelper!: MapNavHelper;
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
   }
 
-  preload() {
-    this.load.atlas(
-      'atlas',
-      'assets/probable-waffle/atlas/megaset-0.png',
-      'assets/probable-waffle/atlas/megaset-0.json'
-    );
-
-    this.load.image('tiles', 'assets/probable-waffle/atlas/iso-64x64-outside.png');
-    this.load.image('tiles2', 'assets/probable-waffle/atlas/iso-64x64-building.png');
-    this.load.tilemapTiledJSON('map', 'assets/probable-waffle/tilemaps/start-small.json');
-
-    this.load.atlas(
-      'iso-64x64-building-atlas',
-      'assets/probable-waffle/atlas/iso-64x64-building.png',
-      'assets/probable-waffle/atlas/iso-64x64-building.json'
-    );
-
-    // big map
-    // this.load.tilemapTiledJSON('map', 'https://labs.phaser.io/assets/tilemaps/iso/isorpg.json');
+  init(data: unknown) {
+    // todo?
   }
 
-  init() {
-    this.tilemapHelper = new TilemapHelper(this);
-    this.manualTilesHelper = new ManualTilesHelper(this);
-    this.pathfinder = new Pathfinder(this);
+  preload() {
+    this.load.atlas(
+      MapDefinitions.atlasMegaset + MapDefinitions.atlasSuffix,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.png`,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.json`
+    );
+
+    MapDefinitions.mapAtlases.forEach((atlas) => {
+      // used by this.scene.add.image(...
+      this.load.atlas(
+        `${atlas}${MapDefinitions.atlasSuffix}`,
+        `assets/probable-waffle/atlas/${atlas}.png`,
+        `assets/probable-waffle/atlas/${atlas}.json`
+      );
+      // used by addTilesetImage
+      this.load.image(atlas, `assets/probable-waffle/atlas/${atlas}.png`);
+    });
+
+    this.load.tilemapTiledJSON(MapDefinitions.tilemapMapName, MapDefinitions.tilemapMapJson);
   }
 
   create() {
+    // navigable map
+    this.mapHelper = new MapHelper();
+    this.tilemapHelper = new TilemapHelper(this.mapHelper, this);
+    this.mapPropertiesHelper = new MapPropertiesHelper(this.mapHelper, this.textures);
+    this.manualTilesHelper = new ManualTilesHelper(this.mapHelper, this, this.tilemapHelper);
+    this.staticObjectHelper = new StaticObjectHelper(this.mapHelper, this);
+
+    this.dynamicObjectHelper = new DynamicObjectHelper(this.mapHelper, this);
+    this.layerLines = new LayerLines(this);
+    this.pathfinder = new Pathfinder(this);
+
     this.bindSceneCommunicator();
 
-    const tilemapLayer = this.createMap();
-    this.manualLayers = this.createEmptyLayers();
-    this.placeAdditionalItemsOnManualLayers(this.manualLayers);
-    this.createSprites(tilemapLayer);
+    // init map
+    this.tilemapHelper.createTilemap();
+    this.mapPropertiesHelper.mapLayerTilesetsToAtlasesAndExtractProperties();
+    this.manualTilesHelper.createEmptyManualLayers();
+    this.staticObjectHelper.createStaticObjectLayer();
+    this.dynamicObjectHelper.createDynamicObjectLayer();
 
+    // placing objects on map
+
+    this.placeAdditionalItemsOnManualLayers();
+    this.placeStaticObjectsOnMap();
+    this.placeDynamicObjectsOnMap();
+
+    // input handling
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
-    this.otherInputHandler = new OtherInputHandler(this, this.input, this.pathfinder, tilemapLayer);
-    this.otherInputHandler.bindOtherPossiblyUsefulInputHandlers(this.selected);
     this.cursorHandler = new CursorHandler(this.input);
-    this.tilemapInputHandler = new TilemapInputHandler(this.input, tilemapLayer);
-    this.manualTileInputHandler = new ManualTileInputHandler(this, this.input, tilemapLayer, this.manualLayers);
-    this.subscribeToTileMapSelectEvents(tilemapLayer);
+    this.tilemapInputHandler = new TilemapInputHandler(this.mapHelper.tilemapLayer);
+    this.manualTileInputHandler = new ManualTileInputHandler(this, this.mapHelper.manualLayers);
+    this.mapNavHelper = new MapNavHelper(this.mapHelper, this.tilemapInputHandler, this.manualTileInputHandler);
+    this.navInputHandler = new NavInputHandler(this, this.pathfinder, this.mapNavHelper);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.subscribeToSelectionEvents();
+    this.subscribeToInputEvents();
     this.destroyListener();
   }
 
-  private createMap(): Phaser.Tilemaps.TilemapLayer {
-    const map = this.add.tilemap('map');
-
-    const tileset1 = map.addTilesetImage('iso-64x64-outside', 'tiles') as Phaser.Tilemaps.Tileset;
-    const tileset2 = map.addTilesetImage('iso-64x64-building', 'tiles2') as Phaser.Tilemaps.Tileset;
-
-    const tileMapLayer = map.createLayer('Tile Layer 1', [tileset1, tileset2]) as Phaser.Tilemaps.TilemapLayer;
-    MapSizeInfo.info = new MapSizeInfo(map.width, map.height, map.tileWidth, map.tileHeight);
-    return tileMapLayer;
-  }
-
-  private createEmptyLayers(): ManualTileLayer[] {
-    const layers: ManualTileLayer[] = [];
-    for (let i = 0; i <= MapDefinitions.nrLayers; i++) {
-      layers.push({
-        z: i,
-        tiles: []
-      });
-    }
-    return layers;
-  }
-
-  private placeAdditionalItemsOnManualLayers(layers: ManualTileLayer[]): void {
-    this.manualTilesHelper.addItemsToLayer(
-      layers,
-      [
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 6, y: 4 },
-        {
-          texture: 'iso-64x64-building-atlas',
-          frame: 'iso-64x64-building-55.png',
-          x: 7,
-          y: 4,
-          slopeDir: SlopeDirection.SouthEast
-        },
-        {
-          texture: 'iso-64x64-building-atlas',
-          frame: 'iso-64x64-building-54.png',
-          x: 8,
-          y: 8,
-          slopeDir: SlopeDirection.SouthWest
+  private subscribeToInputEvents() {
+    this.input.on(
+      Phaser.Input.Events.POINTER_MOVE,
+      (
+        pointer: Phaser.Input.Pointer,
+        gameObjectsUnderCursor: Phaser.GameObjects.GameObject[],
+        event: TouchEvent | MouseEvent
+      ) => {
+        /**
+         * pointer velocity threshold, which is used to determine if the pointer is moving or not
+         */
+        const allowedPointerVelocity = 100;
+        if (
+          pointer.leftButtonDown() &&
+          (Math.abs(pointer.velocity.x) > allowedPointerVelocity ||
+            Math.abs(pointer.velocity.y) > allowedPointerVelocity)
+        ) {
+          // console.log('deselecting because of pointer velocity');
+          this.deselectPlacementInEditor();
         }
-      ],
-      0
+      }
     );
-    this.manualTilesHelper.addItemsToLayer(
-      layers,
-      [
-        { texture: 'iso-64x64-building-atlas', frame: 'iso-64x64-building-0.png', x: 5, y: 4 },
-        {
-          texture: 'iso-64x64-building-atlas',
-          frame: 'iso-64x64-building-55.png',
-          x: 6,
-          y: 4,
-          slopeDir: SlopeDirection.SouthEast
+
+    this.input.on(
+      Phaser.Input.Events.POINTER_UP,
+      (
+        pointer: Phaser.Input.Pointer,
+        gameObjectsUnderCursor: Phaser.GameObjects.GameObject[],
+        event: TouchEvent | MouseEvent
+      ) => {
+        const worldXY: Vector2Simple = { x: pointer.worldX, y: pointer.worldY };
+        if (pointer.rightButtonReleased()) {
+          // if (this.warningText) {
+          //   this.warningText.destroy(true);
+          // }
+          // this.warningText = this.add.text(-100, 0, 'Note that nav z index checks only last node now', {
+          //   fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
+          // });
+
+          this.deselectPlacementInEditor();
+
+          const navigableTile = this.mapNavHelper.getNavigableTile(worldXY);
+          if (navigableTile) {
+            this.navInputHandler.startNav(navigableTile, this.selected);
+          }
+        } else {
+          if (gameObjectsUnderCursor.length) {
+            for (const gameObject of gameObjectsUnderCursor) {
+              if (gameObject instanceof Phaser.GameObjects.Sprite || gameObject instanceof Phaser.GameObjects.Image) {
+                gameObject.setTint(0xff0000);
+              }
+            }
+          } else {
+            // deselect all sprites
+            // todo this.selected.forEach((sprite) => sprite.clearTint());
+
+            // todo reduce all these tile input handlers
+
+            const tileOnTilemap = this.tilemapInputHandler.getTileFromTilemapOnWorldXY(worldXY);
+            const removingTile = this.tileToBeReplaced === TileDefinitions.tileRemoveIndex;
+            const removingExistingTile = !!tileOnTilemap && removingTile;
+            if (
+              (removingExistingTile && this.editorLayerNr === 0) ||
+              (!removingTile &&
+                this.tilemapHelper.tileShouldBePlacedOnTilemap(this.tileToBeReplaced, this.editorLayerNr))
+            ) {
+              const newTileLayerProperties = {
+                tileIndex: this.tileToBeReplaced
+              } as TileIndexProperties;
+              if (tileOnTilemap) {
+                this.tilemapHelper.replaceTileOnTilemap(tileOnTilemap.tileWorldData, newTileLayerProperties);
+              }
+            } else {
+              const possibleCoordsFound =
+                this.manualTileInputHandler.searchPossibleTileCoordinatesOnManualLayers(worldXY);
+              this.possibleCoordSelected(possibleCoordsFound, this.editorLayerNr);
+              if (possibleCoordsFound.length) {
+                const existingTileSelected = this.manualTileInputHandler.getManualTileOnWorldXY(worldXY);
+                if (existingTileSelected) {
+                  this.selectedTileFromManualTileLayer(existingTileSelected);
+                } else {
+                  // console.log('no action');
+                }
+              }
+            }
+          }
         }
-      ],
-      1
+      }
     );
   }
 
-  /**
-   * called by editor. Ensures to destroy tiles before creating new one
-   */
-  private replaceTilesOnLayer(manualTilesLayer: ManualTile[], layer: number, tileConfig: TileLayerConfig) {
-    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
-      offset: layer * MapSizeInfo.info.tileHeight
-    });
-    const existingTileOnLayer = manualTilesLayer.find(
-      (tile) => tile.tileConfig.x === tileConfig.x && tile.tileConfig.y === tileConfig.y && tile.z === layer
-    );
-    if (existingTileOnLayer) {
-      manualTilesLayer.splice(manualTilesLayer.indexOf(existingTileOnLayer), 1);
-      existingTileOnLayer.gameObjectImage.destroy(true);
+  private deselectPlacementInEditor() {
+    // deselect in editor
+    if (this.atlasToBePlaced) {
+      SceneCommunicatorService.atlasEmitterSubject.next(null);
     }
+    // deselect in editor
+    if (this.tileToBeReplaced) {
+      SceneCommunicatorService.tileEmitterSubject.next(null);
+    }
+  }
 
-    this.manualTilesHelper.placeTileOnLayer(manualTilesLayer, layer, tileConfig, tileCenter);
+  private placeAdditionalItemsOnManualLayers(): void {
+    const buildingCubeIndex = 137;
+    const buildingStairsSouthWestIndex = 191;
+    const buildingStairsSouthEastIndex = 192;
+    const waterIndex = 63;
+    this.manualTilesHelper.placeTilesOnLayer(this.mapHelper.mappedTilesetsToAtlasesWithProperties, [
+      { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
+      { tilePlacementData: { tileXY: { x: 6, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
+      {
+        tilePlacementData: { tileXY: { x: 7, y: 4 }, z: 0 },
+        tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
+      },
+      {
+        tilePlacementData: { tileXY: { x: 2, y: 4 }, z: 0 },
+        tileIndexProperties: { tileIndex: buildingStairsSouthWestIndex }
+      },
+      { tilePlacementData: { tileXY: { x: 0, y: 2 }, z: 0 }, tileIndexProperties: { tileIndex: waterIndex } },
+
+      // layer 1
+      { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
+      {
+        tilePlacementData: { tileXY: { x: 6, y: 4 }, z: 1 },
+        tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
+      }
+    ]);
   }
 
   override update(time: number, delta: number) {
@@ -182,12 +274,13 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.scale.off(Phaser.Scale.Events.RESIZE);
       this.input.off(Phaser.Input.Events.GAMEOBJECT_DOWN);
+      this.input.off(Phaser.Input.Events.POINTER_UP);
       this.input.off(Phaser.Input.Events.POINTER_DOWN);
       this.input.off(Phaser.Input.Events.GAME_OUT);
       this.input.off(Phaser.Input.Events.POINTER_WHEEL);
       // todo these components should handle their own destroy on shutdown
       this.inputHandler.destroy();
-      this.otherInputHandler.destroy();
+      this.navInputHandler.destroy();
       this.scaleHandler.destroy();
       this.cursorHandler.destroy();
       this.tilemapInputHandler.destroy();
@@ -201,117 +294,153 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Phaser.GameObjects.Sprite[] {
-    return this.objects.filter((s: Phaser.GameObjects.Sprite) => {
-      const bounds = s.getBounds();
+  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): PlacedGameObject[] {
+    return this.mapHelper.dynamicObjects.filter((o) => {
+      const bounds = o.spriteInstance.getBounds();
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
     });
   }
+
   private subscribeToSelectionEvents() {
     // todo move this
     this.selectionPreviewSub = this.multiSelectionHandler.onPreview.subscribe((rect) => {
       const selected = this.getObjectsUnderSelectionRectangle(rect);
       // tint all selected with blue
+
+      this.mapHelper.dynamicObjects.forEach((o) => {
+        o.spriteInstance.clearTint();
+      });
       selected.forEach((s) => {
-        s.setTint(0x0000ff);
+        s.spriteInstance.setTint(0x0000ff);
       });
     });
     // todo move this
     this.selectionEventSub = this.multiSelectionHandler.onSelect.subscribe((rect) => {
-      // clear selected array
-      this.selected.splice(0, this.selected.length);
-      this.selected.push(...this.getObjectsUnderSelectionRectangle(rect));
+      this.selected = this.getObjectsUnderSelectionRectangle(rect);
       // tint all selected with red
-      this.selected.forEach((s) => {
-        s.setTint(0xff0000);
+      this.mapHelper.dynamicObjects.forEach((o) => {
+        o.spriteInstance.clearTint();
       });
+      this.selected.forEach((s) => {
+        s.spriteInstance.setTint(0xff0000);
+      });
+
+      // extract sprite frame name
+      const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => {
+        return {
+          name: s.placeableObjectProperties.placeableAtlasProperties.frame
+        };
+      });
+      SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
     });
   }
 
-  private subscribeToTileMapSelectEvents(tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
-    this.tileSelectedSub = this.tilemapInputHandler.onTileSelected.subscribe((tile) => {
-      // replace tile
-      this.tileReplacement(tilemapLayer, tile);
-    });
-
-    this.manualTileSelectedSub = this.manualTileInputHandler.onTileSelected.subscribe((tile) => {
-      // console.log('manual tile selected', tile.tileConfig.x, tile.tileConfig.y, tile.z);
-      tile.gameObjectImage.tint = 0xff0000;
-    });
-
-    this.onEditorTileSelectedSub = this.manualTileInputHandler.onEditorTileSelected.subscribe((possibleCoords) => {
-      const maxLayerZ = this.manualLayers[this.manualLayers.length - 1].z;
-      if (
-        this.tileToBeReplaced !== null &&
-        this.editorLayerNr !== null &&
-        this.editorLayerNr >= 0 &&
-        this.editorLayerNr <= maxLayerZ
-      ) {
-        const correctLayer = possibleCoords.find((c) => c.z === this.editorLayerNr);
-        if (correctLayer) {
-          const tiles = (this.manualLayers.find((l) => l.z === this.editorLayerNr) as ManualTileLayer).tiles;
-
-          // offset by 2, so it's displayed correctly
-          const offset = this.editorLayerNr * 2;
-          // todo take this into account:
-          // todo this.nrTilesToReplace
-          this.replaceTilesOnLayer(tiles, this.editorLayerNr, {
-            x: correctLayer.tileXY.x + offset,
-            y: correctLayer.tileXY.y + offset,
-            texture: 'iso-64x64-building-atlas',
-            frame: 'iso-64x64-building-0.png' // todo take into account this.tileToBeReplaced and possible slopeDir
-          });
-        }
-      }
-    });
+  private selectedTileFromManualTileLayer(tile: ManualTile) {
+    tile.gameObjectImage.tint = 0xff0000;
   }
 
-  private get nrTilesToReplace(): number {
-    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
-  }
+  /**
+   * used when placing new tile / placing new atlas
+   */
+  private possibleCoordSelected(possibleCoords: PossibleClickCoords[], layer: number) {
+    const maxLayerZ = MapDefinitions.nrLayers;
 
-  private tileReplacement(tilemapLayer: Phaser.Tilemaps.TilemapLayer, tile: Phaser.Tilemaps.Tile) {
-    if (this.tileToBeReplaced !== null) {
-      const tilesToReplace = this.nrTilesToReplace;
-      // get neighbors of tile
-      const from = Math.floor(tilesToReplace / 2);
-      const neighbors = tilemapLayer.getTilesWithin(tile.x - from, tile.y - from, tilesToReplace, tilesToReplace);
-      neighbors.forEach((t) => {
-        tilemapLayer.replaceByIndex(t.index, this.tileToBeReplaced as number, t.x, t.y, 1, 1);
+    if (!(layer !== null && layer >= 0 && layer <= maxLayerZ)) {
+      return;
+    }
+
+    const correctLayer = possibleCoords.find((c) => c.z === layer);
+    if (!correctLayer) {
+      return;
+    }
+
+    this.manualTilesHelper.tryPlaceTileOnLayer(correctLayer, this.tileToBeReplaced, layer);
+
+    if (this.atlasToBePlaced) {
+      // todo
+      this.placeAtlasOnCoords(this.atlasToBePlaced, {
+        tileXY: correctLayer.tileXY,
+        z: layer
       });
     }
   }
 
+  private placeAtlasOnCoords(atlasToBePlaced: AtlasEmitValue | null, tilePlacementData: TilePlacementData): void {
+    if (atlasToBePlaced === null) return;
+
+    this.dynamicObjectHelper.placeObjectsOnMap([
+      {
+        tilePlacementData,
+        placeableObjectProperties: {
+          placeableAtlasProperties: {
+            texture: atlasToBePlaced.tilesetName + MapDefinitions.atlasSuffix,
+            frame: atlasToBePlaced.atlasFrame.filename
+          }
+        },
+        belongsToPlayer: {
+          playerNumber: this.playerNumber
+        }
+      }
+    ]);
+  }
+
   private bindSceneCommunicator() {
-    SceneCommunicatorService.subscriptions.push(
+    SceneCommunicatorService.addSubscription(
       SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
         this.tileToBeReplaced = tileNr;
-        this.drawLayerLines();
+        this.atlasToBePlaced = null; // stop placing atlas
+        this.selected = [];
+        this.conditionallyDrawLayerLines();
       }),
       SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
         this.editorLayerNr = layerNr;
-        this.drawLayerLines();
+        this.conditionallyDrawLayerLines();
+      }),
+      SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
+        this.atlasToBePlaced = atlas;
+        this.tileToBeReplaced = null; // stop placing tile
+        this.selected = [];
+        this.conditionallyDrawLayerLines();
       })
     );
   }
 
-  private drawLayerLines() {
-    if (this.currentLayerLinesGroup !== null) {
-      // remove all lines from group
-      this.currentLayerLinesGroup.clear(true, true);
-      this.currentLayerLinesGroup.destroy();
-    }
-    if (this.tileToBeReplaced !== null) {
-      this.currentLayerLinesGroup = this.manualTilesHelper.drawLayerLines(this.editorLayerNr);
-    }
+  private conditionallyDrawLayerLines() {
+    if (this.tileToBeReplaced === null && this.atlasToBePlaced === null) return;
+    this.layerLines.drawLayerLines(this.editorLayerNr);
   }
 
-  private createSprites(tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
-    const ball1XY = { x: 0, y: 0 };
-    const ballSprite = this.tilemapHelper.placeSpriteOnTilemapTile(tilemapLayer.getTileAt(ball1XY.x, ball1XY.y));
-    this.objects.push(ballSprite);
+  private placeStaticObjectsOnMap(): void {
+    this.staticObjectHelper.placeObjectsOnMap([
+      {
+        tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 },
+        placeableObjectProperties: {
+          placeableAtlasProperties: {
+            texture: 'house1',
+            frame: 'house1_1'
+          }
+        },
+        belongsToPlayer: {
+          playerNumber: this.playerNumber
+        }
+      }
+    ]);
+  }
 
-    // removing navigation for now
-    // this.pathfinder.find(ball1XY, { x: 4, y: 0 }, tilemapLayer, mapSizeInfo);
+  private placeDynamicObjectsOnMap() {
+    this.dynamicObjectHelper.placeObjectsOnMap([
+      {
+        tilePlacementData: { tileXY: { x: 1, y: 1 }, z: 0 },
+        placeableObjectProperties: {
+          placeableAtlasProperties: {
+            texture: MapDefinitions.atlasMegaset + MapDefinitions.atlasSuffix,
+            frame: 'blue_ball'
+          }
+        },
+        belongsToPlayer: {
+          playerNumber: this.playerNumber
+        }
+      }
+    ]);
   }
 }

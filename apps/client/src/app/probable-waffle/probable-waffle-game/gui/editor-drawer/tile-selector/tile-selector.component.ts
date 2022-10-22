@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { TileFrame } from '../atlas-loader.service';
 import { SceneCommunicatorService } from '../../../event-emitters/scene-communicator.service';
-import { FrameWithMeta } from '../atlas-loader.service';
 
 @Component({
   selector: 'fuzzy-waddle-tile-selector',
@@ -8,11 +8,22 @@ import { FrameWithMeta } from '../atlas-loader.service';
   styleUrls: ['./tile-selector.component.scss']
 })
 export class TileSelectorComponent {
-  @Input() frameWithMeta!: FrameWithMeta;
-  @Input() tileId!: number;
-  src = 'assets/probable-waffle/atlas/iso-64x64-outside.png';
+  @Input()
+  set textureName(value: string) {
+    this._textureName = value;
+    this.src = `assets/probable-waffle/atlas/${this._textureName}.png`;
+  }
+  @Input() frameWithMeta!: TileFrame;
+  @Input() selectedTile: number | null = null;
+  private _textureName!: string;
+  src: string | null = null;
+  get fileName(): string {
+    // "remove extension"
+    return this.frameWithMeta.filename.split('.').slice(0, -1).join('.');
+  }
 
   selectTile() {
-    SceneCommunicatorService.tileEmitterSubject.next(this.tileId);
+    // todo make sure to border the selected tile
+    SceneCommunicatorService.tileEmitterSubject.next(this.frameWithMeta.id);
   }
 }

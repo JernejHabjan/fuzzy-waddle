@@ -1,39 +1,58 @@
 import * as Phaser from 'phaser';
+import { Vector2Simple } from '../../math/intersection';
+import { TilePlacementWorldWithProperties } from '../../manual-tiles/manual-tiles.helper';
 import { MapSizeInfo } from '../../const/map-size.info';
-import { Subject } from 'rxjs';
+import { IsoHelper } from '../../iso/iso-helper';
+import { TileLayerProperties } from '../../types/tile-types';
+
+export interface TilePlacementData {
+  tileXY: Vector2Simple;
+  z: number;
+}
+
+export interface TileWorldData extends TilePlacementData {
+  worldXY: Vector2Simple;
+}
 
 export class TilemapInputHandler {
-  private input: Phaser.Input.InputPlugin;
-  private tilemapLayer: Phaser.Tilemaps.TilemapLayer;
-
-  onTileSelected: Subject<Phaser.Tilemaps.Tile> = new Subject<Phaser.Tilemaps.Tile>();
-
-  constructor(input: Phaser.Input.InputPlugin, tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
-    this.input = input;
-    this.tilemapLayer = tilemapLayer;
-    this.setupCursor();
+  constructor(private readonly tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
   }
 
-  private setupCursor() {
-    this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
-      const { worldX, worldY } = pointer;
+  /**
+   *
+   * Returns true if the tile was found and selected
+   */
+  getTileFromTilemapOnWorldXY(worldXY: Vector2Simple): TilePlacementWorldWithProperties | null {
+    const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
+    const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-      const searchedWorldX = worldX - MapSizeInfo.info.tileWidthHalf;
-      const searchedWorldY = worldY - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+    const tileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
-      const foundTile = this.tilemapLayer.getTileAtWorldXY(searchedWorldX, searchedWorldY) as Phaser.Tilemaps.Tile;
+    const foundTile = this.tilemapLayer.getTileAt(tileXY.x, tileXY.y) as Phaser.Tilemaps.Tile;
 
-      //if (previousTile) {
-      //  previousTile.tint = 0xffffff;
-      //}
-      if (foundTile) {
-        //foundTile.tint = 0xff0000;
-        //console.log('foundTile tile', foundTile.x, foundTile.y);
-        this.onTileSelected.next(foundTile);
-      }
-    });
+    if (foundTile) {
+      // foundTile.tint = 0xff0000;
+      return {
+        tileWorldData: {
+          worldXY: { x: searchedWorldX, y: searchedWorldY },
+          tileXY: { x: tileXY.x, y: tileXY.y },
+          z: 0
+        },
+        tileLayerProperties: TilemapInputHandler.defaultTilemapLayerProperties
+      };
+    }
+    return null;
   }
+
+
+  static get defaultTilemapLayerProperties(): TileLayerProperties {
+    return {
+        tileIndex: 0,
+        stepHeight: 0
+    };
+  }
+
   destroy() {
-    this.input.off(Phaser.Input.Events.POINTER_UP);
+    // this.input.off(Phaser.Input.Events.POINTER_UP);
   }
 }

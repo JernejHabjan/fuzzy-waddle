@@ -4,8 +4,8 @@ import { ProbableWafflePlaygroundComponent } from './probable-waffle-playground.
 
 const routes: Routes = [
   {
-    path:'',
-    component:ProbableWafflePlaygroundComponent,
+    path: '',
+    component: ProbableWafflePlaygroundComponent
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ProbableWafflePlaygroundRoutingModule { }
+export class ProbableWafflePlaygroundRoutingModule {}

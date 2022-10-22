@@ -1,20 +1,23 @@
 import * as Phaser from 'phaser';
-import { MapSizeInfo } from '../const/map-size.info';
-import { SlopeDirection, TileLayerConfig } from '../types/tile-types';
+import { MapDefinitions, MapSizeInfo, TileDefinitions } from '../const/map-size.info';
+import { SlopeDirection, TileIndexProperties, TileLayerProperties } from '../types/tile-types';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
+import { TilemapToAtlasMap } from '../scenes/grassland.scene';
+import { TilePlacementData, TileWorldData } from '../input/tilemap/tilemap-input.handler';
+import { PossibleClickCoords } from '../input/manual-tiles/manual-tile-input.handler';
+import { MapHelper } from '../map/map-helper';
 
-export interface ManualTile {
+export interface ManualTile extends TilePlacementWorldWithProperties {
   gameObjectImage: Phaser.GameObjects.Image;
-  // layer depth (starting with 0)
-  z: number;
-  // layer depth + 1
-  clickableZ: number;
-  depth: number;
-  tileConfig: TileLayerConfig;
 
   // for stairs
   manualRectangleInputInterceptor: Phaser.Geom.Polygon | null;
+}
+
+export interface TilePlacementWorldWithProperties {
+  tileWorldData: TileWorldData;
+  tileLayerProperties: TileLayerProperties;
 }
 
 export interface ManualTileLayer {
@@ -23,116 +26,117 @@ export interface ManualTileLayer {
 }
 
 export class ManualTilesHelper {
-  private scene: Phaser.Scene; // todo should not be used like this
+  constructor(
+    private readonly mapHelper: MapHelper,
+    private readonly scene: Phaser.Scene,
+    private readonly tilemapHelper: TilemapHelper
+  ) {}
 
-  constructor(scene: Phaser.Scene) {
-    this.scene = scene;
+  static getDepth(tileXY: Vector2Simple, tileWorldXYCenter: Vector2Simple, layer: number): number {
+    const layerOffset = layer * MapSizeInfo.info.tileHeight;
+    const ty = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
+    const depth = tileWorldXYCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
+    return depth;
   }
 
-  /**
-   * Generated layer is not of type tilemap layer, but individual tiles
-   */
-  addItemsToLayer(layers: ManualTileLayer[], tileLayerConfig: TileLayerConfig[], layer: number): void {
-    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
-      offset: layer * MapSizeInfo.info.tileHeight
+  createEmptyManualLayers() {
+    const layers: ManualTileLayer[] = [];
+    for (let i = 0; i <= MapDefinitions.nrLayers; i++) {
+      layers.push({
+        z: i,
+        tiles: []
+      });
+    }
+    this.mapHelper.manualLayers = layers;
+  }
+
+  placeTilesOnLayer(
+    tilemapToAtlasMap: TilemapToAtlasMap[],
+    data: { tilePlacementData: TilePlacementData; tileIndexProperties: TileIndexProperties }[]
+  ): void {
+    data.forEach((d) => {
+      this.placeTileOnManualLayer(tilemapToAtlasMap, d.tilePlacementData, d.tileIndexProperties);
     });
+  }
 
-    for (let y = 0; y < MapSizeInfo.info.height; y++) {
-      for (let x = 0; x < MapSizeInfo.info.width; x++) {
-        const tileConfig = tileLayerConfig.find((r) => r.x === x && r.y === y);
-        if (!tileConfig) {
-          continue;
-        }
+  placeTileOnManualLayer(
+    tilemapToAtlasMap: TilemapToAtlasMap[],
+    tilePlacementData: TilePlacementData,
+    tileIndexProperties: TileIndexProperties
+  ): void {
+    const manualTilesLayer = (this.mapHelper.manualLayers.find((l) => l.z === tilePlacementData.z) as ManualTileLayer)
+      .tiles;
 
-        this.placeTileOnLayer(
-          (layers.find((l) => l.z === layer) as ManualTileLayer).tiles,
-          layer,
-          tileConfig,
-          tileCenter
-        );
+    if (tileIndexProperties.tileIndex === TileDefinitions.tileRemoveIndex) {
+      this.removeManualTileAt(manualTilesLayer, tilePlacementData);
+      return;
+    }
+
+    // TODO REPLACE THIS WITH TilemapHelper.getTileWorldCenterByTilemapTileXY(tileXY,... ???
+    const tx = (tilePlacementData.tileXY.x - tilePlacementData.tileXY.y) * MapSizeInfo.info.tileWidthHalf;
+    const ty = (tilePlacementData.tileXY.x + tilePlacementData.tileXY.y) * MapSizeInfo.info.tileHeightHalf;
+
+    const byLayerOffsetInPx = tilePlacementData.z * MapSizeInfo.info.tileHeight;
+    const tileWorldCenter = TilemapHelper.adjustTileWorldWithVerticalOffset(
+      { x: MapSizeInfo.info.tileWidthHalf, y: MapSizeInfo.info.tileWidthHalf },
+      {
+        offsetInPx: byLayerOffsetInPx
       }
+    );
+    const worldCenterXY: Vector2Simple = { x: tileWorldCenter.x + tx, y: tileWorldCenter.y + ty };
+
+    const atlasMap = tilemapToAtlasMap[tileIndexProperties.tileIndex];
+    const tileProperties = atlasMap.tileProperties;
+
+    if (atlasMap.atlasName !== null && atlasMap.imageName !== null) {
+      if (tilePlacementData.z === 0 && tileProperties?.fillsRootHeight) {
+        // make a hole in tilemap, as the tile is blocking the tilemap tile, and it's not visible anyway - OPTIMIZATION
+        this.tilemapHelper.removeTileAt(tilePlacementData);
+        // console.log('Removed tile because of optimization');
+      }
+
+      const tile = this.scene.add.image(
+        worldCenterXY.x,
+        worldCenterXY.y,
+        atlasMap.atlasName + MapDefinitions.atlasSuffix,
+        `${atlasMap.imageName}.${atlasMap.imageSuffix}`
+      );
+
+      tile.depth = ManualTilesHelper.getDepth(tilePlacementData.tileXY, worldCenterXY, tilePlacementData.z);
+
+      manualTilesLayer.push({
+        gameObjectImage: tile,
+        tileWorldData: {
+          tileXY: tilePlacementData.tileXY,
+          worldXY: worldCenterXY,
+          z: tilePlacementData.z
+        },
+        tileLayerProperties: {
+          tileIndex: tileIndexProperties.tileIndex,
+          slopeDir: tileProperties?.slopeDir,
+          stepHeight: tileProperties?.stepHeight
+        },
+        manualRectangleInputInterceptor: this.getSlopeDir(worldCenterXY, tileProperties?.slopeDir)
+      });
+      // console.log('placed manual tile');
     }
   }
 
-  placeTileOnLayer(
-    manualTilesLayer: ManualTile[],
-    layer: number,
-    tileConfig: TileLayerConfig,
-    tileCenter: Vector2Simple
-  ): void {
-    const tx = (tileConfig.x - tileConfig.y) * MapSizeInfo.info.tileWidthHalf;
-    const ty = (tileConfig.x + tileConfig.y) * MapSizeInfo.info.tileHeightHalf;
+  private removeManualTileAt(manualTilesLayer: ManualTile[], tilePlacementData: TilePlacementData): void {
+    // find it by tilePlacementData in manualTilesLayer and remove it
 
-    const worldX = tileCenter.x + tx;
-    const worldY = tileCenter.y + ty;
-
-    const tile = this.scene.add.image(worldX, worldY, tileConfig.texture, tileConfig.frame);
-
-    const layerOffset = layer * MapSizeInfo.info.tileHeight;
-    tile.depth = tileCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
-
-    manualTilesLayer.push({
-      gameObjectImage: tile,
-      z: layer,
-      tileConfig,
-      clickableZ: layer + 1,
-      depth: tile.depth,
-      manualRectangleInputInterceptor: this.getSlopeDir({ x: worldX, y: worldY }, tileConfig.slopeDir)
-    });
-  }
-
-  drawLayerLines(layer: number): Phaser.GameObjects.Group {
-    const layerOffset = layer * MapSizeInfo.info.tileHeight;
-    const tileWidth = MapSizeInfo.info.tileWidth;
-    const tileHeight = MapSizeInfo.info.tileHeight;
-
-    const tileWidthHalf = tileWidth / 2;
-    const tileHeightHalf = tileHeight / 2;
-
-    const mapWidth = MapSizeInfo.info.width;
-    const mapHeight = MapSizeInfo.info.height;
-
-    // not offsetting, because we're placing block tiles there
-    const tileCenter = TilemapHelper.getTileCenter(MapSizeInfo.info.tileWidthHalf, MapSizeInfo.info.tileWidthHalf, {
-      offset: layerOffset
-    });
-
-    const linesGroup = this.scene.add.group();
-
-    this.drawGridLines(linesGroup, -1, mapWidth, mapHeight, tileWidthHalf, tileHeightHalf, tileCenter);
-    this.drawGridLines(linesGroup, 1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenter);
-    return linesGroup;
-  }
-
-  /**
-   * TODO
-   * Fix line drawing so z index will work on correct plane.
-   * This means we'll have to draw short lines and set their z index correctly (same way as in {@link placeTileOnLayer})
-   */
-  private drawGridLines(
-    group: Phaser.GameObjects.Group,
-    axisModifier: 1 | -1,
-    firstAxis: number,
-    secondAxis: number,
-    tileWidthHalf: number,
-    tileHeightHalf: number,
-    tileCenter: Vector2Simple
-  ): void {
-    for (let y = 0; y < firstAxis + 1; y++) {
-      const txStart = -1 * axisModifier * y * tileWidthHalf;
-      const tyStart = y * tileHeightHalf;
-      const txEnd = axisModifier * (secondAxis - y) * tileWidthHalf;
-      const tyEnd = (secondAxis + y) * tileHeightHalf;
-
-      const worldXStart = tileCenter.x + txStart;
-      const worldYStart = tileCenter.y + tyStart;
-      const worldXEnd = tileCenter.x + txEnd;
-      const worldYEnd = tileCenter.y + tyEnd;
-
-      const graphics = this.scene.add.graphics();
-      graphics.lineStyle(1, 0x00ff00, 1);
-      graphics.lineBetween(worldXStart, worldYStart, worldXEnd, worldYEnd);
-      group.add(graphics);
+    const tile = manualTilesLayer.find(
+      (t) =>
+        t.tileWorldData.tileXY.x === tilePlacementData.tileXY.x &&
+        t.tileWorldData.tileXY.y === tilePlacementData.tileXY.y &&
+        t.tileWorldData.z === tilePlacementData.z
+    );
+    if (tile) {
+      tile.gameObjectImage.destroy();
+      // if(tile.manualRectangleInputInterceptor){
+      //   tile.manualRectangleInputInterceptor.destroy();
+      // }
+      manualTilesLayer.splice(manualTilesLayer.indexOf(tile), 1);
     }
   }
 
@@ -193,7 +197,49 @@ export class ManualTilesHelper {
     // displace the rectangle a bit to the left and top by center offset
     for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {
       manualRectangleInputInterceptor.points[i].x -= MapSizeInfo.info.tileWidthHalf;
-      manualRectangleInputInterceptor.points[i].y -= MapSizeInfo.info.tileWidthHalf;
+      manualRectangleInputInterceptor.points[i].y -= MapSizeInfo.info.tileHeight;
     }
+  }
+
+  tryPlaceTileOnLayer(possibleCoords: PossibleClickCoords, tileToBeReplaced: number | null, layer: number): void {
+    if (tileToBeReplaced === null) return;
+    const tiles = (this.mapHelper.manualLayers.find((l) => l.z === layer) as ManualTileLayer).tiles;
+
+    this.replaceManualTilesOnLayer(
+      tiles,
+      {
+        tileXY: possibleCoords.tileXY,
+        z: layer
+      },
+      {
+        tileIndex: tileToBeReplaced
+      }
+    );
+  }
+
+  /**
+   * called by editor. Ensures to destroy tiles before creating new one
+   */
+  private replaceManualTilesOnLayer(
+    manualTilesLayer: ManualTile[],
+    tilePlacementData: TilePlacementData,
+    tileIndexProperties: TileIndexProperties
+  ) {
+    const existingTileOnLayer = manualTilesLayer.find(
+      (tile) =>
+        tile.tileWorldData.tileXY.x === tilePlacementData.tileXY.x &&
+        tile.tileWorldData.tileXY.y === tilePlacementData.tileXY.y &&
+        tile.tileWorldData.z === tilePlacementData.z
+    );
+    if (existingTileOnLayer) {
+      manualTilesLayer.splice(manualTilesLayer.indexOf(existingTileOnLayer), 1);
+      existingTileOnLayer.gameObjectImage.destroy(true);
+    }
+
+    this.placeTileOnManualLayer(
+      this.mapHelper.mappedTilesetsToAtlasesWithProperties,
+      tilePlacementData,
+      tileIndexProperties
+    );
   }
 }

@@ -1,22 +1,44 @@
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { AtlasFrame } from '../gui/editor-drawer/atlas-loader.service';
+
+// for communication of selected sprite atlas in gui to scene
+export interface AtlasEmitValue {
+  tilesetName: string;
+  atlasFrame: AtlasFrame;
+}
+
+// for communication of selection between GUI and Scene
+export interface GameObjectSelection {
+  name: string; // todo this needs to change!!!
+}
 
 export class SceneCommunicatorService {
+  static DEFAULT_LAYER = 0;
+  static DEFAULT_TILE_REPLACE = 1;
+
+  static atlasEmitterSubject: Subject<AtlasEmitValue | null>;
   static tileEmitterSubject: Subject<number | null>;
   static tileEmitterNrSubject: BehaviorSubject<number>;
   static layerEmitterSubject: BehaviorSubject<number>;
+  static selectionChangedSubject: Subject<GameObjectSelection[]> = new Subject<GameObjectSelection[]>();
 
-  static subscriptions: Subscription[] = [];
+  private static subscriptions: Subscription[] = [];
+
+  static addSubscription(...sub: Subscription[]) {
+    SceneCommunicatorService.subscriptions.push(...sub);
+  }
 
   static setup() {
-    // todo make sure this is the right way to setup event emitters
     SceneCommunicatorService.unsubscribe();
     SceneCommunicatorService.tileEmitterSubject = new Subject<number | null>();
-    SceneCommunicatorService.tileEmitterNrSubject = new BehaviorSubject<number>(1);
-    SceneCommunicatorService.layerEmitterSubject = new BehaviorSubject<number>(0);
+    SceneCommunicatorService.atlasEmitterSubject = new Subject<AtlasEmitValue | null>();
+    SceneCommunicatorService.tileEmitterNrSubject = new BehaviorSubject<number>(
+      SceneCommunicatorService.DEFAULT_TILE_REPLACE
+    );
+    SceneCommunicatorService.layerEmitterSubject = new BehaviorSubject<number>(SceneCommunicatorService.DEFAULT_LAYER);
   }
 
   static unsubscribe() {
-    // todo make sure everything unsubscribes
     for (const sub of SceneCommunicatorService.subscriptions) {
       sub.unsubscribe();
     }

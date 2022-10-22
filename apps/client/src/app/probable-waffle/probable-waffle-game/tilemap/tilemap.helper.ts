@@ -1,51 +1,101 @@
 import * as Phaser from 'phaser';
-import { MapSizeInfo } from '../const/map-size.info';
-import { TileCenterOptions } from '../types/tile-types';
+import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
+import { TileCenterOptions, TileIndexProperties, TilePossibleProperties } from '../types/tile-types';
 import { Vector2Simple } from '../math/intersection';
+import { IsoHelper } from '../iso/iso-helper';
+import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
+import { SceneCommunicatorService } from '../event-emitters/scene-communicator.service';
+import Tileset = Phaser.Tilemaps.Tileset;
+import { MapHelper } from '../map/map-helper';
+import Tile = Phaser.Tilemaps.Tile;
 
 export class TilemapHelper {
-  private scene: Phaser.Scene; // todo should not be used like this
+  constructor(private readonly mapHelper: MapHelper, private readonly scene: Phaser.Scene) {}
 
-  constructor(scene: Phaser.Scene) {
-    this.scene = scene;
-  }
-
-  static getTileCenter(x: number, y: number, tileCenterOptions: TileCenterOptions = null): Vector2Simple {
-    const centerX = x;
-    const centerY =
-      y +
-      (tileCenterOptions?.offset
-        ? -tileCenterOptions.offset
-        : tileCenterOptions?.centerSprite
-        ? MapSizeInfo.info.tileHeight / 2
-        : 0);
-    return { x: centerX, y: centerY };
-  }
-
-  static getTileCenterByTilemapTileXY(
-    x: number,
-    y: number,
-    tilemapLayer: Phaser.Tilemaps.TilemapLayer,
+  static adjustTileWorldWithVerticalOffset(
+    // todo move to IsoHelper
+    tileXY: Vector2Simple,
     tileCenterOptions: TileCenterOptions = null
-  ): Vector2Simple | null {
-    const currentTile = tilemapLayer.getTileAt(x, y);
-    if (!currentTile) {
-      return null;
+  ): Vector2Simple {
+    if (tileCenterOptions?.offsetInPx) {
+      return { x: tileXY.x, y: tileXY.y - tileCenterOptions.offsetInPx };
     }
-    return this.getTileCenter(currentTile.getCenterX(), currentTile.getCenterY(), tileCenterOptions);
+    if (tileCenterOptions?.centerOfTile) {
+      return { x: tileXY.x, y: tileXY.y + TilemapHelper.tileCenterOffset };
+    }
+    return tileXY;
   }
 
-  placeSpriteOnTilemapTile(tile: Phaser.Tilemaps.Tile): Phaser.GameObjects.Sprite {
-    const tileCenter = TilemapHelper.getTileCenter(tile.getCenterX(), tile.getCenterY(), {
-      centerSprite: true
+  static get tileCenterOffset(): number {
+    // todo move to IsoHelper
+    return MapSizeInfo.info.tileHeightHalf;
+  }
+
+  static getTileWorldCenterByTilemapTileXY(
+    // todo move to IsoHelper
+    tileXY: Vector2Simple,
+    tileCenterOptions: TileCenterOptions = null
+  ): Vector2Simple {
+    return this.adjustTileWorldWithVerticalOffset(IsoHelper.getWorldCenterXY(tileXY), tileCenterOptions);
+  }
+
+  tileShouldBePlacedOnTilemap(tileToBeReplaced: number | null, layer: number): boolean {
+    if (!tileToBeReplaced) return false;
+    if (layer !== 0) return false;
+
+    const atlasMap = this.mapHelper.mappedTilesetsToAtlasesWithProperties[tileToBeReplaced];
+    if (!atlasMap.tileProperties) return false;
+    const tileProperties = atlasMap.tileProperties as TilePossibleProperties;
+    return tileProperties.stepHeight === 0;
+  }
+
+  createTilemap() {
+    const tilemap = this.scene.add.tilemap(MapDefinitions.tilemapMapName);
+
+    const tileSetImages: Phaser.Tilemaps.Tileset[] = [];
+    tilemap.tilesets.forEach((tileset: Tileset) => {
+      tileSetImages.push(tilemap.addTilesetImage(tileset.name, tileset.name) as Phaser.Tilemaps.Tileset);
     });
 
-    // create object
-    const sprite = this.scene.add.sprite(tileCenter.x, tileCenter.y, 'atlas', 'blue_ball');
-    // todo set object depth!
-    sprite.setInteractive();
-    // todo temp
-    sprite.setScale(1, 1);
-    return sprite;
+    // const tilemapLayer = map.createBlankLayer('layer 2', tileSetImages, 0, 0, 100, 100) as Phaser.Tilemaps.TilemapLayer;
+    const tilemapLayer = (this.mapHelper.tilemapLayer = tilemap.createLayer(
+      tilemap.layers[0].name,
+      tileSetImages
+    ) as Phaser.Tilemaps.TilemapLayer);
+    MapSizeInfo.info = new MapSizeInfo(
+      tilemapLayer.width / tilemap.tileWidth,
+      tilemapLayer.height / tilemap.tileHeight,
+      tilemap.tileWidth,
+      tilemap.tileHeight
+    );
+  }
+
+  replaceTileOnTilemap(tilePlacementData: TilePlacementData, tileIndexProperties: TileIndexProperties) {
+    this.tileReplacement(tilePlacementData, tileIndexProperties);
+  }
+
+  private get nrTilesToReplace(): number {
+    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
+  }
+
+  private tileReplacement(tilePlacementData: TilePlacementData, tileIndexProperties: TileIndexProperties) {
+    const tilesToReplace = this.nrTilesToReplace;
+    // get neighbors of tile
+    const from = Math.floor(tilesToReplace / 2);
+    const neighbors = this.mapHelper.tilemapLayer.getTilesWithin(
+      tilePlacementData.tileXY.x - from,
+      tilePlacementData.tileXY.y - from,
+      tilesToReplace,
+      tilesToReplace
+    );
+    neighbors.forEach((t: Tile) => {
+      // todo maybe use width and height here and don't loop
+      this.mapHelper.tilemapLayer.replaceByIndex(t.index, tileIndexProperties.tileIndex, t.x, t.y, 1, 1);
+    });
+    // console.log('tilemap tile replaced');
+  }
+
+  removeTileAt(tilePlacementData: TilePlacementData) {
+    this.tileReplacement(tilePlacementData, { tileIndex: -1 });
   }
 }

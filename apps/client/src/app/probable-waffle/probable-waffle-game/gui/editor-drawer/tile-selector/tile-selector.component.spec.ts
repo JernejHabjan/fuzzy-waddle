@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TileSelectorComponent } from './tile-selector.component';
+import { MapDefinitions } from '../../../const/map-size.info';
 
 describe('TileSelectorComponent', () => {
   let component: TileSelectorComponent;
@@ -13,10 +14,12 @@ describe('TileSelectorComponent', () => {
 
     fixture = TestBed.createComponent(TileSelectorComponent);
     component = fixture.componentInstance;
-    const atlasUrl = 'assets/probable-waffle/atlas/iso-64x64-outside.json';
-
     component.frameWithMeta = {
-      filename: atlasUrl,
+      filename: 'cube-1.png',
+      tileProperties: {
+        stepHeight: 32
+      },
+      id: 1,
       frame: {
         y: 0,
         x: 0,
@@ -24,7 +27,7 @@ describe('TileSelectorComponent', () => {
         h: 0
       }
     };
-    component.tileId = 0;
+    component.textureName = MapDefinitions.atlasOutside;
     fixture.detectChanges();
   });
 
