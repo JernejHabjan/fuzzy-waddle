@@ -98,6 +98,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   create() {
+    this.minimapTextureHelper = new MinimapTextureHelper(this);
+    this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
+    // this.minimapTextureHelper.createRenderTexture(); // todo temp
+
     // navigable map
     this.mapHelper = new MapHelper();
     this.tilemapHelper = new TilemapHelper(this.mapHelper, this);
@@ -133,7 +137,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.mapNavHelper = new MapNavHelper(this.mapHelper, this.tilemapInputHandler, this.manualTileInputHandler);
     this.navInputHandler = new NavInputHandler(this, this.pathfinder, this.mapNavHelper);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
-    this.minimapTextureHelper = new MinimapTextureHelper(this);
     this.subscribeToSelectionEvents();
     this.subscribeToInputEvents();
     this.destroyListener();
@@ -271,7 +274,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   override update(time: number, delta: number) {
     super.update(time, delta);
     this.inputHandler.update(time, delta);
-    this.minimapTextureHelper.update(this.objects);
   }
 
   private destroyListener() {
