@@ -140,7 +140,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.subscribeToInputEvents();
     this.destroyListener();
 
-    this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
+    // this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
     // this.minimapTextureHelper.createRenderTexture(); // todo temp
   }
 
