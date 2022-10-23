@@ -17,8 +17,15 @@ export class AtlasDisplayComponent {
   private _textureName!: string;
   src: string | null = null;
   get fileName(): string {
-    // "remove extension"
-    return this.atlasFrame.filename.split('.').slice(0, -1).join('.').replace(/_/g, ' ').replace(/-/g, ' ')
+    let fileName = this.atlasFrame.filename;
+    if (fileName.includes('.')) {
+      // remove extension
+      fileName = this.atlasFrame.filename.split('.').slice(0, -1).join('.');
+    }
+
+    fileName = fileName.replace(/[_-]/g, ' ');
+
+    return fileName;
   }
 
   get scale(): number {

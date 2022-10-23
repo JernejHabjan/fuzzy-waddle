@@ -47,7 +47,7 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   }
 
   selectAtlas(tilesetName: string, atlasFrame: AtlasFrame) {
-    SceneCommunicatorService.atlasEmitterSubject.next({ tilesetName,  atlasFrame });
+    SceneCommunicatorService.atlasEmitterSubject.next({ tilesetName, atlasFrame });
   }
 
   nrReplacedTilesChanged() {
@@ -63,7 +63,10 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   }
 
   async loadSpriteAtlases() {
-    this.spriteAtlases = [await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasMegaset)];
+    this.spriteAtlases = [
+      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasMegaset),
+      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasBuildings)
+    ];
   }
 
   leave() {

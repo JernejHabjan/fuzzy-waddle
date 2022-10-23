@@ -10,8 +10,7 @@ import { probableWaffleGameConfig } from './const/game-config';
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   gameRef!: Phaser.Game;
-  collapsedEditor = false;
-  collapsedSelectionBar = false;
+  drawerWidth = '100px';
 
   ngOnDestroy(): void {
     this.gameRef.destroy(true);

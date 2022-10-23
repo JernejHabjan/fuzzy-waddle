@@ -82,6 +82,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.png`,
       `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.json`
     );
+    this.load.atlas(
+      MapDefinitions.atlasBuildings + MapDefinitions.atlasSuffix,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.png`,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.json`
+    );
 
     MapDefinitions.mapAtlases.forEach((atlas) => {
       // used by this.scene.add.image(...
@@ -123,7 +128,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.placeAdditionalItemsOnManualLayers();
     this.placeStaticObjectsOnMap();
     this.placeDynamicObjectsOnMap();
-
 
     // input handling
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);

@@ -7,8 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { EditorDrawerComponent } from './gui/editor-drawer/editor-drawer.component';
 import { TileSelectorComponent } from './gui/editor-drawer/tile-selector/tile-selector.component';
 import { TileSelectorGroupComponent } from './gui/editor-drawer/tile-selector-group/tile-selector-group.component';
-import { SelectionDisplayComponent } from './gui/selection-display/selection-display.component';
+import { SelectionDisplayComponent } from './gui/selection/selection-display/selection-display.component';
 import { AtlasDisplayComponent } from './gui/editor-drawer/atlas-display/atlas-display.component';
+import { SelectionGroupComponent } from './gui/selection/selection-group/selection-group.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { AtlasDisplayComponent } from './gui/editor-drawer/atlas-display/atlas-d
     TileSelectorComponent,
     TileSelectorGroupComponent,
     SelectionDisplayComponent,
-    AtlasDisplayComponent
+    AtlasDisplayComponent,
+    SelectionGroupComponent
   ],
   imports: [CommonModule, FormsModule, ProbableWaffleGameRoutingModule]
 })
