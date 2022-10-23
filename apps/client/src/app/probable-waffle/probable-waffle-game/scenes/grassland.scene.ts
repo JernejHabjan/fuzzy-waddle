@@ -26,6 +26,7 @@ import { LayerLines } from '../map/layer-lines';
 import { PlacedGameObject, StaticObjectHelper } from '../placable-objects/static-object';
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
+import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -47,6 +48,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private dynamicObjectHelper!: DynamicObjectHelper;
   private pathfinder!: Pathfinder;
   private navInputHandler!: NavInputHandler;
+  private minimapTextureHelper!: MinimapTextureHelper;
 
   // todo move this somewhere else
   // used for selection
@@ -122,6 +124,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.placeStaticObjectsOnMap();
     this.placeDynamicObjectsOnMap();
 
+
     // input handling
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
@@ -131,9 +134,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.mapNavHelper = new MapNavHelper(this.mapHelper, this.tilemapInputHandler, this.manualTileInputHandler);
     this.navInputHandler = new NavInputHandler(this, this.pathfinder, this.mapNavHelper);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
+    this.minimapTextureHelper = new MinimapTextureHelper(this);
+
     this.subscribeToSelectionEvents();
     this.subscribeToInputEvents();
     this.destroyListener();
+
+    // this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
+    // this.minimapTextureHelper.createRenderTexture(); // todo temp
   }
 
   private subscribeToInputEvents() {
