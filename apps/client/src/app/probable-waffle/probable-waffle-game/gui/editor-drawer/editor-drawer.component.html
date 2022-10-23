@@ -38,9 +38,14 @@
       <button
         (click)="selectAtlas(spriteAtlas.tilesetName, atlasFrame)"
         [class.selected]="selectedAtlas === atlasFrame"
-        style="word-break: break-word"
+        style="word-break: break-word; display: flex; align-items: center; flex-direction: column"
       >
         {{ formatAtlasFileName(atlasFrame.filename) }}
+
+        <fuzzy-waddle-atlas-display
+          [atlasFrame]="atlasFrame"
+          [textureName]="spriteAtlas.tilesetName"
+        ></fuzzy-waddle-atlas-display>
       </button>
     </div>
   </div>

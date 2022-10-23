@@ -8,6 +8,7 @@ import { EditorDrawerComponent } from './gui/editor-drawer/editor-drawer.compone
 import { TileSelectorComponent } from './gui/editor-drawer/tile-selector/tile-selector.component';
 import { TileSelectorGroupComponent } from './gui/editor-drawer/tile-selector-group/tile-selector-group.component';
 import { SelectionDisplayComponent } from './gui/selection-display/selection-display.component';
+import { AtlasDisplayComponent } from './gui/editor-drawer/atlas-display/atlas-display.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { SelectionDisplayComponent } from './gui/selection-display/selection-dis
     EditorDrawerComponent,
     TileSelectorComponent,
     TileSelectorGroupComponent,
-    SelectionDisplayComponent
+    SelectionDisplayComponent,
+    AtlasDisplayComponent
   ],
   imports: [CommonModule, FormsModule, ProbableWaffleGameRoutingModule]
 })
