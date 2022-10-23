@@ -18,8 +18,6 @@ export class MapDefinitions {
 
   static tilemapMapName = 'map';
   static tilemapMapJson = 'assets/probable-waffle/tilemaps/start-small.json';
-  // big map
-  // static tilemapMapJson = "https://labs.phaser.io/assets/tilemaps/iso/isorpg.json";
 
   static atlasSuffix = '-atlas';
   static atlasMegaset = 'megaset-0';

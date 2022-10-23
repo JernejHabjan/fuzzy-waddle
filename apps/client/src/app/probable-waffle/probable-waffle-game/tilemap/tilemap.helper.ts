@@ -50,6 +50,7 @@ export class TilemapHelper {
   }
 
   createTilemap() {
+    const createBlankLayer = false; // todo this is not working: https://github.com/photonstorm/phaser/issues/6262
     const tilemap = this.scene.add.tilemap(MapDefinitions.tilemapMapName);
 
     const tileSetImages: Phaser.Tilemaps.Tileset[] = [];
@@ -57,11 +58,24 @@ export class TilemapHelper {
       tileSetImages.push(tilemap.addTilesetImage(tileset.name, tileset.name) as Phaser.Tilemaps.Tileset);
     });
 
-    // const tilemapLayer = map.createBlankLayer('layer 2', tileSetImages, 0, 0, 100, 100) as Phaser.Tilemaps.TilemapLayer;
-    const tilemapLayer = (this.mapHelper.tilemapLayer = tilemap.createLayer(
-      tilemap.layers[0].name,
-      tileSetImages
-    ) as Phaser.Tilemaps.TilemapLayer);
+    let tilemapLayer: Phaser.Tilemaps.TilemapLayer;
+    if (createBlankLayer) {
+      tilemapLayer = tilemap.createBlankLayer(
+        tilemap.layers[0].name + '-blank-layer-0',
+        tileSetImages,
+        0,
+        0,
+        10,
+        10,
+        64,
+        32, // todo hardcoded?
+      ) as Phaser.Tilemaps.TilemapLayer;
+      // fill layer with 1
+      tilemapLayer.fill(2);
+    } else {
+      tilemapLayer = tilemap.createLayer(tilemap.layers[0].name, tileSetImages) as Phaser.Tilemaps.TilemapLayer;
+    }
+    this.mapHelper.tilemapLayer = tilemapLayer;
     MapSizeInfo.info = new MapSizeInfo(
       tilemapLayer.width / tilemap.tileWidth,
       tilemapLayer.height / tilemap.tileHeight,
