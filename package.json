@@ -46,7 +46,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nrwl/angular": "15.0.0",
     "easystarjs": "^0.4.4",
-    "phaser": "^3.60.0-beta.12",
+    "phaser": "^3.60.0-beta.13",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "tslib": "^2.3.0",
