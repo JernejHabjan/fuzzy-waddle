@@ -5,14 +5,12 @@ import { Vector2Simple } from '../math/intersection';
 import { ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 import { Scene } from 'phaser';
 
-export class LayerLines{
+export class LayerLines {
   private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;
 
-  constructor(private readonly scene:Scene) {
-  }
+  constructor(private readonly scene: Scene) {}
 
-
-  drawLayerLines(layer:number) {
+  drawLayerLines(layer: number) {
     if (this.currentLayerLinesGroup !== null) {
       // remove all lines from group
       this.currentLayerLinesGroup.clear(true, true);
@@ -20,8 +18,7 @@ export class LayerLines{
       this.currentLayerLinesGroup = null;
     }
 
-      this.currentLayerLinesGroup = this.createLinesGroup(layer);
-
+    this.currentLayerLinesGroup = this.createLinesGroup(layer);
   }
 
   private createLinesGroup(layer: number): Phaser.GameObjects.Group {
@@ -58,7 +55,6 @@ export class LayerLines{
     this.drawLayerGridLines(linesGroup, 1, mapHeight, mapWidth, tileWidthHalf, tileHeightHalf, tileCenterOffset, layer);
     return linesGroup;
   }
-
 
   /**
    * Working drawing so z index works on correct plane.
@@ -100,5 +96,4 @@ export class LayerLines{
       }
     }
   }
-
 }

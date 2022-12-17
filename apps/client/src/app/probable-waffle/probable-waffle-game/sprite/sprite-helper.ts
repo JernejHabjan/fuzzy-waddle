@@ -47,7 +47,7 @@ export class SpriteHelper {
   private static rescaleSpriteToFitTwoTiles(sprite: Phaser.GameObjects.Sprite) {
     // todo just for test
     const width = sprite.width;
-    const scale =MapSizeInfo.info.tileWidth / width;
+    const scale = MapSizeInfo.info.tileWidth / width;
     sprite.setScale(scale * 2);
     // offset sprite on x and y by 10
     sprite.x -= 5; // offset so it looks nice

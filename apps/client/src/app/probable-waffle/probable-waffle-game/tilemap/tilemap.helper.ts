@@ -50,48 +50,38 @@ export class TilemapHelper {
   }
 
   createTilemap() {
-    const createBlankLayer = false; // todo https://github.com/photonstorm/phaser/issues/6262
+    const createBlankLayer = true; // https://github.com/photonstorm/phaser/issues/6262
     let tilemap: Phaser.Tilemaps.Tilemap;
+    const tilemapWithLayers = (tilemap = this.scene.make.tilemap({ key: MapDefinitions.tilemapMapName }));
     if (createBlankLayer) {
       const mapData = new Phaser.Tilemaps.MapData({
-        width: 10, // todo read from somewhere
-        height: 10, // todo read from somewhere
-        tileWidth: 64, // todo hardcoded
-        tileHeight: 32, // todo hardcoded
-        orientation: Phaser.Tilemaps.Orientation.ISOMETRIC as any as string, // todo
+        width: MapSizeInfo.info.width,
+        height: MapSizeInfo.info.height,
+        tileWidth: MapSizeInfo.info.tileWidth,
+        tileHeight: MapSizeInfo.info.tileHeight,
+        orientation: Phaser.Tilemaps.Orientation.ISOMETRIC as any as string,
         format: Phaser.Tilemaps.Formats.ARRAY_2D
       });
 
       tilemap = new Phaser.Tilemaps.Tilemap(this.scene, mapData);
-    } else {
-      tilemap = this.scene.add.tilemap(MapDefinitions.tilemapMapName);
     }
 
     const tileSetImages: Phaser.Tilemaps.Tileset[] = [];
-    tilemap.tilesets.forEach((tileset: Tileset) => {
+    tilemapWithLayers.tilesets.forEach((tileset: Tileset) => {
       tileSetImages.push(tilemap.addTilesetImage(tileset.name, tileset.name) as Phaser.Tilemaps.Tileset);
     });
 
     let tilemapLayer: Phaser.Tilemaps.TilemapLayer;
     if (createBlankLayer) {
-      tilemapLayer = tilemap.createBlankLayer(
-        'layer-blank-layer-0',
-        tileSetImages,
-        0,
-        0 // todo xy
-      ) as Phaser.Tilemaps.TilemapLayer;
-      // fill layer with 1
-      tilemapLayer.fill(2);
+      tilemapLayer = tilemap.createBlankLayer('layer-blank-layer-0', tileSetImages) as Phaser.Tilemaps.TilemapLayer;
+      tilemapLayer.fill(1);
+      // todo here mappedTilesetsToAtlasesWithProperties aren't set correctly - because different this.mapHelper.tilemapLayer is set and tilesets from it retrieved wrong
     } else {
       tilemapLayer = tilemap.createLayer(tilemap.layers[0].name, tileSetImages) as Phaser.Tilemaps.TilemapLayer;
+      MapSizeInfo.info.width = tilemap.width;
+      MapSizeInfo.info.height = tilemap.height;
     }
     this.mapHelper.tilemapLayer = tilemapLayer;
-    MapSizeInfo.info = new MapSizeInfo(
-      tilemapLayer.width / tilemap.tileWidth,
-      tilemapLayer.height / tilemap.tileHeight,
-      tilemap.tileWidth,
-      tilemap.tileHeight
-    );
   }
 
   replaceTileOnTilemap(tilePlacementData: TilePlacementData, tileIndexProperties: TileIndexProperties) {
