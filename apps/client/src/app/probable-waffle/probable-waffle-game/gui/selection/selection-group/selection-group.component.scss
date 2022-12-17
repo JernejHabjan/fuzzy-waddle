@@ -6,9 +6,9 @@ $padding: 4px;
 .sketchy {
   background: lighten($theme-color, 20%);
   border: $dash-size dashed $theme-color;
-  box-shadow: 0 0 0 ($dash-size / 2) darken($theme-color, 20%), 0 0 0 ($dash-size * 2.5) #fff,
-    inset 0 0 0 ($dash-size / 2) darken($theme-color, 20%),
-    0 $dash-size ($dash-size * 2) ($dash-size * 3) rgba(0, 0, 0, 0.5), inset 0 0 0 ($dash-size * 1.2) #fff,
+  box-shadow: 0 0 0 calc($dash-size / 2) darken($theme-color, 20%), 0 0 0 calc($dash-size * 2.5) #fff,
+    inset 0 0 0 calc($dash-size / 2) darken($theme-color, 20%),
+    0 $dash-size calc($dash-size * 2) ($dash-size * 3) rgba(0, 0, 0, 0.5), inset 0 0 0 calc($dash-size * 1.2) #fff,
     inset 0 0 100vw 100vw $fill-color;
 
   margin: 13px;

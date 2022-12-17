@@ -50,8 +50,22 @@ export class TilemapHelper {
   }
 
   createTilemap() {
-    const createBlankLayer = false; // todo this is not working: https://github.com/photonstorm/phaser/issues/6262
-    const tilemap = this.scene.add.tilemap(MapDefinitions.tilemapMapName);
+    const createBlankLayer = false; // todo https://github.com/photonstorm/phaser/issues/6262
+    let tilemap: Phaser.Tilemaps.Tilemap;
+    if (createBlankLayer) {
+      const mapData = new Phaser.Tilemaps.MapData({
+        width: 10, // todo read from somewhere
+        height: 10, // todo read from somewhere
+        tileWidth: 64, // todo hardcoded
+        tileHeight: 32, // todo hardcoded
+        orientation: Phaser.Tilemaps.Orientation.ISOMETRIC as any as string, // todo
+        format: Phaser.Tilemaps.Formats.ARRAY_2D
+      });
+
+      tilemap = new Phaser.Tilemaps.Tilemap(this.scene, mapData);
+    } else {
+      tilemap = this.scene.add.tilemap(MapDefinitions.tilemapMapName);
+    }
 
     const tileSetImages: Phaser.Tilemaps.Tileset[] = [];
     tilemap.tilesets.forEach((tileset: Tileset) => {
@@ -61,14 +75,10 @@ export class TilemapHelper {
     let tilemapLayer: Phaser.Tilemaps.TilemapLayer;
     if (createBlankLayer) {
       tilemapLayer = tilemap.createBlankLayer(
-        tilemap.layers[0].name + '-blank-layer-0',
+        'layer-blank-layer-0',
         tileSetImages,
         0,
-        0,
-        10,
-        10,
-        64,
-        32, // todo hardcoded?
+        0 // todo xy
       ) as Phaser.Tilemaps.TilemapLayer;
       // fill layer with 1
       tilemapLayer.fill(2);
