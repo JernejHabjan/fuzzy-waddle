@@ -1,9 +1,10 @@
 import * as Phaser from 'phaser';
 import GrasslandScene from '../scenes/grassland.scene';
 import { environment } from '../../../../environments/environment';
+import CharacterPlaygroundScene from '../scenes/character-playground.scene';
 
 export const probableWaffleGameConfig: Phaser.Types.Core.GameConfig = {
-  scene: [GrasslandScene],
+  scene: [CharacterPlaygroundScene, GrasslandScene],
   physics: {
     default: 'arcade',
     arcade: {
