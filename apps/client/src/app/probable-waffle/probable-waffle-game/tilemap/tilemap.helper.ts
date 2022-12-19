@@ -50,7 +50,7 @@ export class TilemapHelper {
   }
 
   createTilemap() {
-    const createBlankLayer = true; // https://github.com/photonstorm/phaser/issues/6262
+    const createBlankLayer = false; // https://github.com/photonstorm/phaser/issues/6262
     let tilemap: Phaser.Tilemaps.Tilemap;
     const tilemapWithLayers = (tilemap = this.scene.make.tilemap({ key: MapDefinitions.tilemapMapName }));
     if (createBlankLayer) {
