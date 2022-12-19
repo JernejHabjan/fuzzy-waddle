@@ -1,15 +1,21 @@
 .atlas-map-scroll-selector {
+  min-height: 100px;
   max-height: 300px;
-  overflow: auto;
-  button{
+  overflow-y: scroll;
+  button {
     width: 100%;
   }
 }
 
-.extra-margin{
-  margin-top: 10px
+.extra-margin {
+  margin-top: 10px;
 }
 
-.selected{
+.selected {
   background-color: darkgrey;
+}
+.atlas-map-scroll-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
 }

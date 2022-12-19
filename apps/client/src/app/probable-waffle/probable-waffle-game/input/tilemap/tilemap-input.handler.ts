@@ -15,8 +15,7 @@ export interface TileWorldData extends TilePlacementData {
 }
 
 export class TilemapInputHandler {
-  constructor(private readonly tilemapLayer: Phaser.Tilemaps.TilemapLayer) {
-  }
+  constructor(private readonly tilemapLayer: Phaser.Tilemaps.TilemapLayer) {}
 
   /**
    *
@@ -44,11 +43,10 @@ export class TilemapInputHandler {
     return null;
   }
 
-
   static get defaultTilemapLayerProperties(): TileLayerProperties {
     return {
-        tileIndex: 0,
-        stepHeight: 0
+      tileIndex: 0,
+      stepHeight: 0
     };
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as Phaser from 'phaser';
 import { SceneCommunicatorService } from './event-emitters/scene-communicator.service';
 import { probableWaffleGameConfig } from './const/game-config';
@@ -10,9 +10,9 @@ import { probableWaffleGameConfig } from './const/game-config';
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   gameRef!: Phaser.Game;
-  collapsedEditor = false;
-  collapsedSelectionBar = false;
+  drawerWidth = '100px';
 
+  constructor(private ngZone: NgZone) {}
   ngOnDestroy(): void {
     this.gameRef.destroy(true);
     SceneCommunicatorService.unsubscribe();
@@ -21,6 +21,8 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     SceneCommunicatorService.setup();
 
-    this.gameRef = new Phaser.Game(probableWaffleGameConfig);
+    this.ngZone.runOutsideAngular(() => {
+      this.gameRef = new Phaser.Game(probableWaffleGameConfig);
+    });
   }
 }

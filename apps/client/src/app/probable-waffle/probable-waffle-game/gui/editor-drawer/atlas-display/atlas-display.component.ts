@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { AtlasFrame } from '../atlas-loader.service';
 
 @Component({
   selector: 'fuzzy-waddle-atlas-display',
   templateUrl: './atlas-display.component.html',
-  styleUrls: ['./atlas-display.component.scss']
+  styleUrls: ['./atlas-display.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AtlasDisplayComponent {
   displaySize = 64;
@@ -17,8 +18,15 @@ export class AtlasDisplayComponent {
   private _textureName!: string;
   src: string | null = null;
   get fileName(): string {
-    // "remove extension"
-    return this.atlasFrame.filename.split('.').slice(0, -1).join('.').replace(/_/g, ' ').replace(/-/g, ' ')
+    let fileName = this.atlasFrame.filename;
+    if (fileName.includes('.')) {
+      // remove extension
+      fileName = this.atlasFrame.filename.split('.').slice(0, -1).join('.');
+    }
+
+    fileName = fileName.replace(/[_-]/g, ' ');
+
+    return fileName;
   }
 
   get scale(): number {

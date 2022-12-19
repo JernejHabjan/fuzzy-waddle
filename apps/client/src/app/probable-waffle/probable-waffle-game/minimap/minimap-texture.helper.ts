@@ -34,8 +34,6 @@ export class MinimapTextureHelper {
   }
 
   createMinimapCamera(cameras: Phaser.Cameras.Scene2D.CameraManager) {
-
-
     const width = this.scene.game.canvas.width * this.mapSizePercentageToWholeWindow;
     const height = this.scene.game.canvas.height * this.mapSizePercentageToWholeWindow;
     const mapSizeInPx = Math.round(Math.min(width, height));
@@ -45,7 +43,6 @@ export class MinimapTextureHelper {
 
     const rectangleWidth = Math.round(width / mapWidth);
     const rectangleHeight = Math.round(height / mapHeight);
-
 
     const minimapWidthInPx = rectangleWidth * mapWidth;
     const minimapHeightInPx = rectangleHeight * mapHeight;
@@ -59,10 +56,8 @@ export class MinimapTextureHelper {
     const zoom = Math.min(minimapWidthInPx / worldWidthInPx, minimapHeightInPx / worldHeightInPx);
     // offset minimap so it is centered
 
-
-    this.minimap.setScroll( - (minimapWidthInPx - worldWidthInPx) / 2, - (minimapHeightInPx - worldHeightInPx ) / 2);
+    this.minimap.setScroll(-(minimapWidthInPx - worldWidthInPx) / 2, -(minimapHeightInPx - worldHeightInPx) / 2);
     this.minimap.setZoom(zoom);
-
 
     // this.minimap.scrollX = cameras.main.scrollX;
     // this.minimap.scrollY = cameras.main.scrollY;
