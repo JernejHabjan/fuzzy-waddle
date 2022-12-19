@@ -6,7 +6,6 @@ export enum AnimDirectionEnum {
 }
 
 export enum LPCAnimTypeEnum {
-  idle = 'idle',
   spellCast = 'spellCast',
   thrust = 'thrust',
   walk = 'walk',
@@ -22,7 +21,6 @@ export type AnimDirection =
   | AnimDirectionEnum.east;
 
 export type LPCAnimType =
-  | LPCAnimTypeEnum.idle
   | LPCAnimTypeEnum.spellCast
   | LPCAnimTypeEnum.thrust
   | LPCAnimTypeEnum.walk
@@ -33,74 +31,80 @@ export type LPCAnimType =
 export class AnimationHelper {
   constructor(private animationManager: Phaser.Animations.AnimationManager) {}
 
-  createAnim(
+  private createAnim(
     textureName: string,
     animName: LPCAnimType,
     dir: AnimDirection,
     frameIndexStart: number,
     frameCount: number,
+    generateIdle:
+      | false
+      | {
+          frame: number;
+        },
     frameRate: number = 8
   ) {
+    if (generateIdle !== false) {
+      this.animationManager.create({
+        key: `${animName}-${dir}-idle`,
+        frames: this.animationManager.generateFrameNumbers(textureName, {
+          start: generateIdle.frame,
+          end: generateIdle.frame
+        }),
+        frameRate,
+        repeat: -1
+      });
+    }
     this.animationManager.create({
       key: `${animName}-${dir}`,
       frames: this.animationManager.generateFrameNumbers(textureName, {
         start: frameIndexStart,
         end: frameIndexStart + frameCount - 1
       }),
-      frameRate,
-      repeat: -1
+      frameRate
+      // repeat: 1
     });
   }
 
   createAnimationsForLPCSpriteSheet(textureName: string): [LPCAnimType, AnimDirection][] {
-    // 1 frame
-    this.createAnim(textureName, LPCAnimTypeEnum.idle, AnimDirectionEnum.north, 0, 1); // todo we need idle for every direction for every animType!!!
-    this.createAnim(textureName, LPCAnimTypeEnum.idle, AnimDirectionEnum.west, 13, 1); // todo we need idle for every direction for every animType!!!
-    this.createAnim(textureName, LPCAnimTypeEnum.idle, AnimDirectionEnum.south, 26, 1); // todo we need idle for every direction for every animType!!!
-    this.createAnim(textureName, LPCAnimTypeEnum.idle, AnimDirectionEnum.east, 39, 1); // todo we need idle for every direction for every animType!!!
-
     // 7 frames
-    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north, 0, 7);
-    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.west, 13, 7);
-    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.south, 26, 7);
-    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.east, 39, 7);
+    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north, 0, 7, { frame: 0 });
+    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.west, 13, 7, { frame: 13 });
+    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.south, 26, 7, { frame: 26 });
+    this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.east, 39, 7, { frame: 39 });
 
     // 8 frames
-    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.north, 52, 8);
-    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.west, 65, 8);
-    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.south, 78, 8);
-    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.east, 91, 8);
+    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.north, 52, 8, { frame: 52 });
+    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.west, 65, 8, { frame: 65 });
+    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.south, 78, 8, { frame: 78 });
+    this.createAnim(textureName, LPCAnimTypeEnum.thrust, AnimDirectionEnum.east, 91, 8, { frame: 91 });
 
     // walk 9 frames
-    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.north, 104, 9);
-    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.west, 117, 9);
-    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.south, 130, 9);
-    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.east, 143, 9);
+    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.north, 104, 9, { frame: 104 });
+    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.west, 117, 9, { frame: 117 });
+    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.south, 130, 9, { frame: 130 });
+    this.createAnim(textureName, LPCAnimTypeEnum.walk, AnimDirectionEnum.east, 143, 9, { frame: 143 });
 
     // slash 6 frames
-    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.north, 156, 6);
-    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.west, 169, 6);
-    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.south, 182, 6);
-    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.east, 195, 6);
+    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.north, 156, 6, { frame: 156 });
+    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.west, 169, 6, { frame: 169 });
+    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.south, 182, 6, { frame: 182 });
+    this.createAnim(textureName, LPCAnimTypeEnum.slash, AnimDirectionEnum.east, 195, 6, { frame: 195 });
 
     // shoot 13 frames
-    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.north, 208, 13);
-    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.west, 221, 13);
-    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.south, 234, 13);
-    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.east, 247, 13);
+    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.north, 208, 13, { frame: 208 });
+    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.west, 221, 13, { frame: 221 });
+    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.south, 234, 13, { frame: 234 });
+    this.createAnim(textureName, LPCAnimTypeEnum.shoot, AnimDirectionEnum.east, 247, 13, { frame: 247 });
 
     // hurt 6 frames
     // note that these frames are the same
-    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.north, 260, 6);
-    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.west, 260, 6);
-    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.south, 260, 6);
-    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.east, 260, 6);
+    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.north, 260, 6, { frame: 260 + 6 - 1 });
+    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.west, 260, 6, { frame: 260 + 6 - 1 });
+    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.south, 260, 6, { frame: 260 + 6 - 1 });
+    this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.east, 260, 6, { frame: 260 + 6 - 1 });
 
     return [
-      [LPCAnimTypeEnum.idle, AnimDirectionEnum.north],
-      [LPCAnimTypeEnum.idle, AnimDirectionEnum.west],
-      [LPCAnimTypeEnum.idle, AnimDirectionEnum.south],
-      [LPCAnimTypeEnum.idle, AnimDirectionEnum.east],
       [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north],
       [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.west],
       [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.south],
@@ -128,7 +132,7 @@ export class AnimationHelper {
     ];
   }
 
-  playAnimation(sprite: Phaser.GameObjects.Sprite, animName: LPCAnimType, dir: AnimDirection) {
-    sprite.play(`${animName}-${dir}`);
+  playAnimation(sprite: Phaser.GameObjects.Sprite, animName: LPCAnimType, dir: AnimDirection, idle: boolean) {
+    sprite.play(`${animName}-${dir}` + (idle ? '-idle' : ''));
   }
 }

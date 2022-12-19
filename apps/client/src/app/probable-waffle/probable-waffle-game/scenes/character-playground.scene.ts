@@ -7,6 +7,7 @@ export default class CharacterPlaygroundScene extends Phaser.Scene implements Cr
   private brawlerTextureName = 'brawler';
   private currentDir = 2; // south
   private currentAnimGroup = 0; // first one is idle
+  private isIdle = false;
   private brawlerAnimationKeys!: [LPCAnimType, AnimDirection][];
   private animHelper!: AnimationHelper;
   private cody!: Phaser.GameObjects.Sprite;
@@ -29,7 +30,12 @@ export default class CharacterPlaygroundScene extends Phaser.Scene implements Cr
     this.cody.setScale(8);
     this.playAnim();
 
-    this.input.on('pointerdown', () => {
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      // if right click
+      if (pointer.rightButtonDown()) {
+        this.isIdle = !this.isIdle; // toggle
+        return;
+      }
       this.currentAnimGroup++;
       if (this.currentAnimGroup * 4 >= this.brawlerAnimationKeys.length) {
         this.currentAnimGroup = 0;
@@ -54,12 +60,9 @@ export default class CharacterPlaygroundScene extends Phaser.Scene implements Cr
       this.brawlerAnimationKeys[this.currentAnimGroup * 4 + 3] // east
     ];
 
-    this.animHelper.playAnimation(
-      this.cody,
-      currentAnimations[this.currentDir][0],
-      currentAnimations[this.currentDir][1]
-    );
-    console.log(`Playing: ${currentAnimations[this.currentDir][0]} - ${currentAnimations[this.currentDir][1]}`);
+    const [animType, animDir] = currentAnimations[this.currentDir];
+    this.animHelper.playAnimation(this.cody, animType, animDir, this.isIdle);
+    console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
   }
 
   override update(time: number, delta: number) {
