@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TileSelectorComponent } from './tile-selector.component';
 import { MapDefinitions } from '../../../const/map-size.info';
+import { AtlasDisplayComponent } from '../atlas-display/atlas-display.component';
 
 describe('TileSelectorComponent', () => {
   let component: TileSelectorComponent;
@@ -9,7 +10,7 @@ describe('TileSelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TileSelectorComponent]
+      declarations: [TileSelectorComponent, AtlasDisplayComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TileSelectorComponent);

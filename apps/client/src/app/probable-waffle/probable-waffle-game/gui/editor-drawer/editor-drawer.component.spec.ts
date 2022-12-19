@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SceneCommunicatorService } from '../../event-emitters/scene-communicator.service';
 import { FormsModule } from '@angular/forms';
+import { TileSelectorGroupComponent } from './tile-selector-group/tile-selector-group.component';
 
 describe('EditorDrawerComponent', () => {
   let component: EditorDrawerComponent;
@@ -13,7 +14,7 @@ describe('EditorDrawerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditorDrawerComponent],
+      declarations: [EditorDrawerComponent, TileSelectorGroupComponent],
       providers: [
         {
           provide: ActivatedRoute,
