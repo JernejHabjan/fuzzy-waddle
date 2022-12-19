@@ -32,6 +32,7 @@ export class NavInputHandler {
             this.mapNavHelper.getFlattenedGrid
           );
 
+          console.log("printing path", tileXYPath);
           this.moveSpriteToTileCenters(selection, tileXYPath);
         } catch (e) {
           console.log(e);
@@ -119,8 +120,13 @@ export class NavInputHandler {
       tileWorldXYCenter, // todo
       prevNavTile.tileWorldData.z
     );
-
-    spriteInstance.depth = Math.max(currentDepth, prevDepth);
+    if (currentPathNode.tileWorldData.z > prevNavTile.tileWorldData.z) {
+      spriteInstance.depth = currentDepth;
+    } else if (currentPathNode.tileWorldData.z < prevNavTile.tileWorldData.z) {
+      spriteInstance.depth = prevDepth;
+    } else {
+      spriteInstance.depth = currentDepth;
+    }
   }
 
   /**

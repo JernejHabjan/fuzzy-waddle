@@ -32,12 +32,12 @@ export class ManualTilesHelper {
     private readonly tilemapHelper: TilemapHelper
   ) {}
 
-  static getDepth(tileXY: Vector2Simple, tileWorldXYCenter: Vector2Simple, layer: number): number {
-    const layerOffset = layer * MapSizeInfo.info.tileHeight;
-    const ty = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
-    const depth = tileWorldXYCenter.y + ty + layerOffset * MapSizeInfo.info.tileHeight;
-    return depth;
-  }
+static getDepth(tileXY: Vector2Simple, tileWorldXYCenter: Vector2Simple, layer: number): number {
+  const layerOffset = layer * MapSizeInfo.info.tileHeight * 2;
+  const ty = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
+  const depth = tileWorldXYCenter.y + ty + layerOffset;
+  return depth;
+}
 
   createEmptyManualLayers() {
     const layers: ManualTileLayer[] = [];
