@@ -27,7 +27,11 @@ export class SpriteHelper {
     sprite.setInteractive();
     sprite.depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
 
-    if (frame === 'barracks.png') {
+    const [imageName] = frame.split('.');
+    if (imageName === 'warrior1') {
+      // todo
+      this.placeSpriteAsIs(sprite);
+    } else if (imageName === 'barracks') {
       // todo just for test
       this.rescaleSpriteToFitTwoTiles(sprite);
     } else {
@@ -52,5 +56,10 @@ export class SpriteHelper {
     // offset sprite on x and y by 10
     sprite.x -= 5; // offset so it looks nice
     sprite.y -= 7; // offset so it looks nice
+  }
+
+  private static placeSpriteAsIs(sprite: Phaser.GameObjects.Sprite) {
+    // todo?
+    sprite.y -= MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
   }
 }

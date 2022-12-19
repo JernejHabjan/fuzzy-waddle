@@ -65,7 +65,8 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   async loadSpriteAtlases() {
     this.spriteAtlases = [
       await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasMegaset),
-      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasBuildings)
+      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasBuildings),
+      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasCharacters)
     ];
   }
 

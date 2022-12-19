@@ -78,14 +78,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   preload() {
     this.load.atlas(
-      MapDefinitions.atlasMegaset + MapDefinitions.atlasSuffix,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.png`,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasMegaset}.json`
-    );
-    this.load.atlas(
       MapDefinitions.atlasBuildings + MapDefinitions.atlasSuffix,
       `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.png`,
       `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.json`
+    );
+    this.load.atlas(
+      MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasCharacters}.png`,
+      `assets/probable-waffle/atlas/${MapDefinitions.atlasCharacters}.json`
     );
 
     MapDefinitions.mapAtlases.forEach((atlas) => {
@@ -445,8 +445,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         tilePlacementData: { tileXY: { x: 1, y: 1 }, z: 0 },
         placeableObjectProperties: {
           placeableAtlasProperties: {
-            texture: MapDefinitions.atlasMegaset + MapDefinitions.atlasSuffix,
-            frame: 'blue_ball'
+            texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
+            frame: 'warrior1'
           }
         },
         belongsToPlayer: {

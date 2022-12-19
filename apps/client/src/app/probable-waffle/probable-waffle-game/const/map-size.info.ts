@@ -36,6 +36,7 @@ export class MapDefinitions {
   static atlasSuffix = '-atlas';
   static atlasMegaset = 'megaset-0';
   static atlasBuildings = 'buildings';
+  static atlasCharacters = 'characters';
   static atlasOutside = 'iso-64x64-outside';
   static atlasBuilding = 'iso-64x64-building';
   static mapAtlases = [MapDefinitions.atlasOutside, MapDefinitions.atlasBuilding];

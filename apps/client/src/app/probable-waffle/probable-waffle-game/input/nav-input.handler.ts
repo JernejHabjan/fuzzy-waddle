@@ -68,11 +68,13 @@ export class NavInputHandler {
 
       // this.sinkSpriteInWater(stepHeightPercentage, selection.spriteInstance);
 
+      const offsetByCharacterCenter = MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
+
       // todo store this tween to selection so we can cancel it if needed
       this.scene.tweens.add({
         targets: selection.spriteInstance,
         x: tileWorldXYCenterWithOffset.x,
-        y: tileWorldXYCenterWithOffset.y,
+        y: tileWorldXYCenterWithOffset.y - offsetByCharacterCenter,
         duration: 300,
         ease: Phaser.Math.Easing.Linear, // Phaser.Math.Easing.Sine.InOut,
         yoyo: false,
