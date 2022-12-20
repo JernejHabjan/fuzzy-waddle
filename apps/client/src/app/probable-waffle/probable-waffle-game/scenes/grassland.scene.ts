@@ -27,6 +27,8 @@ import { PlacedGameObject, StaticObjectHelper } from '../placable-objects/static
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
+import { gameScene } from '../const/game-scene';
+import { Warrior1 } from '../characters/warrior1';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -100,9 +102,17 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
 
     this.load.tilemapTiledJSON(MapDefinitions.tilemapMapName, MapDefinitions.tilemapMapJson);
+
+    this.load.spritesheet(
+      Warrior1.textureName,
+      'assets/probable-waffle/spritesheets/' + Warrior1.spriteSheet.name + '.png',
+      Warrior1.spriteSheet.frameConfig
+    );
   }
 
   create() {
+    gameScene.start();
+
     // navigable map
     this.mapHelper = new MapHelper();
     this.tilemapHelper = new TilemapHelper(this.mapHelper, this);
@@ -123,13 +133,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.staticObjectHelper.createStaticObjectLayer();
     this.dynamicObjectHelper.createDynamicObjectLayer();
 
-    // placing objects on map
-
-    this.placeAdditionalItemsOnManualLayers();
-    this.placeStaticObjectsOnMap();
-    this.placeDynamicObjectsOnMap();
-
     // input handling
+    gameScene.initAnims(this.anims);
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this.input);
@@ -146,6 +151,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     // this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
     // this.minimapTextureHelper.createRenderTexture(); // todo temp
+
+
+    // placing objects on map
+    this.placeAdditionalItemsOnManualLayers();
+    this.placeStaticObjectsOnMap();
+    this.placeDynamicObjectsOnMap();
+    this.placeWarrior1();
+
   }
 
   private subscribeToInputEvents() {
@@ -447,7 +460,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         placeableObjectProperties: {
           placeableAtlasProperties: {
             texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
-            frame: 'warrior1'
+            frame: Warrior1.textureName
           }
         },
         belongsToPlayer: {
@@ -455,5 +468,15 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         }
       }
     ]);
+  }
+
+  private placeWarrior1() {
+    const warrior1Group = this.add.group({
+      classType: Warrior1,
+      createCallback: (go) => (go as Warrior1).createCallback()
+    });
+    const warrior = warrior1Group.get(60, 80) as Warrior1; // todo hardcoded position
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => warrior.managePointerClick(pointer));
+    this.input.on(Phaser.Input.Events.POINTER_WHEEL, () => warrior.managePointerWheel());
   }
 }

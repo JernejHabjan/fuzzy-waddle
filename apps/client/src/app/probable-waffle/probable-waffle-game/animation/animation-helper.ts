@@ -31,6 +31,10 @@ export type LPCAnimType =
 export class AnimationHelper {
   constructor(private animationManager: Phaser.Animations.AnimationManager) {}
 
+  static playAnimation(sprite: Phaser.GameObjects.Sprite, animName: LPCAnimType, dir: AnimDirection, idle: boolean) {
+    sprite.play(`${animName}-${dir}` + (idle ? '-idle' : ''));
+  }
+
   private createAnim(
     textureName: string,
     animName: LPCAnimType,
@@ -132,7 +136,4 @@ export class AnimationHelper {
     ];
   }
 
-  playAnimation(sprite: Phaser.GameObjects.Sprite, animName: LPCAnimType, dir: AnimDirection, idle: boolean) {
-    sprite.play(`${animName}-${dir}` + (idle ? '-idle' : ''));
-  }
 }

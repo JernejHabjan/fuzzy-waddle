@@ -6,6 +6,7 @@ import { ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { PlaceableAtlasProperties } from '../placable-objects/static-object';
+import { Warrior1 } from '../characters/warrior1';
 
 export class SpriteHelper {
   static placeSpriteOnTileXY(
@@ -28,7 +29,7 @@ export class SpriteHelper {
     sprite.depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
 
     const [imageName] = frame.split('.');
-    if (imageName === 'warrior1') {
+    if (imageName === Warrior1.textureName) {
       // todo
       this.placeSpriteAsIs(sprite);
     } else if (imageName === 'barracks') {
