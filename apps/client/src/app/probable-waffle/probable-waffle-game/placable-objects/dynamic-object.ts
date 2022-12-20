@@ -3,11 +3,12 @@ import { Scene } from 'phaser';
 import { PlayerPlaceableGameObject } from './static-object';
 import { SpriteHelper } from '../sprite/sprite-helper';
 import { IsoHelper } from '../iso/iso-helper';
+import { GameObjectsHelper } from '../map/game-objects-helper';
 
 export class DynamicObjectHelper {
-  constructor(private readonly mapHelper: MapHelper, private readonly scene: Scene) {}
+  constructor(private readonly gameObjectsHelper: GameObjectsHelper, private readonly scene: Scene) {}
   createDynamicObjectLayer() {
-    this.mapHelper.dynamicObjects = [];
+    this.gameObjectsHelper.dynamicObjects = [];
   }
 
   placeRawSpriteObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
@@ -18,7 +19,7 @@ export class DynamicObjectHelper {
         p.tilePlacementData,
         p.placeableObjectProperties.placeableAtlasProperties
       );
-      this.mapHelper.dynamicObjects.push({
+      this.gameObjectsHelper.dynamicObjects.push({
         tileWorldData: {
           tileXY: p.tilePlacementData.tileXY,
           z: p.tilePlacementData.z,

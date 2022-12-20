@@ -30,6 +30,7 @@ import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
 import { gameScene } from '../const/game-scene';
 import { Warrior1 } from '../characters/warrior1';
 import { SpriteHelper } from '../sprite/sprite-helper';
+import { GameObjectsHelper } from '../map/game-objects-helper';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -67,6 +68,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private warningText: Phaser.GameObjects.Text | null = null;
   private mapPropertiesHelper!: MapPropertiesHelper;
   private mapHelper!: MapHelper;
+  private gameObjectsHelper!: GameObjectsHelper;
   private layerLines!: LayerLines;
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
@@ -116,12 +118,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     // navigable map
     this.mapHelper = new MapHelper();
+    this.gameObjectsHelper = new GameObjectsHelper();
     this.tilemapHelper = new TilemapHelper(this.mapHelper, this);
     this.mapPropertiesHelper = new MapPropertiesHelper(this.mapHelper, this.textures);
     this.manualTilesHelper = new ManualTilesHelper(this.mapHelper, this, this.tilemapHelper);
-    this.staticObjectHelper = new StaticObjectHelper(this.mapHelper, this);
-
-    this.dynamicObjectHelper = new DynamicObjectHelper(this.mapHelper, this);
+    this.staticObjectHelper = new StaticObjectHelper(this.gameObjectsHelper, this);
+    this.dynamicObjectHelper = new DynamicObjectHelper(this.gameObjectsHelper, this);
     this.layerLines = new LayerLines(this);
     this.pathfinder = new Pathfinder(this);
 
@@ -141,7 +143,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.mapHelper.tilemapLayer);
     this.manualTileInputHandler = new ManualTileInputHandler(this, this.mapHelper.manualLayers);
-    this.mapNavHelper = new MapNavHelper(this.mapHelper, this.tilemapInputHandler, this.manualTileInputHandler);
+    this.mapNavHelper = new MapNavHelper(
+      this.mapHelper,
+      this.gameObjectsHelper,
+      this.tilemapInputHandler,
+      this.manualTileInputHandler
+    );
     this.navInputHandler = new NavInputHandler(this, this.pathfinder, this.mapNavHelper);
     this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
     this.minimapTextureHelper = new MinimapTextureHelper(this);
@@ -320,7 +327,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): PlacedGameObject[] {
-    return this.mapHelper.dynamicObjects.filter((o) => {
+    return this.gameObjectsHelper.dynamicObjects.filter((o) => {
       const bounds = o.spriteInstance.getBounds();
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
     });
@@ -332,7 +339,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       const selected = this.getObjectsUnderSelectionRectangle(rect);
       // tint all selected with blue
 
-      this.mapHelper.dynamicObjects.forEach((o) => {
+      this.gameObjectsHelper.dynamicObjects.forEach((o) => {
         o.spriteInstance.clearTint();
       });
       selected.forEach((s) => {
@@ -343,7 +350,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.selectionEventSub = this.multiSelectionHandler.onSelect.subscribe((rect) => {
       this.selected = this.getObjectsUnderSelectionRectangle(rect);
       // tint all selected with red
-      this.mapHelper.dynamicObjects.forEach((o) => {
+      this.gameObjectsHelper.dynamicObjects.forEach((o) => {
         o.spriteInstance.clearTint();
       });
       this.selected.forEach((s) => {

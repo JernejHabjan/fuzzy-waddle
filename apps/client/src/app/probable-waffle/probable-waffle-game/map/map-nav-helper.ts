@@ -5,10 +5,12 @@ import { TilemapInputHandler } from '../input/tilemap/tilemap-input.handler';
 import { ManualTileInputHandler } from '../input/manual-tiles/manual-tile-input.handler';
 import * as Phaser from 'phaser';
 import { TileLayerProperties } from '../types/tile-types';
+import { GameObjectsHelper } from './game-objects-helper';
 
 export class MapNavHelper {
   constructor(
     private readonly mapHelper: MapHelper,
+    private readonly gameObjectsHelper: GameObjectsHelper,
     private readonly tilemapInputHandler: TilemapInputHandler,
     private readonly manualTileInputHandler: ManualTileInputHandler
   ) {}
@@ -70,7 +72,7 @@ export class MapNavHelper {
    */
   getNavigableTile(worldXY: Vector2Simple): TilePlacementWorldWithProperties | null {
     // todo maybe compare this staticObjects.find same way as cursor is doing. because atlas bounds might not be the same as object bounds - diff "collision" box
-    const existingBuildingSelected = this.mapHelper.staticObjects.find((s) =>
+    const existingBuildingSelected = this.gameObjectsHelper.staticObjects.find((s) =>
       s.spriteInstance.getBounds().contains(worldXY.x, worldXY.y)
     );
     if (existingBuildingSelected) {
