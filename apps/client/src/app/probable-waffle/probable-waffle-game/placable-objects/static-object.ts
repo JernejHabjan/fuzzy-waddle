@@ -29,8 +29,9 @@ export interface PlacedGameObject {
   placeableObjectProperties: PlaceableObjectProperties;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PlayerPlaceableGameObject extends PlaceableGameObject {
-  belongsToPlayer?: GameObjectPlayer;
+  // belongsToPlayer?: GameObjectPlayer;
 }
 
 export class StaticObjectHelper {
@@ -39,7 +40,7 @@ export class StaticObjectHelper {
     this.mapHelper.staticObjects = [];
   }
 
-  placeObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
+  placeRawSpriteObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
     // todo
   }
 }

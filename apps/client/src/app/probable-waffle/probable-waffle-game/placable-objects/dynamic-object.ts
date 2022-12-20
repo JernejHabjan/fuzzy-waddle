@@ -10,7 +10,7 @@ export class DynamicObjectHelper {
     this.mapHelper.dynamicObjects = [];
   }
 
-  placeObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
+  placeRawSpriteObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
     // todo
     playerPlaceableGameObjects.forEach((p) => {
       const spriteInstance = SpriteHelper.placeSpriteOnTileXY(

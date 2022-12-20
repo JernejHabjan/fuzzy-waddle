@@ -18,20 +18,22 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   currentAnimGroup = 0; // first one is idle
   isIdle = false;
   private animKeys!: [LPCAnimType, AnimDirection][];
+  private tilePlacementData!: TilePlacementData;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, Warrior1.textureName);
   }
 
-  createCallback(tilePlacementData:TilePlacementData) {
-    // pass - here we're added to the scene
+  createCallback(tilePlacementData: TilePlacementData) {
+    this.tilePlacementData = tilePlacementData;
+
     gameScene.characterAnimationInitializer.ensureAnimationKeys(Warrior1.spriteSheet.name);
     this.animKeys = gameScene.characterAnimationInitializer.animationKeys[Warrior1.spriteSheet.name];
 
     const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
     this.depth = spriteWorldPlacementInfo.depth;
 
-
+    this.setInteractive();
     this.playAnim();
   }
 

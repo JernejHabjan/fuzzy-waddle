@@ -155,8 +155,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     // placing objects on map
     this.placeAdditionalItemsOnManualLayers();
-    this.placeStaticObjectsOnMap();
-    this.placeDynamicObjectsOnMap();
+    this.placeRawSpriteStaticObjectsOnMap();
+    this.placeRawSpriteDynamicObjectsOnMap();
     this.placeWarrior1();
   }
 
@@ -393,7 +393,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private placeAtlasOnCoords(atlasToBePlaced: AtlasEmitValue | null, tilePlacementData: TilePlacementData): void {
     if (atlasToBePlaced === null) return;
 
-    this.dynamicObjectHelper.placeObjectsOnMap([
+    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
       {
         tilePlacementData,
         placeableObjectProperties: {
@@ -401,9 +401,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
             texture: atlasToBePlaced.tilesetName + MapDefinitions.atlasSuffix,
             frame: atlasToBePlaced.atlasFrame.filename
           }
-        },
-        belongsToPlayer: {
-          playerNumber: this.playerNumber
         }
       }
     ]);
@@ -435,8 +432,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.layerLines.drawLayerLines(this.editorLayerNr);
   }
 
-  private placeStaticObjectsOnMap(): void {
-    this.staticObjectHelper.placeObjectsOnMap([
+  private placeRawSpriteStaticObjectsOnMap(): void {
+    this.staticObjectHelper.placeRawSpriteObjectsOnMap([
       {
         tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 },
         placeableObjectProperties: {
@@ -444,16 +441,13 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
             texture: 'house1',
             frame: 'house1_1'
           }
-        },
-        belongsToPlayer: {
-          playerNumber: this.playerNumber
         }
       }
     ]);
   }
 
-  private placeDynamicObjectsOnMap() {
-    this.dynamicObjectHelper.placeObjectsOnMap([
+  private placeRawSpriteDynamicObjectsOnMap() {
+    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
       {
         tilePlacementData: { tileXY: { x: 1, y: 1 }, z: 0 },
         placeableObjectProperties: {
@@ -461,9 +455,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
             texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
             frame: Warrior1.textureName
           }
-        },
-        belongsToPlayer: {
-          playerNumber: this.playerNumber
         }
       }
     ]);
