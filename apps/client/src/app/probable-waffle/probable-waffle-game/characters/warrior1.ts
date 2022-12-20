@@ -18,7 +18,7 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   currentAnimGroup = 0; // first one is idle
   isIdle = false;
   private animKeys!: [LPCAnimType, AnimDirection][];
-  private tilePlacementData!: TilePlacementData;
+  tilePlacementData!: TilePlacementData;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, Warrior1.textureName);
@@ -47,7 +47,7 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
 
     const [animType, animDir] = currentAnimations[this.currentDir];
     AnimationHelper.playAnimation(this, animType, animDir, this.isIdle);
-    console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
+    // console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
   }
 
   managePointerClick(pointer: Phaser.Input.Pointer) {

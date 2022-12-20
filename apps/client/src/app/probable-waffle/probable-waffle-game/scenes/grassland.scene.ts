@@ -63,7 +63,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
   private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
-  private selected: PlacedGameObject[] = [];
+  private selected: Warrior1[] = [];
   private atlasToBePlaced: AtlasEmitValue | null = null;
   private warningText: Phaser.GameObjects.Text | null = null;
   private mapPropertiesHelper!: MapPropertiesHelper;
@@ -72,6 +72,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private layerLines!: LayerLines;
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
+  private warrior1Group!: Phaser.GameObjects.Group;
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -160,11 +161,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     // this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
     // this.minimapTextureHelper.createRenderTexture(); // todo temp
 
+    this.warrior1Group = this.add.group({ classType: Warrior1 });
+
     // placing objects on map
     this.placeAdditionalItemsOnManualLayers();
     this.placeRawSpriteStaticObjectsOnMap();
     this.placeRawSpriteDynamicObjectsOnMap();
-    this.placeWarrior1();
   }
 
   private subscribeToInputEvents() {
@@ -326,9 +328,14 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): PlacedGameObject[] {
-    return this.gameObjectsHelper.dynamicObjects.filter((o) => {
-      const bounds = o.spriteInstance.getBounds();
+  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Warrior1[] {
+    // return this.gameObjectsHelper.dynamicObjects.filter((o) => {
+    //   const bounds = o.spriteInstance.getBounds();
+    //   return this.multiSelectionHandler.overlapsBounds(rect, bounds);
+    // });
+    const children = this.warrior1Group.getChildren() as Warrior1[];
+    return children.filter((o) => {
+      const bounds = o.getBounds();
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
     });
   }
@@ -343,7 +350,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         o.spriteInstance.clearTint();
       });
       selected.forEach((s) => {
-        s.spriteInstance.setTint(0x0000ff);
+        s.setTint(0x0000ff);
       });
     });
     // todo move this
@@ -354,15 +361,13 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         o.spriteInstance.clearTint();
       });
       this.selected.forEach((s) => {
-        s.spriteInstance.setTint(0xff0000);
+        s.setTint(0xff0000);
       });
 
       // extract sprite frame name
-      const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => {
-        return {
-          name: s.placeableObjectProperties.placeableAtlasProperties.frame
-        };
-      });
+      const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => ({
+        name: s.name
+      }));
       SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
     });
   }
@@ -400,17 +405,21 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private placeAtlasOnCoords(atlasToBePlaced: AtlasEmitValue | null, tilePlacementData: TilePlacementData): void {
     if (atlasToBePlaced === null) return;
 
-    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
-      {
-        tilePlacementData,
-        placeableObjectProperties: {
-          placeableAtlasProperties: {
-            texture: atlasToBePlaced.tilesetName + MapDefinitions.atlasSuffix,
-            frame: atlasToBePlaced.atlasFrame.filename
+    if (atlasToBePlaced.atlasFrame.filename === Warrior1.textureName + '.png') {
+      this.placeWarrior1(tilePlacementData);
+    } else {
+      this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
+        {
+          tilePlacementData,
+          placeableObjectProperties: {
+            placeableAtlasProperties: {
+              texture: atlasToBePlaced.tilesetName + MapDefinitions.atlasSuffix,
+              frame: atlasToBePlaced.atlasFrame.filename
+            }
           }
         }
-      }
-    ]);
+      ]);
+    }
   }
 
   private bindSceneCommunicator() {
@@ -441,44 +450,41 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   private placeRawSpriteStaticObjectsOnMap(): void {
     this.staticObjectHelper.placeRawSpriteObjectsOnMap([
-      {
-        tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 },
-        placeableObjectProperties: {
-          placeableAtlasProperties: {
-            texture: 'house1',
-            frame: 'house1_1'
-          }
-        }
-      }
+      // {
+      //   tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 },
+      //   placeableObjectProperties: {
+      //     placeableAtlasProperties: {
+      //       texture: 'house1',
+      //       frame: 'house1_1'
+      //     }
+      //   }
+      // }
     ]);
   }
 
   private placeRawSpriteDynamicObjectsOnMap() {
     this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
-      {
-        tilePlacementData: { tileXY: { x: 1, y: 1 }, z: 0 },
-        placeableObjectProperties: {
-          placeableAtlasProperties: {
-            texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
-            frame: Warrior1.textureName
-          }
-        }
-      }
+      // {
+      //   tilePlacementData: { tileXY: { x: 1, y: 1 }, z: 0 },
+      //   placeableObjectProperties: {
+      //     placeableAtlasProperties: {
+      //       texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
+      //       frame: Warrior1.textureName
+      //     }
+      //   }
+      // }
     ]);
+    this.placeWarrior1({ tileXY: { x: 1, y: 1 }, z: 0 });
   }
 
-  // todo needs additional work so it's accepted as dynamicObject
-  private placeWarrior1() {
-    const tilePlacementData: TilePlacementData = { tileXY: { x: 1, y: 1 }, z: 0 };
-
+  private placeWarrior1(tilePlacementData: TilePlacementData) {
     const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
 
-    const warrior1Group = this.add.group({
-      classType: Warrior1,
-      createCallback: (go) => (go as Warrior1).createCallback(tilePlacementData)
-    });
-    const warrior = warrior1Group.get(spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y) as Warrior1;
+    const warrior = this.warrior1Group.create(spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y) as Warrior1;
+    warrior.createCallback(tilePlacementData);
+    // todo this input pointerdown is just for demo
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => warrior.managePointerClick(pointer));
+    // todo this input pointerdown is just for demo
     this.input.on(Phaser.Input.Events.POINTER_WHEEL, () => warrior.managePointerWheel());
   }
 }

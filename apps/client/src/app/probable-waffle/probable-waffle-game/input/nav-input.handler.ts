@@ -5,8 +5,8 @@ import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../manual-t
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { MapNavHelper } from '../map/map-nav-helper';
-import { PlacedGameObject } from '../placable-objects/static-object';
 import Tween = Phaser.Tweens.Tween;
+import { Warrior1 } from '../characters/warrior1';
 
 export class NavInputHandler {
   constructor(
@@ -19,12 +19,12 @@ export class NavInputHandler {
     return 0 <= tileXY.x && tileXY.x <= MapSizeInfo.info.width && 0 <= tileXY.y && tileXY.y <= MapSizeInfo.info.height;
   }
 
-  startNav(navigableTile: TilePlacementWorldWithProperties, selected: PlacedGameObject[]) {
+  startNav(navigableTile: TilePlacementWorldWithProperties, selected: Warrior1[]) {
     selected.forEach(async (selection) => {
       if (NavInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
         try {
           const tileXYPath = await this.pathfinder.find(
-            selection.tileWorldData.tileXY,
+            selection.tilePlacementData.tileXY,
             {
               x: navigableTile.tileWorldData.tileXY.x,
               y: navigableTile.tileWorldData.tileXY.y
@@ -32,7 +32,7 @@ export class NavInputHandler {
             this.mapNavHelper.getFlattenedGrid
           );
 
-          console.log("printing path", tileXYPath);
+          console.log('printing path', tileXYPath);
           this.moveSpriteToTileCenters(selection, tileXYPath);
         } catch (e) {
           console.log(e);
@@ -45,7 +45,7 @@ export class NavInputHandler {
    * todo replace tweens with something else?
    * todo this needs to be improved - this is hacky
    */
-  private moveSpriteToTileCenters(selection: PlacedGameObject, path: TilePlacementWorldWithProperties[]) {
+  private moveSpriteToTileCenters(selection: Warrior1, path: TilePlacementWorldWithProperties[]) {
     let prevNavTile = path[0];
     const addTween = (i: number) => {
       if (i >= path.length) {
@@ -73,7 +73,7 @@ export class NavInputHandler {
 
       // todo store this tween to selection so we can cancel it if needed
       this.scene.tweens.add({
-        targets: selection.spriteInstance,
+        targets: selection,
         x: tileWorldXYCenterWithOffset.x,
         y: tileWorldXYCenterWithOffset.y - offsetByCharacterCenter,
         duration: 300,
@@ -83,16 +83,18 @@ export class NavInputHandler {
         onUpdate: (tween: Tween) => {
           this.handleSpriteUnderWaterCropping(
             tween,
-            selection.spriteInstance,
+            selection,
             prevNavTile.tileLayerProperties?.stepHeight,
             currentNavTile.tileLayerProperties?.stepHeight
           );
 
-          this.setSpriteDepthDuringNavigation(selection.spriteInstance, currentNavTile, prevNavTile, tileWorldXYCenter);
+          this.setSpriteDepthDuringNavigation(selection, currentNavTile, prevNavTile, tileWorldXYCenter);
         },
         onComplete: () => {
           prevNavTile = currentNavTile;
-          selection.tileWorldData = currentNavTile.tileWorldData; // update selection
+          selection.tilePlacementData.tileXY = currentNavTile.tileWorldData.tileXY; // update selection
+          selection.tilePlacementData.z = currentNavTile.tileWorldData.z; // update selection
+
           addTween(i + 1);
         }
       });
