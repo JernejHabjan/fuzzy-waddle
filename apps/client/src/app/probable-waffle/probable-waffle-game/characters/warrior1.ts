@@ -1,6 +1,8 @@
 import * as Phaser from 'phaser';
 import { AnimationHelper, AnimDirection, LPCAnimType } from '../animation/animation-helper';
 import { gameScene } from '../const/game-scene';
+import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
+import { SpriteHelper } from '../sprite/sprite-helper';
 
 export class Warrior1 extends Phaser.GameObjects.Sprite {
   static readonly textureName = 'warrior1';
@@ -21,12 +23,14 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
     super(scene, x, y, Warrior1.textureName);
   }
 
-  createCallback() {
+  createCallback(tilePlacementData:TilePlacementData) {
     // pass - here we're added to the scene
     gameScene.characterAnimationInitializer.ensureAnimationKeys(Warrior1.spriteSheet.name);
     this.animKeys = gameScene.characterAnimationInitializer.animationKeys[Warrior1.spriteSheet.name];
 
-    // this.setScale(8); // todo
+    const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
+    this.depth = spriteWorldPlacementInfo.depth;
+
 
     this.playAnim();
   }

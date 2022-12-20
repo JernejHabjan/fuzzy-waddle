@@ -7,26 +7,45 @@ import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { PlaceableAtlasProperties } from '../placable-objects/static-object';
 import { Warrior1 } from '../characters/warrior1';
+import { Vector2Simple } from '../math/intersection';
+
+export type SpriteWorldPlacementInfo = {
+  depth: number;
+} & Vector2Simple;
 
 export class SpriteHelper {
-  static placeSpriteOnTileXY(
-    scene: Scene,
-    tilePlacementData: TilePlacementData,
-    placeableAtlasProperties: PlaceableAtlasProperties
-  ): Phaser.GameObjects.Sprite {
+
+  static getSpriteWorldPlacementInfo(tilePlacementData: TilePlacementData): SpriteWorldPlacementInfo {
     const tileXY = tilePlacementData.tileXY;
     const layer = tilePlacementData.z;
-    const texture = placeableAtlasProperties.texture;
-    const frame = placeableAtlasProperties.frame;
 
     const tileWorldXYCenter = TilemapHelper.adjustTileWorldWithVerticalOffset(IsoHelper.getWorldCenterXY(tileXY), {
       offsetInPx: layer * MapSizeInfo.info.tileHeight - MapSizeInfo.info.tileHeightHalf
     });
 
     // create object
-    const sprite = scene.add.sprite(tileWorldXYCenter.x, tileWorldXYCenter.y, texture, frame);
+
+    const depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
+    return {
+      x: tileWorldXYCenter.x,
+      y: tileWorldXYCenter.y,
+      depth
+    };
+  }
+
+  static placeSpriteOnTileXY(
+    scene: Scene,
+    tilePlacementData: TilePlacementData,
+    placeableAtlasProperties: PlaceableAtlasProperties
+  ): Phaser.GameObjects.Sprite {
+    const texture = placeableAtlasProperties.texture;
+    const frame = placeableAtlasProperties.frame;
+
+    const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
+    // create object
+    const sprite = scene.add.sprite(spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y, texture, frame);
     sprite.setInteractive();
-    sprite.depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
+    sprite.depth = spriteWorldPlacementInfo.depth;
 
     const [imageName] = frame.split('.');
     if (imageName === Warrior1.textureName) {

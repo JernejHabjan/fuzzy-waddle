@@ -29,6 +29,7 @@ import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
 import { gameScene } from '../const/game-scene';
 import { Warrior1 } from '../characters/warrior1';
+import { SpriteHelper } from '../sprite/sprite-helper';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -152,13 +153,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     // this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
     // this.minimapTextureHelper.createRenderTexture(); // todo temp
 
-
     // placing objects on map
     this.placeAdditionalItemsOnManualLayers();
     this.placeStaticObjectsOnMap();
     this.placeDynamicObjectsOnMap();
     this.placeWarrior1();
-
   }
 
   private subscribeToInputEvents() {
@@ -470,12 +469,17 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     ]);
   }
 
+  // todo needs additional work so it's accepted as dynamicObject
   private placeWarrior1() {
+    const tilePlacementData: TilePlacementData = { tileXY: { x: 1, y: 1 }, z: 0 };
+
+    const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
+
     const warrior1Group = this.add.group({
       classType: Warrior1,
-      createCallback: (go) => (go as Warrior1).createCallback()
+      createCallback: (go) => (go as Warrior1).createCallback(tilePlacementData)
     });
-    const warrior = warrior1Group.get(60, 80) as Warrior1; // todo hardcoded position
+    const warrior = warrior1Group.get(spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y) as Warrior1;
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => warrior.managePointerClick(pointer));
     this.input.on(Phaser.Input.Events.POINTER_WHEEL, () => warrior.managePointerWheel());
   }
