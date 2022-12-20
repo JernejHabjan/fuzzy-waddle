@@ -32,6 +32,7 @@ export class MapDefinitions {
 
   static tilemapMapName = 'map';
   static tilemapMapJson = 'assets/probable-waffle/tilemaps/start-small.json';
+  // static tilemapMapJson = 'assets/probable-waffle/tilemaps/start-large.json'; big map
 
   static atlasSuffix = '-atlas';
   static atlasMegaset = 'megaset-0';
