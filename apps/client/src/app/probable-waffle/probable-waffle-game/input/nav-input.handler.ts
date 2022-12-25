@@ -5,8 +5,9 @@ import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../manual-t
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { MapNavHelper } from '../map/map-nav-helper';
-import Tween = Phaser.Tweens.Tween;
 import { Warrior1 } from '../characters/warrior1';
+import { IsoAngleToAnimDirectionEnum } from '../animation/lpc-animation-helper';
+import Tween = Phaser.Tweens.Tween;
 
 export class NavInputHandler {
   constructor(
@@ -72,6 +73,7 @@ export class NavInputHandler {
       const offsetByCharacterCenter = MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
 
       // todo store this tween to selection so we can cancel it if needed
+      selection.isMoving = true;
       this.scene.tweens.add({
         targets: selection,
         x: tileWorldXYCenterWithOffset.x,
@@ -81,6 +83,16 @@ export class NavInputHandler {
         yoyo: false,
         repeat: 0,
         onUpdate: (tween: Tween) => {
+          const direction = Phaser.Math.Angle.BetweenPoints(
+            prevNavTile.tileWorldData.tileXY,
+            currentNavTile.tileWorldData.tileXY
+          );
+          // get iso angle (one of 8 directions)
+          const isoAngle = Phaser.Math.RadToDeg(direction);
+          const isoAngleRounded = Math.round(isoAngle / 45) * 45;
+
+
+          selection.move(IsoAngleToAnimDirectionEnum[isoAngleRounded.toString()]);
           this.handleSpriteUnderWaterCropping(
             tween,
             selection,
@@ -94,6 +106,8 @@ export class NavInputHandler {
           prevNavTile = currentNavTile;
           selection.tilePlacementData.tileXY = currentNavTile.tileWorldData.tileXY; // update selection
           selection.tilePlacementData.z = currentNavTile.tileWorldData.z; // update selection
+
+          selection.isMoving = false;
 
           addTween(i + 1);
         }

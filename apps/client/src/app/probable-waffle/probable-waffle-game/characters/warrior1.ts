@@ -1,11 +1,5 @@
 import * as Phaser from 'phaser';
-import {
-  AnimDirection,
-  AnimDirectionEnum,
-  LpcAnimationHelper,
-  LPCAnimType,
-  LPCAnimTypeEnum
-} from '../animation/lpc-animation-helper';
+import { AnimDirection, AnimDirectionEnum, LPCAnimType, LPCAnimTypeEnum } from '../animation/lpc-animation-helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { SpriteHelper } from '../sprite/sprite-helper';
 import ComponentService from '../services/component.service';
@@ -22,15 +16,14 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
     }
   };
 
-  // currentDir = AnimDirectionEnum.south;
-  // currentAnimGroup = LPCAnimTypeEnum.walk;
-
-  currentDir = 2; // south
-  currentAnimGroup = 0; // first one is idle
+  currentDir = AnimDirectionEnum.south;
+  currentAnimGroup = LPCAnimTypeEnum.walk;
   isIdle = false;
   tilePlacementData!: TilePlacementData;
 
   components = new ComponentService();
+  isMoving = false;
+
   private knightStateMachine!: StateMachine;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -63,7 +56,7 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
         onUpdate: this.knightIdleUpdate
       })
       .addState('run', {
-        onEnter: this.knightOnEnter,
+        onEnter: this.knightRunEnter,
         onUpdate: this.knightRunUpdate
       })
       .addState('attack', {
@@ -71,44 +64,43 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
       });
 
     this.knightStateMachine.setState('idle');
-    this.playAnim(); // todo outdated because of state machine
   }
 
   playAnim() {
     // todo outdated?
-    const animKeys = LpcAnimationHelper.animKeys;
-    const currentAnimations = [
-      animKeys[this.currentAnimGroup * 4], // north
-      animKeys[this.currentAnimGroup * 4 + 1], // west
-      animKeys[this.currentAnimGroup * 4 + 2], // south
-      animKeys[this.currentAnimGroup * 4 + 3] // east
-    ];
-
-    const [animType, animDir] = currentAnimations[this.currentDir];
-    Warrior1.playAnimation(this, animType, animDir, this.isIdle);
-    console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
+    // const animKeys = LpcAnimationHelper.animKeys;
+    // const currentAnimations = [
+    //   animKeys[this.currentAnimGroup * 4], // north
+    //   animKeys[this.currentAnimGroup * 4 + 1], // west
+    //   animKeys[this.currentAnimGroup * 4 + 2], // south
+    //   animKeys[this.currentAnimGroup * 4 + 3] // east
+    // ];
+    //
+    // const [animType, animDir] = currentAnimations[this.currentDir];
+    // Warrior1.playAnimation(this, animType, animDir, this.isIdle);
+    // console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
   }
 
   managePointerClick(pointer: Phaser.Input.Pointer) {
     // if right click
-    if (pointer.rightButtonDown()) {
-      this.isIdle = !this.isIdle; // toggle
-      return;
-    }
-    this.currentAnimGroup++;
-    const animKeys = LpcAnimationHelper.animKeys;
-    if (this.currentAnimGroup * 4 >= animKeys.length) {
-      this.currentAnimGroup = 0;
-    }
-    this.playAnim();
+    // if (pointer.rightButtonDown()) {
+    //   this.isIdle = !this.isIdle; // toggle
+    //   return;
+    // }
+    // this.currentAnimGroup++;
+    // const animKeys = LpcAnimationHelper.animKeys;
+    // if (this.currentAnimGroup * 4 >= animKeys.length) {
+    //   this.currentAnimGroup = 0;
+    // }
+    // this.playAnim();
   }
 
   managePointerWheel() {
-    this.currentDir += 1;
-    if (this.currentDir >= 4) {
-      this.currentDir = 0;
-    }
-    this.playAnim();
+    // this.currentDir += 1;
+    // if (this.currentDir >= 4) {
+    //   this.currentDir = 0;
+    // }
+    // this.playAnim();
   }
 
   private lateUpdate(time: number, delta: number) {
@@ -120,21 +112,23 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   }
 
   private knightIdleEnter() {
-    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
+    Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
     // this.setVelocityX(0) // todo remove navigation tween
   }
 
   private knightIdleUpdate() {
-    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
+    Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
   }
 
-  private knightOnEnter() {
-    // this.currentAnimGroup = LPCAnimTypeEnum.walk;
-    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
+  private knightRunEnter() {
+    this.currentAnimGroup = LPCAnimTypeEnum.walk;
+    Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
   }
 
   private knightRunUpdate() {
-    const isMoving = false; // todo
+    if (this.isMoving) {
+      return;
+    }
     const isAttacking = false; // todo
     if (isAttacking) {
       this.knightStateMachine.setState('attack');
@@ -155,8 +149,8 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   }
 
   private knightAttackEnter() {
-    // this.currentAnimGroup = LPCAnimTypeEnum.thrust; // todo thrust
-    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
+    this.currentAnimGroup = LPCAnimTypeEnum.thrust; // todo thrust
+    Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
 
     // todo this.setVelocityX(0)
 
@@ -184,5 +178,15 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
       // this.swordHitbox.body.enable = false;
       // this.physics.world.remove(this.swordHitbox.body);
     });
+  }
+
+  move(dir: AnimDirection) {
+    const prevDir = this.currentDir;
+    this.currentDir = dir;
+    // if state is "run" and currentDir is different, then change direction
+    if (this.knightStateMachine.isCurrentState('run') && prevDir !== dir) {
+      this.knightRunEnter();
+    }
+    this.knightStateMachine.setState('run');
   }
 }

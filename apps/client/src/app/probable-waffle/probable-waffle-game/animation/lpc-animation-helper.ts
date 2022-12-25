@@ -5,6 +5,17 @@ export enum AnimDirectionEnum {
   west = 'west'
 }
 
+export const IsoAngleToAnimDirectionEnum:Record<string,AnimDirection> = {
+  '-135': AnimDirectionEnum.north, // up
+  '-90': AnimDirectionEnum.east, // right up
+  '-45': AnimDirectionEnum.east, // right
+  '0': AnimDirectionEnum.east, // right down
+  '45': AnimDirectionEnum.south, // down
+  '90': AnimDirectionEnum.west, // left down
+  '135': AnimDirectionEnum.west, // left
+  '180': AnimDirectionEnum.west // left up
+};
+
 export enum LPCAnimTypeEnum {
   spellCast = 'spellCast',
   thrust = 'thrust',
