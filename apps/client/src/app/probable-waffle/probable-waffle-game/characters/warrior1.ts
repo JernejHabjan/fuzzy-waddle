@@ -6,7 +6,11 @@ import ComponentService from '../services/component.service';
 import UiBarComponent from '../hud/ui-bar-component';
 import { StateMachine } from '../animation/state-machine';
 import { CharacterNavigationComponent } from './character-navigation-component';
+import { CharacterSoundComponent } from './character-sound-component';
 
+export enum Warrior1SoundEnum {
+  'move' = 'move'
+}
 export class Warrior1 extends Phaser.GameObjects.Sprite {
   static readonly textureName = 'warrior1';
   static readonly spriteSheet = {
@@ -22,16 +26,18 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   isIdle = false;
   tilePlacementData!: TilePlacementData;
 
-  components!:ComponentService;
+  components!: ComponentService;
   isMoving = false;
 
   private knightStateMachine!: StateMachine;
+  private characterSoundComponent!: CharacterSoundComponent;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, Warrior1.textureName);
-    this.components= new ComponentService(this);
+    this.components = new ComponentService(this);
     this.components.addComponent(new UiBarComponent());
-    this.components.addComponent(new CharacterNavigationComponent(scene));
+    this.components.addComponent(new CharacterNavigationComponent());
+    this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent());
 
     scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
     scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -59,7 +65,8 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
       })
       .addState('run', {
         onEnter: this.knightRunEnter,
-        onUpdate: this.knightRunUpdate
+        onUpdate: this.knightRunUpdate,
+        onExit: this.knightRunExit
       })
       .addState('attack', {
         onEnter: this.knightAttackEnter
@@ -125,6 +132,11 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   private knightRunEnter() {
     this.currentAnimGroup = LPCAnimTypeEnum.walk;
     Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
+    this.playRunSound();
+  }
+
+  private playRunSound() {
+    this.characterSoundComponent.play(Warrior1SoundEnum.move, true);
   }
 
   private knightRunUpdate() {
@@ -135,19 +147,23 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
     if (isAttacking) {
       this.knightStateMachine.setState('attack');
     }
-      // todo else if (isMoving)
-      // todo {
-      // todo   this.knight.setVelocityX(-300)
-      // todo   this.knight.flipX = true
-      // todo }
-      // todo else if (isMoving)
-      // todo {
-      // todo   this.knight.flipX = false
-      // todo   this.knight.setVelocityX(300)
+    // todo else if (isMoving)
+    // todo {
+    // todo   this.knight.setVelocityX(-300)
+    // todo   this.knight.flipX = true
+    // todo }
+    // todo else if (isMoving)
+    // todo {
+    // todo   this.knight.flipX = false
+    // todo   this.knight.setVelocityX(300)
     // todo }
     else {
       this.knightStateMachine.setState('idle');
     }
+  }
+
+  private knightRunExit() {
+    this.characterSoundComponent.stop(Warrior1SoundEnum.move);
   }
 
   private knightAttackEnter() {

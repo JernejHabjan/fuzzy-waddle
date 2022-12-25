@@ -27,7 +27,7 @@ import { StaticObjectHelper } from '../placable-objects/static-object';
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
-import { Warrior1 } from '../characters/warrior1';
+import { Warrior1, Warrior1SoundEnum } from '../characters/warrior1';
 import { SpriteHelper } from '../sprite/sprite-helper';
 import { GameObjectsHelper } from '../map/game-objects-helper';
 import { LpcAnimationHelper } from '../animation/lpc-animation-helper';
@@ -73,7 +73,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
   private warrior1Group!: Phaser.GameObjects.Group;
-  private animHelper!:LpcAnimationHelper;
+  private animHelper!: LpcAnimationHelper;
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -113,11 +113,17 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       'assets/probable-waffle/spritesheets/' + Warrior1.spriteSheet.name + '.png',
       Warrior1.spriteSheet.frameConfig
     );
+
+    this.load.audio(Warrior1SoundEnum.move, 'assets/probable-waffle/sfx/character/move/footstep.mp3');
   }
 
   create() {
     this.animHelper = new LpcAnimationHelper(this.anims);
-    this.animHelper.createAnimationsForLPCSpriteSheet(Warrior1.spriteSheet.name)
+    this.animHelper.createAnimationsForLPCSpriteSheet(Warrior1.spriteSheet.name);
+    // iterate over Warrior1SoundEnum and load all sounds
+    Object.values(Warrior1SoundEnum).forEach((sound) => {
+      this.sound.add(sound);
+    });
 
     // navigable map
     this.mapHelper = new MapHelper();

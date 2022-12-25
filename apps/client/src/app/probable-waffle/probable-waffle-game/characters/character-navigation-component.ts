@@ -13,13 +13,10 @@ export class CharacterNavigationComponent implements IComponent {
   private path?: TilePlacementWorldWithProperties[];
   private currentNavTween?: Phaser.Tweens.Tween;
 
-  constructor(private scene: Phaser.Scene) {
-  }
-
-  init(gameObject: Warrior1) { // todo!!!
+  init(gameObject: Warrior1) {
+    // todo!!!
     this.gameObject = gameObject;
   }
-
 
   /**
    * todo replace tweens with something else?
@@ -31,7 +28,7 @@ export class CharacterNavigationComponent implements IComponent {
     this.startNav();
   }
 
-  cancelMove(){
+  cancelMove() {
     if (this.currentNavTween) {
       this.currentNavTween.stop();
       this.currentNavTween = undefined;
@@ -39,6 +36,7 @@ export class CharacterNavigationComponent implements IComponent {
   }
 
   private startNav() {
+    const { scene } = this.gameObject;
     const path = this.path;
     if (!path) {
       return;
@@ -70,7 +68,7 @@ export class CharacterNavigationComponent implements IComponent {
 
       // todo store this tween to selection so we can cancel it if needed
       this.gameObject.isMoving = true;
-      this.currentNavTween = this.scene.tweens.add({
+      this.currentNavTween = scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXYCenterWithOffset.x,
         y: tileWorldXYCenterWithOffset.y - offsetByCharacterCenter,
@@ -86,7 +84,6 @@ export class CharacterNavigationComponent implements IComponent {
           // get iso angle (one of 8 directions)
           const isoAngle = Phaser.Math.RadToDeg(direction);
           const isoAngleRounded = Math.round(isoAngle / 45) * 45;
-
 
           this.gameObject.move(IsoAngleToAnimDirectionEnum[isoAngleRounded.toString()]);
           this.handleSpriteUnderWaterCropping(
@@ -112,7 +109,6 @@ export class CharacterNavigationComponent implements IComponent {
 
     addTween(1);
   }
-
 
   /**
    * todo this is a bit hackish
