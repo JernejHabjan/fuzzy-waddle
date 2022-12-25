@@ -14,6 +14,8 @@ type TileType = 'flat' | 'water' | 'slopes' | 'blocks' | 'other';
   styleUrls: ['./editor-drawer.component.scss']
 })
 export class EditorDrawerComponent implements OnInit, OnDestroy {
+  editorVisible = false;
+  showObjectPlacement = false;
   MapDefinitions = MapDefinitions;
   nrReplacedTiles = SceneCommunicatorService.DEFAULT_TILE_REPLACE;
   layerNr = SceneCommunicatorService.DEFAULT_LAYER;
