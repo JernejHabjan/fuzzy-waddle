@@ -23,7 +23,7 @@ import { Vector2Simple } from '../math/intersection';
 import { MapPropertiesHelper } from '../map/map-properties-helper';
 import { MapHelper } from '../map/map-helper';
 import { LayerLines } from '../map/layer-lines';
-import { PlacedGameObject, StaticObjectHelper } from '../placable-objects/static-object';
+import { StaticObjectHelper } from '../placable-objects/static-object';
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';

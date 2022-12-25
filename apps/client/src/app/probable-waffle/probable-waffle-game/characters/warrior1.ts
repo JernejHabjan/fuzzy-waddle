@@ -3,6 +3,8 @@ import { AnimationHelper, AnimDirection, LPCAnimType } from '../animation/animat
 import { gameScene } from '../const/game-scene';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { SpriteHelper } from '../sprite/sprite-helper';
+import ComponentService from '../services/component.service';
+import UiBarComponent from '../hud/ui-bar-component';
 
 export class Warrior1 extends Phaser.GameObjects.Sprite {
   static readonly textureName = 'warrior1';
@@ -20,8 +22,17 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   private animKeys!: [LPCAnimType, AnimDirection][];
   tilePlacementData!: TilePlacementData;
 
+  components = new ComponentService();
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, Warrior1.textureName);
+
+    this.components.addComponent(this, new UiBarComponent());
+
+    scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this)
+    scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+      scene.events.off(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
+      this.components.destroy();
+    });
   }
 
   createCallback(tilePlacementData: TilePlacementData) {
@@ -70,5 +81,9 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
       this.currentDir = 0;
     }
     this.playAnim();
+  }
+
+  private lateUpdate(time:number, delta:number){
+    this.components.update(time, delta);
   }
 }
