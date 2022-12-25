@@ -1,9 +1,16 @@
 import * as Phaser from 'phaser';
-import { AnimDirection, LpcAnimationHelper, LPCAnimType } from '../animation/lpc-animation-helper';
+import {
+  AnimDirection,
+  AnimDirectionEnum,
+  LpcAnimationHelper,
+  LPCAnimType,
+  LPCAnimTypeEnum
+} from '../animation/lpc-animation-helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { SpriteHelper } from '../sprite/sprite-helper';
 import ComponentService from '../services/component.service';
 import UiBarComponent from '../hud/ui-bar-component';
+import { StateMachine } from '../animation/state-machine';
 
 export class Warrior1 extends Phaser.GameObjects.Sprite {
   static readonly textureName = 'warrior1';
@@ -15,12 +22,16 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
     }
   };
 
+  // currentDir = AnimDirectionEnum.south;
+  // currentAnimGroup = LPCAnimTypeEnum.walk;
+
   currentDir = 2; // south
   currentAnimGroup = 0; // first one is idle
   isIdle = false;
   tilePlacementData!: TilePlacementData;
 
   components = new ComponentService();
+  private knightStateMachine!: StateMachine;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, Warrior1.textureName);
@@ -45,10 +56,26 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
     this.depth = spriteWorldPlacementInfo.depth;
 
     this.setInteractive();
-    this.playAnim();
+
+    this.knightStateMachine = new StateMachine(this, 'knight') // todo some unique id?
+      .addState('idle', {
+        onEnter: this.knightIdleEnter,
+        onUpdate: this.knightIdleUpdate
+      })
+      .addState('run', {
+        onEnter: this.knightOnEnter,
+        onUpdate: this.knightRunUpdate
+      })
+      .addState('attack', {
+        onEnter: this.knightAttackEnter
+      });
+
+    this.knightStateMachine.setState('idle');
+    this.playAnim(); // todo outdated because of state machine
   }
 
   playAnim() {
+    // todo outdated?
     const animKeys = LpcAnimationHelper.animKeys;
     const currentAnimations = [
       animKeys[this.currentAnimGroup * 4], // north
@@ -59,9 +86,8 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
 
     const [animType, animDir] = currentAnimations[this.currentDir];
     Warrior1.playAnimation(this, animType, animDir, this.isIdle);
-    // console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
+    console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
   }
-
 
   managePointerClick(pointer: Phaser.Input.Pointer) {
     // if right click
@@ -87,5 +113,76 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
 
   private lateUpdate(time: number, delta: number) {
     this.components.update(time, delta);
+  }
+
+  override update(t: number, dt: number) {
+    this.knightStateMachine.update(dt);
+  }
+
+  private knightIdleEnter() {
+    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
+    // this.setVelocityX(0) // todo remove navigation tween
+  }
+
+  private knightIdleUpdate() {
+    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
+  }
+
+  private knightOnEnter() {
+    // this.currentAnimGroup = LPCAnimTypeEnum.walk;
+    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
+  }
+
+  private knightRunUpdate() {
+    const isMoving = false; // todo
+    const isAttacking = false; // todo
+    if (isAttacking) {
+      this.knightStateMachine.setState('attack');
+    }
+      // todo else if (isMoving)
+      // todo {
+      // todo   this.knight.setVelocityX(-300)
+      // todo   this.knight.flipX = true
+      // todo }
+      // todo else if (isMoving)
+      // todo {
+      // todo   this.knight.flipX = false
+      // todo   this.knight.setVelocityX(300)
+    // todo }
+    else {
+      this.knightStateMachine.setState('idle');
+    }
+  }
+
+  private knightAttackEnter() {
+    // this.currentAnimGroup = LPCAnimTypeEnum.thrust; // todo thrust
+    // Warrior1.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
+
+    // todo this.setVelocityX(0)
+
+    // TODO: move sword swing hitbox into place
+    // does it need to start part way into the animation?
+    const startHit = (anim: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame) => {
+      if (frame.index != 5) {
+        // todo
+        return;
+      }
+
+      this.off(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
+
+      console.log('attacked');
+    };
+
+    this.on(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
+
+    this.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY, (a: unknown, b: unknown) => {
+      // todo
+      console.log('animation complete', a, b);
+      this.knightStateMachine.setState('idle');
+
+      // TODO: hide and remove the sword swing hitbox
+      // this.swordHitbox.body.enable = false;
+      // this.physics.world.remove(this.swordHitbox.body);
+    });
   }
 }

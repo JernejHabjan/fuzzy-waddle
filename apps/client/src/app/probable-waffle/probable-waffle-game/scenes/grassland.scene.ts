@@ -303,6 +303,10 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   override update(time: number, delta: number) {
     super.update(time, delta);
     this.inputHandler.update(time, delta);
+    this.warrior1Group.children.iterate((child: Phaser.GameObjects.GameObject) => {
+      child.update(time, delta);
+      return true;
+    });
   }
 
   private destroyListener() {
