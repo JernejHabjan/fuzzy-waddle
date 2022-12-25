@@ -1,17 +1,28 @@
 import * as Phaser from 'phaser';
-import { AnimDirection, AnimDirectionEnum, LPCAnimType, LPCAnimTypeEnum } from '../animation/lpc-animation-helper';
+import {
+  AnimDirection,
+  AnimDirectionEnum,
+  IsoAngleToAnimDirectionEnum,
+  LPCAnimType,
+  LPCAnimTypeEnum
+} from '../animation/lpc-animation-helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { SpriteHelper } from '../sprite/sprite-helper';
 import ComponentService from '../services/component.service';
 import UiBarComponent from '../hud/ui-bar-component';
 import { StateMachine } from '../animation/state-machine';
-import { CharacterNavigationComponent } from './character-navigation-component';
+import { CharacterNavigationComponent, MoveEventTypeEnum } from './character-navigation-component';
 import { CharacterSoundComponent } from './character-sound-component';
 
 export enum Warrior1SoundEnum {
   'move' = 'move'
 }
-export class Warrior1 extends Phaser.GameObjects.Sprite {
+
+export interface PlaceableCharacter {
+  tilePlacementData: TilePlacementData;
+}
+
+export class Warrior1 extends Phaser.GameObjects.Sprite implements PlaceableCharacter {
   static readonly textureName = 'warrior1';
   static readonly spriteSheet = {
     name: Warrior1.textureName,
@@ -36,7 +47,9 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
     super(scene, x, y, Warrior1.textureName);
     this.components = new ComponentService(this);
     this.components.addComponent(new UiBarComponent());
-    this.components.addComponent(new CharacterNavigationComponent());
+    const characterNavComponent = this.components.addComponent(
+      new CharacterNavigationComponent()
+    ) as CharacterNavigationComponent;
     this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent());
 
     scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
@@ -44,6 +57,11 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
       scene.events.off(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
       this.components.destroy();
     });
+    characterNavComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_START, () => (this.isMoving = true));
+    characterNavComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_END, () => (this.isMoving = false));
+    characterNavComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_PROGRESS, (isoAngleRounded: number) =>
+      this.playMoveAnim(IsoAngleToAnimDirectionEnum[isoAngleRounded.toString()])
+    );
   }
 
   static playAnimation(sprite: Phaser.GameObjects.Sprite, animName: LPCAnimType, dir: AnimDirection, idle: boolean) {
@@ -198,7 +216,7 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
     });
   }
 
-  move(dir: AnimDirection) {
+  playMoveAnim(dir: AnimDirection) {
     const prevDir = this.currentDir;
     this.currentDir = dir;
     // if state is "run" and currentDir is different, then change direction

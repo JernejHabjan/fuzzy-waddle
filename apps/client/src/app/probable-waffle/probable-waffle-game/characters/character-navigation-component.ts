@@ -1,19 +1,25 @@
-import { Warrior1 } from './warrior1';
+import { PlaceableCharacter } from './warrior1';
 import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { MapSizeInfo } from '../const/map-size.info';
 import * as Phaser from 'phaser';
-import { IsoAngleToAnimDirectionEnum } from '../animation/lpc-animation-helper';
-import Tween = Phaser.Tweens.Tween;
 import { Vector2Simple } from '../math/intersection';
 import { IComponent } from '../services/component.service';
+import Tween = Phaser.Tweens.Tween;
+
+export enum MoveEventTypeEnum {
+  MOVE_START = 'move-start',
+  MOVE_END = 'move-end',
+  MOVE_PROGRESS = 'move-progress'
+}
 
 export class CharacterNavigationComponent implements IComponent {
-  private gameObject!: Warrior1; // todo!!! replace with interfaces -> for example Phaser.GameObjects.Sprite & NavigationComponent...
+  private gameObject!: Phaser.GameObjects.Sprite & PlaceableCharacter;
   private path?: TilePlacementWorldWithProperties[];
   private currentNavTween?: Phaser.Tweens.Tween;
+  moveEventEmitter = new Phaser.Events.EventEmitter();
 
-  init(gameObject: Warrior1) {
+  init(gameObject: Phaser.GameObjects.Sprite & PlaceableCharacter) {
     // todo!!!
     this.gameObject = gameObject;
   }
@@ -66,8 +72,8 @@ export class CharacterNavigationComponent implements IComponent {
 
       const offsetByCharacterCenter = MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
 
-      // todo store this tween to selection so we can cancel it if needed
-      this.gameObject.isMoving = true;
+      this.moveEventEmitter.emit(MoveEventTypeEnum.MOVE_START);
+
       this.currentNavTween = scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXYCenterWithOffset.x,
@@ -85,7 +91,9 @@ export class CharacterNavigationComponent implements IComponent {
           const isoAngle = Phaser.Math.RadToDeg(direction);
           const isoAngleRounded = Math.round(isoAngle / 45) * 45;
 
-          this.gameObject.move(IsoAngleToAnimDirectionEnum[isoAngleRounded.toString()]);
+          // notify move
+          this.moveEventEmitter.emit(MoveEventTypeEnum.MOVE_PROGRESS, isoAngleRounded);
+
           this.handleSpriteUnderWaterCropping(
             tween,
             this.gameObject,
@@ -100,7 +108,7 @@ export class CharacterNavigationComponent implements IComponent {
           this.gameObject.tilePlacementData.tileXY = currentNavTile.tileWorldData.tileXY; // update selection
           this.gameObject.tilePlacementData.z = currentNavTile.tileWorldData.z; // update selection
 
-          this.gameObject.isMoving = false;
+          this.moveEventEmitter.emit(MoveEventTypeEnum.MOVE_END);
 
           addTween(i + 1);
         }
