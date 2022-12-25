@@ -28,12 +28,35 @@ export type LPCAnimType =
   | LPCAnimTypeEnum.shoot
   | LPCAnimTypeEnum.hurt;
 
-export class AnimationHelper {
+export class LpcAnimationHelper {
   constructor(private animationManager: Phaser.Animations.AnimationManager) {}
 
-  static playAnimation(sprite: Phaser.GameObjects.Sprite, animName: LPCAnimType, dir: AnimDirection, idle: boolean) {
-    sprite.play(`${animName}-${dir}` + (idle ? '-idle' : ''));
-  }
+  static animKeys:[LPCAnimType, AnimDirection][] = [
+    [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north],
+    [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.west],
+    [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.south],
+    [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.east],
+    [LPCAnimTypeEnum.thrust, AnimDirectionEnum.north],
+    [LPCAnimTypeEnum.thrust, AnimDirectionEnum.west],
+    [LPCAnimTypeEnum.thrust, AnimDirectionEnum.south],
+    [LPCAnimTypeEnum.thrust, AnimDirectionEnum.east],
+    [LPCAnimTypeEnum.walk, AnimDirectionEnum.north],
+    [LPCAnimTypeEnum.walk, AnimDirectionEnum.west],
+    [LPCAnimTypeEnum.walk, AnimDirectionEnum.south],
+    [LPCAnimTypeEnum.walk, AnimDirectionEnum.east],
+    [LPCAnimTypeEnum.slash, AnimDirectionEnum.north],
+    [LPCAnimTypeEnum.slash, AnimDirectionEnum.west],
+    [LPCAnimTypeEnum.slash, AnimDirectionEnum.south],
+    [LPCAnimTypeEnum.slash, AnimDirectionEnum.east],
+    [LPCAnimTypeEnum.shoot, AnimDirectionEnum.north],
+    [LPCAnimTypeEnum.shoot, AnimDirectionEnum.west],
+    [LPCAnimTypeEnum.shoot, AnimDirectionEnum.south],
+    [LPCAnimTypeEnum.shoot, AnimDirectionEnum.east],
+    [LPCAnimTypeEnum.hurt, AnimDirectionEnum.north],
+    [LPCAnimTypeEnum.hurt, AnimDirectionEnum.west],
+    [LPCAnimTypeEnum.hurt, AnimDirectionEnum.south],
+    [LPCAnimTypeEnum.hurt, AnimDirectionEnum.east]
+  ];
 
   private createAnim(
     textureName: string,
@@ -70,7 +93,7 @@ export class AnimationHelper {
     });
   }
 
-  createAnimationsForLPCSpriteSheet(textureName: string): [LPCAnimType, AnimDirection][] {
+  createAnimationsForLPCSpriteSheet(textureName: string) {
     // 7 frames
     this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north, 0, 7, { frame: 0 });
     this.createAnim(textureName, LPCAnimTypeEnum.spellCast, AnimDirectionEnum.west, 13, 7, { frame: 13 });
@@ -107,33 +130,6 @@ export class AnimationHelper {
     this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.west, 260, 6, { frame: 260 + 6 - 1 });
     this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.south, 260, 6, { frame: 260 + 6 - 1 });
     this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.east, 260, 6, { frame: 260 + 6 - 1 });
-
-    return [
-      [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north],
-      [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.west],
-      [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.south],
-      [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.east],
-      [LPCAnimTypeEnum.thrust, AnimDirectionEnum.north],
-      [LPCAnimTypeEnum.thrust, AnimDirectionEnum.west],
-      [LPCAnimTypeEnum.thrust, AnimDirectionEnum.south],
-      [LPCAnimTypeEnum.thrust, AnimDirectionEnum.east],
-      [LPCAnimTypeEnum.walk, AnimDirectionEnum.north],
-      [LPCAnimTypeEnum.walk, AnimDirectionEnum.west],
-      [LPCAnimTypeEnum.walk, AnimDirectionEnum.south],
-      [LPCAnimTypeEnum.walk, AnimDirectionEnum.east],
-      [LPCAnimTypeEnum.slash, AnimDirectionEnum.north],
-      [LPCAnimTypeEnum.slash, AnimDirectionEnum.west],
-      [LPCAnimTypeEnum.slash, AnimDirectionEnum.south],
-      [LPCAnimTypeEnum.slash, AnimDirectionEnum.east],
-      [LPCAnimTypeEnum.shoot, AnimDirectionEnum.north],
-      [LPCAnimTypeEnum.shoot, AnimDirectionEnum.west],
-      [LPCAnimTypeEnum.shoot, AnimDirectionEnum.south],
-      [LPCAnimTypeEnum.shoot, AnimDirectionEnum.east],
-      [LPCAnimTypeEnum.hurt, AnimDirectionEnum.north],
-      [LPCAnimTypeEnum.hurt, AnimDirectionEnum.west],
-      [LPCAnimTypeEnum.hurt, AnimDirectionEnum.south],
-      [LPCAnimTypeEnum.hurt, AnimDirectionEnum.east]
-    ];
   }
 
 }

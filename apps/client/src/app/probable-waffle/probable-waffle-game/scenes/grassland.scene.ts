@@ -27,10 +27,10 @@ import { StaticObjectHelper } from '../placable-objects/static-object';
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
-import { gameScene } from '../const/game-scene';
 import { Warrior1 } from '../characters/warrior1';
 import { SpriteHelper } from '../sprite/sprite-helper';
 import { GameObjectsHelper } from '../map/game-objects-helper';
+import { LpcAnimationHelper } from '../animation/lpc-animation-helper';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -73,6 +73,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
   private warrior1Group!: Phaser.GameObjects.Group;
+  private animHelper!:LpcAnimationHelper;
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -115,7 +116,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   }
 
   create() {
-    gameScene.start();
+    this.animHelper = new LpcAnimationHelper(this.anims);
+    this.animHelper.createAnimationsForLPCSpriteSheet(Warrior1.spriteSheet.name)
 
     // navigable map
     this.mapHelper = new MapHelper();
@@ -138,7 +140,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.dynamicObjectHelper.createDynamicObjectLayer();
 
     // input handling
-    gameScene.initAnims(this.anims);
     this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
     this.inputHandler = new InputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this.input);
