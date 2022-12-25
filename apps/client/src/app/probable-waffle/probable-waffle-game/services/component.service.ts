@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export type Constructor<T extends {} = {}> = new (...args: any[]) => T;
+export type Constructor<T extends Record<string, any> = object> = new (...args: any[]) => T;
 
 export interface IComponent {
   init(gameObject: Phaser.GameObjects.GameObject): void;
@@ -12,27 +12,32 @@ export interface IComponent {
 }
 
 export default class ComponentService {
+  private readonly gameObject: Phaser.GameObjects.GameObject;
 
-  private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObject.name
-  private queuedForStart: IComponent[] = [];
-
-  addComponent<T extends IComponent>(gameObject: Phaser.GameObjects.GameObject, component: IComponent): T {
+  constructor(gameObject: Phaser.GameObjects.GameObject) {
+    this.gameObject = gameObject;
     // give our gameObjects a unique name
     if (!gameObject.name) {
       gameObject.name = uuidv4();
     }
+  }
+
+  private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObject.name
+  private queuedForStart: IComponent[] = [];
+
+  addComponent<T extends IComponent>(component: IComponent): T {
     // make sure we have a list of components for this gameObject
-    if (!this.componentsByGameObject.has(gameObject.name)) {
-      this.componentsByGameObject.set(gameObject.name, []);
+    if (!this.componentsByGameObject.has(this.gameObject.name)) {
+      this.componentsByGameObject.set(this.gameObject.name, []);
     }
 
     // add new component to this list
-    const list = this.componentsByGameObject.get(gameObject.name) as IComponent[];
+    const list = this.componentsByGameObject.get(this.gameObject.name) as IComponent[];
     list.push(component);
 
     // call lifecycle hooks
 
-    component.init(gameObject);
+    component.init(this.gameObject);
 
     if (component.awake) {
       component.awake();
@@ -45,13 +50,9 @@ export default class ComponentService {
     return component as T;
   }
 
-  findComponent<T extends IComponent>(gameObject: Phaser.GameObjects.GameObject, component: Constructor<T>): T | null {
-    const components = this.componentsByGameObject.get(gameObject.name);
-    if (!components) {
-      return null;
-    }
-
-    return components.find(c => c instanceof component) as T;
+  findComponent<T extends IComponent>(component: Constructor<T>): T | undefined {
+    const components = this.componentsByGameObject.get(this.gameObject.name) as IComponent[];
+    return components.find((c) => c instanceof component) as T | undefined;
   }
 
 

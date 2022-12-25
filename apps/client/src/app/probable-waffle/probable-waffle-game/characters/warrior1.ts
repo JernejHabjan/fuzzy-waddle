@@ -5,6 +5,7 @@ import { SpriteHelper } from '../sprite/sprite-helper';
 import ComponentService from '../services/component.service';
 import UiBarComponent from '../hud/ui-bar-component';
 import { StateMachine } from '../animation/state-machine';
+import { CharacterNavigationComponent } from './character-navigation-component';
 
 export class Warrior1 extends Phaser.GameObjects.Sprite {
   static readonly textureName = 'warrior1';
@@ -21,15 +22,16 @@ export class Warrior1 extends Phaser.GameObjects.Sprite {
   isIdle = false;
   tilePlacementData!: TilePlacementData;
 
-  components = new ComponentService();
+  components!:ComponentService;
   isMoving = false;
 
   private knightStateMachine!: StateMachine;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, Warrior1.textureName);
-
-    this.components.addComponent(this, new UiBarComponent());
+    this.components= new ComponentService(this);
+    this.components.addComponent(new UiBarComponent());
+    this.components.addComponent(new CharacterNavigationComponent(scene));
 
     scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
     scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
