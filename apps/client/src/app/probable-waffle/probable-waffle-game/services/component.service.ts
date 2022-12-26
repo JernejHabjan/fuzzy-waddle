@@ -25,7 +25,7 @@ export default class ComponentService {
   private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObject.name
   private queuedForStart: IComponent[] = [];
 
-  addComponent<T extends IComponent>(component: IComponent): T {
+  addComponent<T extends IComponent>(component: T): T {
     // make sure we have a list of components for this gameObject
     if (!this.componentsByGameObject.has(this.gameObject.name)) {
       this.componentsByGameObject.set(this.gameObject.name, []);
@@ -50,9 +50,13 @@ export default class ComponentService {
     return component as T;
   }
 
-  findComponent<T extends IComponent>(component: Constructor<T>): T | undefined {
+  findComponent<T extends IComponent>(component: Constructor<T>): T {
     const components = this.componentsByGameObject.get(this.gameObject.name) as IComponent[];
-    return components.find((c) => c instanceof component) as T | undefined;
+    const comp = components.find((c) => c instanceof component);
+    if(!comp) {
+      throw new Error(`Component ${component.name} not found`);
+    }
+    return comp as T;
   }
 
 

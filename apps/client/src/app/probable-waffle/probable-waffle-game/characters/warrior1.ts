@@ -34,22 +34,19 @@ export class Warrior1 extends Phaser.GameObjects.Sprite implements PlaceableChar
 
   currentDir = AnimDirectionEnum.south;
   currentAnimGroup = LPCAnimTypeEnum.walk;
-  isIdle = false;
   tilePlacementData!: TilePlacementData;
 
   components!: ComponentService;
-  isMoving = false;
 
   private knightStateMachine!: StateMachine;
   private characterSoundComponent!: CharacterSoundComponent;
+  private characterNavComponent!: CharacterNavigationComponent;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, Warrior1.textureName);
     this.components = new ComponentService(this);
     this.components.addComponent(new UiBarComponent());
-    const characterNavComponent = this.components.addComponent(
-      new CharacterNavigationComponent()
-    ) as CharacterNavigationComponent;
+    this.characterNavComponent = this.components.addComponent(new CharacterNavigationComponent());
     this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent());
 
     scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
@@ -57,9 +54,7 @@ export class Warrior1 extends Phaser.GameObjects.Sprite implements PlaceableChar
       scene.events.off(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
       this.components.destroy();
     });
-    characterNavComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_START, () => (this.isMoving = true));
-    characterNavComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_END, () => (this.isMoving = false));
-    characterNavComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_PROGRESS, (isoAngleRounded: number) =>
+    this.characterNavComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_PROGRESS, (isoAngleRounded: number) =>
       this.playMoveAnim(IsoAngleToAnimDirectionEnum[isoAngleRounded.toString()])
     );
   }
@@ -93,43 +88,6 @@ export class Warrior1 extends Phaser.GameObjects.Sprite implements PlaceableChar
     this.knightStateMachine.setState('idle');
   }
 
-  playAnim() {
-    // todo outdated?
-    // const animKeys = LpcAnimationHelper.animKeys;
-    // const currentAnimations = [
-    //   animKeys[this.currentAnimGroup * 4], // north
-    //   animKeys[this.currentAnimGroup * 4 + 1], // west
-    //   animKeys[this.currentAnimGroup * 4 + 2], // south
-    //   animKeys[this.currentAnimGroup * 4 + 3] // east
-    // ];
-    //
-    // const [animType, animDir] = currentAnimations[this.currentDir];
-    // Warrior1.playAnimation(this, animType, animDir, this.isIdle);
-    // console.log(`Playing: ${animType} - ${animDir} - ${this.isIdle ? 'idle' : 'not idle'}`);
-  }
-
-  managePointerClick(pointer: Phaser.Input.Pointer) {
-    // if right click
-    // if (pointer.rightButtonDown()) {
-    //   this.isIdle = !this.isIdle; // toggle
-    //   return;
-    // }
-    // this.currentAnimGroup++;
-    // const animKeys = LpcAnimationHelper.animKeys;
-    // if (this.currentAnimGroup * 4 >= animKeys.length) {
-    //   this.currentAnimGroup = 0;
-    // }
-    // this.playAnim();
-  }
-
-  managePointerWheel() {
-    // this.currentDir += 1;
-    // if (this.currentDir >= 4) {
-    //   this.currentDir = 0;
-    // }
-    // this.playAnim();
-  }
-
   private lateUpdate(time: number, delta: number) {
     this.components.update(time, delta);
   }
@@ -158,7 +116,7 @@ export class Warrior1 extends Phaser.GameObjects.Sprite implements PlaceableChar
   }
 
   private knightRunUpdate() {
-    if (this.isMoving) {
+    if (this.characterNavComponent.isMoving) {
       return;
     }
     const isAttacking = false; // todo

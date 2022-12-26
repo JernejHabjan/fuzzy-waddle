@@ -493,9 +493,5 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     const warrior = this.warrior1Group.create(spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y) as Warrior1;
     warrior.createCallback(tilePlacementData);
-    // todo this input pointerdown is just for demo
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => warrior.managePointerClick(pointer));
-    // todo this input pointerdown is just for demo
-    this.input.on(Phaser.Input.Events.POINTER_WHEEL, () => warrior.managePointerWheel());
   }
 }

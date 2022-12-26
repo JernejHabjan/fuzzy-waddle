@@ -18,6 +18,7 @@ export class CharacterNavigationComponent implements IComponent {
   private path?: TilePlacementWorldWithProperties[];
   private currentNavTween?: Phaser.Tweens.Tween;
   moveEventEmitter = new Phaser.Events.EventEmitter();
+  isMoving = false;
 
   init(gameObject: Phaser.GameObjects.Sprite & PlaceableCharacter) {
     // todo!!!
@@ -39,6 +40,17 @@ export class CharacterNavigationComponent implements IComponent {
       this.currentNavTween.stop();
       this.currentNavTween = undefined;
     }
+    this.isMoving = false;
+  }
+
+  private startMove() {
+    this.moveEventEmitter.emit(MoveEventTypeEnum.MOVE_START);
+    this.isMoving = true;
+  }
+
+  private stopMove() {
+    this.isMoving = false;
+    this.moveEventEmitter.emit(MoveEventTypeEnum.MOVE_END);
   }
 
   private startNav() {
@@ -48,6 +60,8 @@ export class CharacterNavigationComponent implements IComponent {
       return;
     }
     let prevNavTile = path[0];
+    this.startMove();
+
     const addTween = (i: number) => {
       if (i >= path.length) {
         return;
@@ -71,8 +85,6 @@ export class CharacterNavigationComponent implements IComponent {
       // this.sinkSpriteInWater(stepHeightPercentage, selection.spriteInstance);
 
       const offsetByCharacterCenter = MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
-
-      this.moveEventEmitter.emit(MoveEventTypeEnum.MOVE_START);
 
       this.currentNavTween = scene.tweens.add({
         targets: this.gameObject,
@@ -108,9 +120,11 @@ export class CharacterNavigationComponent implements IComponent {
           this.gameObject.tilePlacementData.tileXY = currentNavTile.tileWorldData.tileXY; // update selection
           this.gameObject.tilePlacementData.z = currentNavTile.tileWorldData.z; // update selection
 
-          this.moveEventEmitter.emit(MoveEventTypeEnum.MOVE_END);
-
-          addTween(i + 1);
+          if (i + 1 < path.length) {
+            addTween(i + 1);
+          } else {
+            this.stopMove();
+          }
         }
       });
     };

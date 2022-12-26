@@ -10,8 +10,8 @@ let idCount = 0
 
 export class StateMachine
 {
-  private id = (++idCount).toString()
-  private context?: object
+  private readonly id = (++idCount).toString()
+  private readonly context?: object
   private states = new Map<string, IState>()
 
   private previousState?: IState

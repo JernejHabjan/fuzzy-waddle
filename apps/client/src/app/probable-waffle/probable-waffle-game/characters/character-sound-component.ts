@@ -7,10 +7,6 @@ export class CharacterSoundComponent implements IComponent {
     this.gameObject = gameObject;
   }
 
-  start() {
-    // pass
-  }
-
   play(key: string, loop: boolean = false) {
     const { scene } = this.gameObject;
     if (scene.sound.locked) {
@@ -24,10 +20,6 @@ export class CharacterSoundComponent implements IComponent {
     if (!sound.isPlaying) {
       sound.play({ loop });
     }
-  }
-
-  update(time: number, delta: number) {
-    // pass
   }
 
   stop(key: string) {
