@@ -27,10 +27,12 @@ import { StaticObjectHelper } from '../placable-objects/static-object';
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
-import { Warrior1, Warrior1SoundEnum } from '../characters/warrior1';
+import { Warrior, WarriorSoundEnum, WarriorTextureMap } from '../characters/warrior';
 import { SpriteHelper } from '../sprite/sprite-helper';
 import { GameObjectsHelper } from '../map/game-objects-helper';
 import { LpcAnimationHelper } from '../animation/lpc-animation-helper';
+import { Pawn } from '../characters/pawn';
+import { Actor } from '../actor';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -63,7 +65,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
   private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
-  private selected: Warrior1[] = [];
+  private selected: Actor[] = [];
   private atlasToBePlaced: AtlasEmitValue | null = null;
   private warningText: Phaser.GameObjects.Text | null = null;
   private mapPropertiesHelper!: MapPropertiesHelper;
@@ -72,7 +74,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private layerLines!: LayerLines;
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
-  private warrior1Group!: Phaser.GameObjects.Group;
+  private warriorGroup: Pawn[] = [];
   private animHelper!: LpcAnimationHelper;
 
   constructor() {
@@ -109,19 +111,19 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.load.tilemapTiledJSON(MapDefinitions.tilemapMapName, MapDefinitions.tilemapMapJson);
 
     this.load.spritesheet(
-      Warrior1.textureName,
-      'assets/probable-waffle/spritesheets/' + Warrior1.spriteSheet.name + '.png',
-      Warrior1.spriteSheet.frameConfig
+      WarriorTextureMap.textureName,
+      'assets/probable-waffle/spritesheets/' + WarriorTextureMap.spriteSheet.name + '.png',
+      WarriorTextureMap.spriteSheet.frameConfig
     );
 
-    this.load.audio(Warrior1SoundEnum.move, 'assets/probable-waffle/sfx/character/move/footstep.mp3');
+    this.load.audio(WarriorSoundEnum.move, 'assets/probable-waffle/sfx/character/move/footstep.mp3');
   }
 
   create() {
     this.animHelper = new LpcAnimationHelper(this.anims);
-    this.animHelper.createAnimationsForLPCSpriteSheet(Warrior1.spriteSheet.name);
-    // iterate over Warrior1SoundEnum and load all sounds
-    Object.values(Warrior1SoundEnum).forEach((sound) => {
+    this.animHelper.createAnimationsForLPCSpriteSheet(WarriorTextureMap.spriteSheet.name);
+    // iterate over WarriorSoundEnum and load all sounds
+    Object.values(WarriorSoundEnum).forEach((sound) => {
       this.sound.add(sound);
     });
 
@@ -167,8 +169,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
     // this.minimapTextureHelper.createMinimapCamera(this.cameras); // todo temp
     // this.minimapTextureHelper.createRenderTexture(); // todo temp
-
-    this.warrior1Group = this.add.group({ classType: Warrior1 });
 
     // placing objects on map
     this.placeAdditionalItemsOnManualLayers();
@@ -219,7 +219,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
           const navigableTile = this.mapNavHelper.getNavigableTile(worldXY);
           if (navigableTile) {
-            this.navInputHandler.startNav(navigableTile, this.selected);
+            const selectedMovable = this.selected.filter((obj) => obj instanceof Pawn) as Pawn[];
+            this.navInputHandler.startNav(navigableTile, selectedMovable);
           }
         } else {
           if (gameObjectsUnderCursor.length) {
@@ -309,7 +310,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   override update(time: number, delta: number) {
     super.update(time, delta);
     this.inputHandler.update(time, delta);
-    this.warrior1Group.children.iterate((child: Phaser.GameObjects.GameObject) => {
+    this.warriorGroup.forEach((child: Phaser.GameObjects.GameObject) => {
       child.update(time, delta);
       return true;
     });
@@ -339,12 +340,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Warrior1[] {
+  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Pawn[] {
     // return this.gameObjectsHelper.dynamicObjects.filter((o) => {
     //   const bounds = o.spriteInstance.getBounds();
     //   return this.multiSelectionHandler.overlapsBounds(rect, bounds);
     // });
-    const children = this.warrior1Group.getChildren() as Warrior1[];
+    const children = this.warriorGroup;
     return children.filter((o) => {
       const bounds = o.getBounds();
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
@@ -416,8 +417,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private placeAtlasOnCoords(atlasToBePlaced: AtlasEmitValue | null, tilePlacementData: TilePlacementData): void {
     if (atlasToBePlaced === null) return;
 
-    if (atlasToBePlaced.atlasFrame.filename === Warrior1.textureName + '.png') {
-      this.placeWarrior1(tilePlacementData);
+    if (atlasToBePlaced.atlasFrame.filename === WarriorTextureMap.textureName + '.png') {
+      this.placeWarrior(tilePlacementData);
     } else {
       this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
         {
@@ -480,18 +481,17 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       //   placeableObjectProperties: {
       //     placeableAtlasProperties: {
       //       texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
-      //       frame: Warrior1.textureName
+      //       frame: Warrior.textureName
       //     }
       //   }
       // }
     ]);
-    this.placeWarrior1({ tileXY: { x: 1, y: 1 }, z: 0 });
+    this.placeWarrior({ tileXY: { x: 1, y: 1 }, z: 0 });
   }
 
-  private placeWarrior1(tilePlacementData: TilePlacementData) {
-    const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
-
-    const warrior = this.warrior1Group.create(spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y) as Warrior1;
-    warrior.createCallback(tilePlacementData);
+  private placeWarrior(tilePlacementData: TilePlacementData) {
+    const warrior = new Warrior(this, tilePlacementData);
+    this.warriorGroup.push(warrior);
+    this.add.existing(warrior);
   }
 }

@@ -6,15 +6,19 @@ import { ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { PlaceableAtlasProperties } from '../placable-objects/static-object';
-import { Warrior1 } from '../characters/warrior1';
+import { Warrior, WarriorTextureMap } from '../characters/warrior';
 import { Vector2Simple } from '../math/intersection';
+
+export type SpritePlacementData = {
+  textureName: string;
+  tilePlacementData: TilePlacementData;
+};
 
 export type SpriteWorldPlacementInfo = {
   depth: number;
 } & Vector2Simple;
 
 export class SpriteHelper {
-
   static getSpriteWorldPlacementInfo(tilePlacementData: TilePlacementData): SpriteWorldPlacementInfo {
     const tileXY = tilePlacementData.tileXY;
     const layer = tilePlacementData.z;
@@ -48,7 +52,7 @@ export class SpriteHelper {
     sprite.depth = spriteWorldPlacementInfo.depth;
 
     const [imageName] = frame.split('.');
-    if (imageName === Warrior1.textureName) {
+    if (imageName === WarriorTextureMap.textureName) {
       // todo
       this.placeSpriteAsIs(sprite);
     } else if (imageName === 'barracks') {

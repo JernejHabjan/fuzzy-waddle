@@ -4,8 +4,9 @@ import { MapSizeInfo } from '../const/map-size.info';
 import { TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
 import { Vector2Simple } from '../math/intersection';
 import { MapNavHelper } from '../map/map-nav-helper';
-import { Warrior1 } from '../characters/warrior1';
-import { CharacterNavigationComponent } from '../characters/character-navigation-component';
+import { Warrior } from '../characters/warrior';
+import { CharacterMovementComponent } from '../characters/character-movement-component';
+import { Pawn } from '../characters/pawn';
 
 export class NavInputHandler {
   constructor(
@@ -18,7 +19,7 @@ export class NavInputHandler {
     return 0 <= tileXY.x && tileXY.x <= MapSizeInfo.info.width && 0 <= tileXY.y && tileXY.y <= MapSizeInfo.info.height;
   }
 
-  startNav(navigableTile: TilePlacementWorldWithProperties, selected: Warrior1[]) {
+  startNav(navigableTile: TilePlacementWorldWithProperties, selected: Pawn[]) {
     selected.forEach(async (selection) => {
       if (NavInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
         try {
@@ -31,10 +32,9 @@ export class NavInputHandler {
             this.mapNavHelper.getFlattenedGrid
           );
 
-
-          const characterNavigationComponent =selection.components.findComponent(CharacterNavigationComponent);
-          if(characterNavigationComponent){
-            characterNavigationComponent.moveSpriteToTileCenters(tileXYPath);
+          const characterMovementComponent = selection.components.findComponent(CharacterMovementComponent);
+          if (characterMovementComponent) {
+            characterMovementComponent.moveSpriteToTileCenters(tileXYPath);
           }
         } catch (e) {
           console.log(e);

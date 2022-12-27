@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 export type Constructor<T extends Record<string, any> = object> = new (...args: any[]) => T;
 
 export interface IComponent {
-  init(gameObject: Phaser.GameObjects.GameObject): void;
+  init(): void;
 
   awake?: () => void;
   start?: () => void;
@@ -12,32 +12,24 @@ export interface IComponent {
 }
 
 export default class ComponentService {
-  private readonly gameObject: Phaser.GameObjects.GameObject;
+  constructor(private gameObjectName: string) {}
 
-  constructor(gameObject: Phaser.GameObjects.GameObject) {
-    this.gameObject = gameObject;
-    // give our gameObjects a unique name
-    if (!gameObject.name) {
-      gameObject.name = uuidv4();
-    }
-  }
-
-  private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObject.name
+  private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObjectName
   private queuedForStart: IComponent[] = [];
 
   addComponent<T extends IComponent>(component: T): T {
     // make sure we have a list of components for this gameObject
-    if (!this.componentsByGameObject.has(this.gameObject.name)) {
-      this.componentsByGameObject.set(this.gameObject.name, []);
+    if (!this.componentsByGameObject.has(this.gameObjectName)) {
+      this.componentsByGameObject.set(this.gameObjectName, []);
     }
 
     // add new component to this list
-    const list = this.componentsByGameObject.get(this.gameObject.name) as IComponent[];
+    const list = this.componentsByGameObject.get(this.gameObjectName) as IComponent[];
     list.push(component);
 
     // call lifecycle hooks
 
-    component.init(this.gameObject);
+    component.init();
 
     if (component.awake) {
       component.awake();
@@ -51,14 +43,13 @@ export default class ComponentService {
   }
 
   findComponent<T extends IComponent>(component: Constructor<T>): T {
-    const components = this.componentsByGameObject.get(this.gameObject.name) as IComponent[];
+    const components = this.componentsByGameObject.get(this.gameObjectName) as IComponent[];
     const comp = components.find((c) => c instanceof component);
-    if(!comp) {
+    if (!comp) {
       throw new Error(`Component ${component.name} not found`);
     }
     return comp as T;
   }
-
 
   update(time: number, delta: number) {
     while (this.queuedForStart.length) {
@@ -87,5 +78,4 @@ export default class ComponentService {
       }
     }
   }
-
 }

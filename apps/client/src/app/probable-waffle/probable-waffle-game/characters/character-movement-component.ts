@@ -1,4 +1,3 @@
-import { PlaceableCharacter } from './warrior1';
 import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { MapSizeInfo } from '../const/map-size.info';
@@ -6,6 +5,7 @@ import * as Phaser from 'phaser';
 import { Vector2Simple } from '../math/intersection';
 import { IComponent } from '../services/component.service';
 import Tween = Phaser.Tweens.Tween;
+import { Pawn } from './pawn';
 
 export enum MoveEventTypeEnum {
   MOVE_START = 'move-start',
@@ -13,16 +13,16 @@ export enum MoveEventTypeEnum {
   MOVE_PROGRESS = 'move-progress'
 }
 
-export class CharacterNavigationComponent implements IComponent {
-  private gameObject!: Phaser.GameObjects.Sprite & PlaceableCharacter;
+export class CharacterMovementComponent implements IComponent {
+  // todo refactor navigation component to use navigation tree
   private path?: TilePlacementWorldWithProperties[];
   private currentNavTween?: Phaser.Tweens.Tween;
   moveEventEmitter = new Phaser.Events.EventEmitter();
   isMoving = false;
 
-  init(gameObject: Phaser.GameObjects.Sprite & PlaceableCharacter) {
-    // todo!!!
-    this.gameObject = gameObject;
+  constructor(private readonly gameObject: Pawn) {}
+  init() {
+    // pass
   }
 
   /**

@@ -3,7 +3,6 @@ import { MapSizeInfo } from '../../const/map-size.info';
 import { Intersection, Vector2Simple } from '../../math/intersection';
 import { ManualTile, ManualTileLayer } from '../../manual-tiles/manual-tiles.helper';
 import { IsoHelper } from '../../iso/iso-helper';
-import { DebugShapes } from '../../debug/debug-shapes';
 
 export interface PossibleClickCoords {
   z: number;

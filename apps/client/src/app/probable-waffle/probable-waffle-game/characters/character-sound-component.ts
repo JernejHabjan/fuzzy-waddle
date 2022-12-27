@@ -1,10 +1,9 @@
 import { IComponent } from '../services/component.service';
 
 export class CharacterSoundComponent implements IComponent {
-  private gameObject!: Phaser.GameObjects.Sprite;
-
-  init(gameObject: Phaser.GameObjects.Sprite) {
-    this.gameObject = gameObject;
+  constructor(private readonly gameObject: Phaser.GameObjects.Sprite) {}
+  init() {
+    // do nothing
   }
 
   play(key: string, loop: boolean = false) {
