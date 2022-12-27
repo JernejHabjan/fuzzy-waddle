@@ -2,5 +2,5 @@
 export enum ActorDeathType {
   DoNothing = 0,
   StopGameplay = 1,
-  Destroy = 1
+  Destroy = 2
 }
