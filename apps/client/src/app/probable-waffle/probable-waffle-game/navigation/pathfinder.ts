@@ -208,7 +208,7 @@ export class Pathfinder {
           }
         }
 
-        if (nrDirections > 0 && (this.enableDiagonals ? nrDirections !== 8 : nrDirections !== 4)) {
+        if (this.enableDiagonals ? nrDirections < 8 : nrDirections < 4) {
           easyStar.setDirectionalCondition(x, y, directions);
         }
       });

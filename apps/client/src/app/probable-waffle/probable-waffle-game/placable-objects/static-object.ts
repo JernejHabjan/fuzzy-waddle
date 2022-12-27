@@ -1,6 +1,7 @@
 import { MapHelper } from '../map/map-helper';
 import { Scene } from 'phaser';
 import { TilePlacementData, TileWorldData } from '../input/tilemap/tilemap-input.handler';
+import { GameObjectsHelper } from '../map/game-objects-helper';
 
 export interface GameObjectPlayer {
   playerNumber: number;
@@ -29,17 +30,18 @@ export interface PlacedGameObject {
   placeableObjectProperties: PlaceableObjectProperties;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PlayerPlaceableGameObject extends PlaceableGameObject {
-  belongsToPlayer?: GameObjectPlayer;
+  // belongsToPlayer?: GameObjectPlayer;
 }
 
 export class StaticObjectHelper {
-  constructor(private readonly mapHelper: MapHelper, private readonly scene: Scene) {}
+  constructor(private readonly gameObjectsHelper: GameObjectsHelper, private readonly scene: Scene) {}
   createStaticObjectLayer() {
-    this.mapHelper.staticObjects = [];
+    this.gameObjectsHelper.staticObjects = [];
   }
 
-  placeObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
+  placeRawSpriteObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
     // todo
   }
 }

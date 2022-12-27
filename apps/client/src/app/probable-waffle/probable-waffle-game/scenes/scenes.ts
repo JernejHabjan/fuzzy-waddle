@@ -1,3 +1,4 @@
 export enum Scenes {
-  'GrasslandScene' = 'GrasslandScene'
+  'GrasslandScene' = 'GrasslandScene',
+  'PlaygroundScene' = 'PlaygroundScene'
 }

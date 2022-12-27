@@ -6,28 +6,52 @@ import { ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { PlaceableAtlasProperties } from '../placable-objects/static-object';
+import { Warrior1 } from '../characters/warrior1';
+import { Vector2Simple } from '../math/intersection';
+
+export type SpriteWorldPlacementInfo = {
+  depth: number;
+} & Vector2Simple;
 
 export class SpriteHelper {
-  static placeSpriteOnTileXY(
-    scene: Scene,
-    tilePlacementData: TilePlacementData,
-    placeableAtlasProperties: PlaceableAtlasProperties
-  ): Phaser.GameObjects.Sprite {
+
+  static getSpriteWorldPlacementInfo(tilePlacementData: TilePlacementData): SpriteWorldPlacementInfo {
     const tileXY = tilePlacementData.tileXY;
     const layer = tilePlacementData.z;
-    const texture = placeableAtlasProperties.texture;
-    const frame = placeableAtlasProperties.frame;
 
     const tileWorldXYCenter = TilemapHelper.adjustTileWorldWithVerticalOffset(IsoHelper.getWorldCenterXY(tileXY), {
       offsetInPx: layer * MapSizeInfo.info.tileHeight - MapSizeInfo.info.tileHeightHalf
     });
 
     // create object
-    const sprite = scene.add.sprite(tileWorldXYCenter.x, tileWorldXYCenter.y, texture, frame);
-    sprite.setInteractive();
-    sprite.depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
 
-    if (frame === 'barracks.png') {
+    const depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
+    return {
+      x: tileWorldXYCenter.x,
+      y: tileWorldXYCenter.y,
+      depth
+    };
+  }
+
+  static placeSpriteOnTileXY(
+    scene: Scene,
+    tilePlacementData: TilePlacementData,
+    placeableAtlasProperties: PlaceableAtlasProperties
+  ): Phaser.GameObjects.Sprite {
+    const texture = placeableAtlasProperties.texture;
+    const frame = placeableAtlasProperties.frame;
+
+    const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
+    // create object
+    const sprite = scene.add.sprite(spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y, texture, frame);
+    sprite.setInteractive();
+    sprite.depth = spriteWorldPlacementInfo.depth;
+
+    const [imageName] = frame.split('.');
+    if (imageName === Warrior1.textureName) {
+      // todo
+      this.placeSpriteAsIs(sprite);
+    } else if (imageName === 'barracks') {
       // todo just for test
       this.rescaleSpriteToFitTwoTiles(sprite);
     } else {
@@ -52,5 +76,10 @@ export class SpriteHelper {
     // offset sprite on x and y by 10
     sprite.x -= 5; // offset so it looks nice
     sprite.y -= 7; // offset so it looks nice
+  }
+
+  private static placeSpriteAsIs(sprite: Phaser.GameObjects.Sprite) {
+    // todo?
+    sprite.y -= MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
   }
 }

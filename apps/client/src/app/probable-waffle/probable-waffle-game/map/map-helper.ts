@@ -7,6 +7,4 @@ export class MapHelper {
   tilemapLayer!: Phaser.Tilemaps.TilemapLayer;
   mappedTilesetsToAtlasesWithProperties!: TilemapToAtlasMap[];
   manualLayers!: ManualTileLayer[];
-  staticObjects!: PlacedGameObject[];
-  dynamicObjects!: PlacedGameObject[];
 }

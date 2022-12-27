@@ -14,6 +14,8 @@ type TileType = 'flat' | 'water' | 'slopes' | 'blocks' | 'other';
   styleUrls: ['./editor-drawer.component.scss']
 })
 export class EditorDrawerComponent implements OnInit, OnDestroy {
+  editorVisible = false;
+  showObjectPlacement = false;
   MapDefinitions = MapDefinitions;
   nrReplacedTiles = SceneCommunicatorService.DEFAULT_TILE_REPLACE;
   layerNr = SceneCommunicatorService.DEFAULT_LAYER;
@@ -65,7 +67,8 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   async loadSpriteAtlases() {
     this.spriteAtlases = [
       await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasMegaset),
-      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasBuildings)
+      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasBuildings),
+      await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasCharacters)
     ];
   }
 
