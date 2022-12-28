@@ -4,8 +4,10 @@ import { MapSizeInfo } from '../const/map-size.info';
 import * as Phaser from 'phaser';
 import { Vector2Simple } from '../math/intersection';
 import { IComponent } from '../services/component.service';
+import { IAiPawnControllable } from '../controllers/ai-pawn-controller';
 import Tween = Phaser.Tweens.Tween;
-import { Pawn } from './pawn';
+import { ISpriteRepresentable } from './sprite-representable-component';
+import { ITransformable } from './transformable-component';
 
 export enum MoveEventTypeEnum {
   MOVE_START = 'move-start',
@@ -13,6 +15,9 @@ export enum MoveEventTypeEnum {
   MOVE_PROGRESS = 'move-progress'
 }
 
+export interface IMovable {
+  characterMovementComponent: CharacterMovementComponent;
+}
 export class CharacterMovementComponent implements IComponent {
   // todo refactor navigation component to use navigation tree
   private path?: TilePlacementWorldWithProperties[];
@@ -20,7 +25,7 @@ export class CharacterMovementComponent implements IComponent {
   moveEventEmitter = new Phaser.Events.EventEmitter();
   isMoving = false;
 
-  constructor(private readonly gameObject: Pawn) {}
+  constructor(private readonly gameObject: IMovable & IAiPawnControllable & ISpriteRepresentable & ITransformable) {}
   init() {
     // pass
   }
@@ -54,7 +59,8 @@ export class CharacterMovementComponent implements IComponent {
   }
 
   private startNav() {
-    const { scene } = this.gameObject;
+    const { spriteRepresentationComponent, transformComponent } = this.gameObject;
+    const scene = spriteRepresentationComponent.scene;
     const path = this.path;
     if (!path) {
       return;
@@ -87,7 +93,7 @@ export class CharacterMovementComponent implements IComponent {
       const offsetByCharacterCenter = MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
 
       this.currentNavTween = scene.tweens.add({
-        targets: this.gameObject,
+        targets: spriteRepresentationComponent.sprite,
         x: tileWorldXYCenterWithOffset.x,
         y: tileWorldXYCenterWithOffset.y - offsetByCharacterCenter,
         duration: 300,
@@ -108,17 +114,24 @@ export class CharacterMovementComponent implements IComponent {
 
           this.handleSpriteUnderWaterCropping(
             tween,
-            this.gameObject,
+            spriteRepresentationComponent.sprite,
             prevNavTile.tileLayerProperties?.stepHeight,
             currentNavTile.tileLayerProperties?.stepHeight
           );
 
-          this.setSpriteDepthDuringNavigation(this.gameObject, currentNavTile, prevNavTile, tileWorldXYCenter);
+          this.setSpriteDepthDuringNavigation(
+            spriteRepresentationComponent.sprite,
+            currentNavTile,
+            prevNavTile,
+            tileWorldXYCenter
+          );
         },
         onComplete: () => {
           prevNavTile = currentNavTile;
-          this.gameObject.tilePlacementData.tileXY = currentNavTile.tileWorldData.tileXY; // update selection
-          this.gameObject.tilePlacementData.z = currentNavTile.tileWorldData.z; // update selection
+          transformComponent.transform({
+            tileXY: currentNavTile.tileWorldData.tileXY,
+            z: currentNavTile.tileWorldData.z
+          });
 
           if (i + 1 < path.length) {
             addTween(i + 1);

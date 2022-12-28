@@ -4,7 +4,6 @@ import { MapSizeInfo } from '../const/map-size.info';
 import { TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.helper';
 import { Vector2Simple } from '../math/intersection';
 import { MapNavHelper } from '../map/map-nav-helper';
-import { Warrior } from '../characters/warrior';
 import { CharacterMovementComponent } from '../characters/character-movement-component';
 import { Pawn } from '../characters/pawn';
 
@@ -24,7 +23,7 @@ export class NavInputHandler {
       if (NavInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
         try {
           const tileXYPath = await this.pathfinder.find(
-            selection.tilePlacementData.tileXY,
+            selection.transformComponent.tilePlacementData.tileXY,
             {
               x: navigableTile.tileWorldData.tileXY.x,
               y: navigableTile.tileWorldData.tileXY.y

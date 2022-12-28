@@ -1,6 +1,9 @@
 import { BehaviorTree } from '../characters/AI/BehaviorTree';
 import { Blackboard } from '../characters/AI/blackboard';
 
+export interface IAiPawnControllable {
+  aiPawnController: AIPawnController;
+}
 export class AIPawnController {
   constructor(public blackboard: Blackboard, public behaviorTree: BehaviorTree) {}
 

@@ -45,7 +45,7 @@ export class Warrior extends Pawn {
       textureName: WarriorTextureMap.textureName,
       tilePlacementData
     });
-    this.setInteractive();
+    this.spriteRepresentationComponent.sprite.setInteractive();
     this.initStateMachine();
     this.initComponents();
     this.subscribeToEvents();
@@ -56,8 +56,8 @@ export class Warrior extends Pawn {
   }
 
   private initComponents() {
-    this.components.addComponent(new HealthComponent(this, WarriorDefinition.health));
-    this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent(this));
+    this.components.addComponent(new HealthComponent(this.sprite, WarriorDefinition.health));
+    this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent(this.sprite));
   }
 
   private subscribeToEvents() {
@@ -101,17 +101,17 @@ export class Warrior extends Pawn {
   }
 
   private warriorIdleEnter() {
-    Warrior.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
+    Warrior.playAnimation(this.sprite, this.currentAnimGroup, this.currentDir, true);
     // this.setVelocityX(0) // todo remove navigation tween
   }
 
   private warriorIdleUpdate() {
-    Warrior.playAnimation(this, this.currentAnimGroup, this.currentDir, true);
+    Warrior.playAnimation(this.sprite, this.currentAnimGroup, this.currentDir, true);
   }
 
   private warriorRunEnter() {
     this.currentAnimGroup = LPCAnimTypeEnum.walk;
-    Warrior.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
+    Warrior.playAnimation(this.sprite, this.currentAnimGroup, this.currentDir, false);
     this.playRunSound();
   }
 
@@ -148,7 +148,7 @@ export class Warrior extends Pawn {
 
   private warriorAttackEnter() {
     this.currentAnimGroup = LPCAnimTypeEnum.thrust; // todo thrust
-    Warrior.playAnimation(this, this.currentAnimGroup, this.currentDir, false);
+    Warrior.playAnimation(this.sprite, this.currentAnimGroup, this.currentDir, false);
 
     // todo this.setVelocityX(0)
 
@@ -160,14 +160,14 @@ export class Warrior extends Pawn {
         return;
       }
 
-      this.off(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
+      this.sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
 
       console.log('attacked');
     };
 
-    this.on(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
+    this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
 
-    this.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY, (a: unknown, b: unknown) => {
+    this.sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY, (a: unknown, b: unknown) => {
       // todo
       console.log('animation complete', a, b);
       this.warriorStateMachine.setState('idle');

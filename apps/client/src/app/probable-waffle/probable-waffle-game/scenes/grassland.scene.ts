@@ -30,8 +30,9 @@ import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
 import { Warrior, WarriorSoundEnum, WarriorTextureMap } from '../characters/warrior';
 import { GameObjectsHelper } from '../map/game-objects-helper';
 import { LpcAnimationHelper } from '../animation/lpc-animation-helper';
-import { Pawn } from '../characters/pawn';
 import { Actor } from '../actor';
+import { Pawn } from '../characters/pawn';
+import { hasSpriteRepresentationComponent } from '../characters/sprite-representable-component';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -309,7 +310,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   override update(time: number, delta: number) {
     super.update(time, delta);
     this.inputHandler.update(time, delta);
-    this.warriorGroup.forEach((child: Phaser.GameObjects.GameObject) => {
+    this.warriorGroup.forEach((child) => {
       child.update(time, delta);
       return true;
     });
@@ -346,7 +347,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     // });
     const children = this.warriorGroup;
     return children.filter((o) => {
-      const bounds = o.getBounds();
+      const bounds = o.spriteRepresentationComponent.sprite.getBounds();
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
     });
   }
@@ -361,7 +362,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         o.spriteInstance.clearTint();
       });
       selected.forEach((s) => {
-        s.setTint(0x0000ff);
+        s.spriteRepresentationComponent.sprite.setTint(0x0000ff);
       });
     });
     // todo move this
@@ -372,7 +373,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         o.spriteInstance.clearTint();
       });
       this.selected.forEach((s) => {
-        s.setTint(0xff0000);
+        if (hasSpriteRepresentationComponent(s)) {
+          s.spriteRepresentationComponent.sprite.setTint(0xff0000);
+        }
       });
 
       // extract sprite frame name
@@ -491,6 +494,6 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private placeWarrior(tilePlacementData: TilePlacementData) {
     const warrior = new Warrior(this, tilePlacementData);
     this.warriorGroup.push(warrior);
-    this.add.existing(warrior);
+    // this.add.existing(warrior.spriteRepresentationComponent.sprite);
   }
 }
