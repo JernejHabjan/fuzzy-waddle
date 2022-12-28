@@ -1,6 +1,6 @@
-export class BehaviorTree {
-  constructor(public name: string, public rootNode: BehaviorTreeNode) {}
-
+export abstract class BehaviorTree {
+  abstract name: string;
+  abstract rootNode: BehaviorTreeNode;
   public tick(): void {
     this.rootNode.tick();
   }

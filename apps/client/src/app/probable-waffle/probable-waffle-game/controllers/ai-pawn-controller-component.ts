@@ -1,11 +1,16 @@
 import { BehaviorTree } from '../characters/AI/BehaviorTree';
 import { Blackboard } from '../characters/AI/blackboard';
+import { IComponent } from '../services/component.service';
 
 export interface IAiPawnControllable {
-  aiPawnController: AIPawnController;
+  aiPawnControllerComponent: AiPawnControllerComponent;
 }
-export class AIPawnController {
+export class AiPawnControllerComponent implements IComponent {
   constructor(public blackboard: Blackboard, public behaviorTree: BehaviorTree) {}
+
+  init(): void {
+    // todo
+  }
 
   /**
    * look for a feasible target in its acquisition radius // circle overlap actors

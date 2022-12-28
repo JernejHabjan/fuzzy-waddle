@@ -12,6 +12,9 @@ import { StateMachine } from '../animation/state-machine';
 import { MoveEventTypeEnum } from './character-movement-component';
 import { CharacterSoundComponent } from './character-sound-component';
 import { Character } from './character';
+import { Blackboard } from './AI/blackboard';
+import { RtsBehaviorTree } from './AI/rts-behavior-tree';
+import { BehaviorTreeClasses } from './AI/behavior-trees';
 
 export enum WarriorSoundEnum {
   'move' = 'move'
@@ -35,6 +38,8 @@ export const WarriorDefinition = {
 };
 
 export class Warrior extends Character {
+  behaviorTreeClass: BehaviorTreeClasses = RtsBehaviorTree;
+  blackboardClass: typeof Blackboard = Blackboard;
   currentDir = AnimDirectionEnum.south;
   currentAnimGroup = LPCAnimTypeEnum.walk;
   private warriorStateMachine!: StateMachine;
@@ -45,14 +50,18 @@ export class Warrior extends Character {
       textureName: WarriorTextureMap.textureName,
       tilePlacementData
     });
-    this.spriteRepresentationComponent.sprite.setInteractive();
-    this.initStateMachine();
-    this.initComponents();
-    this.subscribeToEvents();
   }
 
   static playAnimation(sprite: Phaser.GameObjects.Sprite, animName: LPCAnimType, dir: AnimDirection, idle: boolean) {
     sprite.play(`${animName}-${dir}` + (idle ? '-idle' : ''));
+  }
+
+  override init() {
+    super.init();
+    this.spriteRepresentationComponent.sprite.setInteractive();
+    this.initStateMachine();
+    this.initComponents();
+    this.subscribeToEvents();
   }
 
   private initComponents() {
@@ -61,12 +70,10 @@ export class Warrior extends Character {
   }
 
   private subscribeToEvents() {
-    this.scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
     this.characterMovementComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_PROGRESS, this.onMoveProgress, this);
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.scene.events.off(Phaser.Scenes.Events.POST_UPDATE, this.lateUpdate, this);
-      this.components.destroy();
       this.characterMovementComponent.moveEventEmitter.off(MoveEventTypeEnum.MOVE_PROGRESS, this.onMoveProgress, this);
+      this.destroy();
     });
   }
 
@@ -97,6 +104,7 @@ export class Warrior extends Character {
   }
 
   override update(t: number, dt: number) {
+    super.update(t, dt);
     this.warriorStateMachine.update(dt);
   }
 

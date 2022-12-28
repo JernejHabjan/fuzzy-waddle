@@ -18,5 +18,17 @@ export abstract class Pawn extends Actor implements ISpriteRepresentable, ITrans
     this.spriteRepresentationComponent.subscribeToTransformEvents(this.transformComponent);
     this.sprite = this.spriteRepresentationComponent.sprite;
     this.scene = scene;
+    this.subscribeToSceneDestroy();
+  }
+
+  override destroy() {
+    super.destroy();
+    this.spriteRepresentationComponent.destroy();
+  }
+
+  private subscribeToSceneDestroy() {
+    this.scene.events.once(Phaser.Scenes.Events.DESTROY, () => {
+      this.destroy();
+    });
   }
 }

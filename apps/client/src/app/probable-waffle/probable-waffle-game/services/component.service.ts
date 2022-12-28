@@ -1,8 +1,7 @@
 export type Constructor<T extends Record<string, any> = object> = new (...args: any[]) => T;
 
 export interface IComponent {
-  init(): void;
-  awake?: () => void;
+  init?: () => void;
   start?: () => void;
   update?: (time: number, delta: number) => void;
   destroy?: () => void;
@@ -25,18 +24,21 @@ export default class ComponentService {
     list.push(component);
 
     // call lifecycle hooks
-
-    component.init();
-
-    if (component.awake) {
-      component.awake();
-    }
-
-    if (component.start) {
-      this.queuedForStart.push(component);
-    }
-
     return component as T;
+  }
+
+  init() {
+    const entries = this.componentsByGameObject.entries();
+    for (const [, value] of entries) {
+      for (const component of value) {
+        if (component.init) {
+          component.init();
+          if (component.start) {
+            this.queuedForStart.push(component);
+          }
+        }
+      }
+    }
   }
 
   findComponent<T extends IComponent>(component: Constructor<T>): T {

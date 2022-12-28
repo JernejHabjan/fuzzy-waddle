@@ -9,7 +9,6 @@ export class AttackComponent implements IComponent {
   onCooldownReady: EventEmitter<Actor> = new EventEmitter<Actor>();
   // actor used an attack
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
-
   remainingCooldown = 0;
   constructor(private owner: Actor, private attacks: AttackData[]) {}
 

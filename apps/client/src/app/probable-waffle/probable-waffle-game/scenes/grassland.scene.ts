@@ -493,6 +493,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   private placeWarrior(tilePlacementData: TilePlacementData) {
     const warrior = new Warrior(this, tilePlacementData);
+    warrior.init();
     this.warriorGroup.push(warrior);
     // this.add.existing(warrior.spriteRepresentationComponent.sprite);
   }

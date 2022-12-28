@@ -4,7 +4,7 @@ import { MapSizeInfo } from '../const/map-size.info';
 import * as Phaser from 'phaser';
 import { Vector2Simple } from '../math/intersection';
 import { IComponent } from '../services/component.service';
-import { IAiPawnControllable } from '../controllers/ai-pawn-controller';
+import { IAiPawnControllable } from '../controllers/ai-pawn-controller-component';
 import Tween = Phaser.Tweens.Tween;
 import { ISpriteRepresentable } from './sprite-representable-component';
 import { ITransformable } from './transformable-component';
