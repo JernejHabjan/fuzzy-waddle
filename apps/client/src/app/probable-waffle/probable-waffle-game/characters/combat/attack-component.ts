@@ -3,6 +3,7 @@ import { Actor } from '../../actor';
 import { AttackData } from './attack-data';
 import { EventEmitter } from '@angular/core';
 import HealthComponent from './health-component';
+import { Pawn } from '../pawn';
 
 export class AttackComponent implements IComponent {
   // when cooldown has expired
@@ -10,7 +11,7 @@ export class AttackComponent implements IComponent {
   // actor used an attack
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
-  constructor(private owner: Actor, private attacks: AttackData[]) {}
+  constructor(private scene: Phaser.Scene, private owner: Pawn, private attacks: AttackData[]) {}
 
   init(): void {
     // pass
@@ -37,7 +38,9 @@ export class AttackComponent implements IComponent {
     const attack = this.attacks[attackIndex];
 
     if (attack.projectileClass) {
-      const projectile = new attack.projectileClass(this.owner);
+      const projectile = new attack.projectileClass(this.scene, this.owner);
+      projectile.init();
+      projectile.start();
       projectile.fireAtActor(enemy);
     } else {
       const enemyHealthComponent = enemy.components.findComponent(HealthComponent);

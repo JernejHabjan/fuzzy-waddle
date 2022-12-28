@@ -1,9 +1,10 @@
 // when placing new building
-import { Actor } from '../actor';
-import Vector3Like = Phaser.Types.Math.Vector3Like;
 import { MapSizeInfo } from '../const/map-size.info';
 import { Vector2Simple } from '../math/intersection';
 import { AttackComponent } from '../characters/combat/attack-component';
+import { ConstructionSiteComponent } from '../buildings/construction-site-component';
+import { Pawn } from '../characters/pawn';
+import Vector3Like = Phaser.Types.Math.Vector3Like;
 
 export class BuildingCursor {
   placementGrid: unknown; // todo
@@ -14,7 +15,7 @@ export class BuildingCursor {
   previewAttackRange = false;
 
   allCellsAreValid = false;
-  private building?: Actor;
+  private building?: Pawn;
 
   private pointerLocation?: Vector2Simple;
   constructor(private scene: Phaser.Scene) {}
@@ -28,7 +29,7 @@ export class BuildingCursor {
     this.pointerLocation = pointerLocation;
   }
 
-  setupForBuilding(building: Actor) {
+  setupForBuilding(building: Pawn) {
     // todo obtains gridWidthAndHeight from buildingClass
     // get ConstructionSiteComponent from buildingClass
     this.building = building;
@@ -88,8 +89,9 @@ export class BuildingCursor {
     if (!this.building || !this.pointerLocation) {
       return;
     }
-    this.building.setPosition(this.pointerLocation.x, this.pointerLocation.y);
-    this.building.setAlpha(0.5);
-    this.building.setVisible(true);
+    const buildingSprite = this.building.spriteRepresentationComponent.sprite;
+    buildingSprite.setPosition(this.pointerLocation.x, this.pointerLocation.y);
+    buildingSprite.setAlpha(0.5);
+    buildingSprite.setVisible(true);
   }
 }

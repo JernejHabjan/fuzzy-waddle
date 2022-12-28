@@ -34,7 +34,7 @@ export class ConstructionSiteComponent implements IComponent {
     private readonly refundFactor: number,
     // Whether to start construction immediately after spawn, or not
     private readonly startImmediately: boolean,
-    private readonly gridWidthAndHeight: { width: number; height: number },
+    readonly gridWidthAndHeight: { width: number; height: number },
     private readonly finishedSound?: string
   ) {
     const ownerComponent = this.owner.components.findComponent(OwnerComponent);
