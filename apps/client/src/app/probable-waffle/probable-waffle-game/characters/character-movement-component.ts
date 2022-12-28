@@ -15,7 +15,7 @@ export enum MoveEventTypeEnum {
   MOVE_PROGRESS = 'move-progress'
 }
 
-export interface IMovable {
+export interface ICharacterMovable {
   characterMovementComponent: CharacterMovementComponent;
 }
 export class CharacterMovementComponent implements IComponent {
@@ -25,7 +25,9 @@ export class CharacterMovementComponent implements IComponent {
   moveEventEmitter = new Phaser.Events.EventEmitter();
   isMoving = false;
 
-  constructor(private readonly gameObject: IMovable & IAiPawnControllable & ISpriteRepresentable & ITransformable) {}
+  constructor(
+    private readonly gameObject: ICharacterMovable & IAiPawnControllable & ISpriteRepresentable & ITransformable
+  ) {}
   init() {
     // pass
   }

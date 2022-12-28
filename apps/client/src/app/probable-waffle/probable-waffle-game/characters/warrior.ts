@@ -9,9 +9,9 @@ import {
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import HealthComponent from './combat/health-component';
 import { StateMachine } from '../animation/state-machine';
-import { CharacterMovementComponent, MoveEventTypeEnum } from './character-movement-component';
+import { MoveEventTypeEnum } from './character-movement-component';
 import { CharacterSoundComponent } from './character-sound-component';
-import { Pawn } from './pawn';
+import { Character } from './character';
 
 export enum WarriorSoundEnum {
   'move' = 'move'
@@ -34,7 +34,7 @@ export const WarriorDefinition = {
   health: 100
 };
 
-export class Warrior extends Pawn {
+export class Warrior extends Character {
   currentDir = AnimDirectionEnum.south;
   currentAnimGroup = LPCAnimTypeEnum.walk;
   private warriorStateMachine!: StateMachine;
