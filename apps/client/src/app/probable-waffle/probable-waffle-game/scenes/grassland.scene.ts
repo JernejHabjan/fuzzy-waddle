@@ -28,7 +28,6 @@ import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
 import { Warrior, WarriorSoundEnum, WarriorTextureMap } from '../characters/warrior';
-import { SpriteHelper } from '../sprite/sprite-helper';
 import { GameObjectsHelper } from '../map/game-objects-helper';
 import { LpcAnimationHelper } from '../animation/lpc-animation-helper';
 import { Pawn } from '../characters/pawn';

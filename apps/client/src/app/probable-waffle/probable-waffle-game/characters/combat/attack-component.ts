@@ -2,7 +2,6 @@ import { IComponent } from '../../services/component.service';
 import { Actor } from '../../actor';
 import { AttackData } from './attack-data';
 import { EventEmitter } from '@angular/core';
-import { Projectiles } from './projectiles';
 import HealthComponent from './health-component';
 
 export class AttackComponent implements IComponent {
@@ -38,8 +37,8 @@ export class AttackComponent implements IComponent {
 
     const attack = this.attacks[attackIndex];
 
-    if (attack.projectileClass && attack.projectileData) {
-      const projectile = new attack.projectileClass(attack.projectileData, this.owner);
+    if (attack.projectileClass) {
+      const projectile = new attack.projectileClass(this.owner);
       projectile.fireAtActor(enemy);
     } else {
       const enemyHealthComponent = enemy.components.findComponent(HealthComponent);

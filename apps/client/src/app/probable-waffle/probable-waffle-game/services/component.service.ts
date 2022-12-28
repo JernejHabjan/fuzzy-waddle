@@ -1,10 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-
 export type Constructor<T extends Record<string, any> = object> = new (...args: any[]) => T;
 
 export interface IComponent {
   init(): void;
-
   awake?: () => void;
   start?: () => void;
   update?: (time: number, delta: number) => void;

@@ -1,6 +1,5 @@
-import { Projectile } from './projectile';
-import { ProjectileData } from './projectile-data';
 import { DamageType } from './damage-type';
+import { ProjectileClass } from './projectiles/projectiles';
 
 export class AttackData {
   constructor(
@@ -10,8 +9,6 @@ export class AttackData {
     public damageType: DamageType,
     public range: number,
     // Type of the projectile to spawn - if not set, damage will be dealt instantly
-    public projectileClass?: typeof Projectile,
-    // for example Projectiles.projectileArrow
-    public projectileData?: ProjectileData
+    public projectileClass?: ProjectileClass
   ) {}
 }

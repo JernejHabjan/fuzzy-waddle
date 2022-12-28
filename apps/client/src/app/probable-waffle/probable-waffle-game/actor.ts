@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 export abstract class Actor extends Phaser.GameObjects.Sprite implements PlaceableActor {
   tilePlacementData: TilePlacementData;
   components: ComponentService;
-
   protected constructor(scene: Phaser.Scene, spritePlacementData: SpritePlacementData) {
     const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(spritePlacementData.tilePlacementData);
     super(scene, spriteWorldPlacementInfo.x, spriteWorldPlacementInfo.y, spritePlacementData.textureName);

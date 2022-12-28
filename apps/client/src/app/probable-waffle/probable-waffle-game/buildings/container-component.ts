@@ -9,16 +9,23 @@ export class ContainerComponent implements IComponent {
     // pass
   }
 
-  GetContainedActors(): Actor[] {
+  getContainedActors(): Actor[] {
     return Array.from(this.containedActors);
   }
+
   onKilled() {
     this.unloadAll();
   }
+
   unloadAll() {
     this.containedActors.forEach((actor) => {
-      actor.setVisible(true);
+      this.unloadActor(actor);
     });
+  }
+
+  unloadActor(actor: Actor) {
+    this.containedActors.delete(actor);
+    actor.setVisible(true);
   }
   canLoadActor() {
     return this.containedActors.size < this.capacity;

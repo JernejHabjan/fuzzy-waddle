@@ -1,12 +1,12 @@
-import { DamageType } from './damage-type';
-import { Actor } from '../../actor';
-import Vector3 = Phaser.Math.Vector3;
+import { Actor } from '../../../actor';
 import { ProjectileData } from './projectile-data';
+import Vector3 = Phaser.Math.Vector3;
 
-export class Projectile {
+export abstract class Projectile {
   private targetActor: Actor | null = null;
   private targetLocation: Vector3 | null = null;
-  constructor(public projectileData: ProjectileData, public damageCauser: Actor) {}
+  public abstract projectileData: ProjectileData;
+  constructor(public damageCauser: Actor) {}
 
   fireAtActor(targetActor: Actor) {
     this.targetActor = targetActor;
