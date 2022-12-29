@@ -1,4 +1,3 @@
-import { MapHelper } from '../map/map-helper';
 import { Scene } from 'phaser';
 import { TilePlacementData, TileWorldData } from '../input/tilemap/tilemap-input.handler';
 import { GameObjectsHelper } from '../map/game-objects-helper';

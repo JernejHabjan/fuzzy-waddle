@@ -20,9 +20,6 @@ export class ContainableComponent {
       return;
     }
     const containerComponent = this.containerOwner.components.findComponent(ContainerComponent);
-    if (!containerComponent) {
-      throw new Error('Container owner has no container component');
-    }
     containerComponent.unloadActor(this.owner);
   }
 }

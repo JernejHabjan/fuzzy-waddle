@@ -1,10 +1,8 @@
-import { PlayerCharacter, PlayerCharacterDefinition } from './player-character';
-import { AttackComponent } from './combat/attack-component';
-import { AttackData } from './combat/attack-data';
-import { DamageTypes } from './combat/damage-types';
+import { CharacterDefinition } from './character';
 import { GathererComponent } from './gatherer-component';
+import { PlayerCharacter } from './player-character';
 
-export const WorkerDefinition: PlayerCharacterDefinition = {
+export const WorkerDefinition: CharacterDefinition = {
   healthDefinition: {
     maxHealth: 100
   },
@@ -23,7 +21,7 @@ export const WorkerDefinition: PlayerCharacterDefinition = {
   }
 };
 export class Worker extends PlayerCharacter {
-  playerCharacterDefinition: PlayerCharacterDefinition = WorkerDefinition;
+  playerCharacterDefinition: CharacterDefinition = WorkerDefinition;
 
   override init() {
     super.init();

@@ -33,9 +33,8 @@ import { LpcAnimationHelper } from '../animation/lpc-animation-helper';
 import { Actor } from '../actor';
 import { RepresentableActor } from '../characters/representable-actor';
 import { hasSpriteRepresentationComponent } from '../characters/sprite-representable-component';
-import { Kismet } from '../kismet/kismet';
-import { Producer } from '../buildings/production-component';
-import { Attacker } from '../characters/combat/attack-component';
+import { PlayerController } from '../controllers/player-controller';
+import { Barracks } from '../buildings/barracks';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -497,12 +496,21 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       // }
     ]);
     this.placeWarrior({ tileXY: { x: 1, y: 1 }, z: 0 });
+    this.placeBarracks({ tileXY: { x: 2, y: 2 }, z: 0 });
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {
-    const warrior = new Warrior(this, tilePlacementData);
-    warrior.init(); // todo should be called by registration engine
+    const playerController = null as any as PlayerController; // todo
+    const warrior = new Warrior(this, tilePlacementData, playerController);
+    warrior.init(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior)
     this.warriorGroup.push(warrior);
-    // this.add.existing(warrior.spriteRepresentationComponent.sprite);
+  }
+
+  private placeBarracks(tilePlacementData: TilePlacementData) {
+    const playerController = null as any as PlayerController; // todo
+
+    const barracks = new Barracks(this, tilePlacementData, playerController);
+    barracks.init(); // todo should be called by registration engine
+    this.warriorGroup.push(barracks); // todo
   }
 }

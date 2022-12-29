@@ -1,9 +1,10 @@
-import { PlayerCharacter, PlayerCharacterDefinition } from './player-character';
+import { CharacterDefinition } from './character';
 import { AttackComponent, Attacker } from './combat/attack-component';
 import { AttackData } from './combat/attack-data';
 import { DamageTypes } from './combat/damage-types';
+import { PlayerCharacter } from './player-character';
 
-export const WarriorDefinition: PlayerCharacterDefinition = {
+export const WarriorDefinition: CharacterDefinition = {
   healthDefinition: {
     maxHealth: 100
   },
@@ -23,13 +24,13 @@ export const WarriorDefinition: PlayerCharacterDefinition = {
 };
 
 export class Warrior extends PlayerCharacter implements Attacker {
-  playerCharacterDefinition: PlayerCharacterDefinition = WarriorDefinition;
+  playerCharacterDefinition: CharacterDefinition = WarriorDefinition;
   attackComponent!: AttackComponent;
 
   override init() {
     super.init();
     this.attackComponent = this.components.addComponent(
-      new AttackComponent(this.scene, this, [new AttackData(10, 10, DamageTypes.DamageTypeNormal, 10)])
+      new AttackComponent(this, [new AttackData(10, 10, DamageTypes.DamageTypeNormal, 10)])
     );
   }
 }

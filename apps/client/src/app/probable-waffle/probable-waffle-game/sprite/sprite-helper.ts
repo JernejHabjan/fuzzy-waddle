@@ -6,7 +6,7 @@ import { ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { PlaceableAtlasProperties } from '../placable-objects/static-object';
-import { Warrior, WarriorDefinition } from '../characters/warrior';
+import { WarriorDefinition } from '../characters/warrior';
 import { Vector2Simple } from '../math/intersection';
 
 export type SpritePlacementData = {

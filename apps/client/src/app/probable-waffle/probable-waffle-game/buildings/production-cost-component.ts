@@ -5,10 +5,10 @@ import { ResourceType } from './resource-type';
 export class ProductionCostComponent implements IComponent {
   finishedSound?: string; // todo
   constructor(
-    private costType: PaymentType,
-    productionTime: number,
-    resources: Map<ResourceType, number>,
-    refundFactor: number
+    public costType: PaymentType,
+    public productionTime: number,
+    public resources: Map<ResourceType, number>,
+    public refundFactor: number
   ) {}
 
   init(): void {

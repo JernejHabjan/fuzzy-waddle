@@ -31,7 +31,7 @@ export class NavInputHandler {
             this.mapNavHelper.getFlattenedGrid
           );
 
-          const characterMovementComponent = selection.components.findComponent(CharacterMovementComponent);
+          const characterMovementComponent = selection.components.findComponentOrNull(CharacterMovementComponent);
           if (characterMovementComponent) {
             characterMovementComponent.moveSpriteToTileCenters(tileXYPath);
           }

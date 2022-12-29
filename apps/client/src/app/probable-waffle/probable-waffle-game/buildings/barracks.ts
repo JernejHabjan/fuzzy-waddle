@@ -21,8 +21,6 @@ export class Barracks extends Building implements Producer {
 
   override init() {
     super.init();
-    this.productionComponent = this.components.addComponent(
-      new ProductionComponent(this.scene, [Warrior, Worker], 2, 3)
-    );
+    this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
   }
 }

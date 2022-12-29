@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture } from '@angular/core/testing';
 
 import { ProbableWaffleGameComponent } from './probable-waffle-game.component';
 
@@ -10,7 +10,6 @@ describe('ProbableWaffleGameComponent', () => {
     // await TestBed.configureTestingModule({ // todo
     //   declarations: [ProbableWaffleGameComponent]
     // }).compileComponents();
-
     // fixture = TestBed.createComponent(ProbableWaffleGameComponent);
     // component = fixture.componentInstance;
     // fixture.detectChanges();

@@ -5,8 +5,8 @@ import { Vector2Simple } from '../math/intersection';
 import { IsoHelper } from '../iso/iso-helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { SceneCommunicatorService } from '../event-emitters/scene-communicator.service';
-import Tileset = Phaser.Tilemaps.Tileset;
 import { MapHelper } from '../map/map-helper';
+import Tileset = Phaser.Tilemaps.Tileset;
 import Tile = Phaser.Tilemaps.Tile;
 
 export class TilemapHelper {

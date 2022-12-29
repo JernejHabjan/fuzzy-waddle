@@ -38,15 +38,7 @@ export class ConstructionSiteComponent implements IComponent {
     private readonly finishedSound?: string
   ) {
     const ownerComponent = this.owner.components.findComponent(OwnerComponent);
-    if (!ownerComponent) {
-      throw new Error('ConstructionSiteComponent must have an owner');
-    }
-    const ownerPlayerController = ownerComponent.owner;
-    const playerResourcesComponent = ownerPlayerController.components.findComponent(PlayerResourcesComponent);
-    if (!playerResourcesComponent) {
-      throw new Error('ConstructionSiteComponent must have an owner with a PlayerResourcesComponent');
-    }
-    this.playerResourcesComponent = playerResourcesComponent;
+    this.playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
   }
 
   init(): void {
@@ -71,10 +63,10 @@ export class ConstructionSiteComponent implements IComponent {
     // todo other logic here
 
     this.remainingConstructionTime -= constructionProgress;
-    const healthComponent = this.owner.components.findComponent(HealthComponent);
+    const healthComponent = this.owner.components.findComponentOrNull(HealthComponent);
     if (healthComponent) {
       const currentHealth = healthComponent.GetCurrentHealth();
-      const maxHealth = healthComponent.maxHealth;
+      const maxHealth = healthComponent.healthDefinition.maxHealth;
       const healthIncrement = ((maxHealth - currentHealth) / this.constructionTime) * constructionProgress;
       healthComponent.SetCurrentHealth(currentHealth + healthIncrement);
     }
@@ -104,9 +96,9 @@ export class ConstructionSiteComponent implements IComponent {
     this.state = ConstructionStateEnum.Constructing;
 
     // set initial health
-    const healthComponent = this.owner.components.findComponent(HealthComponent);
+    const healthComponent = this.owner.components.findComponentOrNull(HealthComponent);
     if (healthComponent) {
-      healthComponent.SetCurrentHealth(healthComponent.maxHealth * this.initialHealthPercentage);
+      healthComponent.SetCurrentHealth(healthComponent.healthDefinition.maxHealth * this.initialHealthPercentage);
     }
 
     this.constructionStarted.emit(this.constructionTime);

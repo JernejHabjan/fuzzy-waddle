@@ -2,14 +2,15 @@ import { Warrior } from '../characters/warrior';
 import { Barracks } from './barracks';
 import { Worker } from '../characters/worker';
 
-export type ActorsAbleToBeProduced = typeof Warrior | typeof Worker | typeof Barracks;
+export type ActorsAbleToBeProduced = Warrior | Worker | Barracks;
+export type ActorsAbleToBeProducedClass = typeof Warrior | typeof Worker | typeof Barracks;
 
 export class ProductionQueue {
   constructor(private capacityPerQueue: number) {}
-  queuedActors: ActorsAbleToBeProduced[] = [];
+  queuedActors: ActorsAbleToBeProducedClass[] = [];
 
   remainingProductionTime = 0;
-  add(actor: ActorsAbleToBeProduced) {
+  add(actor: ActorsAbleToBeProducedClass) {
     if (this.queuedActors.length >= this.capacityPerQueue) {
       throw new Error('Queue is full');
     }

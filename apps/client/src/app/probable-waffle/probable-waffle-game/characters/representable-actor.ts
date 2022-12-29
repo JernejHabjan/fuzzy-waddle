@@ -10,18 +10,15 @@ import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 export abstract class RepresentableActor extends Actor implements ISpriteRepresentable, ITransformable {
   spriteRepresentationComponent!: SpriteRepresentationComponent;
   transformComponent!: TransformComponent;
-  protected sprite!: Phaser.GameObjects.Sprite;
-  protected scene!: Phaser.Scene;
   abstract textureMapDefinition: TextureMapDefinition;
 
-  protected constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
+  protected constructor(private scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
     super();
     this.initActor(scene, tilePlacementData);
   }
 
   initActor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
     this.transformComponent = new TransformComponent(tilePlacementData);
-    this.scene = scene;
     this.subscribeToSceneDestroy();
   }
 
@@ -33,7 +30,6 @@ export abstract class RepresentableActor extends Actor implements ISpriteReprese
       tilePlacementData: this.transformComponent.tilePlacementData
     });
     this.spriteRepresentationComponent.subscribeToTransformEvents(this.transformComponent);
-    this.sprite = this.spriteRepresentationComponent.sprite;
   }
 
   override destroy() {

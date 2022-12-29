@@ -1,5 +1,6 @@
 import ComponentService, { IComponent } from './services/component.service';
 import { v4 as uuidv4 } from 'uuid';
+
 export abstract class Actor implements IComponent {
   components: ComponentService;
   /**

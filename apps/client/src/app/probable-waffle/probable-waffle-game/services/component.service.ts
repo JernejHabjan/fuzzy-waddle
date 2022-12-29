@@ -42,10 +42,18 @@ export default class ComponentService {
   }
 
   findComponent<T extends IComponent>(component: Constructor<T>): T {
+    const comp = this.findComponentOrNull(component);
+    if (!comp) {
+      throw new Error(`Component ${component.name} not found`);
+    }
+    return comp;
+  }
+
+  findComponentOrNull<T extends IComponent>(component: Constructor<T>): T | null {
     const components = this.componentsByGameObject.get(this.gameObjectName) as IComponent[];
     const comp = components.find((c) => c instanceof component);
     if (!comp) {
-      throw new Error(`Component ${component.name} not found`);
+      return null;
     }
     return comp as T;
   }

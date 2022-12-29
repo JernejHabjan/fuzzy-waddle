@@ -1,9 +1,9 @@
 import * as Phaser from 'phaser';
+import { Scene } from 'phaser';
 import { MapSizeInfo } from '../const/map-size.info';
 import { TilemapHelper } from '../tilemap/tilemap.helper';
 import { Vector2Simple } from '../math/intersection';
 import { ManualTilesHelper } from '../manual-tiles/manual-tiles.helper';
-import { Scene } from 'phaser';
 
 export class LayerLines {
   private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;

@@ -1,4 +1,3 @@
-import { MapHelper } from '../map/map-helper';
 import { Scene } from 'phaser';
 import { PlayerPlaceableGameObject } from './static-object';
 import { SpriteHelper } from '../sprite/sprite-helper';

@@ -1,6 +1,6 @@
 import { Vector2Simple } from '../math/intersection';
-import { Scene } from 'phaser';
 import * as Phaser from 'phaser';
+import { Scene } from 'phaser';
 
 export class DebugShapes {
   static drawDebugPoint(scene: Scene, clickPoint: Vector2Simple) {

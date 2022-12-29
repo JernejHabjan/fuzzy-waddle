@@ -4,7 +4,7 @@ import { AttackData } from './attack-data';
 import { EventEmitter } from '@angular/core';
 import HealthComponent from './health-component';
 import { RepresentableActor } from '../representable-actor';
-import { ProductionComponent } from '../../buildings/production-component';
+import { SpriteRepresentationComponent } from '../sprite-representable-component';
 
 export interface Attacker {
   attackComponent: AttackComponent;
@@ -16,10 +16,11 @@ export class AttackComponent implements IComponent {
   // actor used an attack
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
-  constructor(private scene: Phaser.Scene, private owner: RepresentableActor, private attacks: AttackData[]) {}
+  private spriteRepresentationComponent!: SpriteRepresentationComponent;
+  constructor(private owner: RepresentableActor, private attacks: AttackData[]) {}
 
   init(): void {
-    // pass
+    this.spriteRepresentationComponent = this.owner.components.findComponent(SpriteRepresentationComponent);
   }
 
   update(time: number, delta: number): void {
@@ -43,17 +44,13 @@ export class AttackComponent implements IComponent {
     const attack = this.attacks[attackIndex];
 
     if (attack.projectileClass) {
-      const projectile = new attack.projectileClass(this.scene, this.owner);
+      const projectile = new attack.projectileClass(this.spriteRepresentationComponent.scene, this.owner);
       projectile.init(); // todo should be called by registration engine
       projectile.start(); // todo should be called by registration engine
       projectile.fireAtActor(enemy); // todo should be triggered only after init and start
     } else {
       const enemyHealthComponent = enemy.components.findComponent(HealthComponent);
-      if (enemyHealthComponent) {
-        enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
-      } else {
-        throw new Error('Enemy has no health component');
-      }
+      enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
     }
   }
 
