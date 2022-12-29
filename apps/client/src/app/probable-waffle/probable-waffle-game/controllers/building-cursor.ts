@@ -3,7 +3,7 @@ import { MapSizeInfo } from '../const/map-size.info';
 import { Vector2Simple } from '../math/intersection';
 import { AttackComponent } from '../characters/combat/attack-component';
 import { ConstructionSiteComponent } from '../buildings/construction-site-component';
-import { Pawn } from '../characters/pawn';
+import { RepresentableActor } from '../characters/representable-actor';
 import Vector3Like = Phaser.Types.Math.Vector3Like;
 
 export class BuildingCursor {
@@ -15,7 +15,7 @@ export class BuildingCursor {
   previewAttackRange = false;
 
   allCellsAreValid = false;
-  private building?: Pawn;
+  private building?: RepresentableActor;
 
   private pointerLocation?: Vector2Simple;
   constructor(private scene: Phaser.Scene) {}
@@ -29,7 +29,7 @@ export class BuildingCursor {
     this.pointerLocation = pointerLocation;
   }
 
-  setupForBuilding(building: Pawn) {
+  setupForBuilding(building: RepresentableActor) {
     // todo obtains gridWidthAndHeight from buildingClass
     // get ConstructionSiteComponent from buildingClass
     this.building = building;

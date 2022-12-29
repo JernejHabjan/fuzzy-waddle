@@ -27,12 +27,15 @@ import { StaticObjectHelper } from '../placable-objects/static-object';
 import { DynamicObjectHelper } from '../placable-objects/dynamic-object';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { MinimapTextureHelper } from '../minimap/minimap-texture.helper';
-import { Warrior, WarriorSoundEnum, WarriorTextureMap } from '../characters/warrior';
+import { Warrior, WarriorDefinition } from '../characters/warrior';
 import { GameObjectsHelper } from '../map/game-objects-helper';
 import { LpcAnimationHelper } from '../animation/lpc-animation-helper';
 import { Actor } from '../actor';
-import { Pawn } from '../characters/pawn';
+import { RepresentableActor } from '../characters/representable-actor';
 import { hasSpriteRepresentationComponent } from '../characters/sprite-representable-component';
+import { Kismet } from '../kismet/kismet';
+import { Producer } from '../buildings/production-component';
+import { Attacker } from '../characters/combat/attack-component';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -74,7 +77,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private layerLines!: LayerLines;
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
-  private warriorGroup: Pawn[] = [];
+  private warriorGroup: RepresentableActor[] = [];
   private animHelper!: LpcAnimationHelper;
 
   constructor() {
@@ -111,19 +114,22 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     this.load.tilemapTiledJSON(MapDefinitions.tilemapMapName, MapDefinitions.tilemapMapJson);
 
     this.load.spritesheet(
-      WarriorTextureMap.textureName,
-      'assets/probable-waffle/spritesheets/' + WarriorTextureMap.spriteSheet.name + '.png',
-      WarriorTextureMap.spriteSheet.frameConfig
+      WarriorDefinition.textureMapDefinition.textureName,
+      'assets/probable-waffle/spritesheets/' + WarriorDefinition.textureMapDefinition.spriteSheet.name + '.png',
+      WarriorDefinition.textureMapDefinition.spriteSheet.frameConfig
     );
 
-    this.load.audio(WarriorSoundEnum.move, 'assets/probable-waffle/sfx/character/move/footstep.mp3');
+    this.load.audio(
+      WarriorDefinition.soundDefinition.move as string,
+      'assets/probable-waffle/sfx/character/move/footstep.mp3'
+    );
   }
 
   create() {
     this.animHelper = new LpcAnimationHelper(this.anims);
-    this.animHelper.createAnimationsForLPCSpriteSheet(WarriorTextureMap.spriteSheet.name);
+    this.animHelper.createAnimationsForLPCSpriteSheet(WarriorDefinition.textureMapDefinition.spriteSheet.name);
     // iterate over WarriorSoundEnum and load all sounds
-    Object.values(WarriorSoundEnum).forEach((sound) => {
+    Object.values(WarriorDefinition.soundDefinition).forEach((sound) => {
       this.sound.add(sound);
     });
 
@@ -219,7 +225,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
           const navigableTile = this.mapNavHelper.getNavigableTile(worldXY);
           if (navigableTile) {
-            const selectedMovable = this.selected.filter((obj) => obj instanceof Pawn) as Pawn[];
+            const selectedMovable = this.selected.filter(
+              (obj) => obj instanceof RepresentableActor
+            ) as RepresentableActor[];
             this.navInputHandler.startNav(navigableTile, selectedMovable);
           }
         } else {
@@ -340,7 +348,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): Pawn[] {
+  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): RepresentableActor[] {
     // return this.gameObjectsHelper.dynamicObjects.filter((o) => {
     //   const bounds = o.spriteInstance.getBounds();
     //   return this.multiSelectionHandler.overlapsBounds(rect, bounds);
@@ -419,7 +427,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private placeAtlasOnCoords(atlasToBePlaced: AtlasEmitValue | null, tilePlacementData: TilePlacementData): void {
     if (atlasToBePlaced === null) return;
 
-    if (atlasToBePlaced.atlasFrame.filename === WarriorTextureMap.textureName + '.png') {
+    if (atlasToBePlaced.atlasFrame.filename === WarriorDefinition.textureMapDefinition.textureName + '.png') {
       this.placeWarrior(tilePlacementData);
     } else {
       this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
@@ -493,7 +501,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   private placeWarrior(tilePlacementData: TilePlacementData) {
     const warrior = new Warrior(this, tilePlacementData);
-    warrior.init();
+    warrior.init(); // todo should be called by registration engine
     this.warriorGroup.push(warrior);
     // this.add.existing(warrior.spriteRepresentationComponent.sprite);
   }

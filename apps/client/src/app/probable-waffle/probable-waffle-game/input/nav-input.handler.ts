@@ -5,7 +5,7 @@ import { TilePlacementWorldWithProperties } from '../manual-tiles/manual-tiles.h
 import { Vector2Simple } from '../math/intersection';
 import { MapNavHelper } from '../map/map-nav-helper';
 import { CharacterMovementComponent } from '../characters/character-movement-component';
-import { Pawn } from '../characters/pawn';
+import { RepresentableActor } from '../characters/representable-actor';
 
 export class NavInputHandler {
   constructor(
@@ -18,7 +18,7 @@ export class NavInputHandler {
     return 0 <= tileXY.x && tileXY.x <= MapSizeInfo.info.width && 0 <= tileXY.y && tileXY.y <= MapSizeInfo.info.height;
   }
 
-  startNav(navigableTile: TilePlacementWorldWithProperties, selected: Pawn[]) {
+  startNav(navigableTile: TilePlacementWorldWithProperties, selected: RepresentableActor[]) {
     selected.forEach(async (selection) => {
       if (NavInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
         try {

@@ -3,7 +3,12 @@ import { Actor } from '../../actor';
 import { AttackData } from './attack-data';
 import { EventEmitter } from '@angular/core';
 import HealthComponent from './health-component';
-import { Pawn } from '../pawn';
+import { RepresentableActor } from '../representable-actor';
+import { ProductionComponent } from '../../buildings/production-component';
+
+export interface Attacker {
+  attackComponent: AttackComponent;
+}
 
 export class AttackComponent implements IComponent {
   // when cooldown has expired
@@ -11,7 +16,7 @@ export class AttackComponent implements IComponent {
   // actor used an attack
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
-  constructor(private scene: Phaser.Scene, private owner: Pawn, private attacks: AttackData[]) {}
+  constructor(private scene: Phaser.Scene, private owner: RepresentableActor, private attacks: AttackData[]) {}
 
   init(): void {
     // pass
@@ -39,9 +44,9 @@ export class AttackComponent implements IComponent {
 
     if (attack.projectileClass) {
       const projectile = new attack.projectileClass(this.scene, this.owner);
-      projectile.init();
-      projectile.start();
-      projectile.fireAtActor(enemy);
+      projectile.init(); // todo should be called by registration engine
+      projectile.start(); // todo should be called by registration engine
+      projectile.fireAtActor(enemy); // todo should be triggered only after init and start
     } else {
       const enemyHealthComponent = enemy.components.findComponent(HealthComponent);
       if (enemyHealthComponent) {

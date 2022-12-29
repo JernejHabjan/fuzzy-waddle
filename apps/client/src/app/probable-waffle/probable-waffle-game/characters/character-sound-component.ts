@@ -1,5 +1,12 @@
 import { IComponent } from '../services/component.service';
 
+export type SoundDefinition = {
+  move?: string;
+  attack?: string;
+  death?: string;
+  select?: string;
+};
+
 export class CharacterSoundComponent implements IComponent {
   constructor(private readonly gameObject: Phaser.GameObjects.Sprite) {}
   init() {

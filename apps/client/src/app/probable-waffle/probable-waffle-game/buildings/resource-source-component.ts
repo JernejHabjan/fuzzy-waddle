@@ -1,4 +1,4 @@
-import { Pawn } from '../characters/pawn';
+import { RepresentableActor } from '../characters/representable-actor';
 import { IComponent } from '../services/component.service';
 import { ResourceType } from './resource-type';
 import { Actor } from '../actor';
@@ -16,10 +16,10 @@ export class ResourceSourceComponent implements IComponent {
     this.currentResources = this.maximumResources;
   }
 
-  extractResources(gatherer: Pawn, amount: number) {
+  extractResources(gatherer: RepresentableActor, amount: number) {
     // todo
   }
-  canGathererEnter(gatherer: Pawn) {}
+  canGathererEnter(gatherer: RepresentableActor) {}
   getResourceType(): ResourceType {
     return this.resourceType;
   }

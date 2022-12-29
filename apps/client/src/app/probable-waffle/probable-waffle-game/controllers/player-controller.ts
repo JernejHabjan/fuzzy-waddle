@@ -1,6 +1,6 @@
 import { GameState } from '../game-state/game-state';
 import { PlayerState } from '../player-state';
-import { Pawn } from '../characters/pawn';
+import { RepresentableActor } from '../characters/representable-actor';
 import { Actor } from '../actor';
 import { OrderData } from '../characters/AI/order-data';
 import ComponentService from '../services/component.service';
@@ -17,7 +17,7 @@ export class PlayerController {
     this.components.addComponent(new PlayerResourcesComponent());
   }
 
-  issueOrder(orderData: OrderData, issueTo: Pawn) {
+  issueOrder(orderData: OrderData, issueTo: RepresentableActor) {
     throw new Error('Not implemented');
   }
   surrender() {

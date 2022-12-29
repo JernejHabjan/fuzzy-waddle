@@ -1,22 +1,28 @@
-import { SpritePlacementData } from '../sprite/sprite-helper';
 import { CharacterMovementComponent, ICharacterMovable } from './character-movement-component';
 import { AiPawnControllerComponent, IAiPawnControllable } from '../controllers/ai-pawn-controller-component';
 import { Blackboard } from './AI/blackboard';
-import { Pawn } from './pawn';
+import { RepresentableActor } from './representable-actor';
 import { BehaviorTreeClasses } from './AI/behavior-trees';
+
+export type TextureMapDefinition = {
+  textureName: string;
+  spriteSheet: {
+    name: string;
+    frameConfig: {
+      frameWidth: number;
+      frameHeight: number;
+    };
+  };
+};
 
 /*
  * pawn includes AI controller and move component, so it can move around
  */
-export abstract class Character extends Pawn implements ICharacterMovable, IAiPawnControllable {
+export abstract class MovableActor extends RepresentableActor implements ICharacterMovable, IAiPawnControllable {
   characterMovementComponent!: CharacterMovementComponent;
   aiPawnControllerComponent!: AiPawnControllerComponent;
   abstract behaviorTreeClass: BehaviorTreeClasses;
   abstract blackboardClass: typeof Blackboard;
-
-  protected constructor(scene: Phaser.Scene, spritePlacementData: SpritePlacementData) {
-    super(scene, spritePlacementData);
-  }
 
   override init() {
     super.init();

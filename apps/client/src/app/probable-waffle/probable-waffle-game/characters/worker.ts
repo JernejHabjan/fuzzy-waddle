@@ -1,9 +1,10 @@
 import { PlayerCharacter, PlayerCharacterDefinition } from './player-character';
-import { AttackComponent, Attacker } from './combat/attack-component';
+import { AttackComponent } from './combat/attack-component';
 import { AttackData } from './combat/attack-data';
 import { DamageTypes } from './combat/damage-types';
+import { GathererComponent } from './gatherer-component';
 
-export const WarriorDefinition: PlayerCharacterDefinition = {
+export const WorkerDefinition: PlayerCharacterDefinition = {
   healthDefinition: {
     maxHealth: 100
   },
@@ -21,15 +22,11 @@ export const WarriorDefinition: PlayerCharacterDefinition = {
     move: 'move'
   }
 };
-
-export class Warrior extends PlayerCharacter implements Attacker {
-  playerCharacterDefinition: PlayerCharacterDefinition = WarriorDefinition;
-  attackComponent!: AttackComponent;
+export class Worker extends PlayerCharacter {
+  playerCharacterDefinition: PlayerCharacterDefinition = WorkerDefinition;
 
   override init() {
     super.init();
-    this.attackComponent = this.components.addComponent(
-      new AttackComponent(this.scene, this, [new AttackData(10, 10, DamageTypes.DamageTypeNormal, 10)])
-    );
+    this.components.addComponent(new GathererComponent(this, [], 100));
   }
 }

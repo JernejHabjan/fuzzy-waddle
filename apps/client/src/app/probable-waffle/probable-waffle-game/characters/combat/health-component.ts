@@ -4,6 +4,11 @@ import { DamageType } from './damage-type';
 import { EventEmitter } from '@angular/core';
 import { ActorDeathType } from './actor-death-type';
 
+export type HealthDefinition = {
+  maxHealth: number;
+  // todo maybe armor type..
+};
+
 export default class HealthComponent implements IComponent {
   private graphics?: Phaser.GameObjects.Graphics;
   private barWidth = 25;
@@ -15,13 +20,13 @@ export default class HealthComponent implements IComponent {
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.Sprite,
-    public maxHealth: number,
+    public healthDefinition: HealthDefinition,
     regenerateHealth: boolean = false,
     private regenerateHealthRate: number = 0,
     private actorDeathType?: ActorDeathType,
     private actorDeathSound?: string
   ) {
-    this.currentHealth = maxHealth;
+    this.currentHealth = healthDefinition.maxHealth;
   }
 
   init() {
