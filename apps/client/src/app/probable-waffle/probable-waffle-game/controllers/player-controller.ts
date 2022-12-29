@@ -4,14 +4,14 @@ import { RepresentableActor } from '../characters/representable-actor';
 import { Actor } from '../actor';
 import { OrderData } from '../characters/AI/order-data';
 import ComponentService from '../services/component.service';
-import { v4 as uuidv4 } from 'uuid';
 import { PlayerResourcesComponent } from './player-resources-component';
+import UUID = Phaser.Utils.String.UUID;
 
 export class PlayerController {
   components: ComponentService;
 
   constructor(public readonly gameState: GameState, public readonly playerState: PlayerState) {
-    const name = uuidv4(); // give it a unique name
+    const name = UUID();
     this.components = new ComponentService(name);
 
     this.components.addComponent(new PlayerResourcesComponent());
