@@ -33,9 +33,9 @@ export default class ComponentService {
       for (const component of value) {
         if (component.init) {
           component.init();
-          if (component.start) {
-            this.queuedForStart.push(component);
-          }
+        }
+        if (component.start) {
+          this.queuedForStart.push(component);
         }
       }
     }

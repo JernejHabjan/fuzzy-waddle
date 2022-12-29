@@ -1,16 +1,17 @@
 import { Warrior } from '../characters/warrior';
 import { Barracks } from './barracks';
 import { Worker } from '../characters/worker';
+import { ProductionQueueItem } from './production-component';
 
 export type ActorsAbleToBeProduced = Warrior | Worker | Barracks;
 export type ActorsAbleToBeProducedClass = typeof Warrior | typeof Worker | typeof Barracks;
 
 export class ProductionQueue {
   constructor(private capacityPerQueue: number) {}
-  queuedActors: ActorsAbleToBeProducedClass[] = [];
+  queuedActors: ProductionQueueItem[] = [];
 
   remainingProductionTime = 0;
-  add(actor: ActorsAbleToBeProducedClass) {
+  add(actor: ProductionQueueItem) {
     if (this.queuedActors.length >= this.capacityPerQueue) {
       throw new Error('Queue is full');
     }

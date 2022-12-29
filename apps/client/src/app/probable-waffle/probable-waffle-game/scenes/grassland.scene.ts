@@ -35,6 +35,8 @@ import { RepresentableActor } from '../characters/representable-actor';
 import { hasSpriteRepresentationComponent } from '../characters/sprite-representable-component';
 import { PlayerController } from '../controllers/player-controller';
 import { Barracks } from '../buildings/barracks';
+import { PlayerResourcesComponent } from '../controllers/player-resources-component';
+import { Resources, ResourceType } from '../buildings/resource-type';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -77,7 +79,9 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
   private warriorGroup: RepresentableActor[] = [];
+  private updateLoopActors: Actor[] = []; // todo to separate update loop then
   private animHelper!: LpcAnimationHelper;
+  private playerController!: PlayerController; // todo temp
 
   constructor() {
     super({ key: Scenes.GrasslandScene });
@@ -321,6 +325,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       child.update(time, delta);
       return true;
     });
+    this.updateLoopActors.forEach((actor) => actor.update(time, delta));
   }
 
   private destroyListener() {
@@ -495,21 +500,21 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       //   }
       // }
     ]);
+    this.playerController = new PlayerController(); // todo temp
+    this.playerController.components.findComponent(PlayerResourcesComponent).addPlayerResource(Resources.gold, 1000); // todo temp
+    this.updateLoopActors.push(this.playerController);
     this.placeWarrior({ tileXY: { x: 1, y: 1 }, z: 0 });
     this.placeBarracks({ tileXY: { x: 2, y: 2 }, z: 0 });
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {
-    const playerController = null as any as PlayerController; // todo
-    const warrior = new Warrior(this, tilePlacementData, playerController);
-    warrior.init(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior)
+    const warrior = new Warrior(this, tilePlacementData, this.playerController);
+    warrior.init(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior) // todo it also registers on "update" hook
     this.warriorGroup.push(warrior);
   }
 
   private placeBarracks(tilePlacementData: TilePlacementData) {
-    const playerController = null as any as PlayerController; // todo
-
-    const barracks = new Barracks(this, tilePlacementData, playerController);
+    const barracks = new Barracks(this, tilePlacementData, this.playerController);
     barracks.init(); // todo should be called by registration engine
     this.warriorGroup.push(barracks); // todo
   }

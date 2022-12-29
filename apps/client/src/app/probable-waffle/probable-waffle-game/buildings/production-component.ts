@@ -1,13 +1,19 @@
 import { IComponent } from '../services/component.service';
 import { RallyPoint } from '../rally-point';
 import { ActorsAbleToBeProduced, ActorsAbleToBeProducedClass, ProductionQueue } from './production-queue';
-import { ProductionCostComponent } from './production-cost-component';
+import { CostData } from './production-cost-component';
 import { PaymentType } from './payment-type';
 import { PlayerResourcesComponent } from '../controllers/player-resources-component';
 import { OwnerComponent } from '../characters/owner-component';
 import { Actor } from '../actor';
 import { SpriteRepresentationComponent } from '../characters/sprite-representable-component';
 import { TransformComponent } from '../characters/transformable-component';
+import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
+
+export type ProductionQueueItem = {
+  actorClass: ActorsAbleToBeProducedClass;
+  costData: CostData;
+};
 
 export interface Producer {
   productionComponent: ProductionComponent;
@@ -47,27 +53,22 @@ export class ProductionComponent implements IComponent {
       }
 
       for (let j = 0; j < queue.queuedActors.length; j++) {
-        const actorClass = queue.queuedActors[j];
+        const { costData } = queue.queuedActors[j];
 
-        const tempActor = this.spawnActorTemp(actorClass);
-        tempActor.init(); // todo should be called by registration engine
-        tempActor.start(); // todo should be called by registration engine
-        const productionCostComponent = tempActor.components.findComponentOrNull(ProductionCostComponent);
         let productionCostPaid = false;
-        if (productionCostComponent && productionCostComponent.costType == PaymentType.PayOverTime) {
+        if (costData.costType == PaymentType.PayOverTime) {
           // get player resources and pay for production
           const playerResourcesComponent =
             this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
-          const canPayAllResources = playerResourcesComponent.canPayAllResources(productionCostComponent.resources);
+          const canPayAllResources = playerResourcesComponent.canPayAllResources(costData.resources);
 
           if (canPayAllResources) {
-            playerResourcesComponent.spendPlayerResources(productionCostComponent.resources);
+            playerResourcesComponent.spendPlayerResources(costData.resources);
             productionCostPaid = true;
           }
         } else {
           productionCostPaid = true;
         }
-        tempActor.destroy();
 
         if (!productionCostPaid) {
           continue;
@@ -92,15 +93,26 @@ export class ProductionComponent implements IComponent {
     queue.remainingProductionTime = 0;
 
     // spawn actor
-    const actorClass = queue.queuedActors[queueIndex];
+    const { actorClass } = queue.queuedActors[queueIndex];
     this.spawnActor(actorClass);
   }
 
   private spawnActor(actorClass: ActorsAbleToBeProducedClass): ActorsAbleToBeProduced {
     const tilePlacementData = this.transformComponent.tilePlacementData;
+
+    // offset spawn position
+    const spawnPosition: TilePlacementData = {
+      // todo demo
+      tileXY: {
+        x: tilePlacementData.tileXY.x + 1,
+        y: tilePlacementData.tileXY.y + 1
+      },
+      z: tilePlacementData.z
+    };
+
     const actor = new actorClass(
       this.spriteRepresentationComponent.scene,
-      tilePlacementData,
+      spawnPosition,
       this.ownerComponent.playerController
     );
     actor.init(); // todo should be called by registration engine
@@ -108,7 +120,77 @@ export class ProductionComponent implements IComponent {
     return actor;
   }
 
-  private spawnActorTemp(actorClass: ActorsAbleToBeProducedClass): ActorsAbleToBeProduced {
-    return this.spawnActor(actorClass); // todo!!!!
+  isProducing(): boolean {
+    for (let i = 0; i < this.productionQueues.length; i++) {
+      const queue = this.productionQueues[i];
+      if (queue.queuedActors.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * find queue with lest products that is not at capacity
+   */
+  private findQueueForProduct(): ProductionQueue | undefined {
+    let queueWithLeastProducts: ProductionQueue | undefined = undefined;
+    let queueWithLeastProductsCount = Number.MAX_SAFE_INTEGER;
+    for (let i = 0; i < this.productionQueues.length; i++) {
+      const queue = this.productionQueues[i];
+      if (queue.queuedActors.length < queueWithLeastProductsCount) {
+        queueWithLeastProducts = queue;
+        queueWithLeastProductsCount = queue.queuedActors.length;
+      }
+    }
+    return queueWithLeastProducts;
+  }
+
+  private canAssignProduction(item: ProductionQueueItem): boolean {
+    // check if actor can be produced
+    if (!this.availableProductActorClasses.includes(item.actorClass)) {
+      return false;
+    }
+
+    // check if queue is not full
+    const queue = this.findQueueForProduct();
+    // noinspection RedundantIfStatementJS
+    if (!queue) {
+      return false;
+    }
+
+    // check if player has enough resources
+    const playerResourcesComponent =
+      this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
+    return playerResourcesComponent.canPayAllResources(item.costData.resources);
+  }
+
+  startProduction(queueItem: ProductionQueueItem): void {
+    // check production state
+    if (!this.canAssignProduction(queueItem)) {
+      throw new Error('Cannot assign production');
+    }
+
+    // find queue
+    const queue = this.findQueueForProduct();
+    if (!queue) {
+      throw new Error('No queue found');
+    }
+
+    // add to queue
+    queue.queuedActors.push(queueItem);
+    if (queue.queuedActors.length === 1) {
+      // start production
+      this.startProductionInQueue(queue);
+    }
+  }
+
+  private startProductionInQueue(queue: ProductionQueue) {
+    if (queue.queuedActors.length <= 0) {
+      throw new Error('No actor in queue');
+    }
+    const { costData } = queue.queuedActors[0];
+
+    queue.remainingProductionTime = costData.productionTime;
   }
 }

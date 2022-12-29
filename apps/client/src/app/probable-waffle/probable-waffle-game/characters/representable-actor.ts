@@ -18,17 +18,19 @@ export abstract class RepresentableActor extends Actor implements ISpriteReprese
   }
 
   initActor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
-    this.transformComponent = new TransformComponent(tilePlacementData);
+    this.transformComponent = this.components.addComponent(new TransformComponent(tilePlacementData));
     this.subscribeToSceneDestroy();
   }
 
   override init() {
     super.init();
 
-    this.spriteRepresentationComponent = new SpriteRepresentationComponent(this.scene, {
-      textureName: this.textureMapDefinition.textureName,
-      tilePlacementData: this.transformComponent.tilePlacementData
-    });
+    this.spriteRepresentationComponent = this.components.addComponent(
+      new SpriteRepresentationComponent(this.scene, {
+        textureName: this.textureMapDefinition.textureName,
+        tilePlacementData: this.transformComponent.tilePlacementData
+      })
+    );
     this.spriteRepresentationComponent.subscribeToTransformEvents(this.transformComponent);
   }
 

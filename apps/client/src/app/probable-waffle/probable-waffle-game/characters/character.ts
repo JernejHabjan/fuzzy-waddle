@@ -15,11 +15,13 @@ import { RtsBehaviorTree } from './AI/rts-behavior-tree';
 import { BehaviorTreeClasses } from './AI/behavior-trees';
 import { SpriteAnimationHelper } from '../animation/sprite-animation-helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
+import { CostData } from '../buildings/production-cost-component';
 
 export type CharacterDefinition = {
   healthDefinition: HealthDefinition;
   soundDefinition: SoundDefinition;
   textureMapDefinition: TextureMapDefinition;
+  cost?: CostData;
 };
 
 export abstract class Character extends MovableActor {

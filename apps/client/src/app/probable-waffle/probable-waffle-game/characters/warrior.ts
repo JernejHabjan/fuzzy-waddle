@@ -3,6 +3,9 @@ import { AttackComponent, Attacker } from './combat/attack-component';
 import { AttackData } from './combat/attack-data';
 import { DamageTypes } from './combat/damage-types';
 import { PlayerCharacter } from './player-character';
+import { CostData } from '../buildings/production-cost-component';
+import { PaymentType } from '../buildings/payment-type';
+import { Resources, ResourceType } from '../buildings/resource-type';
 
 export const WarriorDefinition: CharacterDefinition = {
   healthDefinition: {
@@ -20,7 +23,8 @@ export const WarriorDefinition: CharacterDefinition = {
   },
   soundDefinition: {
     move: 'move'
-  }
+  },
+  cost: new CostData(PaymentType.PayOverTime, 20, new Map<ResourceType, number>([[Resources.gold, 50]]), 0.5)
 };
 
 export class Warrior extends PlayerCharacter implements Attacker {

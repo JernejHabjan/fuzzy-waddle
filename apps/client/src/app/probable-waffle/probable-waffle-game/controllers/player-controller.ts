@@ -1,19 +1,17 @@
-import { GameState } from '../game-state/game-state';
-import { PlayerState } from '../player-state';
 import { RepresentableActor } from '../characters/representable-actor';
 import { Actor } from '../actor';
 import { OrderData } from '../characters/AI/order-data';
-import ComponentService from '../services/component.service';
 import { PlayerResourcesComponent } from './player-resources-component';
-import UUID = Phaser.Utils.String.UUID;
+import { GameState } from '../game-state/game-state';
+import { PlayerState } from '../player-state';
 
-export class PlayerController {
-  components: ComponentService;
+export class PlayerController extends Actor {
+  readonly gameState!: GameState; // todo
+  readonly playerState!: PlayerState; // todo
 
-  constructor(public readonly gameState: GameState, public readonly playerState: PlayerState) {
-    const name = UUID();
-    this.components = new ComponentService(name);
-
+  // todo playerState and gameState
+  constructor() {
+    super();
     this.components.addComponent(new PlayerResourcesComponent());
   }
 
