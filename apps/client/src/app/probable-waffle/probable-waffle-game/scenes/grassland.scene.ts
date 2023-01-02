@@ -37,6 +37,9 @@ import { PlayerController } from '../controllers/player-controller';
 import { Barracks } from '../buildings/barracks';
 import { PlayerResourcesComponent } from '../controllers/player-resources-component';
 import { Resources, ResourceType } from '../buildings/resource-type';
+import { TownHall } from '../buildings/town-hall';
+import { Minerals } from '../economy/minerals';
+import { Worker } from '../characters/worker';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -516,12 +519,24 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     );
     this.updateLoopActors.push(this.playerController);
     const warrior = this.placeWarrior({ tileXY: { x: 1, y: 1 }, z: 0 });
-    // test for periodically take damage
-    // window.setInterval(() => {
-    //   warrior.healthComponent.takeDamage(10, DamageTypes.DamageTypeNormal);
-    // }, 300);
+    const worker = this.placeWorker({ tileXY: { x: 2, y: 2 }, z: 0 });
+    const barracks = this.placeBarracks({ tileXY: { x: 1, y: 2 }, z: 0 });
+    const townHall = this.placeTownHall({ tileXY: { x: 1, y: 4 }, z: 0 });
+    const minerals = this.placeMinerals({ tileXY: { x: 1, y: 6 }, z: 0 });
 
-    this.placeBarracks({ tileXY: { x: 2, y: 2 }, z: 0 });
+    setTimeout(() => {
+      // test for periodically take damage
+      // window.setInterval(() => {
+      //   warrior.healthComponent.takeDamage(10, DamageTypes.DamageTypeNormal);
+      // }, 300);
+
+      minerals.resourceSourceComponent.extractResources(worker, 10); // todo where to get this value from
+      townHall.resourceDrainComponent.returnResources(
+        worker,
+        worker.gathererComponent.carriedResourceType as ResourceType,
+        worker.gathererComponent.carriedResourceAmount
+      );
+    }, 100);
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {
@@ -531,9 +546,31 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     return warrior;
   }
 
+  private placeWorker(tilePlacementData: TilePlacementData) {
+    const worker = new Worker(this, tilePlacementData, this.playerController);
+    worker.init(); // todo should be called by registration engine -
+    this.warriorGroup.push(worker);
+    return worker;
+  }
+
   private placeBarracks(tilePlacementData: TilePlacementData) {
     const barracks = new Barracks(this, tilePlacementData, this.playerController);
     barracks.init(); // todo should be called by registration engine
     this.warriorGroup.push(barracks); // todo
+    return barracks;
+  }
+
+  private placeTownHall(tilePlacementData: TilePlacementData) {
+    const townHall = new TownHall(this, tilePlacementData, this.playerController);
+    townHall.init(); // todo should be called by registration engine
+    this.warriorGroup.push(townHall); // todo
+    return townHall;
+  }
+
+  private placeMinerals(tilePlacementData: TilePlacementData) {
+    const minerals = new Minerals(this, tilePlacementData);
+    minerals.init(); // todo should be called by registration engine
+    this.warriorGroup.push(minerals); // todo
+    return minerals;
   }
 }

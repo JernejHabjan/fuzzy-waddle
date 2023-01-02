@@ -32,12 +32,16 @@ export class ContainerComponent implements IComponent {
     this.containedActors.delete(actor);
     this.setActorVisible(actor, true);
   }
-  canLoadActor() {
+  canLoadActor(actor:Actor):boolean {
+    // check if actor is not already in container
+    if (this.containedActors.has(actor)) {
+      return false;
+    }
     return this.containedActors.size < this.capacity;
   }
 
   loadActor(actor: Actor) {
-    if (!this.canLoadActor()) {
+    if (!this.canLoadActor(actor)) {
       return;
     }
     this.containedActors.add(actor);

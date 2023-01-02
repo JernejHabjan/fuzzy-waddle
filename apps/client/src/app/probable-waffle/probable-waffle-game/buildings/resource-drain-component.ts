@@ -1,27 +1,46 @@
 import { IComponent } from '../services/component.service';
 import { Actor } from '../actor';
 import { ResourceType } from './resource-type';
+import { ContainerComponent } from './container-component';
+import { OwnerComponent } from '../characters/owner-component';
+import { PlayerResourcesComponent } from '../controllers/player-resources-component';
+import { Subject } from 'rxjs';
 
-// this is to be applied to townHall where resources can be returned to
+export interface ResourceDrain {
+  resourceDrainComponent: ResourceDrainComponent;
+}
+
+// this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent implements IComponent {
-  constructor(
-    private readonly gameObject: Phaser.GameObjects.Sprite,
-    // max gatherers at same time
-    private gathererCapacity: number
-  ) {}
+  private containerComponent: ContainerComponent | null = null;
+  private gathererMustEnter = false;
+  private gathererCapacity = 0;
+  private playerResourcesComponent!: PlayerResourcesComponent;
+  onResourcesReturned: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
+  constructor(private readonly actor: Actor, private readonly resourceTypes: ResourceType[]) {}
   init(): void {
-    // pass
+    this.containerComponent = this.actor.components.findComponentOrNull(ContainerComponent);
+    this.gathererCapacity = this.containerComponent?.capacity ?? 0;
+    this.gathererMustEnter = !!this.containerComponent;
+    const ownerComponent = this.actor.components.findComponent(OwnerComponent);
+    this.playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
   }
+
+  /**
+   * returns resources to player controller
+   */
   returnResources(gatherer: Actor, resourceType: ResourceType, amount: number) {
-    // todo
+    console.log('gatherer', gatherer, 'returned', amount, resourceType, 'to', this.actor);
+    if(this.gathererMustEnter){ // todo!!!!!!
+    }
+    this.playerResourcesComponent.addPlayerResource(resourceType, amount);
+    this.onResourcesReturned.next([resourceType, amount, gatherer]);
   }
   mustGathererEnter(): boolean {
-    // todo
-    return false;
+    return this.gathererMustEnter;
   }
 
   getResourceTypes(): ResourceType[] {
-    // todo
-    return [];
+    return this.resourceTypes;
   }
 }

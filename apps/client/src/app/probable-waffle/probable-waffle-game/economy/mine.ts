@@ -2,8 +2,10 @@ import { RepresentableActor } from '../characters/representable-actor';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { TextureMapDefinition } from '../characters/movable-actor';
 import { CharacterContainer, ContainerComponent } from '../buildings/container-component';
-import { ResourceSource, ResourceSourceComponent } from '../buildings/resource-source-component';
 import { Resources } from '../buildings/resource-type';
+import { ResourceDrain, ResourceDrainComponent } from '../buildings/resource-drain-component';
+import { PlacementRestrictionComponent, PlaceRestricted } from '../buildings/placement-restriction-component';
+import { Minerals } from './minerals';
 
 export const MineDefinitions: TextureMapDefinition = {
   textureName: 'warrior',
@@ -16,9 +18,10 @@ export const MineDefinitions: TextureMapDefinition = {
   }
 };
 
-export class Mine extends RepresentableActor implements CharacterContainer, ResourceSource {
-  resourceSourceComponent!: ResourceSourceComponent;
+export class Mine extends RepresentableActor implements CharacterContainer, ResourceDrain, PlaceRestricted {
+  resourceDrainComponent!: ResourceDrainComponent;
   containerComponent!: ContainerComponent;
+  placementRestrictionComponent!: PlacementRestrictionComponent;
   textureMapDefinition: TextureMapDefinition = MineDefinitions;
 
   constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
@@ -28,8 +31,9 @@ export class Mine extends RepresentableActor implements CharacterContainer, Reso
   override init() {
     super.init();
     this.containerComponent = this.components.addComponent(new ContainerComponent(2));
-    this.resourceSourceComponent = this.components.addComponent(
-      new ResourceSourceComponent(this, Resources.minerals, 100, 1, true, 2)
-    ); // todo gatherer capacity duplicated
+    this.resourceDrainComponent = this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
+    this.placementRestrictionComponent = this.components.addComponent(
+      new PlacementRestrictionComponent(this, [Minerals])
+    );
   }
 }
