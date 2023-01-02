@@ -6,6 +6,7 @@ import { PlayerCharacter } from './player-character';
 import { CostData } from '../buildings/production-cost-component';
 import { PaymentType } from '../buildings/payment-type';
 import { Resources, ResourceType } from '../buildings/resource-type';
+import { Containable, ContainableComponent } from './containable-component';
 
 export const WarriorDefinition: CharacterDefinition = {
   healthDefinition: {
@@ -22,13 +23,15 @@ export const WarriorDefinition: CharacterDefinition = {
     }
   },
   soundDefinition: {
-    move: 'move'
+    move: 'move',
+    death: 'death'
   },
-  cost: new CostData(PaymentType.PayOverTime, 20, new Map<ResourceType, number>([[Resources.gold, 50]]), 0.5)
+  cost: new CostData(PaymentType.PayOverTime, 20, new Map<ResourceType, number>([[Resources.ambrosia, 50]]), 0.5)
 };
 
-export class Warrior extends PlayerCharacter implements Attacker {
+export class Warrior extends PlayerCharacter implements Attacker, Containable {
   playerCharacterDefinition: CharacterDefinition = WarriorDefinition;
+  containableComponent!: ContainableComponent;
   attackComponent!: AttackComponent;
 
   override init() {
@@ -36,5 +39,6 @@ export class Warrior extends PlayerCharacter implements Attacker {
     this.attackComponent = this.components.addComponent(
       new AttackComponent(this, [new AttackData(10, 10, DamageTypes.DamageTypeNormal, 10)])
     );
+    this.containableComponent = this.components.addComponent(new ContainableComponent(this));
   }
 }

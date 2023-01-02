@@ -90,10 +90,12 @@ export class ProductionComponent implements IComponent {
     if (queueIndex >= queue.queuedActors.length) {
       throw new Error('Invalid queue index');
     }
+    const { actorClass } = queue.queuedActors[queueIndex];
+
     queue.remainingProductionTime = 0;
+    queue.queuedActors.splice(queueIndex, 1);
 
     // spawn actor
-    const { actorClass } = queue.queuedActors[queueIndex];
     this.spawnActor(actorClass);
   }
 

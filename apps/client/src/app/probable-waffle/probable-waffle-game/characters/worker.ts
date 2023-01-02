@@ -1,6 +1,9 @@
 import { CharacterDefinition } from './character';
-import { GathererComponent } from './gatherer-component';
+import { Gatherer, GathererComponent } from './gatherer-component';
 import { PlayerCharacter } from './player-character';
+import { Builder, BuilderComponent } from './builder-component';
+import { Barracks } from '../buildings/barracks';
+import { Mine } from '../economy/mine';
 
 export const WorkerDefinition: CharacterDefinition = {
   healthDefinition: {
@@ -20,11 +23,14 @@ export const WorkerDefinition: CharacterDefinition = {
     move: 'move'
   }
 };
-export class Worker extends PlayerCharacter {
+export class Worker extends PlayerCharacter implements Builder, Gatherer {
   playerCharacterDefinition: CharacterDefinition = WorkerDefinition;
+  builderComponent!: BuilderComponent;
+  gathererComponent!: GathererComponent;
 
   override init() {
     super.init();
-    this.components.addComponent(new GathererComponent(this, [], 100));
+    this.builderComponent = this.components.addComponent(new BuilderComponent(this, [Barracks], true, 10));
+    this.gathererComponent = this.components.addComponent(new GathererComponent(this, [Mine], 100));
   }
 }

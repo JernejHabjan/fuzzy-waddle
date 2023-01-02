@@ -126,6 +126,11 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       WarriorDefinition.soundDefinition.move as string,
       'assets/probable-waffle/sfx/character/move/footstep.mp3'
     );
+
+    this.load.audio(
+      WarriorDefinition.soundDefinition.death as string,
+      'assets/probable-waffle/sfx/character/death/death1.mp3'
+    );
   }
 
   create() {
@@ -501,9 +506,21 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       // }
     ]);
     this.playerController = new PlayerController(); // todo temp
-    this.playerController.components.findComponent(PlayerResourcesComponent).addPlayerResource(Resources.gold, 1000); // todo temp
+    this.playerController.components.findComponent(PlayerResourcesComponent).addPlayerResources(
+      new Map<ResourceType, number>([
+        [Resources.ambrosia, 5000],
+        [Resources.stone, 5000],
+        [Resources.wood, 5000],
+        [Resources.minerals, 5000]
+      ])
+    );
     this.updateLoopActors.push(this.playerController);
-    this.placeWarrior({ tileXY: { x: 1, y: 1 }, z: 0 });
+    const warrior = this.placeWarrior({ tileXY: { x: 1, y: 1 }, z: 0 });
+    // test for periodically take damage
+    // window.setInterval(() => {
+    //   warrior.healthComponent.takeDamage(10, DamageTypes.DamageTypeNormal);
+    // }, 300);
+
     this.placeBarracks({ tileXY: { x: 2, y: 2 }, z: 0 });
   }
 
@@ -511,6 +528,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     const warrior = new Warrior(this, tilePlacementData, this.playerController);
     warrior.init(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior) // todo it also registers on "update" hook
     this.warriorGroup.push(warrior);
+    return warrior;
   }
 
   private placeBarracks(tilePlacementData: TilePlacementData) {

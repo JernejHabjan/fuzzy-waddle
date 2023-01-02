@@ -55,17 +55,18 @@ export class AttackComponent implements IComponent {
   }
 
   // actor will automatically select and attack targets
-  GetAcquisitionRadius(): number {
+  getAcquisitionRadius(): number {
     // todo
     return 0;
   }
-  GetChaseRadius(): number {
+
+  getChaseRadius(): number {
     // todo
     return 0;
   }
 
   // Different attacks might be used at different ranges, or against different types of targets
-  GetAttacks(): AttackData[] {
+  getAttacks(): AttackData[] {
     return this.attacks;
   }
 

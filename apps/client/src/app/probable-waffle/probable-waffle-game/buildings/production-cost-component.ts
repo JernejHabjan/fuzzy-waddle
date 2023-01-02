@@ -3,6 +3,12 @@ import { PaymentType } from './payment-type';
 import { ResourceType } from './resource-type';
 
 export class CostData {
+  static NoCost = {
+    costType: PaymentType.PayImmediately,
+    resources: new Map(),
+    productionTime: 0,
+    refundFactor: 1
+  };
   constructor(
     public costType: PaymentType,
     public productionTime: number,

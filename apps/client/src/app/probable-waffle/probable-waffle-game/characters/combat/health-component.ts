@@ -3,6 +3,11 @@ import { Actor } from '../../actor';
 import { DamageType } from './damage-type';
 import { EventEmitter } from '@angular/core';
 import { ActorDeathType } from './actor-death-type';
+import { HealthUiComponent } from './health-ui-component';
+
+export interface Health {
+  healthComponent: HealthComponent;
+}
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -10,16 +15,13 @@ export type HealthDefinition = {
 };
 
 export default class HealthComponent implements IComponent {
-  private graphics?: Phaser.GameObjects.Graphics;
-  private barWidth = 25;
-  private barHeight = 4;
-
   private currentHealth: number;
 
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
+  private healthUiComponent!: HealthUiComponent;
 
   constructor(
-    private readonly gameObject: Phaser.GameObjects.Sprite,
+    private readonly actor: Actor,
     public healthDefinition: HealthDefinition,
     regenerateHealth: boolean = false,
     private regenerateHealthRate: number = 0,
@@ -30,45 +32,32 @@ export default class HealthComponent implements IComponent {
   }
 
   init() {
-    // do nothing
+    this.healthUiComponent = new HealthUiComponent(this.actor);
   }
-
   start() {
-    const { scene } = this.gameObject;
-    this.graphics = scene.add.graphics();
-
-    this.graphics.fillStyle(0xffffff);
-    this.graphics.fillRect(0, 0, this.barWidth, this.barHeight);
+    this.healthUiComponent.start();
   }
 
   update(time: number, delta: number) {
-    // move graphics with player
-    if (!this.graphics) {
-      return;
+    if (!this.actor.destroyed) {
+      this.healthUiComponent.update(time, delta);
     }
-
-    // set this health-bar to be above the player center horizontally
-    // get gameObject width
-    const { height, x: objectCenterX, y: objectCenterY } = this.gameObject;
-
-    // set graphics x to be half of gameObject width
-    const x = objectCenterX - this.barWidth / 2;
-    this.graphics.setPosition(x, objectCenterY - height / 2);
-
-    // set depth to be above player
-    this.graphics.depth = this.gameObject.depth + 1;
   }
 
-  takeDamage(damage: number, damageType: DamageType, actor: Actor) {
-    this.SetCurrentHealth(this.currentHealth - damage, actor);
+  takeDamage(damage: number, damageType: DamageType, damageInitiator?: Actor) {
+    this.setCurrentHealth(this.currentHealth - damage, damageInitiator);
   }
 
   killActor() {
-    this.gameObject.destroy();
+    this.healthUiComponent.destroy();
+    this.actor.kill();
     // todo something else as well
   }
 
-  SetCurrentHealth(newHealth: number, actor?: Actor) {
+  setCurrentHealth(newHealth: number, damageInitiator?: Actor) {
+    if (this.currentHealth <= 0) {
+      return;
+    }
     this.currentHealth = newHealth;
     this.healthChanged.emit(this.currentHealth);
     if (this.currentHealth <= 0) {
@@ -76,7 +65,7 @@ export default class HealthComponent implements IComponent {
     }
   }
 
-  GetCurrentHealth() {
+  getCurrentHealth() {
     return this.currentHealth;
   }
 }

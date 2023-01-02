@@ -1,10 +1,9 @@
 import { Warrior } from '../characters/warrior';
-import { Barracks } from './barracks';
 import { Worker } from '../characters/worker';
 import { ProductionQueueItem } from './production-component';
 
-export type ActorsAbleToBeProduced = Warrior | Worker | Barracks;
-export type ActorsAbleToBeProducedClass = typeof Warrior | typeof Worker | typeof Barracks;
+export type ActorsAbleToBeProduced = Warrior | Worker;
+export type ActorsAbleToBeProducedClass = typeof Warrior | typeof Worker;
 
 export class ProductionQueue {
   constructor(private capacityPerQueue: number) {}

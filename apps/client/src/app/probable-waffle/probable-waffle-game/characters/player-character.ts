@@ -2,8 +2,7 @@ import { Character } from './character';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { Ownable, OwnerComponent } from './owner-component';
 import { PlayerController } from '../controllers/player-controller';
-import { Costs, ProductionCostComponent } from '../buildings/production-cost-component';
-import { PaymentType } from '../buildings/payment-type';
+import { CostData, Costs, ProductionCostComponent } from '../buildings/production-cost-component';
 
 export abstract class PlayerCharacter extends Character implements Ownable, Costs {
   ownerComponent: OwnerComponent;
@@ -21,12 +20,7 @@ export abstract class PlayerCharacter extends Character implements Ownable, Cost
   }
 
   private setupProductionCostComponent() {
-    const cost = this.playerCharacterDefinition.cost ?? {
-      costType: PaymentType.PayImmediately,
-      resources: new Map(),
-      productionTime: 0,
-      refundFactor: 0
-    };
+    const cost = this.playerCharacterDefinition.cost ?? CostData.NoCost;
     this.productionCostComponent = this.components.addComponent(new ProductionCostComponent(cost));
   }
 }

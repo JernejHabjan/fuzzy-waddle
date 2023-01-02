@@ -5,7 +5,7 @@ import {
   IsoAngleToAnimDirectionEnum,
   LPCAnimTypeEnum
 } from '../animation/lpc-animation-helper';
-import HealthComponent, { HealthDefinition } from './combat/health-component';
+import HealthComponent, { Health, HealthDefinition } from './combat/health-component';
 import { StateMachine } from '../animation/state-machine';
 import { MoveEventTypeEnum } from './character-movement-component';
 import { CharacterSoundComponent, SoundDefinition } from './character-sound-component';
@@ -24,16 +24,16 @@ export type CharacterDefinition = {
   cost?: CostData;
 };
 
-export abstract class Character extends MovableActor {
+export abstract class Character extends MovableActor implements Health {
   behaviorTreeClass: BehaviorTreeClasses = RtsBehaviorTree;
   blackboardClass: typeof Blackboard = Blackboard;
   currentDir = AnimDirectionEnum.south;
   currentAnimGroup = LPCAnimTypeEnum.walk;
   private warriorStateMachine!: StateMachine;
   private characterSoundComponent!: CharacterSoundComponent;
+  healthComponent!: HealthComponent;
   abstract playerCharacterDefinition: CharacterDefinition;
   textureMapDefinition!: TextureMapDefinition;
-
   protected constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
   }
@@ -51,7 +51,9 @@ export abstract class Character extends MovableActor {
 
   private initComponents() {
     const sprite = this.spriteRepresentationComponent.sprite;
-    this.components.addComponent(new HealthComponent(sprite, this.playerCharacterDefinition.healthDefinition));
+    this.healthComponent = this.components.addComponent(
+      new HealthComponent(this, this.playerCharacterDefinition.healthDefinition)
+    );
     this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent(sprite));
   }
 
@@ -65,6 +67,9 @@ export abstract class Character extends MovableActor {
   }
 
   private onMoveProgress(isoAngleRounded: number) {
+    if (this.killed) {
+      return;
+    }
     this.playMoveAnim(IsoAngleToAnimDirectionEnum[isoAngleRounded.toString()]);
   }
 
@@ -81,6 +86,9 @@ export abstract class Character extends MovableActor {
       })
       .addState('attack', {
         onEnter: this.warriorAttackEnter
+      })
+      .addState('dead', {
+        onEnter: this.warriorDeadEnter
       });
 
     this.warriorStateMachine.setState('idle');
@@ -92,7 +100,9 @@ export abstract class Character extends MovableActor {
 
   override update(t: number, dt: number) {
     super.update(t, dt);
-    this.warriorStateMachine.update(dt);
+    if (!this.destroyed) {
+      this.warriorStateMachine.update(dt);
+    }
   }
 
   private warriorIdleEnter() {
@@ -102,6 +112,9 @@ export abstract class Character extends MovableActor {
   }
 
   private warriorIdleUpdate() {
+    if (this.killed) {
+      return;
+    }
     const sprite = this.spriteRepresentationComponent.sprite;
     SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, true);
   }
@@ -120,24 +133,13 @@ export abstract class Character extends MovableActor {
   }
 
   private warriorRunUpdate() {
-    if (this.characterMovementComponent.isMoving) {
+    if (this.characterMovementComponent.isMoving || this.killed) {
       return;
     }
     const isAttacking = false; // todo
     if (isAttacking) {
       this.warriorStateMachine.setState('attack');
-    }
-    // todo else if (isMoving)
-    // todo {
-    // todo   this.warrior.setVelocityX(-300)
-    // todo   this.warrior.flipX = true
-    // todo }
-    // todo else if (isMoving)
-    // todo {
-    // todo   this.warrior.flipX = false
-    // todo   this.warrior.setVelocityX(300)
-    // todo }
-    else {
+    } else {
       this.warriorStateMachine.setState('idle');
     }
   }
@@ -146,6 +148,11 @@ export abstract class Character extends MovableActor {
     const move = this.playerCharacterDefinition.soundDefinition.move;
     if (!move) return;
     this.characterSoundComponent.stop(move);
+  }
+
+  override kill() {
+    this.warriorStateMachine.setState('dead');
+    super.kill();
   }
 
   private warriorAttackEnter() {
@@ -181,6 +188,13 @@ export abstract class Character extends MovableActor {
     });
   }
 
+  private warriorDeadEnter() {
+    const sprite = this.spriteRepresentationComponent.sprite;
+    this.currentAnimGroup = LPCAnimTypeEnum.hurt;
+    SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, false);
+    this.playDeathSound();
+  }
+
   playMoveAnim(dir: AnimDirection) {
     const prevDir = this.currentDir;
     this.currentDir = dir;
@@ -189,5 +203,11 @@ export abstract class Character extends MovableActor {
       this.warriorRunEnter();
     }
     this.warriorStateMachine.setState('run');
+  }
+
+  private playDeathSound() {
+    const death = this.playerCharacterDefinition.soundDefinition.death;
+    if (!death) return;
+    this.characterSoundComponent.play(death);
   }
 }

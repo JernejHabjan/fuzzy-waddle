@@ -3,6 +3,10 @@ import { IComponent } from '../services/component.service';
 import { ResourceType } from './resource-type';
 import { Actor } from '../actor';
 
+export interface ResourceSource {
+  resourceSourceComponent: ResourceSourceComponent;
+}
+
 export class ResourceSourceComponent implements IComponent {
   private readonly currentResources: number;
   constructor(
@@ -11,7 +15,7 @@ export class ResourceSourceComponent implements IComponent {
     private maximumResources: number,
     private gatheringFactor: number,
     private gathererMustEnter: boolean,
-    private gathererCapacity: boolean
+    private gathererCapacity: number // todo gatherer capacity duplicated as in container component
   ) {
     this.currentResources = this.maximumResources;
   }
@@ -19,7 +23,9 @@ export class ResourceSourceComponent implements IComponent {
   extractResources(gatherer: RepresentableActor, amount: number) {
     // todo
   }
-  canGathererEnter(gatherer: RepresentableActor) {}
+  canGathererEnter(gatherer: RepresentableActor) {
+    // todo
+  }
   getResourceType(): ResourceType {
     return this.resourceType;
   }

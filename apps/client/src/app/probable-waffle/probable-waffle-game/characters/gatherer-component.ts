@@ -3,6 +3,13 @@ import { GatherData } from '../buildings/gather-data';
 import { Actor } from '../actor';
 import { ResourceType } from '../buildings/resource-type';
 import { ResourceSourceComponent } from '../buildings/resource-source-component';
+import { Mine } from '../economy/mine';
+
+export type GathererClasses = typeof Mine;
+
+export interface Gatherer {
+  gathererComponent: GathererComponent;
+}
 
 export class GathererComponent implements IComponent {
   gatheredResources: GatherData[] = [];
@@ -16,7 +23,7 @@ export class GathererComponent implements IComponent {
   constructor(
     private readonly actor: Actor,
     // type of actors the gatherer can gather resources from
-    public resourceSourceActorClasses: typeof Actor[],
+    public resourceSourceActorClasses: GathererClasses[],
     // radius in which actor will automatically gather resourcesFrom
     public resourceSweepRadius: number
   ) {}

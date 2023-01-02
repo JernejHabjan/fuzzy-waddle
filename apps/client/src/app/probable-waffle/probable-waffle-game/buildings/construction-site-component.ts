@@ -65,10 +65,10 @@ export class ConstructionSiteComponent implements IComponent {
     this.remainingConstructionTime -= constructionProgress;
     const healthComponent = this.owner.components.findComponentOrNull(HealthComponent);
     if (healthComponent) {
-      const currentHealth = healthComponent.GetCurrentHealth();
+      const currentHealth = healthComponent.getCurrentHealth();
       const maxHealth = healthComponent.healthDefinition.maxHealth;
       const healthIncrement = ((maxHealth - currentHealth) / this.constructionTime) * constructionProgress;
-      healthComponent.SetCurrentHealth(currentHealth + healthIncrement);
+      healthComponent.setCurrentHealth(currentHealth + healthIncrement);
     }
 
     this.constructionProgressChanged.emit(this.remainingConstructionTime / this.constructionTime);
@@ -98,7 +98,7 @@ export class ConstructionSiteComponent implements IComponent {
     // set initial health
     const healthComponent = this.owner.components.findComponentOrNull(HealthComponent);
     if (healthComponent) {
-      healthComponent.SetCurrentHealth(healthComponent.healthDefinition.maxHealth * this.initialHealthPercentage);
+      healthComponent.setCurrentHealth(healthComponent.healthDefinition.maxHealth * this.initialHealthPercentage);
     }
 
     this.constructionStarted.emit(this.constructionTime);

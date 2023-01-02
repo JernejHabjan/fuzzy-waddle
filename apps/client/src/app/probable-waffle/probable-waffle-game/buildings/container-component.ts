@@ -1,5 +1,10 @@
 import { IComponent } from '../services/component.service';
 import { Actor } from '../actor';
+import { SpriteRepresentationComponent } from '../characters/sprite-representable-component';
+
+export interface CharacterContainer {
+  containerComponent: ContainerComponent;
+}
 
 // apply to resource source that needs actors to enter to gather
 export class ContainerComponent implements IComponent {
@@ -25,7 +30,7 @@ export class ContainerComponent implements IComponent {
 
   unloadActor(actor: Actor) {
     this.containedActors.delete(actor);
-    actor.setVisible(true);
+    this.setActorVisible(actor, true);
   }
   canLoadActor() {
     return this.containedActors.size < this.capacity;
@@ -36,6 +41,13 @@ export class ContainerComponent implements IComponent {
       return;
     }
     this.containedActors.add(actor);
-    actor.setVisible(false);
+    this.setActorVisible(actor, false);
+  }
+
+  setActorVisible(actor: Actor, visible: boolean) {
+    const representableComponent = actor.components.findComponentOrNull(SpriteRepresentationComponent);
+    if (representableComponent) {
+      representableComponent.sprite.setVisible(visible);
+    }
   }
 }

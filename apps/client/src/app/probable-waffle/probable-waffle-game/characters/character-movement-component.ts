@@ -7,6 +7,7 @@ import { IComponent } from '../services/component.service';
 import { IAiPawnControllable } from '../controllers/ai-pawn-controller-component';
 import { ISpriteRepresentable } from './sprite-representable-component';
 import { ITransformable } from './transformable-component';
+import { Actor } from '../actor';
 import Tween = Phaser.Tweens.Tween;
 
 export enum MoveEventTypeEnum {
@@ -26,7 +27,7 @@ export class CharacterMovementComponent implements IComponent {
   isMoving = false;
 
   constructor(
-    private readonly gameObject: ICharacterMovable & IAiPawnControllable & ISpriteRepresentable & ITransformable
+    private readonly gameObject: ICharacterMovable & IAiPawnControllable & ISpriteRepresentable & ITransformable & Actor
   ) {}
   init() {
     // pass
@@ -37,6 +38,9 @@ export class CharacterMovementComponent implements IComponent {
    * todo this needs to be improved - this is hacky
    */
   moveSpriteToTileCenters(path: TilePlacementWorldWithProperties[]) {
+    if (this.gameObject.killed) {
+      return;
+    }
     this.path = path;
     this.cancelMove();
     this.startNav();

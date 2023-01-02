@@ -3,5 +3,8 @@ export class ResourceType {
 }
 
 export class Resources {
-  static readonly gold = new ResourceType('Gold', 'gold', 'yellow');
+  static readonly ambrosia = new ResourceType('Ambrosia', 'ambrosia', 'gold');
+  static readonly wood = new ResourceType('Wood', 'wood', 'brown');
+  static readonly stone = new ResourceType('Stone', 'stone', 'grey');
+  static readonly minerals = new ResourceType('Minerals', 'minerals', 'blue');
 }

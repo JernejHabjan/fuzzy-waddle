@@ -8,6 +8,13 @@ export abstract class Actor implements IComponent {
    */
   readonly name: string;
   private started = false;
+  destroyed = false;
+  killed = false;
+  /**
+   * time until actor is finally destroyed from scene
+   */
+  despawnTime = 10;
+
   protected constructor() {
     this.name = UUID();
     this.components = new ComponentService(this.name);
@@ -30,7 +37,17 @@ export abstract class Actor implements IComponent {
     this.components.update(time, delta);
   }
 
+  kill(): void {
+    this.killed = true;
+
+    // destroy actor after a delay
+    setTimeout(() => {
+      this.destroy();
+    }, this.despawnTime * 1000);
+  }
+
   destroy(): void {
+    this.destroyed = true;
     this.components.destroy();
   }
 }
