@@ -29,6 +29,7 @@ export abstract class MovableActor extends RepresentableActor implements ICharac
     this.characterMovementComponent = this.components.addComponent(new CharacterMovementComponent(this));
     const blackboard = new this.blackboardClass();
     const behaviorTree = new this.behaviorTreeClass();
+    behaviorTree.init(this, blackboard);
     this.aiPawnControllerComponent = this.components.addComponent(
       new AiPawnControllerComponent(blackboard, behaviorTree)
     );

@@ -19,6 +19,7 @@ export enum MoveEventTypeEnum {
 export interface ICharacterMovable {
   characterMovementComponent: CharacterMovementComponent;
 }
+
 export class CharacterMovementComponent implements IComponent {
   // todo refactor navigation component to use navigation tree
   private path?: TilePlacementWorldWithProperties[];
@@ -28,7 +29,9 @@ export class CharacterMovementComponent implements IComponent {
 
   constructor(
     private readonly gameObject: ICharacterMovable & IAiPawnControllable & ISpriteRepresentable & ITransformable & Actor
-  ) {}
+  ) {
+  }
+
   init() {
     // pass
   }
@@ -232,5 +235,9 @@ export class CharacterMovementComponent implements IComponent {
         spriteInstance.setCrop();
       }
     }
+  }
+
+  canMove() {
+    return !this.isMoving;
   }
 }

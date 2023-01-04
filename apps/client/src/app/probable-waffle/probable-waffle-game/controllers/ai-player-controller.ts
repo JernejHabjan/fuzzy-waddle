@@ -11,4 +11,8 @@ export class AiPlayerController extends PlayerController {
   givesBounty() {
     throw new Error('Not implemented');
   }
+
+  hasOrderQueue(): boolean {
+    throw new Error('Not implemented');
+  }
 }

@@ -4,10 +4,11 @@ export class GatherData {
   constructor(
     public resourceType: ResourceType,
     public amountPerGathering: number,
-    capacity: number,
-    cooldown: number,
-    needsReturnToDrain: boolean,
+    public capacity: number,
+    public cooldown: number,
+    public needsReturnToDrain: boolean,
     // range in which resources can be gathered
-    range: number
-  ) {}
+    public range: number
+  ) {
+  }
 }

@@ -1,12 +1,15 @@
 import { BehaviorTree } from '../characters/AI/BehaviorTree';
 import { Blackboard } from '../characters/AI/blackboard';
 import { IComponent } from '../services/component.service';
+import { Actor } from '../actor';
 
 export interface IAiPawnControllable {
   aiPawnControllerComponent: AiPawnControllerComponent;
 }
+
 export class AiPawnControllerComponent implements IComponent {
-  constructor(public blackboard: Blackboard, public behaviorTree: BehaviorTree) {}
+  constructor(public blackboard: Blackboard, public behaviorTree: BehaviorTree) {
+  }
 
   init(): void {
     // todo
@@ -15,37 +18,47 @@ export class AiPawnControllerComponent implements IComponent {
   /**
    * look for a feasible target in its acquisition radius // circle overlap actors
    */
-  FindTargetInAcquisitionRadius() {
+  findTargetInAcquisitionRadius() {
     // todo
   }
-  AddOrder() {
+
+  addOrder() {
     // todo
   }
-  IsIdle() {
+
+  isIdle() {
     // todo
   }
-  IssueAttackOrder() {
+
+  issueAttackOrder() {
     // todo
   }
-  IssueBeginConstructionOrder() {
+
+  issueBeginConstructionOrder() {
     // todo
   }
-  IssueContinueConstructionOrder() {
+
+  issueContinueConstructionOrder(actor: Actor) {
     // todo
   }
-  IssueGatherOrder() {
+
+  issueGatherOrder() {
     // todo
   }
-  IssueContinueGatherOrder() {
+
+  issueContinueGatherOrder() {
     // todo
   }
-  IssueReturnResourcesOrder() {
+
+  issueReturnResourcesOrder() {
     // todo
   }
-  IssueStopOrder() {
+
+  issueStopOrder() {
     // todo
   }
-  ObtainNextOrder() {
+
+  obtainNextOrder() {
     // todo
   }
 }

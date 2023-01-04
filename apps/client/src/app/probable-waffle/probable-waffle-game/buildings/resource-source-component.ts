@@ -14,8 +14,10 @@ export class ResourceSourceComponent implements IComponent {
   private containerComponent: ContainerComponent | null = null;
   private gathererMustEnter = false;
   private gathererCapacity = 0;
+
   onResourcesChanged: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
   onDepleted: Subject<Actor> = new Subject<Actor>();
+
   constructor(
     private readonly actor: Actor,
     private resourceType: ResourceType,
@@ -32,7 +34,7 @@ export class ResourceSourceComponent implements IComponent {
   }
 
   extractResources(gatherer: RepresentableActor, amount: number): number {
-    if(this.gathererMustEnter){ // todo!!!!!!
+    if (this.gathererMustEnter) { // todo!!!!!!
     }
 
     const gatheredAmount = Math.min(amount * this.gatheringFactor, this.currentResources);
@@ -64,22 +66,28 @@ export class ResourceSourceComponent implements IComponent {
     }
     return gatheredAmount;
   }
-  canGathererEnter(gatherer: RepresentableActor): boolean {
+
+  canGathererEnter(gatherer: Actor): boolean {
     return this.containerComponent?.canLoadActor(gatherer) ?? true;
   }
+
   getResourceType(): ResourceType {
     return this.resourceType;
   }
+
   getMaximumResources(): number {
     return this.maximumResources;
   }
+
   getGatheringFactor(): number {
     return this.gatheringFactor;
   }
-  MustGathererEnter(): boolean {
+
+  mustGathererEnter(): boolean {
     return this.gathererMustEnter;
   }
-  GetCurrentResources(): number {
+
+  getCurrentResources(): number {
     return this.currentResources;
   }
 }

@@ -1,15 +1,17 @@
+import { Blackboard } from './blackboard';
+import { Actor } from '../../actor';
+
 export abstract class BehaviorTree {
   abstract name: string;
-  abstract rootNode: BehaviorTreeNode;
+  private owner!: Actor;
+  private blackboard!: Blackboard;
+
   public tick(): void {
-    this.rootNode.tick();
+    // todo
   }
-}
 
-export class BehaviorTreeNode {
-  constructor(public name: string) {}
-
-  public tick(): void {
-    // pass
+  public init(owner: Actor, blackboard: Blackboard): void {
+    this.owner = owner;
+    this.blackboard = blackboard;
   }
 }

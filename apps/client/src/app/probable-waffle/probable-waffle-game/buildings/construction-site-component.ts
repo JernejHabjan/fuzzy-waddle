@@ -26,7 +26,7 @@ export class ConstructionSiteComponent implements IComponent {
     private readonly constructionType: ResourceType,
     private readonly constructionTime: number,
     private readonly consumesBuilders: boolean,
-    private readonly maxAssignedBuilders: boolean,
+    private readonly maxAssignedBuilders: number,
     // Factor to multiply all passed construction time with, independent of any currently assigned builders
     private readonly progressMadeAutomatically: number,
     private readonly progressMadePerBuilder: number,
@@ -78,6 +78,7 @@ export class ConstructionSiteComponent implements IComponent {
       this.finishConstruction();
     }
   }
+
   startConstruction() {
     if (this.state !== ConstructionStateEnum.NotStarted) {
       throw new Error('ConstructionSiteComponent can only be started once');
@@ -117,5 +118,50 @@ export class ConstructionSiteComponent implements IComponent {
 
     // todo spawn finished building
     this.onConstructionFinished.emit(this.owner);
+  }
+
+  cancelConstruction() {
+    if (this.isFinished()) {
+      return;
+    }
+    // refund resources
+
+    const TimeRefundFactor =
+      this.constructionCostType === PaymentType.PayImmediately ? this.getProgressPercentage() : 1.0;
+    const actualRefundFactor = this.refundFactor * TimeRefundFactor;
+
+    // refund costs
+    const refundCosts = new Map<ResourceType, number>();
+    this.constructionCosts.forEach((value, key) => {
+      refundCosts.set(key, value * actualRefundFactor);
+    });
+
+    this.playerResourcesComponent.addPlayerResources(refundCosts);
+
+    // destroy building
+    this.owner.kill();
+  }
+
+  isFinished() {
+    return this.state === ConstructionStateEnum.Finished;
+  }
+
+  private getProgressPercentage() {
+    return 1 - this.remainingConstructionTime / this.constructionTime;
+  }
+
+  canAssignBuilder() {
+    return this.assignedBuilders.length < this.maxAssignedBuilders;
+  }
+
+  assignBuilder(actor: Actor) {
+    this.assignedBuilders.push(actor);
+  }
+
+  unAssignBuilder(actor: Actor) {
+    const index = this.assignedBuilders.indexOf(actor);
+    if (index >= 0) {
+      this.assignedBuilders.splice(index, 1);
+    }
   }
 }

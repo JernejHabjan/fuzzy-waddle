@@ -8,4 +8,6 @@ export class Blackboard {
   orderType?: OrderType;
   targetActor?: Actor;
   targetLocation?: Vector3;
+  range?: number;
+  acceptanceRadius?: number;
 }
