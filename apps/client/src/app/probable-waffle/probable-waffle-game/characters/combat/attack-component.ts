@@ -44,7 +44,7 @@ export class AttackComponent implements IComponent {
     const attack = this.attacks[attackIndex];
 
     if (attack.projectileClass) {
-      const projectile = new attack.projectileClass(this.spriteRepresentationComponent.scene, this.owner);
+      const projectile = new attack.projectileClass(this.spriteRepresentationComponent.scene, this.owner); // todo here it should be getWorld.SpawnActor<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
       projectile.init(); // todo should be called by registration engine
       projectile.start(); // todo should be called by registration engine
       projectile.fireAtActor(enemy); // todo should be triggered only after init and start
