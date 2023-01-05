@@ -509,7 +509,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
       // }
     ]);
     this.playerController = new PlayerController(); // todo temp
-    this.playerController.components.findComponent(PlayerResourcesComponent).addPlayerResources(
+    this.playerController.components.findComponent(PlayerResourcesComponent).addResources(
       new Map<ResourceType, number>([
         [Resources.ambrosia, 5000],
         [Resources.stone, 5000],

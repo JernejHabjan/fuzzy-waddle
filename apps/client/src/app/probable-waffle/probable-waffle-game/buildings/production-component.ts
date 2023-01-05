@@ -63,7 +63,7 @@ export class ProductionComponent implements IComponent {
           const canPayAllResources = playerResourcesComponent.canPayAllResources(costData.resources);
 
           if (canPayAllResources) {
-            playerResourcesComponent.spendPlayerResources(costData.resources);
+            playerResourcesComponent.payAllResources(costData.resources);
             productionCostPaid = true;
           }
         } else {

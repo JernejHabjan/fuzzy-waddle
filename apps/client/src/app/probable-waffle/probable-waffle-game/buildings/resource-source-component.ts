@@ -33,7 +33,7 @@ export class ResourceSourceComponent implements IComponent {
     this.gathererMustEnter = !!this.containerComponent;
   }
 
-  extractResources(gatherer: RepresentableActor, amount: number): number {
+  extractResources(gatherer: Actor, amount: number): number {
     if (this.gathererMustEnter) { // todo!!!!!!
     }
 

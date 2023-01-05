@@ -4,6 +4,11 @@ import { Actor } from '../actor';
 import { ResourceType } from '../buildings/resource-type';
 import { ResourceSourceComponent } from '../buildings/resource-source-component';
 import { Mine } from '../economy/mine';
+import { GameplayLibrary } from '../library/gameplay-library';
+import { Subject } from 'rxjs';
+import { PlayerController } from '../controllers/player-controller';
+import { PlayerResourcesComponent } from '../controllers/player-resources-component';
+import { ContainerComponent } from '../buildings/container-component';
 
 export type GathererClasses = typeof Mine;
 
@@ -18,7 +23,11 @@ export class GathererComponent implements IComponent {
   carriedResourceType: ResourceType | null = null;
   currentResourceSource: Actor | null = null;
   previousResourceSource: Actor | null = null;
+  previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
+
+  onResourceGathered: Subject<[Actor, Actor, GatherData, number]> = new Subject<[Actor, Actor, GatherData, number]>();
+  onResourcesReturned: Subject<[Actor, ResourceType, number]> = new Subject<[Actor, ResourceType, number]>();
 
   constructor(
     private readonly actor: Actor,
@@ -26,8 +35,7 @@ export class GathererComponent implements IComponent {
     public resourceSourceActorClasses: GathererClasses[],
     // radius in which actor will automatically gather resourcesFrom
     public resourceSweepRadius: number
-  ) {
-  }
+  ) {}
 
   init(): void {
     // pass
@@ -60,8 +68,42 @@ export class GathererComponent implements IComponent {
 
   // Gets the resource source the actor has recently been gathering from, if available, or a similar one within its sweep radius
   getPreferredResourceSource(): Actor | null {
-    // todo
-    return null;
+    if (this.previousResourceSource) {
+      return this.previousResourceSource;
+    }
+    return this.getClosestResourceSource(this.previousResourceType, this.resourceSweepRadius);
+  }
+
+  getClosestResourceSource(resourceType: ResourceType | null, maxDistance: number): Actor | null {
+    let closestResourceSource: Actor | null = null;
+    let closestResourceSourceDistance = 0;
+
+    // todo get all actors in the world and check the closest
+    const actors: Actor[] = [];
+    for (const actor of actors) {
+      // get resourceSourceComponent
+      const resourceSourceComponent = actor.components.findComponentOrNull(ResourceSourceComponent);
+      if (!resourceSourceComponent) {
+        continue;
+      }
+      // if not correct resource type
+      if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) {
+        continue;
+      }
+      // check distance
+      const distance = GameplayLibrary.getDistanceBetweenActors(this.actor, actor);
+      if (distance === null) {
+        continue;
+      }
+      if (maxDistance > 0 && distance > maxDistance) {
+        continue;
+      }
+      if (!closestResourceSource || distance < closestResourceSourceDistance) {
+        closestResourceSource = actor;
+        closestResourceSourceDistance = distance;
+      }
+    }
+    return closestResourceSource;
   }
 
   isCarryingResources(): boolean {
@@ -72,8 +114,70 @@ export class GathererComponent implements IComponent {
     return !!this.currentResourceSource;
   }
 
-  gatherResources(resourceSource: Actor) {
-    // todo
+  gatherResources(resourceSource: Actor): number {
+    if (this.remainingCooldown > 0) {
+      return 0;
+    }
+    if (!this.carriedResourceType) {
+      throw new Error('Gatherer is not carrying any resources');
+    }
+
+    // check resource type
+    const gatherData = this.getGatherDataForResourceSource(resourceSource);
+    if (!gatherData) {
+      return 0;
+    }
+
+    // determine amount to gather
+    let amountToGather = gatherData.amountPerGathering;
+    if (this.carriedResourceAmount + amountToGather > gatherData.capacity) {
+      amountToGather = gatherData.capacity - this.carriedResourceAmount;
+    }
+
+    // gather resources
+    const resourceSourceComponent = resourceSource.components.findComponentOrNull(ResourceSourceComponent);
+    if (!resourceSourceComponent) {
+      return 0;
+    }
+    const gatheredAmount = resourceSourceComponent.extractResources(this.actor, amountToGather);
+    this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
+    // start cooldown timer
+    this.remainingCooldown = gatherData.cooldown;
+
+    console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
+
+    this.onResourceGathered.next([this.actor, resourceSource, gatherData, gatheredAmount]);
+
+    if (gatherData.needsReturnToDrain) {
+      // check if we're at capacity
+      if (this.carriedResourceAmount >= gatherData.capacity) {
+        this.leaveCurrentResourceSource();
+      }
+    } else {
+      // check if we're at capacity or the resource source is empty
+      if (this.carriedResourceAmount >= gatherData.capacity || resourceSourceComponent.getCurrentResources() === 0) {
+        // return immediately
+        const playerController = this.actor.components.findComponentOrNull(PlayerController);
+        if (playerController) {
+          const playerResourcesComponent = playerController.components.findComponent(PlayerResourcesComponent);
+          const returnedResources = playerResourcesComponent.addResource(
+            this.carriedResourceType,
+            this.carriedResourceAmount
+          );
+          if (returnedResources > 0) {
+            this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
+
+            console.log(`Returned ${returnedResources} ${this.carriedResourceType} to ${this.actor.name}`);
+
+            this.onResourcesReturned.next([this.actor, this.carriedResourceType, returnedResources]);
+          }
+        }
+      }
+
+      // stop gathering
+      this.leaveCurrentResourceSource();
+    }
+    return gatheredAmount;
   }
 
   returnResourcesToDrain() {
@@ -91,10 +195,37 @@ export class GathererComponent implements IComponent {
     }
 
     return this.carriedResourceAmount >= gatherData.capacity;
-
   }
 
   private getGatherDataForResourceType(carriedResourceType: ResourceType): GatherData | null {
-    return this.gatheredResources.find(gatherData => gatherData.resourceType === carriedResourceType) ?? null;
+    return this.gatheredResources.find((gatherData) => gatherData.resourceType === carriedResourceType) ?? null;
+  }
+
+  private getGatherDataForResourceSource(resourceSource: Actor): GatherData | null {
+    const resourceSourceComponent = resourceSource.components.findComponentOrNull(ResourceSourceComponent);
+    if (!resourceSourceComponent) {
+      return null;
+    }
+    return this.getGatherDataForResourceType(resourceSourceComponent.getResourceType());
+  }
+
+  private setCarriedResourceAmount(amount: number) {
+    this.carriedResourceAmount = amount;
+    if (amount <= 0) {
+      this.carriedResourceType = null;
+    }
+    // todo maybe add gameplay tags here
+  }
+
+  private leaveCurrentResourceSource() {
+    const containerComponent = this.currentResourceSource?.components.findComponentOrNull(ContainerComponent);
+    if (containerComponent) {
+      containerComponent.unloadActor(this.actor);
+    }
+
+    // store data about resource source for future reference (e.g. return here, or find similar)
+    this.previousResourceSource = this.currentResourceSource;
+    this.previousResourceType = this.carriedResourceType;
+    this.currentResourceSource = null;
   }
 }

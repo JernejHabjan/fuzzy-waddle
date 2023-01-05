@@ -86,7 +86,7 @@ export class ConstructionSiteComponent implements IComponent {
     if (this.constructionCostType === PaymentType.PayImmediately) {
       const canAfford = this.playerResourcesComponent.canPayAllResources(this.constructionCosts);
       if (canAfford) {
-        this.playerResourcesComponent.spendPlayerResources(this.constructionCosts);
+        this.playerResourcesComponent.payAllResources(this.constructionCosts);
       } else {
         throw new Error('Cannot afford construction costs');
       }
@@ -136,7 +136,7 @@ export class ConstructionSiteComponent implements IComponent {
       refundCosts.set(key, value * actualRefundFactor);
     });
 
-    this.playerResourcesComponent.addPlayerResources(refundCosts);
+    this.playerResourcesComponent.addResources(refundCosts);
 
     // destroy building
     this.owner.kill();

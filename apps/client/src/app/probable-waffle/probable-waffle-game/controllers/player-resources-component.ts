@@ -7,28 +7,29 @@ export class PlayerResourcesComponent implements IComponent {
     // pass
   }
 
-  getPlayerResources(): Map<ResourceType, number> {
+  getResources(): Map<ResourceType, number> {
     return this.resources;
   }
 
-  addPlayerResources(resources: Map<ResourceType, number>): void {
+  addResources(resources: Map<ResourceType, number>): void {
     resources.forEach((value, resourceType) => {
-      this.addPlayerResource(resourceType, value);
+      this.addResource(resourceType, value);
     });
   }
 
-  addPlayerResource(resourceType: ResourceType, amount: number): void {
+  addResource(resourceType: ResourceType, amount: number): number {
     const resourceAmount = this.resources.get(resourceType) || 0;
     this.resources.set(resourceType, resourceAmount + amount);
+    return resourceAmount;
   }
 
-  spendPlayerResources(resources: Map<ResourceType, number>): void {
+  payAllResources(resources: Map<ResourceType, number>): void {
     resources.forEach((value, resourceType) => {
-      this.spendPlayerResource(resourceType, value);
+      this.payResources(resourceType, value);
     });
   }
 
-  spendPlayerResource(resourceType: ResourceType, amount: number): void {
+  payResources(resourceType: ResourceType, amount: number): void {
     const resourceAmount = this.resources.get(resourceType) || 0;
     if (resourceAmount - amount < 0) {
       throw new Error('Not enough resources');

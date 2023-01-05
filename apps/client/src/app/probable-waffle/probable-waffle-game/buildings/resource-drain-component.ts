@@ -33,7 +33,7 @@ export class ResourceDrainComponent implements IComponent {
     console.log('gatherer', gatherer, 'returned', amount, resourceType, 'to', this.actor);
     if(this.gathererMustEnter){ // todo!!!!!!
     }
-    this.playerResourcesComponent.addPlayerResource(resourceType, amount);
+    this.playerResourcesComponent.addResource(resourceType, amount);
     this.onResourcesReturned.next([resourceType, amount, gatherer]);
   }
   mustGathererEnter(): boolean {
