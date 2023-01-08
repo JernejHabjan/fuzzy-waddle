@@ -1,15 +1,14 @@
-import { Building } from './building';
+import { Building, BuildingInfoDefinition } from './building';
 import { Producer, ProductionComponent } from './production-component';
 import { Warrior } from '../characters/warrior';
 import { Worker } from '../characters/worker';
 import { CostData } from './production-cost-component';
-import { CharacterDefinition } from '../characters/character';
 import { PaymentType } from './payment-type';
 import { Resources, ResourceType } from './resource-type';
 import { CharacterContainer, ContainerComponent } from './container-component';
 import { ResourceDrain, ResourceDrainComponent } from './resource-drain-component';
 
-export const TownHallDefinition: CharacterDefinition = {
+export const TownHallDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
     textureName: 'warrior',
     spriteSheet: {
@@ -32,13 +31,31 @@ export const TownHallDefinition: CharacterDefinition = {
   healthDefinition: {
     maxHealth: 400
   },
-  soundDefinition: {}
+  soundDefinition: {},
+  constructionSiteDefinition: {
+    constructionCosts: new Map<ResourceType, number>([
+      [Resources.wood, 100],
+      [Resources.stone, 100]
+    ]),
+    checkCollision: true,
+    constructionCostType: PaymentType.PayOverTime,
+    constructionTime: 100,
+    consumesBuilders: false,
+    maxAssignedBuilders: 3,
+    progressMadeAutomatically: 0,
+    progressMadePerBuilder: 1,
+    initialHealthPercentage: 10,
+    refundFactor: 0.5,
+    startImmediately: false,
+    gridWidthAndHeight: { width: 2, height: 2 },
+    finishedSound: 'construction-finished' // todo
+  }
 };
 
 export class TownHall extends Building implements Producer, CharacterContainer, ResourceDrain {
   productionComponent!: ProductionComponent;
   resourceDrainComponent!: ResourceDrainComponent;
-  characterDefinition: CharacterDefinition = TownHallDefinition;
+  buildingInfoDefinition: BuildingInfoDefinition = TownHallDefinition;
   containerComponent!: ContainerComponent;
 
   override init() {

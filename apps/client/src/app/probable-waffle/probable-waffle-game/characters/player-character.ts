@@ -20,7 +20,7 @@ export abstract class PlayerCharacter extends Character implements Ownable, Cost
   }
 
   private setupProductionCostComponent() {
-    const cost = this.playerCharacterDefinition.cost ?? CostData.NoCost;
+    const cost = this.pawnDefinition.cost ?? CostData.NoCost;
     this.productionCostComponent = this.components.addComponent(new ProductionCostComponent(cost));
   }
 }

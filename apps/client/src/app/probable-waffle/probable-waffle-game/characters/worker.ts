@@ -1,11 +1,11 @@
-import { CharacterDefinition } from './character';
+import { PawnInfoDefinition } from './character';
 import { Gatherer, GathererComponent } from './gatherer-component';
 import { PlayerCharacter } from './player-character';
 import { Builder, BuilderComponent } from './builder-component';
 import { Barracks } from '../buildings/barracks';
 import { Mine } from '../economy/mine';
 
-export const WorkerDefinition: CharacterDefinition = {
+export const WorkerDefinition: PawnInfoDefinition = {
   healthDefinition: {
     maxHealth: 100
   },
@@ -24,7 +24,7 @@ export const WorkerDefinition: CharacterDefinition = {
   }
 };
 export class Worker extends PlayerCharacter implements Builder, Gatherer {
-  playerCharacterDefinition: CharacterDefinition = WorkerDefinition;
+  pawnDefinition: PawnInfoDefinition = WorkerDefinition;
   builderComponent!: BuilderComponent;
   gathererComponent!: GathererComponent;
 

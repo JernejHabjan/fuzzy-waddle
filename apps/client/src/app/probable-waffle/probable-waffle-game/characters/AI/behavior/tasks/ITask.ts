@@ -1,9 +1,8 @@
 import { Actor } from '../../../../actor';
-import { Blackboard } from '../../blackboard';
-import { PlayerAiController } from '../../../../controllers/player-ai-controller';
+import { PawnAiBlackboard } from '../../pawn-ai-blackboard';
 
 export class TaskData {
-  constructor(public owner: Actor, public blackboard: Blackboard, public playerAiController: PlayerAiController) {
+  constructor(public owner: Actor, public blackboard: PawnAiBlackboard) {
   }
 }
 

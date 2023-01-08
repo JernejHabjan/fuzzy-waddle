@@ -3,6 +3,7 @@ import { Limitations } from './limitations';
 import { VictoryCondition, VictoryConditions } from './victory-conditions';
 import { PlayerController } from '../controllers/player-controller';
 import { EventEmitter } from '@angular/core';
+import { PlayerAiController } from '../controllers/player-ai-controller';
 
 export class GameModeSkirmish extends GameMode {
   constructor(
@@ -45,6 +46,7 @@ export class GameModeSkirmish extends GameMode {
   private createAiControllers() {
     // 1. create controller
     // 2. call RestartPlayerAtPlayerStart
+    const aiControllerTest = new PlayerAiController(); // todo just for test
   }
 
   private createPlayerControllers() {

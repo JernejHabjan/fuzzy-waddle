@@ -8,6 +8,29 @@ import { ConstructionStateEnum } from './construction-state-enum';
 import HealthComponent from '../characters/combat/health-component';
 import { EventEmitter } from '@angular/core';
 
+export interface Constructable {
+  constructionSiteComponent: ConstructionSiteComponent;
+}
+
+export type ConstructionSiteDefinition = {
+  constructionCosts: Map<ResourceType, number>;
+  // Whether to check collision for each grid cell
+  checkCollision: boolean;
+  constructionCostType: PaymentType;
+  constructionTime: number;
+  consumesBuilders: boolean;
+  maxAssignedBuilders: number;
+  // Factor to multiply all passed construction time with, independent of any currently assigned builders
+  progressMadeAutomatically: number;
+  progressMadePerBuilder: number;
+  initialHealthPercentage: number;
+  refundFactor: number;
+  // Whether to start construction immediately after spawn, or not
+  startImmediately: boolean;
+  gridWidthAndHeight: { width: number; height: number };
+  finishedSound?: string;
+};
+
 export class ConstructionSiteComponent implements IComponent {
   private remainingConstructionTime = 0;
   private playerResourcesComponent: PlayerResourcesComponent;
@@ -17,26 +40,7 @@ export class ConstructionSiteComponent implements IComponent {
   public constructionProgressChanged: EventEmitter<number> = new EventEmitter<number>();
   private onConstructionFinished: EventEmitter<Actor> = new EventEmitter<Actor>();
 
-  constructor(
-    private owner: Actor,
-    // Whether to check collision for each grid cell
-    private readonly constructionCosts: Map<ResourceType, number>,
-    private readonly checkCollision: boolean,
-    private readonly constructionCostType: PaymentType,
-    private readonly constructionType: ResourceType,
-    private readonly constructionTime: number,
-    private readonly consumesBuilders: boolean,
-    private readonly maxAssignedBuilders: number,
-    // Factor to multiply all passed construction time with, independent of any currently assigned builders
-    private readonly progressMadeAutomatically: number,
-    private readonly progressMadePerBuilder: number,
-    private readonly initialHealthPercentage: number,
-    private readonly refundFactor: number,
-    // Whether to start construction immediately after spawn, or not
-    private readonly startImmediately: boolean,
-    readonly gridWidthAndHeight: { width: number; height: number },
-    private readonly finishedSound?: string
-  ) {
+  constructor(private owner: Actor, private constructionSiteDefinition: ConstructionSiteDefinition) {
     const ownerComponent = this.owner.components.findComponent(OwnerComponent);
     this.playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
   }
@@ -46,7 +50,7 @@ export class ConstructionSiteComponent implements IComponent {
   }
 
   update(time: number, delta: number): void {
-    if (this.state == ConstructionStateEnum.NotStarted && this.startImmediately) {
+    if (this.state === ConstructionStateEnum.NotStarted && this.constructionSiteDefinition.startImmediately) {
       this.startConstruction();
     } else if (this.state == ConstructionStateEnum.Finished) {
       return;
@@ -57,8 +61,8 @@ export class ConstructionSiteComponent implements IComponent {
     //   (DeltaTime * ProgressMadeAutomatically * SpeedBoostFactor) +
     //   (DeltaTime * ProgressMadePerBuilder * AssignedBuilders.Num() * SpeedBoostFactor);
     const constructionProgress =
-      delta * this.progressMadeAutomatically * SpeedBoostFactor +
-      delta * this.progressMadePerBuilder * this.assignedBuilders.length * SpeedBoostFactor;
+      delta * this.constructionSiteDefinition.progressMadeAutomatically * SpeedBoostFactor +
+      delta * this.constructionSiteDefinition.progressMadePerBuilder * this.assignedBuilders.length * SpeedBoostFactor;
 
     // todo other logic here
 
@@ -67,11 +71,14 @@ export class ConstructionSiteComponent implements IComponent {
     if (healthComponent) {
       const currentHealth = healthComponent.getCurrentHealth();
       const maxHealth = healthComponent.healthDefinition.maxHealth;
-      const healthIncrement = ((maxHealth - currentHealth) / this.constructionTime) * constructionProgress;
+      const healthIncrement =
+        ((maxHealth - currentHealth) / this.constructionSiteDefinition.constructionTime) * constructionProgress;
       healthComponent.setCurrentHealth(currentHealth + healthIncrement);
     }
 
-    this.constructionProgressChanged.emit(this.remainingConstructionTime / this.constructionTime);
+    this.constructionProgressChanged.emit(
+      this.remainingConstructionTime / this.constructionSiteDefinition.constructionTime
+    );
 
     // Check if finished.
     if (this.remainingConstructionTime <= 0) {
@@ -83,33 +90,37 @@ export class ConstructionSiteComponent implements IComponent {
     if (this.state !== ConstructionStateEnum.NotStarted) {
       throw new Error('ConstructionSiteComponent can only be started once');
     }
-    if (this.constructionCostType === PaymentType.PayImmediately) {
-      const canAfford = this.playerResourcesComponent.canPayAllResources(this.constructionCosts);
+    if (this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately) {
+      const canAfford = this.playerResourcesComponent.canPayAllResources(
+        this.constructionSiteDefinition.constructionCosts
+      );
       if (canAfford) {
-        this.playerResourcesComponent.payAllResources(this.constructionCosts);
+        this.playerResourcesComponent.payAllResources(this.constructionSiteDefinition.constructionCosts);
       } else {
         throw new Error('Cannot afford construction costs');
       }
     }
 
     // start construction
-    this.remainingConstructionTime = this.constructionTime;
+    this.remainingConstructionTime = this.constructionSiteDefinition.constructionTime;
     this.state = ConstructionStateEnum.Constructing;
 
     // set initial health
     const healthComponent = this.owner.components.findComponentOrNull(HealthComponent);
     if (healthComponent) {
-      healthComponent.setCurrentHealth(healthComponent.healthDefinition.maxHealth * this.initialHealthPercentage);
+      healthComponent.setCurrentHealth(
+        healthComponent.healthDefinition.maxHealth * this.constructionSiteDefinition.initialHealthPercentage
+      );
     }
 
-    this.constructionStarted.emit(this.constructionTime);
+    this.constructionStarted.emit(this.constructionSiteDefinition.constructionTime);
   }
 
   private finishConstruction() {
     this.state = ConstructionStateEnum.Finished;
     // todo play sound
 
-    if (this.consumesBuilders) {
+    if (this.constructionSiteDefinition.consumesBuilders) {
       this.assignedBuilders.forEach((builder) => {
         // todo also somehow else destroy???
         builder.destroy();
@@ -127,12 +138,14 @@ export class ConstructionSiteComponent implements IComponent {
     // refund resources
 
     const TimeRefundFactor =
-      this.constructionCostType === PaymentType.PayImmediately ? this.getProgressPercentage() : 1.0;
-    const actualRefundFactor = this.refundFactor * TimeRefundFactor;
+      this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately
+        ? this.getProgressPercentage()
+        : 1.0;
+    const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
 
     // refund costs
     const refundCosts = new Map<ResourceType, number>();
-    this.constructionCosts.forEach((value, key) => {
+    this.constructionSiteDefinition.constructionCosts.forEach((value, key) => {
       refundCosts.set(key, value * actualRefundFactor);
     });
 
@@ -147,11 +160,11 @@ export class ConstructionSiteComponent implements IComponent {
   }
 
   private getProgressPercentage() {
-    return 1 - this.remainingConstructionTime / this.constructionTime;
+    return 1 - this.remainingConstructionTime / this.constructionSiteDefinition.constructionTime;
   }
 
   canAssignBuilder() {
-    return this.assignedBuilders.length < this.maxAssignedBuilders;
+    return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders;
   }
 
   assignBuilder(actor: Actor) {

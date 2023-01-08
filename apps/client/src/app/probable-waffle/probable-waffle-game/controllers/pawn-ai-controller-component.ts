@@ -1,5 +1,3 @@
-import { BehaviorTree } from '../characters/AI/BehaviorTree';
-import { Blackboard } from '../characters/AI/blackboard';
 import { IComponent } from '../services/component.service';
 import { Actor } from '../actor';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
@@ -8,6 +6,8 @@ import { Queue } from '../kismet/queue';
 import { BeginConstructionArgs, OrderType } from '../characters/AI/order-type';
 import { ActorsAbleToBeBuiltClass } from '../characters/builder-component';
 import { GathererComponent } from '../characters/gatherer-component';
+import { PawnAiBlackboard } from '../characters/AI/pawn-ai-blackboard';
+import { PawnBehaviorTree } from '../characters/AI/behavior-trees';
 
 export interface IPawnAiControllable {
   pawnAiControllerComponent: PawnAiControllerComponent;
@@ -17,7 +17,11 @@ export class PawnAiControllerComponent implements IComponent {
   // declare queue of OrderData
   orders: Queue<OrderData> = new Queue<OrderData>();
 
-  constructor(private owner: Actor, public blackboard: Blackboard, public behaviorTree: BehaviorTree) {}
+  constructor(
+    private owner: Actor,
+    public blackboard: PawnAiBlackboard,
+    public behaviorTree: PawnBehaviorTree
+  ) {}
 
   init(): void {
     this.behaviorTree.run();

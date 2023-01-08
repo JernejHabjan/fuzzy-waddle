@@ -72,7 +72,7 @@ export class BuilderComponent implements IComponent {
   }
 
   beginConstruction(buildingClass: ActorsAbleToBeBuiltClass, targetLocation: TilePlacementData): boolean {
-    const gameMode: GameMode = new GameModeSkirmish(); // todo
+    const gameMode: GameMode = new GameModeSkirmish(); // todo !!!!!!!!!!!!
     const pawnAiController = this.actor.components.findComponent(PawnAiControllerComponent);
 
     // check requirements

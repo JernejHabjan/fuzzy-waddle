@@ -12,4 +12,8 @@ export class PlayerState {
     public resources: PlayerResourcesComponent,
     public actors: Actor[] // buildings and units
   ) {}
+
+  getOwnActors() {
+    return this.actors;
+  }
 }

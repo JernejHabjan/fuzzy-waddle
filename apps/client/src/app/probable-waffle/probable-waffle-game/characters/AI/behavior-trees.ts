@@ -1,3 +1,4 @@
-import { RtsBehaviorTree } from './rts-behavior-tree';
+import { DefaultPawnBehaviorTree } from './default-pawn-behavior-tree';
 
-export type BehaviorTreeClasses = typeof RtsBehaviorTree;
+export type PawnBehaviorTreeClasses = typeof DefaultPawnBehaviorTree;
+export type PawnBehaviorTree = DefaultPawnBehaviorTree;

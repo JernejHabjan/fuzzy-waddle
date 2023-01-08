@@ -3,16 +3,17 @@ import { Actor } from '../../actor';
 
 export abstract class BehaviorTree {
   abstract name: string;
-  private owner!: Actor;
-  private blackboard!: Blackboard;
+  protected owner!: Actor;
+  protected blackboard!: Blackboard;
   private running = false;
+  protected abstract runDecisionTree(): void;
 
-  public tick(): void {
+  public update(time: number, delta: number): void {
     if (!this.running) {
       return;
     }
 
-    // todo
+    this.runDecisionTree();
   }
 
   public init(owner: Actor, blackboard: Blackboard): void {
@@ -22,5 +23,9 @@ export abstract class BehaviorTree {
 
   run(): void {
     this.running = true;
+  }
+
+  kill() {
+    this.running = false;
   }
 }

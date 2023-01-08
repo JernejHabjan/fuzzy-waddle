@@ -9,38 +9,38 @@ import HealthComponent, { Health, HealthDefinition } from './combat/health-compo
 import { StateMachine } from '../animation/state-machine';
 import { MoveEventTypeEnum } from './character-movement-component';
 import { CharacterSoundComponent, SoundDefinition } from './character-sound-component';
-import { MovableActor, TextureMapDefinition } from './movable-actor';
+import { MovableActor } from './movable-actor';
 import { Blackboard } from './AI/blackboard';
-import { RtsBehaviorTree } from './AI/rts-behavior-tree';
-import { BehaviorTreeClasses } from './AI/behavior-trees';
+import { DefaultPawnBehaviorTree } from './AI/default-pawn-behavior-tree';
+import { PawnBehaviorTreeClasses } from './AI/behavior-trees';
 import { SpriteAnimationHelper } from '../animation/sprite-animation-helper';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { CostData } from '../buildings/production-cost-component';
+import { RepresentableActorDefinition } from './representable-actor';
 
-export type CharacterDefinition = {
+export type PawnInfoDefinition =RepresentableActorDefinition& {
   healthDefinition: HealthDefinition;
   soundDefinition: SoundDefinition;
-  textureMapDefinition: TextureMapDefinition;
   cost?: CostData;
 };
 
 export abstract class Character extends MovableActor implements Health {
-  behaviorTreeClass: BehaviorTreeClasses = RtsBehaviorTree;
+  behaviorTreeClass: PawnBehaviorTreeClasses = DefaultPawnBehaviorTree;
   blackboardClass: typeof Blackboard = Blackboard;
   currentDir = AnimDirectionEnum.south;
   currentAnimGroup = LPCAnimTypeEnum.walk;
   private warriorStateMachine!: StateMachine;
   private characterSoundComponent!: CharacterSoundComponent;
   healthComponent!: HealthComponent;
-  abstract playerCharacterDefinition: CharacterDefinition;
-  textureMapDefinition!: TextureMapDefinition;
+  abstract pawnDefinition: PawnInfoDefinition;
+  representableActorDefinition!: RepresentableActorDefinition;
   protected constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
   }
 
   override init() {
     // set this before calling super.init()
-    this.textureMapDefinition = this.playerCharacterDefinition.textureMapDefinition;
+    this.representableActorDefinition = this.pawnDefinition;
 
     super.init();
     this.spriteRepresentationComponent.sprite.setInteractive();
@@ -52,7 +52,7 @@ export abstract class Character extends MovableActor implements Health {
   private initComponents() {
     const sprite = this.spriteRepresentationComponent.sprite;
     this.healthComponent = this.components.addComponent(
-      new HealthComponent(this, this.playerCharacterDefinition.healthDefinition)
+      new HealthComponent(this, this.pawnDefinition.healthDefinition)
     );
     this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent(sprite));
   }
@@ -127,7 +127,7 @@ export abstract class Character extends MovableActor implements Health {
   }
 
   private playRunSound() {
-    const move = this.playerCharacterDefinition.soundDefinition.move;
+    const move = this.pawnDefinition.soundDefinition.move;
     if (!move) return;
     this.characterSoundComponent.play(move, true);
   }
@@ -145,7 +145,7 @@ export abstract class Character extends MovableActor implements Health {
   }
 
   private warriorRunExit() {
-    const move = this.playerCharacterDefinition.soundDefinition.move;
+    const move = this.pawnDefinition.soundDefinition.move;
     if (!move) return;
     this.characterSoundComponent.stop(move);
   }
@@ -206,7 +206,7 @@ export abstract class Character extends MovableActor implements Health {
   }
 
   private playDeathSound() {
-    const death = this.playerCharacterDefinition.soundDefinition.death;
+    const death = this.pawnDefinition.soundDefinition.death;
     if (!death) return;
     this.characterSoundComponent.play(death);
   }

@@ -1,4 +1,4 @@
-import { CharacterDefinition } from './character';
+import { PawnInfoDefinition } from './character';
 import { AttackComponent, Attacker } from './combat/attack-component';
 import { AttackData } from './combat/attack-data';
 import { DamageTypes } from './combat/damage-types';
@@ -8,7 +8,7 @@ import { PaymentType } from '../buildings/payment-type';
 import { Resources, ResourceType } from '../buildings/resource-type';
 import { Containable, ContainableComponent } from './containable-component';
 
-export const WarriorDefinition: CharacterDefinition = {
+export const WarriorDefinition: PawnInfoDefinition = {
   healthDefinition: {
     maxHealth: 100
   },
@@ -30,7 +30,7 @@ export const WarriorDefinition: CharacterDefinition = {
 };
 
 export class Warrior extends PlayerCharacter implements Attacker, Containable {
-  playerCharacterDefinition: CharacterDefinition = WarriorDefinition;
+  pawnDefinition: PawnInfoDefinition = WarriorDefinition;
   containableComponent!: ContainableComponent;
   attackComponent!: AttackComponent;
 

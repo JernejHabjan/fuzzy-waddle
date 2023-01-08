@@ -536,6 +536,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         worker.gathererComponent.carriedResourceType as ResourceType,
         worker.gathererComponent.carriedResourceAmount
       );
+
+      // worker.builderComponent.beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 }); // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer
     }, 100);
   }
 

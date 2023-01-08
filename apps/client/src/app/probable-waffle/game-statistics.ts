@@ -1,4 +1,7 @@
 import { PlayerState } from './probable-waffle-game/player-state';
+import { GameMode } from './probable-waffle-game/game-mode/game-mode';
+import { Building } from './probable-waffle-game/buildings/building';
+import { Character } from './probable-waffle-game/characters/character';
 
 export class GameStatistics {
   constructor(public players: PlayerStatistics[], public gameInfoStatistics: GameInfoStatistics) {}
@@ -9,7 +12,7 @@ export class PlayerStatistics {
 }
 
 export class UnitStatistics {
-  constructor(public unit: Unit, public kills: number, public deaths: number) {}
+  constructor(public unit: Character, public kills: number, public deaths: number) {}
 }
 
 export class BuildingStatistics {
