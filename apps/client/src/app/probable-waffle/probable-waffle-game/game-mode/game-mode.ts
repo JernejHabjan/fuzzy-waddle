@@ -1,6 +1,6 @@
 import { GameState } from '../game-state/game-state';
 import { VisionManager } from '../vision/vision-manager';
-import { ActorsAbleToBeBuilt, ActorsAbleToBeBuiltClass } from '../characters/builder-component';
+import { ActorAbleToBeBuilt, ActorAbleToBeBuiltClass } from '../characters/builder-component';
 import { PlayerController } from '../controllers/player-controller';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 
@@ -38,10 +38,10 @@ export abstract class GameMode {
   abstract handleStartingNewPlayer(): void;
 
   spawnActorForPlayer(
-    buildingClass: ActorsAbleToBeBuiltClass,
+    buildingClass: ActorAbleToBeBuiltClass,
     playerController: PlayerController,
     targetLocation: TilePlacementData
-  ): ActorsAbleToBeBuilt {
+  ): ActorAbleToBeBuilt {
     const building = new buildingClass(this.scene, targetLocation, playerController); // todo
     // this.gameState.addActor(building); // todo
     // todo initialize actor and register it to loop

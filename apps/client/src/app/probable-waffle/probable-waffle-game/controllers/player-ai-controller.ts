@@ -1,11 +1,10 @@
 import { PlayerController } from './player-controller';
-import { ActorsAbleToBeProducedClass } from '../buildings/production-queue';
+import { ActorAbleToBeCreatedClass, ActorAbleToBeProducedClass } from '../buildings/production-queue';
 import { Actor } from '../actor';
 import { ResourceDrainComponent } from '../buildings/resource-drain-component';
 import { GameplayLibrary } from '../library/gameplay-library';
 import { ResourceSourceComponent } from '../buildings/resource-source-component';
 import { ResourceType } from '../buildings/resource-type';
-import { ActorsAbleToBeBuiltClass } from '../characters/builder-component';
 import { PlayerAiBlackboard } from '../characters/AI/AiPlayer/player-ai-blackboard';
 import { DefaultPlayerAiBehaviorTree } from '../characters/AI/AiPlayer/default-player-ai-behavior-tree';
 import { ProductionComponent } from '../buildings/production-component';
@@ -24,7 +23,7 @@ export class PlayerAiController extends PlayerController {
   /**
    * Units and buildings the AI should produce, in order
    */
-  buildOrder: (ActorsAbleToBeProducedClass | ActorsAbleToBeBuiltClass)[] = [];
+  buildOrder: ActorAbleToBeCreatedClass[] = [];
 
   /**
    * Maximum distance of a new building to an existing one
@@ -46,10 +45,19 @@ export class PlayerAiController extends PlayerController {
     this.behaviorTree.init(this, this.blackboard);
   }
 
-  getNextPawnToProduce(): ActorsAbleToBeProducedClass | null {
-    // todo later
+  getNextPawnToProduce(): ActorAbleToBeProducedClass | null {
+    const ownActors = this.playerState.getOwnActors();
 
-    return null;
+    const acceptableActors = ownActors.filter((actor) => {
+      const hasProductionComponent = !!actor.components.findComponentOrNull(ProductionComponent);
+      return hasProductionComponent;
+    });
+
+    const buildOrder = this.playerState.raceInfo.getBuildOrder();
+
+    // todo check build order
+
+    return null; // todo
   }
 
   private getPrimaryResourceDrain(): Actor | null {
@@ -99,7 +107,7 @@ export class PlayerAiController extends PlayerController {
     return false;
   }
 
-  private meetsAllRequirementsFor(pawnClass: ActorsAbleToBeProducedClass | ActorsAbleToBeBuiltClass): boolean {
+  private meetsAllRequirementsFor(pawnClass: ActorAbleToBeCreatedClass): boolean {
     // todo
     return false;
   }
@@ -107,18 +115,18 @@ export class PlayerAiController extends PlayerController {
   /**
    * todo start production by name and not class?? or class and have global dictionary of all classes where values are CharacterDefinitions etc...
    */
-  private startProduction(pawnClass: ActorsAbleToBeProducedClass | ActorsAbleToBeBuiltClass): boolean {
+  private startProduction(pawnClass: ActorAbleToBeCreatedClass): boolean {
     const ownActors = this.playerState.getOwnActors();
 
     // get any own building location
     let ownBuilding;
     for (const actor of ownActors) {
       const productionComponent = actor.components.findComponentOrNull(ProductionComponent);
-      if(!productionComponent) {
+      if (!productionComponent) {
         continue;
       }
       ownBuilding = actor;
-      if(!productionComponent.availableProductActorClasses.includes(pawnClass as ActorsAbleToBeProducedClass)) {
+      if (!productionComponent.availableProductActorClasses.includes(pawnClass as ActorAbleToBeProducedClass)) {
         continue;
       }
 

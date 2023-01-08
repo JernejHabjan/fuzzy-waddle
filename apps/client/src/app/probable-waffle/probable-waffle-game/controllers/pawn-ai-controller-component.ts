@@ -4,7 +4,7 @@ import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { OrderData } from '../characters/AI/order-data';
 import { Queue } from '../kismet/queue';
 import { BeginConstructionArgs, OrderType } from '../characters/AI/order-type';
-import { ActorsAbleToBeBuiltClass } from '../characters/builder-component';
+import { ActorAbleToBeBuiltClass } from '../characters/builder-component';
 import { GathererComponent } from '../characters/gatherer-component';
 import { PawnAiBlackboard } from '../characters/AI/pawn-ai-blackboard';
 import { PawnBehaviorTree } from '../characters/AI/behavior-trees';
@@ -79,7 +79,7 @@ export class PawnAiControllerComponent implements IComponent {
     this.issueOrder(orderData);
   }
 
-  issueBeginConstructionOrder(constructableBuildingClass: ActorsAbleToBeBuiltClass, targetLocation: TilePlacementData) {
+  issueBeginConstructionOrder(constructableBuildingClass: ActorAbleToBeBuiltClass, targetLocation: TilePlacementData) {
     const orderData: OrderData = {
       orderType: OrderType.BeginConstruction,
       targetLocation,

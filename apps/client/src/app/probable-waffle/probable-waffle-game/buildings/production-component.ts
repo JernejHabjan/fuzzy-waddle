@@ -1,6 +1,6 @@
 import { IComponent } from '../services/component.service';
 import { RallyPoint } from '../rally-point';
-import { ActorsAbleToBeProduced, ActorsAbleToBeProducedClass, ProductionQueue } from './production-queue';
+import { ActorAbleToBeProduced, ActorAbleToBeProducedClass, ProductionQueue } from './production-queue';
 import { CostData } from './production-cost-component';
 import { PaymentType } from './payment-type';
 import { PlayerResourcesComponent } from '../controllers/player-resources-component';
@@ -11,7 +11,7 @@ import { TransformComponent } from '../characters/transformable-component';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 
 export type ProductionQueueItem = {
-  actorClass: ActorsAbleToBeProducedClass;
+  actorClass: ActorAbleToBeProducedClass;
   costData: CostData;
 };
 
@@ -28,7 +28,7 @@ export class ProductionComponent implements IComponent {
 
   constructor(
     private readonly owner: Actor,
-    public availableProductActorClasses: ActorsAbleToBeProducedClass[],
+    public availableProductActorClasses: ActorAbleToBeProducedClass[],
     // How many products can be produced simultaneously - for example 2 marines (SC2)
     private queueCount: number,
     private capacityPerQueue: number
@@ -99,7 +99,7 @@ export class ProductionComponent implements IComponent {
     this.spawnActor(actorClass);
   }
 
-  private spawnActor(actorClass: ActorsAbleToBeProducedClass): ActorsAbleToBeProduced {
+  private spawnActor(actorClass: ActorAbleToBeProducedClass): ActorAbleToBeProduced {
     const tilePlacementData = this.transformComponent.tilePlacementData;
 
     // offset spawn position

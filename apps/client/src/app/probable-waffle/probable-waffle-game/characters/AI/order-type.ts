@@ -1,6 +1,6 @@
-import { ActorsAbleToBeBuiltClass } from '../builder-component';
+import { ActorAbleToBeBuiltClass } from '../builder-component';
 
-export type BeginConstructionArgs = [ ActorsAbleToBeBuiltClass];
+export type BeginConstructionArgs = [ ActorAbleToBeBuiltClass];
 
 export enum OrderType {
   Attack = 0,

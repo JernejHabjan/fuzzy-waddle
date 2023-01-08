@@ -12,8 +12,8 @@ import { GameplayLibrary } from '../library/gameplay-library';
 import { TilePlacementData } from '../input/tilemap/tilemap-input.handler';
 import { OwnerComponent } from './owner-component';
 
-export type ActorsAbleToBeBuilt = Barracks | Mine;
-export type ActorsAbleToBeBuiltClass = typeof Barracks | typeof Mine;
+export type ActorAbleToBeBuilt = Barracks | Mine;
+export type ActorAbleToBeBuiltClass = typeof Barracks | typeof Mine;
 
 export interface Builder {
   builderComponent: BuilderComponent;
@@ -32,7 +32,7 @@ export class BuilderComponent implements IComponent {
   constructor(
     private readonly actor: Actor,
     // types of buildings the actor can produce
-    private constructableBuildingClasses: ActorsAbleToBeBuiltClass[],
+    private constructableBuildingClasses: ActorAbleToBeBuiltClass[],
     // Whether the builder enters the construction site while working on it, or not.
     private enterConstructionSite: boolean,
     // from how far builder builds construction site
@@ -71,7 +71,7 @@ export class BuilderComponent implements IComponent {
     }
   }
 
-  beginConstruction(buildingClass: ActorsAbleToBeBuiltClass, targetLocation: TilePlacementData): boolean {
+  beginConstruction(buildingClass: ActorAbleToBeBuiltClass, targetLocation: TilePlacementData): boolean {
     const gameMode: GameMode = new GameModeSkirmish(); // todo !!!!!!!!!!!!
     const pawnAiController = this.actor.components.findComponent(PawnAiControllerComponent);
 
@@ -133,7 +133,7 @@ export class BuilderComponent implements IComponent {
     }
   }
 
-  getConstructionRange(buildingType: ActorsAbleToBeBuiltClass | undefined): number {
+  getConstructionRange(buildingType: ActorAbleToBeBuiltClass | undefined): number {
     // return collision radius of building
     // todo return URTSCollisionLibrary::GetCollisionSize(ConstructibleBuildingClasses[Index]) / 2;
     return 1; // todo

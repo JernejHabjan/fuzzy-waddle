@@ -1,11 +1,11 @@
 import { Actor } from '../actor';
 import { OwnerComponent } from '../characters/owner-component';
-import { ActorsAbleToBeBuiltClass } from '../characters/builder-component';
+import { ActorAbleToBeBuiltClass } from '../characters/builder-component';
 import { TransformComponent } from '../characters/transformable-component';
 import { ConstructionSiteComponent } from '../buildings/construction-site-component';
 
 export class GameplayLibrary {
-  static getMissingRequirementsFor(ownedActor: Actor, desiredProduct: ActorsAbleToBeBuiltClass): Actor | false {
+  static getMissingRequirementsFor(ownedActor: Actor, desiredProduct: ActorAbleToBeBuiltClass): Actor | false {
     const ownerComponent = ownedActor.components.findComponentOrNull(OwnerComponent);
 
     if (!ownerComponent) {

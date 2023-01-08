@@ -2,7 +2,7 @@ import { Blackboard } from './blackboard';
 import { OrderType } from './order-type';
 import { Actor } from '../../actor';
 import { TilePlacementData } from '../../input/tilemap/tilemap-input.handler';
-import { ActorsAbleToBeBuiltClass } from '../builder-component';
+import { ActorAbleToBeBuiltClass } from '../builder-component';
 
 export class PawnAiBlackboard extends Blackboard{
   orderType?: OrderType;
@@ -10,5 +10,5 @@ export class PawnAiBlackboard extends Blackboard{
   targetLocation?: TilePlacementData;
   range?: number;
   acceptanceRadius?: number;
-  buildingType?: ActorsAbleToBeBuiltClass;
+  buildingType?: ActorAbleToBeBuiltClass;
 }
