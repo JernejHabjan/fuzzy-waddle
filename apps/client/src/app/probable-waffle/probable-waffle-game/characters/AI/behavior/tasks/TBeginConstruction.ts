@@ -17,8 +17,11 @@ export class TBeginConstruction implements ITask {
     if (!transformComponent) {
       return TaskResultType.Failure;
     }
-    // todo targetLocation?
-    const targetLocation = transformComponent.tilePlacementData;
+
+    const targetLocation = taskData.blackboard.targetLocation;
+    if (!targetLocation) {
+      return TaskResultType.Failure;
+    }
     const buildingType = taskData.blackboard.buildingType;
     if (!buildingType) {
       return TaskResultType.Failure;

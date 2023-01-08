@@ -1,6 +1,6 @@
 import { PlayerController } from './player-controller';
 
-export class AiPlayerController extends PlayerController {
+export class PlayerAiController extends PlayerController {
   getNextBuildingToProduce() {
     throw new Error('Not implemented');
   }

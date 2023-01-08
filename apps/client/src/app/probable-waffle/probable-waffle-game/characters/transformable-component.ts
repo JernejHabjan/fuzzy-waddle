@@ -25,4 +25,8 @@ export class TransformComponent implements IComponent {
   init(): void {
     // pass
   }
+
+  face(tilePlacementData: TilePlacementData) {
+    // todo use system to communicate between rotationInfo and transformComponent?
+  }
 }

@@ -5,7 +5,7 @@ import { Mine } from '../economy/mine';
 import { ConstructionSiteComponent } from '../buildings/construction-site-component';
 import { ContainerComponent } from '../buildings/container-component';
 import { Subject } from 'rxjs';
-import { AiPawnControllerComponent } from '../controllers/ai-pawn-controller-component';
+import { PawnAiControllerComponent } from '../controllers/pawn-ai-controller-component';
 import { GameMode } from '../game-mode/game-mode';
 import { GameModeSkirmish } from '../game-mode/game-mode-skirmish';
 import { GameplayLibrary } from '../library/gameplay-library';
@@ -27,7 +27,8 @@ export class BuilderComponent implements IComponent {
   onConstructionSiteEntered: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
   onAssignedToConstructionSite: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
   onConstructionStarted: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
-
+  onRemovedFromConstructionSite: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
+  onConstructionSiteLeft: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
   constructor(
     private readonly actor: Actor,
     // types of buildings the actor can produce
@@ -72,7 +73,7 @@ export class BuilderComponent implements IComponent {
 
   beginConstruction(buildingClass: ActorsAbleToBeBuiltClass, targetLocation: TilePlacementData): boolean {
     const gameMode: GameMode = new GameModeSkirmish(); // todo
-    const aiPawnController = this.actor.components.findComponent(AiPawnControllerComponent);
+    const pawnAiController = this.actor.components.findComponent(PawnAiControllerComponent);
 
     // check requirements
     const missingRequirement = GameplayLibrary.getMissingRequirementsFor(this.actor, buildingClass);
@@ -80,7 +81,7 @@ export class BuilderComponent implements IComponent {
       console.log('missing requirement', missingRequirement);
       // player is missing a required actor. stop
 
-      aiPawnController.issueStopOrder();
+      pawnAiController.issueStopOrder();
       return false;
     }
 
@@ -99,7 +100,42 @@ export class BuilderComponent implements IComponent {
     this.onConstructionStarted.next([this.actor, building]);
 
     // issue construction order
-    aiPawnController.issueContinueConstructionOrder(building);
+    pawnAiController.issueContinueConstructionOrder(building);
     return true;
+  }
+
+  leaveConstructionSite() {
+    if(!this.assignedConstructionSite){
+      return;
+    }
+
+    const constructionSite = this.assignedConstructionSite;
+    const constructionSiteComponent = constructionSite.components.findComponentOrNull(ConstructionSiteComponent);
+    if (!constructionSiteComponent) {
+      return;
+    }
+    // remove builder
+    this.assignedConstructionSite = undefined;
+    constructionSiteComponent.unAssignBuilder(this.actor);
+
+    // notify listeners
+    this.onRemovedFromConstructionSite.next([this.actor, constructionSite]);
+
+    console.log('builder left construction site');
+    if(this.enterConstructionSite){
+
+      // leave construction site
+      const containerComponent = constructionSite.components.findComponentOrNull(ContainerComponent);
+      if (containerComponent) {
+        containerComponent.unloadActor(this.actor);
+        this.onConstructionSiteLeft.next([this.actor, constructionSite]);
+      }
+    }
+  }
+
+  getConstructionRange(buildingType: ActorsAbleToBeBuiltClass | undefined): number {
+    // return collision radius of building
+    // todo return URTSCollisionLibrary::GetCollisionSize(ConstructibleBuildingClasses[Index]) / 2;
+    return 1; // todo
   }
 }

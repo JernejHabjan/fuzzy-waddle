@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 import { PlayerController } from '../controllers/player-controller';
 import { PlayerResourcesComponent } from '../controllers/player-resources-component';
 import { ContainerComponent } from '../buildings/container-component';
+import { ResourceDrainComponent } from '../buildings/resource-drain-component';
+import { OwnerComponent } from './owner-component';
 
 export type GathererClasses = typeof Mine;
 
@@ -56,14 +58,91 @@ export class GathererComponent implements IComponent {
     return true;
   }
 
-  // this gets set by the behavior tree
-  startGatheringResources(actor: Actor) {
-    // pass
+
+  /**
+   * this gets set by the behavior tree
+   */
+  startGatheringResources(resourceSource: Actor) {
+    if (!this.canGatherFrom(resourceSource)) {
+      return;
+    }
+    if (this.currentResourceSource === resourceSource) {
+      return;
+    }
+
+    this.currentResourceSource = resourceSource;
+
+    const resourceSourceComponent = resourceSource.components.findComponentOrNull(ResourceSourceComponent);
+    if (!resourceSourceComponent) {
+      return;
+    }
+
+    const gatherData = this.getGatherDataForResourceSource(resourceSource);
+
+    if (!gatherData) {
+      return;
+    }
+
+    // reset carried amount
+    this.setCarriedResourceAmount(0);
+    this.carriedResourceType = resourceSourceComponent.getResourceType();
+
+    // start cooldown before first gathering
+    this.remainingCooldown = gatherData.cooldown;
+
+    if (resourceSourceComponent.mustGathererEnter()) {
+      // enter resource source
+      const containerComponent = resourceSource.components.findComponentOrNull(ContainerComponent);
+      if (containerComponent) {
+        containerComponent.loadActor(this.actor);
+      }
+    }
   }
 
   findClosestResourceDrain(): Actor | null {
-    // todo
-    return null;
+    if(this.carriedResourceType === null) {
+      throw new Error('Gatherer is not carrying any resources');
+    }
+
+    // find nearby actors
+    let closestResourceDrain: Actor | null = null;
+    let closestResourceDrainDistance = 0;
+
+    const gatherer = this.actor;
+    const gatherOwnerComponent = gatherer.components.findComponent(OwnerComponent);
+
+    const actors: Actor[] = []; // todo get all actors in the world
+    for (const resourceDrain of actors) {
+      // check if found resource drain
+      const resourceDrainComponent = resourceDrain.components.findComponentOrNull(ResourceDrainComponent);
+      if (!resourceDrainComponent) {
+        continue;
+      }
+
+      // check owner
+      if (!gatherOwnerComponent.isSameTeamAsActor(resourceDrain)) {
+        continue;
+      }
+
+      // check resource type
+      if(!resourceDrainComponent.getResourceTypes().includes(this.carriedResourceType)) {
+        continue;
+      }
+
+      // check if ready to use - e.g. construction finished
+      if(!GameplayLibrary.isReadyToUse(resourceDrain)) {
+        continue;
+      }
+
+      // check distance
+      const distance = GameplayLibrary.getDistanceBetweenActors(gatherer, resourceDrain);
+      if(distance && (!closestResourceDrain || distance < closestResourceDrainDistance)) {
+        closestResourceDrain = resourceDrain;
+        closestResourceDrainDistance = distance;
+      }
+    }
+
+    return closestResourceDrain;
   }
 
   // Gets the resource source the actor has recently been gathering from, if available, or a similar one within its sweep radius
@@ -180,8 +259,20 @@ export class GathererComponent implements IComponent {
     return gatheredAmount;
   }
 
-  returnResourcesToDrain() {
-    // todo
+  returnResources(resourceDrain:Actor):number {
+    if(!this.carriedResourceType) {
+      throw new Error('Gatherer is not carrying any resources');
+    }
+    // return resources
+    const resourceDrainComponent = resourceDrain.components.findComponent(ResourceDrainComponent);
+    const returnedResources = resourceDrainComponent.returnResources(this.actor, this.carriedResourceType, this.carriedResourceAmount);
+    this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
+
+    console.log(`Returned ${returnedResources} ${this.carriedResourceType} to ${resourceDrain.name}`);
+    // notify listeners
+    this.onResourcesReturned.next([this.actor, this.carriedResourceType, returnedResources]);
+    return returnedResources;
+
   }
 
   isCapacityFull() {
@@ -227,5 +318,14 @@ export class GathererComponent implements IComponent {
     this.previousResourceSource = this.currentResourceSource;
     this.previousResourceType = this.carriedResourceType;
     this.currentResourceSource = null;
+  }
+
+  getGatherRange(resourceSource: Actor):number {
+    const gatherData = this.getGatherDataForResourceSource(resourceSource);
+
+    if (!gatherData) {
+      return 0;
+    }
+    return gatherData.range;
   }
 }

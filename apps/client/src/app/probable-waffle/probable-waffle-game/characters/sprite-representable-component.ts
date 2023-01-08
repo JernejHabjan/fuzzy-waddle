@@ -2,6 +2,7 @@ import { IComponent } from '../services/component.service';
 import { Subscription } from 'rxjs';
 import { SpriteHelper, SpritePlacementData } from '../sprite/sprite-helper';
 import { TransformComponent } from './transformable-component';
+import { Actor } from '../actor';
 
 export interface ISpriteRepresentable {
   spriteRepresentationComponent: SpriteRepresentationComponent;
@@ -14,7 +15,7 @@ export class SpriteRepresentationComponent implements IComponent {
   scene: Phaser.Scene;
   sprite: Phaser.GameObjects.Sprite;
   private transformSubscription?: Subscription;
-  constructor(scene: Phaser.Scene, spritePlacementData: SpritePlacementData) {
+  constructor(private actor:Actor, scene: Phaser.Scene, spritePlacementData: SpritePlacementData) {
     this.scene = scene;
     const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(spritePlacementData.tilePlacementData);
     this.sprite = this.scene.add.sprite(
@@ -36,7 +37,10 @@ export class SpriteRepresentationComponent implements IComponent {
   }
 
   init(): void {
-    // pass
+    const transformComponent = this.actor.components.findComponentOrNull(TransformComponent);
+    if (transformComponent) {
+      this.subscribeToTransformEvents(transformComponent);
+    }
   }
 
   destroy(): void {

@@ -1,10 +1,9 @@
 import { Actor } from '../../../../actor';
 import { Blackboard } from '../../blackboard';
-import { AiPlayerController } from '../../../../controllers/ai-player-controller';
+import { PlayerAiController } from '../../../../controllers/player-ai-controller';
 
 export class DecoratorData {
-  constructor(public owner: Actor, public blackboard: Blackboard, public aiPlayerController: AiPlayerController) {
-  }
+  constructor(public owner: Actor, public blackboard: Blackboard, public playerAiController: PlayerAiController) {}
 }
 
 export interface IDecorator {

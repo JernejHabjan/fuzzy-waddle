@@ -2,6 +2,7 @@ import { Actor } from '../actor';
 import { OwnerComponent } from '../characters/owner-component';
 import { ActorsAbleToBeBuiltClass } from '../characters/builder-component';
 import { TransformComponent } from '../characters/transformable-component';
+import { ConstructionSiteComponent } from '../buildings/construction-site-component';
 
 export class GameplayLibrary {
   static getMissingRequirementsFor(ownedActor: Actor, desiredProduct: ActorsAbleToBeBuiltClass): Actor | false {
@@ -40,5 +41,17 @@ export class GameplayLibrary {
         Math.pow(actor1tXYZ.z - Actor2XYZ.z, 2)
     );
     return distance;
+  }
+
+  /**
+   * Checks whether the specified actor is ready to use (e.g. finished construction).
+   */
+  static isReadyToUse(resourceDrain: Actor): boolean {
+    const constructionSiteComponent = resourceDrain.components.findComponentOrNull(ConstructionSiteComponent);
+
+    if (!constructionSiteComponent) {
+      return true;
+    }
+    return constructionSiteComponent.isFinished();
   }
 }

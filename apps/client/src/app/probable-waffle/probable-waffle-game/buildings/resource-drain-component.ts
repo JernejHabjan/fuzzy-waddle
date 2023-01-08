@@ -29,13 +29,19 @@ export class ResourceDrainComponent implements IComponent {
   /**
    * returns resources to player controller
    */
-  returnResources(gatherer: Actor, resourceType: ResourceType, amount: number) {
-    console.log('gatherer', gatherer, 'returned', amount, resourceType, 'to', this.actor);
-    if(this.gathererMustEnter){ // todo!!!!!!
+  returnResources(gatherer: Actor, resourceType: ResourceType, amount: number): number {
+    const returnedResources = this.playerResourcesComponent.addResource(resourceType, amount);
+
+    if (returnedResources <= 0) {
+      return 0;
     }
-    this.playerResourcesComponent.addResource(resourceType, amount);
+
+    // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);
+
+    return returnedResources;
   }
+
   mustGathererEnter(): boolean {
     return this.gathererMustEnter;
   }

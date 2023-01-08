@@ -4,7 +4,7 @@ import { MapSizeInfo } from '../const/map-size.info';
 import * as Phaser from 'phaser';
 import { Vector2Simple } from '../math/intersection';
 import { IComponent } from '../services/component.service';
-import { IAiPawnControllable } from '../controllers/ai-pawn-controller-component';
+import { IPawnAiControllable } from '../controllers/pawn-ai-controller-component';
 import { ISpriteRepresentable } from './sprite-representable-component';
 import { ITransformable } from './transformable-component';
 import { Actor } from '../actor';
@@ -28,7 +28,7 @@ export class CharacterMovementComponent implements IComponent {
   isMoving = false;
 
   constructor(
-    private readonly gameObject: ICharacterMovable & IAiPawnControllable & ISpriteRepresentable & ITransformable & Actor
+    private readonly gameObject: ICharacterMovable & IPawnAiControllable & ISpriteRepresentable & ITransformable & Actor
   ) {
   }
 

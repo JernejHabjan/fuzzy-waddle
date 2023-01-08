@@ -11,7 +11,7 @@ export class OwnerComponent implements IComponent {
     // pass
   }
 
-  IsSameTeamAsActor(actor: Actor): boolean {
+  isSameTeamAsActor(actor: Actor): boolean {
     const ownerComponent = actor.components.findComponentOrNull(OwnerComponent);
     if (!ownerComponent) {
       return false;
@@ -20,6 +20,7 @@ export class OwnerComponent implements IComponent {
       ownerComponent.playerController.playerState.teamInfo.teamId === this.playerController.playerState.teamInfo.teamId
     );
   }
+
   isSameTeamAsController(controller: PlayerController): boolean {
     return controller.playerState.teamInfo.teamId === this.playerController.playerState.teamInfo.teamId;
   }

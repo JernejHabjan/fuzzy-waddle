@@ -1,5 +1,5 @@
 import { CharacterMovementComponent, ICharacterMovable } from './character-movement-component';
-import { AiPawnControllerComponent, IAiPawnControllable } from '../controllers/ai-pawn-controller-component';
+import { PawnAiControllerComponent, IPawnAiControllable } from '../controllers/pawn-ai-controller-component';
 import { Blackboard } from './AI/blackboard';
 import { RepresentableActor } from './representable-actor';
 import { BehaviorTreeClasses } from './AI/behavior-trees';
@@ -18,9 +18,9 @@ export type TextureMapDefinition = {
 /*
  * pawn includes AI controller and move component, so it can move around
  */
-export abstract class MovableActor extends RepresentableActor implements ICharacterMovable, IAiPawnControllable {
+export abstract class MovableActor extends RepresentableActor implements ICharacterMovable, IPawnAiControllable {
   characterMovementComponent!: CharacterMovementComponent;
-  aiPawnControllerComponent!: AiPawnControllerComponent;
+  pawnAiControllerComponent!: PawnAiControllerComponent;
   abstract behaviorTreeClass: BehaviorTreeClasses;
   abstract blackboardClass: typeof Blackboard;
 
@@ -30,8 +30,8 @@ export abstract class MovableActor extends RepresentableActor implements ICharac
     const blackboard = new this.blackboardClass();
     const behaviorTree = new this.behaviorTreeClass();
     behaviorTree.init(this, blackboard);
-    this.aiPawnControllerComponent = this.components.addComponent(
-      new AiPawnControllerComponent(blackboard, behaviorTree)
+    this.pawnAiControllerComponent = this.components.addComponent(
+      new PawnAiControllerComponent(this,blackboard, behaviorTree)
     );
   }
 }

@@ -26,12 +26,11 @@ export abstract class RepresentableActor extends Actor implements ISpriteReprese
     super.init();
 
     this.spriteRepresentationComponent = this.components.addComponent(
-      new SpriteRepresentationComponent(this.scene, {
+      new SpriteRepresentationComponent(this, this.scene, {
         textureName: this.textureMapDefinition.textureName,
         tilePlacementData: this.transformComponent.tilePlacementData
       })
     );
-    this.spriteRepresentationComponent.subscribeToTransformEvents(this.transformComponent);
   }
 
   override destroy() {
