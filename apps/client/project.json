@@ -16,7 +16,7 @@
         "tsConfig": "apps/client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets"],
-        "styles": ["apps/client/src/assets/styles/styles.scss"],
+        "styles": ["apps/client/src/assets/styles/styles.scss", "apps/client/src/assets/styles/trimmed-bootstrap.scss", "apps/client/src/assets/styles/probable-waffle/probable-waffle-pages.scss"],
         "scripts": []
       },
       "configurations": {

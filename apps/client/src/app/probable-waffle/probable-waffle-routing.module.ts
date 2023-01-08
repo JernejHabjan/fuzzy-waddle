@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProbableWaffleLevelsComponent } from './probable-waffle-levels/probable-waffle-levels.component';
+import { ProbableWaffleSkirmishComponent } from './probable-waffle-skirmish/probable-waffle-skirmish.component';
 import { ProbableWaffleHomeComponent } from './probable-waffle-home/probable-waffle-home.component';
 import { ProbableWaffleComponent } from './probable-waffle.component';
+import { ProbableWaffleProfileComponent } from './probable-waffle-profile/probable-waffle-profile.component';
 
 const routes: Routes = [
   {
@@ -14,8 +15,12 @@ const routes: Routes = [
         component: ProbableWaffleHomeComponent
       },
       {
-        path: 'levels',
-        component: ProbableWaffleLevelsComponent
+        path: 'skirmish',
+        component: ProbableWaffleSkirmishComponent
+      },
+      {
+        path: 'profile',
+        component: ProbableWaffleProfileComponent
       },
       {
         path: 'playground',

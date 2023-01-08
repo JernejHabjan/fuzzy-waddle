@@ -1,10 +1,21 @@
-<p>
-  home page of the game - display user score, navigate to levels button, logout,
-  etc
-</p>
+<div class="toolbar">
+  <div class="toolbar-left">
+    <button class="button button-clear" (click)="skirmishClick()">Skirmish</button>
+    <button class="button button-clear" (click)="editorClick()">Editor</button>
+    <button class="button button-clear" (click)="playgroundClick()">Playground</button>
+  </div>
+  <div class="toolbar-right">
+    <button class="button button-clear" (click)="profileClick()">Profile</button>
+  </div>
+</div>
 
-<div style="display: flex; flex-direction: column">
-  <a [routerLink]="['levels']">levels</a>
-  <a [routerLink]="['playground']">playground</a>
-  <a [routerLink]="['game']">game</a>
+<div class="logo flex-grow-1 overflow-auto">
+  <div>Probable Waffle</div>
+  <fuzzy-waddle-constellation-effect></fuzzy-waddle-constellation-effect>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-left">
+    <button class="button button-clear" (click)="leaveClick()">Leave</button>
+  </div>
 </div>

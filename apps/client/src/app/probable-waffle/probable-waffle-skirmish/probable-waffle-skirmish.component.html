@@ -1,0 +1,29 @@
+<div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
+  <div style="max-width: 500px">
+    <!-- dropdown to select a map -->
+    <div class="dropdown">
+      <button class="button" (click)="dropdownVisible = !dropdownVisible">Select a map</button>
+      <div *ngIf="dropdownVisible" class="dropdown-menu">
+        <div
+          *ngFor="let map of Maps.maps"
+          class="dropdown-item"
+          (click)="selectedMap = map; dropdownVisible = !dropdownVisible"
+        >
+          <img [src]="'assets/probable-waffle/maps/icons/'+map.image" class='map-preview' />
+          <span>{{ map.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <fuzzy-waddle-probable-waffle-map-definition [map]="selectedMap"></fuzzy-waddle-probable-waffle-map-definition>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-left">
+    <button class="button button-clear" (click)="leaveClick()">Leave</button>
+  </div>
+  <div class="toolbar-right">
+    <button class="button button-clear" (click)="start()" [disabled]="!selectedMap">Start</button>
+  </div>
+</div>
