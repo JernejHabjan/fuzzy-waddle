@@ -1,29 +1,51 @@
 <div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
-  <div style="max-width: 500px">
+  <div style="max-width: 500px" class="d-flex flex-column align-items-center">
     <!-- dropdown to select a map -->
-    <div class="dropdown">
+    <div class="map-dropdown">
       <button class="button" (click)="dropdownVisible = !dropdownVisible">Select a map</button>
       <div *ngIf="dropdownVisible" class="dropdown-menu">
         <div
-          *ngFor="let map of Maps.maps"
+          *ngFor="let mapPlayerDefinition of mapPlayerDefinitions"
           class="dropdown-item"
-          (click)="selectedMap = map; dropdownVisible = !dropdownVisible"
+          (click)="selectedMap = mapPlayerDefinition; dropdownVisible = !dropdownVisible"
         >
-          <img [src]="'assets/probable-waffle/maps/icons/'+map.image" class='map-preview' />
-          <span>{{ map.name }}</span>
+          <img [src]="'assets/probable-waffle/maps/icons/' + mapPlayerDefinition.map.image" class="map-preview" />
+          <span style="margin-left: 10px">{{ mapPlayerDefinition.map.name }}</span>
         </div>
       </div>
     </div>
 
-    <fuzzy-waddle-probable-waffle-map-definition [map]="selectedMap"></fuzzy-waddle-probable-waffle-map-definition>
+    <fuzzy-waddle-probable-waffle-map-definition
+      [mapPlayerDefinition]="selectedMap"
+    ></fuzzy-waddle-probable-waffle-map-definition>
+    <!-- player list -->
+    <div *ngIf="selectedMap">
+      <div *ngFor="let position of selectedMap.startPositionPerPlayer; let playerIndex = index" class="d-flex">
+        <ng-container *ngIf="position !== -1">
+          <div>Player: {{ playerIndex + 1 }}</div>
+          <div style="margin-left: 10px">
+            <span>Team:</span>
+            <select>
+              <option
+                *ngFor="let number of selectedMap.startPositionPerPlayer; let teamIndex = index"
+                [value]="teamIndex + 1"
+              >
+                {{ teamIndex + 1 }}
+              </option>
+            </select>
+          </div>
+        </ng-container>
+      </div>
+    </div>
   </div>
 </div>
-
 <div class="toolbar">
   <div class="toolbar-left">
     <button class="button button-clear" (click)="leaveClick()">Leave</button>
   </div>
   <div class="toolbar-right">
-    <button class="button button-clear" (click)="start()" [disabled]="!selectedMap">Start</button>
+    <button class="button button-clear" (click)="start()" [disabled]="!selectedMap || !atLeastTwoPlayersSelected">
+      Start
+    </button>
   </div>
 </div>

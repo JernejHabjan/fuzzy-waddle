@@ -21,7 +21,7 @@ export class Maps {
       image: 'grasslands-small.png',
       startPositions: [
         { tileXY: { x: 2, y: 2 }, z: 0 },
-        { tileXY: { x: 8, y: 8 }, z: 0 }
+        { tileXY: { x: 6, y: 9 }, z: 0 }
       ],
       mapWidth: 10,
       mapHeight: 10
@@ -31,7 +31,7 @@ export class Maps {
       description: 'A large grassland',
       image: 'grasslands-large.png',
       startPositions: [
-        { tileXY: { x: 2, y: 2 }, z: 0 },
+        { tileXY: { x: 20, y: 20 }, z: 0 },
         { tileXY: { x: 80, y: 80 }, z: 0 }
       ],
       mapWidth: 100,

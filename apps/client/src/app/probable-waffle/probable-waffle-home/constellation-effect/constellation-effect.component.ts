@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 
 class Particle {
   private readonly speedX: number;
@@ -29,7 +29,10 @@ class Particle {
   templateUrl: './constellation-effect.component.html',
   styleUrls: ['./constellation-effect.component.scss']
 })
-export class ConstellationEffectComponent implements AfterViewInit {
+export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
+  private clickListener?: (e: MouseEvent) => void;
+  private mouseMoveListener?: (e: MouseEvent) => void;
+  private destroyed = false;
   ngAfterViewInit(): void {
     const canvas = document.getElementById('canvas1') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -49,21 +52,23 @@ export class ConstellationEffectComponent implements AfterViewInit {
       y: undefined
     };
 
-    canvas.addEventListener('click', function (e) {
+    this.clickListener = (e: MouseEvent) => {
       mouse.x = e.x;
       mouse.y = e.y;
       for (let i = 0; i < 5; i++) {
         particles.push(new Particle(mouse.x, mouse.y, hueCol));
       }
-    });
+    };
+    canvas.addEventListener('click', this.clickListener);
 
-    canvas.addEventListener('mousemove', function (e) {
+    this.mouseMoveListener = (e: MouseEvent) => {
       mouse.x = e.x;
       mouse.y = e.y;
       for (let i = 0; i < 5; i++) {
         particles.push(new Particle(mouse.x, mouse.y, hueCol));
       }
-    });
+    };
+    canvas.addEventListener('mousemove', this.mouseMoveListener);
 
     function handleParticles() {
       for (let i = 0; i < particles.length; i++) {
@@ -89,15 +94,29 @@ export class ConstellationEffectComponent implements AfterViewInit {
       }
     }
 
-    function animate() {
+    const animate = ()=> {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       // ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
       // ctx.fillRect(0, 0, canvas.width, canvas.height);
       handleParticles();
       hueCol += 2;
-      requestAnimationFrame(animate);
+      if (!this.destroyed) {
+        requestAnimationFrame(animate);
+      }
     }
 
     animate();
+  }
+
+  ngOnDestroy(): void {
+    if (this.clickListener) {
+      const canvas = document.getElementById('canvas1') as HTMLCanvasElement || undefined;
+      canvas?.removeEventListener('click', this.clickListener);
+    }
+    if (this.mouseMoveListener) {
+      const canvas = document.getElementById('canvas1') as HTMLCanvasElement || undefined;
+      canvas?.removeEventListener('mousemove', this.mouseMoveListener);
+    }
+    this.destroyed = true;
   }
 }

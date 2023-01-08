@@ -29,6 +29,6 @@ export class ProbableWaffleHomeComponent {
   }
 
   leaveClick() {
-    this.router.navigate(['probable-waffle']);
+    this.router.navigate(['']);
   }
 }

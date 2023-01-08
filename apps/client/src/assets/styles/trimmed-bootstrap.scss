@@ -1,3 +1,5 @@
+@import '_variables.scss';
+
 .d-flex {
   display: flex;
 }
@@ -35,6 +37,7 @@
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 5px;
+  font-family: $app-font;
 }
 .button:disabled {
   opacity: 0.5;
@@ -57,8 +60,8 @@
 }
 
 .dropdown-item {
-  display: block;
-  width: 100%;
+  display: flex;
+  align-items: center;
   padding: 0.25rem 1.5rem;
   clear: both;
   font-weight: 400;
@@ -68,6 +71,10 @@
   background-color: transparent;
   border: 0;
   cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: lightgray;
 }
 
 .cursor-pointer {
@@ -87,4 +94,11 @@
   background-color: white;
   color: #3f51b5;
   border: 1px solid #3f51b5;
+}
+
+.position-relative {
+  position: relative;
+}
+.position-absolute {
+  position: absolute;
 }

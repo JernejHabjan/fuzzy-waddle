@@ -8,11 +8,13 @@
 }
 
 .logo {
-  font-family: 'Pacifico', cursive;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 3rem;
+  .logo-text {
+    z-index: 1;
+    pointer-events: none;
+  }
 }
-

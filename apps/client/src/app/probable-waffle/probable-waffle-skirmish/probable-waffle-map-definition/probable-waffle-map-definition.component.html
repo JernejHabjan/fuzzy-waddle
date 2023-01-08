@@ -1,8 +1,6 @@
-<div *ngIf="map">
-  <div>{{ map.name }}</div>
-  <div>{{ map.description }}</div>
-  <div>{{ map.mapWidth }} x {{ map.mapHeight }}</div>
-  <img [src]="'assets/probable-waffle/maps/icons/' + map.image" class="map-image" />
-
-  <div>TODO DISPLAY IN CANVAS START POSITIONS</div>
+<div *ngIf="mapPlayerDefinition" class="d-flex flex-column align-items-center">
+  <div>{{ mapPlayerDefinition.map.name }}</div>
+  <div>{{ mapPlayerDefinition.map.description }}</div>
+  <div>{{ mapPlayerDefinition.map.mapWidth }} x {{ mapPlayerDefinition.map.mapHeight }}</div>
+  <canvas #canvas width="400" height="200"></canvas>
 </div>
