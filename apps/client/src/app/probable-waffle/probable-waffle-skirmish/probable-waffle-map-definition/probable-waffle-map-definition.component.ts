@@ -1,6 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { MapInfo } from '../../probable-waffle-game/scenes/scenes';
-import { MapPlayerDefinition } from '../probable-waffle-skirmish.component';
+import { MapPlayerDefinition, PositionPlayerDefinition } from '../probable-waffle-skirmish.component';
 
 @Component({
   selector: 'fuzzy-waddle-probable-waffle-map-definition',
@@ -50,7 +49,8 @@ export class ProbableWaffleMapDefinitionComponent {
       const map = mapPlayerDefinition.map;
       const mapWidth = map.mapWidth;
       const mapHeight = map.mapHeight;
-      map.startPositions.forEach((startPosition, index) => {
+      const isoCoordinates: { x: number; y: number }[] = [];
+      map.startPositions.forEach((startPosition, startPositionIndex) => {
         const startPositionX = startPosition.tileXY.x;
         const startPositionY = startPosition.tileXY.y;
         const startPositionZ = startPosition.z;
@@ -63,15 +63,18 @@ export class ProbableWaffleMapDefinitionComponent {
         const isoYTileXY = ((startPositionX + startPositionY) * imageTileHeight) / 2 - startPositionZ * imageTileHeight;
 
         const worldWidthHalf = (mapWidth * imageTileWidth) / 2;
-        const worldHeightHalf = (mapHeight * imageTileHeight) / 2;
 
         const isoWorldX = worldWidthHalf + isoXTileXY + imageTileWidth / 2;
         const isoWorldY = isoYTileXY;
 
         const isoX = isoWorldX * scale + x;
         const isoY = isoWorldY * scale + y;
-        this.drawStartPosition(ctx, isoX, isoY, index, mapPlayerDefinition);
+
+        isoCoordinates.push({ x: isoX, y: isoY });
+        this.drawStartPosition(ctx, isoX, isoY, startPositionIndex, mapPlayerDefinition);
       });
+
+      this.registerCanvasClick(ctx, isoCoordinates, mapPlayerDefinition);
     };
   }
 
@@ -79,11 +82,13 @@ export class ProbableWaffleMapDefinitionComponent {
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
-    index: number,
+    startPositionIndex: number,
     mapPlayerDefinition: MapPlayerDefinition
   ) {
-    const playerIndex = mapPlayerDefinition.startPositionPerPlayer[index];
-    const color = playerIndex === -1 ? 'white' : 'green';
+    const mapPlayerDef = mapPlayerDefinition.startPositionPerPlayer.find(
+      (startPosition) => startPosition.position === startPositionIndex
+    ) as PositionPlayerDefinition;
+    const color = mapPlayerDef.player === null ? 'white' : 'green';
     ctx.beginPath();
     ctx.arc(x, y, 10, 0, 2 * Math.PI);
     ctx.fillStyle = color;
@@ -91,30 +96,42 @@ export class ProbableWaffleMapDefinitionComponent {
     ctx.font = 'bold 20px Arial';
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
-    if (playerIndex !== -1) {
-      ctx.fillText((index + 1).toString(), x, y + 5);
+    if (mapPlayerDef.player !== null) {
+      ctx.fillText((mapPlayerDef.player + 1).toString(), x, y + 5);
     }
+  }
 
+  private registerCanvasClick(
+    ctx: CanvasRenderingContext2D,
+    coords: { x: number; y: number }[],
+    mapPlayerDefinition: MapPlayerDefinition
+  ) {
     // register click event
-    const fn = (event: MouseEvent) => {
-      const rect = ctx.canvas.getBoundingClientRect();
-      const newX = event.clientX - rect.left;
-      const newY = event.clientY - rect.top;
-      const distance = Math.sqrt(Math.pow(newX - x, 2) + Math.pow(newY - y, 2));
-      if (distance < 10) {
-        if (playerIndex === -1) {
-          // assign player
-          mapPlayerDefinition.startPositionPerPlayer[index] = index;
-          ctx.canvas.removeEventListener('click', fn);
-          this.renderMapWithStartPositions();
-        } else {
-          // unassign player
-          mapPlayerDefinition.startPositionPerPlayer[index] = -1;
-          ctx.canvas.removeEventListener('click', fn);
-          this.renderMapWithStartPositions();
+    const fn = (event: MouseEvent) =>
+      coords.forEach((isoCoordinate, i) => {
+        const { x, y } = isoCoordinate;
+        const positionPlayerDef = mapPlayerDefinition.startPositionPerPlayer[i];
+
+        const rect = ctx.canvas.getBoundingClientRect();
+        const newX = event.clientX - rect.left;
+        const newY = event.clientY - rect.top;
+        const distance = Math.sqrt(Math.pow(newX - x, 2) + Math.pow(newY - y, 2));
+        if (distance < 10) {
+          if (positionPlayerDef.player === null) {
+            // assign player
+            positionPlayerDef.player = mapPlayerDefinition.startPositionPerPlayer.filter(
+              (startPosition) => startPosition.player !== null
+            ).length;
+            ctx.canvas.removeEventListener('click', fn);
+            this.renderMapWithStartPositions();
+          } else {
+            // un-assign player
+            positionPlayerDef.player = null;
+            ctx.canvas.removeEventListener('click', fn);
+            this.renderMapWithStartPositions();
+          }
         }
-      }
-    };
+      });
 
     ctx.canvas.addEventListener('click', fn);
   }

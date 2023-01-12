@@ -15,26 +15,26 @@
       </div>
     </div>
 
-    <fuzzy-waddle-probable-waffle-map-definition
-      [mapPlayerDefinition]="selectedMap"
-    ></fuzzy-waddle-probable-waffle-map-definition>
-    <!-- player list -->
-    <div *ngIf="selectedMap">
-      <div *ngFor="let position of selectedMap.startPositionPerPlayer; let playerIndex = index" class="d-flex">
-        <ng-container *ngIf="position !== -1">
-          <div>Player: {{ playerIndex + 1 }}</div>
-          <div style="margin-left: 10px">
-            <span>Team:</span>
-            <select>
-              <option
-                *ngFor="let number of selectedMap.startPositionPerPlayer; let teamIndex = index"
-                [value]="teamIndex + 1"
-              >
-                {{ teamIndex + 1 }}
-              </option>
-            </select>
-          </div>
-        </ng-container>
+    <div class='d-flex'>
+      <fuzzy-waddle-probable-waffle-map-definition
+        [mapPlayerDefinition]="selectedMap"
+      ></fuzzy-waddle-probable-waffle-map-definition>
+      <!-- player list -->
+      <div *ngIf="selectedMap">
+        <div *ngFor="let position of selectedMap.startPositionPerPlayer; let playerIndex = index" class="d-flex">
+          <ng-container *ngIf="position.player !== null">
+            <div>Player: {{ playerIndex + 1 }}</div>
+            <div style="margin-left: 10px">
+              <span>Team:</span>
+              <!-- on select change, update position.team - use allPossibleTeams array -->
+              <select [(ngModel)]="position.team">
+                <option *ngFor="let team of selectedMap.allPossibleTeams" [ngValue]="team">
+                  {{ team === null ? 'None' : team + 1 }}
+                </option>
+              </select>
+            </div>
+          </ng-container>
+        </div>
       </div>
     </div>
   </div>
@@ -44,7 +44,11 @@
     <button class="button button-clear" (click)="leaveClick()">Leave</button>
   </div>
   <div class="toolbar-right">
-    <button class="button button-clear" (click)="start()" [disabled]="!selectedMap || !atLeastTwoPlayersSelected">
+    <button
+      class="button button-clear"
+      (click)="start()"
+      [disabled]="!selectedMap || !atLeastTwoPlayersAndDifferentTeamsSelected"
+    >
       Start
     </button>
   </div>
