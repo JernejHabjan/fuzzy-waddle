@@ -1,5 +1,5 @@
 import ComponentService, { IComponent } from './services/component.service';
-import UUID = Phaser.Utils.String.UUID;
+import * as Phaser from 'phaser';
 
 export abstract class Actor implements IComponent {
   components: ComponentService;
@@ -16,7 +16,7 @@ export abstract class Actor implements IComponent {
   despawnTime = 10;
 
   protected constructor() {
-    this.name = UUID();
+    this.name = Phaser.Utils.String.UUID();
     this.components = new ComponentService(this.name);
   }
 

@@ -28,6 +28,9 @@ export class ProbableWaffleMapDefinitionComponent {
   private _canvas?: ElementRef;
   private _mapPlayerDefinition?: MapPlayerDefinition;
 
+  /**
+   * https://stackoverflow.com/a/24938627/5909875 - todo drag and drop
+   */
   renderMapWithStartPositions() {
     if (!this.mapPlayerDefinition || !this.canvas) {
       return;
@@ -40,42 +43,50 @@ export class ProbableWaffleMapDefinitionComponent {
     const img = new Image();
     img.src = 'assets/probable-waffle/maps/icons/' + this.mapPlayerDefinition.map.image;
     img.onload = () => {
-      // clamp image to canvas
-      const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-      const x = canvas.width / 2 - (img.width / 2) * scale;
-      const y = canvas.height / 2 - (img.height / 2) * scale;
-      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-      const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
-      const map = mapPlayerDefinition.map;
-      const mapWidth = map.mapWidth;
-      const mapHeight = map.mapHeight;
-      const isoCoordinates: { x: number; y: number }[] = [];
-      map.startPositions.forEach((startPosition, startPositionIndex) => {
-        const startPositionX = startPosition.tileXY.x;
-        const startPositionY = startPosition.tileXY.y;
-        const startPositionZ = startPosition.z;
-
-        // convert to isometric coordinates
-        const imageTileHeight = img.height / mapHeight;
-        const imageTileWidth = img.width / mapWidth;
-
-        const isoXTileXY = ((startPositionX - startPositionY) * imageTileWidth) / 2;
-        const isoYTileXY = ((startPositionX + startPositionY) * imageTileHeight) / 2 - startPositionZ * imageTileHeight;
-
-        const worldWidthHalf = (mapWidth * imageTileWidth) / 2;
-
-        const isoWorldX = worldWidthHalf + isoXTileXY + imageTileWidth / 2;
-        const isoWorldY = isoYTileXY;
-
-        const isoX = isoWorldX * scale + x;
-        const isoY = isoWorldY * scale + y;
-
-        isoCoordinates.push({ x: isoX, y: isoY });
-        this.drawStartPosition(ctx, isoX, isoY, startPositionIndex, mapPlayerDefinition);
-      });
-
-      this.registerCanvasClick(ctx, isoCoordinates, mapPlayerDefinition);
+      const isoCoordinates = this.drawMap(canvas, ctx, img);
+      this.registerCanvasClick(ctx, isoCoordinates, this.mapPlayerDefinition as MapPlayerDefinition);
     };
+  }
+
+  private drawMap(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    img: HTMLImageElement
+  ): { x: number; y: number }[] {
+    // clamp image to canvas
+    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+    const x = canvas.width / 2 - (img.width / 2) * scale;
+    const y = canvas.height / 2 - (img.height / 2) * scale;
+    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+    const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
+    const map = mapPlayerDefinition.map;
+    const mapWidth = map.mapWidth;
+    const mapHeight = map.mapHeight;
+    const isoCoordinates: { x: number; y: number }[] = [];
+    map.startPositions.forEach((startPosition, startPositionIndex) => {
+      const startPositionX = startPosition.tileXY.x;
+      const startPositionY = startPosition.tileXY.y;
+      const startPositionZ = startPosition.z;
+
+      // convert to isometric coordinates
+      const imageTileHeight = img.height / mapHeight;
+      const imageTileWidth = img.width / mapWidth;
+
+      const isoXTileXY = ((startPositionX - startPositionY) * imageTileWidth) / 2;
+      const isoYTileXY = ((startPositionX + startPositionY) * imageTileHeight) / 2 - startPositionZ * imageTileHeight;
+
+      const worldWidthHalf = (mapWidth * imageTileWidth) / 2;
+
+      const isoWorldX = worldWidthHalf + isoXTileXY + imageTileWidth / 2;
+      const isoWorldY = isoYTileXY;
+
+      const isoX = isoWorldX * scale + x;
+      const isoY = isoWorldY * scale + y;
+
+      isoCoordinates.push({ x: isoX, y: isoY });
+      this.drawStartPosition(ctx, isoX, isoY, startPositionIndex, mapPlayerDefinition);
+    });
+    return isoCoordinates;
   }
 
   private drawStartPosition(

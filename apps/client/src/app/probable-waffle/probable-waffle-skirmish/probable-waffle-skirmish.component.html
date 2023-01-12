@@ -16,10 +16,6 @@
     </div>
 
     <div class='d-flex'>
-      <fuzzy-waddle-probable-waffle-map-definition
-        [mapPlayerDefinition]="selectedMap"
-      ></fuzzy-waddle-probable-waffle-map-definition>
-      <!-- player list -->
       <div *ngIf="selectedMap">
         <div *ngFor="let position of selectedMap.startPositionPerPlayer; let playerIndex = index" class="d-flex">
           <ng-container *ngIf="position.player !== null">
@@ -29,13 +25,20 @@
               <!-- on select change, update position.team - use allPossibleTeams array -->
               <select [(ngModel)]="position.team">
                 <option *ngFor="let team of selectedMap.allPossibleTeams" [ngValue]="team">
-                  {{ team === null ? 'None' : team + 1 }}
+                  {{ team === null ? 'No team' : team + 1 }}
                 </option>
               </select>
             </div>
           </ng-container>
         </div>
+        <div *ngIf='selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length' (click)='addPlayer(selectedMap.playerPositions.length)'>
+          Add player
+        </div>
       </div>
+
+      <fuzzy-waddle-probable-waffle-map-definition
+        [mapPlayerDefinition]="selectedMap"
+      ></fuzzy-waddle-probable-waffle-map-definition>
     </div>
   </div>
 </div>
