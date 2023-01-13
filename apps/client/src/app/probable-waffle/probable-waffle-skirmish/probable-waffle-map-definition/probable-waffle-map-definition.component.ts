@@ -160,6 +160,16 @@ export class ProbableWaffleMapDefinitionComponent {
   }
 
   /**
+   * Removes player rectangle from canvas
+   */
+  removePlayer(playerNumber: number) {
+    const index = this.rects.findIndex((rect) => rect.playerNumber === playerNumber);
+    if (index >= 0) {
+      this.rects.splice(index, 1);
+    }
+  }
+
+  /**
    * Adds new draggable rectangle
    */
   private createDraggablePlayerRectangle(

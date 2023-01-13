@@ -7,12 +7,8 @@
   overflow: auto;
 }
 
-.map-preview {
-  width: 100px;
-  height: 50px;
-  object-fit: cover;
-}
-
-.map-dropdown {
-  text: center;
+.map-display-center{
+  background-color: var(--container-background);
+  padding: 2rem;
+  flex-grow: 1;
 }

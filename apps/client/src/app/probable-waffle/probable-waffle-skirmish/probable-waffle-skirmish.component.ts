@@ -3,11 +3,7 @@ import { Router } from '@angular/router';
 import { MapInfo, Maps } from '../probable-waffle-game/scenes/scenes';
 import { RaceType } from '../probable-waffle-game/race-definitions';
 import { ProbableWaffleMapDefinitionComponent } from './probable-waffle-map-definition/probable-waffle-map-definition.component';
-
-export enum PlayerType {
-  Human,
-  AI
-}
+import { PlayerType } from './probable-waffle-player-definition/probable-waffle-player-definition.component';
 
 export class PlayerLobbyDefinition {
   constructor(public playerNumber: number, public playerPosition: number | null, public joined: boolean) {}
@@ -52,13 +48,8 @@ export class MapPlayerDefinition {
 })
 export class ProbableWaffleSkirmishComponent {
   @ViewChild('mapDefinition') mapDefinition!: ProbableWaffleMapDefinitionComponent;
-  dropdownVisible = false;
   selectedMap?: MapPlayerDefinition;
-  mapPlayerDefinitions: MapPlayerDefinition[];
-  constructor(private router: Router) {
-    this.mapPlayerDefinitions = Maps.maps.map((map) => new MapPlayerDefinition(map));
-    this.selectedMap = this.mapPlayerDefinitions[1];
-  }
+  constructor(private router: Router) {}
 
   /**
    * at least two players selected and at least two different teams
@@ -88,36 +79,13 @@ export class ProbableWaffleSkirmishComponent {
     this.router.navigate(['probable-waffle']);
   }
 
-  addPlayer(playerIndex: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
-    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
-    startPositionPerPlayerElement.player.joined = true;
-    this.mapDefinition.initializePlayerPositions(); // todo we should not reset all positions on mapDefinition
+  playerCountChanged() {
+    this.mapDefinition.initializePlayerPositions();
     this.mapDefinition.draw();
   }
 
-  /**
-   * get first free position
-   */
-  private get firstFreePosition(): number {
-    const map = this.selectedMap as MapPlayerDefinition;
-
-    // extract all positions that are already taken
-    const takenPositions = map.startPositionPerPlayer
-      .filter((startPosition) => startPosition.player.playerPosition !== null)
-      .map((startPosition) => startPosition.player.playerPosition) as number[];
-    // sort them
-    takenPositions.sort();
-    // get first free position
-    let freePosition = 0;
-    for (let i = 0; i < map.startPositionPerPlayer.length; i++) {
-      if (takenPositions.includes(i)) {
-        continue;
-      }
-      freePosition = i;
-      break;
-    }
-    return freePosition;
+  playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
+    this.mapDefinition.removePlayer(positionPlayerDefinition.player.playerNumber);
+    this.playerCountChanged();
   }
 }

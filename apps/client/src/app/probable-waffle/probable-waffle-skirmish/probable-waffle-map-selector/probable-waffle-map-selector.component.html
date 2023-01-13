@@ -1,0 +1,13 @@
+<div>
+  <button class='button' (click)='dropdownVisible = !dropdownVisible'>Select a map</button>
+  <div *ngIf='dropdownVisible' class='dropdown-menu'>
+    <div
+      *ngFor='let mapPlayerDefinition of mapPlayerDefinitions'
+      class='dropdown-item'
+      (click)='selectMap(mapPlayerDefinition)'
+    >
+      <img [src]="'assets/probable-waffle/maps/icons/' + mapPlayerDefinition.map.image" class='map-preview' />
+      <span style='margin-left: 10px'>{{ mapPlayerDefinition.map.name }}</span>
+    </div>
+  </div>
+</div>

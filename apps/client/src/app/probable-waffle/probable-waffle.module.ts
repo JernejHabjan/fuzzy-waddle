@@ -9,6 +9,9 @@ import { ConstellationEffectComponent } from './probable-waffle-home/constellati
 import { ProbableWaffleProfileComponent } from './probable-waffle-profile/probable-waffle-profile.component';
 import { ProbableWaffleMapDefinitionComponent } from './probable-waffle-skirmish/probable-waffle-map-definition/probable-waffle-map-definition.component';
 import { FormsModule } from '@angular/forms';
+import { ProbableWafflePlayerDefinitionComponent } from './probable-waffle-skirmish/probable-waffle-player-definition/probable-waffle-player-definition.component';
+import { ProbableWaffleGameModeDefinitionComponent } from './probable-waffle-skirmish/probable-waffle-game-mode-definition/probable-waffle-game-mode-definition.component';
+import { ProbableWaffleMapSelectorComponent } from './probable-waffle-skirmish/probable-waffle-map-selector/probable-waffle-map-selector.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { FormsModule } from '@angular/forms';
     ProbableWaffleComponent,
     ConstellationEffectComponent,
     ProbableWaffleProfileComponent,
-    ProbableWaffleMapDefinitionComponent
+    ProbableWaffleMapDefinitionComponent,
+    ProbableWafflePlayerDefinitionComponent,
+    ProbableWaffleGameModeDefinitionComponent,
+    ProbableWaffleMapSelectorComponent
   ],
   imports: [CommonModule, ProbableWaffleRoutingModule, FormsModule]
 })

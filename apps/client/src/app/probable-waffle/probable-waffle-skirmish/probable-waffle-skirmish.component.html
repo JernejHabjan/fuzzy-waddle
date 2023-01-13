@@ -1,63 +1,34 @@
-<div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
-  <div style="max-width: 500px" class="d-flex flex-column align-items-center">
+<div class="d-flex flex-column flex-grow-1">
+  <div class="d-flex flex-column align-items-center map-display-center overflow-auto ml-auto mr-auto">
     <!-- dropdown to select a map -->
-    <div class="map-dropdown">
-      <button class="button" (click)="dropdownVisible = !dropdownVisible">Select a map</button>
-      <div *ngIf="dropdownVisible" class="dropdown-menu">
-        <div
-          *ngFor="let mapPlayerDefinition of mapPlayerDefinitions"
-          class="dropdown-item"
-          (click)="selectedMap = mapPlayerDefinition; dropdownVisible = !dropdownVisible"
-        >
-          <img [src]="'assets/probable-waffle/maps/icons/' + mapPlayerDefinition.map.image" class="map-preview" />
-          <span style="margin-left: 10px">{{ mapPlayerDefinition.map.name }}</span>
-        </div>
-      </div>
-    </div>
-
+    <fuzzy-waddle-probable-waffle-map-selector
+      (selectedMapChange)="selectedMap = $event"
+    ></fuzzy-waddle-probable-waffle-map-selector>
     <div class="d-flex">
-      <div *ngIf="selectedMap">
-        <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="d-flex">
-          <ng-container *ngIf="position.player.playerPosition !== null">
-            <div>Player: {{ position.player.playerNumber + 1 }}</div>
-            <div>Position: {{ position.player.playerPosition + 1 }}</div>
-            <div style="margin-left: 10px">
-              <span>Team:</span>
-              <!-- on select change, update position.team - use allPossibleTeams array -->
-              <select [(ngModel)]="position.team">
-                <option *ngFor="let team of selectedMap.allPossibleTeams" [ngValue]="team">
-                  {{ team === null ? 'No team' : team + 1 }}
-                </option>
-              </select>
-            </div>
-          </ng-container>
-        </div>
-        <div
-          *ngIf="selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length"
-          (click)="addPlayer(selectedMap.playerPositions.length)"
-        >
-          Add player
-        </div>
-      </div>
-
+      <fuzzy-waddle-probable-waffle-player-definition
+        [selectedMap]="selectedMap"
+        (playerJoined)="playerCountChanged()"
+        (playerRemoved)="playerRemoved($event)"
+      ></fuzzy-waddle-probable-waffle-player-definition>
       <fuzzy-waddle-probable-waffle-map-definition
         #mapDefinition
         [mapPlayerDefinition]="selectedMap"
       ></fuzzy-waddle-probable-waffle-map-definition>
+      <fuzzy-waddle-probable-waffle-game-mode-definition></fuzzy-waddle-probable-waffle-game-mode-definition>
     </div>
   </div>
-</div>
-<div class="toolbar">
-  <div class="toolbar-left">
-    <button class="button button-clear" (click)="leaveClick()">Leave</button>
-  </div>
-  <div class="toolbar-right">
-    <button
-      class="button button-clear"
-      (click)="start()"
-      [disabled]="!selectedMap || !atLeastTwoPlayersAndDifferentTeamsSelected"
-    >
-      Start
-    </button>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="button button-clear" (click)="leaveClick()">Leave</button>
+    </div>
+    <div class="toolbar-right">
+      <button
+        class="button button-clear"
+        (click)="start()"
+        [disabled]="!selectedMap || !atLeastTwoPlayersAndDifferentTeamsSelected"
+      >
+        Start
+      </button>
+    </div>
   </div>
 </div>

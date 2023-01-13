@@ -1,0 +1,33 @@
+<div *ngIf="selectedMap">
+  <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="d-flex">
+    <ng-container *ngIf="position.player.playerPosition !== null">
+      <div>Player: {{ position.player.playerNumber + 1 }}</div>
+      <div>Position: {{ position.player.playerPosition + 1 }}</div>
+      <div>Race: {{ position.raceType }}</div>
+      <div>Type: {{ playerTypeLookup[position.playerType] }}</div>
+      <div style="margin-left: 10px">
+        <span>Team:</span>
+        <select [(ngModel)]="position.team" class="form-control">
+          <option *ngFor="let team of selectedMap.allPossibleTeams" [ngValue]="team">
+            {{ team === null ? 'No team' : team + 1 }}
+          </option>
+        </select>
+      </div>
+
+      <button
+        *ngIf="position.playerType === PlayerType.AI"
+        (click)="removePlayer(position.player.playerNumber)"
+        class="btn btn-danger"
+      >
+        X
+      </button>
+    </ng-container>
+  </div>
+  <button
+    class="button button-clear"
+    *ngIf="selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length"
+    (click)="addPlayer(selectedMap.playerPositions.length)"
+  >
+    Add A.I. player
+  </button>
+</div>

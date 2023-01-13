@@ -5,7 +5,12 @@ export enum Scenes {
   'PlaygroundScene' = 'PlaygroundScene'
 }
 
+export enum MapIds {
+  'GrasslandSmall' = 'GrasslandSmall',
+  'GrasslandLarge' = 'GrasslandLarge'
+}
 export type MapInfo = {
+  id: MapIds;
   name: string;
   description: string;
   image: string;
@@ -16,6 +21,7 @@ export type MapInfo = {
 export class Maps {
   static readonly maps: MapInfo[] = [
     {
+      id: MapIds.GrasslandSmall,
       name: 'Grassland',
       description: 'A small grassland',
       image: 'grasslands-small.png',
@@ -27,6 +33,7 @@ export class Maps {
       mapHeight: 10
     },
     {
+      id: MapIds.GrasslandLarge,
       name: 'Grassland Large',
       description: 'A large grassland',
       image: 'grasslands-large.png',

@@ -1,5 +1,11 @@
 $blue: #82d2e5; // todo
 
 $app-background: $blue;
-
+$container-background: #f5f5f5;
 $app-font: monospace, sans-serif;
+
+:root{
+  --app-background: #{$app-background};
+  --app-font: #{$app-font};
+  --container-background: #{$container-background};
+}
