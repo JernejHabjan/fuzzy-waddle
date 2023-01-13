@@ -32,7 +32,9 @@ export class Maps {
       image: 'grasslands-large.png',
       startPositions: [
         { tileXY: { x: 20, y: 20 }, z: 0 },
-        { tileXY: { x: 80, y: 80 }, z: 0 }
+        { tileXY: { x: 80, y: 80 }, z: 0 },
+        { tileXY: { x: 20, y: 80 }, z: 0 },
+        { tileXY: { x: 80, y: 20 }, z: 0 }
       ],
       mapWidth: 100,
       mapHeight: 100
