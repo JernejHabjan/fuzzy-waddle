@@ -1,11 +1,23 @@
 <div *ngIf="selectedMap">
-  <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="d-flex">
+  <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="d-flex align-items-center">
     <ng-container *ngIf="position.player.playerPosition !== null">
-      <div>Player: {{ position.player.playerNumber + 1 }}</div>
-      <div>Position: {{ position.player.playerPosition + 1 }}</div>
-      <div>Race: {{ position.raceType }}</div>
-      <div>Type: {{ playerTypeLookup[position.playerType] }}</div>
-      <div style="margin-left: 10px">
+      <div class="p-2">
+        <div>Player:</div>
+        <div>{{ position.player.playerNumber + 1 }}</div>
+      </div>
+      <div class="p-2">
+        <div>Position on map:</div>
+        <div>{{ position.player.playerPosition + 1 }}</div>
+      </div>
+      <div class="p-2">
+        <div>Race:</div>
+        <div>{{ position.raceType }}</div>
+      </div>
+      <div class="p-2">
+        <div>Type:</div>
+        <div>{{ playerTypeLookup[position.playerType] }}</div>
+      </div>
+      <div class="p-2" style="margin-left: 10px">
         <span>Team:</span>
         <select [(ngModel)]="position.team" class="form-control">
           <option *ngFor="let team of selectedMap.allPossibleTeams" [ngValue]="team">
@@ -15,9 +27,10 @@
       </div>
 
       <button
+        style="height: 40px"
         *ngIf="position.playerType === PlayerType.AI"
         (click)="removePlayer(position.player.playerNumber)"
-        class="btn btn-danger"
+        class="button button-clear"
       >
         X
       </button>

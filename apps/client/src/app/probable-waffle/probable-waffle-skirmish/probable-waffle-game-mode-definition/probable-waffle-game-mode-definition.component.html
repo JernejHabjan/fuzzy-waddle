@@ -2,8 +2,9 @@
   <div>Game Setup</div>
   <div>
     <div>Win Conditions</div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="number"
         [(ngModel)]="gameModeLobby.winConditions.timeLimit"
         (ngModelChange)="onValueChange()"
@@ -11,8 +12,9 @@
       />
       <label>Time limit (in minutes)</label>
     </div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="number"
         [(ngModel)]="gameModeLobby.winConditions.scoreLimit"
         (ngModelChange)="onValueChange()"
@@ -23,23 +25,34 @@
   </div>
   <div>
     <div>Tech level</div>
-    <div>
-      <select [(ngModel)]="gameModeLobby.mapTuning.techLevel" (ngModelChange)="onValueChange()" name="techLevel">
+    <div class="p-2">
+      <select
+        class="mr-1"
+        [(ngModel)]="gameModeLobby.mapTuning.techLevel"
+        (ngModelChange)="onValueChange()"
+        name="techLevel"
+      >
         <option value="low">Low</option>
         <option value="medium">Medium</option>
         <option value="high">High</option>
       </select>
     </div>
-    <div>
-      <select [(ngModel)]="gameModeLobby.mapTuning.gameSpeed" (ngModelChange)="onValueChange()" name="gameSpeed">
+    <div class="p-2">
+      <select
+        class="mr-1"
+        [(ngModel)]="gameModeLobby.mapTuning.gameSpeed"
+        (ngModelChange)="onValueChange()"
+        name="gameSpeed"
+      >
         <option value="slow">Slow</option>
         <option value="normal">Normal</option>
         <option value="fast">Fast</option>
       </select>
       <label>Game speed</label>
     </div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="checkbox"
         [(ngModel)]="gameModeLobby.mapTuning.revealMap"
         (ngModelChange)="onValueChange()"
@@ -47,8 +60,9 @@
       />
       <label>Reveal map</label>
     </div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="number"
         [(ngModel)]="gameModeLobby.mapTuning.unitCap"
         (ngModelChange)="onValueChange()"
@@ -59,8 +73,9 @@
   </div>
   <div>
     <div>Modifiers</div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.aiAdvantageResources"
         (ngModelChange)="onValueChange()"
@@ -68,8 +83,9 @@
       />
       <label>A.I. additional resources</label>
     </div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.reducedVisibility"
         (ngModelChange)="onValueChange()"
@@ -77,8 +93,9 @@
       />
       <label>Reduced vision</label>
     </div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.reducedIncome"
         (ngModelChange)="onValueChange()"
@@ -86,8 +103,9 @@
       />
       <label>Reduced income</label>
     </div>
-    <div>
+    <div class="p-2">
       <input
+        class="mr-1"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.unitsDieOfAge"
         (ngModelChange)="onValueChange()"

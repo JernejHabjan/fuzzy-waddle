@@ -71,6 +71,8 @@ export class ProbableWaffleMapDefinitionComponent {
   private startX = 0;
   private startY = 0;
   private rects: DisplayRect[] = [];
+  private rectangleWidth = 30;
+  private rectangleHeight = 30;
 
   /**
    * Called when map changes - reset everything
@@ -97,9 +99,7 @@ export class ProbableWaffleMapDefinitionComponent {
     this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
     // get canvas related references
-    const BB = canvas.getBoundingClientRect();
-    this.canvasOffsetX = BB.left;
-    this.canvasOffsetY = BB.top;
+    this.recalculateOffset();
     this.contextWidth = canvas.width;
     this.contextHeight = canvas.height;
 
@@ -118,6 +118,19 @@ export class ProbableWaffleMapDefinitionComponent {
     canvas.onmousemove = this.myMove.bind(this);
     canvas.onmouseout = this.myOut.bind(this);
     this.draw();
+  }
+
+  /**
+   * We need to recalculate offset because canvas might have been moved around
+   */
+  private recalculateOffset() {
+    if (!this.canvas) {
+      return;
+    }
+    const canvas = this.canvas.nativeElement as HTMLCanvasElement;
+    const BB = canvas.getBoundingClientRect();
+    this.canvasOffsetX = BB.left;
+    this.canvasOffsetY = BB.top;
   }
 
   /**
@@ -178,7 +191,7 @@ export class ProbableWaffleMapDefinitionComponent {
     isoCoordinate: { x: number; y: number },
     fill: string
   ) {
-    const lightenFill = this.lightenColor(fill, 0.1);
+    const lightenFill = this.lightenColor(fill, 0.3);
     this.rects.push({
       playerNumber,
       positionNumber,
@@ -186,8 +199,8 @@ export class ProbableWaffleMapDefinitionComponent {
       tileY: isoCoordinate.y,
       worldX: isoCoordinate.x,
       worldY: isoCoordinate.y,
-      width: 30,
-      height: 30,
+      width: this.rectangleWidth,
+      height: this.rectangleHeight,
       fillNormal: fill,
       fillHover: lightenFill,
       isHovering: false,
@@ -216,7 +229,10 @@ export class ProbableWaffleMapDefinitionComponent {
   private rect(x: number, y: number, w: number, h: number, fill: string) {
     this.ctx.fillStyle = fill;
     this.ctx.beginPath();
-    this.ctx.rect(x, y, w, h);
+
+    // draw a circle instead of rectangle
+    this.ctx.arc(x, y, w / 2, 0, Math.PI * 2, true);
+    // this.ctx.rect(x, y, w, h);
     this.ctx.closePath();
     this.ctx.fill();
   }
@@ -254,6 +270,7 @@ export class ProbableWaffleMapDefinitionComponent {
    * checks for hovering rectangles on canvas and marks them with isHovering
    */
   private myOver(e: MouseEvent) {
+    this.recalculateOffset();
     // lighten the rect if the mouse is inside
     // get the current mouse position
     const mx = e.clientX - this.canvasOffsetX;
@@ -263,7 +280,8 @@ export class ProbableWaffleMapDefinitionComponent {
     for (let i = 0; i < this.rects.length; i++) {
       const r = this.rects[i];
       const previousIsHovering = r.isHovering;
-      r.isHovering = mx > r.worldX && mx < r.worldX + r.width && my > r.worldY && my < r.worldY + r.height;
+
+      r.isHovering = this.intersects({ x: mx, y: my }, { x: r.worldX, y: r.worldY, width: r.width, height: r.height });
       if (previousIsHovering !== r.isHovering) {
         this.draw();
       }
@@ -274,6 +292,7 @@ export class ProbableWaffleMapDefinitionComponent {
    * check if we clicked on any draggable rectangle - if yes, set isDragging to true
    */
   private myDown(e: MouseEvent) {
+    this.recalculateOffset();
     // tell the browser we're handling this mouse event
     e.preventDefault();
     e.stopPropagation();
@@ -304,6 +323,7 @@ export class ProbableWaffleMapDefinitionComponent {
    * returns all rectangles that are intersected by the mouse event
    */
   private getIntersectedRectangles(e: MouseEvent): DisplayRect[] {
+    this.recalculateOffset();
     // get the current mouse position
     const mx = e.clientX - this.canvasOffsetX;
     const my = e.clientY - this.canvasOffsetY;
@@ -312,11 +332,34 @@ export class ProbableWaffleMapDefinitionComponent {
     // test each rect to see if mouse is inside
     for (let i = 0; i < this.rects.length; i++) {
       const r = this.rects[i];
-      if (mx > r.worldX && mx < r.worldX + r.width && my > r.worldY && my < r.worldY + r.height) {
+      const intersects = this.intersects(
+        { x: mx, y: my },
+        { x: r.worldX, y: r.worldY, width: r.width, height: r.height }
+      );
+      if (intersects) {
         intersectedRectangles.push(r);
       }
     }
     return intersectedRectangles;
+  }
+
+  /**
+   * Checks if click intersects with canvas element
+   */
+  private intersects(
+    click: { x: number; y: number },
+    second: { x: number; y: number; width: number; height: number }
+  ): boolean {
+    const rectangleWidthHalf = second.width / 2;
+    const rectangleHeightHalf = second.height / 2;
+    const rectangleCenterX = second.x;
+    const rectangleCenterY = second.y;
+
+    const dx = Math.abs(click.x - rectangleCenterX);
+    const dy = Math.abs(click.y - rectangleCenterY);
+
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < Math.min(rectangleWidthHalf, rectangleHeightHalf);
   }
 
   /**
@@ -329,6 +372,7 @@ export class ProbableWaffleMapDefinitionComponent {
     e.preventDefault();
     e.stopPropagation();
 
+    this.handleEmptyRectangleOnUp(e);
     this.handleRectangleSwitchOnUp(e);
     this.handleRectangleOnEmptyTileUp();
     this.handleRectangleSnappingOnUp();
@@ -393,23 +437,45 @@ export class ProbableWaffleMapDefinitionComponent {
     }
 
     // check if we're hovering over an empty tile
-    const isoCoordinates = this.isoCoordinates;
-    const hoveringIsoCoordinate = isoCoordinates.find((isoCoordinate) => {
-      // check if worldX and worldY difference is less than 10
-      return (
-        Math.abs(isoCoordinate.x - draggingRectangle.worldX) < 10 &&
-        Math.abs(isoCoordinate.y - draggingRectangle.worldY) < 10
-      );
-    });
+    const hoveringIsoCoordinate = this.getIsoCoordinateFromWorld(draggingRectangle.worldX, draggingRectangle.worldY);
 
     if (hoveringIsoCoordinate) {
       const previousTileX = draggingRectangle.tileX;
       const previousTileY = draggingRectangle.tileY;
-      draggingRectangle.tileX = hoveringIsoCoordinate.x;
-      draggingRectangle.tileY = hoveringIsoCoordinate.y;
+      draggingRectangle.tileX = hoveringIsoCoordinate.coordinate.x;
+      draggingRectangle.tileY = hoveringIsoCoordinate.coordinate.y;
 
-      this.updatePlayerPosition(draggingRectangle, { x: previousTileX, y: previousTileY }, hoveringIsoCoordinate);
+      this.updatePlayerPosition(
+        draggingRectangle,
+        { x: previousTileX, y: previousTileY },
+        { x: hoveringIsoCoordinate.coordinate.x, y: hoveringIsoCoordinate.coordinate.y }
+      );
     }
+  }
+
+  /**
+   * Returns iso coordinate index from world coordinates
+   */
+  private getIsoCoordinateFromWorld(
+    x: number,
+    y: number
+  ): {
+    coordinate: { x: number; y: number };
+    index: number;
+  } | null {
+    const isoCoordinates = this.isoCoordinates;
+    const coordinate =
+      isoCoordinates.find((isoCoordinate) => {
+        // check if worldX and worldY difference is less than 10
+        return Math.abs(isoCoordinate.x - x) < 10 && Math.abs(isoCoordinate.y - y) < 10;
+      }) || null;
+    if (!coordinate) {
+      return null;
+    }
+    return {
+      coordinate,
+      index: isoCoordinates.indexOf(coordinate)
+    };
   }
 
   /**
@@ -460,6 +526,40 @@ export class ProbableWaffleMapDefinitionComponent {
   }
 
   /**
+   * Add new A.I. player on empty rectangle click
+   */
+  private handleEmptyRectangleOnUp(e: MouseEvent) {
+    this.recalculateOffset();
+    const getIntersectedRectangles = this.getIntersectedRectangles(e);
+    if (getIntersectedRectangles.length) {
+      return;
+    }
+
+    const map = this.mapPlayerDefinition as MapPlayerDefinition;
+
+    // get the current mouse position
+    const mx = e.clientX - this.canvasOffsetX;
+    const my = e.clientY - this.canvasOffsetY;
+    const isoCoordinate = this.getIsoCoordinateFromWorld(mx, my);
+
+    // check if any isoCoordinate intersects with the mouse position
+    if (!isoCoordinate) {
+      return;
+    }
+    const { index } = isoCoordinate;
+
+    // add new player
+
+    // find first player in map.startPositionPerPlayer that is not joined
+    const player = map.startPositionPerPlayer.find((p) => !p.player.joined) as PositionPlayerDefinition;
+    player.player.playerPosition = index;
+    player.player.joined = true;
+
+    this.initializePlayerPositions();
+    this.draw();
+  }
+
+  /**
    * clears all dragging flags
    */
   private clearDraggingFlags() {
@@ -474,6 +574,7 @@ export class ProbableWaffleMapDefinitionComponent {
    * Updates position of draggable rectangle
    */
   private myMove(e: MouseEvent) {
+    this.recalculateOffset();
     this.myOver(e);
 
     // if we're dragging anything...
@@ -598,6 +699,6 @@ export class ProbableWaffleMapDefinitionComponent {
    * blank start position
    */
   private drawStartPositionSquare(x: number, y: number) {
-    this.rect(x, y, 30, 30, 'white');
+    this.rect(x, y, this.rectangleWidth, this.rectangleHeight, 'white');
   }
 }
