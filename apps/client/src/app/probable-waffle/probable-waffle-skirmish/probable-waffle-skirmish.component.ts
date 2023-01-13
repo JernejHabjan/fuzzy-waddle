@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MapInfo, Maps } from '../probable-waffle-game/scenes/scenes';
+import { MapInfo } from '../probable-waffle-game/scenes/scenes';
 import { RaceType } from '../probable-waffle-game/race-definitions';
 import { ProbableWaffleMapDefinitionComponent } from './probable-waffle-map-definition/probable-waffle-map-definition.component';
 import { PlayerType } from './probable-waffle-player-definition/probable-waffle-player-definition.component';
+import { ProbableWaffleGameModeDefinitionComponent } from './probable-waffle-game-mode-definition/probable-waffle-game-mode-definition.component';
 
 export class PlayerLobbyDefinition {
   constructor(public playerNumber: number, public playerPosition: number | null, public joined: boolean) {}
@@ -48,6 +49,7 @@ export class MapPlayerDefinition {
 })
 export class ProbableWaffleSkirmishComponent {
   @ViewChild('mapDefinition') mapDefinition!: ProbableWaffleMapDefinitionComponent;
+  @ViewChild('gameModeDefinition') gameModeDefinition!: ProbableWaffleGameModeDefinitionComponent;
   selectedMap?: MapPlayerDefinition;
   constructor(private router: Router) {}
 
@@ -72,6 +74,9 @@ export class ProbableWaffleSkirmishComponent {
   }
 
   start() {
+    const gameModeLobby = this.gameModeDefinition.gameModeLobby;
+    // todo use this to set the real game mode!
+
     this.router.navigate(['probable-waffle/game']);
   }
 

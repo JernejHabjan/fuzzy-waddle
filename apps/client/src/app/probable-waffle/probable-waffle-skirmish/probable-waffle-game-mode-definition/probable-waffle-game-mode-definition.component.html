@@ -1,21 +1,99 @@
-<div>
+<form>
   <div>Game Setup</div>
   <div>
     <div>Win Conditions</div>
-    <div>Time limit</div>
-    <div>Score limit</div>
+    <div>
+      <input
+        type="number"
+        [(ngModel)]="gameModeLobby.winConditions.timeLimit"
+        (ngModelChange)="onValueChange()"
+        name="timeLimit"
+      />
+      <label>Time limit (in minutes)</label>
+    </div>
+    <div>
+      <input
+        type="number"
+        [(ngModel)]="gameModeLobby.winConditions.scoreLimit"
+        (ngModelChange)="onValueChange()"
+        name="scoreLimit"
+      />
+      <label>Score limit</label>
+    </div>
   </div>
   <div>
     <div>Tech level</div>
-    <div>Starting resources</div>
-    <div>Game speed</div>
-    <div>Reveal map</div>
-    <div>Unit cap</div>
+    <div>
+      <select [(ngModel)]="gameModeLobby.mapTuning.techLevel" (ngModelChange)="onValueChange()" name="techLevel">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+    <div>
+      <select [(ngModel)]="gameModeLobby.mapTuning.gameSpeed" (ngModelChange)="onValueChange()" name="gameSpeed">
+        <option value="slow">Slow</option>
+        <option value="normal">Normal</option>
+        <option value="fast">Fast</option>
+      </select>
+      <label>Game speed</label>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        [(ngModel)]="gameModeLobby.mapTuning.revealMap"
+        (ngModelChange)="onValueChange()"
+        name="revealMap"
+      />
+      <label>Reveal map</label>
+    </div>
+    <div>
+      <input
+        type="number"
+        [(ngModel)]="gameModeLobby.mapTuning.unitCap"
+        (ngModelChange)="onValueChange()"
+        name="unitCap"
+      />
+      <label>Unit cap</label>
+    </div>
   </div>
   <div>
     <div>Modifiers</div>
-    <div>Reduced vision</div>
-    <div>Reduced income</div>
-    <div>Units die of age</div>
+    <div>
+      <input
+        type="checkbox"
+        [(ngModel)]="gameModeLobby.difficultyModifiers.aiAdvantageResources"
+        (ngModelChange)="onValueChange()"
+        name="additionalResources"
+      />
+      <label>A.I. additional resources</label>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        [(ngModel)]="gameModeLobby.difficultyModifiers.reducedVisibility"
+        (ngModelChange)="onValueChange()"
+        name="reducedVision"
+      />
+      <label>Reduced vision</label>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        [(ngModel)]="gameModeLobby.difficultyModifiers.reducedIncome"
+        (ngModelChange)="onValueChange()"
+        name="reducedIncome"
+      />
+      <label>Reduced income</label>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        [(ngModel)]="gameModeLobby.difficultyModifiers.unitsDieOfAge"
+        (ngModelChange)="onValueChange()"
+        name="unitsDieOfAge"
+      />
+      <label>Units die of age</label>
+    </div>
   </div>
-</div>
+</form>
