@@ -4,6 +4,7 @@ import {
   PlayerLobbyDefinition,
   PositionPlayerDefinition
 } from '../probable-waffle-skirmish.component';
+import { Difficulty } from '../probable-waffle-player-definition/probable-waffle-player-definition.component';
 
 /**
  * canvas element containing info about current player and position.
@@ -553,6 +554,7 @@ export class ProbableWaffleMapDefinitionComponent {
     // find first player in map.startPositionPerPlayer that is not joined
     const player = map.startPositionPerPlayer.find((p) => !p.player.joined) as PositionPlayerDefinition;
     player.player.playerPosition = index;
+    player.difficulty = Difficulty.Medium;
     player.player.joined = true;
 
     this.initializePlayerPositions();

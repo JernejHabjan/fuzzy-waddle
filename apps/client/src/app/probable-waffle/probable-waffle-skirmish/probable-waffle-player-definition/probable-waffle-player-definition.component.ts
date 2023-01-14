@@ -1,15 +1,35 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MapPlayerDefinition, PositionPlayerDefinition } from '../probable-waffle-skirmish.component';
+import { RaceDefinitions } from '../../probable-waffle-game/race-definitions';
 
 export enum PlayerType {
-  Human,
-  AI
+  Human=0,
+  AI=1
 }
 
-export const playerTypeLookup = {
-  [PlayerType.Human]: 'Human',
-  [PlayerType.AI]: 'A.I.'
-};
+export class PlayerTypeDefinitions{
+  static playerTypes = [
+    { value: PlayerType.Human, name: 'Human' },
+    { value: PlayerType.AI, name: 'AI' }
+  ];
+  static playerTypeLookup = {
+    [PlayerType.Human]: 'Human',
+    [PlayerType.AI]: 'A.I.'
+  };
+}
+
+export enum Difficulty{
+  Easy=0,
+  Medium=1,
+  Hard=2
+}
+export class DifficultyDefinitions{
+  static difficulties = [
+    { name: 'Easy', value: Difficulty.Easy },
+    { name: 'Normal', value: Difficulty.Medium },
+    { name: 'Hard', value: Difficulty.Hard }
+  ]
+}
 
 @Component({
   selector: 'fuzzy-waddle-probable-waffle-player-definition',
@@ -17,9 +37,10 @@ export const playerTypeLookup = {
   styleUrls: ['./probable-waffle-player-definition.component.scss']
 })
 export class ProbableWafflePlayerDefinitionComponent {
-  playerTypeLookup = playerTypeLookup;
+  PlayerTypeDefinitions = PlayerTypeDefinitions;
   PlayerType = PlayerType;
-
+  RaceDefinitions = RaceDefinitions;
+  DifficultyDefinitions=DifficultyDefinitions;
   @Input() selectedMap?: MapPlayerDefinition;
   @Output() playerJoined: EventEmitter<void> = new EventEmitter<void>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
@@ -29,6 +50,7 @@ export class ProbableWafflePlayerDefinitionComponent {
     const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
     startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
     startPositionPerPlayerElement.player.joined = true;
+    startPositionPerPlayerElement.difficulty = Difficulty.Medium;
     this.playerJoined.emit();
   }
 

@@ -1,9 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MapInfo } from '../probable-waffle-game/scenes/scenes';
-import { RaceType } from '../probable-waffle-game/race-definitions';
+import { RaceDefinitions, RaceType } from '../probable-waffle-game/race-definitions';
 import { ProbableWaffleMapDefinitionComponent } from './probable-waffle-map-definition/probable-waffle-map-definition.component';
-import { PlayerType } from './probable-waffle-player-definition/probable-waffle-player-definition.component';
+import {
+  Difficulty,
+  PlayerType
+} from './probable-waffle-player-definition/probable-waffle-player-definition.component';
 import { ProbableWaffleGameModeDefinitionComponent } from './probable-waffle-game-mode-definition/probable-waffle-game-mode-definition.component';
 
 export class PlayerLobbyDefinition {
@@ -15,27 +18,35 @@ export class PositionPlayerDefinition {
     public team: number | null,
     public raceType: RaceType,
     public playerType: PlayerType,
-    public playerColor: string
+    public playerColor: string,
+    public difficulty: Difficulty | null
   ) {}
 }
 export class MapPlayerDefinition {
   startPositionPerPlayer: PositionPlayerDefinition[] = [];
   allPossibleTeams: (number | null)[] = [];
+  initialNrAiPlayers = 1;
 
   get playerPositions(): PositionPlayerDefinition[] {
     return this.startPositionPerPlayer.filter((positionPlayer) => positionPlayer.player.playerPosition !== null);
   }
   constructor(public map: MapInfo) {
     this.allPossibleTeams.push(null);
+    const races = RaceDefinitions.raceTypes;
     for (let i = 0; i < map.startPositions.length; i++) {
+      const randomRace = races[Math.floor(Math.random() * races.length)];
       const playerColor = `hsl(${(i * 360) / map.startPositions.length}, 100%, 50%)`;
+      // use initialNrAiPlayers to set the first x players to AI
+      const shouldAutoJoin = i < this.initialNrAiPlayers + 1; // 1 for human player
+      const isAi = i > 0 && shouldAutoJoin;
       this.startPositionPerPlayer.push(
         new PositionPlayerDefinition(
-          new PlayerLobbyDefinition(i, i === 0 ? 0 : null, i === 0),
+          new PlayerLobbyDefinition(i, shouldAutoJoin ? i : null, shouldAutoJoin),
           null,
-          RaceType.IceMarauders,
-          i === 0 ? PlayerType.Human : PlayerType.AI,
-          playerColor
+          randomRace.value,
+          !isAi ? PlayerType.Human : PlayerType.AI,
+          playerColor,
+          isAi ? Difficulty.Medium : null
         )
       );
       this.allPossibleTeams.push(i);
@@ -76,6 +87,7 @@ export class ProbableWaffleSkirmishComponent {
   start() {
     const gameModeLobby = this.gameModeDefinition.gameModeLobby;
     // todo use this to set the real game mode!
+    console.log('selected map definitions', this.selectedMap, gameModeLobby);
 
     this.router.navigate(['probable-waffle/game']);
   }

@@ -1,22 +1,37 @@
 <div *ngIf="selectedMap">
   <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="d-flex align-items-center">
     <ng-container *ngIf="position.player.playerPosition !== null">
+      <div class="color-box" [style.background-color]="position.playerColor"></div>
       <div class="p-2">
         <div>Player:</div>
         <div>{{ position.player.playerNumber + 1 }}</div>
       </div>
-      <div class="p-2">
+      <!-- <div class="p-2">
         <div>Position on map:</div>
         <div>{{ position.player.playerPosition + 1 }}</div>
-      </div>
+      </div> -->
       <div class="p-2">
         <div>Race:</div>
-        <div>{{ position.raceType }}</div>
+        <select [(ngModel)]="position.raceType" class="form-control">
+          <option *ngFor="let raceType of RaceDefinitions.raceTypes" [ngValue]="raceType.value">
+            {{ raceType.name }}
+          </option>
+        </select>
       </div>
       <div class="p-2">
         <div>Type:</div>
-        <div>{{ playerTypeLookup[position.playerType] }}</div>
+        <div>{{ PlayerTypeDefinitions.playerTypeLookup[position.playerType] }}</div>
       </div>
+
+      <div *ngIf="position.playerType === PlayerType.AI" class="p-2">
+        <div>Difficulty:</div>
+        <select [(ngModel)]="position.difficulty" class="form-control">
+          <option *ngFor="let difficulty of DifficultyDefinitions.difficulties" [ngValue]="difficulty.value">
+            {{ difficulty.name }}
+          </option>
+        </select>
+      </div>
+
       <div class="p-2" style="margin-left: 10px">
         <span>Team:</span>
         <select [(ngModel)]="position.team" class="form-control">

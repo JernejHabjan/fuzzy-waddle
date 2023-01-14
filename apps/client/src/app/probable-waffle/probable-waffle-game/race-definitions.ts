@@ -65,7 +65,10 @@ export class RaceDefinitions {
     true
   );
 
-  static get raceTypes(): RaceType[] {
-    return [RaceType.IceMarauders, RaceType.FireBoosters, RaceType.SandDwellers, RaceType.ForestShadows];
-  }
+  static raceTypes: { name: string; value: RaceType }[] = [
+    { name: 'Ice Marauders', value: RaceType.IceMarauders },
+    { name: 'Fire Boosters', value: RaceType.FireBoosters },
+    { name: 'Sand Dwellers', value: RaceType.SandDwellers },
+    { name: 'Forest Shadows', value: RaceType.ForestShadows }
+  ];
 }
