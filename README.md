@@ -1,6 +1,9 @@
 
 
 # FuzzyWaddle
+## Setup
+### Api
+- Copy the `.env.example` file to `.env.local` and fill in the values.
 
 ## Deployment
 - Client: https://fuzzy-waddle-client.onrender.com/
