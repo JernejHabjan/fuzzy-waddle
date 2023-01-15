@@ -10,6 +10,8 @@
     "lint": "nx run-many --all --target=lint",
     "e2e": "nx run client-e2e:e2e",
     "nx": "nx",
+    "nx-build-client": "nx build client",
+    "nx-build-server": "nx build server",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",
