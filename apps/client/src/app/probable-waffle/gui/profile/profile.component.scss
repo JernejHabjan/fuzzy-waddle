@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  overflow: auto;
+}
+.achievement-header {
+  text-align: center;
+  color: #3f51b5;
+}
+.achievement {
+  border-radius: 5px;
+  border: 1px solid #3f51b5;
+  padding: 10px;
+  margin: 10px;
+  background-color: white;
+  color: #3f51b5;
+
+  .achievement-image {
+    // max 200x200
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+  }
+}

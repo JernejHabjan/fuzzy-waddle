@@ -1,6 +1,28 @@
-<h3>Welcome to Fuzzy Waddle game portal</h3>
+<div class="toolbar">
+  <div class="toolbar-left">
+    <a class="button button-clear btn-home" href="#">Fuzzy Waddle</a>
+  </div>
+  <div class="toolbar-right">
+    <button class="button button-clear btn-profile" (click)="navigateProfile()">Profile</button>
+  </div>
+</div>
 
-<div style="display: flex; flex-direction: column">
-  <a [routerLink]="['probable-waffle']">probable-waffle</a>
-  <a [routerLink]="['little-muncher']">little-muncher</a>
+<div class="tile-featured cursor-pointer position-relative" (click)="router.navigateByUrl(probableWaffle.route)">
+  <img class="featured-image" [src]="'assets/games/images/' + probableWaffle.image" />
+  <div class="featured-title">
+    <h2>Featured</h2>
+    <h3 style="margin-left: 30px">{{ probableWaffle.name }}</h3>
+  </div>
+</div>
+
+<div class="all-games">
+  <div class="tile-game cursor-pointer" *ngFor="let game of displayGames" (click)="router.navigateByUrl(game.route)">
+    <img class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
+    <div class="game-title">
+      <h2>{{ game.name }}</h2>
+    </div>
+    <div class="game-description">
+      <p>{{ game.description }}</p>
+    </div>
+  </div>
 </div>

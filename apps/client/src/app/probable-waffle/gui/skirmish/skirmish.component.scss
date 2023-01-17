@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.map-display-center{
+  background-color: var(--container-background);
+  padding: 2rem;
+  flex-grow: 1;
+}
