@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProbableWaffleSkirmishComponent } from '../probable-waffle-skirmish/probable-waffle-skirmish.component';
-import { ProbableWaffleHomeComponent } from '../probable-waffle-home/probable-waffle-home.component';
+import { SkirmishComponent } from '../skirmish/skirmish.component';
+import { HomeComponent } from '../home/home.component';
 import { ProbableWaffleComponent } from './probable-waffle.component';
-import { ProbableWaffleProfileComponent } from '../probable-waffle-profile/probable-waffle-profile.component';
+import { ProfileComponent } from '../profile/profile.component';
 
 const routes: Routes = [
   {
@@ -12,27 +12,27 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: ProbableWaffleHomeComponent
+        component: HomeComponent
       },
       {
         path: 'skirmish',
-        component: ProbableWaffleSkirmishComponent
+        component: SkirmishComponent
       },
       {
         path: 'profile',
-        component: ProbableWaffleProfileComponent
+        component: ProfileComponent
       },
       {
         path: 'playground',
         loadChildren: () =>
-          import('../probable-waffle-playground/probable-waffle-playground.module').then(
-            (m) => m.ProbableWafflePlaygroundModule
+          import('../playground/playground.module').then(
+            (m) => m.PlaygroundModule
           )
       },
       {
         path: 'game',
         loadChildren: () =>
-          import('../../probable-waffle-game/probable-waffle-game.module').then((m) => m.ProbableWaffleGameModule)
+          import('../game-interface/main/probable-waffle-game.module').then((m) => m.ProbableWaffleGameModule)
       }
     ]
   },

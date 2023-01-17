@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TileFrame } from '../atlas-loader.service';
-import { SceneCommunicatorService } from '../../../../probable-waffle-game/event-emitters/scene-communicator.service';
+import { SceneCommunicatorService } from '../../../../communicators/scene-communicator.service';
 
 @Component({
   selector: 'fuzzy-waddle-tile-selector',

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { MapDefinitions } from '../../../probable-waffle-game/const/map-size.info';
-import { TilePossibleProperties } from '../../../probable-waffle-game/types/tile-types';
+import { MapDefinitions } from '../../../game/world/const/map-size.info';
+import { TilePossibleProperties } from '../../../game/world/map/tile/types/tile-types';
 
 export interface TileAtlasFrame {
   tilesetName: string;

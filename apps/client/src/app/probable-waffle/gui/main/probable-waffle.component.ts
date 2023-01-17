@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GameInstanceService } from '../../game-instance.service';
+import { GameInstanceService } from '../../communicators/game-instance.service';
 
 @Component({
   selector: 'fuzzy-waddle-probable-waffle',
