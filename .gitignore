@@ -44,3 +44,6 @@ Thumbs.db
 *.tiled-session
 
 migrations.json
+
+# local env files
+.env.local
