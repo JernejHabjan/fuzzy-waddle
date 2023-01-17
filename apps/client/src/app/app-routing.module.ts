@@ -19,7 +19,7 @@ const routes: Routes = [
   {
     path: 'probable-waffle',
     loadChildren: () =>
-      import('./probable-waffle/probable-waffle.module').then(
+      import('./probable-waffle/gui/main/probable-waffle.module').then(
         (m) => m.ProbableWaffleModule
       )
   },

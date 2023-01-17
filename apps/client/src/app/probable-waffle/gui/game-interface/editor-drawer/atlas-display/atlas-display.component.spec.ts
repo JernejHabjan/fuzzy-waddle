@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AtlasDisplayComponent } from './atlas-display.component';
-import { MapDefinitions } from '../../../const/map-size.info';
+import { MapDefinitions } from '../../../../probable-waffle-game/const/map-size.info';
 
 describe('AtlasDisplayComponent', () => {
   let component: AtlasDisplayComponent;

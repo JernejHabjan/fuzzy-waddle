@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { GameObjectSelection, SceneCommunicatorService } from '../../../event-emitters/scene-communicator.service';
+import { GameObjectSelection, SceneCommunicatorService } from '../../../../probable-waffle-game/event-emitters/scene-communicator.service';
 import { Subscription } from 'rxjs';
 
 @Component({

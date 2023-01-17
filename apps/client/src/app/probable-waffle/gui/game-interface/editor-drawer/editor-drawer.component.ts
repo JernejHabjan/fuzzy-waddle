@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SceneCommunicatorService } from '../../event-emitters/scene-communicator.service';
+import { SceneCommunicatorService } from '../../../probable-waffle-game/event-emitters/scene-communicator.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AtlasFrame, AtlasJsonWrapper, AtlasLoaderService, TileAtlasFrame, TileFrame } from './atlas-loader.service';
-import { MapDefinitions } from '../../const/map-size.info';
-import { TileTypes } from '../../manual-tiles/tile-types';
+import { MapDefinitions } from '../../../probable-waffle-game/const/map-size.info';
+import { TileTypes } from '../../../probable-waffle-game/manual-tiles/tile-types';
 import { Subscription } from 'rxjs';
 
 type TileType = 'flat' | 'water' | 'slopes' | 'blocks' | 'other';

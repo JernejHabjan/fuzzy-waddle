@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TileSelectorComponent } from './tile-selector.component';
-import { MapDefinitions } from '../../../const/map-size.info';
+import { MapDefinitions } from '../../../../probable-waffle-game/const/map-size.info';
 import { AtlasDisplayComponent } from '../atlas-display/atlas-display.component';
 
 describe('TileSelectorComponent', () => {

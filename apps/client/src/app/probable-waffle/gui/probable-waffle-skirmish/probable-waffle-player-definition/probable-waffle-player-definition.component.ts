@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MapPlayerDefinition, PositionPlayerDefinition } from '../probable-waffle-skirmish.component';
-import { RaceDefinitions } from '../../probable-waffle-game/race-definitions';
+import { RaceDefinitions } from '../../../probable-waffle-game/race-definitions';
 
 export enum PlayerType {
   Human=0,

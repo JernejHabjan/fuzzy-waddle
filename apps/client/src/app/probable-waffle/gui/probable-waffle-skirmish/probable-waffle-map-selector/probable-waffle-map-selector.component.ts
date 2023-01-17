@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MapIds, Maps } from '../../probable-waffle-game/scenes/scenes';
+import { MapIds, Maps } from '../../../probable-waffle-game/scenes/scenes';
 import { MapPlayerDefinition } from '../probable-waffle-skirmish.component';
 
 @Component({

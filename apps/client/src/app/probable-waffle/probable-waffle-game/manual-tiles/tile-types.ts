@@ -1,4 +1,4 @@
-import { TileFrame } from '../gui/editor-drawer/atlas-loader.service';
+import { TileFrame } from '../../gui/game-interface/editor-drawer/atlas-loader.service';
 import { TileDefinitions } from '../const/map-size.info';
 
 export class TileTypes {

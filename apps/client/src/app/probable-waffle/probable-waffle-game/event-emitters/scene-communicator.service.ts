@@ -1,5 +1,5 @@
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
-import { AtlasFrame } from '../gui/editor-drawer/atlas-loader.service';
+import { AtlasFrame } from '../../gui/game-interface/editor-drawer/atlas-loader.service';
 
 // for communication of selected sprite atlas in gui to scene
 export interface AtlasEmitValue {

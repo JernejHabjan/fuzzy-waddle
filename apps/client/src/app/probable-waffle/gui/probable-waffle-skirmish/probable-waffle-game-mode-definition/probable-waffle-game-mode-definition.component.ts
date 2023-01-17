@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Resources, ResourceType } from '../../probable-waffle-game/buildings/resource-type';
+import { Resources, ResourceType } from '../../../probable-waffle-game/buildings/resource-type';
 
 class WinConditions {
   constructor(public timeLimit: number | null = null, public scoreLimit: number | null = null) {}

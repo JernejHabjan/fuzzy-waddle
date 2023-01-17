@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MapInfo } from '../probable-waffle-game/scenes/scenes';
-import { RaceDefinitions, RaceType } from '../probable-waffle-game/race-definitions';
+import { MapInfo } from '../../probable-waffle-game/scenes/scenes';
+import { RaceDefinitions, RaceType } from '../../probable-waffle-game/race-definitions';
 import { ProbableWaffleMapDefinitionComponent } from './probable-waffle-map-definition/probable-waffle-map-definition.component';
 import {
   Difficulty,

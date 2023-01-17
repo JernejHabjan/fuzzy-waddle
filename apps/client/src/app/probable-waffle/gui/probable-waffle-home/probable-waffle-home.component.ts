@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GameInstanceService } from '../game-instance.service';
+import { GameInstanceService } from '../../game-instance.service';
 import { Router } from '@angular/router';
 
 @Component({
