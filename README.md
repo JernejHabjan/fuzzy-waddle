@@ -6,7 +6,7 @@
 - Copy the `.env.example` file to `.env.local` and fill in the values.
 
 ## Deployment
-- Client: https://fuzzy-waddle-client.onrender.com/
+- Client: https://fuzzy-waddle.onrender.com/
   - build command: `npm run nx-build-client`
   - publish directory: `./dist/apps/client`
 - Server: https://fuzzy-waddle-api.onrender.com/
