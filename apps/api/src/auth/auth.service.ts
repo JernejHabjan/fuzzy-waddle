@@ -29,20 +29,20 @@ export class AuthService {
   }
 
   async signInUser(dto: CreateUserDto) {
-    const { user, session, error } = await this.supabaseClient.auth.signIn({
+    const { data:{ user, session}, error } = await this.supabaseClient.auth.signInWithPassword({
       email: dto.email,
       password: dto.password
     });
 
     return {
-      user: user,
-      session: session,
-      error: error
+      user,
+      session,
+      error
     };
   }
 
   async signupUser(dto: CreateUserDto) {
-    const { user, session, error } = await this.supabaseClient.auth.signUp(
+    const {data:{ user, session},  error } = await this.supabaseClient.auth.signUp(
       {
         email: dto.email,
         password: dto.password
@@ -60,9 +60,9 @@ export class AuthService {
     console.log(error);
 
     return {
-      user: user,
-      session: session,
-      error: error
+      user,
+      session,
+      error
     };
   }
 }
