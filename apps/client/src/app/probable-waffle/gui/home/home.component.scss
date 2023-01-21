@@ -1,3 +1,5 @@
+@import '../../../../assets/styles/_variables.scss';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -12,7 +14,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3rem;
+  font-size: 4rem;
+  font-family: $app-font-bold;
   .logo-text {
     z-index: 1;
     pointer-events: none;

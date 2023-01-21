@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { PlayerDefinitionComponent } from '../skirmish/player-definition/player-definition.component';
 import { GameModeDefinitionComponent } from '../skirmish/game-mode-definition/game-mode-definition.component';
 import { MapSelectorComponent } from '../skirmish/map-selector/map-selector.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,6 @@ import { MapSelectorComponent } from '../skirmish/map-selector/map-selector.comp
     GameModeDefinitionComponent,
     MapSelectorComponent
   ],
-  imports: [CommonModule, ProbableWaffleRoutingModule, FormsModule]
+  imports: [CommonModule, ProbableWaffleRoutingModule, FormsModule, FontAwesomeModule]
 })
 export class ProbableWaffleModule {}

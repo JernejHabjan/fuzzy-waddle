@@ -1,7 +1,7 @@
 @import '_variables.scss';
 
 .d-flex {
-  display: flex;
+  display: flex !important;
 }
 .flex-column {
   flex-direction: column;
@@ -26,7 +26,7 @@
 }
 
 .button {
-  background-color: #3f51b5;
+  background-color: $primary;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -37,7 +37,16 @@
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 5px;
-  font-family: $app-font;
+  font-family: $app-font-bold;
+  &:hover {
+    background-color: darken($primary, 10%);
+  }
+  &:active {
+    background-color: darken($primary, 20%);
+  }
+  &:focus {
+    outline: none;
+  }
 }
 .button:disabled {
   opacity: 0.5;
@@ -81,19 +90,19 @@
   cursor: pointer;
 }
 
-.button:hover {
-  background-color: #5c6bc0;
-}
-.button:active {
-  background-color: #3949ab;
-}
-.button:focus {
-  outline: none;
-}
+
 .button-clear {
   background-color: white;
-  color: #3f51b5;
-  border: 1px solid #3f51b5;
+  color: $primary;
+  border: 1px solid $primary;
+  &:hover {
+    background-color: lighten($primary, 20%);
+    color: white;
+  }
+  &:active {
+    background-color: lighten($primary, 40%);
+    color: white;
+  }
 }
 
 .position-relative {
@@ -121,6 +130,9 @@
 }
 .mr-auto {
   margin-right: auto;
+}
+.p-0 {
+  padding: 0;
 }
 .p-2 {
   padding: 0.5rem;

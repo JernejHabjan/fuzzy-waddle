@@ -42,12 +42,11 @@
       </div>
 
       <button
-        style="height: 40px"
         *ngIf="position.playerType === PlayerType.AI"
         (click)="removePlayer(position.player.playerNumber)"
         class="button button-clear"
       >
-        X
+        <fa-icon [icon]="faTimes"></fa-icon>
       </button>
     </ng-container>
   </div>

@@ -1,9 +1,14 @@
 <div class="toolbar">
   <div class="toolbar-left">
-    <a class="button button-clear btn-home" href="#">Fuzzy Waddle</a>
+    <a class="button button-clear btn-home p-0 align-items-center d-flex" href="#">
+     <img class="logo" src="assets/icons/fuzzy-waddle.svg" alt="Fuzzy Waddle" />
+      <div class='title'>Fuzzy Waddle</div>
+    </a>
   </div>
   <div class="toolbar-right">
-    <button class="button button-clear btn-profile" (click)="navigateProfile()">Profile</button>
+    <button class="button button-clear" (click)="navigateProfile()">
+      <fa-icon [icon]="faUser"></fa-icon>
+      Profile</button>
   </div>
 </div>
 

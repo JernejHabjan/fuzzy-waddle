@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 export type DisplayGame = {
   name: string;
@@ -14,7 +15,8 @@ export type DisplayGame = {
   styleUrls: ['./home-page.component.scss']
 })
 export class HomePageComponent {
-  probableWaffle:DisplayGame = {
+  faUser = faUser;
+  probableWaffle: DisplayGame = {
     name: 'Probable Waffle',
     description: 'A real-time strategy game',
     image: 'probable-waffle.jpg',
