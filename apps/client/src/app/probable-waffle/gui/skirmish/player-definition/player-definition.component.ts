@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MapPlayerDefinition, PositionPlayerDefinition } from '../skirmish.component';
 import { RaceDefinitions } from '../../../game/player/race-definitions';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export enum PlayerType {
   Human=0,
@@ -37,6 +38,7 @@ export class DifficultyDefinitions{
   styleUrls: ['./player-definition.component.scss']
 })
 export class PlayerDefinitionComponent {
+  faTimes = faTimes;
   PlayerTypeDefinitions = PlayerTypeDefinitions;
   PlayerType = PlayerType;
   RaceDefinitions = RaceDefinitions;
