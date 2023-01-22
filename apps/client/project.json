@@ -29,7 +29,10 @@
         ],
         "scripts": [],
         "serviceWorker": true,
-        "ngswConfigPath": "apps/client/ngsw-config.json"
+        "ngswConfigPath": "apps/client/ngsw-config.json",
+        "allowedCommonJsDependencies": [
+          "phaser"
+        ]
       },
       "configurations": {
         "production": {
