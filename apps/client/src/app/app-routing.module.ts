@@ -28,7 +28,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes
+    // { useHash: true } // not needed
+    // when deployed, set a rewrite rule for SPA application:
+    // source: "/*"
+    // destination: "/index.html"
+    // action: "rewrite"
+    // docs for render.com: https://render.com/docs/deploy-create-react-app#using-client-side-routing
+    // docs for azure: https://learn.microsoft.com/en-us/azure/static-web-apps/configuration?WT.mc_id=javascript-17844-cxa#fallback-routes
+  )],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
