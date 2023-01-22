@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { JwtFromRequestFunction } from "passport-jwt";
 import { Strategy } from "passport-strategy";
 
@@ -39,7 +38,7 @@ export class SupabaseV2AuthStrategy extends Strategy {
     return payload;
   }
 
-  authenticate(req: Request): void {
+  authenticate(req): void {
     const idToken = this.extractor(req);
 
     if (!idToken) {

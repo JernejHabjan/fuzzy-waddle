@@ -47,3 +47,5 @@ migrations.json
 
 # local env files
 .env.local
+# migration to pnpm
+package-lock.json
