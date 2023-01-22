@@ -1,17 +1,10 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - '**'         # matches every branch
-      - '!main'      # excludes main
-      - '!develop'   # excludes develop
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches:
-      - '**'         # matches every branch
-      - '!main'      # excludes main
-      - '!develop'   # excludes develop
+    branches-ignore:
+    - main
+    - develop
 jobs:
   build:
     runs-on: ubuntu-latest
