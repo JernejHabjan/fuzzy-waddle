@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GameModeDefinitionComponent } from './game-mode-definition.component';
+import { FormsModule } from '@angular/forms';
 
 describe('GameModeDefinitionComponent', () => {
   let component: GameModeDefinitionComponent;
@@ -8,7 +9,8 @@ describe('GameModeDefinitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GameModeDefinitionComponent]
+      declarations: [GameModeDefinitionComponent],
+      imports: [FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GameModeDefinitionComponent);

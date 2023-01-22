@@ -4,12 +4,11 @@ html,
 body {
   height: 100%;
   width: 100%;
-  font-family: $app-font;
+  font-family: $app-font-regular;
 }
 
 body {
   display: flex;
-  background-color: $app-background;
+  background-color: $secondary;
   margin: 0;
-  // font-family: Roboto, 'Helvetica Neue', sans-serif; // todo
 }

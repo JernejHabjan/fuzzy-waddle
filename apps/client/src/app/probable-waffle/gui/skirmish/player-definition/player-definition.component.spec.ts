@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlayerDefinitionComponent } from './player-definition.component';
+import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
+import { FormsModule } from '@angular/forms';
 
 describe('PlayerDefinitionComponent', () => {
   let component: PlayerDefinitionComponent;
@@ -8,7 +10,8 @@ describe('PlayerDefinitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PlayerDefinitionComponent]
+      declarations: [PlayerDefinitionComponent],
+      imports:[FontAwesomeTestingModule, FormsModule ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PlayerDefinitionComponent);

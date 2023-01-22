@@ -1,7 +1,13 @@
-.btn-home {
-}
+@import '../../../assets/styles/_variables.scss';
 
-.btn-profile {
+.btn-home {
+  .logo {
+    height: 46px;
+  }
+  .title {
+    font-size: 22px;
+    padding: 4px;
+  }
 }
 
 .tile-featured {
@@ -24,6 +30,11 @@
     border-radius: 10px;
     display: flex;
     align-items: baseline;
+    font-family: $app-font-bold;
+    &:hover {
+      background-color: $primary;
+      color: white;
+    }
   }
 }
 
@@ -39,15 +50,20 @@
     padding: 10px;
     border-radius: 10px;
     background-color: #f3f3f3;
+    &:hover {
+      background-color: $primary;
+      color: white;
+    }
 
     .game-image {
-      width: 100px;
+      width: 100%;
       height: 100px;
       object-fit: cover;
     }
     .game-title {
       margin-top: 10px;
       margin-bottom: 10px;
+      font-family: $app-font-bold;
     }
     .game-description {
       margin-top: 10px;

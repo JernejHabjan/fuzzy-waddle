@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapSelectorComponent } from './map-selector.component';
+import { FormsModule } from '@angular/forms';
 
 describe('MapSelectorComponent', () => {
   let component: MapSelectorComponent;
@@ -8,7 +9,8 @@ describe('MapSelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapSelectorComponent]
+      declarations: [MapSelectorComponent],
+      imports:[FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapSelectorComponent);

@@ -1,3 +1,5 @@
+@import '../../../../assets/styles/_variables.scss';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -8,7 +10,7 @@
 }
 
 .map-display-center{
-  background-color: var(--container-background);
+  background-color: $secondary;
   padding: 2rem;
   flex-grow: 1;
 }
