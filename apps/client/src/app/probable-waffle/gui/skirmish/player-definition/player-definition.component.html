@@ -1,5 +1,5 @@
-<div *ngIf="selectedMap">
-  <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="d-flex align-items-center">
+<div *ngIf="selectedMap" class='start-position-container'>
+  <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="start-position-row">
     <ng-container *ngIf="position.player.playerPosition !== null">
       <div class="color-box" [style.background-color]="position.playerColor"></div>
       <div class="p-2">

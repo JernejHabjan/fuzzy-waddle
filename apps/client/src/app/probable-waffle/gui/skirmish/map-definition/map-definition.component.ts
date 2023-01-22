@@ -1,9 +1,5 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import {
-  MapPlayerDefinition,
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition
-} from '../skirmish.component';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { MapPlayerDefinition, PlayerLobbyDefinition, PositionPlayerDefinition } from '../skirmish.component';
 import { Difficulty } from '../player-definition/player-definition.component';
 
 /**
@@ -31,6 +27,10 @@ interface DisplayRect {
   styleUrls: ['./map-definition.component.scss']
 })
 export class MapDefinitionComponent {
+  preferredCanvasWidth = 400;
+  preferredCanvasHeight = 200;
+  canvasWidth = this.preferredCanvasWidth;
+  canvasHeight = this.preferredCanvasHeight;
   private img!: HTMLImageElement;
   @ViewChild('canvas')
   get canvas(): ElementRef | undefined {
@@ -39,6 +39,7 @@ export class MapDefinitionComponent {
 
   set canvas(value: ElementRef | undefined) {
     this._canvas = value;
+    this.setCanvasSize();
     // noinspection JSIgnoredPromiseFromCall
     this.initialize();
   }
@@ -74,6 +75,34 @@ export class MapDefinitionComponent {
   private rects: DisplayRect[] = [];
   private rectangleWidth = 30;
   private rectangleHeight = 30;
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.setCanvasSize();
+    this.recalculateOffset();
+    this.draw();
+  }
+
+  private setCanvasSize() {
+    if (!this.canvas) {
+      this.initialize();
+      return;
+    }
+    const margin = 100;
+    const canvas = this.canvas.nativeElement as HTMLCanvasElement;
+    // if innerWidth is smaller than preferred width, use innerWidth
+    if (window.innerWidth - margin < this.preferredCanvasWidth) {
+      this.canvasWidth = window.innerWidth - margin;
+      // preferred height is 1/2 of width
+      this.canvasHeight = this.canvasWidth / 2;
+    }
+    canvas.width = this.canvasWidth;
+    canvas.height = this.canvasHeight;
+    this.changeDetectorRef.detectChanges();
+    this.initialize();
+  }
 
   /**
    * Called when map changes - reset everything

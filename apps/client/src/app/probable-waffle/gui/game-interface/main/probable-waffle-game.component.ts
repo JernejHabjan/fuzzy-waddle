@@ -24,5 +24,9 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     this.ngZone.runOutsideAngular(() => {
       this.gameRef = new Phaser.Game(probableWaffleGameConfig);
     });
+
+    if(window.innerWidth < 800) {
+      this.displayDrawers = false; // todo for now
+    }
   }
 }
