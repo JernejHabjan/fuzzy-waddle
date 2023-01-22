@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapDefinitionComponent } from './map-definition.component';
+import { FormsModule } from '@angular/forms';
 
 describe('MapDefinitionComponent', () => {
   let component: MapDefinitionComponent;
@@ -8,7 +9,8 @@ describe('MapDefinitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapDefinitionComponent]
+      declarations: [MapDefinitionComponent],
+      imports:[FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapDefinitionComponent);
