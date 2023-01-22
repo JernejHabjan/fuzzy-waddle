@@ -9,25 +9,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [ 16 ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      #  with:
-      #    fetch-depth: 0
+        #  with:
+        #    fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
 
       # - name: Lint commits
       #   uses: wagoid/commitlint-github-action@v4
 
-      - name: Use Node.js
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: Install Dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Run linter
         run: npm run lint

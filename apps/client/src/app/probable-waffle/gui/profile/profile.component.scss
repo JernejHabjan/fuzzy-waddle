@@ -1,3 +1,5 @@
+@import '../../../../assets/styles/_variables.scss';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -8,15 +10,19 @@
 }
 .achievement-header {
   text-align: center;
-  color: #3f51b5;
+  color: $primary;
+  font-family: $app-font-bold;
 }
 .achievement {
   border-radius: 5px;
-  border: 1px solid #3f51b5;
+  border: 1px solid $primary;
   padding: 10px;
   margin: 10px;
   background-color: white;
-  color: #3f51b5;
+  color: $primary;
+  .achievement-title{
+    font-family: $app-font-bold;
+  }
 
   .achievement-image {
     // max 200x200
