@@ -9,8 +9,14 @@
   overflow: auto;
 }
 
-.map-display-center{
+.map-display-center {
   background-color: $secondary;
   padding: 2rem;
   flex-grow: 1;
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+  @media (max-width: 576px) {
+    padding: 0.5rem;
+  }
 }

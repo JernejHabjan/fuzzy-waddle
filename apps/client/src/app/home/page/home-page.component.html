@@ -1,19 +1,26 @@
 <div class="toolbar">
   <div class="toolbar-left">
     <a class="button button-clear btn-home p-0 align-items-center d-flex" href="#">
-     <img class="logo" src="assets/icons/fuzzy-waddle.svg" alt="Fuzzy Waddle" />
-      <div class='title'>Fuzzy Waddle</div>
+      <img src="assets/icons/fuzzy-waddle.svg" alt="Fuzzy Waddle logo" width="46px" height="46px" />
+      <div class="title">Fuzzy Waddle</div>
     </a>
   </div>
   <div class="toolbar-right">
     <button class="button button-clear" (click)="navigateProfile()">
       <fa-icon [icon]="faUser"></fa-icon>
-      Profile</button>
+      Profile
+    </button>
   </div>
 </div>
 
 <div class="tile-featured cursor-pointer position-relative" (click)="router.navigateByUrl(probableWaffle.route)">
-  <img class="featured-image" [src]="'assets/games/images/' + probableWaffle.image" />
+  <img
+    class="featured-image"
+    [src]="'assets/games/images/' + probableWaffle.image"
+    [alt]="probableWaffle.name"
+    width="200px"
+    height="100px"
+  />
   <div class="featured-title">
     <h2>Featured</h2>
     <h3 style="margin-left: 30px">{{ probableWaffle.name }}</h3>
@@ -22,7 +29,7 @@
 
 <div class="all-games">
   <div class="tile-game cursor-pointer" *ngFor="let game of displayGames" (click)="router.navigateByUrl(game.route)">
-    <img class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
+    <img class="game-image" src="{{ 'assets/games/images/' + game.image }}" [alt]="game.name" />
     <div class="game-title">
       <h2>{{ game.name }}</h2>
     </div>
