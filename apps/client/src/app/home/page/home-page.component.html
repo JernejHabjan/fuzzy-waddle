@@ -6,7 +6,8 @@
     </a>
   </div>
   <div class="toolbar-right">
-    <button class="button button-clear" (click)="navigateProfile()">
+    <button *ngIf='!authService.processing && !authService.isAuthenticated' class="button button-clear" (click)='authService.signInWithGoogle()'>Sign In</button>
+    <button *ngIf='!authService.processing && authService.isAuthenticated' class="button button-clear" (click)="toProfile()">
       <fa-icon [icon]="faUser"></fa-icon>
       Profile
     </button>

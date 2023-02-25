@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class UserInstanceService {
-  isLoggedIn = false;
   getPageTheme = () => 'light';
   getPreferredGames = () => ['probable-waffle'];
 }

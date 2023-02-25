@@ -3,12 +3,11 @@ import { GameInstanceService } from '../../communicators/game-instance.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'fuzzy-waddle-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss'],
+  templateUrl: './progress.component.html',
+  styleUrls: ['./progress.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent {
+export class ProgressComponent {
   constructor(public gameInstanceService: GameInstanceService, private router: Router) {}
 
   leaveClick() {

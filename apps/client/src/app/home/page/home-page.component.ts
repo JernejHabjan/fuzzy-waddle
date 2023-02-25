@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from '../../auth/auth.service';
 
 export type DisplayGame = {
   name: string;
@@ -10,7 +11,6 @@ export type DisplayGame = {
 };
 
 @Component({
-  selector: 'fuzzy-waddle-home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss']
 })
@@ -31,8 +31,8 @@ export class HomePageComponent {
       route: 'little-muncher'
     }
   ];
-  constructor(public router: Router) {}
-  navigateProfile() {
-    this.router.navigate(['profile']);
+  constructor(public router: Router, public authService: AuthService) {}
+  async toProfile() {
+    await this.router.navigate(['profile']);
   }
 }

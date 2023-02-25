@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SkirmishComponent } from '../skirmish/skirmish.component';
 import { HomeComponent } from '../home/home.component';
 import { ProbableWaffleComponent } from './probable-waffle.component';
-import { ProfileComponent } from '../profile/profile.component';
+import { ProgressComponent } from '../progress/progress.component';
 
 const routes: Routes = [
   {
@@ -19,8 +19,8 @@ const routes: Routes = [
         component: SkirmishComponent
       },
       {
-        path: 'profile',
-        component: ProfileComponent
+        path: 'progress',
+        component: ProgressComponent
       },
       {
         path: 'playground',
