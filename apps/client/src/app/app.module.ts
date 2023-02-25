@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HomeModule } from './home/home.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AuthGuard } from './auth/auth.guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,7 +24,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     }),
     FontAwesomeModule
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

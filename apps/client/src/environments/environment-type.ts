@@ -1,5 +1,9 @@
 export type Environment = {
   production: boolean;
   api: string;
-  googleClientId: string;
+
+  supabase:{
+    url: string;
+    key: string;
+  }
 }

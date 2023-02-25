@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from '../../auth/auth.service';
 
 export type DisplayGame = {
   name: string;
@@ -31,8 +32,8 @@ export class HomePageComponent {
       route: 'little-muncher'
     }
   ];
-  constructor(public router: Router) {}
-  navigateProfile() {
-    this.router.navigate(['profile']);
+  constructor(public router: Router, public authService: AuthService) {}
+  async toProfile() {
+    await this.router.navigate(['profile']);
   }
 }
