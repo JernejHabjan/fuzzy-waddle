@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   constructor(private gameInstanceService: GameInstanceService, private router: Router) {}
 
-  profileClick() {
+  progressClick() {
     // navigate to profile
-    this.router.navigate(['probable-waffle/profile']);
+    this.router.navigate(['probable-waffle/progress']);
   }
 
   skirmishClick() {

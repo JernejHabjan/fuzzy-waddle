@@ -11,7 +11,6 @@ export type DisplayGame = {
 };
 
 @Component({
-  selector: 'fuzzy-waddle-home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss']
 })

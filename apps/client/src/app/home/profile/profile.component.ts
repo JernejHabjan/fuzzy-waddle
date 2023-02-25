@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/auth.service';
 import { UserInstanceService } from './user-instance.service';
 
 @Component({
-  selector: 'fuzzy-waddle-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
