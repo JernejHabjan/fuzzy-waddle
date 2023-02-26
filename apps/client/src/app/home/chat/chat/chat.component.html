@@ -3,7 +3,7 @@
     <div *ngFor="let message of messages" class="chat-message">
       <div class="chat-message-content">
         <div class="chat-message-sender">
-          <img class='avatar' src='{{ "https://avatars.dicebear.com/api/pixel-art/" + message.fullName + ".svg" }}' alt='avatar' height='20'>
+          <img class='avatar' src='{{ "https://avatars.dicebear.com/api/pixel-art/" + message.userId + ".svg" }}' alt='avatar' height='20'>
           <div class="chat-message-sender-name">{{ message.fullName }}</div>
         </div>
         <div class="chat-message-text">{{ message.text }}</div>
