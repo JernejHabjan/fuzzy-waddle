@@ -2,7 +2,7 @@
   <div class="chat-messages">
     <div *ngFor="let message of messages" class="chat-message">
       <div class="chat-message-content">
-        <div class="chat-message-sender">Sender ID: #{{ message.userId }}</div>
+        <div class="chat-message-sender">{{ message.fullName }}</div>
         <div class="chat-message-text">{{ message.text }}</div>
       </div>
     </div>

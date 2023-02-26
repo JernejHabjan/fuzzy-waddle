@@ -5,6 +5,7 @@ export interface Message {
 export interface ChatMessage {
   text: string;
   userId: string;
+  fullName: string;
   createdAt: Date;
 }
 

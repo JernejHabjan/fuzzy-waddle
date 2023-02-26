@@ -8,11 +8,10 @@ import { ChatMessage } from '@fuzzy-waddle/api-interfaces';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent {
-
   @ViewChild('chatBody') chatBody!: ElementRef;
   message = '';
   messages: ChatMessage[] = [];
-  constructor(public chatService: ChatService) {
+  constructor(private chatService: ChatService) {
     chatService.getMessage().subscribe((msg: ChatMessage) => {
       this.messages.push(msg);
       // scroll to bottom

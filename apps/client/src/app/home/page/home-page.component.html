@@ -6,8 +6,18 @@
     </a>
   </div>
   <div class="toolbar-right">
-    <button *ngIf='!authService.processing && !authService.isAuthenticated' class="button button-clear" (click)='authService.signInWithGoogle()'>Sign In</button>
-    <button *ngIf='!authService.processing && authService.isAuthenticated' class="button button-clear" (click)="toProfile()">
+    <button
+      *ngIf="!authService.processing && !authService.isAuthenticated"
+      class="button button-clear"
+      (click)="authService.signInWithGoogle()"
+    >
+      Sign In
+    </button>
+    <button
+      *ngIf="!authService.processing && authService.isAuthenticated"
+      class="button button-clear"
+      (click)="toProfile()"
+    >
       <fa-icon [icon]="faUser"></fa-icon>
       Profile
     </button>
@@ -39,4 +49,4 @@
     </div>
   </div>
 </div>
-<fuzzy-waddle-chat-float></fuzzy-waddle-chat-float>
+<fuzzy-waddle-chat-float *ngIf="authService.isAuthenticated"></fuzzy-waddle-chat-float>
