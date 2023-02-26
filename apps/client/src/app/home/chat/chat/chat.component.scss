@@ -26,8 +26,15 @@
         flex-direction: column;
         .chat-message-sender {
           font-family: $app-font-bold;
+          display: flex;
+          .chat-message-sender-name {
+            margin-left: 5px;
+            margin-right: 5px;
+          }
         }
         .chat-message-text {
+          margin-top: 2px;
+          margin-bottom: 2px;
         }
       }
     }
