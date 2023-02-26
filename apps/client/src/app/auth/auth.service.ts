@@ -13,7 +13,8 @@ export class AuthService {
 
   async signInWithGoogle() {
     const signInPromise = (this.processing = this.dataAccessService.supabase.auth.signInWithOAuth({
-      provider: 'google'
+      provider: 'google',
+      options: { redirectTo: window.location.href }
     }));
 
     const { error } = await signInPromise;

@@ -3,6 +3,13 @@
 ### Api
 - Copy the `.env.example` file to `.env.local` and fill in the values.
 
+### Supabase:
+- Setup Google OAuth2: https://supabase.io/docs/guides/auth#google
+- URL config:
+  - Site URL: `https://fuzzy-waddle.onrender.com` 
+  - Add `http://localhost:4200/`
+  - Add `https://fuzzy-waddle.onrender.com/`
+
 ## Deployment
 - Client: https://fuzzy-waddle.onrender.com/
   - build command: `pnpm i; npm run nx-build-client`
@@ -17,4 +24,3 @@
   - build command in render.com: `pnpm i;  nx build api`
   - Start command in render.com: `node dist/apps/api/main.js`
   - Add supabase environmental variables: `SUPABASE_URL` and `SUPABASE_KEY` and `SUPABASE_JWT_SECRET`
-- DB: https://supabase.com/
