@@ -1,0 +1,26 @@
+<div class="chat-body" #chatBody>
+  <div class="chat-messages">
+    <div *ngFor="let message of messages" class="chat-message">
+      <div class="chat-message-content">
+        <div class="chat-message-sender">
+          <img class='avatar' src='{{ "https://avatars.dicebear.com/api/pixel-art/" + message.userId + ".svg" }}' alt='avatar' height='20'>
+          <div class="chat-message-sender-name">{{ message.fullName }}</div>
+        </div>
+        <div class="chat-message-text">{{ message.text }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="chat-footer">
+  <form class="chat-form" (submit)="sendMessage()">
+    <input
+      type="text"
+      class="chat-input"
+      [(ngModel)]="message"
+      placeholder="Type a message..."
+      [ngModelOptions]="{ standalone: true }"
+    />
+    <button type="submit" class="chat-button" [disabled]="!message">Send</button>
+  </form>
+</div>
