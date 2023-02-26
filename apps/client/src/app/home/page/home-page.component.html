@@ -50,3 +50,7 @@
   </div>
 </div>
 <fuzzy-waddle-chat-float *ngIf="authService.isAuthenticated"></fuzzy-waddle-chat-float>
+<div *ngIf="authService.isAuthenticated">
+  <button class="button button-clear" (click)="dbAccessTestService.add()">Add Test</button>
+  <button class="button button-clear" (click)="dbAccessTestService.get()">Get Test</button>
+</div>
