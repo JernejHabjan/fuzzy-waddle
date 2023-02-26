@@ -7,6 +7,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { HomeModule } from './home/home.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthGuard } from './auth/auth.guard';
+import { SocketIoModule } from 'ngx-socket-io';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +24,7 @@ import { AuthGuard } from './auth/auth.guard';
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    SocketIoModule.forRoot(environment.socketIoConfig),
     FontAwesomeModule
   ],
   providers: [AuthGuard],

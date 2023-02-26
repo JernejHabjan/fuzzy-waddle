@@ -1,13 +1,6 @@
-import {
-  MessageBody,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-  WsResponse,
-} from '@nestjs/websockets';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { ChatMessage, GatewayEvent } from '@fuzzy-waddle/api-interfaces';
 
 @WebSocketGateway({
   cors: {
@@ -18,13 +11,19 @@ export class EventsGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('events')
-  findAll(@MessageBody() data: any): Observable<WsResponse<number>> {
-    return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
+  // @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)
+  // findAll(@MessageBody() data: ChatMessage): Observable<WsResponse<ChatMessage>> {
+  //   return from([data]).pipe(map(item => ({ event: GatewayEvent.CHAT_MESSAGE, data: item })));
+  // }
+
+  //subscribe to chat message and broadcast to all clients
+  @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)
+  broadcastMessage(client: any, payload: ChatMessage) {
+    this.server.emit(GatewayEvent.CHAT_MESSAGE, payload);
   }
 
-  @SubscribeMessage('identity')
-  async identity(@MessageBody() data: number): Promise<number> {
-    return data;
-  }
+  // @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)
+  // findAll(@MessageBody() data: any): Observable<WsResponse<number>> {
+  //   return from([1, 2, 3]).pipe(map(item => ({ event: GatewayEvent.CHAT_MESSAGE, data: item })));
+  // }
 }
