@@ -52,6 +52,7 @@ specifiers:
   '@types/passport-local': ^1.0.35
   '@typescript-eslint/eslint-plugin': ^5.48.2
   '@typescript-eslint/parser': ^5.48.2
+  bad-words: ^3.0.4
   class-transformer: ^0.5.1
   class-validator: ^0.14.0
   cypress: ^12.3.0
@@ -109,6 +110,7 @@ dependencies:
   '@nestjs/websockets': 9.2.1_cbx4gblrpxxed5smhozfworgty
   '@nrwl/angular': 15.5.3_5gsje34cjtoftxu6d64tkejmwi
   '@supabase/supabase-js': 2.4.1
+  bad-words: 3.0.4
   class-transformer: 0.5.1
   class-validator: 0.14.0
   easystarjs: 0.4.4
@@ -4639,6 +4641,17 @@ packages:
 
   /backo2/1.0.2:
     resolution: {integrity: sha512-zj6Z6M7Eq+PBZ7PQxl5NT665MvJdAkzp0f60nAJ+sLaSCBPMwVak5ZegFbgVCzFcCJTKFoMizvM5Ld7+JrRJHA==}
+    dev: false
+
+  /bad-words/3.0.4:
+    resolution: {integrity: sha512-v/Q9uRPH4+yzDVLL4vR1+S9KoFgOEUl5s4axd6NIAq8SV2mradgi4E8lma/Y0cw1ltVdvyegCQQKffCPRCp8fg==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      badwords-list: 1.0.0
+    dev: false
+
+  /badwords-list/1.0.0:
+    resolution: {integrity: sha512-oWhaSG67e+HQj3OGHQt2ucP+vAPm1wTbdp2aDHeuh4xlGXBdWwzZ//pfu6swf5gZ8iX0b7JgmSo8BhgybbqszA==}
     dev: false
 
   /balanced-match/1.0.2:

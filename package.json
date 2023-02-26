@@ -62,6 +62,7 @@
     "@nestjs/websockets": "^9.2.1",
     "@nrwl/angular": "15.5.3",
     "@supabase/supabase-js": "^2.4.1",
+    "bad-words": "^3.0.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "easystarjs": "^0.4.4",
