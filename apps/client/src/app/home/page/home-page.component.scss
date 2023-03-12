@@ -1,15 +1,5 @@
 @import '../../../assets/styles/_variables.scss';
 
-.btn-home {
-  .title {
-    font-size: 22px;
-    padding: 4px;
-    @media (max-width: 520px) {
-      font-size: 18px;
-    }
-  }
-}
-
 .tile-featured {
   margin-top: 20px;
   margin-bottom: 20px;

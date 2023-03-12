@@ -3,9 +3,6 @@
 html,
 body {
   height: 100%;
-  width: 100%;
-  font-family: $app-font-regular;
-
   @media (max-width: 520px) {
     font-size: 12px;
   }
@@ -13,8 +10,13 @@ body {
   min-height: 300px;
 }
 
-body {
-  display: flex;
-  background-color: $secondary;
-  margin: 0;
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* fix for bootstrap nav not flexing direction column multiple buttons */
+@media (min-width: 992px) {
+  .navbar-expand-lg .navbar-nav {
+    flex-direction: row !important;
+  }
 }

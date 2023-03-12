@@ -3,6 +3,7 @@ import GrasslandScene from '../scenes/grassland.scene';
 import { environment } from '../../../../../environments/environment';
 import PlaygroundScene from '../scenes/playground.scene';
 
+export const GameContainerElement = 'gameCanvas';
 export const probableWaffleGameConfig: Phaser.Types.Core.GameConfig = {
   scene: [GrasslandScene, PlaygroundScene],
   physics: {
@@ -25,5 +26,6 @@ export const probableWaffleGameConfig: Phaser.Types.Core.GameConfig = {
     target: 60,
     min: 30
     // forceSetTimeOut: true
-  }
+  },
+  parent: GameContainerElement
 };

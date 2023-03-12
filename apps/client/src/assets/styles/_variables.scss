@@ -1,6 +1,15 @@
 @import "fonts";
 
+/* overrides */
 $primary: #9f3000;
 $secondary: #ffe6c2;
-$app-font-regular: "WorkSans", sans-serif;
+$font-family-base: "WorkSans", sans-serif !default;
+
+@import "bootstrap/scss/bootstrap.scss";
+
+
+/* custom */
 $app-font-bold: "EagleLake", sans-serif;
+$app-row-odd: tint-color($primary, 80%) !default;
+$app-row-even: tint-color($primary, 70%) !default;
+$app-border-radius: $card-border-radius;

@@ -19,18 +19,14 @@
       ></fuzzy-waddle-game-mode-definition>
     </div>
   </div>
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <button class="button button-clear" (click)="leaveClick()">Leave</button>
-    </div>
-    <div class="toolbar-right">
+  <div class="navbar navbar-dark bg-opacity-75 bg-primary px-2">
+      <button class="btn btn-danger" (click)="leaveClick()">Leave</button>
       <button
-        class="button button-clear"
+        class="btn btn-success ms-auto btn-lg"
         (click)="start()"
         [disabled]="!selectedMap || !atLeastTwoPlayersAndDifferentTeamsSelected"
       >
         Start
       </button>
-    </div>
   </div>
 </div>

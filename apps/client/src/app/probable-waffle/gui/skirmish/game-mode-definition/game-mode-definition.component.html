@@ -3,43 +3,48 @@
   <div>
     <div>Win Conditions</div>
     <div class="p-2">
+      <label for="timeLimit" class="form-label">Time limit (in minutes)</label>
       <input
-        class="mr-1"
+        id="timeLimit"
+        class="mr-1 form-control"
         type="number"
         [(ngModel)]="gameModeLobby.winConditions.timeLimit"
         (ngModelChange)="onValueChange()"
         name="timeLimit"
       />
-      <label>Time limit (in minutes)</label>
     </div>
     <div class="p-2">
+      <label for="scoreLimit" class="form-label">Score limit</label>
       <input
-        class="mr-1"
+        id="scoreLimit"
+        class="mr-1 form-control"
         type="number"
         [(ngModel)]="gameModeLobby.winConditions.scoreLimit"
         (ngModelChange)="onValueChange()"
         name="scoreLimit"
       />
-      <label>Score limit</label>
     </div>
   </div>
   <div>
-    <div>Tech level</div>
+    <div>Flow</div>
     <div class="p-2">
       <select
-        class="mr-1"
+        id="techLevel"
+        class="mr-1 form-select"
         [(ngModel)]="gameModeLobby.mapTuning.techLevel"
         (ngModelChange)="onValueChange()"
         name="techLevel"
       >
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
+        <option value="low">Pre-Imperial</option>
+        <option value="medium">Imperial</option>
+        <option value="high">Post-Imperial</option>
       </select>
     </div>
     <div class="p-2">
+      <label for="gameSpeed" class="form-label">Game speed</label>
       <select
-        class="mr-1"
+        id="gameSpeed"
+        class="mr-1 form-select"
         [(ngModel)]="gameModeLobby.mapTuning.gameSpeed"
         (ngModelChange)="onValueChange()"
         name="gameSpeed"
@@ -48,70 +53,75 @@
         <option value="normal">Normal</option>
         <option value="fast">Fast</option>
       </select>
-      <label>Game speed</label>
     </div>
     <div class="p-2">
       <input
-        class="mr-1"
+        id="revealMap"
+        class="mr-1 form-check-input"
         type="checkbox"
         [(ngModel)]="gameModeLobby.mapTuning.revealMap"
         (ngModelChange)="onValueChange()"
         name="revealMap"
       />
-      <label>Reveal map</label>
+      <label for="revealMap" class="form-check-label ms-2">Reveal map</label>
     </div>
     <div class="p-2">
+      <label for="unitCap" class="form-label">Unit cap</label>
       <input
-        class="mr-1"
+        id="unitCap"
+        class="mr-1 form-control"
         type="number"
         [(ngModel)]="gameModeLobby.mapTuning.unitCap"
         (ngModelChange)="onValueChange()"
         name="unitCap"
       />
-      <label>Unit cap</label>
     </div>
   </div>
   <div>
     <div>Modifiers</div>
     <div class="p-2">
       <input
-        class="mr-1"
+        id="aiAdvantageResources"
+        class="mr-1 form-check-input"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.aiAdvantageResources"
         (ngModelChange)="onValueChange()"
         name="additionalResources"
       />
-      <label>A.I. additional resources</label>
+      <label for="aiAdvantageResources" class="form-check-label ms-2">A.I. additional resources</label>
     </div>
     <div class="p-2">
       <input
-        class="mr-1"
+        id="reducedVisibility"
+        class="mr-1 form-check-input"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.reducedVisibility"
         (ngModelChange)="onValueChange()"
         name="reducedVision"
       />
-      <label>Reduced vision</label>
+      <label for="reducedVisibility" class="form-check-label ms-2">Reduced visibility</label>
     </div>
     <div class="p-2">
       <input
-        class="mr-1"
+        id="reducedIncome"
+        class="mr-1 form-check-input"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.reducedIncome"
         (ngModelChange)="onValueChange()"
         name="reducedIncome"
       />
-      <label>Reduced income</label>
+      <label for="reducedIncome" class="form-check-label ms-2">Reduced income</label>
     </div>
     <div class="p-2">
       <input
-        class="mr-1"
+        id="unitsDieOfAge"
+        class="mr-1 form-check-input"
         type="checkbox"
         [(ngModel)]="gameModeLobby.difficultyModifiers.unitsDieOfAge"
         (ngModelChange)="onValueChange()"
         name="unitsDieOfAge"
       />
-      <label>Units die of age</label>
+      <label for="unitsDieOfAge" class="form-check-label ms-2">Units die of age</label>
     </div>
   </div>
 </form>

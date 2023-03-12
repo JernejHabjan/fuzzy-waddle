@@ -1,30 +1,6 @@
-<div class="toolbar">
-  <div class="toolbar-left">
-    <a class="button button-clear btn-home p-0 align-items-center d-flex" href="#">
-      <img src="assets/icons/fuzzy-waddle.svg" alt="Fuzzy Waddle logo" width="46px" height="46px" />
-      <div class="title">Fuzzy Waddle</div>
-    </a>
-  </div>
-  <div class="toolbar-right">
-    <button
-      *ngIf="!authService.processing && !authService.isAuthenticated"
-      class="button button-clear"
-      (click)="authService.signInWithGoogle()"
-    >
-      Sign In
-    </button>
-    <button
-      *ngIf="!authService.processing && authService.isAuthenticated"
-      class="button button-clear"
-      (click)="toProfile()"
-    >
-      <fa-icon [icon]="faUser"></fa-icon>
-      Profile
-    </button>
-  </div>
-</div>
+<fuzzy-waddle-home-page-nav></fuzzy-waddle-home-page-nav>
 
-<div class="tile-featured cursor-pointer position-relative" (click)="router.navigateByUrl(probableWaffle.route)">
+<a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ probableWaffle.route }}">
   <img
     class="featured-image"
     [src]="'assets/games/images/' + probableWaffle.image"
@@ -36,10 +12,10 @@
     <h2>Featured</h2>
     <h3 style="margin-left: 30px">{{ probableWaffle.name }}</h3>
   </div>
-</div>
+</a>
 
 <div class="all-games">
-  <div class="tile-game cursor-pointer" *ngFor="let game of displayGames" (click)="router.navigateByUrl(game.route)">
+  <a class="tile-game nav-link" *ngFor="let game of displayGames" routerLink="{{ game.route }}">
     <img class="game-image" src="{{ 'assets/games/images/' + game.image }}" [alt]="game.name" />
     <div class="game-title">
       <h2>{{ game.name }}</h2>
@@ -47,6 +23,6 @@
     <div class="game-description">
       <p>{{ game.description }}</p>
     </div>
-  </div>
+  </a>
 </div>
 <fuzzy-waddle-chat-float *ngIf="authService.isAuthenticated"></fuzzy-waddle-chat-float>

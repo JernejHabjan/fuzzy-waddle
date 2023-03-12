@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../auth/auth.service';
 
 export type DisplayGame = {
@@ -15,7 +14,6 @@ export type DisplayGame = {
   styleUrls: ['./home-page.component.scss']
 })
 export class HomePageComponent {
-  faUser = faUser;
   probableWaffle: DisplayGame = {
     name: 'Probable Waffle',
     description: 'A real-time strategy game',
@@ -32,7 +30,4 @@ export class HomePageComponent {
     }
   ];
   constructor(public router: Router, public authService: AuthService) {}
-  async toProfile() {
-    await this.router.navigate(['profile']);
-  }
 }
