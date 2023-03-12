@@ -1,7 +1,7 @@
 <form>
-  <div>Game Setup</div>
-  <div>
-    <div>Win Conditions</div>
+  <h2>Game Setup</h2>
+  <fieldset>
+    <legend>Win Conditions</legend>
     <div class="p-2">
       <label for="timeLimit" class="form-label">Time limit (in minutes)</label>
       <input
@@ -24,9 +24,9 @@
         name="scoreLimit"
       />
     </div>
-  </div>
-  <div>
-    <div>Flow</div>
+  </fieldset>
+  <fieldset>
+    <legend>Flow</legend>
     <div class="p-2">
       <select
         id="techLevel"
@@ -76,9 +76,9 @@
         name="unitCap"
       />
     </div>
-  </div>
-  <div>
-    <div>Modifiers</div>
+  </fieldset>
+  <fieldset>
+    <legend>Modifiers</legend>
     <div class="p-2">
       <input
         id="aiAdvantageResources"
@@ -123,5 +123,5 @@
       />
       <label for="unitsDieOfAge" class="form-check-label ms-2">Units die of age</label>
     </div>
-  </div>
+  </fieldset>
 </form>

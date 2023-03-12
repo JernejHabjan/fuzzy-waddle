@@ -1,5 +1,5 @@
 <div *ngIf="mapPlayerDefinition" class="d-flex flex-column align-items-center">
-  <div>{{ mapPlayerDefinition.map.name }}</div>
+  <h2>{{ mapPlayerDefinition.map.name }}</h2>
   <div>{{ mapPlayerDefinition.map.description }}</div>
   <div>{{ mapPlayerDefinition.map.mapWidth }} x {{ mapPlayerDefinition.map.mapHeight }}</div>
   <canvas #canvas [width]="canvasWidth" [height]="canvasHeight"></canvas>
