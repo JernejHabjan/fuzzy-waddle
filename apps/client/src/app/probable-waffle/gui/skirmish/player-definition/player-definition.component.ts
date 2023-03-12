@@ -38,7 +38,6 @@ export class DifficultyDefinitions{
   styleUrls: ['./player-definition.component.scss']
 })
 export class PlayerDefinitionComponent {
-  faTimes = faTimes;
   PlayerTypeDefinitions = PlayerTypeDefinitions;
   PlayerType = PlayerType;
   RaceDefinitions = RaceDefinitions;

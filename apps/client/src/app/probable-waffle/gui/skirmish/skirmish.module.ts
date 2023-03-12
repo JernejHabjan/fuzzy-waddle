@@ -7,6 +7,8 @@ import { MapDefinitionComponent } from './map-definition/map-definition.componen
 import { GameModeDefinitionComponent } from './game-mode-definition/game-mode-definition.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
+import {ComponentsModule} from "../../../shared/components/components.module";
+import {RouterLink} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -16,6 +18,6 @@ import { CommonModule } from '@angular/common';
     MapDefinitionComponent,
     GameModeDefinitionComponent
   ],
-  imports: [CommonModule, FormsModule, FontAwesomeModule]
+  imports: [CommonModule, FormsModule, FontAwesomeModule, ComponentsModule, RouterLink]
 })
 export class SkirmishModule {}

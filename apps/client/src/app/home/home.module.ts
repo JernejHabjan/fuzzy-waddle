@@ -7,10 +7,20 @@ import { ProfileComponent } from './profile/profile.component';
 import { ChatComponent } from './chat/chat/chat.component';
 import { FormsModule } from '@angular/forms';
 import { ChatFloatComponent } from './chat/chat-float/chat-float.component';
+import { HomePageNavComponent } from './page/home-page-nav/home-page-nav.component';
+import { ProfileNavComponent } from './profile/profile-nav/profile-nav.component';
+import {ComponentsModule} from "../shared/components/components.module";
 
 @NgModule({
-  declarations: [HomePageComponent, ProfileComponent, ChatComponent, ChatFloatComponent],
-  imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule],
-  exports: [HomePageComponent]
+  declarations: [
+    HomePageComponent,
+    ProfileComponent,
+    ChatComponent,
+    ChatFloatComponent,
+    HomePageNavComponent,
+    ProfileNavComponent
+  ],
+    imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule, ComponentsModule],
+  exports: [HomePageComponent, HomePageNavComponent]
 })
 export class HomeModule {}
