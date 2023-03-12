@@ -10,7 +10,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { SocketIoModule } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {ComponentsModule} from "./shared/components/components.module";
+import { ComponentsModule } from './shared/components/components.module';
 
 @NgModule({
   declarations: [AppComponent],

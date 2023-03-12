@@ -1,0 +1,36 @@
+<div class="ranked">
+  <div>Please select your preferences then press the Play button to find a ranked match</div>
+  <div>
+    Game settings
+    <div>
+      <div>Number of players</div>
+      <div>
+        <input type="radio" name="numPlayers" value="2" checked="checked" />2
+        <input type="radio" name="numPlayers" value="3" />3 <input type="radio" name="numPlayers" value="4" />4
+      </div>
+    </div>
+    <div>
+      <div>Race</div>
+      <div>
+        <select [(ngModel)]="rankedOptions.raceType" class="form-select">
+          <option *ngFor="let raceType of RaceDefinitions.raceTypes" [ngValue]="raceType.value">
+            {{ raceType.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div>
+      Map Pool
+      <div>
+        <div *ngFor="let map of Maps.maps">
+          <input type="checkbox" name="map" value="{{ map.name }}" checked="checked" />{{ map.name }}
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="start()" [disabled]="searching">
+      <ng-container *ngIf="searching">Searching...</ng-container>
+      <ng-container *ngIf="!searching">Play</ng-container>
+    </button>
+  </div>
+</div>

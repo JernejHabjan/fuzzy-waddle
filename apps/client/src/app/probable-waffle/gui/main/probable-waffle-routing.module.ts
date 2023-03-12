@@ -4,6 +4,10 @@ import { SkirmishComponent } from '../skirmish/skirmish.component';
 import { HomeComponent } from '../home/home.component';
 import { ProbableWaffleComponent } from './probable-waffle.component';
 import { ProgressComponent } from '../progress/progress.component';
+import { OptionsComponent } from '../options/options.component';
+import { OnlineComponent } from '../online/online.component';
+import { CampaignComponent } from '../campaign/campaign.component';
+import { EditorComponent } from '../editor/editor.component';
 
 const routes: Routes = [
   {
@@ -15,19 +19,32 @@ const routes: Routes = [
         component: HomeComponent
       },
       {
+        path: 'campaign',
+        component: CampaignComponent
+      },
+      {
+        path: 'online',
+        component: OnlineComponent
+      },
+      {
         path: 'skirmish',
         component: SkirmishComponent
+      },
+      {
+        path: 'editor',
+        component: EditorComponent
       },
       {
         path: 'progress',
         component: ProgressComponent
       },
       {
+        path: 'options',
+        component: OptionsComponent
+      },
+      {
         path: 'playground',
-        loadChildren: () =>
-          import('../playground/playground.module').then(
-            (m) => m.PlaygroundModule
-          )
+        loadChildren: () => import('../playground/playground.module').then((m) => m.PlaygroundModule)
       },
       {
         path: 'game',
