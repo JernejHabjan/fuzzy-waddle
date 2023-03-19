@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConstellationEffectComponent } from './constellation-effect.component';
+import { Component } from '@angular/core';
+
+@Component({ selector: 'fuzzy-waddle-constellation-effect', template: '' })
+export class ConstellationEffectTestComponent {}
 
 describe('ConstellationEffectComponent', () => {
   let component: ConstellationEffectComponent;

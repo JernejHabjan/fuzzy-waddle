@@ -1,5 +1,5 @@
 export enum AuthStrategies {
-  local = 'local',
-  jwt = 'jwt',
+  // local = 'local',
+  // jwt = 'jwt',
   supabase = 'supabase'
 }

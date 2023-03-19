@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ChatFloatComponent } from './chat-float.component';
+import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 
 describe('ChatFloatComponent', () => {
   let component: ChatFloatComponent;
@@ -8,7 +9,8 @@ describe('ChatFloatComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChatFloatComponent]
+      declarations: [ChatFloatComponent],
+      imports: [FontAwesomeTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChatFloatComponent);

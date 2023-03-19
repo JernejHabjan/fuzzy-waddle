@@ -9,6 +9,7 @@ import { HomePageNavComponent } from './home-page-nav/home-page-nav.component';
 
 @NgModule({
   declarations: [HomeComponent, ConstellationEffectComponent, HomePageNavComponent],
+  exports: [HomePageNavComponent],
   imports: [CommonModule, FontAwesomeModule, ComponentsModule, RouterLink]
 })
 export class HomeModule {}

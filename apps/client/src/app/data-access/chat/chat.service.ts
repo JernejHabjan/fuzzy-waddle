@@ -4,11 +4,12 @@ import { map } from 'rxjs/operators';
 import { ChatMessage, GatewayEvent } from '@fuzzy-waddle/api-interfaces';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
+import { ChatServiceInterface } from './chat.service.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatService implements ChatServiceInterface {
   constructor(private socket: Socket, private authService: AuthService) {}
 
   sendMessage(msg: ChatMessage): void {
