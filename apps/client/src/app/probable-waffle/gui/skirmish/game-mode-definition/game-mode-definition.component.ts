@@ -1,38 +1,6 @@
-import { Component } from '@angular/core';
-import { Resources, ResourceType } from '../../../game/entity/economy/resource/resource-type';
-
-class WinConditions {
-  constructor(public timeLimit: number | null = null, public scoreLimit: number | null = null) {}
-}
-
-class MapTuning {
-  constructor(
-    public techLevel: number = 1,
-    public gameSpeed: number = 1,
-    public revealMap: boolean = false,
-    public unitCap: number = 20
-  ) {}
-}
-
-class DifficultyModifiers {
-  constructor(
-    public aiAdvantageResources: Map<ResourceType, number> = new Map<ResourceType, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
-    public reducedVisibility: boolean = false,
-    public reducedIncome: number = 0.5,
-    public unitsDieOfAge: boolean = false
-  ) {}
-}
-
-class GameModeLobby {
-  constructor(
-    public winConditions: WinConditions = new WinConditions(),
-    public mapTuning: MapTuning = new MapTuning(),
-    public difficultyModifiers: DifficultyModifiers = new DifficultyModifiers()
-  ) {}
-}
+import { Component, Output } from '@angular/core';
+import { GameModeLobby } from './game-mode-lobby';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'fuzzy-waddle-game-mode-definition',
@@ -41,12 +9,15 @@ class GameModeLobby {
 })
 export class GameModeDefinitionComponent {
   gameModeLobby: GameModeLobby;
+  @Output() gameModeLobbyChange;
 
   constructor() {
     this.gameModeLobby = new GameModeLobby();
+    this.gameModeLobbyChange = new BehaviorSubject<GameModeLobby>(this.gameModeLobby);
   }
 
   onValueChange() {
     console.log('game setup changed');
+    this.gameModeLobbyChange.next(this.gameModeLobby);
   }
 }

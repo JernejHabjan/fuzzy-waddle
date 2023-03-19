@@ -42,6 +42,7 @@ export class MapDefinitionComponent {
   canvasWidth = this.preferredCanvasWidth;
   canvasHeight = this.preferredCanvasHeight;
   private img!: HTMLImageElement;
+  selectedMap?: MapPlayerDefinition;
 
   @ViewChild('canvas')
   get canvas(): ElementRef | undefined {
@@ -745,5 +746,10 @@ export class MapDefinitionComponent {
    */
   private drawStartPositionSquare(x: number, y: number) {
     this.rect(x, y, this.rectangleWidth, this.rectangleHeight, 'white');
+  }
+
+  mapChanged(selectedMap: MapPlayerDefinition) {
+    this.selectedMap = selectedMap;
+    this.mapPlayerDefinitionChange.next(selectedMap);
   }
 }

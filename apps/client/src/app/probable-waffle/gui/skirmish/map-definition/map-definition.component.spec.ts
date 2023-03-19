@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Component, Input } from '@angular/core';
 import { MapSelectorTestingComponent } from '../map-selector/map-selector.component.spec';
 import { MapPlayerDefinition } from '../skirmish.component';
+import { TriggerTestingComponent } from '../trigger/trigger.component.spec';
 
 @Component({ selector: 'fuzzy-waddle-map-definition', template: '' })
 export class MapDefinitionTestingComponent {
@@ -17,7 +18,7 @@ describe('MapDefinitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapDefinitionComponent, MapSelectorTestingComponent],
+      declarations: [MapDefinitionComponent, MapSelectorTestingComponent, TriggerTestingComponent],
       imports: [FormsModule]
     }).compileComponents();
 

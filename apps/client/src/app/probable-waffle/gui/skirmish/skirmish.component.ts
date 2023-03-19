@@ -4,7 +4,7 @@ import { MapInfo } from '../../game/world/scenes/scenes';
 import { RaceDefinitions, RaceType } from '../../game/player/race-definitions';
 import { MapDefinitionComponent } from './map-definition/map-definition.component';
 import { Difficulty, PlayerType } from './player-definition/player-definition.component';
-import { GameModeDefinitionComponent } from './game-mode-definition/game-mode-definition.component';
+import { GameModeLobby } from './game-mode-definition/game-mode-lobby';
 
 export class PlayerLobbyDefinition {
   constructor(public playerNumber: number, public playerPosition: number | null, public joined: boolean) {}
@@ -61,42 +61,10 @@ export class MapPlayerDefinition {
 })
 export class SkirmishComponent {
   @ViewChild('mapDefinition') mapDefinition!: MapDefinitionComponent;
-  @ViewChild('gameModeDefinition') gameModeDefinition!: GameModeDefinitionComponent;
   selectedMap?: MapPlayerDefinition;
+  gameModeLobby!: GameModeLobby;
 
   constructor(private router: Router, private cd: ChangeDetectorRef) {}
-
-  /**
-   * at least two players selected and at least two different teams
-   */
-  get atLeastTwoPlayersAndDifferentTeamsSelected(): boolean {
-    if (!this.selectedMap) {
-      return false;
-    }
-    const selectedPlayers = this.selectedMap.startPositionPerPlayer.filter(
-      (startPosition) => startPosition.player.joined
-    );
-    const selectedEmptyTeams = this.selectedMap.startPositionPerPlayer.filter(
-      (startPosition) => startPosition.team === null && startPosition.player.joined
-    );
-    const selectedTeams = this.selectedMap.startPositionPerPlayer.filter(
-      (startPosition) => startPosition.team !== null && startPosition.player.joined
-    );
-    const selectedTeamsSet = new Set(selectedTeams.map((startPosition) => startPosition.team));
-    return selectedPlayers.length >= 2 && selectedEmptyTeams.length + selectedTeamsSet.size >= 2;
-  }
-
-  start() {
-    const gameModeLobby = this.gameModeDefinition.gameModeLobby;
-    // todo use this to set the real game mode!
-    console.log('selected map definitions', this.selectedMap, gameModeLobby);
-
-    this.router.navigate(['probable-waffle/game']);
-  }
-
-  leaveClick() {
-    this.router.navigate(['probable-waffle']);
-  }
 
   playerCountChanged() {
     this.mapDefinition.initializePlayerPositions();
