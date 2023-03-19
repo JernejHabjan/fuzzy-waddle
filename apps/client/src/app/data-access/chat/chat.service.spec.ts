@@ -2,9 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { ChatService } from './chat.service';
 import {SocketIoConfig, SocketIoModule} from 'ngx-socket-io';
-import { environment } from '../../../environments/environment';
 
-const config: SocketIoConfig = { url: 'http://localhost:3005', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:3005', options: {transports: ['websocket'], reconnection: true } };
 
 describe('Chat', () => {
   let service: ChatService;
