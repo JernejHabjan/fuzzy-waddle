@@ -2,9 +2,9 @@
 <data version="1.0">
     <struct type="Settings">
         <key>fileFormatVersion</key>
-        <int>6</int>
+        <int>5</int>
         <key>texturePackerVersion</key>
-        <string>7.0.0</string>
+        <string>6.0.2</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -124,11 +124,11 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../atlas/characters.json</filename>
+                <filename>../../../assets/probable-waffle/atlas/buildings.json</filename>
             </struct>
         </map>
-        <key>multiPackMode</key>
-        <enum type="SettingsBase::MultiPackMode">MultiPackOff</enum>
+        <key>multiPack</key>
+        <false/>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
@@ -173,7 +173,7 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../sprites/characters/warrior.png</key>
+            <key type="filename">../sprites/buildings/barracks.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -189,16 +189,10 @@
                 <false/>
             </struct>
         </map>
-        <key>fileLists</key>
-        <map type="SpriteSheetMap">
-            <key>default</key>
-            <struct type="SpriteSheet">
-                <key>files</key>
-                <array>
-                    <filename>../sprites/characters</filename>
-                </array>
-            </struct>
-        </map>
+        <key>fileList</key>
+        <array>
+            <filename>../sprites/buildings</filename>
+        </array>
         <key>ignoreFileList</key>
         <array/>
         <key>replaceList</key>

@@ -22,7 +22,9 @@
           "apps/client/src/assets",
           "apps/client/src/manifest.webmanifest"
         ],
-        "styles": ["apps/client/src/assets/styles/styles.scss"],
+        "styles": [
+          "apps/client/src/styles/styles.scss"
+        ],
         "scripts": [
           "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
         ],

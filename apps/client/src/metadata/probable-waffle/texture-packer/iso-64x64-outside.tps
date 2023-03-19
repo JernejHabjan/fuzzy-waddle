@@ -124,7 +124,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../atlas/iso-64x64-outside.json</filename>
+                <filename>../../../assets/probable-waffle/atlas/iso-64x64-outside.json</filename>
             </struct>
         </map>
         <key>multiPack</key>

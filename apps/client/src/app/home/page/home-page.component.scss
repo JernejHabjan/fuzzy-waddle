@@ -1,4 +1,4 @@
-@import '../../../assets/styles/_variables.scss';
+@import '../../../styles/_variables.scss';
 
 .tile-featured {
   margin-top: 20px;
@@ -22,6 +22,7 @@
     display: flex;
     align-items: baseline;
     font-family: $app-font-bold;
+
     &:hover {
       background-color: $primary;
       color: white;
@@ -35,6 +36,7 @@
   display: flex;
   flex-wrap: wrap;
   background-color: white;
+
   .tile-game {
     border: 1px solid #ccc;
     margin: 10px;
@@ -44,6 +46,7 @@
     @media (max-width: 520px) {
       width: 100%;
     }
+
     &:hover {
       background-color: $primary;
       color: white;
@@ -54,11 +57,13 @@
       height: 100px;
       object-fit: cover;
     }
+
     .game-title {
       margin-top: 10px;
       margin-bottom: 10px;
       font-family: $app-font-bold;
     }
+
     .game-description {
       margin-top: 10px;
       margin-bottom: 10px;

@@ -4,8 +4,8 @@
     ],
     "extensionsPath": "extensions",
     "folders": [
-        "../tilemaps",
-        "../tilesets"
+        "../../../assets/probable-waffle/tilemaps",
+        "../../../assets/probable-waffle/tilesets"
     ],
     "propertyTypes": [
         {
