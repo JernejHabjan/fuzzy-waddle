@@ -9,6 +9,7 @@ import { GameModeDefinitionComponent } from './game-mode-definition/game-mode-de
 export class PlayerLobbyDefinition {
   constructor(public playerNumber: number, public playerPosition: number | null, public joined: boolean) {}
 }
+
 export class PositionPlayerDefinition {
   constructor(
     public player: PlayerLobbyDefinition,
@@ -19,6 +20,7 @@ export class PositionPlayerDefinition {
     public difficulty: Difficulty | null
   ) {}
 }
+
 export class MapPlayerDefinition {
   startPositionPerPlayer: PositionPlayerDefinition[] = [];
   allPossibleTeams: (number | null)[] = [];
@@ -27,6 +29,7 @@ export class MapPlayerDefinition {
   get playerPositions(): PositionPlayerDefinition[] {
     return this.startPositionPerPlayer.filter((positionPlayer) => positionPlayer.player.playerPosition !== null);
   }
+
   constructor(public map: MapInfo) {
     this.allPossibleTeams.push(null);
     const races = RaceDefinitions.raceTypes;
@@ -50,6 +53,7 @@ export class MapPlayerDefinition {
     }
   }
 }
+
 @Component({
   selector: 'fuzzy-waddle-skirmish',
   templateUrl: './skirmish.component.html',
@@ -59,6 +63,7 @@ export class SkirmishComponent {
   @ViewChild('mapDefinition') mapDefinition!: MapDefinitionComponent;
   @ViewChild('gameModeDefinition') gameModeDefinition!: GameModeDefinitionComponent;
   selectedMap?: MapPlayerDefinition;
+
   constructor(private router: Router, private cd: ChangeDetectorRef) {}
 
   /**

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectionDisplayComponent } from './selection-display.component';
-import {Component} from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({ selector: 'fuzzy-waddle-selection-display', template: '' })
 export class SelectionDisplayTestingComponent {}

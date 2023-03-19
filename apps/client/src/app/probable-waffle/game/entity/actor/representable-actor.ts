@@ -3,7 +3,6 @@ import { ISpriteRepresentable, SpriteRepresentationComponent } from './component
 import { ITransformable, TransformComponent } from './components/transformable-component';
 import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
 
-
 export type RepresentableActorDefinition = {
   textureMapDefinition: TextureMapDefinition;
 };
@@ -18,7 +17,6 @@ export type TextureMapDefinition = {
     };
   };
 };
-
 
 /*
  * pawn includes just physical representation and move component, so it can move around, but no way how to move around

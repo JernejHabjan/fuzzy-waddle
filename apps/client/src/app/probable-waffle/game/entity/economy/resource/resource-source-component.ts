@@ -1,4 +1,3 @@
-import { RepresentableActor } from '../../actor/representable-actor';
 import { IComponent } from '../../../core/component.service';
 import { ResourceType } from './resource-type';
 import { Actor } from '../../actor/actor';
@@ -34,7 +33,8 @@ export class ResourceSourceComponent implements IComponent {
   }
 
   extractResources(gatherer: Actor, amount: number): number {
-    if (this.gathererMustEnter) { // todo!!!!!!
+    if (this.gathererMustEnter) {
+      // todo!!!!!!
     }
 
     const gatheredAmount = Math.min(amount * this.gatheringFactor, this.currentResources);

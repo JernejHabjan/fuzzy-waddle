@@ -1,6 +1,6 @@
-import {Component, Injectable, Input, TemplateRef, ViewChild} from '@angular/core';
-import {ModalConfig} from './modal-config';
-import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import { Component, Injectable, Input, TemplateRef, ViewChild } from '@angular/core';
+import { ModalConfig } from './modal-config';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'fuzzy-waddle-modal',

@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
-import {AuthService} from "../../../auth/auth.service";
-import {faUser} from '@fortawesome/free-solid-svg-icons';
-import {faGoogle} from '@fortawesome/free-brands-svg-icons';
+import { Component } from '@angular/core';
+import { AuthService } from '../../../auth/auth.service';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'fuzzy-waddle-home-page-nav',
@@ -11,5 +11,6 @@ import {faGoogle} from '@fortawesome/free-brands-svg-icons';
 export class HomePageNavComponent {
   faUser = faUser;
   faGoogle = faGoogle;
+
   constructor(public authService: AuthService) {}
 }

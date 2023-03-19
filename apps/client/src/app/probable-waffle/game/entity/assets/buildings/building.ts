@@ -4,7 +4,11 @@ import { Ownable, OwnerComponent } from '../../actor/components/owner-component'
 import { PlayerController } from '../../../world/managers/controllers/player-controller';
 import { CostData, Costs, ProductionCostComponent } from '../../building/production/production-cost-component';
 import { PawnInfoDefinition } from '../../actor/character';
-import { Constructable, ConstructionSiteComponent, ConstructionSiteDefinition } from '../../building/construction/construction-site-component';
+import {
+  Constructable,
+  ConstructionSiteComponent,
+  ConstructionSiteDefinition
+} from '../../building/construction/construction-site-component';
 
 export type BuildingInfoDefinition = PawnInfoDefinition & {
   constructionSiteDefinition: ConstructionSiteDefinition;

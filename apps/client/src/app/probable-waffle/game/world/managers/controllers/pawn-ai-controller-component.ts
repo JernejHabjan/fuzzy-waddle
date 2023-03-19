@@ -17,11 +17,7 @@ export class PawnAiControllerComponent implements IComponent {
   // declare queue of OrderData
   orders: Queue<OrderData> = new Queue<OrderData>();
 
-  constructor(
-    private owner: Actor,
-    public blackboard: PawnAiBlackboard,
-    public behaviorTree: PawnBehaviorTree
-  ) {}
+  constructor(private owner: Actor, public blackboard: PawnAiBlackboard, public behaviorTree: PawnBehaviorTree) {}
 
   init(): void {
     this.behaviorTree.run();

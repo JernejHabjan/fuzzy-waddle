@@ -10,7 +10,7 @@ import { TileSelectorGroupComponent } from '../editor-drawer/tile-selector-group
 import { SelectionDisplayComponent } from '../selection/selection-display/selection-display.component';
 import { AtlasDisplayComponent } from '../editor-drawer/atlas-display/atlas-display.component';
 import { SelectionGroupComponent } from '../selection/selection-group/selection-group.component';
-import {ComponentsModule} from "../../../../shared/components/components.module";
+import { ComponentsModule } from '../../../../shared/components/components.module';
 
 @NgModule({
   declarations: [

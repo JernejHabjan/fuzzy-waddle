@@ -1,4 +1,7 @@
-import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../../../world/map/tile/manual-tiles/manual-tiles.helper';
+import {
+  ManualTilesHelper,
+  TilePlacementWorldWithProperties
+} from '../../../world/map/tile/manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../../../world/map/tile/tilemap.helper';
 import { MapSizeInfo } from '../../../world/const/map-size.info';
 import * as Phaser from 'phaser';
@@ -29,8 +32,7 @@ export class CharacterMovementComponent implements IComponent {
 
   constructor(
     private readonly gameObject: ICharacterMovable & IPawnAiControllable & ISpriteRepresentable & ITransformable & Actor
-  ) {
-  }
+  ) {}
 
   init() {
     // pass

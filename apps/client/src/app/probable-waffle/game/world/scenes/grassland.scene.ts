@@ -16,7 +16,10 @@ import { Subscription } from 'rxjs';
 import { TilemapHelper } from '../map/tile/tilemap.helper';
 import { Pathfinder } from '../map/pathfinder';
 import { NavInputHandler } from '../managers/controllers/input/nav-input.handler';
-import { ManualTileInputHandler, PossibleClickCoords } from '../managers/controllers/input/manual-tiles/manual-tile-input.handler';
+import {
+  ManualTileInputHandler,
+  PossibleClickCoords
+} from '../managers/controllers/input/manual-tiles/manual-tile-input.handler';
 import { ManualTile, ManualTilesHelper } from '../map/tile/manual-tiles/manual-tiles.helper';
 import { TileIndexProperties, TilePossibleProperties } from '../map/tile/types/tile-types';
 import { Vector2Simple } from '../../library/math/intersection';

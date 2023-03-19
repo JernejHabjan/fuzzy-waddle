@@ -18,7 +18,7 @@ import { TilePlacementData } from '../../world/managers/controllers/input/tilema
 import { CostData } from '../building/production/production-cost-component';
 import { RepresentableActorDefinition } from './representable-actor';
 
-export type PawnInfoDefinition =RepresentableActorDefinition& {
+export type PawnInfoDefinition = RepresentableActorDefinition & {
   healthDefinition: HealthDefinition;
   soundDefinition: SoundDefinition;
   cost?: CostData;
@@ -34,6 +34,7 @@ export abstract class Character extends MovableActor implements Health {
   healthComponent!: HealthComponent;
   abstract pawnDefinition: PawnInfoDefinition;
   representableActorDefinition!: RepresentableActorDefinition;
+
   protected constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
   }

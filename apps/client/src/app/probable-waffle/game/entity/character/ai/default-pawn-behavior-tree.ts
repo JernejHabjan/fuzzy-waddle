@@ -13,17 +13,13 @@ export class DefaultPawnBehaviorTree extends BehaviorTree {
 
     this.decoratorData = new DecoratorData(this.owner, this.blackboard);
     this.taskData = new TaskData(this.owner, this.blackboard);
-
   }
 
   protected runDecisionTree(): void {
-
     // todo
-
-
   }
 
-  private attackOrder(){
+  private attackOrder() {
     // todo
   }
 }

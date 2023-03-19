@@ -29,6 +29,7 @@ export class BuilderComponent implements IComponent {
   onConstructionStarted: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
   onRemovedFromConstructionSite: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
   onConstructionSiteLeft: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
+
   constructor(
     private readonly actor: Actor,
     // types of building the actor can produce
@@ -37,8 +38,7 @@ export class BuilderComponent implements IComponent {
     private enterConstructionSite: boolean,
     // from how far builder builds building site
     private constructionSiteOffset: number
-  ) {
-  }
+  ) {}
 
   init(): void {
     // pass
@@ -105,7 +105,7 @@ export class BuilderComponent implements IComponent {
   }
 
   leaveConstructionSite() {
-    if(!this.assignedConstructionSite){
+    if (!this.assignedConstructionSite) {
       return;
     }
 
@@ -122,8 +122,7 @@ export class BuilderComponent implements IComponent {
     this.onRemovedFromConstructionSite.next([this.actor, constructionSite]);
 
     console.log('builder left building site');
-    if(this.enterConstructionSite){
-
+    if (this.enterConstructionSite) {
       // leave building site
       const containerComponent = constructionSite.components.findComponentOrNull(ContainerComponent);
       if (containerComponent) {

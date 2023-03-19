@@ -5,7 +5,7 @@ export enum AnimDirectionEnum {
   west = 'west'
 }
 
-export const IsoAngleToAnimDirectionEnum:Record<string,AnimDirection> = {
+export const IsoAngleToAnimDirectionEnum: Record<string, AnimDirection> = {
   '-135': AnimDirectionEnum.north, // up
   '-90': AnimDirectionEnum.east, // right up
   '-45': AnimDirectionEnum.east, // right
@@ -42,7 +42,7 @@ export type LPCAnimType =
 export class LpcAnimationHelper {
   constructor(private animationManager: Phaser.Animations.AnimationManager) {}
 
-  static animKeys:[LPCAnimType, AnimDirection][] = [
+  static animKeys: [LPCAnimType, AnimDirection][] = [
     [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north],
     [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.west],
     [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.south],
@@ -142,5 +142,4 @@ export class LpcAnimationHelper {
     this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.south, 260, 6, { frame: 260 + 6 - 1 });
     this.createAnim(textureName, LPCAnimTypeEnum.hurt, AnimDirectionEnum.east, 260, 6, { frame: 260 + 6 - 1 });
   }
-
 }

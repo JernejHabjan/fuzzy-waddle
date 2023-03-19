@@ -2,14 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AtlasDisplayComponent } from './atlas-display.component';
 import { MapDefinitions } from '../../../../game/world/const/map-size.info';
-import {Component, Input} from "@angular/core";
-import {AtlasFrame} from "../atlas-loader.service";
+import { Component, Input } from '@angular/core';
+import { AtlasFrame } from '../atlas-loader.service';
 
 @Component({ selector: 'fuzzy-waddle-atlas-display', template: '' })
 export class AtlasDisplayTestingComponent {
   @Input() atlasFrame!: AtlasFrame;
   @Input() textureName!: string;
 }
+
 describe('AtlasDisplayComponent', () => {
   let component: AtlasDisplayComponent;
   let fixture: ComponentFixture<AtlasDisplayComponent>;

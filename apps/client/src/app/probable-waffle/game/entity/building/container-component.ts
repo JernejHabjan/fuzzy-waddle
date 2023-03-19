@@ -9,7 +9,9 @@ export interface CharacterContainer {
 // apply to resource source that needs actors to enter to gather
 export class ContainerComponent implements IComponent {
   containedActors = new Set<Actor>();
+
   constructor(public readonly capacity: number) {}
+
   init(): void {
     // pass
   }
@@ -32,7 +34,8 @@ export class ContainerComponent implements IComponent {
     this.containedActors.delete(actor);
     this.setActorVisible(actor, true);
   }
-  canLoadActor(actor:Actor):boolean {
+
+  canLoadActor(actor: Actor): boolean {
     // check if actor is not already in container
     if (this.containedActors.has(actor)) {
       return false;

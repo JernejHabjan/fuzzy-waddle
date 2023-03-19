@@ -2,7 +2,11 @@
   <div class="d-flex flex-column align-items-center map-display-center overflow-auto ml-auto mr-auto">
     <!-- dropdown to select a map -->
     <div class="d-flex flex-wrap justify-content-center">
-      <fuzzy-waddle-map-definition #mapDefinition [mapPlayerDefinition]="selectedMap" (mapPlayerDefinitionChange)="mapChanged($event)"></fuzzy-waddle-map-definition>
+      <fuzzy-waddle-map-definition
+        #mapDefinition
+        [mapPlayerDefinition]="selectedMap"
+        (mapPlayerDefinitionChange)="mapChanged($event)"
+      ></fuzzy-waddle-map-definition>
       <fuzzy-waddle-player-definition
         [selectedMap]="selectedMap"
         (playerJoined)="playerCountChanged()"

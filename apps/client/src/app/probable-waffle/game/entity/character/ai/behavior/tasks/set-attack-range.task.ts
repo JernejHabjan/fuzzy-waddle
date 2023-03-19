@@ -13,7 +13,7 @@ export class SetAttackRangeTask implements ITask {
       return TaskResultType.Failure;
     }
     const attacks = attackComponent.getAttacks();
-    if(attacks.length === 0) {
+    if (attacks.length === 0) {
       return TaskResultType.Failure;
     }
     const range = attacks[0].range;

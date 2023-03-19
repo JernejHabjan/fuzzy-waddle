@@ -9,6 +9,5 @@ export class GatherData {
     public needsReturnToDrain: boolean,
     // range in which resources can be gathered
     public range: number
-  ) {
-  }
+  ) {}
 }

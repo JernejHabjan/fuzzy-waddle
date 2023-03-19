@@ -1,13 +1,10 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {SkirmishComponent} from './skirmish.component';
-import {FormsModule} from '@angular/forms';
-import {FontAwesomeTestingModule} from '@fortawesome/angular-fontawesome/testing';
-import {provideRouter} from '@angular/router';
-import {Component} from '@angular/core';
-import {PlayerDefinitionTestingComponent} from "./player-definition/player-definition.component.spec";
-import {MapDefinitionTestingComponent} from "./map-definition/map-definition.component.spec";
-import {GameModeDefinitionTestingComponent} from "./game-mode-definition/game-mode-definition.component.spec";
+import { SkirmishComponent } from './skirmish.component';
+import { Component } from '@angular/core';
+import { PlayerDefinitionTestingComponent } from './player-definition/player-definition.component.spec';
+import { MapDefinitionTestingComponent } from './map-definition/map-definition.component.spec';
+import { GameModeDefinitionTestingComponent } from './game-mode-definition/game-mode-definition.component.spec';
 
 @Component({ selector: 'fuzzy-waddle-skirmish', template: '' })
 export class SkirmishTestingComponent {}

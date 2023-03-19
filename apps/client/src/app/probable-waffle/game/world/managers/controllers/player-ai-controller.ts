@@ -1,5 +1,8 @@
 import { PlayerController } from './player-controller';
-import { ActorAbleToBeCreatedClass, ActorAbleToBeProducedClass } from '../../../entity/building/production/production-queue';
+import {
+  ActorAbleToBeCreatedClass,
+  ActorAbleToBeProducedClass
+} from '../../../entity/building/production/production-queue';
 import { Actor } from '../../../entity/actor/actor';
 import { ResourceDrainComponent } from '../../../entity/economy/resource/resource-drain-component';
 import { GameplayLibrary } from '../../../library/gameplay-library';

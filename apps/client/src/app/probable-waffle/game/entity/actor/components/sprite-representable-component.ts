@@ -15,7 +15,8 @@ export class SpriteRepresentationComponent implements IComponent {
   scene: Phaser.Scene;
   sprite: Phaser.GameObjects.Sprite;
   private transformSubscription?: Subscription;
-  constructor(private actor:Actor, scene: Phaser.Scene, spritePlacementData: SpritePlacementData) {
+
+  constructor(private actor: Actor, scene: Phaser.Scene, spritePlacementData: SpritePlacementData) {
     this.scene = scene;
     const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(spritePlacementData.tilePlacementData);
     this.sprite = this.scene.add.sprite(
