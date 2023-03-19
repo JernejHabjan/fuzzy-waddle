@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 
 export type DisplayGame = {
@@ -29,5 +28,5 @@ export class HomePageComponent {
       route: 'little-muncher'
     }
   ];
-  constructor(public router: Router, public authService: AuthService) {}
+  constructor(public authService: AuthService) {}
 }

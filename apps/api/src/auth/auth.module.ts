@@ -5,8 +5,8 @@ import { SupabaseStrategy } from './strategies/supabase.strategy';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { jwtConstants } from './constants';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
+// import { JwtStrategy } from './strategies/jwt.strategy';
+// import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -19,7 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, SupabaseStrategy],
+  providers: [AuthService, /*LocalStrategy, JwtStrategy,*/ SupabaseStrategy],
   exports: [AuthService, SupabaseStrategy]
 })
 export class AuthModule {}

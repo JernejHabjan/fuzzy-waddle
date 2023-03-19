@@ -1,32 +1,26 @@
 <div class="d-flex flex-column flex-grow-1">
   <div class="d-flex flex-column align-items-center map-display-center overflow-auto ml-auto mr-auto">
     <!-- dropdown to select a map -->
-    <fuzzy-waddle-map-selector
-      (selectedMapChange)="selectedMap = $event"
-    ></fuzzy-waddle-map-selector>
+    <fuzzy-waddle-map-selector (selectedMapChange)="selectedMap = $event"></fuzzy-waddle-map-selector>
     <div class="d-flex flex-wrap justify-content-center">
       <fuzzy-waddle-player-definition
         [selectedMap]="selectedMap"
         (playerJoined)="playerCountChanged()"
         (playerRemoved)="playerRemoved($event)"
       ></fuzzy-waddle-player-definition>
-      <fuzzy-waddle-map-definition
-        #mapDefinition
-        [mapPlayerDefinition]="selectedMap"
-      ></fuzzy-waddle-map-definition>
-      <fuzzy-waddle-game-mode-definition
-        #gameModeDefinition
-      ></fuzzy-waddle-game-mode-definition>
+      <fuzzy-waddle-map-definition #mapDefinition [mapPlayerDefinition]="selectedMap"></fuzzy-waddle-map-definition>
+      <fuzzy-waddle-game-mode-definition #gameModeDefinition></fuzzy-waddle-game-mode-definition>
     </div>
   </div>
   <div class="navbar navbar-dark bg-opacity-75 bg-primary px-2">
-      <button class="btn btn-danger" (click)="leaveClick()">Leave</button>
-      <button
-        class="btn btn-success ms-auto btn-lg"
-        (click)="start()"
-        [disabled]="!selectedMap || !atLeastTwoPlayersAndDifferentTeamsSelected"
-      >
-        Start
-      </button>
+    <button type="button" class="btn btn-danger" (click)="leaveClick()">Leave</button>
+    <button
+      type="button"
+      class="btn btn-success ms-auto btn-lg"
+      (click)="start()"
+      [disabled]="!selectedMap || !atLeastTwoPlayersAndDifferentTeamsSelected"
+    >
+      Start
+    </button>
   </div>
 </div>

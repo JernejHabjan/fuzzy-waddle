@@ -1,17 +1,13 @@
-@import "fonts";
+@import 'fonts';
 
 /* custom */
-$app-font-bold: "EagleLake", sans-serif;
+$app-font-bold: 'EagleLake', sans-serif;
+$app-row-odd: #f5f5f5;
+$app-row-even: #e5e5e5;
+$app-border-radius: 10px !default;
 
-/* overrides */
+/* bootstrap overrides */
 $primary: #9f3000;
 $secondary: #ffe6c2;
-$font-family-base: "WorkSans", sans-serif !default;
+$font-family-base: 'WorkSans', sans-serif !default;
 $btn-font-family: $app-font-bold !default;
-
-@import "bootstrap/scss/bootstrap.scss";
-
-/* custom using bootstrap vars */
-$app-row-odd: tint-color($primary, 80%) !default;
-$app-row-even: tint-color($primary, 70%) !default;
-$app-border-radius: $card-border-radius;

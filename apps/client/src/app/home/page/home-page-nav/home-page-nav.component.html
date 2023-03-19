@@ -3,6 +3,7 @@
     <li
       *ngIf="!authService.processing && !authService.isAuthenticated"
       class="nav-item"
+      (click)="authService.signInWithGoogle()"
     >
       <a class="nav-link active cursor-pointer">
         <fa-icon [icon]="faGoogle"></fa-icon>

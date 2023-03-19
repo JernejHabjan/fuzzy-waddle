@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ConstellationEffectComponent } from './constellation-effect/constellation-effect.component';
+import { provideRouter } from '@angular/router';
+import { ConstellationEffectTestComponent } from './constellation-effect/constellation-effect.component.spec';
+import { HomePageNavTestingComponent } from '../../../home/page/home-page-nav/home-page-nav.component.spec';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -10,8 +11,8 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomeComponent, ConstellationEffectComponent],
-      imports: [RouterTestingModule]
+      declarations: [HomeComponent, ConstellationEffectTestComponent, HomePageNavTestingComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);

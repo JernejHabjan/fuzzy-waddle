@@ -9,17 +9,17 @@
     background-color: bisque;
   "
 >
-  <button class="btn btn-danger m-1" (click)="leave()">Leave</button>
+  <button type="button" class="btn btn-danger m-1" (click)="leave()">Leave</button>
   <fuzzy-waddle-modal #modal [modalConfig]="leaveModalConfirm">
     <div>Are you sure you wish to leave?</div>
   </fuzzy-waddle-modal>
 
-  <button class="btn btn-primary m-1" (click)="editorVisible = !editorVisible">
+  <button type="button" class="btn btn-primary m-1" (click)="editorVisible = !editorVisible">
     {{ editorVisible ? 'Hide editor' : 'Show editor' }}
   </button>
   <ng-container *ngIf="editorVisible">
-    <button class="btn btn-primary m-1" (click)="saveMap()">Save map</button>
-    <button class="btn btn-primary m-1" (click)="loadMap()">Load map</button>
+    <button type="button" class="btn btn-primary m-1" (click)="saveMap()">Save map</button>
+    <button type="button" class="btn btn-primary m-1" (click)="loadMap()">Load map</button>
     <div class="extra-margin">Selection</div>
     <div>Current layer:</div>
     <input
@@ -39,9 +39,9 @@
       min="1"
       [max]="5"
     />
-    <button class="btn btn-primary m-1" (click)="removeTile()">Remove Tile</button>
+    <button type="button" class="btn btn-primary m-1" (click)="removeTile()">Remove Tile</button>
     <div class="extra-margin">Tiles</div>
-    <button class="btn btn-primary m-1" *ngFor="let type of tileTypes" (click)="selectedType = type">
+    <button type="button" class="btn btn-primary m-1" *ngFor="let type of tileTypes" (click)="selectedType = type">
       {{ type.tileType }}
     </button>
     <fuzzy-waddle-tile-selector-group
@@ -50,7 +50,7 @@
       [frameWithMetaFilter]="selectedType.fn"
     ></fuzzy-waddle-tile-selector-group>
   </ng-container>
-  <button class="btn btn-primary m-1" (click)="showObjectPlacement = !showObjectPlacement">
+  <button type="button" class="btn btn-primary m-1" (click)="showObjectPlacement = !showObjectPlacement">
     {{ showObjectPlacement ? 'Hide objects' : 'Show objects' }}
   </button>
   <ng-container *ngIf="showObjectPlacement">
@@ -59,6 +59,7 @@
       <div class="atlas-map-scroll-title">{{ spriteAtlas.tilesetName }}</div>
       <div *ngFor="let atlasFrame of spriteAtlas.atlas.frames">
         <button
+          type="button"
           class="btn btn-light m-1"
           (click)="selectAtlas(spriteAtlas.tilesetName, atlasFrame)"
           [class.selected]="selectedAtlas === atlasFrame"
