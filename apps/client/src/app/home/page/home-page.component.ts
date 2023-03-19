@@ -16,7 +16,7 @@ export class HomePageComponent {
   probableWaffle: DisplayGame = {
     name: 'Probable Waffle',
     description: 'A real-time strategy game',
-    image: 'probable-waffle.jpg',
+    image: 'probable-waffle.webp',
     route: 'probable-waffle'
   };
   displayGames: DisplayGame[] = [
@@ -24,9 +24,10 @@ export class HomePageComponent {
     {
       name: 'Little Muncher',
       description: 'Infinite scroller',
-      image: 'little-muncher.jpg',
+      image: 'little-muncher.webp',
       route: 'little-muncher'
     }
   ];
+
   constructor(public authService: AuthService) {}
 }
