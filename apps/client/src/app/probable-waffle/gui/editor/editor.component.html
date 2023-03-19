@@ -1,10 +1,10 @@
 <fuzzy-waddle-home-nav></fuzzy-waddle-home-nav>
 <div class="editor">
-  <div class="m-1 card">
+  <div class="m-1 p-1 card-container">
     <h2>Create a new map</h2>
     <fuzzy-waddle-map-selector (selectedMapChange)="startMap($event)"></fuzzy-waddle-map-selector>
   </div>
-  <div class="m-1 card">
+  <div class="m-1 p-1 card-container">
     <h2>Load your map</h2>
     <div>
       <div *ngFor="let map of maps" class="align-items-center d-flex">
