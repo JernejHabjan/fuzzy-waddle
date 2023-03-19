@@ -30,6 +30,7 @@ interface DisplayRect {
   isDragging: boolean;
   zIndex: number; // 0 or 1
 }
+
 @Component({
   selector: 'fuzzy-waddle-map-definition',
   templateUrl: './map-definition.component.html',
@@ -41,6 +42,7 @@ export class MapDefinitionComponent {
   canvasWidth = this.preferredCanvasWidth;
   canvasHeight = this.preferredCanvasHeight;
   private img!: HTMLImageElement;
+
   @ViewChild('canvas')
   get canvas(): ElementRef | undefined {
     return this._canvas;
@@ -52,6 +54,7 @@ export class MapDefinitionComponent {
     // noinspection JSIgnoredPromiseFromCall
     this.initialize();
   }
+
   @Input()
   get mapPlayerDefinition(): MapPlayerDefinition | undefined {
     return this._mapPlayerDefinition;
@@ -66,6 +69,7 @@ export class MapDefinitionComponent {
     // noinspection JSIgnoredPromiseFromCall
     this.initialize();
   }
+
   @Output() mapPlayerDefinitionChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
   private _canvas?: ElementRef;
   private _mapPlayerDefinition?: MapPlayerDefinition;
@@ -180,7 +184,7 @@ export class MapDefinitionComponent {
     return new Promise((resolve) => {
       const img = new Image();
       this.img = img;
-      img.src = 'assets/probable-waffle/maps/icons/' + (this.mapPlayerDefinition as MapPlayerDefinition).map.image;
+      img.src = 'assets/probable-waffle/tilemaps/' + (this.mapPlayerDefinition as MapPlayerDefinition).map.image;
       img.onload = () => resolve();
     });
   }

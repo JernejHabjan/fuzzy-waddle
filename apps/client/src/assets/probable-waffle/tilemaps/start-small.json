@@ -27,7 +27,7 @@
  "nextobjectid":1,
  "orientation":"isometric",
  "renderorder":"right-down",
- "tiledversion":"1.9.1",
+ "tiledversion":"1.10.0",
  "tileheight":32,
  "tilesets":[
         {
@@ -769,6 +769,6 @@
         }],
  "tilewidth":64,
  "type":"map",
- "version":"1.9",
+ "version":"1.10",
  "width":10
 }
