@@ -1,6 +1,7 @@
 /* eslint-disable */
 export default {
   displayName: 'client',
+  testEnvironment: 'jsdom',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
