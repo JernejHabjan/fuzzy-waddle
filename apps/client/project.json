@@ -22,11 +22,7 @@
           "apps/client/src/assets",
           "apps/client/src/manifest.webmanifest"
         ],
-        "styles": [
-          "apps/client/src/assets/styles/styles.scss",
-          "node_modules/bootstrap/scss/bootstrap.scss",
-          "apps/client/src/assets/styles/probable-waffle/probable-waffle-pages.scss"
-        ],
+        "styles": ["apps/client/src/assets/styles/styles.scss"],
         "scripts": [
           "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
         ],
