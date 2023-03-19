@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { MapPlayerDefinition, PlayerLobbyDefinition, PositionPlayerDefinition } from '../skirmish.component';
 import { Difficulty } from '../player-definition/player-definition.component';
 
@@ -57,6 +66,7 @@ export class MapDefinitionComponent {
     // noinspection JSIgnoredPromiseFromCall
     this.initialize();
   }
+  @Output() mapPlayerDefinitionChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
   private _canvas?: ElementRef;
   private _mapPlayerDefinition?: MapPlayerDefinition;
 

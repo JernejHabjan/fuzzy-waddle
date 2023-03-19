@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectionGroupComponent } from './selection-group.component';
-import { SelectionDisplayComponent } from '../selection-display/selection-display.component';
+import { SelectionDisplayTestingComponent } from '../selection-display/selection-display.component.spec';
 
 describe('SelectionGroupComponent', () => {
   let component: SelectionGroupComponent;
@@ -9,7 +9,7 @@ describe('SelectionGroupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SelectionGroupComponent,SelectionDisplayComponent]
+      declarations: [SelectionGroupComponent, SelectionDisplayTestingComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SelectionGroupComponent);

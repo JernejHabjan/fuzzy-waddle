@@ -2,6 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapDefinitionComponent } from './map-definition.component';
 import { FormsModule } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { MapSelectorTestingComponent } from '../map-selector/map-selector.component.spec';
+import { MapPlayerDefinition } from '../skirmish.component';
+
+@Component({ selector: 'fuzzy-waddle-map-definition', template: '' })
+export class MapDefinitionTestingComponent {
+  @Input() mapPlayerDefinition!: MapPlayerDefinition;
+}
 
 describe('MapDefinitionComponent', () => {
   let component: MapDefinitionComponent;
@@ -9,8 +17,8 @@ describe('MapDefinitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapDefinitionComponent],
-      imports:[FormsModule]
+      declarations: [MapDefinitionComponent, MapSelectorTestingComponent],
+      imports: [FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapDefinitionComponent);

@@ -1,12 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MapInfo } from '../../game/world/scenes/scenes';
 import { RaceDefinitions, RaceType } from '../../game/player/race-definitions';
 import { MapDefinitionComponent } from './map-definition/map-definition.component';
-import {
-  Difficulty,
-  PlayerType
-} from './player-definition/player-definition.component';
+import { Difficulty, PlayerType } from './player-definition/player-definition.component';
 import { GameModeDefinitionComponent } from './game-mode-definition/game-mode-definition.component';
 
 export class PlayerLobbyDefinition {
@@ -62,7 +59,7 @@ export class SkirmishComponent {
   @ViewChild('mapDefinition') mapDefinition!: MapDefinitionComponent;
   @ViewChild('gameModeDefinition') gameModeDefinition!: GameModeDefinitionComponent;
   selectedMap?: MapPlayerDefinition;
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cd: ChangeDetectorRef) {}
 
   /**
    * at least two players selected and at least two different teams
@@ -104,5 +101,10 @@ export class SkirmishComponent {
   playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
     this.mapDefinition.removePlayer(positionPlayerDefinition.player.playerNumber);
     this.playerCountChanged();
+  }
+
+  mapChanged($event: MapPlayerDefinition) {
+    this.selectedMap = $event;
+    this.cd.detectChanges();
   }
 }
