@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { DbAccessTestService } from '../../data-access/db-access-test/db-access-test.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 export type DisplayGame = {
   name: string;
@@ -30,5 +33,15 @@ export class HomePageComponent {
     }
   ];
 
-  constructor(public authService: AuthService, public dbAccessTestService: DbAccessTestService) {}
+  constructor(
+    public authService: AuthService,
+    public dbAccessTestService: DbAccessTestService,
+    private httpClient: HttpClient // todo remove httpClient from view!
+  ) {}
+
+  async addViaMw(): Promise<void> {
+    // todo remove this - this is just for testing
+    const url = environment.api + 'api/message';
+    return await firstValueFrom(this.httpClient.post<void>(url, { message: 'test123' }));
+  }
 }
