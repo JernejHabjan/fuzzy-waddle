@@ -6,6 +6,7 @@ import { Ownable } from '../entity/actor/components/owner-component';
 import { Actor } from '../entity/actor/actor';
 
 export type PlayerActors = Actor & Ownable;
+
 export class PlayerState {
   constructor(
     public playerStart: PlayerStart,
@@ -15,7 +16,7 @@ export class PlayerState {
     public actors: PlayerActors[] // building and units
   ) {}
 
-  getOwnActors() :PlayerActors[]{
+  getOwnActors(): PlayerActors[] {
     return this.actors;
   }
 }

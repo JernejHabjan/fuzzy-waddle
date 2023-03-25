@@ -6,6 +6,7 @@ export type Achievement = {
   image: string;
   unlocked: boolean;
 };
+
 @Injectable({
   providedIn: 'root'
 })

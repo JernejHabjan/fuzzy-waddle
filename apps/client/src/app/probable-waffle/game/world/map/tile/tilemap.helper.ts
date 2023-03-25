@@ -1,4 +1,3 @@
-import * as Phaser from 'phaser';
 import { MapDefinitions, MapSizeInfo } from '../../const/map-size.info';
 import { TileCenterOptions, TileIndexProperties, TilePossibleProperties } from './types/tile-types';
 import { Vector2Simple } from '../../../library/math/intersection';
@@ -6,11 +5,19 @@ import { IsoHelper } from './iso-helper';
 import { TilePlacementData } from '../../managers/controllers/input/tilemap/tilemap-input.handler';
 import { SceneCommunicatorService } from '../../../../communicators/scene-communicator.service';
 import { MapHelper } from './map-helper';
-import Tileset = Phaser.Tilemaps.Tileset;
-import Tile = Phaser.Tilemaps.Tile;
+import { Scene, Tilemaps } from 'phaser';
 
 export class TilemapHelper {
-  constructor(private readonly mapHelper: MapHelper, private readonly scene: Phaser.Scene) {}
+  constructor(private readonly mapHelper: MapHelper, private readonly scene: Scene) {}
+
+  static get tileCenterOffset(): number {
+    // todo move to IsoHelper
+    return MapSizeInfo.info.tileHeightHalf;
+  }
+
+  private get nrTilesToReplace(): number {
+    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
+  }
 
   static adjustTileWorldWithVerticalOffset(
     // todo move to IsoHelper
@@ -24,11 +31,6 @@ export class TilemapHelper {
       return { x: tileXY.x, y: tileXY.y + TilemapHelper.tileCenterOffset };
     }
     return tileXY;
-  }
-
-  static get tileCenterOffset(): number {
-    // todo move to IsoHelper
-    return MapSizeInfo.info.tileHeightHalf;
   }
 
   static getTileWorldCenterByTilemapTileXY(
@@ -51,33 +53,33 @@ export class TilemapHelper {
 
   createTilemap() {
     const createBlankLayer = false; // https://github.com/photonstorm/phaser/issues/6262
-    let tilemap: Phaser.Tilemaps.Tilemap;
+    let tilemap: Tilemaps.Tilemap;
     const tilemapWithLayers = (tilemap = this.scene.make.tilemap({ key: MapDefinitions.tilemapMapName }));
     if (createBlankLayer) {
-      const mapData = new Phaser.Tilemaps.MapData({
+      const mapData = new Tilemaps.MapData({
         width: MapSizeInfo.info.width,
         height: MapSizeInfo.info.height,
         tileWidth: MapSizeInfo.info.tileWidth,
         tileHeight: MapSizeInfo.info.tileHeight,
-        orientation: Phaser.Tilemaps.Orientation.ISOMETRIC as any as string,
-        format: Phaser.Tilemaps.Formats.ARRAY_2D
+        orientation: Tilemaps.Orientation.ISOMETRIC as any as string,
+        format: Tilemaps.Formats.ARRAY_2D
       });
 
-      tilemap = new Phaser.Tilemaps.Tilemap(this.scene, mapData);
+      tilemap = new Tilemaps.Tilemap(this.scene, mapData);
     }
 
-    const tileSetImages: Phaser.Tilemaps.Tileset[] = [];
-    tilemapWithLayers.tilesets.forEach((tileset: Tileset) => {
-      tileSetImages.push(tilemap.addTilesetImage(tileset.name, tileset.name) as Phaser.Tilemaps.Tileset);
+    const tileSetImages: Tilemaps.Tileset[] = [];
+    tilemapWithLayers.tilesets.forEach((tileset: Tilemaps.Tileset) => {
+      tileSetImages.push(tilemap.addTilesetImage(tileset.name, tileset.name) as Tilemaps.Tileset);
     });
 
-    let tilemapLayer: Phaser.Tilemaps.TilemapLayer;
+    let tilemapLayer: Tilemaps.TilemapLayer;
     if (createBlankLayer) {
-      tilemapLayer = tilemap.createBlankLayer('layer-blank-layer-0', tileSetImages) as Phaser.Tilemaps.TilemapLayer;
+      tilemapLayer = tilemap.createBlankLayer('layer-blank-layer-0', tileSetImages) as Tilemaps.TilemapLayer;
       tilemapLayer.fill(1);
       // todo here mappedTilesetsToAtlasesWithProperties aren't set correctly - because different this.mapHelper.tilemapLayer is set and tilesets from it retrieved wrong
     } else {
-      tilemapLayer = tilemap.createLayer(tilemap.layers[0].name, tileSetImages) as Phaser.Tilemaps.TilemapLayer;
+      tilemapLayer = tilemap.createLayer(tilemap.layers[0].name, tileSetImages) as Tilemaps.TilemapLayer;
       MapSizeInfo.info.width = tilemap.width;
       MapSizeInfo.info.height = tilemap.height;
     }
@@ -88,8 +90,8 @@ export class TilemapHelper {
     this.tileReplacement(tilePlacementData, tileIndexProperties);
   }
 
-  private get nrTilesToReplace(): number {
-    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
+  removeTileAt(tilePlacementData: TilePlacementData) {
+    this.tileReplacement(tilePlacementData, { tileIndex: -1 });
   }
 
   private tileReplacement(tilePlacementData: TilePlacementData, tileIndexProperties: TileIndexProperties) {
@@ -102,14 +104,10 @@ export class TilemapHelper {
       tilesToReplace,
       tilesToReplace
     );
-    neighbors.forEach((t: Tile) => {
+    neighbors.forEach((t: Tilemaps.Tile) => {
       // todo maybe use width and height here and don't loop
       this.mapHelper.tilemapLayer.replaceByIndex(t.index, tileIndexProperties.tileIndex, t.x, t.y, 1, 1);
     });
     // console.log('tilemap tile replaced');
-  }
-
-  removeTileAt(tilePlacementData: TilePlacementData) {
-    this.tileReplacement(tilePlacementData, { tileIndex: -1 });
   }
 }

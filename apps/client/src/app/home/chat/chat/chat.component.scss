@@ -1,4 +1,4 @@
-@import '../../../../assets/styles/variables';
+@import '../../../../styles/_variables';
 
 :host {
   display: flex;
@@ -15,23 +15,29 @@
   overflow: auto;
   padding: 10px;
   max-height: 300px;
+
   .chat-messages {
     display: flex;
     flex-direction: column;
+
     .chat-message {
       display: flex;
       flex-direction: row;
+
       .chat-message-content {
         display: flex;
         flex-direction: column;
+
         .chat-message-sender {
           font-family: $app-font-bold;
           display: flex;
+
           .chat-message-sender-name {
             margin-left: 5px;
             margin-right: 5px;
           }
         }
+
         .chat-message-text {
           margin-top: 2px;
           margin-bottom: 2px;
@@ -40,6 +46,7 @@
     }
   }
 }
+
 .chat-footer {
   display: flex;
   flex-direction: row;
@@ -48,11 +55,13 @@
   padding: 10px;
   border-top: 1px solid #ccc;
   background-color: #f3f3f3;
+
   .chat-form {
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
+
     .chat-input {
       margin-right: 10px;
       width: 100%;
@@ -61,6 +70,7 @@
       border-radius: 10px;
       outline: none;
     }
+
     .chat-button {
       display: flex;
       flex-direction: row;

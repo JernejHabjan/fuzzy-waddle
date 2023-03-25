@@ -1,13 +1,14 @@
 import { Actor } from '../../actor/actor';
 import { ProjectileData } from './projectile-data';
 import { RepresentableActor } from '../../actor/representable-actor';
-import Vector3 = Phaser.Math.Vector3;
+import { Scene } from 'phaser';
 
 export abstract class Projectile extends RepresentableActor {
-  private targetActor: Actor | null = null;
-  private targetLocation: Vector3 | null = null;
   public abstract projectileData: ProjectileData;
-  protected constructor(scene: Phaser.Scene, public damageCauser: RepresentableActor) {
+  private targetActor: Actor | null = null;
+  private targetLocation: Phaser.Math.Vector3 | null = null;
+
+  protected constructor(scene: Scene, public damageCauser: RepresentableActor) {
     super(scene, damageCauser.transformComponent.tilePlacementData);
   }
 
@@ -15,7 +16,8 @@ export abstract class Projectile extends RepresentableActor {
     this.targetActor = targetActor;
     this.targetLocation = null;
   }
-  fireAtLocation(targetLocation: Vector3) {
+
+  fireAtLocation(targetLocation: Phaser.Math.Vector3) {
     this.targetLocation = targetLocation;
     this.targetActor = null;
   }
@@ -23,6 +25,7 @@ export abstract class Projectile extends RepresentableActor {
   tick(time: number, delta: number) {
     // todo
   }
+
   hitTargetActor() {
     // todo
   }

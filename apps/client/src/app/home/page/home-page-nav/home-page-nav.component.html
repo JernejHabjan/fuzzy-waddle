@@ -1,0 +1,20 @@
+<fuzzy-waddle-home-nav>
+  <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+    <li
+      (click)="authService.signInWithGoogle()"
+      *ngIf="!authService.processing && !authService.isAuthenticated"
+      class="nav-item"
+    >
+      <a class="nav-link active cursor-pointer">
+        <fa-icon [icon]="faGoogle"></fa-icon>
+        Sign In
+      </a>
+    </li>
+    <li *ngIf="!authService.processing && authService.isAuthenticated" class="nav-item">
+      <a class="nav-link active" routerLink="/profile">
+        <fa-icon [icon]="faUser"></fa-icon>
+        Profile
+      </a>
+    </li>
+  </ul>
+</fuzzy-waddle-home-nav>

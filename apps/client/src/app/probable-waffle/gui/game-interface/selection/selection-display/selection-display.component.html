@@ -1,5 +1,6 @@
 <div style="display: flex">
   <div
+    (click)="select(s)"
     *ngFor="let s of selection"
     style="
       height: 50px;
@@ -12,7 +13,6 @@
       margin: 2px;
       border-radius: 5px;
     "
-    (click)="select(s)"
   >
     {{ formatAtlasFileName(s.name) }}
   </div>

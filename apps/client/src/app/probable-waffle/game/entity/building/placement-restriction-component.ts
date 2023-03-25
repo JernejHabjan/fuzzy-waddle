@@ -4,6 +4,7 @@ import { Minerals } from '../assets/resources/minerals';
 import { Vector2Simple } from '../../library/math/intersection';
 
 export type CanPlaceOnClasses = typeof Minerals;
+
 export interface PlaceRestricted {
   placementRestrictionComponent: PlacementRestrictionComponent;
 }
@@ -19,7 +20,7 @@ export class PlacementRestrictionComponent implements IComponent {
   /**
    * Checks if we can place actor on tileXY
    */
-  canPlace(tileXY:Vector2Simple): boolean {
+  canPlace(tileXY: Vector2Simple): boolean {
     // todo
     return false;
   }

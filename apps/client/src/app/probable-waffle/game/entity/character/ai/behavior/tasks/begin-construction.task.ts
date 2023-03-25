@@ -4,7 +4,7 @@ import { TransformComponent } from '../../../../actor/components/transformable-c
 
 export class BeginConstructionTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
-    const builderComponent  = taskData.owner.components.findComponentOrNull(BuilderComponent);
+    const builderComponent = taskData.owner.components.findComponentOrNull(BuilderComponent);
     if (!builderComponent) {
       return TaskResultType.Failure;
     }

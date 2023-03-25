@@ -1,16 +1,18 @@
+import { Types } from 'phaser';
+
 export interface CreateSceneFromObjectConfig {
   /**
    * The scene's init callback.
    */
-  init?: Phaser.Types.Scenes.SceneInitCallback;
+  init?: Types.Scenes.SceneInitCallback;
   /**
    * The scene's preload callback.
    */
-  preload?: Phaser.Types.Scenes.ScenePreloadCallback;
+  preload?: Types.Scenes.ScenePreloadCallback;
   /**
    * The scene's create callback.
    */
-  create?: Phaser.Types.Scenes.SceneCreateCallback;
+  create?: Types.Scenes.SceneCreateCallback;
   /**
    * Any additional properties, which will be copied to the Scene after it's created (except `data` or `sys`).
    */

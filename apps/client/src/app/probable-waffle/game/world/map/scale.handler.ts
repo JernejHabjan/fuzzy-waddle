@@ -1,12 +1,12 @@
-import * as Phaser from 'phaser';
 import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
+import { Cameras, Scale, Structs } from 'phaser';
 
 export class ScaleHandler {
-  private readonly mainCamera: Phaser.Cameras.Scene2D.Camera;
-  private scaleManager: Phaser.Scale.ScaleManager;
-  private cameras: Phaser.Cameras.Scene2D.CameraManager;
+  private readonly mainCamera: Cameras.Scene2D.Camera;
+  private scaleManager: Scale.ScaleManager;
+  private cameras: Cameras.Scene2D.CameraManager;
 
-  constructor(cameras: Phaser.Cameras.Scene2D.CameraManager, scaleManager: Phaser.Scale.ScaleManager) {
+  constructor(cameras: Cameras.Scene2D.CameraManager, scaleManager: Scale.ScaleManager) {
     this.cameras = cameras;
     this.mainCamera = cameras.main;
     this.scaleManager = scaleManager;
@@ -15,7 +15,7 @@ export class ScaleHandler {
   }
 
   setupResizeListener() {
-    this.scaleManager.on(Phaser.Scale.Events.RESIZE, this.resize, this);
+    this.scaleManager.on(Scale.Events.RESIZE, this.resize, this);
   }
 
   setupBounds(centerOn: boolean = false) {
@@ -33,15 +33,15 @@ export class ScaleHandler {
     );
   }
 
+  destroy() {
+    this.scaleManager.off(Scale.Events.RESIZE);
+  }
+
   /**
    * * When the screen is resized
    */
-  private resize(gameSize: Phaser.Structs.Size): void {
+  private resize(gameSize: Structs.Size): void {
     this.cameras.resize(gameSize.width, gameSize.height);
     this.setupBounds(true); // todo now center for dev
-  }
-
-  destroy() {
-    this.scaleManager.off(Phaser.Scale.Events.RESIZE);
   }
 }

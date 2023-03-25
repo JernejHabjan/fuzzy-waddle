@@ -86,6 +86,36 @@ export class ProductionComponent implements IComponent {
     }
   }
 
+  isProducing(): boolean {
+    for (let i = 0; i < this.productionQueues.length; i++) {
+      const queue = this.productionQueues[i];
+      if (queue.queuedActors.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  startProduction(queueItem: ProductionQueueItem): void {
+    // check production state
+    if (!this.canAssignProduction(queueItem)) {
+      throw new Error('Cannot assign production');
+    }
+
+    // find queue
+    const queue = this.findQueueForProduct();
+    if (!queue) {
+      throw new Error('No queue found');
+    }
+
+    // add to queue
+    queue.queuedActors.push(queueItem);
+    if (queue.queuedActors.length === 1) {
+      // start production
+      this.startProductionInQueue(queue);
+    }
+  }
+
   private finishProduction(queue: ProductionQueue, queueIndex: number) {
     if (queueIndex >= queue.queuedActors.length) {
       throw new Error('Invalid queue index');
@@ -122,16 +152,6 @@ export class ProductionComponent implements IComponent {
     return actor;
   }
 
-  isProducing(): boolean {
-    for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i];
-      if (queue.queuedActors.length > 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   /**
    * find queue with lest products that is not at capacity
    */
@@ -165,26 +185,6 @@ export class ProductionComponent implements IComponent {
     const playerResourcesComponent =
       this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
     return playerResourcesComponent.canPayAllResources(item.costData.resources);
-  }
-
-  startProduction(queueItem: ProductionQueueItem): void {
-    // check production state
-    if (!this.canAssignProduction(queueItem)) {
-      throw new Error('Cannot assign production');
-    }
-
-    // find queue
-    const queue = this.findQueueForProduct();
-    if (!queue) {
-      throw new Error('No queue found');
-    }
-
-    // add to queue
-    queue.queuedActors.push(queueItem);
-    if (queue.queuedActors.length === 1) {
-      // start production
-      this.startProductionInQueue(queue);
-    }
   }
 
   private startProductionInQueue(queue: ProductionQueue) {

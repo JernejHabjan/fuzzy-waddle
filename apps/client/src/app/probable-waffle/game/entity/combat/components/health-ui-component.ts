@@ -1,3 +1,4 @@
+import { GameObjects } from 'phaser';
 import { IComponent } from '../../../core/component.service';
 import { Actor } from '../../actor/actor';
 import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
@@ -5,7 +6,7 @@ import HealthComponent from './health-component';
 
 export class HealthUiComponent implements IComponent {
   private healthComponent!: HealthComponent;
-  private bar!: Phaser.GameObjects.Graphics;
+  private bar!: GameObjects.Graphics;
   private barWidth = 25;
   private barHeight = 8;
   private barBorder = 2;
@@ -13,27 +14,12 @@ export class HealthUiComponent implements IComponent {
   private redThreshold = 0.3;
   private orangeThreshold = 0.5;
   private yellowThreshold = 0.7;
-  private sprite!: Phaser.GameObjects.Sprite;
+  private sprite!: GameObjects.Sprite;
 
   constructor(private readonly actor: Actor) {}
 
   private get healthPercentage() {
     return this.healthComponent.getCurrentHealth() / this.healthComponent.healthDefinition.maxHealth;
-  }
-
-  start() {
-    this.healthComponent = this.actor.components.findComponent(HealthComponent);
-    this.sprite = this.actor.components.findComponent(SpriteRepresentationComponent).sprite;
-    const scene = this.sprite.scene; // todo maybe add this to UI scene instead
-    this.bar = scene.add.graphics();
-  }
-
-  /**
-   * move bar with player
-   */
-  update(time: number, delta: number) {
-    this.draw();
-    this.bar.depth = this.barDepth;
   }
 
   private get barXY() {
@@ -54,6 +40,25 @@ export class HealthUiComponent implements IComponent {
   private get barDepth() {
     // set depth to be above player
     return this.sprite.depth + 1;
+  }
+
+  start() {
+    this.healthComponent = this.actor.components.findComponent(HealthComponent);
+    this.sprite = this.actor.components.findComponent(SpriteRepresentationComponent).sprite;
+    const scene = this.sprite.scene; // todo maybe add this to UI scene instead
+    this.bar = scene.add.graphics();
+  }
+
+  /**
+   * move bar with player
+   */
+  update(time: number, delta: number) {
+    this.draw();
+    this.bar.depth = this.barDepth;
+  }
+
+  destroy() {
+    this.bar.destroy();
   }
 
   private draw() {
@@ -92,9 +97,5 @@ export class HealthUiComponent implements IComponent {
     const barFilledWidth = Math.floor((this.barWidth - 2 * this.barBorder) * this.healthPercentage);
 
     this.bar.fillRect(x + this.barBorder, y + this.barBorder, barFilledWidth, this.barHeight - 2 * this.barBorder);
-  }
-
-  destroy() {
-    this.bar.destroy();
   }
 }

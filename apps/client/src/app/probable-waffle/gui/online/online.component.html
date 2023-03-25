@@ -1,0 +1,22 @@
+<fuzzy-waddle-home-nav></fuzzy-waddle-home-nav>
+<ul #nav="ngbNav" class="nav-tabs" ngbNav>
+  <li ngbNavItem>
+    <a ngbNavLink>Ranked</a>
+    <ng-template ngbNavContent>
+      <fuzzy-waddle-ranked></fuzzy-waddle-ranked>
+    </ng-template>
+  </li>
+  <li ngbNavItem>
+    <a ngbNavLink>Join</a>
+    <ng-template ngbNavContent>
+      <fuzzy-waddle-lobbies></fuzzy-waddle-lobbies>
+    </ng-template>
+  </li>
+  <li ngbNavItem>
+    <a ngbNavLink>Host</a>
+    <ng-template ngbNavContent>
+      <fuzzy-waddle-host></fuzzy-waddle-host>
+    </ng-template>
+  </li>
+</ul>
+<div [ngbNavOutlet]="nav"></div>

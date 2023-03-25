@@ -1,4 +1,3 @@
 import { Blackboard } from '../blackboard';
 
-export class PlayerAiBlackboard extends Blackboard{
-}
+export class PlayerAiBlackboard extends Blackboard {}

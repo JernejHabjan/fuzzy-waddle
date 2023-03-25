@@ -4,7 +4,12 @@ import { Ownable, OwnerComponent } from '../../actor/components/owner-component'
 import { PlayerController } from '../../../world/managers/controllers/player-controller';
 import { CostData, Costs, ProductionCostComponent } from '../../building/production/production-cost-component';
 import { PawnInfoDefinition } from '../../actor/character';
-import { Constructable, ConstructionSiteComponent, ConstructionSiteDefinition } from '../../building/construction/construction-site-component';
+import {
+  Constructable,
+  ConstructionSiteComponent,
+  ConstructionSiteDefinition
+} from '../../building/construction/construction-site-component';
+import { Scene } from 'phaser';
 
 export type BuildingInfoDefinition = PawnInfoDefinition & {
   constructionSiteDefinition: ConstructionSiteDefinition;
@@ -19,7 +24,7 @@ export abstract class Building extends RepresentableActor implements Ownable, Co
   constructionSiteComponent!: ConstructionSiteComponent;
 
   // make it public constructor
-  constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData, private playerController: PlayerController) {
+  constructor(scene: Scene, tilePlacementData: TilePlacementData, private playerController: PlayerController) {
     super(scene, tilePlacementData);
   }
 

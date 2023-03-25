@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { faWindowMinimize, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'fuzzy-waddle-chat-float',

@@ -10,21 +10,97 @@ import {
   TOP_LEFT as EasyStar_TOP_LEFT,
   TOP_RIGHT as EasyStar_TOP_RIGHT
 } from 'easystarjs';
-import * as Phaser from 'phaser';
 import { TilemapHelper } from './tile/tilemap.helper';
 import { Vector2Simple } from '../../library/math/intersection';
 import { TilePlacementWorldWithProperties } from './tile/manual-tiles/manual-tiles.helper';
 import { MapSizeInfo, TileDefinitions } from '../const/map-size.info';
 import { SlopeDirection } from './tile/types/tile-types';
+import { Scene } from 'phaser';
 
 export class Pathfinder {
   private readonly enableDiagonals = true;
   private readonly maxNavigableStepHeightDiff = 16;
-  constructor(private readonly scene: Phaser.Scene) {}
+
+  constructor(private readonly scene: Scene) {}
 
   private static getTileWorldCenterByPath(path: Vector2Simple): Vector2Simple {
     return TilemapHelper.getTileWorldCenterByTilemapTileXY(path, {
       centerOfTile: true
+    });
+  }
+
+  find(
+    from: Vector2Simple,
+    to: Vector2Simple,
+    navigationGridWithProperties: TilePlacementWorldWithProperties[][]
+  ): Promise<TilePlacementWorldWithProperties[]> {
+    return new Promise<TilePlacementWorldWithProperties[]>((resolve, reject) => {
+      const easyStar = new EasyStar();
+
+      // map only tileIndexes from navigationGrid
+      const navigationGrid = navigationGridWithProperties.map((row) =>
+        row.map((tile) => tile.tileLayerProperties.tileIndex)
+      );
+
+      easyStar.setGrid(navigationGrid);
+
+      // const get distinct tile indexes from grid
+      const tileIndexes: number[] = [...new Set(navigationGrid.flat())];
+
+      // todo hardcoded to all existing tiles now (if -1 then it's removed)
+      easyStar.setAcceptableTiles(tileIndexes.filter((tileIndex) => tileIndex !== TileDefinitions.tileRemoveIndex));
+
+      /**
+       * todo this should be only run once grid updates - manualTile + tileLayer + staticObject (building)
+       */
+      this.extractDirectionalConditionForGrid(easyStar, navigationGridWithProperties);
+
+      if (this.enableDiagonals) {
+        easyStar.enableDiagonals();
+      }
+      easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
+        if (!path) {
+          console.log('Path was not found.');
+          reject('Path was not found.');
+        } else {
+          if (path.length === 0) {
+            resolve([]);
+            return;
+          }
+          // draw straight line from start to end colored red
+          let graphics = this.scene.add.graphics();
+          graphics.lineStyle(2, 0xff0000, 1);
+          graphics.beginPath();
+          let tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
+          graphics.moveTo(tileCenter.x, tileCenter.y);
+          tileCenter = Pathfinder.getTileWorldCenterByPath(path[path.length - 1]);
+          graphics.lineTo(tileCenter.x, tileCenter.y);
+          graphics.strokePath();
+
+          // draw phaser line from one point to the next
+          graphics = this.scene.add.graphics();
+          graphics.lineStyle(2, 0xffffff, 1);
+          graphics.beginPath();
+          tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
+          graphics.moveTo(tileCenter.x, tileCenter.y);
+
+          const allTileWorldXYCentersWithoutFirst = path.map((path) => Pathfinder.getTileWorldCenterByPath(path));
+          allTileWorldXYCentersWithoutFirst.shift();
+
+          for (let i = 0; i < path.length - 1; i++) {
+            tileCenter = allTileWorldXYCentersWithoutFirst[i];
+            graphics.lineTo(tileCenter.x, tileCenter.y);
+          }
+          graphics.strokePath();
+
+          // map all tileXYPathWithoutFirst to tilePlacementWorldWithProperties
+          const tilePlacementWorldWithPropertiesPath = path.map(
+            (tileXY) => navigationGridWithProperties[tileXY.y][tileXY.x]
+          );
+          resolve(tilePlacementWorldWithPropertiesPath);
+        }
+      });
+      easyStar.calculate();
     });
   }
 
@@ -212,81 +288,6 @@ export class Pathfinder {
           easyStar.setDirectionalCondition(x, y, directions);
         }
       });
-    });
-  }
-
-  find(
-    from: Vector2Simple,
-    to: Vector2Simple,
-    navigationGridWithProperties: TilePlacementWorldWithProperties[][]
-  ): Promise<TilePlacementWorldWithProperties[]> {
-    return new Promise<TilePlacementWorldWithProperties[]>((resolve, reject) => {
-      const easyStar = new EasyStar();
-
-      // map only tileIndexes from navigationGrid
-      const navigationGrid = navigationGridWithProperties.map((row) =>
-        row.map((tile) => tile.tileLayerProperties.tileIndex)
-      );
-
-      easyStar.setGrid(navigationGrid);
-
-      // const get distinct tile indexes from grid
-      const tileIndexes: number[] = [...new Set(navigationGrid.flat())];
-
-      // todo hardcoded to all existing tiles now (if -1 then it's removed)
-      easyStar.setAcceptableTiles(tileIndexes.filter((tileIndex) => tileIndex !== TileDefinitions.tileRemoveIndex));
-
-      /**
-       * todo this should be only run once grid updates - manualTile + tileLayer + staticObject (building)
-       */
-      this.extractDirectionalConditionForGrid(easyStar, navigationGridWithProperties);
-
-      if (this.enableDiagonals) {
-        easyStar.enableDiagonals();
-      }
-      easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
-        if (!path) {
-          console.log('Path was not found.');
-          reject('Path was not found.');
-        } else {
-          if (path.length === 0) {
-            resolve([]);
-            return;
-          }
-          // draw straight line from start to end colored red
-          let graphics = this.scene.add.graphics();
-          graphics.lineStyle(2, 0xff0000, 1);
-          graphics.beginPath();
-          let tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
-          graphics.moveTo(tileCenter.x, tileCenter.y);
-          tileCenter = Pathfinder.getTileWorldCenterByPath(path[path.length - 1]);
-          graphics.lineTo(tileCenter.x, tileCenter.y);
-          graphics.strokePath();
-
-          // draw phaser line from one point to the next
-          graphics = this.scene.add.graphics();
-          graphics.lineStyle(2, 0xffffff, 1);
-          graphics.beginPath();
-          tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
-          graphics.moveTo(tileCenter.x, tileCenter.y);
-
-          const allTileWorldXYCentersWithoutFirst = path.map((path) => Pathfinder.getTileWorldCenterByPath(path));
-          allTileWorldXYCentersWithoutFirst.shift();
-
-          for (let i = 0; i < path.length - 1; i++) {
-            tileCenter = allTileWorldXYCentersWithoutFirst[i];
-            graphics.lineTo(tileCenter.x, tileCenter.y);
-          }
-          graphics.strokePath();
-
-          // map all tileXYPathWithoutFirst to tilePlacementWorldWithProperties
-          const tilePlacementWorldWithPropertiesPath = path.map(
-            (tileXY) => navigationGridWithProperties[tileXY.y][tileXY.x]
-          );
-          resolve(tilePlacementWorldWithPropertiesPath);
-        }
-      });
-      easyStar.calculate();
     });
   }
 

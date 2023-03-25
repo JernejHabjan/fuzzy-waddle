@@ -1,26 +1,32 @@
 import { PlayerController } from './player-controller';
-import ScaleManager = Phaser.Scale.ScaleManager;
+import { Scale } from 'phaser';
+import { Building } from '../../../entity/assets/buildings/building';
+import { BuildingCursor } from './building-cursor';
+import { Actor } from '../../../entity/actor/actor';
+import { TilePlacementData } from './input/tilemap/tilemap-input.handler';
+import { ControlGroup } from './control-group';
 
 export class HumanPlayerController extends PlayerController {
-  keyboardInput: KeyboardInput;
-  mouseInput: MouseInput;
-  scaleManager: ScaleManager;
-  selectedActors: Actor[];
+  scaleManager!: Scale.ScaleManager;
+  selectedActors?: Actor[];
   // saved selections of this player
-  controllGroups: ControllGroup[];
+  controlGroups?: ControlGroup[];
 
-  hoveredActor: Actor;
-  hoveredTileXY: TileXY;
-  buildingBeingPlacedClass: typeof Building;
+  hoveredActor?: Actor;
+  hoveredTileXY?: TilePlacementData;
+  buildingBeingPlacedClass?: typeof Building;
 
-  buildingCursor: BuildingCursor;
+  buildingCursor?: BuildingCursor;
+
   cancelBuildingPlacement() {
     throw new Error('Not implemented');
   }
+
   confirmBuildingPlacement() {
     // notifyBuildingPlacementConfirmed
     // issueBeginConstructionOrder(buildingBeingPlacedClass, hoveredPosition)
   }
+
   beginBuildingPlacement() {
     // spawn preview building with BuildingCursor
     throw new Error('Not implemented');

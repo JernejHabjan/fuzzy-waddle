@@ -7,9 +7,30 @@ import { DataAccessService } from '../data-access/data-access.service';
 })
 export class AuthService {
   processing: Promise<unknown> | null = null;
-  private _session: Session | null = null;
 
   constructor(private dataAccessService: DataAccessService) {}
+
+  private _session: Session | null = null;
+
+  get session() {
+    return this._session;
+  }
+
+  get fullName(): string | null {
+    return (
+      this.session?.user?.identities?.find((identity) => identity.provider === 'google')?.identity_data?.[
+        'full_name'
+      ] ?? null
+    );
+  }
+
+  get userId(): string | null {
+    return this.session?.user?.id ?? null;
+  }
+
+  get isAuthenticated() {
+    return this._session !== null;
+  }
 
   async signInWithGoogle() {
     const signInPromise = (this.processing = this.dataAccessService.supabase.auth.signInWithOAuth({
@@ -48,25 +69,5 @@ export class AuthService {
     this._session = data.session;
     this.processing = null;
     return data.session;
-  }
-
-  get session() {
-    return this._session;
-  }
-
-  get fullName(): string | null {
-    return (
-      this.session?.user?.identities?.find((identity) => identity.provider === 'google')?.identity_data?.[
-        'full_name'
-      ] ?? null
-    );
-  }
-
-  get userId(): string | null {
-    return this.session?.user?.id ?? null;
-  }
-
-  get isAuthenticated() {
-    return this._session !== null;
   }
 }

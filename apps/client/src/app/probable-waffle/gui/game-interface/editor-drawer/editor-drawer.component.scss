@@ -2,6 +2,7 @@
   min-height: 100px;
   max-height: 300px;
   overflow-y: scroll;
+
   button {
     width: 100%;
   }
@@ -14,6 +15,7 @@
 .selected {
   background-color: darkgrey;
 }
+
 .atlas-map-scroll-title {
   font-size: 1.2em;
   font-weight: bold;

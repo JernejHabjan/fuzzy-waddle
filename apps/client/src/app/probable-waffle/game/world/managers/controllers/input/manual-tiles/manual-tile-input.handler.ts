@@ -1,8 +1,8 @@
-import * as Phaser from 'phaser';
 import { MapSizeInfo } from '../../../../const/map-size.info';
 import { Intersection, Vector2Simple } from '../../../../../library/math/intersection';
 import { ManualTile, ManualTileLayer } from '../../../../map/tile/manual-tiles/manual-tiles.helper';
 import { IsoHelper } from '../../../../map/tile/iso-helper';
+import { Scene } from 'phaser';
 
 export interface PossibleClickCoords {
   z: number;
@@ -10,7 +10,7 @@ export interface PossibleClickCoords {
 }
 
 export class ManualTileInputHandler {
-  constructor(private readonly scene: Phaser.Scene, private readonly manualLayers: ManualTileLayer[]) {}
+  constructor(private readonly scene: Scene, private readonly manualLayers: ManualTileLayer[]) {}
 
   /**
    * returns true if the tile was found and selected
@@ -54,6 +54,10 @@ export class ManualTileInputHandler {
     return possibleCoords;
   }
 
+  destroy() {
+    // this.input.off(Phaser.Input.Events.POINTER_UP);
+  }
+
   private geExistingManualTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
     const pointerToTileXY = IsoHelper.isometricWorldToTileXY(worldX, worldY, true);
     const clickPointToTileWorldXY = {
@@ -91,9 +95,5 @@ export class ManualTileInputHandler {
       }
     }
     return null;
-  }
-
-  destroy() {
-    // this.input.off(Phaser.Input.Events.POINTER_UP);
   }
 }

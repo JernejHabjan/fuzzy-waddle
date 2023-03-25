@@ -1,9 +1,10 @@
-import * as Phaser from 'phaser';
 import GrasslandScene from '../scenes/grassland.scene';
 import { environment } from '../../../../../environments/environment';
 import PlaygroundScene from '../scenes/playground.scene';
+import { Scale, Types } from 'phaser';
 
-export const probableWaffleGameConfig: Phaser.Types.Core.GameConfig = {
+export const GameContainerElement = 'gameCanvas';
+export const probableWaffleGameConfig: Types.Core.GameConfig = {
   scene: [GrasslandScene, PlaygroundScene],
   physics: {
     default: 'arcade',
@@ -19,11 +20,12 @@ export const probableWaffleGameConfig: Phaser.Types.Core.GameConfig = {
   disableContextMenu: true,
   backgroundColor: '#222',
   scale: {
-    mode: Phaser.Scale.RESIZE
+    mode: Scale.RESIZE
   },
   fps: {
     target: 60,
     min: 30
     // forceSetTimeOut: true
-  }
+  },
+  parent: GameContainerElement
 };

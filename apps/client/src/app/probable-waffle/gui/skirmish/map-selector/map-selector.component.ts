@@ -13,6 +13,7 @@ export class MapSelectorComponent implements OnInit {
   selectedMap?: MapPlayerDefinition;
   @Output() selectedMapChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
   private readonly defaultMap = MapIds.GrasslandLarge;
+
   constructor() {
     this.mapPlayerDefinitions = Maps.maps.map((map) => new MapPlayerDefinition(map));
   }

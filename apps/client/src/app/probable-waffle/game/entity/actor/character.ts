@@ -1,4 +1,3 @@
-import * as Phaser from 'phaser';
 import {
   AnimDirection,
   AnimDirectionEnum,
@@ -17,8 +16,9 @@ import { SpriteAnimationHelper } from '../character/animation/sprite-animation-h
 import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
 import { CostData } from '../building/production/production-cost-component';
 import { RepresentableActorDefinition } from './representable-actor';
+import { Animations, Scene, Scenes } from 'phaser';
 
-export type PawnInfoDefinition =RepresentableActorDefinition& {
+export type PawnInfoDefinition = RepresentableActorDefinition & {
   healthDefinition: HealthDefinition;
   soundDefinition: SoundDefinition;
   cost?: CostData;
@@ -29,12 +29,13 @@ export abstract class Character extends MovableActor implements Health {
   blackboardClass: typeof Blackboard = Blackboard;
   currentDir = AnimDirectionEnum.south;
   currentAnimGroup = LPCAnimTypeEnum.walk;
-  private warriorStateMachine!: StateMachine;
-  private characterSoundComponent!: CharacterSoundComponent;
   healthComponent!: HealthComponent;
   abstract pawnDefinition: PawnInfoDefinition;
   representableActorDefinition!: RepresentableActorDefinition;
-  protected constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
+  private warriorStateMachine!: StateMachine;
+  private characterSoundComponent!: CharacterSoundComponent;
+
+  protected constructor(scene: Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
   }
 
@@ -49,6 +50,28 @@ export abstract class Character extends MovableActor implements Health {
     this.subscribeToEvents();
   }
 
+  override update(t: number, dt: number) {
+    super.update(t, dt);
+    if (!this.destroyed) {
+      this.warriorStateMachine.update(dt);
+    }
+  }
+
+  override kill() {
+    this.warriorStateMachine.setState('dead');
+    super.kill();
+  }
+
+  playMoveAnim(dir: AnimDirection) {
+    const prevDir = this.currentDir;
+    this.currentDir = dir;
+    // if state is "run" and currentDir is different, then change direction
+    if (this.warriorStateMachine.isCurrentState('run') && prevDir !== dir) {
+      this.warriorRunEnter();
+    }
+    this.warriorStateMachine.setState('run');
+  }
+
   private initComponents() {
     const sprite = this.spriteRepresentationComponent.sprite;
     this.healthComponent = this.components.addComponent(
@@ -60,7 +83,7 @@ export abstract class Character extends MovableActor implements Health {
   private subscribeToEvents() {
     const scene = this.spriteRepresentationComponent.scene;
     this.characterMovementComponent.moveEventEmitter.on(MoveEventTypeEnum.MOVE_PROGRESS, this.onMoveProgress, this);
-    scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+    scene.events.on(Scenes.Events.SHUTDOWN, () => {
       this.characterMovementComponent.moveEventEmitter.off(MoveEventTypeEnum.MOVE_PROGRESS, this.onMoveProgress, this);
       this.destroy();
     });
@@ -96,13 +119,6 @@ export abstract class Character extends MovableActor implements Health {
 
   private lateUpdate(time: number, delta: number) {
     this.components.update(time, delta);
-  }
-
-  override update(t: number, dt: number) {
-    super.update(t, dt);
-    if (!this.destroyed) {
-      this.warriorStateMachine.update(dt);
-    }
   }
 
   private warriorIdleEnter() {
@@ -150,11 +166,6 @@ export abstract class Character extends MovableActor implements Health {
     this.characterSoundComponent.stop(move);
   }
 
-  override kill() {
-    this.warriorStateMachine.setState('dead');
-    super.kill();
-  }
-
   private warriorAttackEnter() {
     const sprite = this.spriteRepresentationComponent.sprite;
     this.currentAnimGroup = LPCAnimTypeEnum.thrust; // todo thrust
@@ -164,20 +175,20 @@ export abstract class Character extends MovableActor implements Health {
 
     // TODO: move sword swing hitbox into place
     // does it need to start part way into the animation?
-    const startHit = (anim: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame) => {
+    const startHit = (anim: Animations.Animation, frame: Animations.AnimationFrame) => {
       if (frame.index != 5) {
         // todo
         return;
       }
 
-      sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
+      sprite.off(Animations.Events.ANIMATION_UPDATE, startHit);
 
       console.log('attacked');
     };
 
-    sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, startHit);
+    sprite.on(Animations.Events.ANIMATION_UPDATE, startHit);
 
-    sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY, (a: unknown, b: unknown) => {
+    sprite.once(Animations.Events.ANIMATION_COMPLETE_KEY, (a: unknown, b: unknown) => {
       // todo
       console.log('animation complete', a, b);
       this.warriorStateMachine.setState('idle');
@@ -193,16 +204,6 @@ export abstract class Character extends MovableActor implements Health {
     this.currentAnimGroup = LPCAnimTypeEnum.hurt;
     SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, false);
     this.playDeathSound();
-  }
-
-  playMoveAnim(dir: AnimDirection) {
-    const prevDir = this.currentDir;
-    this.currentDir = dir;
-    // if state is "run" and currentDir is different, then change direction
-    if (this.warriorStateMachine.isCurrentState('run') && prevDir !== dir) {
-      this.warriorRunEnter();
-    }
-    this.warriorStateMachine.setState('run');
   }
 
   private playDeathSound() {

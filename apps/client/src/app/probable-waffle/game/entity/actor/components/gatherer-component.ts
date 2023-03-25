@@ -58,7 +58,6 @@ export class GathererComponent implements IComponent {
     return true;
   }
 
-
   /**
    * this gets set by the behavior tree
    */
@@ -100,7 +99,7 @@ export class GathererComponent implements IComponent {
   }
 
   findClosestResourceDrain(): Actor | null {
-    if(this.carriedResourceType === null) {
+    if (this.carriedResourceType === null) {
       throw new Error('Gatherer is not carrying any resources');
     }
 
@@ -125,18 +124,18 @@ export class GathererComponent implements IComponent {
       }
 
       // check resource type
-      if(!resourceDrainComponent.getResourceTypes().includes(this.carriedResourceType)) {
+      if (!resourceDrainComponent.getResourceTypes().includes(this.carriedResourceType)) {
         continue;
       }
 
       // check if ready to use - e.g. building finished
-      if(!GameplayLibrary.isReadyToUse(resourceDrain)) {
+      if (!GameplayLibrary.isReadyToUse(resourceDrain)) {
         continue;
       }
 
       // check distance
       const distance = GameplayLibrary.getDistanceBetweenActors(gatherer, resourceDrain);
-      if(distance && (!closestResourceDrain || distance < closestResourceDrainDistance)) {
+      if (distance && (!closestResourceDrain || distance < closestResourceDrainDistance)) {
         closestResourceDrain = resourceDrain;
         closestResourceDrainDistance = distance;
       }
@@ -259,20 +258,23 @@ export class GathererComponent implements IComponent {
     return gatheredAmount;
   }
 
-  returnResources(resourceDrain:Actor):number {
-    if(!this.carriedResourceType) {
+  returnResources(resourceDrain: Actor): number {
+    if (!this.carriedResourceType) {
       throw new Error('Gatherer is not carrying any resources');
     }
     // return resources
     const resourceDrainComponent = resourceDrain.components.findComponent(ResourceDrainComponent);
-    const returnedResources = resourceDrainComponent.returnResources(this.actor, this.carriedResourceType, this.carriedResourceAmount);
+    const returnedResources = resourceDrainComponent.returnResources(
+      this.actor,
+      this.carriedResourceType,
+      this.carriedResourceAmount
+    );
     this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
 
     console.log(`Returned ${returnedResources} ${this.carriedResourceType} to ${resourceDrain.name}`);
     // notify listeners
     this.onResourcesReturned.next([this.actor, this.carriedResourceType, returnedResources]);
     return returnedResources;
-
   }
 
   isCapacityFull() {
@@ -286,6 +288,15 @@ export class GathererComponent implements IComponent {
     }
 
     return this.carriedResourceAmount >= gatherData.capacity;
+  }
+
+  getGatherRange(resourceSource: Actor): number {
+    const gatherData = this.getGatherDataForResourceSource(resourceSource);
+
+    if (!gatherData) {
+      return 0;
+    }
+    return gatherData.range;
   }
 
   private getGatherDataForResourceType(carriedResourceType: ResourceType): GatherData | null {
@@ -318,14 +329,5 @@ export class GathererComponent implements IComponent {
     this.previousResourceSource = this.currentResourceSource;
     this.previousResourceType = this.carriedResourceType;
     this.currentResourceSource = null;
-  }
-
-  getGatherRange(resourceSource: Actor):number {
-    const gatherData = this.getGatherDataForResourceSource(resourceSource);
-
-    if (!gatherData) {
-      return 0;
-    }
-    return gatherData.range;
   }
 }

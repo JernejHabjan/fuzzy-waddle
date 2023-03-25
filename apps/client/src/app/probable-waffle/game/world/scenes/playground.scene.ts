@@ -1,8 +1,8 @@
-import * as Phaser from 'phaser';
 import { Scenes } from './scenes';
 import { CreateSceneFromObjectConfig } from './interfaces/scene-config.interface';
+import { Scene } from 'phaser';
 
-export default class PlaygroundScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
+export default class PlaygroundScene extends Scene implements CreateSceneFromObjectConfig {
   constructor() {
     super({ key: Scenes.PlaygroundScene });
   }

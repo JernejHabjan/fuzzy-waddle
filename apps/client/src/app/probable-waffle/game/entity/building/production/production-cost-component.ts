@@ -9,6 +9,7 @@ export class CostData {
     productionTime: 0,
     refundFactor: 1
   };
+
   constructor(
     public costType: PaymentType,
     public productionTime: number,

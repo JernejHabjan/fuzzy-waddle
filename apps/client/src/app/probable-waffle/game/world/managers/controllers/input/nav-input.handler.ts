@@ -1,4 +1,3 @@
-import * as Phaser from 'phaser';
 import { Pathfinder } from '../../../map/pathfinder';
 import { MapSizeInfo } from '../../../const/map-size.info';
 import { TilePlacementWorldWithProperties } from '../../../map/tile/manual-tiles/manual-tiles.helper';
@@ -6,10 +5,11 @@ import { Vector2Simple } from '../../../../library/math/intersection';
 import { MapNavHelper } from '../../../map/map-nav-helper';
 import { CharacterMovementComponent } from '../../../../entity/actor/components/character-movement-component';
 import { RepresentableActor } from '../../../../entity/actor/representable-actor';
+import { Scene } from 'phaser';
 
 export class NavInputHandler {
   constructor(
-    private readonly scene: Phaser.Scene,
+    private readonly scene: Scene,
     private readonly pathfinder: Pathfinder,
     private readonly mapNavHelper: MapNavHelper
   ) {}

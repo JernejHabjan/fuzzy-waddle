@@ -1,12 +1,11 @@
-import * as Phaser from 'phaser';
-import { Scene } from 'phaser';
+import { Display, GameObjects, Scene } from 'phaser';
 import { MapSizeInfo } from '../../const/map-size.info';
 import { TilemapHelper } from './tilemap.helper';
 import { Vector2Simple } from '../../../library/math/intersection';
 import { ManualTilesHelper } from './manual-tiles/manual-tiles.helper';
 
 export class LayerLines {
-  private currentLayerLinesGroup: Phaser.GameObjects.Group | null = null;
+  private currentLayerLinesGroup: GameObjects.Group | null = null;
 
   constructor(private readonly scene: Scene) {}
 
@@ -21,7 +20,7 @@ export class LayerLines {
     this.currentLayerLinesGroup = this.createLinesGroup(layer);
   }
 
-  private createLinesGroup(layer: number): Phaser.GameObjects.Group {
+  private createLinesGroup(layer: number): GameObjects.Group {
     const byLayerOffset = layer * MapSizeInfo.info.tileHeight;
     const tileWidth = MapSizeInfo.info.tileWidth;
     const tileHeight = MapSizeInfo.info.tileHeight;
@@ -61,7 +60,7 @@ export class LayerLines {
    * This means have to draw short lines and set their z index correctly (same way as in {@link placeTileOnLayer})
    */
   private drawLayerGridLines(
-    group: Phaser.GameObjects.Group,
+    group: GameObjects.Group,
     axisModifier: 1 | -1,
     firstAxis: number,
     secondAxis: number,
@@ -70,7 +69,7 @@ export class LayerLines {
     tileCenterOffset: Vector2Simple,
     layer: number
   ): void {
-    const color = new Phaser.Display.Color();
+    const color = new Display.Color();
 
     for (let y = 0; y < firstAxis + 1; y++) {
       // draw line secondAxis times

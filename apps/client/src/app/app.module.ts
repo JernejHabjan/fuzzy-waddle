@@ -9,6 +9,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthGuard } from './auth/auth.guard';
 import { SocketIoModule } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ComponentsModule } from './shared/components/components.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +27,9 @@ import { environment } from '../environments/environment';
       registrationStrategy: 'registerWhenStable:30000'
     }),
     SocketIoModule.forRoot(environment.socketIoConfig),
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgbModule,
+    ComponentsModule
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]

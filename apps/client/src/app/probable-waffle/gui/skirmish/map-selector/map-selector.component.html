@@ -1,17 +1,19 @@
-<div>
-  <button class="button" (click)="dropdownVisible = !dropdownVisible">Select a map</button>
-  <div *ngIf="dropdownVisible" class="dropdown-menu">
-    <div
-      *ngFor="let mapPlayerDefinition of mapPlayerDefinitions"
-      class="dropdown-item"
+<div class="dropdown">
+  <button aria-expanded="false" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" type="button">
+    Select a map
+  </button>
+  <ul class="dropdown-menu">
+    <li
       (click)="selectMap(mapPlayerDefinition)"
+      *ngFor="let mapPlayerDefinition of mapPlayerDefinitions"
+      class="text-center cursor-pointer"
     >
       <img
-        [src]="'assets/probable-waffle/maps/icons/' + mapPlayerDefinition.map.image"
-        class="map-preview"
         [alt]="mapPlayerDefinition.map.name"
+        [src]="'assets/probable-waffle/tilemaps/' + mapPlayerDefinition.map.image"
+        class="map-preview"
       />
       <span style="margin-left: 10px">{{ mapPlayerDefinition.map.name }}</span>
-    </div>
-  </div>
+    </li>
+  </ul>
 </div>

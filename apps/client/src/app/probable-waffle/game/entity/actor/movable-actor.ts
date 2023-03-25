@@ -1,9 +1,11 @@
 import { CharacterMovementComponent, ICharacterMovable } from './components/character-movement-component';
-import { IPawnAiControllable, PawnAiControllerComponent } from '../../world/managers/controllers/pawn-ai-controller-component';
+import {
+  IPawnAiControllable,
+  PawnAiControllerComponent
+} from '../../world/managers/controllers/pawn-ai-controller-component';
 import { Blackboard } from '../character/ai/blackboard';
 import { RepresentableActor } from './representable-actor';
 import { PawnBehaviorTree, PawnBehaviorTreeClasses } from '../character/ai/behavior-trees';
-
 
 /*
  * pawn includes ai controller and move component, so it can move around
@@ -22,7 +24,7 @@ export abstract class MovableActor extends RepresentableActor implements ICharac
     this.behaviorTree = new this.behaviorTreeClass();
     this.behaviorTree.init(this, blackboard);
     this.pawnAiControllerComponent = this.components.addComponent(
-      new PawnAiControllerComponent(this,blackboard, this.behaviorTree)
+      new PawnAiControllerComponent(this, blackboard, this.behaviorTree)
     );
   }
 

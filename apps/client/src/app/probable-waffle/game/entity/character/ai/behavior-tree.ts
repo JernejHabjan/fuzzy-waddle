@@ -6,7 +6,6 @@ export abstract class BehaviorTree {
   protected owner!: Actor;
   protected blackboard!: Blackboard;
   private running = false;
-  protected abstract runDecisionTree(): void;
 
   public update(time: number, delta: number): void {
     if (!this.running) {
@@ -28,4 +27,6 @@ export abstract class BehaviorTree {
   kill() {
     this.running = false;
   }
+
+  protected abstract runDecisionTree(): void;
 }

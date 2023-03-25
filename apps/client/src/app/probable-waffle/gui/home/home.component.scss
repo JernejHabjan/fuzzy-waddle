@@ -1,4 +1,4 @@
-@import '../../../../assets/styles/_variables.scss';
+@import '../../../../styles/_variables.scss';
 
 :host {
   display: flex;
@@ -16,9 +16,11 @@
   align-items: center;
   font-size: 4rem;
   font-family: $app-font-bold;
+
   .logo-text {
     z-index: 1;
     pointer-events: none;
     text-align: center;
+    user-select: none;
   }
 }

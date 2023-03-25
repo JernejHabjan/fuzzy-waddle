@@ -1,5 +1,24 @@
 export class MapSizeInfo {
   static readonly info: MapSizeInfo = new MapSizeInfo();
+  public tileWidth = 64;
+  public tileHeight = 32;
+  public widthInPixels = this.width * this.tileWidth;
+  public heightInPixels = this.height * this.tileHeight;
+  public tileWidthHalf = 32;
+  public tileHeightHalf = 16;
+
+  private _width = 10;
+
+  get width(): number {
+    return this._width;
+  }
+
+  public set width(value: number) {
+    this._width = value;
+    this.widthInPixels = this._width * this.tileWidth;
+  }
+
+  private _height = 10;
 
   get height(): number {
     return this._height;
@@ -9,22 +28,6 @@ export class MapSizeInfo {
     this._height = value;
     this.heightInPixels = this._height * this.tileHeight;
   }
-  get width(): number {
-    return this._width;
-  }
-
-  public set width(value: number) {
-    this._width = value;
-    this.widthInPixels = this._width * this.tileWidth;
-  }
-  private _width = 10;
-  private _height = 10;
-  public tileWidth = 64;
-  public tileHeight = 32;
-  public widthInPixels = this.width * this.tileWidth;
-  public heightInPixels = this.height * this.tileHeight;
-  public tileWidthHalf = 32;
-  public tileHeightHalf = 16;
 }
 
 export class MapDefinitions {

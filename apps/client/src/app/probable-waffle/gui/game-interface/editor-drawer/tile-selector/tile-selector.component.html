@@ -1,6 +1,8 @@
-<button (click)="selectTile()" *ngIf="textureName" [class.selected]="selectedTile === frameWithMeta.id">
-  <fuzzy-waddle-atlas-display
-    [atlasFrame]="frameWithMeta"
-    [textureName]="textureName"
-  ></fuzzy-waddle-atlas-display>
+<button
+  (click)="selectTile()"
+  *ngIf="textureName"
+  [class.selected]="selectedTile === frameWithMeta.id"
+  class="btn btn-light m-1"
+>
+  <fuzzy-waddle-atlas-display [atlasFrame]="frameWithMeta" [textureName]="textureName"></fuzzy-waddle-atlas-display>
 </button>

@@ -9,6 +9,7 @@ export enum MapIds {
   'GrasslandSmall' = 'GrasslandSmall',
   'GrasslandLarge' = 'GrasslandLarge'
 }
+
 export type MapInfo = {
   id: MapIds;
   name: string;
@@ -18,13 +19,14 @@ export type MapInfo = {
   mapWidth: number;
   mapHeight: number;
 };
+
 export class Maps {
   static readonly maps: MapInfo[] = [
     {
       id: MapIds.GrasslandSmall,
       name: 'Grassland',
       description: 'A small grassland',
-      image: 'grasslands-small.png',
+      image: 'start-small.png',
       startPositions: [
         { tileXY: { x: 2, y: 2 }, z: 0 },
         { tileXY: { x: 6, y: 9 }, z: 0 }
@@ -36,7 +38,7 @@ export class Maps {
       id: MapIds.GrasslandLarge,
       name: 'Grassland Large',
       description: 'A large grassland',
-      image: 'grasslands-large.png',
+      image: 'start-large.png',
       startPositions: [
         { tileXY: { x: 20, y: 20 }, z: 0 },
         { tileXY: { x: 80, y: 80 }, z: 0 },

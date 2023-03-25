@@ -1,20 +1,20 @@
 <div
   *ngIf="displayDrawers"
-  class='position-absolute h-100 w-100 overflow-auto'
-  style="top: 0;background: #fffecf"
   [ngStyle]="{
     width: drawerWidth
   }"
+  class="position-absolute h-100 overflow-auto"
+  style="top: 0; background: #fffecf"
 >
   <fuzzy-waddle-editor-drawer></fuzzy-waddle-editor-drawer>
 </div>
-
+<div #gameContainerElement id="{{ GameContainerElement }}"></div>
 <div
   *ngIf="displayDrawers"
-  style="position: absolute; right: 0; bottom: 0; height: 100px; background: #fffecf"
   [ngStyle]="{
     width: 'calc(100% - ' + drawerWidth + ')'
   }"
+  style="position: absolute; right: 0; bottom: 0; height: 100px; background: #fffecf"
 >
   <fuzzy-waddle-selection-group></fuzzy-waddle-selection-group>
 </div>

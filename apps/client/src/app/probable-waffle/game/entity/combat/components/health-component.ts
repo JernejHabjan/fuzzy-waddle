@@ -15,9 +15,8 @@ export type HealthDefinition = {
 };
 
 export default class HealthComponent implements IComponent {
-  private currentHealth: number;
-
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
+  private currentHealth: number;
   private healthUiComponent!: HealthUiComponent;
 
   constructor(
@@ -34,6 +33,7 @@ export default class HealthComponent implements IComponent {
   init() {
     this.healthUiComponent = new HealthUiComponent(this.actor);
   }
+
   start() {
     this.healthUiComponent.start();
   }

@@ -2,6 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { IAuthService } from './auth.service.interface';
+import { usersServiceStub } from '../users/users.service.spec';
+
+export const authServiceStub = {
+  validateTest(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+} as IAuthService;
 
 describe('AuthService', () => {
   /**
@@ -11,14 +19,14 @@ describe('AuthService', () => {
   let service: AuthService;
 
   beforeEach(async () => {
-    jest.resetModules() // Most important - it clears the cache
+    jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
 
     process.env.SUPABASE_URL = 'http://localhost:8000';
     process.env.SUPABASE_KEY = 'test';
     process.env.SUPABASE_JWT_SECRET = 'test';
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, UsersService, JwtService]
+      providers: [AuthService, { provide: UsersService, useValue: usersServiceStub }, JwtService]
     }).compile();
 
     service = module.get<AuthService>(AuthService);

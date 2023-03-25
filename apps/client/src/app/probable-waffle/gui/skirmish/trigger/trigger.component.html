@@ -1,0 +1,11 @@
+<div class="navbar navbar-dark bg-opacity-75 bg-primary px-2">
+  <button (click)="leaveClick()" class="btn btn-danger" type="button">Leave</button>
+  <button
+    (click)="start()"
+    [disabled]="!selectedMap || !atLeastTwoPlayersAndDifferentTeamsSelected"
+    class="btn btn-success ms-auto btn-lg"
+    type="button"
+  >
+    Start
+  </button>
+</div>

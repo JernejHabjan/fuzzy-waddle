@@ -1,7 +1,5 @@
-import Vector3Like = Phaser.Types.Math.Vector3Like;
+import { Types } from 'phaser';
 
-export class PlayerStart{
-  constructor(
-    public position: Vector3Like,
-  ){}
+export class PlayerStart {
+  constructor(public position: Types.Math.Vector3Like) {}
 }

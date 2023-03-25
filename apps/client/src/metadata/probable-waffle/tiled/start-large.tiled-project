@@ -1,0 +1,25 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "extensionsPath": "extensions",
+    "folders": [
+        "../../../assets/probable-waffle/tilemaps",
+        "../../../assets/probable-waffle/tilesets"
+    ],
+    "propertyTypes": [
+        {
+            "id": 1,
+            "name": "slopeDir",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "NorthEast",
+                "SouthEast",
+                "SouthWest",
+                "NorthWest"
+            ],
+            "valuesAsFlags": false
+        }
+    ]
+}

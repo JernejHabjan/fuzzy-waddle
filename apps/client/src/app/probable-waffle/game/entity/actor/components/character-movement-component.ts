@@ -1,14 +1,16 @@
-import { ManualTilesHelper, TilePlacementWorldWithProperties } from '../../../world/map/tile/manual-tiles/manual-tiles.helper';
+import {
+  ManualTilesHelper,
+  TilePlacementWorldWithProperties
+} from '../../../world/map/tile/manual-tiles/manual-tiles.helper';
 import { TilemapHelper } from '../../../world/map/tile/tilemap.helper';
 import { MapSizeInfo } from '../../../world/const/map-size.info';
-import * as Phaser from 'phaser';
 import { Vector2Simple } from '../../../library/math/intersection';
 import { IComponent } from '../../../core/component.service';
 import { IPawnAiControllable } from '../../../world/managers/controllers/pawn-ai-controller-component';
 import { ISpriteRepresentable } from './sprite-representable-component';
 import { ITransformable } from './transformable-component';
 import { Actor } from '../actor';
-import Tween = Phaser.Tweens.Tween;
+import { Events, GameObjects, Tweens } from 'phaser';
 
 export enum MoveEventTypeEnum {
   MOVE_START = 'move-start',
@@ -21,16 +23,15 @@ export interface ICharacterMovable {
 }
 
 export class CharacterMovementComponent implements IComponent {
+  moveEventEmitter = new Events.EventEmitter();
+  isMoving = false;
   // todo refactor navigation component to use navigation tree
   private path?: TilePlacementWorldWithProperties[];
-  private currentNavTween?: Phaser.Tweens.Tween;
-  moveEventEmitter = new Phaser.Events.EventEmitter();
-  isMoving = false;
+  private currentNavTween?: Tweens.Tween;
 
   constructor(
     private readonly gameObject: ICharacterMovable & IPawnAiControllable & ISpriteRepresentable & ITransformable & Actor
-  ) {
-  }
+  ) {}
 
   init() {
     // pass
@@ -55,6 +56,10 @@ export class CharacterMovementComponent implements IComponent {
       this.currentNavTween = undefined;
     }
     this.isMoving = false;
+  }
+
+  canMove() {
+    return !this.isMoving;
   }
 
   private startMove() {
@@ -109,7 +114,7 @@ export class CharacterMovementComponent implements IComponent {
         ease: Phaser.Math.Easing.Linear, // Phaser.Math.Easing.Sine.InOut,
         yoyo: false,
         repeat: 0,
-        onUpdate: (tween: Tween) => {
+        onUpdate: (tween: Tweens.Tween) => {
           const direction = Phaser.Math.Angle.BetweenPoints(
             prevNavTile.tileWorldData.tileXY,
             currentNavTile.tileWorldData.tileXY
@@ -158,7 +163,7 @@ export class CharacterMovementComponent implements IComponent {
    * todo this is a bit hackish
    */
   private setSpriteDepthDuringNavigation(
-    spriteInstance: Phaser.GameObjects.Sprite,
+    spriteInstance: GameObjects.Sprite,
     currentPathNode: TilePlacementWorldWithProperties,
     prevNavTile: TilePlacementWorldWithProperties,
     tileWorldXYCenter: Vector2Simple
@@ -186,8 +191,8 @@ export class CharacterMovementComponent implements IComponent {
    * Can be improved - is a bit jagged when exiting water
    */
   private handleSpriteUnderWaterCropping(
-    tween: Tween,
-    spriteInstance: Phaser.GameObjects.Sprite,
+    tween: Tweens.Tween,
+    spriteInstance: GameObjects.Sprite,
     prevStepHeightIn: number | undefined,
     currentStepHeightIn?: number | undefined
   ) {
@@ -235,9 +240,5 @@ export class CharacterMovementComponent implements IComponent {
         spriteInstance.setCrop();
       }
     }
-  }
-
-  canMove() {
-    return !this.isMoving;
   }
 }
