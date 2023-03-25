@@ -46,15 +46,6 @@ export class PlayerDefinitionComponent {
   @Output() playerJoined: EventEmitter<void> = new EventEmitter<void>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 
-  addPlayer(playerIndex: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
-    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
-    startPositionPerPlayerElement.player.joined = true;
-    startPositionPerPlayerElement.difficulty = Difficulty.Medium;
-    this.playerJoined.emit();
-  }
-
   /**
    * get first free position
    */
@@ -77,6 +68,15 @@ export class PlayerDefinitionComponent {
       break;
     }
     return freePosition;
+  }
+
+  addPlayer(playerIndex: number) {
+    const map = this.selectedMap as MapPlayerDefinition;
+    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
+    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
+    startPositionPerPlayerElement.player.joined = true;
+    startPositionPerPlayerElement.difficulty = Difficulty.Medium;
+    this.playerJoined.emit();
   }
 
   removePlayer(playerNumber: number) {

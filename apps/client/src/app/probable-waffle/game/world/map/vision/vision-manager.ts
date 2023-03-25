@@ -17,6 +17,7 @@ export class VisionManager {
   addVisibleActor(actor: Actor) {
     // pass
   }
+
   RemoveVisibleActor(actor: Actor) {
     // pass
   }
@@ -27,6 +28,7 @@ export class VisionManager {
   AddVisionActor(actor: Actor) {
     // pass
   }
+
   RemoveVisionActor(actor: Actor) {
     // pass
   }

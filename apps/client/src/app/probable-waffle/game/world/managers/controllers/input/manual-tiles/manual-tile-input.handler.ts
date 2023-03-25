@@ -54,6 +54,10 @@ export class ManualTileInputHandler {
     return possibleCoords;
   }
 
+  destroy() {
+    // this.input.off(Phaser.Input.Events.POINTER_UP);
+  }
+
   private geExistingManualTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
     const pointerToTileXY = IsoHelper.isometricWorldToTileXY(worldX, worldY, true);
     const clickPointToTileWorldXY = {
@@ -91,9 +95,5 @@ export class ManualTileInputHandler {
       }
     }
     return null;
-  }
-
-  destroy() {
-    // this.input.off(Phaser.Input.Events.POINTER_UP);
   }
 }

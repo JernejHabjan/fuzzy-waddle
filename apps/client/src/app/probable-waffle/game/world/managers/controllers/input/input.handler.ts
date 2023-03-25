@@ -22,6 +22,33 @@ export class InputHandler {
     this.screenEdgeListener();
   }
 
+  /**
+   * Detect if camera is out of bounds
+   */
+  get isCameraOutOfBounds(): boolean {
+    // detect if camera is out of bounds
+    const cameraBounds = this.mainCamera.getBounds();
+    const cameraWorldView = this.recalculateCameraWorldView();
+    return (
+      cameraWorldView.right > cameraBounds.right ||
+      cameraWorldView.bottom > cameraBounds.bottom ||
+      cameraWorldView.left < cameraBounds.left ||
+      cameraWorldView.top < cameraBounds.top
+    );
+  }
+
+  update(time: number, delta: number) {
+    this.keyboardMovementControls?.update(delta);
+    this.screenEdgeMovementUpdate();
+  }
+
+  destroy() {
+    this.input.off(Input.Events.POINTER_WHEEL);
+    this.input.off(Input.Events.GAME_OUT);
+    this.input.off(Input.Events.GAME_OVER);
+    this.keyboardMovementControls?.destroy();
+  }
+
   private createKeyboardControls() {
     if (!this.input.keyboard) return;
     const cursors = this.input.keyboard.createCursorKeys();
@@ -102,21 +129,6 @@ export class InputHandler {
   }
 
   /**
-   * Detect if camera is out of bounds
-   */
-  get isCameraOutOfBounds(): boolean {
-    // detect if camera is out of bounds
-    const cameraBounds = this.mainCamera.getBounds();
-    const cameraWorldView = this.recalculateCameraWorldView();
-    return (
-      cameraWorldView.right > cameraBounds.right ||
-      cameraWorldView.bottom > cameraBounds.bottom ||
-      cameraWorldView.left < cameraBounds.left ||
-      cameraWorldView.top < cameraBounds.top
-    );
-  }
-
-  /**
    * Zoom related
    * So when the camera is zoomed out, we re-calc camera "worldView" so bounds can be checked.
    * This worldView is recalculated in Phaser.Cameras.Scene2D.Camera#preRender, but that is too late.
@@ -156,18 +168,6 @@ export class InputHandler {
     this.input.on(Input.Events.GAME_OVER, () => {
       this.cursorOverGameInstance = true;
     });
-  }
-
-  update(time: number, delta: number) {
-    this.keyboardMovementControls?.update(delta);
-    this.screenEdgeMovementUpdate();
-  }
-
-  destroy() {
-    this.input.off(Input.Events.POINTER_WHEEL);
-    this.input.off(Input.Events.GAME_OUT);
-    this.input.off(Input.Events.GAME_OVER);
-    this.keyboardMovementControls?.destroy();
   }
 
   /**

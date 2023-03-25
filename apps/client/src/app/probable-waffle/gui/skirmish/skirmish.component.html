@@ -4,16 +4,17 @@
     <div class="d-flex flex-wrap justify-content-center">
       <fuzzy-waddle-map-definition
         #mapDefinition
-        [mapPlayerDefinition]="selectedMap"
         (mapPlayerDefinitionChange)="mapChanged($event)"
+        [mapPlayerDefinition]="selectedMap"
       ></fuzzy-waddle-map-definition>
       <fuzzy-waddle-player-definition
-        [selectedMap]="selectedMap"
         (playerJoined)="playerCountChanged()"
         (playerRemoved)="playerRemoved($event)"
+        [selectedMap]="selectedMap"
       ></fuzzy-waddle-player-definition>
       <fuzzy-waddle-game-mode-definition
-        (gameModeLobbyChange)="gameModeLobby = $event"></fuzzy-waddle-game-mode-definition>
+        (gameModeLobbyChange)="gameModeLobby = $event"
+      ></fuzzy-waddle-game-mode-definition>
     </div>
   </div>
 </div>

@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({ selector: 'fuzzy-waddle-home-nav', template: '' })
 export class HomeNavTestingComponent {}
+
 describe('HomeNavComponent', () => {
   let component: HomeNavComponent;
   let fixture: ComponentFixture<HomeNavComponent>;

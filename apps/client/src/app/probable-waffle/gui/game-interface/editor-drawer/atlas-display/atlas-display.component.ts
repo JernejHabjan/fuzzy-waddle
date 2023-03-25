@@ -9,14 +9,17 @@ import { AtlasFrame } from '../atlas-loader.service';
 })
 export class AtlasDisplayComponent {
   displaySize = 64;
+  @Input() atlasFrame!: AtlasFrame;
+  src: string | null = null;
+
+  private _textureName!: string;
+
   @Input()
   set textureName(value: string) {
     this._textureName = value;
     this.src = `assets/probable-waffle/atlas/${this._textureName}.png`;
   }
-  @Input() atlasFrame!: AtlasFrame;
-  private _textureName!: string;
-  src: string | null = null;
+
   get fileName(): string {
     let fileName = this.atlasFrame.filename;
     if (fileName.includes('.')) {
@@ -37,6 +40,7 @@ export class AtlasDisplayComponent {
     const width = this.atlasFrame.frame.w * this.scale;
     return (this.displaySize - width) / 2;
   }
+
   getTranslateY(): number {
     const height = this.atlasFrame.frame.h * this.scale;
     return (this.displaySize - height) / 2;

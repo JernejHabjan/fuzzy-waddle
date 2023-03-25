@@ -10,5 +10,6 @@ import { Message } from '@fuzzy-waddle/api-interfaces';
 })
 export class PlaygroundComponent {
   hello$: Observable<Message> = this.probableWafflePlaygroundService.getData();
+
   constructor(private probableWafflePlaygroundService: PlaygroundService) {}
 }

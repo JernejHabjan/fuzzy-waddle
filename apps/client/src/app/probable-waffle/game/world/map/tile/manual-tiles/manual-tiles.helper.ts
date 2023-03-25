@@ -122,6 +122,22 @@ export class ManualTilesHelper {
     }
   }
 
+  tryPlaceTileOnLayer(possibleCoords: PossibleClickCoords, tileToBeReplaced: number | null, layer: number): void {
+    if (tileToBeReplaced === null) return;
+    const tiles = (this.mapHelper.manualLayers.find((l) => l.z === layer) as ManualTileLayer).tiles;
+
+    this.replaceManualTilesOnLayer(
+      tiles,
+      {
+        tileXY: possibleCoords.tileXY,
+        z: layer
+      },
+      {
+        tileIndex: tileToBeReplaced
+      }
+    );
+  }
+
   private removeManualTileAt(manualTilesLayer: ManualTile[], tilePlacementData: TilePlacementData): void {
     // find it by tilePlacementData in manualTilesLayer and remove it
 
@@ -199,22 +215,6 @@ export class ManualTilesHelper {
       manualRectangleInputInterceptor.points[i].x -= MapSizeInfo.info.tileWidthHalf;
       manualRectangleInputInterceptor.points[i].y -= MapSizeInfo.info.tileHeight;
     }
-  }
-
-  tryPlaceTileOnLayer(possibleCoords: PossibleClickCoords, tileToBeReplaced: number | null, layer: number): void {
-    if (tileToBeReplaced === null) return;
-    const tiles = (this.mapHelper.manualLayers.find((l) => l.z === layer) as ManualTileLayer).tiles;
-
-    this.replaceManualTilesOnLayer(
-      tiles,
-      {
-        tileXY: possibleCoords.tileXY,
-        z: layer
-      },
-      {
-        tileIndex: tileToBeReplaced
-      }
-    );
   }
 
   /**

@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({ selector: 'fuzzy-waddle-tile-selector-group', template: '' })
 export class TileSelectorGroupTestingComponent {}
+
 describe('TileSelectorGroupComponent', () => {
   let component: TileSelectorGroupComponent;
   let fixture: ComponentFixture<TileSelectorGroupComponent>;

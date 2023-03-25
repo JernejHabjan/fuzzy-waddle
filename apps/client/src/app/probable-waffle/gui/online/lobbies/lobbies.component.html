@@ -8,11 +8,11 @@
         Filter:
         <div *ngFor="let map of Maps.maps">
           <input
-            type="checkbox"
+            (change)="filter($event)"
             id="{{ map.id }}"
             name="{{ map.name }}"
+            type="checkbox"
             value="{{ map.id }}"
-            (change)="filter($event)"
           />
           <label for="{{ map.id }}">{{ map.name }}</label>
         </div>
@@ -27,8 +27,8 @@
         </thead>
         <tbody>
           <tr
-            *ngFor="let lobby of lobbies"
             (click)="select(lobby)"
+            *ngFor="let lobby of lobbies"
             class="cursor-pointer {{ lobby === selectedLobby ? 'bg-primary' : '' }}"
           >
             <td>{{ lobby.map }}</td>
@@ -41,7 +41,7 @@
     <div>
       <div>
         <div>Map Preview</div>
-        <img src="https://via.placeholder.com/300x300" alt="map preview" />
+        <img alt="map preview" src="https://via.placeholder.com/300x300" />
         <div>Map Description</div>
       </div>
       <div>
@@ -53,6 +53,6 @@
   </div>
 
   <div>
-    <button type="button" class="btn btn-primary" (click)="join()" [disabled]="!selectedLobby">Join</button>
+    <button (click)="join()" [disabled]="!selectedLobby" class="btn btn-primary" type="button">Join</button>
   </div>
 </div>

@@ -8,14 +8,17 @@ export interface ITransformable {
 }
 
 export type TransformChange = [TilePlacementData, SpriteWorldPlacementInfo];
+
 export class TransformComponent implements IComponent {
   readonly onTransformChanged: EventEmitter<TransformChange> = new EventEmitter<TransformChange>();
   tilePlacementData: TilePlacementData;
   worldPlacementInfo: SpriteWorldPlacementInfo;
+
   constructor(tilePlacementData: TilePlacementData) {
     this.tilePlacementData = tilePlacementData;
     this.worldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);
   }
+
   transform(tilePlacementData: TilePlacementData): void {
     this.tilePlacementData = tilePlacementData;
     this.worldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(tilePlacementData);

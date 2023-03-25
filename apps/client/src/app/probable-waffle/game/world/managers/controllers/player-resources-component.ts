@@ -3,6 +3,7 @@ import { ResourceType } from '../../../entity/economy/resource/resource-type';
 
 export class PlayerResourcesComponent implements IComponent {
   resources: Map<ResourceType, number> = new Map<ResourceType, number>();
+
   init(): void {
     // pass
   }

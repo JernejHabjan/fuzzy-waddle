@@ -8,10 +8,10 @@ export interface IComponent {
 }
 
 export default class ComponentService {
-  constructor(private gameObjectName: string) {}
-
   private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObjectName
   private queuedForStart: IComponent[] = [];
+
+  constructor(private gameObjectName: string) {}
 
   addComponent<T extends IComponent>(component: T): T {
     // make sure we have a list of components for this gameObject

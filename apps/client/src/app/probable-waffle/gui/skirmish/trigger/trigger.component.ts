@@ -12,17 +12,6 @@ export class TriggerComponent {
 
   constructor(private router: Router) {}
 
-  start() {
-    // todo use this to set the real game mode!
-    console.log('selected map definitions');
-
-    this.router.navigate(['probable-waffle/game']);
-  }
-
-  leaveClick() {
-    this.router.navigate(['probable-waffle']);
-  }
-
   /**
    * at least two players selected and at least two different teams
    */
@@ -41,5 +30,16 @@ export class TriggerComponent {
     );
     const selectedTeamsSet = new Set(selectedTeams.map((startPosition) => startPosition.team));
     return selectedPlayers.length >= 2 && selectedEmptyTeams.length + selectedTeamsSet.size >= 2;
+  }
+
+  start() {
+    // todo use this to set the real game mode!
+    console.log('selected map definitions');
+
+    this.router.navigate(['probable-waffle/game']);
+  }
+
+  leaveClick() {
+    this.router.navigate(['probable-waffle']);
   }
 }

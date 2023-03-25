@@ -34,21 +34,22 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   selectedType: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean };
   selectedAtlas: AtlasFrame | null = null;
   selectedTile: number | null = null;
-  private emitterSubjectSubscription?: Subscription;
-  private atlasEmitterSubscription?: Subscription;
   leaveModalConfirm: ModalConfig = {
     modalTitle: 'Leave the game?',
     dismissButtonLabel: 'Continue',
     closeButtonLabel: 'Leave',
     onClose: async () => await this.router.navigate(['probable-waffle/skirmish']) // todo
   };
+  private emitterSubjectSubscription?: Subscription;
+  private atlasEmitterSubscription?: Subscription;
   @ViewChild('modal') private modalComponent!: ModalComponent;
-  async openModal() {
-    return await this.modalComponent.open();
-  }
 
   constructor(private route: ActivatedRoute, private router: Router, private atlasLoaderService: AtlasLoaderService) {
     this.selectedType = this.tileTypes[0];
+  }
+
+  async openModal() {
+    return await this.modalComponent.open();
   }
 
   async ngOnInit(): Promise<void> {
@@ -101,6 +102,11 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
     return filename.replace(/_/g, ' ');
   }
 
+  ngOnDestroy(): void {
+    this.emitterSubjectSubscription?.unsubscribe();
+    this.atlasEmitterSubscription?.unsubscribe();
+  }
+
   private listenToSelectionEvents() {
     this.emitterSubjectSubscription = SceneCommunicatorService.tileEmitterSubject.subscribe((tileId) => {
       this.selectedTile = tileId;
@@ -108,10 +114,5 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
     this.atlasEmitterSubscription = SceneCommunicatorService.atlasEmitterSubject.subscribe((a) => {
       this.selectedAtlas = a?.atlasFrame ?? null;
     });
-  }
-
-  ngOnDestroy(): void {
-    this.emitterSubjectSubscription?.unsubscribe();
-    this.atlasEmitterSubscription?.unsubscribe();
   }
 }

@@ -9,13 +9,12 @@ export interface ResourceSource {
 }
 
 export class ResourceSourceComponent implements IComponent {
+  onResourcesChanged: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
+  onDepleted: Subject<Actor> = new Subject<Actor>();
   private currentResources: number;
   private containerComponent: ContainerComponent | null = null;
   private gathererMustEnter = false;
   private gathererCapacity = 0;
-
-  onResourcesChanged: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
-  onDepleted: Subject<Actor> = new Subject<Actor>();
 
   constructor(
     private readonly actor: Actor,

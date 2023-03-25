@@ -26,10 +26,6 @@ export class MapPlayerDefinition {
   allPossibleTeams: (number | null)[] = [];
   initialNrAiPlayers = 1;
 
-  get playerPositions(): PositionPlayerDefinition[] {
-    return this.startPositionPerPlayer.filter((positionPlayer) => positionPlayer.player.playerPosition !== null);
-  }
-
   constructor(public map: MapInfo) {
     this.allPossibleTeams.push(null);
     const races = RaceDefinitions.raceTypes;
@@ -51,6 +47,10 @@ export class MapPlayerDefinition {
       );
       this.allPossibleTeams.push(i);
     }
+  }
+
+  get playerPositions(): PositionPlayerDefinition[] {
+    return this.startPositionPerPlayer.filter((positionPlayer) => positionPlayer.player.playerPosition !== null);
   }
 }
 

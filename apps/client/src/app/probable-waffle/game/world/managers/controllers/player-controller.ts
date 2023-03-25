@@ -18,6 +18,7 @@ export class PlayerController extends Actor {
   issueOrder(orderData: OrderData, issueTo: RepresentableActor) {
     throw new Error('Not implemented');
   }
+
   surrender() {
     throw new Error('Not implemented');
   }
@@ -25,6 +26,7 @@ export class PlayerController extends Actor {
   cancelProduction(productionActor: Actor) {
     throw new Error('Not implemented');
   }
+
   cancelConstruction(constructionActor: Actor) {
     throw new Error('Not implemented');
   }

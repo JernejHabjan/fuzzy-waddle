@@ -15,6 +15,7 @@ export interface AtlasFrame {
   filename: string;
   frame: Frame;
 }
+
 export interface TileFrame extends AtlasFrame {
   id: number;
   tileProperties: TilePossibleProperties;
@@ -26,6 +27,7 @@ interface Frame {
   w: number;
   h: number;
 }
+
 export interface Atlas {
   frames: AtlasFrame[];
   meta: unknown;

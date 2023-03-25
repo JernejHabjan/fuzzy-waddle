@@ -11,6 +11,7 @@ export class ChatComponent {
   @ViewChild('chatBody') chatBody!: ElementRef;
   message = '';
   messages: ChatMessage[] = [];
+
   constructor(private chatService: ChatService) {
     chatService.getMessage().subscribe((msg: ChatMessage) => {
       this.messages.push(msg);

@@ -1,7 +1,5 @@
 import { TechTreeComponent } from './tech-tree';
 import { RaceInfo } from './race-info';
-import { TownHall } from '../entity/assets/buildings/town-hall';
-import { Worker } from '../entity/assets/characters/worker';
 import { ActorType } from '../entity/assets/types/actor-type';
 
 export enum RaceType {

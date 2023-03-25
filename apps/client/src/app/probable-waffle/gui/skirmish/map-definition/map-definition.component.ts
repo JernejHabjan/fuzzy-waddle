@@ -41,8 +41,27 @@ export class MapDefinitionComponent {
   preferredCanvasHeight = 200;
   canvasWidth = this.preferredCanvasWidth;
   canvasHeight = this.preferredCanvasHeight;
-  private img!: HTMLImageElement;
   selectedMap?: MapPlayerDefinition;
+  @Output() mapPlayerDefinitionChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
+  private img!: HTMLImageElement;
+  // get canvas related references
+  private ctx!: CanvasRenderingContext2D;
+  private canvasOffsetX!: number;
+  private canvasOffsetY!: number;
+  private contextWidth!: number;
+  private contextHeight!: number;
+  private initialized = false;
+  // drag related variables
+  private currentlyDragging = false;
+  private startX = 0;
+  private startY = 0;
+  private rects: DisplayRect[] = [];
+  private rectangleWidth = 30;
+  private rectangleHeight = 30;
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+
+  private _canvas?: ElementRef;
 
   @ViewChild('canvas')
   get canvas(): ElementRef | undefined {
@@ -55,6 +74,8 @@ export class MapDefinitionComponent {
     // noinspection JSIgnoredPromiseFromCall
     this.initialize();
   }
+
+  private _mapPlayerDefinition?: MapPlayerDefinition;
 
   @Input()
   get mapPlayerDefinition(): MapPlayerDefinition | undefined {
@@ -71,33 +92,99 @@ export class MapDefinitionComponent {
     this.initialize();
   }
 
-  @Output() mapPlayerDefinitionChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
-  private _canvas?: ElementRef;
-  private _mapPlayerDefinition?: MapPlayerDefinition;
+  /**
+   * returns iso coordinates that correspond with image definitions for selected map definition
+   * Meaning that iso coordinates are calculated based on image size and map definition
+   */
+  private get isoCoordinates(): { x: number; y: number }[] {
+    const { scale, x, y, width, height } = this.getImgDefinitions();
 
-  // get canvas related references
-  private ctx!: CanvasRenderingContext2D;
-  private canvasOffsetX!: number;
-  private canvasOffsetY!: number;
-  private contextWidth!: number;
-  private contextHeight!: number;
-  private initialized = false;
+    const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
+    const map = mapPlayerDefinition.map;
+    const mapWidth = map.mapWidth;
+    const mapHeight = map.mapHeight;
+    const isoCoordinates: { x: number; y: number }[] = [];
+    map.startPositions.forEach((startPosition) => {
+      const startPositionX = startPosition.tileXY.x;
+      const startPositionY = startPosition.tileXY.y;
+      const startPositionZ = startPosition.z;
 
-  // drag related variables
-  private currentlyDragging = false;
-  private startX = 0;
-  private startY = 0;
-  private rects: DisplayRect[] = [];
-  private rectangleWidth = 30;
-  private rectangleHeight = 30;
+      // convert to isometric coordinates
+      const imageTileHeight = height / mapHeight;
+      const imageTileWidth = width / mapWidth;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+      const isoXTileXY = ((startPositionX - startPositionY) * imageTileWidth) / 2;
+      const isoYTileXY = ((startPositionX + startPositionY) * imageTileHeight) / 2 - startPositionZ * imageTileHeight;
+
+      const worldWidthHalf = (mapWidth * imageTileWidth) / 2;
+
+      const isoWorldX = worldWidthHalf + isoXTileXY + imageTileWidth / 2;
+      const isoWorldY = isoYTileXY;
+
+      const isoX = isoWorldX * scale + x;
+      const isoY = isoWorldY * scale + y;
+
+      isoCoordinates.push({ x: isoX, y: isoY });
+    });
+    return isoCoordinates;
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.setCanvasSize();
     this.recalculateOffset();
     this.draw();
+  }
+
+  /**
+   * create draggable rectangles for each player currently joined on the map
+   */
+  initializePlayerPositions() {
+    // an array of objects that define different rectangles
+    if (!this.mapPlayerDefinition) {
+      return;
+    }
+    const isoCoordinates = this.isoCoordinates;
+
+    let i = -1;
+    for (const positionForPlayer of this.mapPlayerDefinition.startPositionPerPlayer) {
+      i++;
+      if (!positionForPlayer.player.joined) {
+        continue;
+      }
+
+      const player = positionForPlayer.player as PlayerLobbyDefinition;
+      const playerRect = this.rects.find((rect) => rect.playerNumber === player.playerNumber);
+      if (!playerRect) {
+        const playerPosition = player.playerPosition as number;
+        const isoCoordinate = isoCoordinates[playerPosition];
+        this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, positionForPlayer.playerColor);
+      }
+    }
+  }
+
+  /**
+   * Removes player rectangle from canvas
+   */
+  removePlayer(playerNumber: number) {
+    const index = this.rects.findIndex((rect) => rect.playerNumber === playerNumber);
+    if (index >= 0) {
+      this.rects.splice(index, 1);
+    }
+  }
+
+  /**
+   * redraw the scene
+   */
+  draw() {
+    this.clear();
+    this.drawMapWithStartPositions();
+    this.drawPlayerRectangles();
+  }
+
+  mapChanged(selectedMap: MapPlayerDefinition) {
+    this.selectedMap = selectedMap;
+    this.mapPlayerDefinitionChange.next(selectedMap);
   }
 
   private setCanvasSize() {
@@ -191,43 +278,6 @@ export class MapDefinitionComponent {
   }
 
   /**
-   * create draggable rectangles for each player currently joined on the map
-   */
-  initializePlayerPositions() {
-    // an array of objects that define different rectangles
-    if (!this.mapPlayerDefinition) {
-      return;
-    }
-    const isoCoordinates = this.isoCoordinates;
-
-    let i = -1;
-    for (const positionForPlayer of this.mapPlayerDefinition.startPositionPerPlayer) {
-      i++;
-      if (!positionForPlayer.player.joined) {
-        continue;
-      }
-
-      const player = positionForPlayer.player as PlayerLobbyDefinition;
-      const playerRect = this.rects.find((rect) => rect.playerNumber === player.playerNumber);
-      if (!playerRect) {
-        const playerPosition = player.playerPosition as number;
-        const isoCoordinate = isoCoordinates[playerPosition];
-        this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, positionForPlayer.playerColor);
-      }
-    }
-  }
-
-  /**
-   * Removes player rectangle from canvas
-   */
-  removePlayer(playerNumber: number) {
-    const index = this.rects.findIndex((rect) => rect.playerNumber === playerNumber);
-    if (index >= 0) {
-      this.rects.splice(index, 1);
-    }
-  }
-
-  /**
    * Adds new draggable rectangle
    */
   private createDraggablePlayerRectangle(
@@ -287,15 +337,6 @@ export class MapDefinitionComponent {
    */
   private clear() {
     this.ctx.clearRect(0, 0, this.contextWidth, this.contextHeight);
-  }
-
-  /**
-   * redraw the scene
-   */
-  draw() {
-    this.clear();
-    this.drawMapWithStartPositions();
-    this.drawPlayerRectangles();
   }
 
   /**
@@ -695,43 +736,6 @@ export class MapDefinitionComponent {
   }
 
   /**
-   * returns iso coordinates that correspond with image definitions for selected map definition
-   * Meaning that iso coordinates are calculated based on image size and map definition
-   */
-  private get isoCoordinates(): { x: number; y: number }[] {
-    const { scale, x, y, width, height } = this.getImgDefinitions();
-
-    const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
-    const map = mapPlayerDefinition.map;
-    const mapWidth = map.mapWidth;
-    const mapHeight = map.mapHeight;
-    const isoCoordinates: { x: number; y: number }[] = [];
-    map.startPositions.forEach((startPosition) => {
-      const startPositionX = startPosition.tileXY.x;
-      const startPositionY = startPosition.tileXY.y;
-      const startPositionZ = startPosition.z;
-
-      // convert to isometric coordinates
-      const imageTileHeight = height / mapHeight;
-      const imageTileWidth = width / mapWidth;
-
-      const isoXTileXY = ((startPositionX - startPositionY) * imageTileWidth) / 2;
-      const isoYTileXY = ((startPositionX + startPositionY) * imageTileHeight) / 2 - startPositionZ * imageTileHeight;
-
-      const worldWidthHalf = (mapWidth * imageTileWidth) / 2;
-
-      const isoWorldX = worldWidthHalf + isoXTileXY + imageTileWidth / 2;
-      const isoWorldY = isoYTileXY;
-
-      const isoX = isoWorldX * scale + x;
-      const isoY = isoWorldY * scale + y;
-
-      isoCoordinates.push({ x: isoX, y: isoY });
-    });
-    return isoCoordinates;
-  }
-
-  /**
    * draws blank start positions on map
    */
   private drawMapWithStartPositions() {
@@ -746,10 +750,5 @@ export class MapDefinitionComponent {
    */
   private drawStartPositionSquare(x: number, y: number) {
     this.rect(x, y, this.rectangleWidth, this.rectangleHeight, 'white');
-  }
-
-  mapChanged(selectedMap: MapPlayerDefinition) {
-    this.selectedMap = selectedMap;
-    this.mapPlayerDefinitionChange.next(selectedMap);
   }
 }

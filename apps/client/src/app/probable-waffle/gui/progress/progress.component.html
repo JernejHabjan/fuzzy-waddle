@@ -9,13 +9,13 @@
         <h3 class="achievement-title">{{ achievement.name }}</h3>
         <div>{{ achievement.description }}</div>
       </div>
-      <img class="achievement-image" [src]="achievement.image" [alt]="achievement.name" />
+      <img [alt]="achievement.name" [src]="achievement.image" class="achievement-image" />
     </div>
   </div>
 </div>
 
 <div class="toolbar">
   <div class="toolbar-left">
-    <button class="button button-clear" (click)="leaveClick()">Leave</button>
+    <button (click)="leaveClick()" class="button button-clear">Leave</button>
   </div>
 </div>

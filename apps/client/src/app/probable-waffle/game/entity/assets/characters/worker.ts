@@ -23,6 +23,7 @@ export const WorkerDefinition: PawnInfoDefinition = {
     move: 'move'
   }
 };
+
 export class Worker extends PlayerCharacter implements Builder, Gatherer {
   pawnDefinition: PawnInfoDefinition = WorkerDefinition;
   builderComponent!: BuilderComponent;

@@ -15,6 +15,7 @@ export class ChatService implements ChatServiceInterface {
   sendMessage(msg: ChatMessage): void {
     this.socket.emit(GatewayEvent.CHAT_MESSAGE, msg);
   }
+
   getMessage(): Observable<ChatMessage> {
     return this.socket.fromEvent<ChatMessage>(GatewayEvent.CHAT_MESSAGE).pipe(map((data: ChatMessage) => data));
   }

@@ -14,6 +14,7 @@ export class VictoryCondition {
 
   constructor(public name: string) {}
 }
+
 export class VictoryConditions {
   constructor(public victoryCondition: VictoryCondition, public value: number) {}
 }

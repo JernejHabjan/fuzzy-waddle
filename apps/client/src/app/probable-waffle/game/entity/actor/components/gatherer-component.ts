@@ -290,6 +290,15 @@ export class GathererComponent implements IComponent {
     return this.carriedResourceAmount >= gatherData.capacity;
   }
 
+  getGatherRange(resourceSource: Actor): number {
+    const gatherData = this.getGatherDataForResourceSource(resourceSource);
+
+    if (!gatherData) {
+      return 0;
+    }
+    return gatherData.range;
+  }
+
   private getGatherDataForResourceType(carriedResourceType: ResourceType): GatherData | null {
     return this.gatheredResources.find((gatherData) => gatherData.resourceType === carriedResourceType) ?? null;
   }
@@ -320,14 +329,5 @@ export class GathererComponent implements IComponent {
     this.previousResourceSource = this.currentResourceSource;
     this.previousResourceType = this.carriedResourceType;
     this.currentResourceSource = null;
-  }
-
-  getGatherRange(resourceSource: Actor): number {
-    const gatherData = this.getGatherDataForResourceSource(resourceSource);
-
-    if (!gatherData) {
-      return 0;
-    }
-    return gatherData.range;
   }
 }

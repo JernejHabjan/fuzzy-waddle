@@ -17,17 +17,17 @@ export class StateMachine {
   private isChangingState = false;
   private changeStateQueue: string[] = [];
 
+  constructor(context?: object, id?: string) {
+    this.id = id ?? this.id;
+    this.context = context;
+  }
+
   get previousStateName() {
     if (!this.previousState) {
       return '';
     }
 
     return this.previousState.name;
-  }
-
-  constructor(context?: object, id?: string) {
-    this.id = id ?? this.id;
-    this.context = context;
   }
 
   isCurrentState(name: string) {

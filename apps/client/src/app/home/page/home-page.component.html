@@ -2,11 +2,11 @@
 
 <a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ probableWaffle.route }}">
   <img
-    class="featured-image"
-    [src]="'assets/games/images/' + probableWaffle.image"
     [alt]="probableWaffle.name"
-    width="200px"
+    [src]="'assets/games/images/' + probableWaffle.image"
+    class="featured-image"
     height="100px"
+    width="200px"
   />
   <div class="featured-title">
     <h2>Featured</h2>
@@ -15,8 +15,8 @@
 </a>
 
 <div class="all-games">
-  <a class="tile-game nav-link" *ngFor="let game of displayGames" routerLink="{{ game.route }}">
-    <img class="game-image" src="{{ 'assets/games/images/' + game.image }}" [alt]="game.name" />
+  <a *ngFor="let game of displayGames" class="tile-game nav-link" routerLink="{{ game.route }}">
+    <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
     <div class="game-title">
       <h2>{{ game.name }}</h2>
     </div>

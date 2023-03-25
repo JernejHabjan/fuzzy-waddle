@@ -33,15 +33,15 @@ export class ScaleHandler {
     );
   }
 
+  destroy() {
+    this.scaleManager.off(Scale.Events.RESIZE);
+  }
+
   /**
    * * When the screen is resized
    */
   private resize(gameSize: Structs.Size): void {
     this.cameras.resize(gameSize.width, gameSize.height);
     this.setupBounds(true); // todo now center for dev
-  }
-
-  destroy() {
-    this.scaleManager.off(Scale.Events.RESIZE);
   }
 }
