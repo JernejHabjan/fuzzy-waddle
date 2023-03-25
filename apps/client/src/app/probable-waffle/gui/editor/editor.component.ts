@@ -3,6 +3,7 @@ import { MapIds } from '../../game/world/scenes/scenes';
 import { MapPlayerDefinition } from '../skirmish/skirmish.component';
 
 type EditorMap = { name: string; id: MapIds };
+
 @Component({
   selector: 'fuzzy-waddle-editor',
   templateUrl: './editor.component.html',

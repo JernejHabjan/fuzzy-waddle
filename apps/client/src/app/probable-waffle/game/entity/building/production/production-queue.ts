@@ -10,10 +10,11 @@ export type ActorAbleToBeCreated = ActorAbleToBeProduced | ActorAbleToBeBuilt;
 export type ActorAbleToBeCreatedClass = ActorAbleToBeProducedClass | ActorAbleToBeBuiltClass;
 
 export class ProductionQueue {
-  constructor(private capacityPerQueue: number) {}
   queuedActors: ProductionQueueItem[] = [];
-
   remainingProductionTime = 0;
+
+  constructor(private capacityPerQueue: number) {}
+
   add(actor: ProductionQueueItem) {
     if (this.queuedActors.length >= this.capacityPerQueue) {
       throw new Error('Queue is full');

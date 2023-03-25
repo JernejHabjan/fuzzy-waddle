@@ -5,14 +5,14 @@ import { PawnAiControllerComponent } from '../../../../../world/managers/control
 export class MoveToTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
     const targetActor = taskData.blackboard.targetActor;
-    let targetLocation =taskData.blackboard.targetLocation;
-    if(targetActor){
-      const  targetActorTransformComponent = targetActor.components.findComponentOrNull(TransformComponent);
-      if(targetActorTransformComponent){
+    let targetLocation = taskData.blackboard.targetLocation;
+    if (targetActor) {
+      const targetActorTransformComponent = targetActor.components.findComponentOrNull(TransformComponent);
+      if (targetActorTransformComponent) {
         targetLocation = targetActorTransformComponent.tilePlacementData;
       }
     }
-    if(!targetLocation){
+    if (!targetLocation) {
       return TaskResultType.Failure;
     }
 
@@ -22,7 +22,6 @@ export class MoveToTask implements ITask {
       return TaskResultType.Failure;
     }
     pawnAiControllerComponent.issueMoveOrder(targetLocation);
-
 
     return TaskResultType.Success;
   }

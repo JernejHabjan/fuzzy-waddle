@@ -1,4 +1,4 @@
-@import '../../../../assets/styles/_variables';
+@import '../../../../styles/_variables';
 
 .chat-container {
   position: fixed;
@@ -12,6 +12,7 @@
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
+
   .chat {
     display: flex;
     flex-direction: column;
@@ -51,6 +52,7 @@
     }
   }
 }
+
 .chat-container-minimized {
   height: unset;
   width: unset;

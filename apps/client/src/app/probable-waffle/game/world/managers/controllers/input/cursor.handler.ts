@@ -9,11 +9,11 @@ export class CursorHandler {
     this.setupCursor();
   }
 
-  private setupCursor() {
-    this.input.setDefaultCursor('url(assets/probable-waffle/input/cursors/sc2/SC2-cursor.cur), pointer');
-  }
-
   destroy() {
     this.input.setDefaultCursor('default');
+  }
+
+  private setupCursor() {
+    this.input.setDefaultCursor('url(assets/probable-waffle/input/cursors/sc2/SC2-cursor.cur), pointer');
   }
 }

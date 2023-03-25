@@ -16,7 +16,6 @@ export class RaceInfo {
      * Relative locations of the actors to spawn for each player in the game, relative to their respective start spot
      */
     public readonly initialActorLocations: Vector2Simple[] = [],
-
     /**
      * Optional types of actors that are required for a player to be alive. As soon as no actor of the specified type is alive, the player is defeated
      */
@@ -28,6 +27,7 @@ export class RaceInfo {
     public readonly buildOrder: ActorType[] = [], // todo query then ActorTypeLookup constant
     public readonly includeInitialActorsInBuildOrder = true
   ) {}
+
   getBuildOrder(): ActorType[] {
     const classes = [];
     if (this.includeInitialActorsInBuildOrder) {

@@ -7,6 +7,7 @@ import { HomeNavTestingComponent } from '../../../shared/components/home-nav/hom
 
 @Component({ selector: 'fuzzy-waddle-profile-nav', template: '' })
 export class ProfileNavTestingComponent {}
+
 describe('ProfileNavComponent', () => {
   let component: ProfileNavComponent;
   let fixture: ComponentFixture<ProfileNavComponent>;

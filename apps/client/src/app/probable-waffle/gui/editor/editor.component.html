@@ -9,8 +9,8 @@
     <div>
       <div *ngFor="let map of maps" class="align-items-center d-flex">
         <div>{{ map.name }}</div>
-        <img ngSrc="https://via.placeholder.com/300x300" alt="map preview" width="100" height="100" class="m-1" />
-        <button type="button" class="btn btn-primary" (click)="loadMap(map)">Load</button>
+        <img alt="map preview" class="m-1" height="100" ngSrc="https://via.placeholder.com/300x300" width="100" />
+        <button (click)="loadMap(map)" class="btn btn-primary" type="button">Load</button>
       </div>
     </div>
   </div>

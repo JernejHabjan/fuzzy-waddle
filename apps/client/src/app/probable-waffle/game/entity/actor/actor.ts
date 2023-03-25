@@ -7,13 +7,13 @@ export abstract class Actor implements IComponent {
    * unique name
    */
   readonly name: string;
-  private started = false;
   destroyed = false;
   killed = false;
   /**
    * time until actor is finally destroyed from scene
    */
   despawnTime = 10;
+  private started = false;
 
   protected constructor() {
     this.name = Utils.String.UUID();

@@ -1,5 +1,3 @@
-export class MatchInstance{
-
+export class MatchInstance {
   // todo
-
 }

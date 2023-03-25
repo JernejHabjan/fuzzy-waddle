@@ -12,12 +12,14 @@ export interface ResourceDrain {
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent implements IComponent {
+  onResourcesReturned: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
   private containerComponent: ContainerComponent | null = null;
   private gathererMustEnter = false;
   private gathererCapacity = 0;
   private playerResourcesComponent!: PlayerResourcesComponent;
-  onResourcesReturned: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
+
   constructor(private readonly actor: Actor, private readonly resourceTypes: ResourceType[]) {}
+
   init(): void {
     this.containerComponent = this.actor.components.findComponentOrNull(ContainerComponent);
     this.gathererCapacity = this.containerComponent?.capacity ?? 0;

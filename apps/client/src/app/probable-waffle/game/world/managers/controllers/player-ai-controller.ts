@@ -1,5 +1,8 @@
 import { PlayerController } from './player-controller';
-import { ActorAbleToBeCreatedClass, ActorAbleToBeProducedClass } from '../../../entity/building/production/production-queue';
+import {
+  ActorAbleToBeCreatedClass,
+  ActorAbleToBeProducedClass
+} from '../../../entity/building/production/production-queue';
 import { Actor } from '../../../entity/actor/actor';
 import { ResourceDrainComponent } from '../../../entity/economy/resource/resource-drain-component';
 import { GameplayLibrary } from '../../../library/gameplay-library';
@@ -24,7 +27,10 @@ export class PlayerAiController extends PlayerController {
    * Units and building the ai should produce, in order
    */
   buildOrder: ActorAbleToBeCreatedClass[] = [];
-
+  /**
+   * Whether killing an actor owned by this player yields a reward for the attacking player
+   */
+  givesBounty = false;
   /**
    * Maximum distance of a new building to an existing one
    */
@@ -33,10 +39,6 @@ export class PlayerAiController extends PlayerController {
    * Type of the primary resource for the ai to gather (e.g. used for placing resource drains)
    */
   private primaryResourceType?: ResourceType;
-  /**
-   * Whether killing an actor owned by this player yields a reward for the attacking player
-   */
-  givesBounty = false;
 
   constructor() {
     super();

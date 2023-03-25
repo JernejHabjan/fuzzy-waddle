@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {User, UsersService} from './users.service';
+import { User, UsersService } from './users.service';
 import { IUsersService } from './users.service.interface';
 
 export const usersServiceStub = {

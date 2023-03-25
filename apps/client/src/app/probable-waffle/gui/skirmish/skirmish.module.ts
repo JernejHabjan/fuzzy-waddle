@@ -9,6 +9,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
 import { ComponentsModule } from '../../../shared/components/components.module';
 import { RouterLink } from '@angular/router';
+import { TriggerComponent } from './trigger/trigger.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { RouterLink } from '@angular/router';
     PlayerDefinitionComponent,
     MapSelectorComponent,
     MapDefinitionComponent,
-    GameModeDefinitionComponent
+    GameModeDefinitionComponent,
+    TriggerComponent
   ],
   exports: [SkirmishComponent, MapSelectorComponent],
   imports: [CommonModule, FormsModule, FontAwesomeModule, ComponentsModule, RouterLink]

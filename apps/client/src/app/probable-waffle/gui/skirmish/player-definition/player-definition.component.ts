@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MapPlayerDefinition, PositionPlayerDefinition } from '../skirmish.component';
 import { RaceDefinitions } from '../../../game/player/race-definitions';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export enum PlayerType {
-  Human=0,
-  AI=1
+  Human = 0,
+  AI = 1
 }
 
-export class PlayerTypeDefinitions{
+export class PlayerTypeDefinitions {
   static playerTypes = [
     { value: PlayerType.Human, name: 'Human' },
     { value: PlayerType.AI, name: 'AI' }
@@ -19,17 +18,18 @@ export class PlayerTypeDefinitions{
   };
 }
 
-export enum Difficulty{
-  Easy=0,
-  Medium=1,
-  Hard=2
+export enum Difficulty {
+  Easy = 0,
+  Medium = 1,
+  Hard = 2
 }
-export class DifficultyDefinitions{
+
+export class DifficultyDefinitions {
   static difficulties = [
     { name: 'Easy', value: Difficulty.Easy },
     { name: 'Normal', value: Difficulty.Medium },
     { name: 'Hard', value: Difficulty.Hard }
-  ]
+  ];
 }
 
 @Component({
@@ -41,19 +41,10 @@ export class PlayerDefinitionComponent {
   PlayerTypeDefinitions = PlayerTypeDefinitions;
   PlayerType = PlayerType;
   RaceDefinitions = RaceDefinitions;
-  DifficultyDefinitions=DifficultyDefinitions;
+  DifficultyDefinitions = DifficultyDefinitions;
   @Input() selectedMap?: MapPlayerDefinition;
   @Output() playerJoined: EventEmitter<void> = new EventEmitter<void>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
-
-  addPlayer(playerIndex: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
-    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
-    startPositionPerPlayerElement.player.joined = true;
-    startPositionPerPlayerElement.difficulty = Difficulty.Medium;
-    this.playerJoined.emit();
-  }
 
   /**
    * get first free position
@@ -77,6 +68,15 @@ export class PlayerDefinitionComponent {
       break;
     }
     return freePosition;
+  }
+
+  addPlayer(playerIndex: number) {
+    const map = this.selectedMap as MapPlayerDefinition;
+    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
+    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
+    startPositionPerPlayerElement.player.joined = true;
+    startPositionPerPlayerElement.difficulty = Difficulty.Medium;
+    this.playerJoined.emit();
   }
 
   removePlayer(playerNumber: number) {

@@ -17,6 +17,13 @@ export interface TileWorldData extends TilePlacementData {
 export class TilemapInputHandler {
   constructor(private readonly tilemapLayer: Tilemaps.TilemapLayer) {}
 
+  static get defaultTilemapLayerProperties(): TileLayerProperties {
+    return {
+      tileIndex: 0,
+      stepHeight: 0
+    };
+  }
+
   /**
    *
    * Returns true if the tile was found and selected
@@ -41,13 +48,6 @@ export class TilemapInputHandler {
       };
     }
     return null;
-  }
-
-  static get defaultTilemapLayerProperties(): TileLayerProperties {
-    return {
-      tileIndex: 0,
-      stepHeight: 0
-    };
   }
 
   destroy() {

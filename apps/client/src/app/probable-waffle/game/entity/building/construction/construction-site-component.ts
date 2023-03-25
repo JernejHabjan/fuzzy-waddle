@@ -32,12 +32,12 @@ export type ConstructionSiteDefinition = {
 };
 
 export class ConstructionSiteComponent implements IComponent {
+  public constructionStarted: EventEmitter<number> = new EventEmitter<number>();
+  public constructionProgressChanged: EventEmitter<number> = new EventEmitter<number>();
   private remainingConstructionTime = 0;
   private playerResourcesComponent: PlayerResourcesComponent;
   private state: ConstructionStateEnum = ConstructionStateEnum.NotStarted;
   private assignedBuilders: Actor[] = [];
-  public constructionStarted: EventEmitter<number> = new EventEmitter<number>();
-  public constructionProgressChanged: EventEmitter<number> = new EventEmitter<number>();
   private onConstructionFinished: EventEmitter<Actor> = new EventEmitter<Actor>();
 
   constructor(private owner: Actor, private constructionSiteDefinition: ConstructionSiteDefinition) {
@@ -116,21 +116,6 @@ export class ConstructionSiteComponent implements IComponent {
     this.constructionStarted.emit(this.constructionSiteDefinition.constructionTime);
   }
 
-  private finishConstruction() {
-    this.state = ConstructionStateEnum.Finished;
-    // todo play sound
-
-    if (this.constructionSiteDefinition.consumesBuilders) {
-      this.assignedBuilders.forEach((builder) => {
-        // todo also somehow else destroy???
-        builder.destroy();
-      });
-    }
-
-    // todo spawn finished building
-    this.onConstructionFinished.emit(this.owner);
-  }
-
   cancelConstruction() {
     if (this.isFinished()) {
       return;
@@ -159,10 +144,6 @@ export class ConstructionSiteComponent implements IComponent {
     return this.state === ConstructionStateEnum.Finished;
   }
 
-  private getProgressPercentage() {
-    return 1 - this.remainingConstructionTime / this.constructionSiteDefinition.constructionTime;
-  }
-
   canAssignBuilder() {
     return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders;
   }
@@ -176,5 +157,24 @@ export class ConstructionSiteComponent implements IComponent {
     if (index >= 0) {
       this.assignedBuilders.splice(index, 1);
     }
+  }
+
+  private finishConstruction() {
+    this.state = ConstructionStateEnum.Finished;
+    // todo play sound
+
+    if (this.constructionSiteDefinition.consumesBuilders) {
+      this.assignedBuilders.forEach((builder) => {
+        // todo also somehow else destroy???
+        builder.destroy();
+      });
+    }
+
+    // todo spawn finished building
+    this.onConstructionFinished.emit(this.owner);
+  }
+
+  private getProgressPercentage() {
+    return 1 - this.remainingConstructionTime / this.constructionSiteDefinition.constructionTime;
   }
 }

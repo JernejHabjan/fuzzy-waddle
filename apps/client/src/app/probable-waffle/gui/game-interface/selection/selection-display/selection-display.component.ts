@@ -8,8 +8,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./selection-display.component.scss']
 })
 export class SelectionDisplayComponent implements OnInit, OnDestroy {
-  private selectionSubscription!: Subscription;
   selection: GameObjectSelection[] = [];
+  private selectionSubscription!: Subscription;
 
   ngOnDestroy(): void {
     this.selectionSubscription.unsubscribe();

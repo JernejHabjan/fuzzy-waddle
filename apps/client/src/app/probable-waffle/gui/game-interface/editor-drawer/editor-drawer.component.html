@@ -9,48 +9,48 @@
     background-color: bisque;
   "
 >
-  <button type="button" class="btn btn-danger m-1" (click)="leave()">Leave</button>
+  <button (click)="leave()" class="btn btn-danger m-1" type="button">Leave</button>
   <fuzzy-waddle-modal #modal [modalConfig]="leaveModalConfirm">
     <div>Are you sure you wish to leave?</div>
   </fuzzy-waddle-modal>
 
-  <button type="button" class="btn btn-primary m-1" (click)="editorVisible = !editorVisible">
+  <button (click)="editorVisible = !editorVisible" class="btn btn-primary m-1" type="button">
     {{ editorVisible ? 'Hide editor' : 'Show editor' }}
   </button>
   <ng-container *ngIf="editorVisible">
-    <button type="button" class="btn btn-primary m-1" (click)="saveMap()">Save map</button>
-    <button type="button" class="btn btn-primary m-1" (click)="loadMap()">Load map</button>
+    <button (click)="saveMap()" class="btn btn-primary m-1" type="button">Save map</button>
+    <button (click)="loadMap()" class="btn btn-primary m-1" type="button">Load map</button>
     <div class="extra-margin">Selection</div>
     <div>Current layer:</div>
     <input
-      type="number"
-      class="form-control"
-      [(ngModel)]="layerNr"
       (ngModelChange)="layerNrChanged()"
-      min="0"
+      [(ngModel)]="layerNr"
       [max]="MapDefinitions.nrLayers"
+      class="form-control"
+      min="0"
+      type="number"
     />
     <div>Replace tile nr:</div>
     <input
-      type="number"
-      class="form-control"
-      [(ngModel)]="nrReplacedTiles"
       (ngModelChange)="nrReplacedTilesChanged()"
-      min="1"
+      [(ngModel)]="nrReplacedTiles"
       [max]="5"
+      class="form-control"
+      min="1"
+      type="number"
     />
-    <button type="button" class="btn btn-primary m-1" (click)="removeTile()">Remove Tile</button>
+    <button (click)="removeTile()" class="btn btn-primary m-1" type="button">Remove Tile</button>
     <div class="extra-margin">Tiles</div>
-    <button type="button" class="btn btn-primary m-1" *ngFor="let type of tileTypes" (click)="selectedType = type">
+    <button (click)="selectedType = type" *ngFor="let type of tileTypes" class="btn btn-primary m-1" type="button">
       {{ type.tileType }}
     </button>
     <fuzzy-waddle-tile-selector-group
+      [frameWithMetaFilter]="selectedType.fn"
       [selectedTile]="selectedTile"
       [tileAtlasFrames]="tileAtlasFrames"
-      [frameWithMetaFilter]="selectedType.fn"
     ></fuzzy-waddle-tile-selector-group>
   </ng-container>
-  <button type="button" class="btn btn-primary m-1" (click)="showObjectPlacement = !showObjectPlacement">
+  <button (click)="showObjectPlacement = !showObjectPlacement" class="btn btn-primary m-1" type="button">
     {{ showObjectPlacement ? 'Hide objects' : 'Show objects' }}
   </button>
   <ng-container *ngIf="showObjectPlacement">
@@ -59,11 +59,11 @@
       <div class="atlas-map-scroll-title">{{ spriteAtlas.tilesetName }}</div>
       <div *ngFor="let atlasFrame of spriteAtlas.atlas.frames">
         <button
-          type="button"
-          class="btn btn-light m-1"
           (click)="selectAtlas(spriteAtlas.tilesetName, atlasFrame)"
           [class.selected]="selectedAtlas === atlasFrame"
+          class="btn btn-light m-1"
           style="word-break: break-word; display: flex; align-items: center; flex-direction: column"
+          type="button"
         >
           <fuzzy-waddle-atlas-display
             [atlasFrame]="atlasFrame"

@@ -6,6 +6,10 @@ import { EventEmitter } from '@angular/core';
 import { PlayerAiController } from '../../controllers/player-ai-controller';
 
 export class GameModeSkirmish extends GameMode {
+  // events:
+  playerJoined: EventEmitter<PlayerController> = new EventEmitter();
+  playerLeft: EventEmitter<PlayerController> = new EventEmitter();
+
   constructor(
     private gameSpeed = 1,
     // allow only certain units, building, upgrades, etc.
@@ -19,10 +23,6 @@ export class GameModeSkirmish extends GameMode {
       this.victoryConditions = new VictoryConditions(VictoryCondition.NONE, 0);
     }
   }
-
-  // events:
-  playerJoined: EventEmitter<PlayerController> = new EventEmitter();
-  playerLeft: EventEmitter<PlayerController> = new EventEmitter();
 
   handleStartingNewPlayer(): void {
     // todo
@@ -40,9 +40,18 @@ export class GameModeSkirmish extends GameMode {
     // todo
   }
 
+  isGameOver(): boolean {
+    return false;
+  }
+
+  loadGameState(): void {
+    // todo
+  }
+
   private createTeamVisionForAllTeams(): void {
     // todo
   }
+
   private createAiControllers() {
     // 1. create controller
     // 2. call RestartPlayerAtPlayerStart
@@ -66,13 +75,6 @@ export class GameModeSkirmish extends GameMode {
   }
 
   private assignTeamVisionToControllers() {
-    // todo
-  }
-  isGameOver(): boolean {
-    return false;
-  }
-
-  loadGameState(): void {
     // todo
   }
 }

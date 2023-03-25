@@ -17,11 +17,7 @@ export class PawnAiControllerComponent implements IComponent {
   // declare queue of OrderData
   orders: Queue<OrderData> = new Queue<OrderData>();
 
-  constructor(
-    private owner: Actor,
-    public blackboard: PawnAiBlackboard,
-    public behaviorTree: PawnBehaviorTree
-  ) {}
+  constructor(private owner: Actor, public blackboard: PawnAiBlackboard, public behaviorTree: PawnBehaviorTree) {}
 
   init(): void {
     this.behaviorTree.run();
@@ -130,22 +126,6 @@ export class PawnAiControllerComponent implements IComponent {
     this.issueOrder(orderData);
   }
 
-  private composeReturnResourcesOrder(): OrderData | null {
-    const gathererComponent = this.owner.components.findComponentOrNull(GathererComponent);
-    if (!gathererComponent) {
-      return null;
-    }
-    const resourceDrain = gathererComponent.findClosestResourceDrain();
-    if (!resourceDrain) {
-      return null;
-    }
-    const orderData: OrderData = {
-      orderType: OrderType.ReturnResources,
-      targetActor: resourceDrain
-    };
-    return orderData;
-  }
-
   issueReturnResourcesOrder() {
     const orderData = this.composeReturnResourcesOrder();
     if (!orderData) {
@@ -180,5 +160,21 @@ export class PawnAiControllerComponent implements IComponent {
     this.blackboard.orderType = orderData.orderType;
     this.blackboard.targetActor = orderData.targetActor;
     this.blackboard.targetLocation = orderData.targetLocation;
+  }
+
+  private composeReturnResourcesOrder(): OrderData | null {
+    const gathererComponent = this.owner.components.findComponentOrNull(GathererComponent);
+    if (!gathererComponent) {
+      return null;
+    }
+    const resourceDrain = gathererComponent.findClosestResourceDrain();
+    if (!resourceDrain) {
+      return null;
+    }
+    const orderData: OrderData = {
+      orderType: OrderType.ReturnResources,
+      targetActor: resourceDrain
+    };
+    return orderData;
   }
 }

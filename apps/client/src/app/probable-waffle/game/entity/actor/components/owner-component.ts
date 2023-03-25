@@ -5,8 +5,10 @@ import { Actor } from '../actor';
 export interface Ownable {
   ownerComponent: OwnerComponent;
 }
+
 export class OwnerComponent implements IComponent {
   constructor(public playerController: PlayerController) {}
+
   init(): void {
     // pass
   }

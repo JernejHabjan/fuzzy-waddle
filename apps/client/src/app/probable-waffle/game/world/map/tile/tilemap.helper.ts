@@ -10,6 +10,15 @@ import { Scene, Tilemaps } from 'phaser';
 export class TilemapHelper {
   constructor(private readonly mapHelper: MapHelper, private readonly scene: Scene) {}
 
+  static get tileCenterOffset(): number {
+    // todo move to IsoHelper
+    return MapSizeInfo.info.tileHeightHalf;
+  }
+
+  private get nrTilesToReplace(): number {
+    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
+  }
+
   static adjustTileWorldWithVerticalOffset(
     // todo move to IsoHelper
     tileXY: Vector2Simple,
@@ -22,11 +31,6 @@ export class TilemapHelper {
       return { x: tileXY.x, y: tileXY.y + TilemapHelper.tileCenterOffset };
     }
     return tileXY;
-  }
-
-  static get tileCenterOffset(): number {
-    // todo move to IsoHelper
-    return MapSizeInfo.info.tileHeightHalf;
   }
 
   static getTileWorldCenterByTilemapTileXY(
@@ -86,8 +90,8 @@ export class TilemapHelper {
     this.tileReplacement(tilePlacementData, tileIndexProperties);
   }
 
-  private get nrTilesToReplace(): number {
-    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
+  removeTileAt(tilePlacementData: TilePlacementData) {
+    this.tileReplacement(tilePlacementData, { tileIndex: -1 });
   }
 
   private tileReplacement(tilePlacementData: TilePlacementData, tileIndexProperties: TileIndexProperties) {
@@ -105,9 +109,5 @@ export class TilemapHelper {
       this.mapHelper.tilemapLayer.replaceByIndex(t.index, tileIndexProperties.tileIndex, t.x, t.y, 1, 1);
     });
     // console.log('tilemap tile replaced');
-  }
-
-  removeTileAt(tilePlacementData: TilePlacementData) {
-    this.tileReplacement(tilePlacementData, { tileIndex: -1 });
   }
 }

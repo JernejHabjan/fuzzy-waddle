@@ -1,4 +1,5 @@
 export type TileCenterOptions = { centerOfTile?: boolean; offsetInPx?: number } | null;
+
 export enum SlopeDirection {
   NorthEast = 0,
   SouthEast = 1,

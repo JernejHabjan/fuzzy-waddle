@@ -17,6 +17,7 @@ export class AttackComponent implements IComponent {
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
   private spriteRepresentationComponent!: SpriteRepresentationComponent;
+
   constructor(private owner: RepresentableActor, private attacks: AttackData[]) {}
 
   init(): void {

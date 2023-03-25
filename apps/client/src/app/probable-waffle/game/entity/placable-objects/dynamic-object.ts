@@ -6,6 +6,7 @@ import { GameObjectsHelper } from '../../world/map/game-objects-helper';
 
 export class DynamicObjectHelper {
   constructor(private readonly gameObjectsHelper: GameObjectsHelper, private readonly scene: Scene) {}
+
   createDynamicObjectLayer() {
     this.gameObjectsHelper.dynamicObjects = [];
   }

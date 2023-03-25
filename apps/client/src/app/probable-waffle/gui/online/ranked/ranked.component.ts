@@ -14,6 +14,7 @@ export class RankedComponent {
   rankedOptions = {
     raceType: undefined
   };
+
   start() {
     this.searching = true;
     // todo

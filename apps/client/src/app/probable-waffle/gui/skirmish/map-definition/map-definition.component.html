@@ -1,6 +1,9 @@
+<fuzzy-waddle-map-selector (selectedMapChange)="mapChanged($event)"></fuzzy-waddle-map-selector>
+
 <div *ngIf="mapPlayerDefinition" class="d-flex flex-column align-items-center">
   <h2>{{ mapPlayerDefinition.map.name }}</h2>
   <div>{{ mapPlayerDefinition.map.description }}</div>
   <div>{{ mapPlayerDefinition.map.mapWidth }} x {{ mapPlayerDefinition.map.mapHeight }}</div>
-  <canvas #canvas [width]="canvasWidth" [height]="canvasHeight"></canvas>
+  <canvas #canvas [height]="canvasHeight" [width]="canvasWidth"></canvas>
 </div>
+<fuzzy-waddle-trigger [selectedMap]="selectedMap"></fuzzy-waddle-trigger>

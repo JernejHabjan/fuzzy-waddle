@@ -29,11 +29,11 @@ export abstract class Character extends MovableActor implements Health {
   blackboardClass: typeof Blackboard = Blackboard;
   currentDir = AnimDirectionEnum.south;
   currentAnimGroup = LPCAnimTypeEnum.walk;
-  private warriorStateMachine!: StateMachine;
-  private characterSoundComponent!: CharacterSoundComponent;
   healthComponent!: HealthComponent;
   abstract pawnDefinition: PawnInfoDefinition;
   representableActorDefinition!: RepresentableActorDefinition;
+  private warriorStateMachine!: StateMachine;
+  private characterSoundComponent!: CharacterSoundComponent;
 
   protected constructor(scene: Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
@@ -48,6 +48,28 @@ export abstract class Character extends MovableActor implements Health {
     this.initStateMachine();
     this.initComponents();
     this.subscribeToEvents();
+  }
+
+  override update(t: number, dt: number) {
+    super.update(t, dt);
+    if (!this.destroyed) {
+      this.warriorStateMachine.update(dt);
+    }
+  }
+
+  override kill() {
+    this.warriorStateMachine.setState('dead');
+    super.kill();
+  }
+
+  playMoveAnim(dir: AnimDirection) {
+    const prevDir = this.currentDir;
+    this.currentDir = dir;
+    // if state is "run" and currentDir is different, then change direction
+    if (this.warriorStateMachine.isCurrentState('run') && prevDir !== dir) {
+      this.warriorRunEnter();
+    }
+    this.warriorStateMachine.setState('run');
   }
 
   private initComponents() {
@@ -99,13 +121,6 @@ export abstract class Character extends MovableActor implements Health {
     this.components.update(time, delta);
   }
 
-  override update(t: number, dt: number) {
-    super.update(t, dt);
-    if (!this.destroyed) {
-      this.warriorStateMachine.update(dt);
-    }
-  }
-
   private warriorIdleEnter() {
     const sprite = this.spriteRepresentationComponent.sprite;
     SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, true);
@@ -151,11 +166,6 @@ export abstract class Character extends MovableActor implements Health {
     this.characterSoundComponent.stop(move);
   }
 
-  override kill() {
-    this.warriorStateMachine.setState('dead');
-    super.kill();
-  }
-
   private warriorAttackEnter() {
     const sprite = this.spriteRepresentationComponent.sprite;
     this.currentAnimGroup = LPCAnimTypeEnum.thrust; // todo thrust
@@ -194,16 +204,6 @@ export abstract class Character extends MovableActor implements Health {
     this.currentAnimGroup = LPCAnimTypeEnum.hurt;
     SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, false);
     this.playDeathSound();
-  }
-
-  playMoveAnim(dir: AnimDirection) {
-    const prevDir = this.currentDir;
-    this.currentDir = dir;
-    // if state is "run" and currentDir is different, then change direction
-    if (this.warriorStateMachine.isCurrentState('run') && prevDir !== dir) {
-      this.warriorRunEnter();
-    }
-    this.warriorStateMachine.setState('run');
   }
 
   private playDeathSound() {

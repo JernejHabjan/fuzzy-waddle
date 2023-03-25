@@ -196,6 +196,16 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
     this.placeRawSpriteDynamicObjectsOnMap();
   }
 
+  override update(time: number, delta: number) {
+    super.update(time, delta);
+    this.inputHandler.update(time, delta);
+    this.warriorGroup.forEach((child) => {
+      child.update(time, delta);
+      return true;
+    });
+    this.updateLoopActors.forEach((actor) => actor.update(time, delta));
+  }
+
   private subscribeToInputEvents() {
     this.input.on(
       Input.Events.POINTER_MOVE,
@@ -319,16 +329,6 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
         tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
       }
     ]);
-  }
-
-  override update(time: number, delta: number) {
-    super.update(time, delta);
-    this.inputHandler.update(time, delta);
-    this.warriorGroup.forEach((child) => {
-      child.update(time, delta);
-      return true;
-    });
-    this.updateLoopActors.forEach((actor) => actor.update(time, delta));
   }
 
   private destroyListener() {

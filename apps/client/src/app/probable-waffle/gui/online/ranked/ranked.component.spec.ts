@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 
 @Component({ selector: 'fuzzy-waddle-ranked', template: '' })
 export class RankedTestingComponent {}
+
 describe('RankedComponent', () => {
   let component: RankedComponent;
   let fixture: ComponentFixture<RankedComponent>;

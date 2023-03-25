@@ -1,4 +1,4 @@
-@import '../../../../../assets/styles/_variables';
+@import '../../../../../styles/_variables';
 
 .start-position-container {
   .player-rows {
@@ -20,9 +20,7 @@
       }
     }
   }
-
 }
-
 
 .start-position-row:nth-child(odd) {
   background: $app-row-odd;

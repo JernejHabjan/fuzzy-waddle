@@ -11,6 +11,7 @@ export interface Containable {
  */
 export class ContainableComponent implements IComponent {
   private containerOwner: Actor | null = null;
+
   constructor(public owner: Actor) {}
 
   init() {

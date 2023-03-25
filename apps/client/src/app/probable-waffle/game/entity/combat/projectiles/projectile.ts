@@ -4,9 +4,9 @@ import { RepresentableActor } from '../../actor/representable-actor';
 import { Scene } from 'phaser';
 
 export abstract class Projectile extends RepresentableActor {
+  public abstract projectileData: ProjectileData;
   private targetActor: Actor | null = null;
   private targetLocation: Phaser.Math.Vector3 | null = null;
-  public abstract projectileData: ProjectileData;
 
   protected constructor(scene: Scene, public damageCauser: RepresentableActor) {
     super(scene, damageCauser.transformComponent.tilePlacementData);

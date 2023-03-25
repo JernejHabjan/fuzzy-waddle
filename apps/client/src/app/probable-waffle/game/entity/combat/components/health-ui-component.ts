@@ -22,21 +22,6 @@ export class HealthUiComponent implements IComponent {
     return this.healthComponent.getCurrentHealth() / this.healthComponent.healthDefinition.maxHealth;
   }
 
-  start() {
-    this.healthComponent = this.actor.components.findComponent(HealthComponent);
-    this.sprite = this.actor.components.findComponent(SpriteRepresentationComponent).sprite;
-    const scene = this.sprite.scene; // todo maybe add this to UI scene instead
-    this.bar = scene.add.graphics();
-  }
-
-  /**
-   * move bar with player
-   */
-  update(time: number, delta: number) {
-    this.draw();
-    this.bar.depth = this.barDepth;
-  }
-
   private get barXY() {
     if (!this.bar) {
       throw new Error('Bar not initialized');
@@ -55,6 +40,25 @@ export class HealthUiComponent implements IComponent {
   private get barDepth() {
     // set depth to be above player
     return this.sprite.depth + 1;
+  }
+
+  start() {
+    this.healthComponent = this.actor.components.findComponent(HealthComponent);
+    this.sprite = this.actor.components.findComponent(SpriteRepresentationComponent).sprite;
+    const scene = this.sprite.scene; // todo maybe add this to UI scene instead
+    this.bar = scene.add.graphics();
+  }
+
+  /**
+   * move bar with player
+   */
+  update(time: number, delta: number) {
+    this.draw();
+    this.bar.depth = this.barDepth;
+  }
+
+  destroy() {
+    this.bar.destroy();
   }
 
   private draw() {
@@ -93,9 +97,5 @@ export class HealthUiComponent implements IComponent {
     const barFilledWidth = Math.floor((this.barWidth - 2 * this.barBorder) * this.healthPercentage);
 
     this.bar.fillRect(x + this.barBorder, y + this.barBorder, barFilledWidth, this.barHeight - 2 * this.barBorder);
-  }
-
-  destroy() {
-    this.bar.destroy();
   }
 }

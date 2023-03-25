@@ -44,6 +44,7 @@ export class IsoHelper {
   static getWorldCenterX(tileXY: Vector2Simple): number {
     return (IsoHelper.getWorldLeft(tileXY) + IsoHelper.getWorldRight(tileXY)) / 2;
   }
+
   static getWorldCenterY(tileXY: Vector2Simple): number {
     return (IsoHelper.getWorldTop(tileXY) + IsoHelper.getWorldBottom(tileXY)) / 2;
   }

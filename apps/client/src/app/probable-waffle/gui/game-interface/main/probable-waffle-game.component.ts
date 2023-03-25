@@ -9,6 +9,15 @@ import { Game } from 'phaser';
   styleUrls: ['./probable-waffle-game.component.scss']
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
+  GameContainerElement = GameContainerElement;
+  gameRef!: Game;
+  drawerWidth = '150px';
+  displayDrawers = true; // todo
+
+  constructor(private ngZone: NgZone) {}
+
+  private _gameContainerElement!: HTMLDivElement;
+
   @ViewChild('gameContainerElement')
   get gameContainerElement(): HTMLDivElement {
     return this._gameContainerElement;
@@ -18,13 +27,6 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     this._gameContainerElement = value;
     this.setupGameContainer();
   }
-
-  private _gameContainerElement!: HTMLDivElement;
-  GameContainerElement = GameContainerElement;
-  gameRef!: Game;
-  drawerWidth = '150px';
-  displayDrawers = true; // todo
-  constructor(private ngZone: NgZone) {}
 
   ngOnDestroy(): void {
     this.gameRef.destroy(true);

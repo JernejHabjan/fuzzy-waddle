@@ -16,6 +16,18 @@ export class MultiSelectionHandler {
     this.setupEvents();
   }
 
+  overlapsBounds(rect: Geom.Rectangle, bounds: Geom.Rectangle): boolean {
+    if (!this.selectionRect) return false;
+    return Geom.Rectangle.Overlaps(rect, bounds);
+  }
+
+  destroy() {
+    this.input.off(Input.Events.POINTER_DOWN);
+    this.input.off(Input.Events.POINTER_MOVE);
+    this.input.off(Input.Events.POINTER_UP);
+    this.input.off(Input.Events.GAME_OUT);
+  }
+
   private setupEvents() {
     this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
@@ -82,17 +94,5 @@ export class MultiSelectionHandler {
 
     // use the new Rectangle to check for overlap
     this.onPreview.next(this.selectionRect);
-  }
-
-  overlapsBounds(rect: Geom.Rectangle, bounds: Geom.Rectangle): boolean {
-    if (!this.selectionRect) return false;
-    return Geom.Rectangle.Overlaps(rect, bounds);
-  }
-
-  destroy() {
-    this.input.off(Input.Events.POINTER_DOWN);
-    this.input.off(Input.Events.POINTER_MOVE);
-    this.input.off(Input.Events.POINTER_UP);
-    this.input.off(Input.Events.GAME_OUT);
   }
 }

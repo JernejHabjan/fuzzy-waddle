@@ -15,5 +15,4 @@ export class CanGatherFromDecorator implements IDecorator {
     // if gathererComponent can gather from target, return true
     return gathererComponent.canGatherFrom(target) && !gathererComponent.isCapacityFull();
   }
-
 }

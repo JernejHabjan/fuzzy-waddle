@@ -5,8 +5,8 @@
     <div>
       <div>Number of players</div>
       <div>
-        <input type="radio" name="numPlayers" value="2" checked="checked" />2
-        <input type="radio" name="numPlayers" value="3" />3 <input type="radio" name="numPlayers" value="4" />4
+        <input checked="checked" name="numPlayers" type="radio" value="2" />2
+        <input name="numPlayers" type="radio" value="3" />3 <input name="numPlayers" type="radio" value="4" />4
       </div>
     </div>
     <div>
@@ -23,12 +23,12 @@
       Map Pool
       <div>
         <div *ngFor="let map of Maps.maps">
-          <input type="checkbox" name="map" value="{{ map.name }}" checked="checked" />{{ map.name }}
+          <input checked="checked" name="map" type="checkbox" value="{{ map.name }}" />{{ map.name }}
         </div>
       </div>
     </div>
 
-    <button type="button" class="btn btn-primary" (click)="start()" [disabled]="searching">
+    <button (click)="start()" [disabled]="searching" class="btn btn-primary" type="button">
       <ng-container *ngIf="searching">Searching...</ng-container>
       <ng-container *ngIf="!searching">Play</ng-container>
     </button>

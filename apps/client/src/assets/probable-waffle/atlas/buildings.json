@@ -1,21 +1,20 @@
+{"frames": [
+
 {
-  "frames": [
-    {
-      "filename": "barracks.png",
-      "frame": { "x": 0, "y": 0, "w": 315, "h": 250 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 315, "h": 250 },
-      "sourceSize": { "w": 315, "h": 250 }
-    }
-  ],
-  "meta": {
-    "app": "https://www.codeandweb.com/texturepacker",
-    "version": "1.0",
-    "image": "buildings.png",
-    "format": "RGBA8888",
-    "size": { "w": 315, "h": 250 },
-    "scale": "1",
-    "smartupdate": "$TexturePacker:SmartUpdate:662f29f35ec189f4f066e17d123e3ab9:c9a9f48b328c6dfd1e1edd83615f1a8a:8f670863a0ac9ac15291caba2801fd50$"
-  }
+	"filename": "barracks.png",
+	"frame": {"x":0,"y":0,"w":315,"h":250},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":315,"h":250},
+	"sourceSize": {"w":315,"h":250}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "buildings.png",
+	"format": "RGBA8888",
+	"size": {"w":315,"h":250},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:b11dce8ab69b0cd73da09c6dee85e4a7:c9a9f48b328c6dfd1e1edd83615f1a8a:8f670863a0ac9ac15291caba2801fd50$"
+}
 }

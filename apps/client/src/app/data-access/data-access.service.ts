@@ -6,16 +6,17 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class DataAccessService {
-  private _supabase!: SupabaseClient;
-
   constructor() {
     this.createSupabaseClient();
   }
-  private createSupabaseClient() {
-    this._supabase = createClient(environment.supabase.url, environment.supabase.key);
-  }
+
+  private _supabase!: SupabaseClient;
 
   get supabase(): SupabaseClient {
     return this._supabase;
+  }
+
+  private createSupabaseClient() {
+    this._supabase = createClient(environment.supabase.url, environment.supabase.key);
   }
 }

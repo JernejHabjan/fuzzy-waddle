@@ -23,11 +23,11 @@ export interface ICharacterMovable {
 }
 
 export class CharacterMovementComponent implements IComponent {
+  moveEventEmitter = new Events.EventEmitter();
+  isMoving = false;
   // todo refactor navigation component to use navigation tree
   private path?: TilePlacementWorldWithProperties[];
   private currentNavTween?: Tweens.Tween;
-  moveEventEmitter = new Events.EventEmitter();
-  isMoving = false;
 
   constructor(
     private readonly gameObject: ICharacterMovable & IPawnAiControllable & ISpriteRepresentable & ITransformable & Actor
@@ -56,6 +56,10 @@ export class CharacterMovementComponent implements IComponent {
       this.currentNavTween = undefined;
     }
     this.isMoving = false;
+  }
+
+  canMove() {
+    return !this.isMoving;
   }
 
   private startMove() {
@@ -236,9 +240,5 @@ export class CharacterMovementComponent implements IComponent {
         spriteInstance.setCrop();
       }
     }
-  }
-
-  canMove() {
-    return !this.isMoving;
   }
 }

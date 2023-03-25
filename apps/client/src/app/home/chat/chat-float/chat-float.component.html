@@ -1,9 +1,9 @@
-<div class="chat-container" [ngClass]="{'chat-container-minimized': !maximized}">
+<div [ngClass]="{ 'chat-container-minimized': !maximized }" class="chat-container">
   <div class="chat">
     <div class="chat-header">
       <div class="chat-title">Chat</div>
       <!-- minimize button -->
-      <div class="chat-minimize" (click)="toggleChatVisibility()">
+      <div (click)="toggleChatVisibility()" class="chat-minimize">
         <fa-icon [icon]="maximized ? faWindowMinimize : faWindowMaximize"></fa-icon>
       </div>
     </div>
