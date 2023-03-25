@@ -12,9 +12,10 @@ export class DbAccessTestService {
       .from('test')
       .select('*')
       .then((data) => {
-        console.log(data);
+        console.table(data.data);
       });
   }
+
   add(): void {
     this.dataAccessService.supabase
       .from('test')
