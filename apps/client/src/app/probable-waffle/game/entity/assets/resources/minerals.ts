@@ -3,6 +3,7 @@ import { TilePlacementData } from '../../../world/managers/controllers/input/til
 import { ResourceSource, ResourceSourceComponent } from '../../economy/resource/resource-source-component';
 import { CharacterContainer, ContainerComponent } from '../../building/container-component';
 import { Resources } from '../../economy/resource/resource-type';
+import { Scene } from 'phaser';
 
 export const MineralsDefinitions: RepresentableActorDefinition = {
   textureMapDefinition: {
@@ -21,7 +22,8 @@ export class Minerals extends RepresentableActor implements ResourceSource, Char
   containerComponent!: ContainerComponent;
   resourceSourceComponent!: ResourceSourceComponent;
   representableActorDefinition: RepresentableActorDefinition = MineralsDefinitions;
-  constructor(scene: Phaser.Scene, tilePlacementData: TilePlacementData) {
+
+  constructor(scene: Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
   }
 

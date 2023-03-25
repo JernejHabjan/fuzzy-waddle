@@ -3,6 +3,7 @@ import { VisionManager } from '../../map/vision/vision-manager';
 import { ActorAbleToBeBuilt, ActorAbleToBeBuiltClass } from '../../../entity/actor/components/builder-component';
 import { PlayerController } from '../controllers/player-controller';
 import { TilePlacementData } from '../controllers/input/tilemap/tilemap-input.handler';
+import { Scene } from 'phaser';
 
 export enum GameModeState {
   // https://docs.unrealengine.com/4.27/en-US/InteractiveExperiences/Framework/GameMode/
@@ -19,7 +20,7 @@ export abstract class GameMode {
   gameState: GameState;
   canGameBePaused = true;
   gameModeState: GameModeState;
-  scene!: Phaser.Scene;
+  scene!: Scene;
 
   constructor() {
     this.gameModeState = GameModeState.WaitingToStart;

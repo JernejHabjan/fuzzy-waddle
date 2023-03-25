@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { SpriteHelper, SpritePlacementData } from '../sprite-helper';
 import { TransformComponent } from './transformable-component';
 import { Actor } from '../actor';
+import { GameObjects, Scene } from 'phaser';
 
 export interface ISpriteRepresentable {
   spriteRepresentationComponent: SpriteRepresentationComponent;
@@ -12,10 +13,11 @@ export const hasSpriteRepresentationComponent = (o: object): o is ISpriteReprese
   (o as ISpriteRepresentable).spriteRepresentationComponent !== undefined;
 
 export class SpriteRepresentationComponent implements IComponent {
-  scene: Phaser.Scene;
-  sprite: Phaser.GameObjects.Sprite;
+  scene: Scene;
+  sprite: GameObjects.Sprite;
   private transformSubscription?: Subscription;
-  constructor(private actor:Actor, scene: Phaser.Scene, spritePlacementData: SpritePlacementData) {
+
+  constructor(private actor: Actor, scene: Scene, spritePlacementData: SpritePlacementData) {
     this.scene = scene;
     const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(spritePlacementData.tilePlacementData);
     this.sprite = this.scene.add.sprite(

@@ -10,17 +10,18 @@ import {
   TOP_LEFT as EasyStar_TOP_LEFT,
   TOP_RIGHT as EasyStar_TOP_RIGHT
 } from 'easystarjs';
-import * as Phaser from 'phaser';
 import { TilemapHelper } from './tile/tilemap.helper';
 import { Vector2Simple } from '../../library/math/intersection';
 import { TilePlacementWorldWithProperties } from './tile/manual-tiles/manual-tiles.helper';
 import { MapSizeInfo, TileDefinitions } from '../const/map-size.info';
 import { SlopeDirection } from './tile/types/tile-types';
+import { Scene } from 'phaser';
 
 export class Pathfinder {
   private readonly enableDiagonals = true;
   private readonly maxNavigableStepHeightDiff = 16;
-  constructor(private readonly scene: Phaser.Scene) {}
+
+  constructor(private readonly scene: Scene) {}
 
   private static getTileWorldCenterByPath(path: Vector2Simple): Vector2Simple {
     return TilemapHelper.getTileWorldCenterByTilemapTileXY(path, {

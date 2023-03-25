@@ -1,4 +1,3 @@
-import * as Phaser from 'phaser';
 import { Scenes } from './scenes';
 import {
   AtlasEmitValue,
@@ -16,7 +15,10 @@ import { Subscription } from 'rxjs';
 import { TilemapHelper } from '../map/tile/tilemap.helper';
 import { Pathfinder } from '../map/pathfinder';
 import { NavInputHandler } from '../managers/controllers/input/nav-input.handler';
-import { ManualTileInputHandler, PossibleClickCoords } from '../managers/controllers/input/manual-tiles/manual-tile-input.handler';
+import {
+  ManualTileInputHandler,
+  PossibleClickCoords
+} from '../managers/controllers/input/manual-tiles/manual-tile-input.handler';
 import { ManualTile, ManualTilesHelper } from '../map/tile/manual-tiles/manual-tiles.helper';
 import { TileIndexProperties, TilePossibleProperties } from '../map/tile/types/tile-types';
 import { Vector2Simple } from '../../library/math/intersection';
@@ -40,6 +42,7 @@ import { Resources, ResourceType } from '../../entity/economy/resource/resource-
 import { TownHall } from '../../entity/assets/buildings/town-hall';
 import { Minerals } from '../../entity/assets/resources/minerals';
 import { Worker } from '../../entity/assets/characters/worker';
+import { GameObjects, Geom, Input, Scale, Scene } from 'phaser';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -48,7 +51,7 @@ export interface TilemapToAtlasMap {
   tileProperties: TilePossibleProperties | null;
 }
 
-export default class GrasslandScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
+export default class GrasslandScene extends Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
   private scaleHandler!: ScaleHandler;
   private cursorHandler!: CursorHandler;
@@ -74,7 +77,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
   private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
   private selected: Actor[] = [];
   private atlasToBePlaced: AtlasEmitValue | null = null;
-  private warningText: Phaser.GameObjects.Text | null = null;
+  private warningText: GameObjects.Text | null = null;
   private mapPropertiesHelper!: MapPropertiesHelper;
   private mapHelper!: MapHelper;
   private gameObjectsHelper!: GameObjectsHelper;
@@ -195,12 +198,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   private subscribeToInputEvents() {
     this.input.on(
-      Phaser.Input.Events.POINTER_MOVE,
-      (
-        pointer: Phaser.Input.Pointer,
-        gameObjectsUnderCursor: Phaser.GameObjects.GameObject[],
-        event: TouchEvent | MouseEvent
-      ) => {
+      Input.Events.POINTER_MOVE,
+      (pointer: Input.Pointer, gameObjectsUnderCursor: GameObjects.GameObject[], event: TouchEvent | MouseEvent) => {
         /**
          * pointer velocity threshold, which is used to determine if the pointer is moving or not
          */
@@ -217,12 +216,8 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     );
 
     this.input.on(
-      Phaser.Input.Events.POINTER_UP,
-      (
-        pointer: Phaser.Input.Pointer,
-        gameObjectsUnderCursor: Phaser.GameObjects.GameObject[],
-        event: TouchEvent | MouseEvent
-      ) => {
+      Input.Events.POINTER_UP,
+      (pointer: Input.Pointer, gameObjectsUnderCursor: GameObjects.GameObject[], event: TouchEvent | MouseEvent) => {
         const worldXY: Vector2Simple = { x: pointer.worldX, y: pointer.worldY };
         if (pointer.rightButtonReleased()) {
           // if (this.warningText) {
@@ -244,7 +239,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
         } else {
           if (gameObjectsUnderCursor.length) {
             for (const gameObject of gameObjectsUnderCursor) {
-              if (gameObject instanceof Phaser.GameObjects.Sprite || gameObject instanceof Phaser.GameObjects.Image) {
+              if (gameObject instanceof GameObjects.Sprite || gameObject instanceof GameObjects.Image) {
                 gameObject.setTint(0xff0000);
               }
             }
@@ -338,12 +333,12 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
 
   private destroyListener() {
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.scale.off(Phaser.Scale.Events.RESIZE);
-      this.input.off(Phaser.Input.Events.GAMEOBJECT_DOWN);
-      this.input.off(Phaser.Input.Events.POINTER_UP);
-      this.input.off(Phaser.Input.Events.POINTER_DOWN);
-      this.input.off(Phaser.Input.Events.GAME_OUT);
-      this.input.off(Phaser.Input.Events.POINTER_WHEEL);
+      this.scale.off(Scale.Events.RESIZE);
+      this.input.off(Input.Events.GAMEOBJECT_DOWN);
+      this.input.off(Input.Events.POINTER_UP);
+      this.input.off(Input.Events.POINTER_DOWN);
+      this.input.off(Input.Events.GAME_OUT);
+      this.input.off(Input.Events.POINTER_WHEEL);
       // todo these components should handle their own destroy on shutdown
       this.inputHandler.destroy();
       this.navInputHandler.destroy();
@@ -360,7 +355,7 @@ export default class GrasslandScene extends Phaser.Scene implements CreateSceneF
     });
   }
 
-  private getObjectsUnderSelectionRectangle(rect: Phaser.Geom.Rectangle): RepresentableActor[] {
+  private getObjectsUnderSelectionRectangle(rect: Geom.Rectangle): RepresentableActor[] {
     // return this.gameObjectsHelper.dynamicObjects.filter((o) => {
     //   const bounds = o.spriteInstance.getBounds();
     //   return this.multiSelectionHandler.overlapsBounds(rect, bounds);
