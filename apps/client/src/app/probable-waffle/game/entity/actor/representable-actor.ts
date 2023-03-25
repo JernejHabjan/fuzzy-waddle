@@ -2,6 +2,7 @@ import { Actor } from './actor';
 import { ISpriteRepresentable, SpriteRepresentationComponent } from './components/sprite-representable-component';
 import { ITransformable, TransformComponent } from './components/transformable-component';
 import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
+import { Scene, Scenes } from 'phaser';
 
 export type RepresentableActorDefinition = {
   textureMapDefinition: TextureMapDefinition;
@@ -26,7 +27,7 @@ export abstract class RepresentableActor extends Actor implements ISpriteReprese
   transformComponent!: TransformComponent;
   abstract representableActorDefinition: RepresentableActorDefinition;
 
-  protected constructor(private scene: Phaser.Scene, private tilePlacementData: TilePlacementData) {
+  protected constructor(private scene: Scene, private tilePlacementData: TilePlacementData) {
     super();
     this.initActor();
   }
@@ -53,7 +54,7 @@ export abstract class RepresentableActor extends Actor implements ISpriteReprese
   }
 
   private subscribeToSceneDestroy() {
-    this.scene.events.once(Phaser.Scenes.Events.DESTROY, () => {
+    this.scene.events.once(Scenes.Events.DESTROY, () => {
       this.destroy();
     });
   }

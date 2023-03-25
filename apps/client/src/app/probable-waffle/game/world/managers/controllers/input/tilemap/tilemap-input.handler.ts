@@ -1,9 +1,9 @@
-import * as Phaser from 'phaser';
 import { Vector2Simple } from '../../../../../library/math/intersection';
 import { TilePlacementWorldWithProperties } from '../../../../map/tile/manual-tiles/manual-tiles.helper';
 import { MapSizeInfo } from '../../../../const/map-size.info';
 import { IsoHelper } from '../../../../map/tile/iso-helper';
 import { TileLayerProperties } from '../../../../map/tile/types/tile-types';
+import { Tilemaps } from 'phaser';
 
 export interface TilePlacementData {
   tileXY: Vector2Simple;
@@ -15,7 +15,7 @@ export interface TileWorldData extends TilePlacementData {
 }
 
 export class TilemapInputHandler {
-  constructor(private readonly tilemapLayer: Phaser.Tilemaps.TilemapLayer) {}
+  constructor(private readonly tilemapLayer: Tilemaps.TilemapLayer) {}
 
   /**
    *
@@ -27,7 +27,7 @@ export class TilemapInputHandler {
 
     const tileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
-    const foundTile = this.tilemapLayer.getTileAt(tileXY.x, tileXY.y) as Phaser.Tilemaps.Tile;
+    const foundTile = this.tilemapLayer.getTileAt(tileXY.x, tileXY.y) as Tilemaps.Tile;
 
     if (foundTile) {
       // foundTile.tint = 0xff0000;

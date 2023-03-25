@@ -1,5 +1,4 @@
-import * as Phaser from 'phaser';
-import { Scene } from 'phaser';
+import { GameObjects, Scene } from 'phaser';
 import { IsoHelper } from '../../world/map/tile/iso-helper';
 import { MapSizeInfo } from '../../world/const/map-size.info';
 import { ManualTilesHelper } from '../../world/map/tile/manual-tiles/manual-tiles.helper';
@@ -41,7 +40,7 @@ export class SpriteHelper {
     scene: Scene,
     tilePlacementData: TilePlacementData,
     placeableAtlasProperties: PlaceableAtlasProperties
-  ): Phaser.GameObjects.Sprite {
+  ): GameObjects.Sprite {
     const texture = placeableAtlasProperties.texture;
     const frame = placeableAtlasProperties.frame;
 
@@ -64,7 +63,7 @@ export class SpriteHelper {
     return sprite;
   }
 
-  private static rescaleSpriteToFitTile(sprite: Phaser.GameObjects.Sprite) {
+  private static rescaleSpriteToFitTile(sprite: GameObjects.Sprite) {
     // if sprite is larger than 64x64, then we need to scale it down // TODO THIS IS FOR TEST
     const width = sprite.width;
     const height = sprite.height;
@@ -72,7 +71,7 @@ export class SpriteHelper {
     sprite.setScale(scale);
   }
 
-  private static rescaleSpriteToFitTwoTiles(sprite: Phaser.GameObjects.Sprite) {
+  private static rescaleSpriteToFitTwoTiles(sprite: GameObjects.Sprite) {
     // todo just for test
     const width = sprite.width;
     const scale = MapSizeInfo.info.tileWidth / width;
@@ -82,7 +81,7 @@ export class SpriteHelper {
     sprite.y -= 7; // offset so it looks nice
   }
 
-  private static placeSpriteAsIs(sprite: Phaser.GameObjects.Sprite) {
+  private static placeSpriteAsIs(sprite: GameObjects.Sprite) {
     // todo?
     sprite.y -= MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
   }

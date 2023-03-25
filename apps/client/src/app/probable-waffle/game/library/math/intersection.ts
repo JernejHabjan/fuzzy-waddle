@@ -1,10 +1,12 @@
+import { Geom } from 'phaser';
+
 export interface Vector2Simple {
   x: number;
   y: number;
 }
 
 export class Intersection {
-  static intersectsWithRectangle = (M: Vector2Simple, rectangleForIntersection: Phaser.Geom.Polygon) => {
+  static intersectsWithRectangle = (M: Vector2Simple, rectangleForIntersection: Geom.Polygon) => {
     const A = rectangleForIntersection.points[0];
     const B = rectangleForIntersection.points[1];
     // const C = rectangleForIntersection.points[2];

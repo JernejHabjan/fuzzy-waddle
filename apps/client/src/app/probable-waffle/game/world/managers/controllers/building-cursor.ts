@@ -4,7 +4,7 @@ import { Vector2Simple } from '../../../library/math/intersection';
 import { AttackComponent } from '../../../entity/combat/components/attack-component';
 import { ConstructionSiteComponent } from '../../../entity/building/construction/construction-site-component';
 import { RepresentableActor } from '../../../entity/actor/representable-actor';
-import Vector3Like = Phaser.Types.Math.Vector3Like;
+import { Scene, Types } from 'phaser';
 
 export class BuildingCursor {
   placementGrid: unknown; // todo
@@ -18,9 +18,10 @@ export class BuildingCursor {
   private building?: RepresentableActor;
 
   private pointerLocation?: Vector2Simple;
-  constructor(private scene: Phaser.Scene) {}
 
-  canConstructBuildingAt(location: Vector3Like): boolean {
+  constructor(private scene: Scene) {}
+
+  canConstructBuildingAt(location: Types.Math.Vector3Like): boolean {
     // todo
     return true;
   }

@@ -1,10 +1,12 @@
+import { Cameras, Scene } from 'phaser';
 import { MapSizeInfo } from '../const/map-size.info';
 
 export class MinimapTextureHelper {
-  private scene: Phaser.Scene;
+  private scene: Scene;
   private readonly mapSizePercentageToWholeWindow = 0.2;
-  private minimap!: Phaser.Cameras.Scene2D.Camera;
-  constructor(scene: Phaser.Scene) {
+  private minimap!: Cameras.Scene2D.Camera;
+
+  constructor(scene: Scene) {
     this.scene = scene;
   }
 
@@ -33,7 +35,7 @@ export class MinimapTextureHelper {
     }
   }
 
-  createMinimapCamera(cameras: Phaser.Cameras.Scene2D.CameraManager) {
+  createMinimapCamera(cameras: Cameras.Scene2D.CameraManager) {
     const width = this.scene.game.canvas.width * this.mapSizePercentageToWholeWindow;
     const height = this.scene.game.canvas.height * this.mapSizePercentageToWholeWindow;
     const mapSizeInPx = Math.round(Math.min(width, height));

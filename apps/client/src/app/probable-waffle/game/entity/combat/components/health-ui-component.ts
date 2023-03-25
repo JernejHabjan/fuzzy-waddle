@@ -1,3 +1,4 @@
+import { GameObjects } from 'phaser';
 import { IComponent } from '../../../core/component.service';
 import { Actor } from '../../actor/actor';
 import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
@@ -5,7 +6,7 @@ import HealthComponent from './health-component';
 
 export class HealthUiComponent implements IComponent {
   private healthComponent!: HealthComponent;
-  private bar!: Phaser.GameObjects.Graphics;
+  private bar!: GameObjects.Graphics;
   private barWidth = 25;
   private barHeight = 8;
   private barBorder = 2;
@@ -13,7 +14,7 @@ export class HealthUiComponent implements IComponent {
   private redThreshold = 0.3;
   private orangeThreshold = 0.5;
   private yellowThreshold = 0.7;
-  private sprite!: Phaser.GameObjects.Sprite;
+  private sprite!: GameObjects.Sprite;
 
   constructor(private readonly actor: Actor) {}
 

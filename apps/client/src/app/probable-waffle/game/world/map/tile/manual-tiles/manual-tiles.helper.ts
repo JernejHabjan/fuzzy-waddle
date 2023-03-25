@@ -1,4 +1,3 @@
-import * as Phaser from 'phaser';
 import { MapDefinitions, MapSizeInfo, TileDefinitions } from '../../../const/map-size.info';
 import { SlopeDirection, TileIndexProperties, TileLayerProperties } from '../types/tile-types';
 import { TilemapHelper } from '../tilemap.helper';
@@ -7,12 +6,13 @@ import { TilemapToAtlasMap } from '../../../scenes/grassland.scene';
 import { TilePlacementData, TileWorldData } from '../../../managers/controllers/input/tilemap/tilemap-input.handler';
 import { PossibleClickCoords } from '../../../managers/controllers/input/manual-tiles/manual-tile-input.handler';
 import { MapHelper } from '../map-helper';
+import { GameObjects, Geom, Scene } from 'phaser';
 
 export interface ManualTile extends TilePlacementWorldWithProperties {
-  gameObjectImage: Phaser.GameObjects.Image;
+  gameObjectImage: GameObjects.Image;
 
   // for stairs
-  manualRectangleInputInterceptor: Phaser.Geom.Polygon | null;
+  manualRectangleInputInterceptor: Geom.Polygon | null;
 }
 
 export interface TilePlacementWorldWithProperties {
@@ -28,7 +28,7 @@ export interface ManualTileLayer {
 export class ManualTilesHelper {
   constructor(
     private readonly mapHelper: MapHelper,
-    private readonly scene: Phaser.Scene,
+    private readonly scene: Scene,
     private readonly tilemapHelper: TilemapHelper
   ) {}
 
@@ -143,12 +143,12 @@ export class ManualTilesHelper {
   /**
    * Slopes like stairs
    */
-  private getSlopeDir(worldXY: Vector2Simple, slopeDir?: SlopeDirection): Phaser.Geom.Polygon | null {
+  private getSlopeDir(worldXY: Vector2Simple, slopeDir?: SlopeDirection): Geom.Polygon | null {
     const tileWidth = MapSizeInfo.info.tileWidth;
-    let manualRectangleInputInterceptor: Phaser.Geom.Polygon | null = null;
+    let manualRectangleInputInterceptor: Geom.Polygon | null = null;
     switch (slopeDir) {
       case SlopeDirection.SouthEast:
-        manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
+        manualRectangleInputInterceptor = new Geom.Polygon([
           tileWidth / 2,
           0,
           0,
@@ -160,7 +160,7 @@ export class ManualTilesHelper {
         ]);
         break;
       case SlopeDirection.SouthWest:
-        manualRectangleInputInterceptor = new Phaser.Geom.Polygon([
+        manualRectangleInputInterceptor = new Geom.Polygon([
           tileWidth / 2,
           0,
           tileWidth,
@@ -186,7 +186,7 @@ export class ManualTilesHelper {
    */
   private applyPositionModifierToRectangleInputInterceptor(
     worldXY: Vector2Simple,
-    manualRectangleInputInterceptor: Phaser.Geom.Polygon
+    manualRectangleInputInterceptor: Geom.Polygon
   ) {
     // displace the rectangle by world position
     for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {

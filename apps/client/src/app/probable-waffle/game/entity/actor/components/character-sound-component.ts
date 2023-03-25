@@ -1,3 +1,4 @@
+import { GameObjects } from 'phaser';
 import { IComponent } from '../../../core/component.service';
 
 export type SoundDefinition = {
@@ -8,7 +9,8 @@ export type SoundDefinition = {
 };
 
 export class CharacterSoundComponent implements IComponent {
-  constructor(private readonly gameObject: Phaser.GameObjects.Sprite) {}
+  constructor(private readonly gameObject: GameObjects.Sprite) {}
+
   init() {
     // do nothing
   }

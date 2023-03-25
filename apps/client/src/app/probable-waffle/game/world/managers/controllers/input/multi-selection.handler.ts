@@ -1,31 +1,31 @@
-import * as Phaser from 'phaser';
 import { Subject } from 'rxjs';
+import { Cameras, GameObjects, Geom, Input, Scene } from 'phaser';
 
 export class MultiSelectionHandler {
-  onSelect: Subject<Phaser.Geom.Rectangle> = new Subject();
-  onPreview: Subject<Phaser.Geom.Rectangle> = new Subject();
-  private selection: Phaser.GameObjects.Rectangle;
-  private selectionRect: Phaser.Geom.Rectangle | null = null;
+  onSelect: Subject<Geom.Rectangle> = new Subject();
+  onPreview: Subject<Geom.Rectangle> = new Subject();
+  private selection: GameObjects.Rectangle;
+  private selectionRect: Geom.Rectangle | null = null;
 
   constructor(
-    scene: Phaser.Scene,
-    private readonly input: Phaser.Input.InputPlugin,
-    private readonly mainCamera: Phaser.Cameras.Scene2D.Camera
+    scene: Scene,
+    private readonly input: Input.InputPlugin,
+    private readonly mainCamera: Cameras.Scene2D.Camera
   ) {
     this.selection = scene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5).setDepth(Phaser.Math.MAX_SAFE_INTEGER);
     this.setupEvents();
   }
 
   private setupEvents() {
-    this.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this);
-    this.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this);
-    this.input.on(Phaser.Input.Events.POINTER_UP, this.handlePointerUp, this);
-    this.input.on(Phaser.Input.Events.GAME_OUT, () => {
+    this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
+    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
+    this.input.on(Input.Events.GAME_OUT, () => {
       this.hideSelectionRectangle();
     });
   }
 
-  private handlePointerDown(pointer: Phaser.Input.Pointer) {
+  private handlePointerDown(pointer: Input.Pointer) {
     if (!pointer.leftButtonDown()) {
       return;
     }
@@ -41,15 +41,15 @@ export class MultiSelectionHandler {
     this.selectionRect = null;
   }
 
-  private handlePointerUp(pointer: Phaser.Input.Pointer) {
+  private handlePointerUp(pointer: Input.Pointer) {
     if (!pointer.rightButtonReleased()) {
-      this.onSelect.next(this.selectionRect as Phaser.Geom.Rectangle);
+      this.onSelect.next(this.selectionRect as Geom.Rectangle);
 
       this.hideSelectionRectangle();
     }
   }
 
-  private handlePointerMove(pointer: Phaser.Input.Pointer) {
+  private handlePointerMove(pointer: Input.Pointer) {
     if (!pointer.leftButtonDown()) {
       return;
     }
@@ -62,7 +62,7 @@ export class MultiSelectionHandler {
     this.selection.height += dy;
 
     // create a new Rectangle
-    this.selectionRect = new Phaser.Geom.Rectangle(
+    this.selectionRect = new Geom.Rectangle(
       this.selection.x,
       this.selection.y,
       this.selection.width,
@@ -84,15 +84,15 @@ export class MultiSelectionHandler {
     this.onPreview.next(this.selectionRect);
   }
 
-  overlapsBounds(rect: Phaser.Geom.Rectangle, bounds: Phaser.Geom.Rectangle): boolean {
+  overlapsBounds(rect: Geom.Rectangle, bounds: Geom.Rectangle): boolean {
     if (!this.selectionRect) return false;
-    return Phaser.Geom.Rectangle.Overlaps(rect, bounds);
+    return Geom.Rectangle.Overlaps(rect, bounds);
   }
 
   destroy() {
-    this.input.off(Phaser.Input.Events.POINTER_DOWN);
-    this.input.off(Phaser.Input.Events.POINTER_MOVE);
-    this.input.off(Phaser.Input.Events.POINTER_UP);
-    this.input.off(Phaser.Input.Events.GAME_OUT);
+    this.input.off(Input.Events.POINTER_DOWN);
+    this.input.off(Input.Events.POINTER_MOVE);
+    this.input.off(Input.Events.POINTER_UP);
+    this.input.off(Input.Events.GAME_OUT);
   }
 }

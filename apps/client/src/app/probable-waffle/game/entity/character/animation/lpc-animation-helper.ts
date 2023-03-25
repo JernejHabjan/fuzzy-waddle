@@ -1,3 +1,5 @@
+import { Animations } from 'phaser';
+
 export enum AnimDirectionEnum {
   north = 'north',
   east = 'east',
@@ -40,7 +42,7 @@ export type LPCAnimType =
   | LPCAnimTypeEnum.hurt;
 
 export class LpcAnimationHelper {
-  constructor(private animationManager: Phaser.Animations.AnimationManager) {}
+  constructor(private animationManager: Animations.AnimationManager) {}
 
   static animKeys: [LPCAnimType, AnimDirection][] = [
     [LPCAnimTypeEnum.spellCast, AnimDirectionEnum.north],

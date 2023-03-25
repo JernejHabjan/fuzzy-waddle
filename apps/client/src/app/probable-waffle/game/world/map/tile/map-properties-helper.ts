@@ -1,11 +1,11 @@
-import * as Phaser from 'phaser';
 import { MapDefinitions } from '../../const/map-size.info';
 import { TilePossibleProperties } from './types/tile-types';
 import { TilemapToAtlasMap } from '../../scenes/grassland.scene';
 import { MapHelper } from './map-helper';
+import { Textures } from 'phaser';
 
 export class MapPropertiesHelper {
-  constructor(private readonly mapHelper: MapHelper, private readonly textures: Phaser.Textures.TextureManager) {}
+  constructor(private readonly mapHelper: MapHelper, private readonly textures: Textures.TextureManager) {}
 
   mapLayerTilesetsToAtlasesAndExtractProperties() {
     const tilesetAtlasNameMapper: TilemapToAtlasMap[] = [];

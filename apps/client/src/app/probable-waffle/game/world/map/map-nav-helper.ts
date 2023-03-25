@@ -3,9 +3,9 @@ import { TilePlacementWorldWithProperties } from './tile/manual-tiles/manual-til
 import { MapHelper } from './tile/map-helper';
 import { TilemapInputHandler } from '../managers/controllers/input/tilemap/tilemap-input.handler';
 import { ManualTileInputHandler } from '../managers/controllers/input/manual-tiles/manual-tile-input.handler';
-import * as Phaser from 'phaser';
 import { TileLayerProperties } from './tile/types/tile-types';
 import { GameObjectsHelper } from './game-objects-helper';
+import { Tilemaps } from 'phaser';
 
 export class MapNavHelper {
   constructor(
@@ -38,7 +38,7 @@ export class MapNavHelper {
    * todo this needs to be removed later as we should be manually updating arrays of static objects
    */
   getTilemapLayerTilePlacementWithProperties(): TilePlacementWorldWithProperties[][] {
-    return this.mapHelper.tilemapLayer.layer.data.map((row: Phaser.Tilemaps.Tile[]) =>
+    return this.mapHelper.tilemapLayer.layer.data.map((row: Tilemaps.Tile[]) =>
       row.map(
         (tile) =>
           ({
