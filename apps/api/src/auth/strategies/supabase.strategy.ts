@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
 import { AuthStrategies } from './auth-strategies';
 import { SupabaseV2AuthStrategy } from './supabase-auth-strategy/supabase-v2-auth.strategy';
+import { AuthUser } from '@supabase/supabase-js';
 
 @Injectable()
 export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, AuthStrategies.supabase) {
@@ -16,13 +17,11 @@ export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, A
     });
   }
 
-  async validate(payload: any): Promise<any> {
-    console.log('in validate');
+  async validate(payload: AuthUser | null): Promise<any> {
     return super.validate(payload);
   }
 
   authenticate(req) {
-    console.log('in authenticate');
     return super.authenticate(req);
   }
 }
