@@ -28,6 +28,7 @@ async function bootstrap() {
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);
+    // navigate to /docs to see the swagger docs
   }
 
   app.enableCors({
