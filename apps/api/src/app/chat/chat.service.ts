@@ -14,7 +14,7 @@ export class ChatService implements IChatService {
 
   constructor() {
     this.badWordsFilter = new BadWords({ list: ['tristo', 'kosmatih', 'medvedov'] }) as IBadWords;
-    this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+    this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
   }
 
   async postMessage(text: string, user: AuthUser): Promise<void> {

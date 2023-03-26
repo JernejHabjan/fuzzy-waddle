@@ -9,7 +9,7 @@ export class AuthService implements IAuthService {
   private supabaseClient: SupabaseClient;
 
   constructor(private usersService: UsersService, private jwtService: JwtService) {
-    this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+    this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
   }
 
   async validateTest() {

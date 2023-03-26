@@ -23,8 +23,7 @@ describe('AuthService', () => {
     process.env = { ...OLD_ENV }; // Make a copy
 
     process.env.SUPABASE_URL = 'http://localhost:8000';
-    process.env.SUPABASE_KEY = 'test';
-    process.env.SUPABASE_JWT_SECRET = 'test';
+    process.env.SUPABASE_SERVICE_KEY = 'test';
     const module: TestingModule = await Test.createTestingModule({
       providers: [AuthService, { provide: UsersService, useValue: usersServiceStub }, JwtService]
     }).compile();

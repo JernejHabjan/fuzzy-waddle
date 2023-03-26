@@ -10,9 +10,8 @@ export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, A
   constructor() {
     super({
       supabaseUrl: process.env.SUPABASE_URL,
-      supabaseKey: process.env.SUPABASE_KEY,
+      supabaseKey: process.env.SUPABASE_SERVICE_KEY,
       supabaseOptions: {},
-      supabaseJwtSecret: process.env.SUPABASE_JWT_SECRET,
       extractor: ExtractJwt.fromAuthHeaderAsBearerToken()
     });
   }
