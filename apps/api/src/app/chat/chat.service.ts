@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { IChatService } from './chat.service.interface';
 import { IBadWords } from '../../interfaces/bad-words.interface';
-import * as BadWords from 'bad-words';
+import * as BadWords from 'bad-words-plus';
 import { AuthUser, createClient, SupabaseClient } from '@supabase/supabase-js';
+import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class ChatService implements IChatService {
@@ -18,7 +19,7 @@ export class ChatService implements IChatService {
   }
 
   async postMessage(text: string, user: AuthUser): Promise<void> {
-    const sanitizedMessage = this.badWordsFilter.clean(text);
+    const sanitizedMessage = EventsGateway.cleanBadWords(text, this.badWordsFilter);
     // Insert sanitized message into Messages table
     const { data, error } = await this.supabaseClient.from('test').insert({ text: sanitizedMessage, user_id: user.id });
     if (error) {

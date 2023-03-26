@@ -12,7 +12,15 @@ export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, A
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_SERVICE_KEY,
       supabaseOptions: {},
-      extractor: ExtractJwt.fromAuthHeaderAsBearerToken()
+      extractor: (req) => {
+        // for socket-io extract token from handshake
+        const accessToken = req?.handshake?.auth?.token || req?.handshake?.query?.access_token;
+        if (accessToken) {
+          return accessToken;
+        }
+        // extract from fromAuthHeaderAsBearerToken
+        return ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+      }
     });
   }
 

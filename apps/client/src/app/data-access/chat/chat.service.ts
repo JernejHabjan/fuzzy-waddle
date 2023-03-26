@@ -5,19 +5,26 @@ import { ChatMessage, GatewayEvent } from '@fuzzy-waddle/api-interfaces';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { ChatServiceInterface } from './chat.service.interface';
+import { AuthenticatedSocket } from './socket.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService implements ChatServiceInterface {
-  constructor(private socket: Socket, private authService: AuthService) {}
+  private authenticatedSocket: AuthenticatedSocket;
+
+  constructor(private socket: Socket, private authService: AuthService) {
+    this.authenticatedSocket = new AuthenticatedSocket(this.authService); // todo this needs to be constructed only when the user is authenticated
+  }
 
   sendMessage(msg: ChatMessage): void {
-    this.socket.emit(GatewayEvent.CHAT_MESSAGE, msg);
+    this.authenticatedSocket.emit(GatewayEvent.CHAT_MESSAGE, msg);
   }
 
   getMessage(): Observable<ChatMessage> {
-    return this.socket.fromEvent<ChatMessage>(GatewayEvent.CHAT_MESSAGE).pipe(map((data: ChatMessage) => data));
+    return this.authenticatedSocket
+      .fromEvent<ChatMessage>(GatewayEvent.CHAT_MESSAGE)
+      .pipe(map((data: ChatMessage) => data));
   }
 
   createMessage(message: string): ChatMessage {

@@ -56,7 +56,7 @@ specifiers:
   '@types/passport-local': ^1.0.35
   '@typescript-eslint/eslint-plugin': ^5.48.2
   '@typescript-eslint/parser': ^5.48.2
-  bad-words: ^3.0.4
+  bad-words-plus: ^3.0.4
   bootstrap: ^5.2.3
   class-transformer: ^0.5.1
   class-validator: ^0.14.0
@@ -121,7 +121,7 @@ dependencies:
   '@popperjs/core': 2.11.6
   '@schematics/angular': 15.2.4
   '@supabase/supabase-js': 2.4.1
-  bad-words: 3.0.4
+  bad-words-plus: 3.0.4
   bootstrap: 5.2.3_@popperjs+core@2.11.6
   class-transformer: 0.5.1
   class-validator: 0.14.0
@@ -4907,9 +4907,9 @@ packages:
     resolution: {integrity: sha512-zj6Z6M7Eq+PBZ7PQxl5NT665MvJdAkzp0f60nAJ+sLaSCBPMwVak5ZegFbgVCzFcCJTKFoMizvM5Ld7+JrRJHA==}
     dev: false
 
-  /bad-words/3.0.4:
-    resolution: {integrity: sha512-v/Q9uRPH4+yzDVLL4vR1+S9KoFgOEUl5s4axd6NIAq8SV2mradgi4E8lma/Y0cw1ltVdvyegCQQKffCPRCp8fg==}
-    engines: {node: '>=8.0.0'}
+  /bad-words-plus/3.0.4:
+    resolution: {integrity: sha512-C/+ksGbW1VtPva4DH85mrzgTSzcdPF8k8YzJeeDMUndtee0yocC46LsqucTSdJm8o8wZyBZmN+m57/TW4Y/pfw==}
+    engines: {node: '>=12.0.0'}
     dependencies:
       badwords-list: 1.0.0
     dev: false
