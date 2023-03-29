@@ -8,6 +8,8 @@ import { jwtConstants } from './constants';
 // import { JwtStrategy } from './strategies/jwt.strategy';
 // import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { UserAuthCacheService } from '../core/cache/user-auth-cache.service.ts/user-auth-cache.service';
+import { SupabaseProviderService } from '../core/supabase-provider/supabase-provider.service';
 
 @Module({
   imports: [
@@ -19,7 +21,12 @@ import { JwtModule } from '@nestjs/jwt';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, /*LocalStrategy, JwtStrategy,*/ SupabaseStrategy],
+  providers: [
+    AuthService,
+    /*LocalStrategy, JwtStrategy,*/ SupabaseStrategy,
+    UserAuthCacheService,
+    SupabaseProviderService
+  ],
   exports: [AuthService, SupabaseStrategy]
 })
 export class AuthModule {}

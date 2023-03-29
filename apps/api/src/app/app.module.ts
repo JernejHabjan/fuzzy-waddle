@@ -6,9 +6,10 @@ import { AuthModule } from '../auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { EventsModule } from './events/events.module';
 import { ChatModule } from './chat/chat.module';
+import { GameSessionModule } from './game-session/game-session.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, EventsModule, ChatModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, EventsModule, ChatModule, GameSessionModule],
   controllers: [AppController],
   providers: [AppService]
 })

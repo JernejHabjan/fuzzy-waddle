@@ -1,32 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { IChatService } from './chat.service.interface';
-import { IBadWords } from '../../interfaces/bad-words.interface';
-import * as BadWords from 'bad-words-plus';
-import { AuthUser, createClient, SupabaseClient } from '@supabase/supabase-js';
-import { EventsGateway } from '../events/events.gateway';
+import { AuthUser } from '@supabase/supabase-js';
+import { SupabaseProviderService } from '../../core/supabase-provider/supabase-provider.service';
+import { TextSanitizationService } from '../../core/content-filters/text-sanitization.service';
 
 @Injectable()
 export class ChatService implements IChatService {
+  constructor(
+    private supabaseProviderService: SupabaseProviderService,
+    private textSanitizationService: TextSanitizationService
+  ) {}
+
   /**
-   * https://www.npmjs.com/package/bad-words?activeTab=versions
+   * @returns {Promise<Awaited<string>>} sanitized message
    */
-  private badWordsFilter: IBadWords;
-  private supabaseClient: SupabaseClient;
-
-  constructor() {
-    this.badWordsFilter = new BadWords({ list: ['tristo', 'kosmatih', 'medvedov'] }) as IBadWords;
-    this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  }
-
-  async postMessage(text: string, user: AuthUser): Promise<void> {
-    const sanitizedMessage = EventsGateway.cleanBadWords(text, this.badWordsFilter);
+  async postMessage(text: string, user: AuthUser): Promise<string> {
+    const sanitizedMessage = this.textSanitizationService.cleanBadWords(text);
     // Insert sanitized message into Messages table
-    const { data, error } = await this.supabaseClient.from('test').insert({ text: sanitizedMessage, user_id: user.id });
+    const { data, error } = await this.supabaseProviderService.supabaseClient.from('test').insert({
+      text: sanitizedMessage,
+      user_id: user.id
+    });
     if (error) {
       console.error(error);
       return Promise.reject(error);
     } else {
-      return Promise.resolve();
+      return Promise.resolve(sanitizedMessage);
     }
   }
 }
