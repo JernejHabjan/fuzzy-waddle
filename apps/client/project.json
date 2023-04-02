@@ -85,6 +85,12 @@
       "options": {
         "jestConfig": "apps/client/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
   },

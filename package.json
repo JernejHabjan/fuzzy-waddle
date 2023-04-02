@@ -81,7 +81,6 @@
     "phaser": "^3.60.0-beta.21",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
-    "socket.io": "^4.6.1",
     "tslib": "^2.4.1",
     "zone.js": "0.12.0"
   },
@@ -99,10 +98,12 @@
     "@nrwl/cypress": "15.8.7",
     "@nrwl/eslint-plugin-nx": "15.8.7",
     "@nrwl/jest": "15.8.7",
+    "@nrwl/js": "15.8.7",
     "@nrwl/linter": "15.8.7",
     "@nrwl/nest": "15.8.7",
     "@nrwl/node": "15.8.7",
     "@nrwl/nx-cloud": "15.2.3",
+    "@nrwl/webpack": "15.8.7",
     "@nrwl/workspace": "15.8.7",
     "@types/jest": "29.4.4",
     "@types/node": "18.11.18",
@@ -114,15 +115,16 @@
     "eslint": "~8.32.0",
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-cypress": "^2.12.1",
-    "jest": "29.4.3",
-    "jest-canvas-mock": "^2.4.0",
-    "jest-environment-jsdom": "29.4.3",
-    "jest-fail-on-console": "^3.0.2",
-    "jest-preset-angular": "13.0.0",
+    "jest": "29.5.0",
+    "jest-canvas-mock": "^2.5.0",
+    "jest-environment-jsdom": "29.5.0",
+    "jest-environment-node": "^29.4.1",
+    "jest-fail-on-console": "^3.1.1",
+    "jest-preset-angular": "13.0.1",
     "nx": "15.8.7",
     "prettier": "^2.8.3",
     "ts-jest": "29.0.5",
     "ts-node": "10.9.1",
-    "typescript": "~4.9.4"
+    "typescript": "~4.9.5"
   }
 }

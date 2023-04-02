@@ -1,11 +1,11 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
 import { ChatMessage, GatewayEvent } from '@fuzzy-waddle/api-interfaces';
 import { CurrentUser } from '../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
 import { UseGuards } from '@nestjs/common';
 import { SupabaseAuthGuard } from '../../auth/guards/supabase-auth.guard';
 import { ChatService } from '../chat/chat.service';
+import { Server, Socket } from 'net';
 
 @WebSocketGateway({
   cors: {
@@ -14,7 +14,7 @@ import { ChatService } from '../chat/chat.service';
 })
 export class EventsGateway {
   @WebSocketServer()
-  server: Server;
+  private server: Server;
 
   constructor(private readonly chatService: ChatService) {}
 

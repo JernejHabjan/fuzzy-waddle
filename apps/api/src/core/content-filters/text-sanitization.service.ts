@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IBadWords } from './bad-words.interface';
-import * as BadWords from 'bad-words-plus';
+import BadWords from 'bad-words-plus';
 import { ITextSanitizationService } from './text-sanitization.service.interface';
 
 @Injectable()
