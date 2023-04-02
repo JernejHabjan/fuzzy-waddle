@@ -5,6 +5,7 @@ import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testi
 import { HomePageNavTestingComponent } from './home-page-nav/home-page-nav.component.spec';
 import { provideRouter } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('HomePageComponent', () => {
   let component: HomePageComponent;
@@ -13,7 +14,11 @@ describe('HomePageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [HomePageComponent, HomePageNavTestingComponent],
-      imports: [FontAwesomeTestingModule, RouterTestingModule],
+      imports: [
+        FontAwesomeTestingModule,
+        RouterTestingModule,
+        HttpClientTestingModule // todo remove httpClient from view!
+      ],
       providers: [provideRouter([])]
     }).compileComponents();
 

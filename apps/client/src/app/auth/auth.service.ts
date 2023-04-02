@@ -24,6 +24,10 @@ export class AuthService {
     );
   }
 
+  get accessToken(): string | null {
+    return this.session?.access_token ?? null;
+  }
+
   get userId(): string | null {
     return this.session?.user?.id ?? null;
   }

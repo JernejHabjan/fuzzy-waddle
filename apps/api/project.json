@@ -35,10 +35,14 @@
     },
     "serve": {
       "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "api:build"
       },
       "configurations": {
+        "development": {
+          "buildTarget": "api:build:development"
+        },
         "production": {
           "buildTarget": "api:build:production"
         }
@@ -63,6 +67,12 @@
       "options": {
         "jestConfig": "apps/api/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
   },

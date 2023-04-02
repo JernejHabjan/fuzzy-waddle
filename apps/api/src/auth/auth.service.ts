@@ -1,17 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { IAuthService } from './auth.service.interface';
 
 @Injectable()
 export class AuthService implements IAuthService {
-  private supabaseClient: SupabaseClient;
-
-  constructor(private usersService: UsersService, private jwtService: JwtService) {
-    this.supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-  }
-
   async validateTest() {
     return true;
   }

@@ -31,5 +31,5 @@
   - build command in render.com: `pnpm i; nx build api`
   - Start command in render.com: `node dist/apps/api/main.js`
   - add health check: `/api/health`
-  - Add supabase environmental variables: `SUPABASE_URL` and `SUPABASE_KEY` and `SUPABASE_JWT_SECRET`
+  - Add supabase environmental variables: `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`
   - Add `CORS_ORIGIN` environmental variable: `https://fuzzy-waddle.onrender.com`

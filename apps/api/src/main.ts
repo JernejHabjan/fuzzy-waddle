@@ -17,16 +17,19 @@ async function bootstrap() {
   const port = process.env.PORT || 3333;
   app.useGlobalPipes(new ValidationPipe());
 
-  // swagger setup
-  const config = new DocumentBuilder()
-    .setTitle('Fuzzy waddle API')
-    .setDescription('This API helps you manage fuzzy waddle data!')
-    .setVersion('1.0')
-    .addTag('calendar')
-    .addBearerAuth({ in: 'header', type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  if (process.env.NODE_ENV === 'development') {
+    // swagger setup
+    const config = new DocumentBuilder()
+      .setTitle('Fuzzy waddle API')
+      .setDescription('This API helps you manage fuzzy waddle data!')
+      .setVersion('1.0')
+      .addTag('calendar')
+      .addBearerAuth({ in: 'header', type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document);
+    // navigate to /docs to see the swagger docs
+  }
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN

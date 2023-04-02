@@ -2,7 +2,7 @@ import { isDevMode, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HomeModule } from './home/home.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -11,6 +11,7 @@ import { SocketIoModule } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentsModule } from './shared/components/components.module';
+import { AccessTokenInterceptor } from './auth/access-token.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,7 +32,7 @@ import { ComponentsModule } from './shared/components/components.module';
     NgbModule,
     ComponentsModule
   ],
-  providers: [AuthGuard],
+  providers: [AuthGuard, { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

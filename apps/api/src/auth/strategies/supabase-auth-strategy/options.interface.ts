@@ -1,9 +1,9 @@
-import { SupabaseClientOptions } from '@supabase/supabase-js';
 import { JwtFromRequestFunction } from 'passport-jwt';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { UserAuthCacheService } from '../../../core/cache/user-auth-cache.service.ts/user-auth-cache.service';
 
 export interface SupabaseAuthStrategyOptions {
-  supabaseUrl: string;
-  supabaseKey: string;
-  supabaseOptions: SupabaseClientOptions<'public'>;
+  supabaseClient: SupabaseClient;
   extractor: JwtFromRequestFunction;
+  userAuthCacheService: UserAuthCacheService;
 }

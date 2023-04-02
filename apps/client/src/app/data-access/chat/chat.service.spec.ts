@@ -1,19 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-
 import { ChatService } from './chat.service';
-import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-
-// https://stackoverflow.com/a/68708618/5909875
-const config: SocketIoConfig = {
-  url: 'http://localhost:3005',
-  options: { transports: ['websocket'], reconnection: true }
-};
+import { AuthenticatedSocketService } from './authenticated-socket.service';
+import { createAuthenticatedSocketServiceStub } from './authenticated-socket.service.spec';
 
 describe('Chat', () => {
   let service: ChatService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [SocketIoModule.forRoot(config)] });
+    TestBed.configureTestingModule({
+      providers: [
+        ChatService,
+        {
+          provide: AuthenticatedSocketService,
+          useValue: createAuthenticatedSocketServiceStub
+        }
+      ]
+    });
     service = TestBed.inject(ChatService);
   });
 
