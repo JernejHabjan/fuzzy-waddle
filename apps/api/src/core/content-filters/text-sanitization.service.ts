@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { IBadWords } from './bad-words.interface';
 import * as BadWords from 'bad-words-plus';
+import { ITextSanitizationService } from './text-sanitization.service.interface';
 
 @Injectable()
-export class TextSanitizationService {
+export class TextSanitizationService implements ITextSanitizationService {
   /**
    * https://www.npmjs.com/package/bad-words?activeTab=versions
    */
@@ -16,7 +17,7 @@ export class TextSanitizationService {
   /**
    * https://github.com/web-mech/badwords/issues/93
    */
-  public cleanBadWords(text: string): string {
+  cleanBadWords(text: string): string {
     const additionalSuffix = 'ABC';
     const wholeText = text + additionalSuffix;
     const clean = this.badWordsFilter.clean(wholeText);

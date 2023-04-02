@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChatService } from './chat.service';
 import { chatServiceStub } from './chat.service.spec';
-import { ChatController, MessageDto } from './chat.controller';
+import { ChatController } from './chat.controller';
+import { MessageDto } from './message.dto';
+import { authUserStub } from '../../auth/auth.service.spec';
 
 describe('ChatController', () => {
   let app: TestingModule;
@@ -16,7 +18,9 @@ describe('ChatController', () => {
   describe('postMessage', () => {
     it('should return void', async () => {
       const chatController = app.get<ChatController>(ChatController);
-      const result = await chatController.postMessage({ message: 'test' } as MessageDto);
+      const user = authUserStub;
+      const messageDto: MessageDto = { message: 'test' };
+      const result = await chatController.postMessage(user, messageDto);
       expect(result).toBeUndefined();
     });
   });
