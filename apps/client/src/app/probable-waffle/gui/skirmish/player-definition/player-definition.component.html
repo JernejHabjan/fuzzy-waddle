@@ -1,4 +1,6 @@
 <div *ngIf="selectedMap" class="start-position-container">
+  <div class="players-title">Players</div>
+
   <div class="player-rows">
     <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="start-position-row">
       <ng-container *ngIf="position.player.playerPosition !== null">
@@ -12,8 +14,8 @@
           <div>{{ position.player.playerPosition + 1 }}</div>
         </div> -->
         <div class="p-2">
-          <label class="form-label" for='factionTypes'>Faction:</label>
-          <select [(ngModel)]="position.factionType" class="form-select" id='factionTypes'>
+          <label class="form-label" for="factionTypes">Faction:</label>
+          <select [(ngModel)]="position.factionType" class="form-select" id="factionTypes">
             <option *ngFor="let factionTypeType of FactionDefinitions.factionTypes" [ngValue]="factionTypeType.value">
               {{ factionTypeType.name }}
             </option>
@@ -24,20 +26,20 @@
           <div id="playerType">{{ PlayerTypeDefinitions.playerTypeLookup[position.playerType] }}</div>
         </div>
 
-        <div *ngIf="position.playerType === PlayerType.AI" class="p-2">
-          <label class="form-label" for="difficulty">Difficulty:</label>
-          <select [(ngModel)]="position.difficulty" class="form-select" id="difficulty">
-            <option *ngFor="let difficulty of DifficultyDefinitions.difficulties" [ngValue]="difficulty.value">
-              {{ difficulty.name }}
-            </option>
-          </select>
-        </div>
-
         <div class="p-2" style="margin-left: 10px">
           <label class="form-label" for="team">Team:</label>
           <select [(ngModel)]="position.team" class="form-select" id="team">
             <option *ngFor="let team of selectedMap.allPossibleTeams" [ngValue]="team">
               {{ team === null ? 'No team' : team + 1 }}
+            </option>
+          </select>
+        </div>
+
+        <div *ngIf="position.playerType === PlayerType.AI" class="p-2">
+          <label class="form-label" for="difficulty">Difficulty:</label>
+          <select [(ngModel)]="position.difficulty" class="form-select" id="difficulty">
+            <option *ngFor="let difficulty of DifficultyDefinitions.difficulties" [ngValue]="difficulty.value">
+              {{ difficulty.name }}
             </option>
           </select>
         </div>
@@ -56,9 +58,17 @@
     </div>
   </div>
   <button
+    (click)="openSlot(selectedMap.playerPositions.length)"
+    *ngIf="selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length"
+    class="btn btn-primary mt-4 me-4"
+    type="button"
+  >
+    Open slot for MP
+  </button>
+  <button
     (click)="addPlayer(selectedMap.playerPositions.length)"
     *ngIf="selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length"
-    class="btn btn-success mt-2"
+    class="btn btn-primary mt-4"
     type="button"
   >
     Add A.I. player

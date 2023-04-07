@@ -9,14 +9,14 @@
     width="200px"
   />
   <div class="featured-title">
-    <h2>Featured</h2>
-    <h3 style="margin-left: 30px">{{ probableWaffle.name }}</h3>
+    <div>Featured</div>
+    <div style="margin-left: 30px">{{ probableWaffle.name }}</div>
   </div>
 </a>
 
 <div class="all-games">
-  <a *ngFor="let game of displayGames" class="tile-game nav-link" routerLink="{{ game.route }}">
-    <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}"/>
+  <a *ngFor="let game of displayGames" class="tile-game nav-link card-container" routerLink="{{ game.route }}">
+    <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
     <div class="game-title">
       <h2>{{ game.name }}</h2>
     </div>
@@ -26,7 +26,7 @@
   </a>
 </div>
 <fuzzy-waddle-chat-float *ngIf="authService.isAuthenticated"></fuzzy-waddle-chat-float>
-<div *ngIf="authService.isAuthenticated">
+<div *ngIf="authService.isAuthenticated && !environment.production">
   <button class="button button-clear" (click)="dbAccessTestService.add()">Add Test</button>
   <button class="button button-clear" (click)="addViaMw()">Add Test via MW</button>
   <button class="button button-clear" (click)="dbAccessTestService.get()">Get Test</button>

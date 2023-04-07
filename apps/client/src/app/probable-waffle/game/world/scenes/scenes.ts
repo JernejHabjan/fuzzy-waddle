@@ -25,7 +25,8 @@ export class Maps {
     {
       id: MapIds.GrasslandSmall,
       name: 'Grassland',
-      description: 'A small grassland',
+      description:
+        'Engage in intense skirmishes on a compact grassland map, where every move counts. Limited resources and tight quarters demand cunning tactics in this RTS arena.',
       image: 'start-small.png',
       startPositions: [
         { tileXY: { x: 2, y: 2 }, z: 0 },
@@ -37,7 +38,8 @@ export class Maps {
     {
       id: MapIds.GrasslandLarge,
       name: 'Grassland Large',
-      description: 'A large grassland',
+      description:
+        'Explore a sprawling grassland teeming with resources and potential pitfalls. Navigate strategic chokepoints to outmaneuver your foes and secure victory in this RTS battleground.',
       image: 'start-large.png',
       startPositions: [
         { tileXY: { x: 20, y: 20 }, z: 0 },

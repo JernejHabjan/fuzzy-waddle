@@ -1,7 +1,9 @@
-:host {
-  max-height: 500px;
-  overflow: auto;
-  @media (max-width: 768px) {
-    max-height: unset;
-  }
+@import '../../../../../styles/_variables.scss';
+
+.definition-title {
+  font-size: 1.6em;
+  font-family: $app-font-bold;
+  color: $primary;
+  text-align: center;
+  margin-bottom: 1rem;
 }

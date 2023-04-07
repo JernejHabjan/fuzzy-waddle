@@ -3,16 +3,14 @@
 :host {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   height: 100%;
   width: 100%;
   flex-grow: 1;
   overflow: auto;
-}
-
-.map-display-center {
-  background-color: $secondary;
+  background-color: $tertiary;
   padding: 2rem;
-  flex-grow: 1;
+
   @media (max-width: 768px) {
     padding: 1rem;
   }

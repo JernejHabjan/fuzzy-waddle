@@ -17,6 +17,7 @@ export type DisplayGame = {
   styleUrls: ['./home-page.component.scss']
 })
 export class HomePageComponent {
+  environment = environment;
   probableWaffle: DisplayGame = {
     name: 'Probable Waffle',
     description: 'A real-time strategy game',

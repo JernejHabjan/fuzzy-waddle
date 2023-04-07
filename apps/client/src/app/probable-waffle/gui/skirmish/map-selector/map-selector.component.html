@@ -1,19 +1,19 @@
-<div class="dropdown">
-  <button aria-expanded="false" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" type="button">
+<div class='dropdown'>
+  <button aria-expanded='false' class='btn btn-primary dropdown-toggle' data-bs-toggle='dropdown' type='button'>
     Select a map
   </button>
-  <ul class="dropdown-menu">
+  <ul class='dropdown-menu menu-border'>
     <li
-      (click)="selectMap(mapPlayerDefinition)"
-      *ngFor="let mapPlayerDefinition of mapPlayerDefinitions"
-      class="text-center cursor-pointer"
+      (click)='selectMap(mapPlayerDefinition)'
+      *ngFor='let mapPlayerDefinition of mapPlayerDefinitions'
+      class='cursor-pointer p-2'
     >
       <img
-        [alt]="mapPlayerDefinition.map.name"
+        [alt]='mapPlayerDefinition.map.name'
         [src]="'assets/probable-waffle/tilemaps/' + mapPlayerDefinition.map.image"
-        class="map-preview"
+        class='map-preview'
       />
-      <span style="margin-left: 10px">{{ mapPlayerDefinition.map.name }}</span>
+      <span style='margin-left: 10px'>{{ mapPlayerDefinition.map.name }}</span>
     </li>
   </ul>
 </div>

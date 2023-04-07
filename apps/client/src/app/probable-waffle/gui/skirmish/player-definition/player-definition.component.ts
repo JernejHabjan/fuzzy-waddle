@@ -79,6 +79,11 @@ export class PlayerDefinitionComponent {
     this.playerJoined.emit();
   }
 
+  openSlot(playerIndex: number) {
+    // todo implement this for multiplayer
+    this.addPlayer(playerIndex);
+  }
+
   removePlayer(playerNumber: number) {
     const map = this.selectedMap as MapPlayerDefinition;
     const startPositionPerPlayerElement = map.startPositionPerPlayer[playerNumber];

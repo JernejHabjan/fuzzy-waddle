@@ -53,8 +53,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  border-top: 1px solid #ccc;
-  background-color: #f3f3f3;
+  border-top: 2px solid $primary;
+  background-color: $quaternary;
 
   .chat-form {
     display: flex;
@@ -66,9 +66,9 @@
       margin-right: 10px;
       width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
       border-radius: 10px;
       outline: none;
+      border: 2px solid $primary;
     }
 
     .chat-button {
@@ -80,12 +80,15 @@
       border-radius: 10px;
       background-color: white;
       cursor: pointer;
+      transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 
       &:not([disabled]) {
         &:hover {
           background-color: $primary;
           color: white;
         }
+
+        border: 2px solid $primary;
       }
     }
   }
