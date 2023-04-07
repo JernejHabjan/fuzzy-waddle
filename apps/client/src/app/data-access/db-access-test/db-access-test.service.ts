@@ -24,4 +24,9 @@ export class DbAccessTestService {
         console.log(data);
       });
   }
+
+  async getStorageEntry(): Promise<void> {
+    const bucket1 = await this.dataAccessService.supabase.storage.from('test-bucket').download('probable-waffle.webp');
+    console.log(bucket1);
+  }
 }
