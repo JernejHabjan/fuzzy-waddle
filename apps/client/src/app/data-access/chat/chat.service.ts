@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ChatMessage, GatewayEvent } from '@fuzzy-waddle/api-interfaces';
 import { Observable } from 'rxjs';
-import { ChatServiceInterface } from './chat.service.interface';
+import { IChatService } from './chat.service.interface';
 import { AuthenticatedSocketService } from './authenticated-socket.service';
 import { Socket } from 'ngx-socket-io';
 import { AuthService } from '../../auth/auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../../auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService implements ChatServiceInterface {
+export class ChatService implements IChatService {
   private authenticatedSocket: Socket;
 
   constructor(private authenticatedSocketService: AuthenticatedSocketService, private authService: AuthService) {

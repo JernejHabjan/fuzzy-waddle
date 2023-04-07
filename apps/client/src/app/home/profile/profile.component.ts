@@ -8,5 +8,5 @@ import { UserInstanceService } from './user-instance.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent {
-  constructor(public authService: AuthService, public userInstanceService: UserInstanceService) {}
+  constructor(protected authService: AuthService, protected userInstanceService: UserInstanceService) {}
 }

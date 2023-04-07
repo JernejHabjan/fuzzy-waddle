@@ -34,8 +34,8 @@ export class HomePageComponent {
   ];
 
   constructor(
-    public authService: AuthService,
-    public dbAccessTestService: DbAccessTestService,
+    protected authService: AuthService,
+    protected dbAccessTestService: DbAccessTestService,
     private httpClient: HttpClient // todo remove httpClient from view!
   ) {}
 

@@ -8,7 +8,7 @@ import { AuthService } from '../../../auth/auth.service';
   styleUrls: ['./profile-nav.component.scss']
 })
 export class ProfileNavComponent {
-  constructor(private router: Router, public authService: AuthService) {}
+  constructor(private router: Router, protected authService: AuthService) {}
 
   async toHome() {
     await this.router.navigate(['/']);

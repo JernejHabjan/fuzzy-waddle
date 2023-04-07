@@ -7,7 +7,7 @@
             alt="avatar"
             class="avatar"
             height="20"
-            src="{{ getAvatar(message.userId) }}"
+            src="{{ avatarProviderService.getAvatar(message.userId) }}"
           />
           <div class="chat-message-sender-name">{{ message.fullName }}</div>
         </div>

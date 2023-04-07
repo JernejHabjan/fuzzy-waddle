@@ -12,5 +12,5 @@ export class HomePageNavComponent {
   faUser = faUser;
   faGoogle = faGoogle;
 
-  constructor(public authService: AuthService) {}
+  constructor(protected authService: AuthService) {}
 }

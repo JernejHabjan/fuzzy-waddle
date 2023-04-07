@@ -1,8 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ChatService } from '../../../data-access/chat/chat.service';
 import { ChatMessage } from '@fuzzy-waddle/api-interfaces';
-import { createAvatar } from '@dicebear/core';
-import * as pixelArt from '@dicebear/pixel-art';
+import { AvatarProviderService } from './avatar-provider/avatar-provider.service';
 
 @Component({
   selector: 'fuzzy-waddle-chat',
@@ -14,7 +13,7 @@ export class ChatComponent {
   message = '';
   messages: ChatMessage[] = [];
 
-  constructor(private chatService: ChatService) {
+  constructor(private chatService: ChatService, protected avatarProviderService: AvatarProviderService) {
     chatService.getMessage().subscribe((msg: ChatMessage) => {
       this.messages.push(msg);
       // scroll to bottom
@@ -32,10 +31,5 @@ export class ChatComponent {
     }
     this.chatService.sendMessage(this.chatService.createMessage(this.message));
     this.message = '';
-  }
-
-  getAvatar(userId: string) {
-    const avatar = createAvatar(pixelArt, { seed: userId });
-    return avatar.toDataUriSync();
   }
 }

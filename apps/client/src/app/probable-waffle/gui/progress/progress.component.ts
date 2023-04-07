@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProgressComponent {
-  constructor(public gameInstanceService: GameInstanceService, private router: Router) {}
+  constructor(protected gameInstanceService: GameInstanceService, private router: Router) {}
 
   leaveClick() {
     this.router.navigate(['/probable-waffle']);
