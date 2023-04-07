@@ -1,17 +1,17 @@
 import { TechTreeComponent } from './tech-tree';
-import { RaceInfo } from './race-info';
+import { FactionInfo } from './faction-info';
 import { ActorType } from '../entity/assets/types/actor-type';
 
-export enum RaceType {
+export enum FactionType {
   IceMarauders = 'IceMarauders',
   FireBoosters = 'FireBoosters',
   SandDwellers = 'SandDwellers',
   ForestShadows = 'ForestShadows'
 }
 
-export class RaceDefinitions {
-  static iceMarauders: RaceInfo = new RaceInfo(
-    RaceType.IceMarauders,
+export class FactionDefinitions {
+  static iceMarauders: FactionInfo = new FactionInfo(
+    FactionType.IceMarauders,
     new TechTreeComponent(),
     [ActorType.TownHall, ActorType.Worker, ActorType.Worker],
     [
@@ -23,8 +23,8 @@ export class RaceDefinitions {
     [ActorType.TownHall], // todo
     true
   );
-  static fireBoosters: RaceInfo = new RaceInfo(
-    RaceType.FireBoosters,
+  static fireBoosters: FactionInfo = new FactionInfo(
+    FactionType.FireBoosters,
     new TechTreeComponent(),
     [ActorType.TownHall, ActorType.Worker, ActorType.Worker],
     [
@@ -36,8 +36,8 @@ export class RaceDefinitions {
     [ActorType.TownHall], // todo
     true
   );
-  static sandDwellers: RaceInfo = new RaceInfo(
-    RaceType.SandDwellers,
+  static sandDwellers: FactionInfo = new FactionInfo(
+    FactionType.SandDwellers,
     new TechTreeComponent(),
     [ActorType.TownHall, ActorType.Worker, ActorType.Worker],
     [
@@ -49,8 +49,8 @@ export class RaceDefinitions {
     [ActorType.TownHall], // todo
     true
   );
-  static forestShadows: RaceInfo = new RaceInfo(
-    RaceType.ForestShadows,
+  static forestShadows: FactionInfo = new FactionInfo(
+    FactionType.ForestShadows,
     new TechTreeComponent(),
     [ActorType.TownHall, ActorType.Worker, ActorType.Worker],
     [
@@ -63,10 +63,10 @@ export class RaceDefinitions {
     true
   );
 
-  static raceTypes: { name: string; value: RaceType }[] = [
-    { name: 'Ice Marauders', value: RaceType.IceMarauders },
-    { name: 'Fire Boosters', value: RaceType.FireBoosters },
-    { name: 'Sand Dwellers', value: RaceType.SandDwellers },
-    { name: 'Forest Shadows', value: RaceType.ForestShadows }
+  static factionTypes: { name: string; value: FactionType }[] = [
+    { name: 'Ice Marauders', value: FactionType.IceMarauders },
+    { name: 'Fire Boosters', value: FactionType.FireBoosters },
+    { name: 'Sand Dwellers', value: FactionType.SandDwellers },
+    { name: 'Forest Shadows', value: FactionType.ForestShadows }
   ];
 }

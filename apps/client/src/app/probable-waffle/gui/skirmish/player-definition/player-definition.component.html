@@ -12,10 +12,10 @@
           <div>{{ position.player.playerPosition + 1 }}</div>
         </div> -->
         <div class="p-2">
-          <label class="form-label" for="raceTypes">Race:</label>
-          <select [(ngModel)]="position.raceType" class="form-select" id="raceTypes">
-            <option *ngFor="let raceType of RaceDefinitions.raceTypes" [ngValue]="raceType.value">
-              {{ raceType.name }}
+          <label class="form-label" for='factionTypes'>Faction:</label>
+          <select [(ngModel)]="position.factionType" class="form-select" id='factionTypes'>
+            <option *ngFor="let factionTypeType of FactionDefinitions.factionTypes" [ngValue]="factionTypeType.value">
+              {{ factionTypeType.name }}
             </option>
           </select>
         </div>

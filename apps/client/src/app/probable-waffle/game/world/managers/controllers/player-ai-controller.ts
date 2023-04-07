@@ -55,7 +55,7 @@ export class PlayerAiController extends PlayerController {
       return hasProductionComponent;
     });
 
-    const buildOrder = this.playerState.raceInfo.getBuildOrder();
+    const buildOrder = this.playerState.factionInfo.getBuildOrder();
 
     // todo check build order
 

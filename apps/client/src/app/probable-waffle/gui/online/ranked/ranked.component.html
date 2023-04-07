@@ -10,11 +10,11 @@
       </div>
     </div>
     <div>
-      <div>Race</div>
+      <div>Faction</div>
       <div>
-        <select [(ngModel)]="rankedOptions.raceType" class="form-select">
-          <option *ngFor="let raceType of RaceDefinitions.raceTypes" [ngValue]="raceType.value">
-            {{ raceType.name }}
+        <select [(ngModel)]="rankedOptions.factionType" class="form-select">
+          <option *ngFor="let factionType of FactionDefinitions.factionTypes" [ngValue]="factionType.value">
+            {{ factionType.name }}
           </option>
         </select>
       </div>

@@ -1,11 +1,11 @@
 import { TechTreeComponent } from './tech-tree';
 import { Vector2Simple } from '../library/math/intersection';
-import { RaceType } from './race-definitions';
+import { FactionType } from './faction-definitions';
 import { ActorType } from '../entity/assets/types/actor-type';
 
-export class RaceInfo {
+export class FactionInfo {
   constructor(
-    public raceType: RaceType,
+    public factionType: FactionType,
     public techTreeComponent: TechTreeComponent,
     /**
      * Actors to spawn for each player in the game

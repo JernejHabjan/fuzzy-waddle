@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RaceDefinitions } from '../../../game/player/race-definitions';
+import { FactionDefinitions } from '../../../game/player/faction-definitions';
 import { Maps } from '../../../game/world/scenes/scenes';
 
 @Component({
@@ -8,11 +8,11 @@ import { Maps } from '../../../game/world/scenes/scenes';
   styleUrls: ['./ranked.component.scss']
 })
 export class RankedComponent {
-  RaceDefinitions = RaceDefinitions;
+  FactionDefinitions = FactionDefinitions;
   Maps = Maps;
   searching = false;
   rankedOptions = {
-    raceType: undefined
+    factionType: undefined
   };
 
   start() {

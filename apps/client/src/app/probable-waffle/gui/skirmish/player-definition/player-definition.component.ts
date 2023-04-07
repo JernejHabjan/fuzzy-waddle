@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MapPlayerDefinition, PositionPlayerDefinition } from '../skirmish.component';
-import { RaceDefinitions } from '../../../game/player/race-definitions';
+import { FactionDefinitions } from '../../../game/player/faction-definitions';
 
 export enum PlayerType {
   Human = 0,
@@ -40,7 +40,7 @@ export class DifficultyDefinitions {
 export class PlayerDefinitionComponent {
   PlayerTypeDefinitions = PlayerTypeDefinitions;
   PlayerType = PlayerType;
-  RaceDefinitions = RaceDefinitions;
+  FactionDefinitions = FactionDefinitions;
   DifficultyDefinitions = DifficultyDefinitions;
   @Input() selectedMap?: MapPlayerDefinition;
   @Output() playerJoined: EventEmitter<void> = new EventEmitter<void>();
