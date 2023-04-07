@@ -46,6 +46,8 @@
     "@angular/pwa": "^15.1.2",
     "@angular/router": "15.2.3",
     "@angular/service-worker": "15.2.3",
+    "@dicebear/core": "^6.0.2",
+    "@dicebear/pixel-art": "^6.0.2",
     "@fortawesome/angular-fontawesome": "^0.12.1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",

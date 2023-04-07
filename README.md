@@ -5,7 +5,7 @@
 ### Api
 
 - Copy the `.env.example` file to `.env.local` and fill in the values.
-  - for CORS_ORIGIN, set it to `http://localhost:4201`
+  - for CORS_ORIGIN, set it to `http://localhost:4200`
 
 ### Supabase:
 

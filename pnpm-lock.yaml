@@ -34,6 +34,12 @@ dependencies:
   '@angular/service-worker':
     specifier: 15.2.3
     version: 15.2.3(@angular/common@15.2.3)(@angular/core@15.2.3)
+  '@dicebear/core':
+    specifier: ^6.0.2
+    version: 6.0.2
+  '@dicebear/pixel-art':
+    specifier: ^6.0.2
+    version: 6.0.2(@dicebear/core@6.0.2)
   '@fortawesome/angular-fontawesome':
     specifier: ^0.12.1
     version: 0.12.1(@angular/core@15.2.3)(@fortawesome/fontawesome-svg-core@6.2.1)
@@ -2019,6 +2025,46 @@ packages:
       lodash.once: 4.1.1
     transitivePeerDependencies:
       - supports-color
+
+  /@dicebear/converter@6.0.2:
+    resolution: {integrity: sha512-oylyWwLyeB7euFNsnrCbTm2GNXGELCBcO8uRWEpx09g5aK534H9zLggxqmyL1lcRzAJEaZXl3pZWNStXReLGYA==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      '@resvg/resvg-js': ^2.4.1
+      exiftool-vendored: ^21.2.0
+      sharp: ^0.31.3
+    peerDependenciesMeta:
+      '@resvg/resvg-js':
+        optional: true
+      exiftool-vendored:
+        optional: true
+      sharp:
+        optional: true
+    dependencies:
+      '@types/json-schema': 7.0.11
+      tmp-promise: 3.0.3
+    dev: false
+
+  /@dicebear/core@6.0.2:
+    resolution: {integrity: sha512-Ce0m4Lc0qq23+m9Jysdxvj8nEUz8XSbABrtzLFZCxFEWJgLRaH6hahAouKrMmxkd1YuP/iIC4/4mD0Ulon80wA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@dicebear/converter': 6.0.2
+      '@types/json-schema': 7.0.11
+    transitivePeerDependencies:
+      - '@resvg/resvg-js'
+      - exiftool-vendored
+      - sharp
+    dev: false
+
+  /@dicebear/pixel-art@6.0.2(@dicebear/core@6.0.2):
+    resolution: {integrity: sha512-D88pG4w5ynrw7t4b54CQsAR5p2ZQ0dDGqt1UAeD6hmTbuDmyZDRZqhPkdPEg8c0zltGkwM7o6nZNQN1IBa15mA==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      '@dicebear/core': ^6.0.0
+    dependencies:
+      '@dicebear/core': 6.0.2
+    dev: false
 
   /@discoveryjs/json-ext@0.5.7:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -11278,6 +11324,12 @@ packages:
 
   /thunky@1.1.0:
     resolution: {integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==}
+
+  /tmp-promise@3.0.3:
+    resolution: {integrity: sha512-RwM7MoPojPxsOBYnyd2hy0bxtIlVrihNs9pj5SUvY8Zz1sQcQG2tG1hSr8PDxfgEB8RNKDhqbIlroIarSNDNsQ==}
+    dependencies:
+      tmp: 0.2.1
+    dev: false
 
   /tmp@0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
