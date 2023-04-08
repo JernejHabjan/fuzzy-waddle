@@ -9,6 +9,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import csurf from 'csurf';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -34,7 +35,10 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS_ORIGIN
   });
+  // https://docs.nestjs.com/security/helmet
   app.use(helmet());
+  // https://docs.nestjs.com/security/csrf
+  app.use(csurf());
 
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
