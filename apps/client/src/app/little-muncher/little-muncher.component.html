@@ -1,1 +1,3 @@
-<p>little-muncher rewrite to Phaser game goes here</p>
+<little-muncher-home *ngIf='!ReferenceHolder.gameModeRef' (runGame)='runGame($event)'></little-muncher-home>
+
+<little-muncher-main *ngIf='ReferenceHolder.gameModeRef'></little-muncher-main>

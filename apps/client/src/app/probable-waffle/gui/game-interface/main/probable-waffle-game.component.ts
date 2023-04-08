@@ -23,6 +23,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     return this._gameContainerElement;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   set gameContainerElement(value: HTMLDivElement) {
     this._gameContainerElement = value;
     this.setupGameContainer();
