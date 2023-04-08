@@ -1,10 +1,8 @@
-<button (click)='leave()' class='btn btn-danger m-1 position-absolute' style='left:20px; top:20px;' type='button'>
+<button (click)="leave()" class="btn btn-danger m-1 position-absolute" style="left: 20px; top: 20px" type="button">
   Leave
 </button>
-<fuzzy-waddle-modal #modal [modalConfig]='leaveModalConfirm'>
+<fuzzy-waddle-modal #modal [modalConfig]="leaveModalConfirm">
   <div>Are you sure you wish to leave?</div>
 </fuzzy-waddle-modal>
 
-<div class='btn btn-danger m-1 position-absolute' style='right:20px; top:20px;'>
-  Score: {{score}}
-</div>
+<div class="position-absolute text-info" style="right: 20px; top: 20px">Score: {{ score }}</div>

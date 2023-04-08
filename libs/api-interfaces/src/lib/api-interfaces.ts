@@ -10,7 +10,8 @@ export interface ChatMessage {
 }
 
 export enum GatewayEvent {
-  CHAT_MESSAGE = 'chat-message'
+  CHAT_MESSAGE = 'chat-message',
+  LittleMuncherSpectateRoom = 'little-muncher-spectate-room'
 }
 
 export interface LittleMuncherGameInstanceCreateDto {
@@ -25,4 +26,9 @@ export interface LittleMuncherGameModeCreateDto {
 export enum LittleMuncherHills {
   Stefka = 0,
   Jakob = 1
+}
+
+export interface SpectatorRoom {
+  action: 'added' | 'existing' | 'removed';
+  id: string; // todo some id?
 }

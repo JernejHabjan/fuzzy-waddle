@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
 import { GameInstanceClientService } from './main/game-instance-client.service';
 import { ReferenceHolder } from './game/reference-holder';
@@ -9,7 +9,14 @@ import { ReferenceHolder } from './game/reference-holder';
   styleUrls: ['./little-muncher.component.scss']
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {
+  protected readonly ReferenceHolder = ReferenceHolder;
+
   constructor(private gameInstanceClientService: GameInstanceClientService) {}
+
+  @HostListener('window:beforeunload')
+  async onBeforeUnload() {
+    await this.gameInstanceClientService.destroyGameInstance();
+  }
 
   async runGame(hillName: LittleMuncherHills): Promise<void> {
     await this.gameInstanceClientService.setupGameMode(hillName);
@@ -22,6 +29,4 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     await this.gameInstanceClientService.createGameInstance();
   }
-
-  protected readonly ReferenceHolder = ReferenceHolder;
 }

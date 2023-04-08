@@ -1,4 +1,4 @@
-import { LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherHills } from './api-interfaces';
 
 export class LittleMuncherGameMode {
   constructor(public hillToClimbOn: LittleMuncherHills) {}

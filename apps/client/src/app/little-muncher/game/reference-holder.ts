@@ -1,5 +1,5 @@
+import { LittleMuncherGameMode } from '@fuzzy-waddle/api-interfaces';
 import { Game } from 'phaser';
-import { LittleMuncherGameMode } from './framework/game-mode';
 import { GameInstance } from './framework/game-instance';
 
 export class ReferenceHolder {

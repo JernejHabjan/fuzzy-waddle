@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ModalConfig } from '../../../shared/components/modal/modal-config';
-import { Router } from '@angular/router';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { GameInstanceClientService } from '../game-instance-client.service';
 
 @Component({
   selector: 'fuzzy-waddle-game-interface',
@@ -16,10 +16,10 @@ export class GameInterfaceComponent {
     modalTitle: 'Leave the game?',
     dismissButtonLabel: 'Continue',
     closeButtonLabel: 'Leave',
-    onClose: async () => await this.router.navigate(['/']) // todo
+    onClose: async () => await this.gameInstanceClientService.destroyGameMode('localAndRemote').then()
   };
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly gameInstanceClientService: GameInstanceClientService) {}
 
   async leave() {
     await this.openModal();

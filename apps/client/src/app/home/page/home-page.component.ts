@@ -4,6 +4,7 @@ import { DbAccessTestService } from '../../data-access/db-access-test/db-access-
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
+import { ServerHealthService } from '../../shared/services/server-health.service';
 
 export type DisplayGame = {
   name: string;
@@ -17,7 +18,7 @@ export type DisplayGame = {
   styleUrls: ['./home-page.component.scss']
 })
 export class HomePageComponent {
-  environment = environment;
+  protected readonly environment = environment;
   probableWaffle: DisplayGame = {
     name: 'Probable Waffle',
     description: 'A real-time strategy game',
@@ -35,9 +36,10 @@ export class HomePageComponent {
   ];
 
   constructor(
-    protected authService: AuthService,
-    protected dbAccessTestService: DbAccessTestService,
-    private httpClient: HttpClient // todo remove httpClient from view!
+    protected readonly authService: AuthService,
+    protected readonly dbAccessTestService: DbAccessTestService,
+    protected readonly serverHealthService: ServerHealthService,
+    private readonly httpClient: HttpClient // todo remove httpClient from view!
   ) {}
 
   async addViaMw(): Promise<void> {

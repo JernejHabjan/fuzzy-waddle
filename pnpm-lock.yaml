@@ -79,6 +79,9 @@ dependencies:
   '@nestjs/platform-socket.io':
     specifier: ^9.2.1
     version: 9.2.1(@nestjs/common@9.2.1)(@nestjs/websockets@9.2.1)(rxjs@7.8.0)
+  '@nestjs/schedule':
+    specifier: ^2.2.1
+    version: 2.2.1(@nestjs/common@9.2.1)(@nestjs/core@9.2.1)(reflect-metadata@0.1.13)
   '@nestjs/swagger':
     specifier: ^6.1.4
     version: 6.1.4(@nestjs/common@9.2.1)(@nestjs/core@9.2.1)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
@@ -100,6 +103,9 @@ dependencies:
   '@supabase/supabase-js':
     specifier: ^2.4.1
     version: 2.4.1
+  '@types/cron':
+    specifier: ^2.0.1
+    version: 2.0.1
   bad-words-plus:
     specifier: ^3.0.4
     version: 3.0.4
@@ -2994,6 +3000,20 @@ packages:
       - supports-color
       - utf-8-validate
 
+  /@nestjs/schedule@2.2.1(@nestjs/common@9.2.1)(@nestjs/core@9.2.1)(reflect-metadata@0.1.13):
+    resolution: {integrity: sha512-7jev9Q3aFnRajKAi/At+9rzwflZNN10SA5PcdCvxc35GFfTdM2a6O5GA7tiIbLuOOzdjPYPbC3RxP4tpXOHVWw==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0
+      '@nestjs/core': ^7.0.0 || ^8.0.0 || ^9.0.0
+      reflect-metadata: ^0.1.12
+    dependencies:
+      '@nestjs/common': 9.2.1(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.0)
+      '@nestjs/core': 9.2.1(@nestjs/common@9.2.1)(@nestjs/platform-express@9.2.1)(@nestjs/websockets@9.2.1)(reflect-metadata@0.1.13)(rxjs@7.8.0)
+      cron: 2.3.0
+      reflect-metadata: 0.1.13
+      uuid: 9.0.0
+    dev: false
+
   /@nestjs/schematics@9.0.4(typescript@4.9.5):
     resolution: {integrity: sha512-egurCfAc4e5i1r2TmeAF0UrOKejFmT5oTdv4b7HcOVPupc3QGU7CbEfGleL3mkM5AjrixTQeMxU9bJ00ttAbGg==}
     peerDependencies:
@@ -3930,6 +3950,13 @@ packages:
     dependencies:
       '@types/node': 18.11.18
 
+  /@types/cron@2.0.1:
+    resolution: {integrity: sha512-WHa/1rtNtD2Q/H0+YTTZoty+/5rcE66iAFX2IY+JuUoOACsevYyFkSYu/2vdw+G5LrmO7Lxowrqm0av4k3qWNQ==}
+    dependencies:
+      '@types/luxon': 3.3.0
+      '@types/node': 18.11.18
+    dev: false
+
   /@types/eslint-scope@3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
@@ -4012,6 +4039,10 @@ packages:
     dependencies:
       '@types/node': 18.11.18
     dev: true
+
+  /@types/luxon@3.3.0:
+    resolution: {integrity: sha512-uKRI5QORDnrGFYgcdAVnHvEIvEZ8noTpP/Bg+HeUzZghwinDlIS87DEenV5r1YoOF9G4x600YsUXLWZ19rmTmg==}
+    dev: false
 
   /@types/mime@3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
@@ -5572,6 +5603,12 @@ packages:
       parse5-htmlparser2-tree-adapter: 6.0.1
       postcss: 8.4.21
       pretty-bytes: 5.6.0
+
+  /cron@2.3.0:
+    resolution: {integrity: sha512-ZN5HP8zDY41sJolMsbc+GksRATcbvkPKF5wR/qc8FrV4NBVi9ORQa1HmYa5GydaysUB80X9XpRlRkooa5uEtTA==}
+    dependencies:
+      luxon: 3.3.0
+    dev: false
 
   /cross-fetch@3.1.5:
     resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
@@ -8865,6 +8902,11 @@ packages:
   /lru-cache@7.14.1:
     resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
     engines: {node: '>=12'}
+
+  /luxon@3.3.0:
+    resolution: {integrity: sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg==}
+    engines: {node: '>=12'}
+    dev: false
 
   /magic-string@0.26.7:
     resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}

@@ -63,9 +63,6 @@ export class AuthService {
   async autoSignIn(): Promise<Session | null> {
     const signInPromise = (this.processing = this.dataAccessService.supabase.auth.getSession());
     const { data, error } = await signInPromise;
-    // if (data) {
-    //   console.log('data', data);
-    // }
 
     if (error) {
       console.error('error', error);
