@@ -7,7 +7,9 @@ export enum Scenes {
 
 export enum MapIds {
   'GrasslandSmall' = 'GrasslandSmall',
-  'GrasslandLarge' = 'GrasslandLarge'
+  'GrasslandLarge' = 'GrasslandLarge',
+  'GrasslandExtraLarge' = 'GrasslandExtraLarge',
+  'GrasslandExtraExtraLarge' = 'GrasslandExtraExtraLarge'
 }
 
 export type MapInfo = {
@@ -49,6 +51,35 @@ export class Maps {
       ],
       mapWidth: 100,
       mapHeight: 100
+    },
+    {
+      id: MapIds.GrasslandExtraLarge,
+      name: 'Grassland Extra Large',
+      description:
+        'The RTS extra large map is a visually stunning game environment that immerses players in an expansive terrain covered in lush grass. It offers ample space for strategic gameplay, allowing players to build their base and engage in battles while taking advantage of the natural cover provided by the grass.',
+      image: 'start-extra-large.png',
+      startPositions: [
+        { tileXY: { x: 20, y: 20 }, z: 0 },
+        { tileXY: { x: 180, y: 180 }, z: 0 },
+        { tileXY: { x: 20, y: 180 }, z: 0 },
+        { tileXY: { x: 180, y: 20 }, z: 0 }
+      ],
+      mapWidth: 200,
+      mapHeight: 200
+    },
+    {
+      id: MapIds.GrasslandExtraExtraLarge,
+      name: 'Grassland Extra Extra Large',
+      description: 'Largest map for performance testing',
+      image: 'start-extra-large.png',
+      startPositions: [
+        { tileXY: { x: 20, y: 20 }, z: 0 },
+        { tileXY: { x: 480, y: 480 }, z: 0 },
+        { tileXY: { x: 20, y: 480 }, z: 0 },
+        { tileXY: { x: 480, y: 20 }, z: 0 }
+      ],
+      mapWidth: 500,
+      mapHeight: 500
     }
   ];
 }

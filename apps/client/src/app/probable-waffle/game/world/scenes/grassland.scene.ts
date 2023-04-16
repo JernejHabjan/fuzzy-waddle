@@ -534,6 +534,21 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
 
       // worker.builderComponent.beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 }); // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer
     }, 500);
+
+    // todo this.demoPlaceWarriors();
+  }
+
+  private demoPlaceWarriors() {
+    let i = 0;
+    this.mapHelper.tilemapLayer.forEachTile((tile) => {
+      if (tile.index === -1) return;
+      if (i < 50) {
+        this.placeWarrior({ tileXY: { x: tile.x, y: tile.y }, z: 0 });
+      }
+
+      i++;
+    });
+    console.log('placed ' + i + ' warriors');
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {

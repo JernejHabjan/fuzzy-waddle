@@ -15,7 +15,17 @@ export class EditorComponent {
 
   maps: EditorMap[] = [
     { name: 'Grassland Small', id: MapIds.GrasslandSmall, imageSrc: 'assets/probable-waffle/tilemaps/start-small.png' },
-    { name: 'Grassland Large', id: MapIds.GrasslandLarge, imageSrc: 'assets/probable-waffle/tilemaps/start-large.png' }
+    { name: 'Grassland Large', id: MapIds.GrasslandLarge, imageSrc: 'assets/probable-waffle/tilemaps/start-large.png' },
+    {
+      name: 'Grassland Extra Large',
+      id: MapIds.GrasslandExtraLarge,
+      imageSrc: 'assets/probable-waffle/tilemaps/start-extra-large.png'
+    },
+    {
+      name: 'Grassland Extra Extra Large',
+      id: MapIds.GrasslandExtraLarge,
+      imageSrc: 'assets/probable-waffle/tilemaps/start-extra-extra-large.png'
+    }
   ];
 
   loadMap(map: EditorMap) {
