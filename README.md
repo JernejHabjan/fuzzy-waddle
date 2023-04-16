@@ -33,3 +33,8 @@
   - add health check: `/api/health`
   - Add supabase environmental variables: `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`
   - Add `CORS_ORIGIN` environmental variable: `https://fuzzy-waddle.onrender.com`
+
+## Tiled
+
+- When exporting `.json`, make sure to check `Embed Tilesets` in `Tiled > Preferences`
+  until [this](https://github.com/JernejHabjan/fuzzy-waddle/issues/60) is fixed
