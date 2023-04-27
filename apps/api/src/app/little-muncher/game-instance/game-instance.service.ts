@@ -2,12 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@supabase/supabase-js';
 import { GameInstanceServer } from './game-instance-server';
 import {
+  LittleMuncherGameCreateDto,
+  LittleMuncherGameDestroyDto,
+  LittleMuncherGameInstance,
   LittleMuncherGameInstanceCreateDto,
   LittleMuncherGameMode,
-  LittleMuncherGameModeCreateDto,
-  SpectatorRoom
+  LittleMuncherGameState,
+  LittleMuncherPlayerController,
+  LittleMuncherPlayerState,
+  LittleMuncherSessionState,
+  LittleMuncherSpectator,
+  Room,
+  RoomAction,
+  RoomEvent,
+  SpectatorAction,
+  SpectatorEvent
 } from '@fuzzy-waddle/api-interfaces';
-import { Cron, CronExpression } from "@nestjs/schedule";
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { GameInstanceGateway } from './game-instance.gateway';
 
 @Injectable()
@@ -16,13 +27,13 @@ export class GameInstanceService {
 
   openGameInstances: GameInstanceServer[] = [];
 
-  async create(body: LittleMuncherGameInstanceCreateDto, user: User) {
+  async startGame(body: LittleMuncherGameInstanceCreateDto, user: User) {
     const newGameInstance = new GameInstanceServer(body, user);
     this.openGameInstances.push(newGameInstance);
     console.log('game instance created on server', this.openGameInstances.length);
   }
 
-  async delete(body: LittleMuncherGameInstanceCreateDto, user: User) {
+  async stopGame(body: LittleMuncherGameInstanceCreateDto, user: User) {
     const gameInstance = this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
     );
@@ -35,19 +46,48 @@ export class GameInstanceService {
     console.log('game instance deleted on server', this.openGameInstances.length);
   }
 
-  async setGameMode(body: LittleMuncherGameModeCreateDto, user: User) {
+  async startLevel(body: LittleMuncherGameCreateDto, user: User) {
     const gameInstance = this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
     );
     if (!gameInstance) return;
     // check that we're the creator
     if (gameInstance.createdBy !== user.id) return;
-    gameInstance.gameMode = new LittleMuncherGameMode(body.hillName);
-    console.log('game mode set on server', body.hillName);
-    this.gameInstanceGateway.emit(this.getGameInstanceToSpectatorRoom(gameInstance, 'added'));
+    gameInstance.gameMode = new LittleMuncherGameMode(body.level.hillName);
+    gameInstance.gameState = new LittleMuncherGameState();
+    gameInstance.playerStates = body.player_ids.map((playerId) => new LittleMuncherPlayerState(playerId));
+    gameInstance.playerControllers = body.player_ids.map((playerId) => new LittleMuncherPlayerController(playerId));
+    gameInstance.sessionState = LittleMuncherSessionState.StartingLevel;
+    gameInstance.spectators = [];
+    console.log('game mode set on server', body.level.hillName);
+    this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'added'));
   }
 
-  async deleteGameMode(body: LittleMuncherGameModeCreateDto, user: User) {
+  async spectatorJoined(body: LittleMuncherGameInstance, user: User) {
+    const gameInstance = this.openGameInstances.find(
+      (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
+    );
+    if (!gameInstance) return;
+    gameInstance.spectators.push(new LittleMuncherSpectator(user.id));
+    console.log('spectator joined', user.id);
+    this.gameInstanceGateway.emitSpectator(
+      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'joined')
+    );
+  }
+
+  async spectatorLeft(body: LittleMuncherGameInstance, user: User) {
+    const gameInstance = this.openGameInstances.find(
+      (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
+    );
+    if (!gameInstance) return;
+    gameInstance.spectators = gameInstance.spectators.filter((spectator) => spectator.userId !== user.id);
+    console.log('spectator left', user.id);
+    this.gameInstanceGateway.emitSpectator(
+      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'left')
+    );
+  }
+
+  async stopLevel(body: LittleMuncherGameDestroyDto, user: User) {
     const gameInstance = this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
     );
@@ -55,23 +95,39 @@ export class GameInstanceService {
     // check that we're the creator
     if (gameInstance.createdBy !== user.id) return;
     gameInstance.gameMode = null;
+    gameInstance.gameState = null;
+    gameInstance.playerStates = [];
+    gameInstance.playerControllers = [];
+    gameInstance.spectators = [];
+    gameInstance.sessionState = LittleMuncherSessionState.EndingLevel;
     console.log('game mode deleted on server');
 
-    this.gameInstanceGateway.emit(this.getGameInstanceToSpectatorRoom(gameInstance, 'removed'));
+    this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'removed'));
   }
 
-  async getSpectatorRooms(user: User): Promise<SpectatorRoom[]> {
+  async getSpectatorRooms(user: User): Promise<Room[]> {
     return this.openGameInstances
       .filter((gi) => gi.gameMode)
-      .map((gameInstance) => this.getGameInstanceToSpectatorRoom(gameInstance, 'existing'));
+      .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
   }
 
-  getGameInstanceToSpectatorRoom(
-    gameInstance: GameInstanceServer,
-    action: 'added' | 'existing' | 'removed'
-  ): SpectatorRoom {
+  getGameInstanceToRoom(gameInstance: GameInstanceServer): Room {
     return {
-      id: gameInstance.gameInstanceId,
+      gameInstanceId: gameInstance.gameInstanceId
+    };
+  }
+
+  getRoomEvent(gameInstance: GameInstanceServer, action: RoomAction): RoomEvent {
+    return {
+      room: this.getGameInstanceToRoom(gameInstance),
+      action
+    };
+  }
+
+  getSpectatorEvent(user: User, room: Room, action: SpectatorAction): SpectatorEvent {
+    return {
+      user_id: user.id,
+      room,
       action
     };
   }
@@ -87,7 +143,7 @@ export class GameInstanceService {
       const now = new Date();
       const isOld = now.getTime() - started.getTime() > timeInMs;
       if (isOld) {
-        this.gameInstanceGateway.emit(this.getGameInstanceToSpectatorRoom(gi, 'removed'));
+        this.gameInstanceGateway.emitRoom(this.getRoomEvent(gi, 'removed'));
       }
       return !isOld;
     });

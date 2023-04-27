@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SpectateService } from './spectate.service';
 import { Subscription } from 'rxjs';
-import { SpectatorRoom } from '@fuzzy-waddle/api-interfaces';
+import { Room } from '@fuzzy-waddle/api-interfaces';
 import { ServerHealthService } from '../../../shared/services/server-health.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { ServerHealthService } from '../../../shared/services/server-health.serv
 })
 export class SpectateComponent implements OnInit, OnDestroy {
   private spectateRoomsSubscription!: Subscription;
-  protected rooms: SpectatorRoom[] = [];
+  protected rooms: Room[] = [];
 
   constructor(
     private readonly spectateService: SpectateService,
@@ -19,12 +19,13 @@ export class SpectateComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.rooms = await this.spectateService.getSpectatorRooms();
-    this.spectateRoomsSubscription = this.spectateService.spectatorRoomEvent.subscribe((spectatorRoom) => {
-      if (spectatorRoom.action === 'added') {
-        this.rooms.push(spectatorRoom);
-      } else if (spectatorRoom.action === 'removed') {
-        this.rooms = this.rooms.filter((room) => room.id !== spectatorRoom.id);
+    this.rooms = await this.spectateService.getRooms();
+    this.spectateRoomsSubscription = this.spectateService.roomEvent.subscribe((roomEvent) => {
+      const room = roomEvent.room;
+      if (roomEvent.action === 'added') {
+        this.rooms.push(room);
+      } else if (roomEvent.action === 'removed') {
+        this.rooms = this.rooms.filter((room) => room.gameInstanceId !== room.gameInstanceId);
       }
     });
   }
@@ -33,7 +34,7 @@ export class SpectateComponent implements OnInit, OnDestroy {
     this.spectateRoomsSubscription.unsubscribe();
   }
 
-  spectate(room: SpectatorRoom) {
-    // todo
+  async spectate(room: Room) {
+    await this.spectateService.joinRoom(room.gameInstanceId);
   }
 }

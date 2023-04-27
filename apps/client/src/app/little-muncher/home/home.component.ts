@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameCreate, LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
 import { ServerHealthService } from '../../shared/services/server-health.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'little-muncher-home',
@@ -9,10 +10,19 @@ import { ServerHealthService } from '../../shared/services/server-health.service
 })
 export class HomeComponent {
   LittleMuncherHills = LittleMuncherHills;
-  @Output() runGame: EventEmitter<LittleMuncherHills> = new EventEmitter<LittleMuncherHills>();
+  @Output() runGame: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
 
-  constructor(protected readonly serverHealthService: ServerHealthService) {}
+  constructor(
+    protected readonly serverHealthService: ServerHealthService,
+    protected readonly authService: AuthService
+  ) {}
+
   climbOn(hillName: LittleMuncherHills) {
-    this.runGame.next(hillName);
+    this.runGame.next({
+      level: {
+        hillName
+      },
+      player_ids: [this.authService.userId as string]
+    });
   }
 }

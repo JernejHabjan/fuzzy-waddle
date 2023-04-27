@@ -4,48 +4,56 @@ import { CurrentUser } from '../../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
 import { GameInstanceService } from './game-instance.service';
 import {
+  LittleMuncherGameCreateDto,
+  LittleMuncherGameDestroyDto,
+  LittleMuncherGameInstance,
   LittleMuncherGameInstanceCreateDto,
-  LittleMuncherGameModeCreateDto,
-  SpectatorRoom
+  Room
 } from '@fuzzy-waddle/api-interfaces';
 
 @Controller('little-muncher')
 export class GameInstanceController {
   constructor(private readonly gameInstanceService: GameInstanceService) {}
 
-  @Post('create-game-instance')
+  @Post('start-game')
   @UseGuards(SupabaseAuthGuard)
-  async createGameInstance(
-    @CurrentUser() user: AuthUser,
-    @Body() body: LittleMuncherGameInstanceCreateDto
-  ): Promise<void> {
-    await this.gameInstanceService.create(body, user);
+  async startGame(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameInstanceCreateDto): Promise<void> {
+    await this.gameInstanceService.startGame(body, user);
   }
 
-  @Delete('destroy-game-instance')
+  @Delete('stop-game')
   @UseGuards(SupabaseAuthGuard)
-  async deleteGameInstance(
-    @CurrentUser() user: AuthUser,
-    @Body() body: LittleMuncherGameInstanceCreateDto
-  ): Promise<void> {
-    await this.gameInstanceService.delete(body, user);
+  async stopGame(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameInstanceCreateDto): Promise<void> {
+    await this.gameInstanceService.stopGame(body, user);
   }
 
-  @Post('create-game-mode')
+  @Post('start-level')
   @UseGuards(SupabaseAuthGuard)
-  async createGameMode(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameModeCreateDto): Promise<void> {
-    await this.gameInstanceService.setGameMode(body, user);
+  async createGameMode(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameCreateDto): Promise<void> {
+    await this.gameInstanceService.startLevel(body, user);
   }
 
-  @Delete('destroy-game-mode')
+  @Delete('stop-level')
   @UseGuards(SupabaseAuthGuard)
-  async deleteGameMode(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameModeCreateDto): Promise<void> {
-    await this.gameInstanceService.deleteGameMode(body, user);
+  async deleteGameMode(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameDestroyDto): Promise<void> {
+    await this.gameInstanceService.stopLevel(body, user);
   }
 
-  @Get('get-spectator-rooms')
+  @Post('spectator-join')
   @UseGuards(SupabaseAuthGuard)
-  async getSpectatorRooms(@CurrentUser() user: AuthUser): Promise<SpectatorRoom[]> {
+  async spectatorJoin(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameInstance): Promise<void> {
+    await this.gameInstanceService.spectatorJoined(body, user);
+  }
+
+  @Delete('spectator-leave')
+  @UseGuards(SupabaseAuthGuard)
+  async spectatorLeave(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameInstance): Promise<void> {
+    await this.gameInstanceService.spectatorLeft(body, user);
+  }
+
+  @Get('get-rooms')
+  @UseGuards(SupabaseAuthGuard)
+  async getRooms(@CurrentUser() user: AuthUser): Promise<Room[]> {
     return await this.gameInstanceService.getSpectatorRooms(user);
   }
 }

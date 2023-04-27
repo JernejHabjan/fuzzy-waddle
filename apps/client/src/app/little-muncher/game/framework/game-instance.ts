@@ -1,7 +1,11 @@
 export class GameInstance {
   id: string;
 
-  constructor() {
+  constructor(id: string | null = null) {
+    if (id) {
+      this.id = id;
+      return;
+    }
     this.id = this.generateRandomId(20);
   }
 

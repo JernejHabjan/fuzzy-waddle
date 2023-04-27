@@ -16,7 +16,7 @@ export class GameInterfaceComponent {
     modalTitle: 'Leave the game?',
     dismissButtonLabel: 'Continue',
     closeButtonLabel: 'Leave',
-    onClose: async () => await this.gameInstanceClientService.destroyGameMode('localAndRemote').then()
+    onClose: async () => await this.gameInstanceClientService.stopLevel('localAndRemote').then()
   };
 
   constructor(private readonly gameInstanceClientService: GameInstanceClientService) {}
