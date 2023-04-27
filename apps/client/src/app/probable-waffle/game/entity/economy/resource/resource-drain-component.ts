@@ -6,10 +6,6 @@ import { OwnerComponent } from '../../actor/components/owner-component';
 import { PlayerResourcesComponent } from '../../../world/managers/controllers/player-resources-component';
 import { Subject } from 'rxjs';
 
-export interface ResourceDrain {
-  resourceDrainComponent: ResourceDrainComponent;
-}
-
 // this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent implements IComponent {
   onResourcesReturned: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();

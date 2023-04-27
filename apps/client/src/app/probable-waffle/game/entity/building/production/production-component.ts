@@ -15,10 +15,6 @@ export type ProductionQueueItem = {
   costData: CostData;
 };
 
-export interface Producer {
-  productionComponent: ProductionComponent;
-}
-
 export class ProductionComponent implements IComponent {
   productionQueues: ProductionQueue[] = [];
   rallyPoint?: RallyPoint;

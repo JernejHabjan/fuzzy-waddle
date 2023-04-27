@@ -6,6 +6,7 @@ import { MapNavHelper } from '../../../map/map-nav-helper';
 import { CharacterMovementComponent } from '../../../../entity/actor/components/character-movement-component';
 import { RepresentableActor } from '../../../../entity/actor/representable-actor';
 import { Scene } from 'phaser';
+import { TransformComponent } from '../../../../entity/actor/components/transformable-component';
 
 export class NavInputHandler {
   constructor(
@@ -22,8 +23,9 @@ export class NavInputHandler {
     selected.forEach(async (selection) => {
       if (NavInputHandler.tileXYWithinMapBounds(navigableTile.tileWorldData.tileXY)) {
         try {
+          const transformComponent = selection.components.findComponent(TransformComponent);
           const tileXYPath = await this.pathfinder.find(
-            selection.transformComponent.tilePlacementData.tileXY,
+            transformComponent.tilePlacementData.tileXY,
             {
               x: navigableTile.tileWorldData.tileXY.x,
               y: navigableTile.tileWorldData.tileXY.y

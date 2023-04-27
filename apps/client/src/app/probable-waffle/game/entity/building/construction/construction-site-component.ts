@@ -8,10 +8,6 @@ import { ConstructionStateEnum } from './construction-state-enum';
 import HealthComponent from '../../combat/components/health-component';
 import { EventEmitter } from '@angular/core';
 
-export interface Constructable {
-  constructionSiteComponent: ConstructionSiteComponent;
-}
-
 export type ConstructionSiteDefinition = {
   constructionCosts: Map<ResourceType, number>;
   // Whether to check collision for each grid cell

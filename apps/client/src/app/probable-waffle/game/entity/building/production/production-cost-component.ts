@@ -18,10 +18,6 @@ export class CostData {
   ) {}
 }
 
-export interface Costs {
-  productionCostComponent: ProductionCostComponent;
-}
-
 export class ProductionCostComponent implements IComponent {
   finishedSound?: string; // todo
   constructor(public costData: CostData) {}

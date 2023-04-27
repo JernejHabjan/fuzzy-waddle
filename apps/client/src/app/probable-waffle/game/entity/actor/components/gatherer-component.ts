@@ -14,10 +14,6 @@ import { OwnerComponent } from './owner-component';
 
 export type GathererClasses = typeof Mine;
 
-export interface Gatherer {
-  gathererComponent: GathererComponent;
-}
-
 export class GathererComponent implements IComponent {
   gatheredResources: GatherData[] = [];
   // amount the actor is carrying

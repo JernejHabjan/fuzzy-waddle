@@ -2,10 +2,6 @@ import { PlayerController } from '../../../world/managers/controllers/player-con
 import { IComponent } from '../../../core/component.service';
 import { Actor } from '../actor';
 
-export interface Ownable {
-  ownerComponent: OwnerComponent;
-}
-
 export class OwnerComponent implements IComponent {
   constructor(public playerController: PlayerController) {}
 

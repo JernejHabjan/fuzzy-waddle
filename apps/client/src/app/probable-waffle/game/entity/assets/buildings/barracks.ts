@@ -1,11 +1,11 @@
 import { Building, BuildingInfoDefinition } from './building';
-import { Producer, ProductionComponent } from '../../building/production/production-component';
+import { ProductionComponent } from '../../building/production/production-component';
 import { Warrior, WarriorDefinition } from '../characters/warrior';
 import { Worker } from '../characters/worker';
 import { CostData } from '../../building/production/production-cost-component';
 import { PaymentType } from '../../building/payment-type';
 import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { CharacterContainer, ContainerComponent } from '../../building/container-component';
+import { ContainerComponent } from '../../building/container-component';
 
 export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -51,19 +51,17 @@ export const BarracksDefinition: BuildingInfoDefinition = {
   }
 };
 
-export class Barracks extends Building implements Producer, CharacterContainer {
-  productionComponent!: ProductionComponent;
+export class Barracks extends Building {
   buildingInfoDefinition: BuildingInfoDefinition = BarracksDefinition;
-  containerComponent!: ContainerComponent;
 
   override init() {
     super.init();
-    this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
-
-    this.containerComponent = this.components.addComponent(new ContainerComponent(10));
+    this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
+    this.components.addComponent(new ContainerComponent(10));
 
     setTimeout(() => {
-      this.productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });
+      const productionComponent = this.components.findComponent(ProductionComponent);
+      productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });
       console.log('started production of 1 warrior');
     }, 1000);
   }

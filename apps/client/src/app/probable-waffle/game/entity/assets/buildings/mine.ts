@@ -1,7 +1,7 @@
-import { CharacterContainer, ContainerComponent } from '../../building/container-component';
+import { ContainerComponent } from '../../building/container-component';
 import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { ResourceDrain, ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
-import { PlacementRestrictionComponent, PlaceRestricted } from '../../building/placement-restriction-component';
+import { ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
+import { PlacementRestrictionComponent } from '../../building/placement-restriction-component';
 import { Minerals } from '../resources/minerals';
 import { Building, BuildingInfoDefinition } from './building';
 import { CostData } from '../../building/production/production-cost-component';
@@ -51,18 +51,13 @@ export const MineDefinitions: BuildingInfoDefinition = {
   }
 };
 
-export class Mine extends Building implements CharacterContainer, ResourceDrain, PlaceRestricted {
-  resourceDrainComponent!: ResourceDrainComponent;
-  containerComponent!: ContainerComponent;
-  placementRestrictionComponent!: PlacementRestrictionComponent;
+export class Mine extends Building {
   buildingInfoDefinition: BuildingInfoDefinition = MineDefinitions;
 
   override init() {
     super.init();
-    this.containerComponent = this.components.addComponent(new ContainerComponent(2));
-    this.resourceDrainComponent = this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
-    this.placementRestrictionComponent = this.components.addComponent(
-      new PlacementRestrictionComponent(this, [Minerals])
-    );
+    this.components.addComponent(new ContainerComponent(2));
+    this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
+    this.components.addComponent(new PlacementRestrictionComponent(this, [Minerals]));
   }
 }

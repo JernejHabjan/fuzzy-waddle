@@ -4,10 +4,6 @@ import { Actor } from '../../actor/actor';
 import { ContainerComponent } from '../../building/container-component';
 import { Subject } from 'rxjs';
 
-export interface ResourceSource {
-  resourceSourceComponent: ResourceSourceComponent;
-}
-
 export class ResourceSourceComponent implements IComponent {
   onResourcesChanged: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
   onDepleted: Subject<Actor> = new Subject<Actor>();

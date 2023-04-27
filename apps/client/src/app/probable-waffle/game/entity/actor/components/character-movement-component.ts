@@ -6,20 +6,15 @@ import { TilemapHelper } from '../../../world/map/tile/tilemap.helper';
 import { MapSizeInfo } from '../../../world/const/map-size.info';
 import { Vector2Simple } from '../../../library/math/intersection';
 import { IComponent } from '../../../core/component.service';
-import { IPawnAiControllable } from '../../../world/managers/controllers/pawn-ai-controller-component';
-import { ISpriteRepresentable } from './sprite-representable-component';
-import { ITransformable } from './transformable-component';
 import { Actor } from '../actor';
 import { Events, GameObjects, Tweens } from 'phaser';
+import { SpriteRepresentationComponent } from './sprite-representable-component';
+import { TransformComponent } from './transformable-component';
 
 export enum MoveEventTypeEnum {
   MOVE_START = 'move-start',
   MOVE_END = 'move-end',
   MOVE_PROGRESS = 'move-progress'
-}
-
-export interface ICharacterMovable {
-  characterMovementComponent: CharacterMovementComponent;
 }
 
 export class CharacterMovementComponent implements IComponent {
@@ -29,9 +24,7 @@ export class CharacterMovementComponent implements IComponent {
   private path?: TilePlacementWorldWithProperties[];
   private currentNavTween?: Tweens.Tween;
 
-  constructor(
-    private readonly gameObject: ICharacterMovable & IPawnAiControllable & ISpriteRepresentable & ITransformable & Actor
-  ) {}
+  constructor(private readonly gameObject: Actor) {}
 
   init() {
     // pass
@@ -73,7 +66,8 @@ export class CharacterMovementComponent implements IComponent {
   }
 
   private startNav() {
-    const { spriteRepresentationComponent, transformComponent } = this.gameObject;
+    const spriteRepresentationComponent = this.gameObject.components.findComponent(SpriteRepresentationComponent);
+    const transformComponent = this.gameObject.components.findComponent(TransformComponent);
     const scene = spriteRepresentationComponent.scene;
     const path = this.path;
     if (!path) {

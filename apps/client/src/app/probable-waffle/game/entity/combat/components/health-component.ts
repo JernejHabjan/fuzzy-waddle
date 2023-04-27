@@ -5,10 +5,6 @@ import { EventEmitter } from '@angular/core';
 import { ActorDeathType } from '../actor-death-type';
 import { HealthUiComponent } from './health-ui-component';
 
-export interface Health {
-  healthComponent: HealthComponent;
-}
-
 export type HealthDefinition = {
   maxHealth: number;
   // todo maybe armor type..

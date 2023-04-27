@@ -6,10 +6,6 @@ import HealthComponent from './health-component';
 import { RepresentableActor } from '../../actor/representable-actor';
 import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
 
-export interface Attacker {
-  attackComponent: AttackComponent;
-}
-
 export class AttackComponent implements IComponent {
   // when cooldown has expired
   onCooldownReady: EventEmitter<Actor> = new EventEmitter<Actor>();

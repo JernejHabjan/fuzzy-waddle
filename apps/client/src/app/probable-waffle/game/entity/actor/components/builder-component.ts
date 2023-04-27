@@ -15,10 +15,6 @@ import { OwnerComponent } from './owner-component';
 export type ActorAbleToBeBuilt = Barracks | Mine;
 export type ActorAbleToBeBuiltClass = typeof Barracks | typeof Mine;
 
-export interface Builder {
-  builderComponent: BuilderComponent;
-}
-
 // Allows the actor to construct building
 export class BuilderComponent implements IComponent {
   // building site the builder is currently working on
