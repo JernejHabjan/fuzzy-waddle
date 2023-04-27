@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { ChatMessage, GatewayEvent } from '@fuzzy-waddle/api-interfaces';
 import { Observable } from 'rxjs';
 import { IChatService } from './chat.service.interface';
 import { AuthenticatedSocketService } from './authenticated-socket.service';
 import { Socket } from 'ngx-socket-io';
 import { AuthService } from '../../auth/auth.service';
+import { ChatMessage, GatewayChatEvent } from '@fuzzy-waddle/api-interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +18,12 @@ export class ChatService implements IChatService {
   }
 
   sendMessage(msg: ChatMessage): void {
-    this.authenticatedSocket.emit(GatewayEvent.CHAT_MESSAGE, msg);
+    this.authenticatedSocket.emit(GatewayChatEvent.CHAT_MESSAGE, msg);
   }
 
   getMessage(): Observable<ChatMessage> {
     return this.authenticatedSocket
-      .fromEvent<ChatMessage>(GatewayEvent.CHAT_MESSAGE)
+      .fromEvent<ChatMessage>(GatewayChatEvent.CHAT_MESSAGE)
       .pipe(map((data: ChatMessage) => data));
   }
 

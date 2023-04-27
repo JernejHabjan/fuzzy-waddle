@@ -1,5 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { LittleMuncherGameCreate, LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  LittleMuncherGameCreate,
+  LittleMuncherGameSessionInstance,
+  LittleMuncherHills
+} from '@fuzzy-waddle/api-interfaces';
 import { ServerHealthService } from '../../shared/services/server-health.service';
 import { AuthService } from '../../auth/auth.service';
 
@@ -10,6 +14,7 @@ import { AuthService } from '../../auth/auth.service';
 })
 export class HomeComponent {
   LittleMuncherHills = LittleMuncherHills;
+  @Input() gameSessionInstance!: LittleMuncherGameSessionInstance;
   @Output() runGame: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
 
   constructor(

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { SpectateService } from './spectate.service';
 import { Subscription } from 'rxjs';
-import { Room } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameSessionInstance, Room } from '@fuzzy-waddle/api-interfaces';
 import { ServerHealthService } from '../../../shared/services/server-health.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { ServerHealthService } from '../../../shared/services/server-health.serv
 export class SpectateComponent implements OnInit, OnDestroy {
   private spectateRoomsSubscription!: Subscription;
   protected rooms: Room[] = [];
+  @Input() gameSessionInstance!: LittleMuncherGameSessionInstance;
 
   constructor(
     private readonly spectateService: SpectateService,
@@ -35,6 +36,6 @@ export class SpectateComponent implements OnInit, OnDestroy {
   }
 
   async spectate(room: Room) {
-    await this.spectateService.joinRoom(room.gameInstanceId);
+    await this.spectateService.joinRoom(this.gameSessionInstance, room.gameInstanceId);
   }
 }

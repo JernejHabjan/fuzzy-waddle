@@ -1,32 +1,38 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { LittleMuncherGameCreate } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameCreate, LittleMuncherGameSessionInstance } from '@fuzzy-waddle/api-interfaces';
 import { GameInstanceClientService } from './main/game-instance-client.service';
-import { ReferenceHolder } from './game/reference-holder';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'fuzzy-waddle-little-muncher',
   templateUrl: './little-muncher.component.html',
   styleUrls: ['./little-muncher.component.scss']
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {
-  protected readonly ReferenceHolder = ReferenceHolder;
+  protected readonly faSpinner = faSpinner;
+  protected readonly gameSessionInstance: LittleMuncherGameSessionInstance = new LittleMuncherGameSessionInstance();
+  protected loading = false;
 
   constructor(private gameInstanceClientService: GameInstanceClientService) {}
 
   @HostListener('window:beforeunload')
   async onBeforeUnload() {
-    await this.gameInstanceClientService.stopGame();
+    await this.gameInstanceClientService.stopGame(this.gameSessionInstance);
   }
 
   async runGame(gameCreate: LittleMuncherGameCreate): Promise<void> {
-    await this.gameInstanceClientService.startLevel(gameCreate);
+    this.loading = true;
+    try {
+      await this.gameInstanceClientService.startLevel(this.gameSessionInstance, gameCreate);
+    } finally {
+      this.loading = false;
+    }
   }
 
   async ngOnDestroy(): Promise<void> {
-    await this.gameInstanceClientService.stopGame();
+    await this.gameInstanceClientService.stopGame(this.gameSessionInstance);
   }
 
   async ngOnInit(): Promise<void> {
-    await this.gameInstanceClientService.startGame();
+    await this.gameInstanceClientService.startGame(this.gameSessionInstance);
   }
 }

@@ -1,6 +1,6 @@
 import { User } from '@supabase/supabase-js';
 import {
-  LittleMuncherGameInstanceCreateDto,
+  GameCreateDto,
   LittleMuncherGameMode,
   LittleMuncherGameState,
   LittleMuncherPlayerController,
@@ -20,7 +20,7 @@ export class GameInstanceServer {
   playerControllers?: LittleMuncherPlayerController[];
   spectators: LittleMuncherSpectator[] = [];
 
-  constructor(body: LittleMuncherGameInstanceCreateDto, user: User) {
+  constructor(body: GameCreateDto, user: User) {
     this.createdOn = new Date();
     this.createdBy = user.id;
     this.gameInstanceId = body.gameInstanceId;

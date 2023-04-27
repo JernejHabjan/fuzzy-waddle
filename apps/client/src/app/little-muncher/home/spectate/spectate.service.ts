@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
-  GatewayEvent,
   LittleMuncherGameInstance,
+  LittleMuncherGameSessionInstance,
+  LittleMuncherGatewayEvent,
   LittleMuncherHills,
   Room,
   RoomEvent
@@ -35,11 +36,11 @@ export class SpectateService {
 
   get roomEvent(): Observable<RoomEvent> {
     return this.authenticatedSocket
-      .fromEvent<RoomEvent>(GatewayEvent.LittleMuncherRoom)
+      .fromEvent<RoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
       .pipe(map((data: RoomEvent) => data));
   }
 
-  async joinRoom(gameInstanceId: string) {
+  async joinRoom(gameSessionInstance: LittleMuncherGameSessionInstance, gameInstanceId: string) {
     // create post with LittleMuncherGameInstance dto
     const url = environment.api + 'api/little-muncher/spectator-join';
     await firstValueFrom(
@@ -48,8 +49,8 @@ export class SpectateService {
       } as LittleMuncherGameInstance)
     );
 
-    this.gameInstanceClientService.openGameInstance(gameInstanceId);
-    this.gameInstanceClientService.openLevel({
+    this.gameInstanceClientService.openGameInstance(gameSessionInstance, gameInstanceId);
+    this.gameInstanceClientService.openLevel(gameSessionInstance, {
       hillName: LittleMuncherHills.Jakob // todo pull from server which level to join
     });
   }

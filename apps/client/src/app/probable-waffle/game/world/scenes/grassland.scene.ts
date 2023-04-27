@@ -4,7 +4,7 @@ import {
   GameObjectSelection,
   SceneCommunicatorService
 } from '../../../communicators/scene-communicator.service';
-import { CreateSceneFromObjectConfig } from '../../../../shared/game/phaser/scene-config.interface';
+import { CreateSceneFromObjectConfig } from '../../../../shared/game/phaser/scene/scene-config.interface';
 import { InputHandler } from '../managers/controllers/input/input.handler';
 import { ScaleHandler } from '../map/scale.handler';
 import { MapDefinitions, TileDefinitions } from '../const/map-size.info';

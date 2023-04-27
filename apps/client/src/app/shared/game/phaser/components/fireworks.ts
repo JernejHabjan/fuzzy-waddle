@@ -1,3 +1,6 @@
+import { Subscription } from 'rxjs';
+import BaseScene from '../scene/base.scene';
+
 const { Between } = Phaser.Math;
 const { GetRandom } = Phaser.Utils.Array;
 
@@ -13,10 +16,21 @@ export class Fireworks {
   private emitter1Event?: Phaser.Time.TimerEvent;
   private emitter2Event?: Phaser.Time.TimerEvent;
   private emitter3Event?: Phaser.Time.TimerEvent;
+  private subscriptions: Subscription[] = [];
 
-  constructor(private readonly scene: Phaser.Scene) {}
+  constructor(private readonly scene: BaseScene) {
+    this.registerEvents();
+  }
 
-  create() {
+  private registerEvents() {
+    this.subscriptions = [
+      this.scene.onCreate.subscribe(() => this.create()),
+      this.scene.onUpdate.subscribe(({ time, delta }) => this.update(time, delta)),
+      this.scene.onDestroy.subscribe(() => this.destroy())
+    ];
+  }
+
+  private create() {
     this.renderTexture = this.scene.add
       .renderTexture(0, 0, this.scene.cameras.main.width, this.scene.cameras.main.height)
       .setOrigin(0, 0)
@@ -73,11 +87,11 @@ export class Fireworks {
     emitter.explode();
   }
 
-  update(time: number, delta: number) {
+  private update(time: number, delta: number) {
     this.renderTexture?.fill(0, 0.01 * delta).draw([this.emitter1, this.emitter2, this.emitter3]);
   }
 
-  destroy() {
+  private destroy() {
     this.emitter1?.destroy();
     this.emitter2?.destroy();
     this.emitter3?.destroy();
@@ -85,5 +99,6 @@ export class Fireworks {
     this.emitter1Event?.destroy();
     this.emitter2Event?.destroy();
     this.emitter3Event?.destroy();
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

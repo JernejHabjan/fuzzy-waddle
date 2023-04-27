@@ -3,13 +3,8 @@ import { SupabaseAuthGuard } from '../../../auth/guards/supabase-auth.guard';
 import { CurrentUser } from '../../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
 import { GameInstanceService } from './game-instance.service';
-import {
-  LittleMuncherGameCreateDto,
-  LittleMuncherGameDestroyDto,
-  LittleMuncherGameInstance,
-  LittleMuncherGameInstanceCreateDto,
-  Room
-} from '@fuzzy-waddle/api-interfaces';
+import { GameCreateDto, GameDestroyDto } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameCreateDto, LittleMuncherGameInstance, Room } from '@fuzzy-waddle/api-interfaces';
 
 @Controller('little-muncher')
 export class GameInstanceController {
@@ -17,13 +12,13 @@ export class GameInstanceController {
 
   @Post('start-game')
   @UseGuards(SupabaseAuthGuard)
-  async startGame(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameInstanceCreateDto): Promise<void> {
+  async startGame(@CurrentUser() user: AuthUser, @Body() body: GameCreateDto): Promise<void> {
     await this.gameInstanceService.startGame(body, user);
   }
 
   @Delete('stop-game')
   @UseGuards(SupabaseAuthGuard)
-  async stopGame(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameInstanceCreateDto): Promise<void> {
+  async stopGame(@CurrentUser() user: AuthUser, @Body() body: GameCreateDto): Promise<void> {
     await this.gameInstanceService.stopGame(body, user);
   }
 
@@ -35,7 +30,7 @@ export class GameInstanceController {
 
   @Delete('stop-level')
   @UseGuards(SupabaseAuthGuard)
-  async deleteGameMode(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherGameDestroyDto): Promise<void> {
+  async deleteGameMode(@CurrentUser() user: AuthUser, @Body() body: GameDestroyDto): Promise<void> {
     await this.gameInstanceService.stopLevel(body, user);
   }
 

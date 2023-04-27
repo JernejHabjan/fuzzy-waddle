@@ -1,15 +1,16 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'net';
-import {
-  GatewayEvent,
-  LittleMuncherSceneCommunicatorKeyEvent,
-  RoomEvent,
-  SpectatorEvent
-} from '@fuzzy-waddle/api-interfaces';
 import { UseGuards } from '@nestjs/common';
 import { SupabaseAuthGuard } from '../../../auth/guards/supabase-auth.guard';
 import { CurrentUser } from '../../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
+import {
+  GatewaySpectatorEvent,
+  LittleMuncherCommunicatorKeyEvent,
+  LittleMuncherGatewayEvent,
+  RoomEvent,
+  SpectatorEvent
+} from '@fuzzy-waddle/api-interfaces';
 
 @WebSocketGateway({
   cors: {
@@ -21,20 +22,20 @@ export class GameInstanceGateway {
   private server: Server;
 
   emitRoom(roomEvent: RoomEvent) {
-    this.server.emit(GatewayEvent.LittleMuncherRoom, roomEvent);
+    this.server.emit(LittleMuncherGatewayEvent.LittleMuncherRoom, roomEvent);
   }
 
   emitSpectator(spectatorEvent: SpectatorEvent) {
-    this.server.emit(GatewayEvent.LittleMuncherSpectator, spectatorEvent);
+    this.server.emit(GatewaySpectatorEvent.Spectator, spectatorEvent);
   }
 
   @UseGuards(SupabaseAuthGuard)
-  @SubscribeMessage(GatewayEvent.LittleMuncherMove)
+  @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherMove)
   async broadcastMessage(
     @CurrentUser() user: AuthUser,
-    @MessageBody() payload: LittleMuncherSceneCommunicatorKeyEvent,
+    @MessageBody() payload: LittleMuncherCommunicatorKeyEvent,
     @ConnectedSocket() client: Socket
   ) {
-    (client as any).broadcast.emit(GatewayEvent.LittleMuncherMove, payload); // todo just emit to all now
+    (client as any).broadcast.emit(LittleMuncherGatewayEvent.LittleMuncherMove, payload); // todo just emit to all now
   }
 }

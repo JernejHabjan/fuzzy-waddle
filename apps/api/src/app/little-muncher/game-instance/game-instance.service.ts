@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@supabase/supabase-js';
 import { GameInstanceServer } from './game-instance-server';
 import {
+  GameCreateDto,
+  GameDestroyDto,
   LittleMuncherGameCreateDto,
-  LittleMuncherGameDestroyDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceCreateDto,
   LittleMuncherGameMode,
   LittleMuncherGameState,
   LittleMuncherPlayerController,
@@ -27,13 +27,13 @@ export class GameInstanceService {
 
   openGameInstances: GameInstanceServer[] = [];
 
-  async startGame(body: LittleMuncherGameInstanceCreateDto, user: User) {
+  async startGame(body: GameCreateDto, user: User) {
     const newGameInstance = new GameInstanceServer(body, user);
     this.openGameInstances.push(newGameInstance);
     console.log('game instance created on server', this.openGameInstances.length);
   }
 
-  async stopGame(body: LittleMuncherGameInstanceCreateDto, user: User) {
+  async stopGame(body: GameCreateDto, user: User) {
     const gameInstance = this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
     );
@@ -87,7 +87,7 @@ export class GameInstanceService {
     );
   }
 
-  async stopLevel(body: LittleMuncherGameDestroyDto, user: User) {
+  async stopLevel(body: GameDestroyDto, user: User) {
     const gameInstance = this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
     );

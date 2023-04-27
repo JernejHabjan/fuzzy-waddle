@@ -1,7 +1,13 @@
-import { LittleMuncherHills } from './api-interfaces';
+import { GameModeBase } from './game-mode-base';
+import { GameSessionInstance } from './game-session-instance';
+import { LittleMuncherHills } from './little-muncher/little-muncher';
 
-export class LittleMuncherGameMode {
-  constructor(public hillToClimbOn: LittleMuncherHills) {}
+export class LittleMuncherGameSessionInstance extends GameSessionInstance<LittleMuncherGameMode> {}
+
+export class LittleMuncherGameMode extends GameModeBase {
+  constructor(public hillToClimbOn: LittleMuncherHills) {
+    super();
+  }
 }
 
 export class LittleMuncherGameState {

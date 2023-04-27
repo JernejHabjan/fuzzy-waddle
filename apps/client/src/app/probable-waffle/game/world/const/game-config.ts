@@ -2,9 +2,10 @@ import GrasslandScene from '../scenes/grassland.scene';
 import { environment } from '../../../../../environments/environment';
 import PlaygroundScene from '../scenes/playground.scene';
 import { Scale, Types } from 'phaser';
+import { baseGameConfig } from '../../../../shared/game/base-game.config';
 
-export const GameContainerElement = 'gameCanvas';
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
+  ...baseGameConfig,
   scene: [GrasslandScene, PlaygroundScene],
   physics: {
     default: 'arcade',
@@ -14,18 +15,6 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
       debug: !environment.production
     }
   },
-  width: window.innerWidth,
-  height: window.innerHeight,
   pixelArt: true,
-  disableContextMenu: true,
-  backgroundColor: '#222',
-  scale: {
-    mode: Scale.RESIZE
-  },
-  fps: {
-    target: 60,
-    min: 30
-    // forceSetTimeOut: true
-  },
-  parent: GameContainerElement
+  backgroundColor: '#222'
 };

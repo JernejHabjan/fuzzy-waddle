@@ -1,11 +1,11 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { ChatMessage, GatewayEvent } from '@fuzzy-waddle/api-interfaces';
 import { CurrentUser } from '../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
 import { UseGuards } from '@nestjs/common';
 import { SupabaseAuthGuard } from '../../auth/guards/supabase-auth.guard';
 import { ChatService } from '../chat/chat.service';
 import { Server, Socket } from 'net';
+import { ChatMessage, GatewayChatEvent } from '@fuzzy-waddle/api-interfaces';
 
 @WebSocketGateway({
   cors: {
@@ -25,7 +25,7 @@ export class EventsGateway {
 
   //subscribe to chat message and broadcast to all clients
   @UseGuards(SupabaseAuthGuard)
-  @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)
+  @SubscribeMessage(GatewayChatEvent.CHAT_MESSAGE)
   async broadcastMessage(
     @CurrentUser() user: AuthUser,
     @MessageBody() payload: ChatMessage,
@@ -39,7 +39,7 @@ export class EventsGateway {
     newPayload.text = sanitizedMessage;
 
     // emit the message to all connected clients
-    this.server.emit(GatewayEvent.CHAT_MESSAGE, newPayload);
+    this.server.emit(GatewayChatEvent.CHAT_MESSAGE, newPayload);
   }
 
   // @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)

@@ -1,7 +1,6 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
-import { GameContainerElement, probableWaffleGameConfig } from '../../../game/world/const/game-config';
-import { Game } from 'phaser';
+import { probableWaffleGameConfig } from '../../../game/world/const/game-config';
 
 @Component({
   selector: 'fuzzy-waddle-game',
@@ -9,28 +8,12 @@ import { Game } from 'phaser';
   styleUrls: ['./probable-waffle-game.component.scss']
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
-  GameContainerElement = GameContainerElement;
-  gameRef!: Game;
+  protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
   drawerWidth = '150px';
   displayDrawers = true; // todo
-
-  constructor(private ngZone: NgZone) {}
-
-  private _gameContainerElement!: HTMLDivElement;
-
-  @ViewChild('gameContainerElement')
-  get gameContainerElement(): HTMLDivElement {
-    return this._gameContainerElement;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  set gameContainerElement(value: HTMLDivElement) {
-    this._gameContainerElement = value;
-    this.setupGameContainer();
-  }
+  gameData = {}; // todo later add communicator here
 
   ngOnDestroy(): void {
-    this.gameRef.destroy(true);
     SceneCommunicatorService.unsubscribe();
   }
 
@@ -40,11 +23,5 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     if (window.innerWidth < 800) {
       this.displayDrawers = false; // todo for now
     }
-  }
-
-  private setupGameContainer() {
-    this.ngZone.runOutsideAngular(() => {
-      this.gameRef = new Game(probableWaffleGameConfig);
-    });
   }
 }

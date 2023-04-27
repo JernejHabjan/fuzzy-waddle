@@ -1,3 +1,4 @@
+<fuzzy-waddle-game-container [gameConfig]="probableWaffleGameConfig" [gameData]="gameData" />
 <div
   *ngIf="displayDrawers"
   [ngStyle]="{
@@ -8,7 +9,6 @@
 >
   <fuzzy-waddle-editor-drawer></fuzzy-waddle-editor-drawer>
 </div>
-<div #gameContainerElement id="{{ GameContainerElement }}"></div>
 <div
   *ngIf="displayDrawers"
   [ngStyle]="{

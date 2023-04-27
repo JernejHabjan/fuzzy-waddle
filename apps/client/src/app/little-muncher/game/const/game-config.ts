@@ -1,9 +1,10 @@
-import { Scale, Types } from 'phaser';
+import { Types } from 'phaser';
 import { environment } from '../../../../environments/environment';
 import MainScene from '../main.scene';
+import { baseGameConfig } from '../../../shared/game/base-game.config';
 
-export const GameContainerElement = 'gameCanvas';
 export const littleMuncherGameConfig: Types.Core.GameConfig = {
+  ...baseGameConfig,
   scene: [MainScene],
   physics: {
     default: 'arcade',
@@ -13,18 +14,6 @@ export const littleMuncherGameConfig: Types.Core.GameConfig = {
       debug: !environment.production
     }
   },
-  width: window.innerWidth,
-  height: window.innerHeight,
   pixelArt: true,
-  disableContextMenu: true,
-  backgroundColor: '#8bc34a',
-  scale: {
-    mode: Scale.RESIZE
-  },
-  fps: {
-    target: 60,
-    min: 30
-    // forceSetTimeOut: true
-  },
-  parent: GameContainerElement
+  backgroundColor: '#8bc34a'
 };

@@ -1,3 +1,15 @@
-<little-muncher-home *ngIf='!ReferenceHolder.gameModeRef' (runGame)='runGame($event)'></little-muncher-home>
-
-<little-muncher-main *ngIf='ReferenceHolder.gameModeRef'></little-muncher-main>
+<div
+  *ngIf='loading; else content'
+  class='align-items-center d-flex h-100 justify-content-center'
+  style='font-size: 70px'
+>
+  <fa-icon [icon]='faSpinner' animation='spin' />
+</div>
+<ng-template #content>
+  <little-muncher-home
+    *ngIf='!gameSessionInstance.gameModeRef'
+    (runGame)='runGame($event)'
+    [gameSessionInstance]='gameSessionInstance'
+  />
+  <little-muncher-main *ngIf='gameSessionInstance.gameModeRef' [gameSessionInstance]='gameSessionInstance' />
+</ng-template>
