@@ -10,7 +10,7 @@ import { ServerHealthService } from '../../../shared/services/server-health.serv
   styleUrls: ['./spectate.component.scss']
 })
 export class SpectateComponent implements OnInit, OnDestroy {
-  private spectateRoomsSubscription!: Subscription;
+  private spectateRoomsSubscription?: Subscription;
   protected rooms: Room[] = [];
   @Input() gameSessionInstance!: LittleMuncherGameSessionInstance;
 
@@ -21,7 +21,7 @@ export class SpectateComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.rooms = await this.spectateService.getRooms();
-    this.spectateRoomsSubscription = this.spectateService.roomEvent.subscribe((roomEvent) => {
+    this.spectateRoomsSubscription = this.spectateService.roomEvent?.subscribe((roomEvent) => {
       const room = roomEvent.room;
       if (roomEvent.action === 'added') {
         this.rooms.push(room);
@@ -32,7 +32,7 @@ export class SpectateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.spectateRoomsSubscription.unsubscribe();
+    this.spectateRoomsSubscription?.unsubscribe();
   }
 
   async spectate(room: Room) {

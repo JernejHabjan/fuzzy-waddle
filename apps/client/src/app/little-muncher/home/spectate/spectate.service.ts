@@ -11,7 +11,6 @@ import {
 } from '@fuzzy-waddle/api-interfaces';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AuthenticatedSocketService } from '../../../data-access/chat/authenticated-socket.service';
-import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
 import { GameInstanceClientService } from '../../main/game-instance-client.service';
 
@@ -19,24 +18,21 @@ import { GameInstanceClientService } from '../../main/game-instance-client.servi
   providedIn: 'root'
 })
 export class SpectateService {
-  private authenticatedSocket: Socket;
-
   constructor(
     private readonly httpClient: HttpClient,
     private readonly authenticatedSocketService: AuthenticatedSocketService,
     private readonly gameInstanceClientService: GameInstanceClientService
-  ) {
-    this.authenticatedSocket = this.authenticatedSocketService.createAuthSocket(); // todo this needs to be constructed only when the user is authenticated
-  }
+  ) {}
 
   async getRooms() {
     const url = environment.api + 'api/little-muncher/get-rooms';
     return await firstValueFrom(this.httpClient.get<Room[]>(url));
   }
 
-  get roomEvent(): Observable<RoomEvent> {
-    return this.authenticatedSocket
-      .fromEvent<RoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
+  get roomEvent(): Observable<RoomEvent> | undefined {
+    const socket = this.authenticatedSocketService.socket;
+    return socket
+      ?.fromEvent<RoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
       .pipe(map((data: RoomEvent) => data));
   }
 
