@@ -1,5 +1,5 @@
 import { Scenes } from './const/scenes';
-import { LittleMuncherCommunicatorKeyEvent } from '@fuzzy-waddle/api-interfaces';
+import { CommunicatorKeyEvent, CommunicatorPauseEvent } from '@fuzzy-waddle/api-interfaces';
 import BaseScene from '../../shared/game/phaser/scene/base.scene';
 import { Fireworks } from '../../shared/game/phaser/components/fireworks';
 import { LittleMuncherGameData } from './little-muncher-game-data';
@@ -35,13 +35,22 @@ export default class MainScene extends BaseScene<LittleMuncherGameData> {
     this.input.keyboard.on('keydown', (event: KeyboardEvent) => {
       const validKeyboardEvent = this.manageKeyboardEvent(event.key);
       if (validKeyboardEvent) {
-        this.communicator.keyboard.sendToServer({ key: event.key });
-        this.communicator.score.sendToUi({ score: Math.random() * 100 });
+        this.communicator.keyboard.send({ key: event.key });
+        this.communicator.score.send({ score: Math.round(Math.random() * 100) });
       }
     });
     this.subscribe(
-      this.communicator.keyboard.fromServer.subscribe((event: LittleMuncherCommunicatorKeyEvent) => {
+      this.communicator.keyboard.on.subscribe((event: CommunicatorKeyEvent) => {
         this.manageKeyboardEvent(event.key);
+      })
+    );
+    this.subscribe(
+      this.communicator.pause.on.subscribe((event: CommunicatorPauseEvent) => {
+        if (event.pause) {
+          this.scene.pause();
+        } else {
+          this.scene.resume();
+        }
       })
     );
   }

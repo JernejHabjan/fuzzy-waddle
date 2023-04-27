@@ -2,8 +2,9 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TwoWayCommunicator } from '../../shared/game/communicators/two-way-communicator';
 import { Socket } from 'ngx-socket-io';
 import {
-  LittleMuncherCommunicatorKeyEvent,
-  LittleMuncherCommunicatorScoreEvent,
+  CommunicatorKeyEvent,
+  CommunicatorPauseEvent,
+  CommunicatorScoreEvent,
   LittleMuncherGatewayEvent
 } from '@fuzzy-waddle/api-interfaces';
 
@@ -11,13 +12,23 @@ import {
   providedIn: 'root'
 })
 export class CommunicatorService implements OnDestroy {
-  keyboard: TwoWayCommunicator<LittleMuncherCommunicatorKeyEvent> =
-    new TwoWayCommunicator<LittleMuncherCommunicatorKeyEvent>();
-  score: TwoWayCommunicator<LittleMuncherCommunicatorScoreEvent> =
-    new TwoWayCommunicator<LittleMuncherCommunicatorScoreEvent>();
+  keyboard: TwoWayCommunicator<CommunicatorKeyEvent> = new TwoWayCommunicator<CommunicatorKeyEvent>();
+  score: TwoWayCommunicator<CommunicatorScoreEvent> = new TwoWayCommunicator<CommunicatorScoreEvent>();
+  pause: TwoWayCommunicator<CommunicatorPauseEvent> = new TwoWayCommunicator<CommunicatorPauseEvent>();
 
   startServerCommunication(socket: Socket) {
-    this.keyboard.communicateWithServer(socket, LittleMuncherGatewayEvent.LittleMuncherMove);
+    this.keyboard.listenToCommunication({
+      eventName: LittleMuncherGatewayEvent.LittleMuncherMove,
+      socket
+    });
+    this.pause.listenToCommunication({
+      eventName: LittleMuncherGatewayEvent.LittleMuncherPause,
+      socket
+    });
+    this.score.listenToCommunication({
+      eventName: LittleMuncherGatewayEvent.LittleMuncherScore,
+      socket
+    });
   }
 
   stopCommunication() {

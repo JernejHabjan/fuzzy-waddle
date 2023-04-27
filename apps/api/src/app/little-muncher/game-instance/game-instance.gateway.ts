@@ -6,7 +6,7 @@ import { CurrentUser } from '../../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
 import {
   GatewaySpectatorEvent,
-  LittleMuncherCommunicatorKeyEvent,
+  CommunicatorKeyEvent,
   LittleMuncherGatewayEvent,
   RoomEvent,
   SpectatorEvent
@@ -31,11 +31,31 @@ export class GameInstanceGateway {
 
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherMove)
-  async broadcastMessage(
+  async broadcastMove(
     @CurrentUser() user: AuthUser,
-    @MessageBody() payload: LittleMuncherCommunicatorKeyEvent,
+    @MessageBody() payload: CommunicatorKeyEvent,
     @ConnectedSocket() client: Socket
   ) {
-    (client as any).broadcast.emit(LittleMuncherGatewayEvent.LittleMuncherMove, payload); // todo just emit to all now
+    (client as any).broadcast.emit(LittleMuncherGatewayEvent.LittleMuncherMove, payload);
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherPause)
+  async broadcastPause(
+    @CurrentUser() user: AuthUser,
+    @MessageBody() payload: CommunicatorKeyEvent,
+    @ConnectedSocket() client: Socket
+  ) {
+    (client as any).broadcast.emit(LittleMuncherGatewayEvent.LittleMuncherPause, payload);
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherScore)
+  async broadcastScore(
+    @CurrentUser() user: AuthUser,
+    @MessageBody() payload: CommunicatorKeyEvent,
+    @ConnectedSocket() client: Socket
+  ) {
+    (client as any).broadcast.emit(LittleMuncherGatewayEvent.LittleMuncherScore, payload);
   }
 }
