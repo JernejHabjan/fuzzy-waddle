@@ -1,5 +1,6 @@
 import { Subscription } from 'rxjs';
 import BaseScene from '../scene/base.scene';
+import { UpdateEventData } from '../scene/update-event-data';
 
 const { Between } = Phaser.Math;
 const { GetRandom } = Phaser.Utils.Array;
@@ -24,13 +25,14 @@ export class Fireworks {
 
   private registerEvents() {
     this.subscriptions = [
-      this.scene.onCreate.subscribe(() => this.create()),
-      this.scene.onUpdate.subscribe(({ time, delta }) => this.update(time, delta)),
-      this.scene.onDestroy.subscribe(() => this.destroy())
+      this.scene.onCreate.subscribe(this.create),
+      this.scene.onUpdate.subscribe(this.update),
+      this.scene.onDestroy.subscribe(this.destroy),
+      this.scene.onResize.subscribe(this.resize)
     ];
   }
 
-  private create() {
+  private create = () => {
     this.renderTexture = this.scene.add
       .renderTexture(0, 0, this.scene.cameras.main.width, this.scene.cameras.main.height)
       .setOrigin(0, 0)
@@ -78,7 +80,7 @@ export class Fireworks {
       repeat: -1,
       callback: () => this.updateEmitter(this.emitter3 as Phaser.GameObjects.Particles.ParticleEmitter)
     });
-  }
+  };
 
   private updateEmitter(emitter: Phaser.GameObjects.Particles.ParticleEmitter) {
     emitter.particleX = Between(0, this.scene.cameras.main.width);
@@ -87,11 +89,11 @@ export class Fireworks {
     emitter.explode();
   }
 
-  private update(time: number, delta: number) {
-    this.renderTexture?.fill(0, 0.01 * delta).draw([this.emitter1, this.emitter2, this.emitter3]);
-  }
+  private update = (updateEventData: UpdateEventData) => {
+    this.renderTexture?.fill(0, 0.01 * updateEventData.delta).draw([this.emitter1, this.emitter2, this.emitter3]);
+  };
 
-  private destroy() {
+  private destroy = () => {
     this.emitter1?.destroy();
     this.emitter2?.destroy();
     this.emitter3?.destroy();
@@ -100,5 +102,9 @@ export class Fireworks {
     this.emitter2Event?.destroy();
     this.emitter3Event?.destroy();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
-  }
+  };
+
+  private resize = () => {
+    this.renderTexture?.resize(this.scene.cameras.main.width, this.scene.cameras.main.height);
+  };
 }

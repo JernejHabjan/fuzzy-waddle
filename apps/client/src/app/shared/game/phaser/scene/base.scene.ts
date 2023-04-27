@@ -15,6 +15,7 @@ export default class BaseScene<TData extends BaseGameData = BaseGameData>
   onCreate: EventEmitter<void> = new EventEmitter<void>();
   onDestroy: EventEmitter<void> = new EventEmitter<void>();
   onUpdate: EventEmitter<UpdateEventData> = new EventEmitter<UpdateEventData>();
+  onResize: EventEmitter<void> = new EventEmitter<void>();
 
   private subscriptions: Subscription[] = [];
 
@@ -29,6 +30,7 @@ export default class BaseScene<TData extends BaseGameData = BaseGameData>
     this.game = this.sys.game as BaseGame;
     this.baseGameData = this.game.data as TData;
     this.registerSceneDestroy();
+    this.registerSceneResize();
     this.onInit.emit();
   }
 
@@ -39,6 +41,12 @@ export default class BaseScene<TData extends BaseGameData = BaseGameData>
   override update(time: number, delta: number) {
     super.update(time, delta);
     this.onUpdate.emit({ time, delta });
+  }
+
+  private registerSceneResize() {
+    this.scale.on(Phaser.Scale.Events.RESIZE, () => {
+      this.onResize.emit();
+    });
   }
 
   private registerSceneDestroy() {
@@ -52,6 +60,7 @@ export default class BaseScene<TData extends BaseGameData = BaseGameData>
   }
 
   destroy() {
+    this.scale.removeAllListeners();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.onDestroy.emit();
   }
