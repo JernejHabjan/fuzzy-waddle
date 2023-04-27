@@ -55,7 +55,8 @@ export default class BaseScene<TData extends BaseGameData = BaseGameData>
     });
   }
 
-  protected subscribe(subscription: Subscription) {
+  protected subscribe(subscription?: Subscription) {
+    if (!subscription) return;
     this.subscriptions.push(subscription);
   }
 

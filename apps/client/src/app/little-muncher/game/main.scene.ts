@@ -35,17 +35,17 @@ export default class MainScene extends BaseScene<LittleMuncherGameData> {
     this.input.keyboard.on('keydown', (event: KeyboardEvent) => {
       const validKeyboardEvent = this.manageKeyboardEvent(event.key);
       if (validKeyboardEvent) {
-        this.communicator.keyboard.send({ key: event.key });
-        this.communicator.score.send({ score: Math.round(Math.random() * 100) });
+        this.communicator.key?.send({ key: event.key });
+        this.communicator.score?.send({ score: Math.round(Math.random() * 100) });
       }
     });
     this.subscribe(
-      this.communicator.keyboard.on.subscribe((event: CommunicatorKeyEvent) => {
+      this.communicator.key?.on.subscribe((event: CommunicatorKeyEvent) => {
         this.manageKeyboardEvent(event.key);
       })
     );
     this.subscribe(
-      this.communicator.pause.on.subscribe((event: CommunicatorPauseEvent) => {
+      this.communicator.pause?.on.subscribe((event: CommunicatorPauseEvent) => {
         if (event.pause) {
           this.scene.pause();
         } else {

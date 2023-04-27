@@ -1,11 +1,16 @@
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
+import { CommunicatorEvent, CommunicatorType } from '@fuzzy-waddle/api-interfaces';
 
 export class TwoWayCommunicator<T> {
   private onSubject: Subject<T> = new Subject<T>();
   private sendSubject: Subject<T> = new Subject<T>();
   private sendLocallySubject: Subject<T> = new Subject<T>();
   private subscriptions: Subscription[] = [];
+
+  constructor(private readonly eventName: string, public readonly communicator: CommunicatorType, socket: Socket) {
+    this.listenToCommunication({ eventName, socket });
+  }
 
   destroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
@@ -27,7 +32,7 @@ export class TwoWayCommunicator<T> {
   /**
    * Starts communication between the game and the server (if event is emitted from the game, it will be sent to the server, and vice versa)
    */
-  listenToCommunication(data: { eventName: string; socket?: Socket }): void {
+  private listenToCommunication(config: { eventName: string; socket?: Socket }): void {
     // send from UI->Game or Game->UI
     this.subscriptions.push(
       this.sendLocallySubject.subscribe((event) => {
@@ -37,15 +42,19 @@ export class TwoWayCommunicator<T> {
 
     // send from UI/Game to server
     this.subscriptions.push(
-      this.sendSubject.subscribe((event) => {
-        data.socket?.emit(data.eventName, event);
+      this.sendSubject.subscribe((data) => {
+        config.socket?.emit(config.eventName, {
+          communicator: this.communicator,
+          data: data
+        } as CommunicatorEvent<T>);
       })
     );
     // listen from server
-    if (data.socket) {
+    if (config.socket) {
       this.subscriptions.push(
-        data.socket.fromEvent<T>(data.eventName).subscribe((event) => {
-          this.onSubject.next(event);
+        config.socket.fromEvent<CommunicatorEvent<T>>(config.eventName).subscribe((event) => {
+          if (event.communicator !== this.communicator) return;
+          this.onSubject.next(event.data);
         })
       );
     }

@@ -1,15 +1,3 @@
-export interface CommunicatorKeyEvent {
-  key: string;
-}
-
-export interface CommunicatorScoreEvent {
-  score: number;
-}
-
-export interface CommunicatorPauseEvent {
-  pause: boolean;
-}
-
 export enum LittleMuncherHills {
   Stefka = 0,
   Jakob = 1
@@ -30,11 +18,4 @@ export interface LittleMuncherGameCreateDto extends LittleMuncherGameCreate {
 
 export interface LittleMuncherGameInstance {
   gameInstanceId: string;
-}
-
-export enum LittleMuncherGatewayEvent {
-  LittleMuncherRoom = 'little-muncher-spectate-room',
-  LittleMuncherMove = 'little-muncher-move',
-  LittleMuncherPause = 'little-muncher-pause',
-  LittleMuncherScore = 'little-muncher-score'
 }

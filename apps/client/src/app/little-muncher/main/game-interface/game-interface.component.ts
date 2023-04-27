@@ -13,7 +13,6 @@ import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./game-interface.component.scss']
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
   score = 0;
   @ViewChild('modal') private modalComponent!: ModalComponent;
   @Input() gameSessionInstance!: LittleMuncherGameSessionInstance;
@@ -28,6 +27,8 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     onClose: async () =>
       await this.gameInstanceClientService.stopLevel(this.gameSessionInstance, 'localAndRemote').then()
   };
+  private scoreSubscription?: Subscription;
+  private pauseSubscription?: Subscription;
 
   constructor(
     private readonly gameInstanceClientService: GameInstanceClientService,
@@ -44,20 +45,23 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(
-      this.communicatorService.score.on.subscribe((littleMuncherCommunicatorScoreEvent) => {
-        this.score = littleMuncherCommunicatorScoreEvent.score;
-        this.changeDetectorRef.detectChanges();
-      })
-    );
+    this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
+      this.score = event.score;
+      this.changeDetectorRef.detectChanges();
+    });
+    this.pauseSubscription = this.communicatorService.pause?.on.subscribe((event) => {
+      this.paused = event.pause;
+      this.changeDetectorRef.detectChanges();
+    });
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.scoreSubscription?.unsubscribe();
+    this.pauseSubscription?.unsubscribe();
   }
 
   pauseToggle() {
     this.paused = !this.paused;
-    this.communicatorService.pause.send({ pause: this.paused });
+    this.communicatorService.pause?.send({ pause: this.paused });
   }
 }

@@ -7,3 +7,4 @@ export * from './lib/game-instance';
 export * from './lib/room';
 export * from './lib/chat/chat';
 export * from './lib/little-muncher/little-muncher';
+export * from './lib/little-muncher/communicators';

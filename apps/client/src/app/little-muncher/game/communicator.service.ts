@@ -12,28 +12,32 @@ import {
   providedIn: 'root'
 })
 export class CommunicatorService implements OnDestroy {
-  keyboard: TwoWayCommunicator<CommunicatorKeyEvent> = new TwoWayCommunicator<CommunicatorKeyEvent>();
-  score: TwoWayCommunicator<CommunicatorScoreEvent> = new TwoWayCommunicator<CommunicatorScoreEvent>();
-  pause: TwoWayCommunicator<CommunicatorPauseEvent> = new TwoWayCommunicator<CommunicatorPauseEvent>();
+  key?: TwoWayCommunicator<CommunicatorKeyEvent>;
+  score?: TwoWayCommunicator<CommunicatorScoreEvent>;
+  pause?: TwoWayCommunicator<CommunicatorPauseEvent>;
 
   startServerCommunication(socket: Socket) {
-    this.keyboard.listenToCommunication({
-      eventName: LittleMuncherGatewayEvent.LittleMuncherMove,
+    this.key = new TwoWayCommunicator<CommunicatorKeyEvent>(
+      LittleMuncherGatewayEvent.LittleMuncherAction,
+      'key',
       socket
-    });
-    this.pause.listenToCommunication({
-      eventName: LittleMuncherGatewayEvent.LittleMuncherPause,
+    );
+    this.score = new TwoWayCommunicator<CommunicatorScoreEvent>(
+      LittleMuncherGatewayEvent.LittleMuncherAction,
+      'score',
       socket
-    });
-    this.score.listenToCommunication({
-      eventName: LittleMuncherGatewayEvent.LittleMuncherScore,
+    );
+    this.pause = new TwoWayCommunicator<CommunicatorPauseEvent>(
+      LittleMuncherGatewayEvent.LittleMuncherAction,
+      'pause',
       socket
-    });
+    );
   }
 
   stopCommunication() {
-    this.keyboard.destroy();
-    this.score.destroy();
+    this.key?.destroy();
+    this.score?.destroy();
+    this.pause?.destroy();
   }
 
   ngOnDestroy(): void {
