@@ -16,9 +16,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 10
+      limit: 30
       // https://github.com/nestjs/throttler
-      // The above would mean that 10 requests from the same IP can be made to a single endpoint in 1 minute
+      // The above would mean that 30 requests from the same IP can be made to a single endpoint in 1 minute
     }),
     AuthModule,
     EventsModule,
