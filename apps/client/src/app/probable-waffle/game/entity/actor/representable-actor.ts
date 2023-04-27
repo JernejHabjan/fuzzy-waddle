@@ -28,33 +28,15 @@ export abstract class RepresentableActor extends Actor {
 
   protected constructor(private scene: Scene, private tilePlacementData: TilePlacementData) {
     super();
-    this.initActor();
   }
 
-  initActor() {
-    this.components.addComponent(new TransformComponent(this.tilePlacementData));
-    this.subscribeToSceneDestroy();
-  }
-
-  override init() {
-    super.init();
-
-    this.transformComponent = this.components.findComponent(TransformComponent);
+  override initComponents() {
+    this.transformComponent = this.components.addComponent(new TransformComponent(this.tilePlacementData));
     this.components.addComponent(
       new SpriteRepresentationComponent(this, this.scene, {
         textureName: this.representableActorDefinition.textureMapDefinition.textureName,
         tilePlacementData: this.transformComponent.tilePlacementData
       })
     );
-  }
-
-  override destroy() {
-    super.destroy();
-  }
-
-  private subscribeToSceneDestroy() {
-    this.scene.events.once(Scenes.Events.DESTROY, () => {
-      this.destroy();
-    });
   }
 }

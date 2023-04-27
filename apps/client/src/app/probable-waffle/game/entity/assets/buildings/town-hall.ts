@@ -55,8 +55,9 @@ export const TownHallDefinition: BuildingInfoDefinition = {
 export class TownHall extends Building {
   buildingInfoDefinition: BuildingInfoDefinition = TownHallDefinition;
 
-  override init() {
-    super.init();
+  override initComponents() {
+    super.initComponents();
+
     this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
     this.components.addComponent(new ContainerComponent(10));
     this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));

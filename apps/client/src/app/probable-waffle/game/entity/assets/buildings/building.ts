@@ -20,19 +20,26 @@ export abstract class Building extends RepresentableActor {
   representableActorDefinition!: RepresentableActorDefinition;
 
   // make it public constructor
+  private cost!: CostData;
+
   constructor(scene: Scene, tilePlacementData: TilePlacementData, private playerController: PlayerController) {
     super(scene, tilePlacementData);
   }
 
-  override init(): void {
-    this.representableActorDefinition = this.buildingInfoDefinition;
-
+  override init() {
     super.init();
+
+    this.representableActorDefinition = this.buildingInfoDefinition;
+    this.cost = this.buildingInfoDefinition.cost ?? CostData.NoCost;
+  }
+
+  override initComponents(): void {
+    super.initComponents();
+
     this.components.addComponent(new OwnerComponent(this.playerController));
     this.components.addComponent(
       new ConstructionSiteComponent(this, this.buildingInfoDefinition.constructionSiteDefinition)
     );
-    const cost = this.buildingInfoDefinition.cost ?? CostData.NoCost;
-    this.components.addComponent(new ProductionCostComponent(cost));
+    this.components.addComponent(new ProductionCostComponent(this.cost));
   }
 }

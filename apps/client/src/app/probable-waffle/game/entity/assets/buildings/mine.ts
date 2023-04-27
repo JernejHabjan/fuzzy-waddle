@@ -54,8 +54,9 @@ export const MineDefinitions: BuildingInfoDefinition = {
 export class Mine extends Building {
   buildingInfoDefinition: BuildingInfoDefinition = MineDefinitions;
 
-  override init() {
-    super.init();
+  override initComponents() {
+    super.initComponents();
+
     this.components.addComponent(new ContainerComponent(2));
     this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
     this.components.addComponent(new PlacementRestrictionComponent(this, [Minerals]));

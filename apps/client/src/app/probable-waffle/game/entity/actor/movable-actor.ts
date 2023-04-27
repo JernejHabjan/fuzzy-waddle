@@ -11,14 +11,21 @@ export abstract class MovableActor extends RepresentableActor {
   abstract behaviorTreeClass: PawnBehaviorTreeClasses;
   abstract blackboardClass: typeof Blackboard;
   private behaviorTree!: PawnBehaviorTree;
+  private blackboard!: Blackboard;
 
   override init() {
     super.init();
-    this.components.addComponent(new CharacterMovementComponent(this));
-    const blackboard = new this.blackboardClass();
+
+    this.blackboard = new this.blackboardClass();
     this.behaviorTree = new this.behaviorTreeClass();
-    this.behaviorTree.init(this, blackboard);
-    this.components.addComponent(new PawnAiControllerComponent(this, blackboard, this.behaviorTree));
+    this.behaviorTree.init(this, this.blackboard);
+  }
+
+  override initComponents() {
+    super.initComponents();
+
+    this.components.addComponent(new CharacterMovementComponent(this));
+    this.components.addComponent(new PawnAiControllerComponent(this, this.blackboard, this.behaviorTree));
   }
 
   override update(time: number, delta: number) {

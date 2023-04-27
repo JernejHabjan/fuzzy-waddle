@@ -6,21 +6,23 @@ import { CostData, ProductionCostComponent } from '../building/production/produc
 import { Scene } from 'phaser';
 
 export abstract class PlayerCharacter extends Character {
-  productionCostComponent!: ProductionCostComponent;
+  cost!: CostData;
 
   // making constructor public
-  constructor(scene: Scene, tilePlacementData: TilePlacementData, playerController: PlayerController) {
+  constructor(scene: Scene, tilePlacementData: TilePlacementData, private readonly playerController: PlayerController) {
     super(scene, tilePlacementData);
-    this.components.addComponent(new OwnerComponent(playerController));
   }
 
   override init() {
     super.init();
-    this.setupProductionCostComponent();
+
+    this.cost = this.pawnDefinition.cost ?? CostData.NoCost;
   }
 
-  private setupProductionCostComponent() {
-    const cost = this.pawnDefinition.cost ?? CostData.NoCost;
-    this.productionCostComponent = this.components.addComponent(new ProductionCostComponent(cost));
+  override initComponents() {
+    super.initComponents();
+
+    this.components.addComponent(new OwnerComponent(this.playerController));
+    this.components.addComponent(new ProductionCostComponent(this.cost));
   }
 }

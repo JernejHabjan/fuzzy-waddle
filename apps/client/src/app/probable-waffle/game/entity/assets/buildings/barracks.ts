@@ -53,15 +53,20 @@ export const BarracksDefinition: BuildingInfoDefinition = {
 
 export class Barracks extends Building {
   buildingInfoDefinition: BuildingInfoDefinition = BarracksDefinition;
+  private productionComponent!: ProductionComponent;
 
-  override init() {
-    super.init();
-    this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
+  override initComponents() {
+    super.initComponents();
+
+    this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
     this.components.addComponent(new ContainerComponent(10));
+  }
+
+  override postStart() {
+    super.postStart();
 
     setTimeout(() => {
-      const productionComponent = this.components.findComponent(ProductionComponent);
-      productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });
+      this.productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });
       console.log('started production of 1 warrior');
     }, 1000);
   }

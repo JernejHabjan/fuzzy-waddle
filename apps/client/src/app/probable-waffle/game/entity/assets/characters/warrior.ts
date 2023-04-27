@@ -32,8 +32,9 @@ export const WarriorDefinition: PawnInfoDefinition = {
 export class Warrior extends PlayerCharacter {
   pawnDefinition: PawnInfoDefinition = WarriorDefinition;
 
-  override init() {
-    super.init();
+  override initComponents() {
+    super.initComponents();
+
     this.components.addComponent(new AttackComponent(this, [new AttackData(10, 10, DamageTypes.DamageTypeNormal, 10)]));
     this.components.addComponent(new ContainableComponent(this));
   }

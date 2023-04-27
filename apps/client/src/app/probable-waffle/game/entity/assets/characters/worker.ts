@@ -27,8 +27,9 @@ export const WorkerDefinition: PawnInfoDefinition = {
 export class Worker extends PlayerCharacter {
   pawnDefinition: PawnInfoDefinition = WorkerDefinition;
 
-  override init() {
-    super.init();
+  override initComponents() {
+    super.initComponents();
+
     this.components.addComponent(new BuilderComponent(this, [Barracks], true, 10));
     this.components.addComponent(new GathererComponent(this, [Mine], 100));
   }

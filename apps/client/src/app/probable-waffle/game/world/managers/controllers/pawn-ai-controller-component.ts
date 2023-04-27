@@ -34,7 +34,7 @@ export class PawnAiControllerComponent implements IComponent {
     if (!order.orderType) {
       return;
     }
-    this.addOrder(order);
+    this.orders.enqueueBack(order);
   }
 
   insertOrder(order: OrderData): void {

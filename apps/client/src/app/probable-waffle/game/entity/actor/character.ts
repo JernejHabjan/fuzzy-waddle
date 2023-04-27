@@ -43,15 +43,29 @@ export abstract class Character extends MovableActor {
   }
 
   override init() {
-    // set this before calling super.init()
-    this.representableActorDefinition = this.pawnDefinition;
-
     super.init();
+
+    this.representableActorDefinition = this.pawnDefinition;
+  }
+
+  override initComponents() {
+    super.initComponents();
+
     this.spriteRepresentationComponent = this.components.findComponent(SpriteRepresentationComponent);
     this.spriteRepresentationComponent.sprite.setInteractive();
     this.characterMovementComponent = this.components.findComponent(CharacterMovementComponent);
+    this.healthComponent = this.components.addComponent(
+      new HealthComponent(this, this.pawnDefinition.healthDefinition)
+    );
+    this.characterSoundComponent = this.components.addComponent(
+      new CharacterSoundComponent(this.spriteRepresentationComponent.sprite)
+    );
+  }
+
+  override postStart() {
+    super.postStart();
+
     this.initStateMachine();
-    this.initComponents();
     this.subscribeToEvents();
   }
 
@@ -75,14 +89,6 @@ export abstract class Character extends MovableActor {
       this.warriorRunEnter();
     }
     this.warriorStateMachine.setState('run');
-  }
-
-  private initComponents() {
-    const sprite = this.spriteRepresentationComponent.sprite;
-    this.healthComponent = this.components.addComponent(
-      new HealthComponent(this, this.pawnDefinition.healthDefinition)
-    );
-    this.characterSoundComponent = this.components.addComponent(new CharacterSoundComponent(sprite));
   }
 
   private subscribeToEvents() {

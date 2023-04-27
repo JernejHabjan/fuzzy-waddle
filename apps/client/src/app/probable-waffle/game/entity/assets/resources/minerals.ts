@@ -25,8 +25,9 @@ export class Minerals extends RepresentableActor {
     super(scene, tilePlacementData);
   }
 
-  override init() {
-    super.init();
+  override initComponents() {
+    super.initComponents();
+
     this.components.addComponent(new ContainerComponent(2));
     this.components.addComponent(new ResourceSourceComponent(this, Resources.minerals, 40, 2));
   }

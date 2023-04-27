@@ -143,8 +143,7 @@ export class ProductionComponent implements IComponent {
       spawnPosition,
       this.ownerComponent.playerController
     );
-    actor.init(); // todo should be called by registration engine
-    actor.start(); // todo should be called by registration engine
+    actor.addToRegistry(); // todo should be called by registration engine
     return actor;
   }
 
