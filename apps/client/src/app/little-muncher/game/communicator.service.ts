@@ -16,7 +16,7 @@ export class CommunicatorService implements OnDestroy {
   score?: TwoWayCommunicator<CommunicatorScoreEvent>;
   pause?: TwoWayCommunicator<CommunicatorPauseEvent>;
 
-  startServerCommunication(socket: Socket) {
+  startCommunication(socket?: Socket) {
     this.key = new TwoWayCommunicator<CommunicatorKeyEvent>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       'key',

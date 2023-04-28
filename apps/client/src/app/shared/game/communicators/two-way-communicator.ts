@@ -8,8 +8,8 @@ export class TwoWayCommunicator<T> {
   private sendLocallySubject: Subject<T> = new Subject<T>();
   private subscriptions: Subscription[] = [];
 
-  constructor(private readonly eventName: string, public readonly communicator: CommunicatorType, socket: Socket) {
-    this.listenToCommunication({ eventName, socket });
+  constructor(private readonly eventName: string, private readonly communicator: CommunicatorType, socket?: Socket) {
+    this.listenToCommunication(eventName, socket);
   }
 
   destroy(): void {
@@ -30,9 +30,11 @@ export class TwoWayCommunicator<T> {
   }
 
   /**
-   * Starts communication between the game and the server (if event is emitted from the game, it will be sent to the server, and vice versa)
+   * Starts communication between listeners.
+   * if socket is provided, it will also listen to the server
+   * otherwise, it will only listen to the UI and Game events and send them to each other
    */
-  private listenToCommunication(config: { eventName: string; socket?: Socket }): void {
+  private listenToCommunication(eventName: string, socket?: Socket): void {
     // send from UI->Game or Game->UI
     this.subscriptions.push(
       this.sendLocallySubject.subscribe((event) => {
@@ -43,16 +45,17 @@ export class TwoWayCommunicator<T> {
     // send from UI/Game to server
     this.subscriptions.push(
       this.sendSubject.subscribe((data) => {
-        config.socket?.emit(config.eventName, {
+        socket?.emit(eventName, {
           communicator: this.communicator,
           data: data
         } as CommunicatorEvent<T>);
       })
     );
+
     // listen from server
-    if (config.socket) {
+    if (socket) {
       this.subscriptions.push(
-        config.socket.fromEvent<CommunicatorEvent<T>>(config.eventName).subscribe((event) => {
+        socket.fromEvent<CommunicatorEvent<T>>(eventName).subscribe((event) => {
           if (event.communicator !== this.communicator) return;
           this.onSubject.next(event.data);
         })

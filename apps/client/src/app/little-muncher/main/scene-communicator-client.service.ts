@@ -14,10 +14,7 @@ export class SceneCommunicatorClientService {
   ) {}
 
   startListeningToEvents() {
-    const socket = this.authenticatedSocketService.socket;
-    if (!socket) return;
-
-    this.communicator.startServerCommunication(socket);
+    this.communicator.startCommunication(this.authenticatedSocketService.socket);
   }
 
   stopListeningToEvents() {
