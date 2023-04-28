@@ -20,7 +20,6 @@ export abstract class GameMode {
   gameState: GameState;
   canGameBePaused = true;
   gameModeState: GameModeState;
-  scene!: Scene;
 
   constructor() {
     this.gameModeState = GameModeState.WaitingToStart;
@@ -39,11 +38,14 @@ export abstract class GameMode {
   abstract handleStartingNewPlayer(): void;
 
   spawnActorForPlayer(
+    scene: Scene,
     buildingClass: ActorAbleToBeBuiltClass,
-    playerController: PlayerController,
-    targetLocation: TilePlacementData
+    targetLocation: TilePlacementData,
+    playerController?: PlayerController
   ): ActorAbleToBeBuilt {
-    const building = new buildingClass(this.scene, targetLocation, playerController); // todo
+    const building = new buildingClass(scene, targetLocation); // todo
+    building.registerGameObject();
+    building.possess(playerController);
     // this.gameState.addActor(building); // todo
     // todo initialize actor and register it to loop
     return building;

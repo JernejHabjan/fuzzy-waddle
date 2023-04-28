@@ -42,7 +42,7 @@ export class AttackComponent implements IComponent {
 
     if (attack.projectileClass) {
       const projectile = new attack.projectileClass(this.spriteRepresentationComponent.scene, this.owner); // todo here it should be getWorld.SpawnActor<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
-      projectile.addToRegistry(); // todo should be called by registration engine
+      projectile.registerGameObject(); // todo should be called by registration engine
       projectile.fireAtActor(enemy);
     } else {
       const enemyHealthComponent = enemy.components.findComponent(HealthComponent);

@@ -22,7 +22,7 @@ export abstract class Building extends RepresentableActor {
   // make it public constructor
   private cost!: CostData;
 
-  constructor(scene: Scene, tilePlacementData: TilePlacementData, private playerController: PlayerController) {
+  constructor(scene: Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
   }
 
@@ -36,10 +36,15 @@ export abstract class Building extends RepresentableActor {
   override initComponents(): void {
     super.initComponents();
 
-    this.components.addComponent(new OwnerComponent(this.playerController));
+    this.components.addComponent(new OwnerComponent());
     this.components.addComponent(
       new ConstructionSiteComponent(this, this.buildingInfoDefinition.constructionSiteDefinition)
     );
     this.components.addComponent(new ProductionCostComponent(this.cost));
+  }
+
+  possess(playerController?: PlayerController) {
+    if (!playerController) return;
+    this.components.findComponent(OwnerComponent).possess(playerController);
   }
 }

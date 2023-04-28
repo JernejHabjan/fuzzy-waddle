@@ -562,36 +562,40 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {
-    const warrior = new Warrior(this, tilePlacementData, this.playerController);
-    warrior.addToRegistry(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior) // todo it also registers on "update" hook
+    const warrior = new Warrior(this, tilePlacementData);
+    warrior.registerGameObject(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior) // todo it also registers on "update" hook
+    warrior.possess(this.playerController);
     this.warriorGroup.push(warrior);
     return warrior;
   }
 
   private placeWorker(tilePlacementData: TilePlacementData) {
-    const worker = new Worker(this, tilePlacementData, this.playerController);
-    worker.addToRegistry(); // todo should be called by registration engine -
+    const worker = new Worker(this, tilePlacementData);
+    worker.registerGameObject(); // todo should be called by registration engine -
+    worker.possess(this.playerController);
     this.warriorGroup.push(worker);
     return worker;
   }
 
   private placeBarracks(tilePlacementData: TilePlacementData) {
-    const barracks = new Barracks(this, tilePlacementData, this.playerController);
-    barracks.addToRegistry(); // todo should be called by registration engine
+    const barracks = new Barracks(this, tilePlacementData);
+    barracks.registerGameObject(); // todo should be called by registration engine
+    barracks.possess(this.playerController);
     this.warriorGroup.push(barracks); // todo
     return barracks;
   }
 
   private placeTownHall(tilePlacementData: TilePlacementData) {
-    const townHall = new TownHall(this, tilePlacementData, this.playerController);
-    townHall.addToRegistry(); // todo should be called by registration engine
+    const townHall = new TownHall(this, tilePlacementData);
+    townHall.registerGameObject(); // todo should be called by registration engine
+    townHall.possess(this.playerController);
     this.warriorGroup.push(townHall); // todo
     return townHall;
   }
 
   private placeMinerals(tilePlacementData: TilePlacementData) {
     const minerals = new Minerals(this, tilePlacementData);
-    minerals.addToRegistry(); // todo should be called by registration engine
+    minerals.registerGameObject(); // todo should be called by registration engine
     this.warriorGroup.push(minerals); // todo
     return minerals;
   }

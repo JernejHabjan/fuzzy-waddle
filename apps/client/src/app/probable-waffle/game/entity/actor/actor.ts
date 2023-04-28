@@ -47,7 +47,7 @@ export abstract class Actor implements IComponent {
     // pass
   }
 
-  addToRegistry(): void {
+  registerGameObject(): void {
     // todo call from registration engine
     this.init();
     this.initComponents();
