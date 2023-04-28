@@ -1,3 +1,5 @@
+import { GameInstance } from '../game-instance';
+
 export enum LittleMuncherHills {
   Stefka = 0,
   Jakob = 1
@@ -16,6 +18,4 @@ export interface LittleMuncherGameCreateDto extends LittleMuncherGameCreate {
   gameInstanceId: string;
 }
 
-export interface LittleMuncherGameInstance {
-  gameInstanceId: string;
-}
+export class LittleMuncherGameInstance extends GameInstance {}

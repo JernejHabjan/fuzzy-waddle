@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { littleMuncherGameConfig } from '../game/const/game-config';
 import { LittleMuncherGameData } from '../game/little-muncher-game-data';
 import { CommunicatorService } from '../game/communicator.service';
-import { LittleMuncherGameMode, LittleMuncherGameSessionInstance } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameSessionInstance } from '@fuzzy-waddle/api-interfaces';
 
 @Component({
   selector: 'little-muncher-main',
@@ -12,7 +12,7 @@ import { LittleMuncherGameMode, LittleMuncherGameSessionInstance } from '@fuzzy-
 export class MainComponent implements OnInit {
   protected readonly littleMuncherGameConfig = littleMuncherGameConfig;
   @Input() gameSessionInstance!: LittleMuncherGameSessionInstance;
-  protected gameData?: LittleMuncherGameData<LittleMuncherGameMode>;
+  protected gameData?: LittleMuncherGameData;
 
   constructor(private readonly communicator: CommunicatorService) {}
 

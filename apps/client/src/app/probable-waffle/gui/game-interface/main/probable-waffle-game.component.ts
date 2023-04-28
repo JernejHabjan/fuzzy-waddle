@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
 import { probableWaffleGameConfig } from '../../../game/world/const/game-config';
 import { BaseGameData } from '../../../../shared/game/phaser/game/base-game-data';
-import { GameModeBase, GameSessionInstance } from '@fuzzy-waddle/api-interfaces';
+import { GameSessionInstance } from '@fuzzy-waddle/api-interfaces';
+import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
 
 @Component({
   selector: 'fuzzy-waddle-game',
@@ -13,7 +14,9 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
   drawerWidth = '150px';
   displayDrawers = true; // todo
-  gameData?: BaseGameData<GameModeBase>; // todo
+  gameData?: BaseGameData; // todo
+
+  constructor(private readonly communicatorService: CommunicatorService) {}
 
   ngOnDestroy(): void {
     SceneCommunicatorService.unsubscribe();
@@ -23,9 +26,11 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     SceneCommunicatorService.setup();
     const gameSessionInstance = new GameSessionInstance();
     this.gameData = {
-      gameSessionInstance
-      // todo later add communicator here when you rework it from this singleton
+      gameSessionInstance,
+      communicator: this.communicatorService
     };
+
+    // todo properly listen with communicatorService
 
     if (window.innerWidth < 800) {
       this.displayDrawers = false; // todo for now

@@ -5,12 +5,8 @@ import { UpdateEventData } from './update-event-data';
 import { BaseGame } from '../game/base-game';
 import { BaseGameData } from '../game/base-game-data';
 import { Subscription } from 'rxjs';
-import { GameModeBase, GameSessionInstance } from '@fuzzy-waddle/api-interfaces';
 
-export default class BaseScene<
-    TGameMode extends GameModeBase = GameModeBase,
-    TGameData extends BaseGameData<TGameMode> = BaseGameData<TGameMode>
-  >
+export default class BaseScene<TGameData extends BaseGameData = BaseGameData>
   extends Scene
   implements CreateSceneFromObjectConfig
 {
@@ -23,18 +19,16 @@ export default class BaseScene<
 
   private subscriptions: Subscription[] = [];
 
-  override game!: BaseGame<TGameMode, TGameData>;
+  override game!: BaseGame<TGameData>;
   protected baseGameData!: TGameData;
-  protected gameSessionInstance!: GameSessionInstance<TGameMode>;
 
   preload() {
     this.onPreload.emit();
   }
 
   init() {
-    this.game = this.sys.game as BaseGame<TGameMode, TGameData>;
+    this.game = this.sys.game as BaseGame<TGameData>;
     this.baseGameData = this.game.data;
-    this.gameSessionInstance = this.baseGameData.gameSessionInstance;
     this.registerSceneDestroy();
     this.registerSceneResize();
     this.onInit.emit();

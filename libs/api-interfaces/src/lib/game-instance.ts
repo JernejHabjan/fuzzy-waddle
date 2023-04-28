@@ -9,13 +9,13 @@ export interface GameDestroyDto {
 }
 
 export class GameInstance {
-  id: string;
+  gameInstanceId: string;
 
   constructor(id: string | null = null) {
     if (id) {
-      this.id = id;
+      this.gameInstanceId = id;
       return;
     }
-    this.id = new Guid().value;
+    this.gameInstanceId = new Guid().value;
   }
 }

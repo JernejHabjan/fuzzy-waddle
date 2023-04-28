@@ -3,7 +3,6 @@ import { BaseGame } from '../phaser/game/base-game';
 import { Types } from 'phaser';
 import { BaseGameData } from '../phaser/game/base-game-data';
 import { GameContainerElement } from './game-container';
-import { GameModeBase } from '@fuzzy-waddle/api-interfaces';
 
 @Component({
   selector: 'fuzzy-waddle-game-container',
@@ -14,9 +13,9 @@ export class GameContainerComponent implements OnDestroy {
   protected readonly GameContainerElement = GameContainerElement;
 
   @Input() gameConfig!: Types.Core.GameConfig;
-  @Input() gameData!: BaseGameData<GameModeBase>;
+  @Input() gameData!: BaseGameData;
 
-  private gameRef?: BaseGame<GameModeBase, BaseGameData<GameModeBase>>;
+  private gameRef?: BaseGame;
 
   constructor(private readonly ngZone: NgZone) {}
 
