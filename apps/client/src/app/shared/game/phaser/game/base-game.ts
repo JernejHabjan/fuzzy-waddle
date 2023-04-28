@@ -1,8 +1,9 @@
 import { Game } from 'phaser';
 import { BaseGameData } from './base-game-data';
+import { GameModeBase } from '@fuzzy-waddle/api-interfaces';
 
-export class BaseGame extends Game {
-  constructor(gameConfig?: Phaser.Types.Core.GameConfig, data?: BaseGameData) {
+export class BaseGame<TGameMode extends GameModeBase, TGameData extends BaseGameData<TGameMode>> extends Game {
+  constructor(gameConfig?: Phaser.Types.Core.GameConfig, data?: TGameData) {
     super({
       ...gameConfig,
       callbacks: {
@@ -14,7 +15,7 @@ export class BaseGame extends Game {
     });
   }
 
-  get data(): unknown {
+  get data(): TGameData {
     return this.registry.get('data');
   }
 }

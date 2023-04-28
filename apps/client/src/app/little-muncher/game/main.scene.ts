@@ -1,11 +1,11 @@
 import { Scenes } from './const/scenes';
-import { CommunicatorKeyEvent, CommunicatorPauseEvent } from '@fuzzy-waddle/api-interfaces';
+import { CommunicatorKeyEvent, CommunicatorPauseEvent, LittleMuncherGameMode } from '@fuzzy-waddle/api-interfaces';
 import BaseScene from '../../shared/game/phaser/scene/base.scene';
 import { Fireworks } from '../../shared/game/phaser/components/fireworks';
 import { LittleMuncherGameData } from './little-muncher-game-data';
 import { CommunicatorService } from './communicator.service';
 
-export default class MainScene extends BaseScene<LittleMuncherGameData> {
+export default class MainScene extends BaseScene<LittleMuncherGameMode, LittleMuncherGameData<LittleMuncherGameMode>> {
   private text!: Phaser.GameObjects.Text;
   private fireworks!: Fireworks;
   private communicator!: CommunicatorService;

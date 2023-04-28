@@ -1,2 +1,4 @@
-<fuzzy-waddle-game-container [gameConfig]='littleMuncherGameConfig' [gameData]='gameData' />
-<fuzzy-waddle-game-interface [gameSessionInstance]='gameSessionInstance' />
+<ng-container *ngIf="gameData">
+  <fuzzy-waddle-game-container [gameConfig]="littleMuncherGameConfig" [gameData]="gameData" />
+  <fuzzy-waddle-game-interface [gameSessionInstance]="gameSessionInstance" />
+</ng-container>
