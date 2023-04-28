@@ -3,23 +3,25 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import {
+  GameCreateDto,
+  GameDestroyDto,
+  GameInstance,
   LittleMuncherGameCreate,
   LittleMuncherGameCreateDto,
-  GameDestroyDto,
-  GameCreateDto,
   LittleMuncherGameMode,
   LittleMuncherGameSessionInstance,
   LittleMuncherLevel
 } from '@fuzzy-waddle/api-interfaces';
-import { GameInstance } from '@fuzzy-waddle/api-interfaces';
 import { ServerHealthService } from '../../shared/services/server-health.service';
 import { SceneCommunicatorClientService } from './scene-communicator-client.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameInstanceClientService {
   constructor(
+    private readonly authService: AuthService,
     private readonly httpClient: HttpClient,
     private readonly serverHealthService: ServerHealthService,
     private readonly sceneCommunicatorClientService: SceneCommunicatorClientService
@@ -27,7 +29,7 @@ export class GameInstanceClientService {
 
   async startGame(gameSessionInstance: LittleMuncherGameSessionInstance): Promise<void> {
     gameSessionInstance.gameInstance = new GameInstance();
-    if (this.serverHealthService.serverAvailable) {
+    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/start-game';
       const body: GameCreateDto = { gameInstanceId: gameSessionInstance.gameInstance.id };
       await firstValueFrom(this.httpClient.post<void>(url, body));
@@ -36,7 +38,7 @@ export class GameInstanceClientService {
 
   async stopGame(gameSessionInstance: LittleMuncherGameSessionInstance) {
     if (!gameSessionInstance.gameInstance) return;
-    if (this.serverHealthService.serverAvailable) {
+    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/stop-game';
       const body: GameCreateDto = { gameInstanceId: gameSessionInstance.gameInstance.id };
       await firstValueFrom(this.httpClient.delete<void>(url, { body }));
@@ -47,7 +49,7 @@ export class GameInstanceClientService {
 
   async startLevel(gameSessionInstance: LittleMuncherGameSessionInstance, gameCreate: LittleMuncherGameCreate) {
     if (!gameSessionInstance.gameInstance) return;
-    if (this.serverHealthService.serverAvailable) {
+    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/start-level';
       const body: LittleMuncherGameCreateDto = {
         gameInstanceId: gameSessionInstance.gameInstance.id,
@@ -76,7 +78,11 @@ export class GameInstanceClientService {
     removeFrom: 'local' | 'localAndRemote'
   ): Promise<void> {
     if (!gameSessionInstance.gameInstance || !gameSessionInstance.gameModeRef) return;
-    if (this.serverHealthService.serverAvailable && removeFrom === 'localAndRemote') {
+    if (
+      this.authService.isAuthenticated &&
+      this.serverHealthService.serverAvailable &&
+      removeFrom === 'localAndRemote'
+    ) {
       const url = environment.api + 'api/little-muncher/stop-level';
       const body: GameDestroyDto = {
         gameInstanceId: gameSessionInstance.gameInstance.id

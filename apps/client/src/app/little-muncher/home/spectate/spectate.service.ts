@@ -13,18 +13,23 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { AuthenticatedSocketService } from '../../../data-access/chat/authenticated-socket.service';
 import { map } from 'rxjs/operators';
 import { GameInstanceClientService } from '../../main/game-instance-client.service';
+import { AuthService } from '../../../auth/auth.service';
+import { ServerHealthService } from '../../../shared/services/server-health.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpectateService {
   constructor(
+    private readonly authService: AuthService,
     private readonly httpClient: HttpClient,
+    private readonly serverHealthService: ServerHealthService,
     private readonly authenticatedSocketService: AuthenticatedSocketService,
     private readonly gameInstanceClientService: GameInstanceClientService
   ) {}
 
   async getRooms() {
+    if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return [];
     const url = environment.api + 'api/little-muncher/get-rooms';
     return await firstValueFrom(this.httpClient.get<Room[]>(url));
   }
