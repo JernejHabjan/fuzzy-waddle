@@ -9,8 +9,8 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;
-  protected readonly gameSessionInstance: LittleMuncherGameSessionInstance = new LittleMuncherGameSessionInstance();
   protected loading = false;
+  protected gameSessionInstance?: LittleMuncherGameSessionInstance;
 
   constructor(private gameInstanceClientService: GameInstanceClientService) {}
 
@@ -19,7 +19,7 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
     await this.gameInstanceClientService.stopGame(this.gameSessionInstance);
   }
 
-  async runGame(gameCreate: LittleMuncherGameCreate): Promise<void> {
+  async startLevel(gameCreate: LittleMuncherGameCreate): Promise<void> {
     this.loading = true;
     try {
       await this.gameInstanceClientService.startLevel(this.gameSessionInstance, gameCreate);
@@ -33,6 +33,6 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.gameInstanceClientService.startGame(this.gameSessionInstance);
+    this.gameSessionInstance = await this.gameInstanceClientService.startGame();
   }
 }

@@ -1,15 +1,17 @@
 <div
-  *ngIf='loading; else content'
-  class='align-items-center d-flex h-100 justify-content-center'
-  style='font-size: 70px'
+  *ngIf="loading || !gameSessionInstance; else content"
+  class="align-items-center d-flex h-100 justify-content-center"
+  style="font-size: 70px"
 >
-  <fa-icon [icon]='faSpinner' animation='spin' />
+  <fa-icon [icon]="faSpinner" animation="spin"/>
 </div>
 <ng-template #content>
-  <little-muncher-home
-    *ngIf='!gameSessionInstance.gameModeRef'
-    (runGame)='runGame($event)'
-    [gameSessionInstance]='gameSessionInstance'
-  />
-  <little-muncher-main *ngIf='gameSessionInstance.gameModeRef' [gameSessionInstance]='gameSessionInstance' />
+  <ng-container *ngIf="gameSessionInstance">
+    <little-muncher-home
+      *ngIf="!gameSessionInstance.gameModeRef"
+      (startLevel)="startLevel($event)"
+      [gameSessionInstance]="gameSessionInstance"
+    />
+    <little-muncher-main *ngIf="gameSessionInstance.gameModeRef" [gameSessionInstance]="gameSessionInstance"/>
+  </ng-container>
 </ng-template>

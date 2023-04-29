@@ -8,6 +8,6 @@ export class GameSessionInstance<TGameMode extends GameModeBase, TGameInstance e
   gameModeRef: TGameMode | null = null;
   gameInstance: TGameInstance | null = null;
 
-  todo players: tweq ewe qw eqweqw;
-  todo spectators:w eq wqe qwe qwe qwe qw
+  // todo players: tweq ewe qw eqweqw;
+  // todo spectators:w eq wqe qwe qwe qwe qw
 }

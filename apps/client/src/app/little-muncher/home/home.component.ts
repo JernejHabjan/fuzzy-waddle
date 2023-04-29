@@ -15,7 +15,7 @@ import { AuthService } from '../../auth/auth.service';
 export class HomeComponent {
   LittleMuncherHills = LittleMuncherHills;
   @Input() gameSessionInstance!: LittleMuncherGameSessionInstance;
-  @Output() runGame: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
+  @Output() startLevel: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
 
   constructor(
     protected readonly serverHealthService: ServerHealthService,
@@ -23,7 +23,7 @@ export class HomeComponent {
   ) {}
 
   climbOn(hillName: LittleMuncherHills) {
-    this.runGame.next({
+    this.startLevel.next({
       level: {
         hillName
       },

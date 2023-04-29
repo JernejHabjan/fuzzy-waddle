@@ -27,17 +27,19 @@ export class GameInstanceClientService {
     private readonly sceneCommunicatorClientService: SceneCommunicatorClientService
   ) {}
 
-  async startGame(gameSessionInstance: LittleMuncherGameSessionInstance): Promise<void> {
+  async startGame(): Promise<LittleMuncherGameSessionInstance> {
+    const gameSessionInstance = new LittleMuncherGameSessionInstance();
     gameSessionInstance.gameInstance = new LittleMuncherGameInstance();
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/start-game';
       const body: GameCreateDto = { gameInstanceId: gameSessionInstance.gameInstance.gameInstanceId };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
+    return gameSessionInstance;
   }
 
-  async stopGame(gameSessionInstance: LittleMuncherGameSessionInstance) {
-    if (!gameSessionInstance.gameInstance) return;
+  async stopGame(gameSessionInstance: LittleMuncherGameSessionInstance | undefined) {
+    if (!gameSessionInstance?.gameInstance) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/stop-game';
       const body: GameCreateDto = { gameInstanceId: gameSessionInstance.gameInstance.gameInstanceId };
@@ -47,8 +49,11 @@ export class GameInstanceClientService {
     await this.stopLevel(gameSessionInstance, 'local');
   }
 
-  async startLevel(gameSessionInstance: LittleMuncherGameSessionInstance, gameCreate: LittleMuncherGameCreate) {
-    if (!gameSessionInstance.gameInstance) return;
+  async startLevel(
+    gameSessionInstance: LittleMuncherGameSessionInstance | undefined,
+    gameCreate: LittleMuncherGameCreate
+  ) {
+    if (!gameSessionInstance?.gameInstance) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/start-level';
       const body: LittleMuncherGameCreateDto = {

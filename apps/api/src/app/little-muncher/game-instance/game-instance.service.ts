@@ -7,6 +7,7 @@ import {
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
   LittleMuncherGameMode,
+  LittleMuncherGameSessionInstance,
   LittleMuncherGameState,
   LittleMuncherPlayerController,
   LittleMuncherPlayerState,
@@ -28,6 +29,9 @@ export class GameInstanceService {
   openGameInstances: GameInstanceServer[] = [];
 
   async startGame(body: GameCreateDto, user: User) {
+    const newGameInstanceShared = new LittleMuncherGameSessionInstance();
+    newGameInstanceShared.gameInstance = new LittleMuncherGameInstance(body.gameInstanceId);
+
     const newGameInstance = new GameInstanceServer(body, user);
     this.openGameInstances.push(newGameInstance);
     console.log('game instance created on server', this.openGameInstances.length);
