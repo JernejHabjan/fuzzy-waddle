@@ -1,17 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@supabase/supabase-js';
-import { GameInstanceServer } from './game-instance-server';
 import {
-  GameCreateDto,
-  GameDestroyDto,
+  GameInstanceDataDto,
+  GameSessionState,
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
+  LittleMuncherGameInstanceMetadata,
   LittleMuncherGameMode,
-  LittleMuncherGameSessionInstance,
   LittleMuncherGameState,
-  LittleMuncherPlayerController,
-  LittleMuncherPlayerState,
-  LittleMuncherSessionState,
   LittleMuncherSpectator,
   Room,
   RoomAction,
@@ -26,84 +22,61 @@ import { GameInstanceGateway } from './game-instance.gateway';
 export class GameInstanceService {
   constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
 
-  openGameInstances: GameInstanceServer[] = [];
+  openGameInstances: LittleMuncherGameInstance[] = [];
 
-  async startGame(body: GameCreateDto, user: User) {
-    const newGameInstanceShared = new LittleMuncherGameSessionInstance();
-    newGameInstanceShared.gameInstance = new LittleMuncherGameInstance(body.gameInstanceId);
+  async startGame(body: GameInstanceDataDto, user: User) {
+    const newGameInstance = new LittleMuncherGameInstance();
+    newGameInstance.gameInstanceMetadata = new LittleMuncherGameInstanceMetadata(body.gameInstanceId, user.id);
 
-    const newGameInstance = new GameInstanceServer(body, user);
     this.openGameInstances.push(newGameInstance);
     console.log('game instance created on server', this.openGameInstances.length);
   }
 
-  async stopGame(body: GameCreateDto, user: User) {
-    const gameInstance = this.openGameInstances.find(
-      (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
-    );
+  async stopGame(body: GameInstanceDataDto, user: User) {
+    const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    // check that we're the creator
-    if (gameInstance.createdBy !== user.id) return;
+    if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
     this.openGameInstances = this.openGameInstances.filter(
-      (gameInstance) => gameInstance.gameInstanceId !== body.gameInstanceId
+      (gameInstance) => gameInstance.gameInstanceMetadata.gameInstanceId !== body.gameInstanceId
     );
     console.log('game instance deleted on server', this.openGameInstances.length);
   }
 
   async startLevel(body: LittleMuncherGameCreateDto, user: User) {
-    const gameInstance = this.openGameInstances.find(
-      (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
-    );
+    const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    // check that we're the creator
-    if (gameInstance.createdBy !== user.id) return;
-    gameInstance.gameMode = new LittleMuncherGameMode(body.level.hillName);
-    gameInstance.gameState = new LittleMuncherGameState();
-    gameInstance.playerStates = body.player_ids.map((playerId) => new LittleMuncherPlayerState(playerId));
-    gameInstance.playerControllers = body.player_ids.map((playerId) => new LittleMuncherPlayerController(playerId));
-    gameInstance.sessionState = LittleMuncherSessionState.StartingLevel;
-    gameInstance.spectators = [];
+    if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
+    gameInstance.initGame(new LittleMuncherGameMode(body.level.hillName), new LittleMuncherGameState());
+    gameInstance.gameInstanceMetadata.sessionState = GameSessionState.StartingLevel;
     console.log('game mode set on server', body.level.hillName);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'added'));
   }
 
-  async spectatorJoined(body: LittleMuncherGameInstance, user: User) {
-    const gameInstance = this.openGameInstances.find(
-      (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
-    );
+  async spectatorJoined(body: GameInstanceDataDto, user: User) {
+    const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    gameInstance.spectators.push(new LittleMuncherSpectator(user.id));
+    gameInstance.initSpectator(new LittleMuncherSpectator(user.id));
     console.log('spectator joined', user.id);
     this.gameInstanceGateway.emitSpectator(
       this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'joined')
     );
   }
 
-  async spectatorLeft(body: LittleMuncherGameInstance, user: User) {
-    const gameInstance = this.openGameInstances.find(
-      (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
-    );
+  async spectatorLeft(body: GameInstanceDataDto, user: User) {
+    const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    gameInstance.spectators = gameInstance.spectators.filter((spectator) => spectator.userId !== user.id);
+    gameInstance.removeSpectator(user.id);
     console.log('spectator left', user.id);
     this.gameInstanceGateway.emitSpectator(
       this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'left')
     );
   }
 
-  async stopLevel(body: GameDestroyDto, user: User) {
-    const gameInstance = this.openGameInstances.find(
-      (gameInstance) => gameInstance.gameInstanceId === body.gameInstanceId
-    );
+  async stopLevel(body: GameInstanceDataDto, user: User) {
+    const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    // check that we're the creator
-    if (gameInstance.createdBy !== user.id) return;
-    gameInstance.gameMode = null;
-    gameInstance.gameState = null;
-    gameInstance.playerStates = [];
-    gameInstance.playerControllers = [];
-    gameInstance.spectators = [];
-    gameInstance.sessionState = LittleMuncherSessionState.EndingLevel;
+    if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
+    gameInstance.stopLevel();
     console.log('game mode deleted on server');
 
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'removed'));
@@ -115,13 +88,13 @@ export class GameInstanceService {
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
   }
 
-  getGameInstanceToRoom(gameInstance: GameInstanceServer): Room {
+  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): Room {
     return {
-      gameInstanceId: gameInstance.gameInstanceId
+      gameInstanceId: gameInstance.gameInstanceMetadata.gameInstanceId
     };
   }
 
-  getRoomEvent(gameInstance: GameInstanceServer, action: RoomAction): RoomEvent {
+  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): RoomEvent {
     return {
       room: this.getGameInstanceToRoom(gameInstance),
       action
@@ -143,7 +116,7 @@ export class GameInstanceService {
   handleCron() {
     this.openGameInstances = this.openGameInstances.filter((gi) => {
       const timeInMs = 1000 * 60 * 60 * 2; // 2 hours
-      const started = gi.createdOn;
+      const started = gi.gameInstanceMetadata.createdOn; // todo change this to lastUpdated
       const now = new Date();
       const isOld = now.getTime() - started.getTime() > timeInMs;
       if (isOld) {
@@ -151,5 +124,15 @@ export class GameInstanceService {
       }
       return !isOld;
     });
+  }
+
+  private findGameInstance(gameInstanceId: string): LittleMuncherGameInstance {
+    return this.openGameInstances.find(
+      (gameInstance) => gameInstance.gameInstanceMetadata.gameInstanceId === gameInstanceId
+    );
+  }
+
+  private checkIfPlayerIsCreator(gameInstance: LittleMuncherGameInstance, user: User) {
+    return gameInstance.gameInstanceMetadata.createdBy === user.id;
   }
 }

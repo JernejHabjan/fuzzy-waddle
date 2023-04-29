@@ -1,10 +1,14 @@
 import { GameModeBase } from './game-mode-base';
-import { GameSessionInstance } from './game-session-instance';
-import { LittleMuncherGameInstance, LittleMuncherHills } from './little-muncher/little-muncher';
+import { GameInstance } from './game-instance';
+import { LittleMuncherGameInstanceMetadata, LittleMuncherHills } from './little-muncher/little-muncher';
 
-export class LittleMuncherGameSessionInstance extends GameSessionInstance<
+export class LittleMuncherGameInstance extends GameInstance<
   LittleMuncherGameMode,
-  LittleMuncherGameInstance
+  LittleMuncherGameInstanceMetadata,
+  LittleMuncherGameState,
+  LittleMuncherPlayerState,
+  LittleMuncherPlayerController,
+  LittleMuncherSpectator
 > {}
 
 export class LittleMuncherGameMode extends GameModeBase {
@@ -13,25 +17,33 @@ export class LittleMuncherGameMode extends GameModeBase {
   }
 }
 
-export class LittleMuncherGameState {
+export abstract class BaseGameState {}
+
+export class LittleMuncherGameState extends BaseGameState {
   timeClimbing = 0; // in seconds
 }
 
-export class LittleMuncherPlayerState {
+export abstract class BasePlayerState {
+  constructor(public userId: string) {}
+}
+
+export class LittleMuncherPlayerState extends BasePlayerState {
   score = 0;
+}
 
+export abstract class BasePlayerController {
   constructor(public userId: string) {}
 }
 
-export class LittleMuncherPlayerController {
+export class LittleMuncherPlayerController extends BasePlayerController {}
+
+export abstract class BaseSpectator {
   constructor(public userId: string) {}
 }
 
-export class LittleMuncherSpectator {
-  constructor(public userId: string) {}
-}
+export class LittleMuncherSpectator extends BaseSpectator {}
 
-export enum LittleMuncherSessionState {
+export enum GameSessionState {
   WaitingForPlayers,
   StartingLevel,
   PlayingLevel,

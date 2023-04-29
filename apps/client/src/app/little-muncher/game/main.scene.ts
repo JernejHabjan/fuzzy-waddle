@@ -24,7 +24,8 @@ export default class MainScene extends BaseScene<LittleMuncherGameData> {
     super.create();
     this.text = this.add.text(100, 100, 'Hello World!');
 
-    console.log('hill to climb on:', this.baseGameData.gameSessionInstance.gameModeRef!.hillToClimbOn);
+    console.log('hill to climb on:', this.baseGameData.gameInstance.gameMode!.hillToClimbOn);
+    console.log('time climbing:', this.baseGameData.gameInstance.gameState!.timeClimbing);
 
     this.setupKeyboard();
   }

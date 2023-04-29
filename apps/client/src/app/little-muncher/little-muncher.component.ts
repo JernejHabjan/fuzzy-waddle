@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { LittleMuncherGameCreate, LittleMuncherGameSessionInstance } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameCreate, LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
 import { GameInstanceClientService } from './main/game-instance-client.service';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,7 +10,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 export class LittleMuncherComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;
   protected loading = false;
-  protected gameSessionInstance?: LittleMuncherGameSessionInstance;
+  protected gameSessionInstance?: LittleMuncherGameInstance;
 
   constructor(private gameInstanceClientService: GameInstanceClientService) {}
 

@@ -8,10 +8,10 @@
 <ng-template #content>
   <ng-container *ngIf="gameSessionInstance">
     <little-muncher-home
-      *ngIf="!gameSessionInstance.gameModeRef"
+      *ngIf="!gameSessionInstance.gameMode"
       (startLevel)="startLevel($event)"
       [gameSessionInstance]="gameSessionInstance"
     />
-    <little-muncher-main *ngIf="gameSessionInstance.gameModeRef" [gameSessionInstance]="gameSessionInstance"/>
+    <little-muncher-main *ngIf="gameSessionInstance.gameMode" [gameSessionInstance]="gameSessionInstance"/>
   </ng-container>
 </ng-template>

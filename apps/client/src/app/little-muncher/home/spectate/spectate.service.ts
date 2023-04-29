@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
   LittleMuncherGameInstance,
-  LittleMuncherGameSessionInstance,
+  LittleMuncherGameInstanceMetadata,
   LittleMuncherGatewayEvent,
   LittleMuncherHills,
   Room,
@@ -41,13 +41,13 @@ export class SpectateService {
       .pipe(map((data: RoomEvent) => data));
   }
 
-  async joinRoom(gameSessionInstance: LittleMuncherGameSessionInstance, gameInstanceId: string) {
+  async joinRoom(gameSessionInstance: LittleMuncherGameInstance, gameInstanceId: string) {
     // create post with LittleMuncherGameInstance dto
     const url = environment.api + 'api/little-muncher/spectator-join';
     await firstValueFrom(
       this.httpClient.post(url, {
         gameInstanceId
-      } as LittleMuncherGameInstance)
+      } as LittleMuncherGameInstanceMetadata)
     );
 
     this.gameInstanceClientService.openGameInstance(gameSessionInstance, gameInstanceId);
@@ -64,7 +64,7 @@ export class SpectateService {
       this.httpClient.delete(url, {
         body: {
           gameInstanceId
-        } as LittleMuncherGameInstance
+        } as LittleMuncherGameInstanceMetadata
       })
     );
   }

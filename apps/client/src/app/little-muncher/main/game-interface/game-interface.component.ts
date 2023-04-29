@@ -4,8 +4,8 @@ import { ModalComponent } from '../../../shared/components/modal/modal.component
 import { GameInstanceClientService } from '../game-instance-client.service';
 import { CommunicatorService } from '../../game/communicator.service';
 import { Subscription } from 'rxjs';
-import { LittleMuncherGameSessionInstance } from '@fuzzy-waddle/api-interfaces';
-import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'fuzzy-waddle-game-interface',
@@ -15,7 +15,7 @@ import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   score = 0;
   @ViewChild('modal') private modalComponent!: ModalComponent;
-  @Input() gameSessionInstance!: LittleMuncherGameSessionInstance;
+  @Input() gameSessionInstance!: LittleMuncherGameInstance;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
   paused = false;

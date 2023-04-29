@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
 import { probableWaffleGameConfig } from '../../../game/world/const/game-config';
 import { BaseGameData } from '../../../../shared/game/phaser/game/base-game-data';
-import { GameSessionInstance } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
 import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
 
 @Component({
@@ -24,9 +24,9 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     SceneCommunicatorService.setup();
-    const gameSessionInstance = new GameSessionInstance();
+    const gameSessionInstance = new LittleMuncherGameInstance(); // todo later use ProbabbleWaffleGameInstance
     this.gameData = {
-      gameSessionInstance,
+      gameInstance: gameSessionInstance,
       communicator: this.communicatorService
     };
 

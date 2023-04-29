@@ -1,1 +1,1 @@
-export class GameModeBase {}
+export abstract class GameModeBase {}
