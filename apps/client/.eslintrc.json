@@ -23,7 +23,8 @@
             "style": "camelCase"
           }
         ],
-        "@angular-eslint/component-selector": "off"
+        "@angular-eslint/component-selector": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
       }
     },
     {
