@@ -20,7 +20,7 @@ export abstract class GameInstance<
   playerControllers: TPlayerController[] = [];
   spectators: TSpectator[] = [];
 
-  initMetadata(gameInstanceMetadata: TGameInstanceMetadata) {
+  protected initMetadata(gameInstanceMetadata: TGameInstanceMetadata) {
     this.gameInstanceMetadata = gameInstanceMetadata;
   }
 

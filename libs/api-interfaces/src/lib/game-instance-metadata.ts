@@ -8,10 +8,10 @@ export interface GameInstanceDataDto {
 export abstract class GameInstanceMetadata {
   readonly gameInstanceId: string;
   readonly createdOn: Date;
-  readonly createdBy?: string;
+  readonly createdBy: string | null;
   sessionState: GameSessionState;
 
-  constructor(gameInstanceId: string | null = null, userId?: string) {
+  constructor(gameInstanceId: string | null = null, userId: string | null) {
     this.gameInstanceId = gameInstanceId ?? new Guid().value;
     this.createdOn = new Date();
     this.createdBy = userId;

@@ -5,6 +5,7 @@ import { SupabaseAuthGuard } from '../../../auth/guards/supabase-auth.guard';
 import { CurrentUser } from '../../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
 import {
+  CommunicatorEvent,
   GatewaySpectatorEvent,
   LittleMuncherGatewayEvent,
   RoomEvent,
@@ -30,7 +31,12 @@ export class GameInstanceGateway {
 
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherAction)
-  async broadcastMove(@CurrentUser() user: AuthUser, @MessageBody() payload: any, @ConnectedSocket() client: Socket) {
+  async broadcastLittleMuncherAction(
+    @CurrentUser() user: AuthUser,
+    @MessageBody() payload: CommunicatorEvent<any>,
+    @ConnectedSocket() client: Socket
+  ) {
+    console.log('broadcasting little muncher action', payload.communicator);
     (client as any).broadcast.emit(LittleMuncherGatewayEvent.LittleMuncherAction, payload);
   }
 }

@@ -7,7 +7,6 @@ import {
   LittleMuncherGameCreate,
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceMetadata,
   LittleMuncherGameMode,
   LittleMuncherGameState,
   LittleMuncherLevel
@@ -31,7 +30,7 @@ export class GameInstanceClientService {
 
   async startGame(): Promise<void> {
     this.gameInstance = new LittleMuncherGameInstance();
-    this.gameInstance.initMetadata(new LittleMuncherGameInstanceMetadata());
+    this.gameInstance.init(null, this.authService.userId);
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/start-game';
       const body: GameInstanceDataDto = { gameInstanceId: this.gameInstanceId! };

@@ -5,7 +5,6 @@ import {
   GameSessionState,
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceMetadata,
   LittleMuncherGameMode,
   LittleMuncherGameState,
   LittleMuncherSpectator,
@@ -26,8 +25,7 @@ export class GameInstanceService {
 
   async startGame(body: GameInstanceDataDto, user: User) {
     const newGameInstance = new LittleMuncherGameInstance();
-    newGameInstance.gameInstanceMetadata = new LittleMuncherGameInstanceMetadata(body.gameInstanceId, user.id);
-
+    newGameInstance.init(body.gameInstanceId, user.id);
     this.openGameInstances.push(newGameInstance);
     console.log('game instance created on server', this.openGameInstances.length);
   }
