@@ -3,7 +3,12 @@ import { SupabaseAuthGuard } from '../../../auth/guards/supabase-auth.guard';
 import { CurrentUser } from '../../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
 import { GameInstanceService } from './game-instance.service';
-import { GameInstanceDataDto, LittleMuncherGameCreateDto, Room } from '@fuzzy-waddle/api-interfaces';
+import {
+  GameInstanceDataDto,
+  LittleMuncherGameCreateDto,
+  LittleMuncherGameInstance,
+  Room
+} from '@fuzzy-waddle/api-interfaces';
 
 @Controller('little-muncher')
 export class GameInstanceController {
@@ -35,8 +40,11 @@ export class GameInstanceController {
 
   @Post('spectator-join')
   @UseGuards(SupabaseAuthGuard)
-  async spectatorJoin(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
-    await this.gameInstanceService.spectatorJoined(body, user);
+  async spectatorJoin(
+    @CurrentUser() user: AuthUser,
+    @Body() body: GameInstanceDataDto
+  ): Promise<LittleMuncherGameInstance> {
+    return await this.gameInstanceService.spectatorJoined(body, user);
   }
 
   @Delete('spectator-leave')

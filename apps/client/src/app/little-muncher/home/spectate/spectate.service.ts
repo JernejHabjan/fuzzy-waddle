@@ -5,7 +5,6 @@ import {
   LittleMuncherGameInstance,
   LittleMuncherGameInstanceMetadata,
   LittleMuncherGatewayEvent,
-  LittleMuncherHills,
   Room,
   RoomEvent
 } from '@fuzzy-waddle/api-interfaces';
@@ -41,19 +40,14 @@ export class SpectateService {
       .pipe(map((data: RoomEvent) => data));
   }
 
-  async joinRoom(gameSessionInstance: LittleMuncherGameInstance, gameInstanceId: string) {
+  async joinRoom(gameInstanceId: string) {
     // create post with LittleMuncherGameInstance dto
     const url = environment.api + 'api/little-muncher/spectator-join';
-    await firstValueFrom(
-      this.httpClient.post(url, {
+    this.gameInstanceClientService.gameInstance = await firstValueFrom(
+      this.httpClient.post<LittleMuncherGameInstance>(url, {
         gameInstanceId
       } as LittleMuncherGameInstanceMetadata)
     );
-
-    this.gameInstanceClientService.openGameInstance(gameSessionInstance, gameInstanceId);
-    this.gameInstanceClientService.openLevel(gameSessionInstance, {
-      hillName: LittleMuncherHills.Jakob // todo pull from server which level to join
-    });
   }
 
   // todo use

@@ -52,7 +52,7 @@ export class GameInstanceService {
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'added'));
   }
 
-  async spectatorJoined(body: GameInstanceDataDto, user: User) {
+  async spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstance> {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     gameInstance.initSpectator(new LittleMuncherSpectator(user.id));
@@ -60,6 +60,7 @@ export class GameInstanceService {
     this.gameInstanceGateway.emitSpectator(
       this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'joined')
     );
+    return gameInstance;
   }
 
   async spectatorLeft(body: GameInstanceDataDto, user: User) {

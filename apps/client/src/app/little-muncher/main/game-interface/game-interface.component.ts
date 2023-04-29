@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalConfig } from '../../../shared/components/modal/modal-config';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { GameInstanceClientService } from '../game-instance-client.service';
 import { CommunicatorService } from '../../game/communicator.service';
 import { Subscription } from 'rxjs';
-import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -15,7 +14,6 @@ import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   score = 0;
   @ViewChild('modal') private modalComponent!: ModalComponent;
-  @Input() gameSessionInstance!: LittleMuncherGameInstance;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
   paused = false;
@@ -24,8 +22,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     modalTitle: 'Leave the game?',
     dismissButtonLabel: 'Continue',
     closeButtonLabel: 'Leave',
-    onClose: async () =>
-      await this.gameInstanceClientService.stopLevel(this.gameSessionInstance, 'localAndRemote').then()
+    onClose: async () => await this.gameInstanceClientService.stopLevel('localAndRemote').then()
   };
   private scoreSubscription?: Subscription;
   private pauseSubscription?: Subscription;
