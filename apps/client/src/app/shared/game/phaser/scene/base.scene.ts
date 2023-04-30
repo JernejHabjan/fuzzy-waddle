@@ -5,8 +5,13 @@ import { UpdateEventData } from './update-event-data';
 import { BaseGame } from '../game/base-game';
 import { BaseGameData } from '../game/base-game-data';
 import { Subscription } from 'rxjs';
+import { BaseGameState, GameModeBase } from '@fuzzy-waddle/api-interfaces';
 
-export default class BaseScene<TGameData extends BaseGameData = BaseGameData>
+export default class BaseScene<
+    TGameData extends BaseGameData = BaseGameData,
+    TGameState extends BaseGameState = BaseGameState,
+    TGameMode extends GameModeBase = GameModeBase
+  >
   extends Scene
   implements CreateSceneFromObjectConfig
 {
@@ -64,5 +69,15 @@ export default class BaseScene<TGameData extends BaseGameData = BaseGameData>
     this.scale.removeAllListeners();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.onDestroy.emit();
+  }
+
+  get gameState(): TGameState {
+    if (!this.baseGameData.gameInstance.gameState) throw new Error('GameState is not defined');
+    return this.baseGameData.gameInstance.gameState as TGameState;
+  }
+
+  get gameMode(): TGameMode {
+    if (!this.baseGameData.gameInstance.gameMode) throw new Error('GameMode is not defined');
+    return this.baseGameData.gameInstance.gameMode as TGameMode;
   }
 }
