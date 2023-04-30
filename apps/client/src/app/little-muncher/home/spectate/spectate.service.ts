@@ -43,11 +43,12 @@ export class SpectateService {
   async joinRoom(gameInstanceId: string) {
     // create post with LittleMuncherGameInstance dto
     const url = environment.api + 'api/little-muncher/spectator-join';
-    this.gameInstanceClientService.gameInstance = await firstValueFrom(
+    const gameInstance = await firstValueFrom(
       this.httpClient.post<LittleMuncherGameInstance>(url, {
         gameInstanceId
       } as LittleMuncherGameInstanceMetadata)
     );
+    this.gameInstanceClientService.openLevelSpectator(gameInstance);
   }
 
   // todo use

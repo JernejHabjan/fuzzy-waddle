@@ -64,6 +64,15 @@ export class GameInstanceClientService {
   openLevel(littleMuncherLevel: LittleMuncherLevel) {
     if (!this.gameInstance) return;
     this.gameInstance.initGame(new LittleMuncherGameMode(littleMuncherLevel.hillName), new LittleMuncherGameState());
+    this.openLevelCommunication();
+  }
+
+  openLevelSpectator(gameInstance: LittleMuncherGameInstance) {
+    this.gameInstance = gameInstance;
+    this.openLevelCommunication();
+  }
+
+  private openLevelCommunication() {
     this.sceneCommunicatorClientService.startListeningToEvents();
   }
 
