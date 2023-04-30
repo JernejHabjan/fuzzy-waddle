@@ -5,15 +5,30 @@ import { UpdateEventData } from './update-event-data';
 import { BaseGame } from '../game/base-game';
 import { BaseGameData } from '../game/base-game-data';
 import { Subscription } from 'rxjs';
-import { BaseGameMode, BaseGameState, BasePlayer, BaseSpectator } from '@fuzzy-waddle/api-interfaces';
+import {
+  BaseData,
+  BaseGameMode,
+  BaseGameState,
+  BasePlayer,
+  BaseSpectator,
+  BaseSpectatorData
+} from '@fuzzy-waddle/api-interfaces';
 import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
 
 export default class BaseScene<
     TGameData extends BaseGameData = BaseGameData,
-    TGameState extends BaseGameState = BaseGameState,
-    TGameMode extends BaseGameMode = BaseGameMode,
-    TPlayer extends BasePlayer = BasePlayer,
-    TSpectator extends BaseSpectator = BaseSpectator
+    TGameStateData extends BaseData = BaseData,
+    TGameState extends BaseGameState<TGameStateData> = BaseGameState<TGameStateData>,
+    TGameModeData extends BaseData = BaseData,
+    TGameMode extends BaseGameMode<TGameModeData> = BaseGameMode<TGameModeData>,
+    TPlayerStateData extends BaseData = BaseData,
+    TPlayerControllerData extends BaseData = BaseData,
+    TPlayer extends BasePlayer<TPlayerStateData, TPlayerControllerData> = BasePlayer<
+      TPlayerStateData,
+      TPlayerControllerData
+    >,
+    TSpectatorData extends BaseSpectatorData = BaseSpectatorData,
+    TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>
   >
   extends Scene
   implements CreateSceneFromObjectConfig
@@ -28,8 +43,8 @@ export default class BaseScene<
   private subscriptions: Subscription[] = [];
 
   override game!: BaseGame<TGameData>;
-  protected communicator!: CommunicatorService;
-  protected baseGameData!: TGameData;
+  communicator!: CommunicatorService;
+  baseGameData!: TGameData;
 
   preload() {
     this.onPreload.emit();
@@ -65,7 +80,7 @@ export default class BaseScene<
     });
   }
 
-  protected subscribe(subscription?: Subscription) {
+  subscribe(subscription?: Subscription) {
     if (!subscription) return;
     this.subscriptions.push(subscription);
   }
@@ -102,7 +117,7 @@ export default class BaseScene<
 
   get spectatorOrNull(): TSpectator | null {
     const spectator = this.baseGameData.gameInstance.spectators.find(
-      (spectator) => spectator.userId === this.baseGameData.user.userId
+      (spectator) => spectator.data.userId === this.baseGameData.user.userId
     );
     if (!spectator) return null;
     return spectator as TSpectator;

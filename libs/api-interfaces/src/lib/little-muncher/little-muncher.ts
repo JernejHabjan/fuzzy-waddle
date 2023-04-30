@@ -1,4 +1,6 @@
-import { GameInstanceMetadata } from '../game-instance-metadata';
+import { GameInstanceMetadata, GameInstanceMetadataData } from '../game-instance-metadata';
+import { Guid } from '../uuid';
+import { GameSessionState } from '../game-mode';
 
 export enum LittleMuncherHills {
   Stefka = 0,
@@ -18,4 +20,17 @@ export interface LittleMuncherGameCreateDto extends LittleMuncherGameCreate {
   gameInstanceId: string;
 }
 
-export class LittleMuncherGameInstanceMetadata extends GameInstanceMetadata {}
+export class LittleMuncherGameInstanceMetadata extends GameInstanceMetadata {
+  data: GameInstanceMetadataData;
+
+  constructor(gameInstanceId: string | null = null, userId: string | null) {
+    super();
+    this.data = {
+      gameInstanceId: gameInstanceId ?? new Guid().value,
+      createdOn: new Date(),
+      createdBy: userId,
+      updatedOn: null,
+      sessionState: GameSessionState.WaitingForPlayers
+    };
+  }
+}

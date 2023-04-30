@@ -2,22 +2,22 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TwoWayCommunicator } from '../../shared/game/communicators/two-way-communicator';
 import { Socket } from 'ngx-socket-io';
 import {
-  CommunicatorKeyEvent,
   CommunicatorPauseEvent,
   CommunicatorScoreEvent,
-  LittleMuncherGatewayEvent
+  LittleMuncherGatewayEvent,
+  LittleMuncherPosition
 } from '@fuzzy-waddle/api-interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommunicatorService implements OnDestroy {
-  key?: TwoWayCommunicator<CommunicatorKeyEvent>;
+  key?: TwoWayCommunicator<LittleMuncherPosition>;
   score?: TwoWayCommunicator<CommunicatorScoreEvent>;
   pause?: TwoWayCommunicator<CommunicatorPauseEvent>;
 
   startCommunication(gameInstanceId: string, socket?: Socket) {
-    this.key = new TwoWayCommunicator<CommunicatorKeyEvent>(
+    this.key = new TwoWayCommunicator<LittleMuncherPosition>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       'key',
       gameInstanceId,

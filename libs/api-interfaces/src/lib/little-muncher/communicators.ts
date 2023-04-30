@@ -6,10 +6,6 @@ export interface CommunicatorEvent<T> {
   data: T;
 }
 
-export interface CommunicatorKeyEvent {
-  key: string;
-}
-
 export interface CommunicatorScoreEvent {
   score: number;
 }

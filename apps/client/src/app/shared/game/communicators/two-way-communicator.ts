@@ -68,4 +68,29 @@ export class TwoWayCommunicator<T> {
       );
     }
   }
+
+  /**
+   * Subscribes to the on event and calls stateChanged() when the state changes
+   * Pass in valueChange to change the state
+   * @param stateChanged
+   * @param valueChange
+   * @returns {Subscription}
+   */
+  onWithInitial(stateChanged: () => void, valueChange: (event: T) => void): Subscription {
+    stateChanged();
+    return this.on.subscribe((event) => {
+      valueChange(event);
+      stateChanged();
+    });
+  }
+
+  /**
+   * Sends data to the game from the server and calls stateChanged() when the state changes
+   * @param data
+   * @param stateChanged
+   */
+  sendWithStateChange(data: T, stateChanged: () => void): void {
+    this.send(data);
+    stateChanged();
+  }
 }

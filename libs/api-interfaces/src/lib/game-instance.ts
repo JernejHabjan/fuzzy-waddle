@@ -1,4 +1,4 @@
-import { GameInstanceMetadata } from './game-instance-metadata';
+import {GameInstanceMetadata, GameInstanceMetadataData} from './game-instance-metadata';
 import { BaseGameMode } from './base-game-mode';
 import { BaseGameState, BasePlayer, BaseSpectator, GameSessionState } from './game-mode';
 
@@ -15,13 +15,16 @@ export abstract class GameInstance<
   constructor(gameInstance?: GameInstance<TGameMode, TGameInstanceMetadata, TGameState, TPlayer, TSpectator>) {
     if (gameInstance) {
       // create a new game instance from existing one
-      this.gameMode = gameInstance.gameMode;
-      this.gameInstanceMetadata = gameInstance.gameInstanceMetadata;
-      this.gameState = gameInstance.gameState;
-      this.players = gameInstance.players;
-      this.spectators = gameInstance.spectators;
+      WE SHOULD NOT GET WHOLE GAME INSTANCE FROM SEVER BUT ONLY GAMEMODEDATA, GameInstanceMetadataData, GAMESTATEDATA, PLAYER[playerControllerData, playerStateData], SPECTATORDATA
+      this.gameMode = gameInstance.gameMode; FIX
+      this.gameInstanceMetadata = gameInstance.gameInstanceMetadata; FIX
+      this.gameState = gameInstance.gameState; FIX
+      this.players = gameInstance.players; FIX
+      this.spectators = gameInstance.spectators; FIX
     }
   }
+
+  abstract init(gameInstanceId: string | null, userId: string | null);
 
   gameMode: TGameMode | null = null;
   gameInstanceMetadata: TGameInstanceMetadata | null = null;

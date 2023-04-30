@@ -10,25 +10,26 @@ export class GameStateServerService {
   updateGameState(body: CommunicatorEvent<any>, user: User): boolean {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
     if (!gameInstance) throw new Error('Game instance not found');
+    if (!gameInstance.players.length) throw new Error('No players in game instance');
     gameInstance.gameInstanceMetadata.updatedOn = new Date();
 
     // get player from gameInstance:
-    const player = gameInstance.isPlayer(user.id);
+    const authUserPlayer = gameInstance.isPlayer(user.id);
+    const player = gameInstance.players[0];
     switch (body.communicator) {
       case 'pause':
-        if (!player) throw new Error('User is not a player in this game instance');
+        if (!authUserPlayer) throw new Error('User is not a player in this game instance');
         gameInstance.gameState.pause = (body.data as CommunicatorPauseEvent).pause;
         console.log('pausing game');
         break;
       case 'score':
-        if (!player) throw new Error('User is not a player in this game instance');
+        if (!authUserPlayer) throw new Error('User is not a player in this game instance');
         // todo
         console.log('updating score');
         break;
       case 'key':
-        if (!player) throw new Error('User is not a player in this game instance');
-        // todo
-        console.log('updating key');
+        if (!authUserPlayer) throw new Error('User is not a player in this game instance');
+        player.playerState.position = body.data.position;
         break;
       default:
         throw new Error('Unknown communicator');

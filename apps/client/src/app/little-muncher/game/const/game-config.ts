@@ -1,11 +1,11 @@
 import { Types } from 'phaser';
 import { environment } from '../../../../environments/environment';
-import MainScene from '../main.scene';
+import LittleMuncherScene from '../little-muncher-scene';
 import { baseGameConfig } from '../../../shared/game/base-game.config';
 
 export const littleMuncherGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
-  scene: [MainScene],
+  scene: [LittleMuncherScene],
   physics: {
     default: 'arcade',
     arcade: {
