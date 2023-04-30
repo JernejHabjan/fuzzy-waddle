@@ -29,7 +29,7 @@ export class GameStateGateway {
   ) {
     console.log('broadcasting little muncher action', payload.communicator);
 
-    const success = this.gameStateServerService.updateGameState(payload);
+    const success = this.gameStateServerService.updateGameState(payload, user);
     if (success) {
       client.broadcast.emit(LittleMuncherGatewayEvent.LittleMuncherAction, payload);
     } else {

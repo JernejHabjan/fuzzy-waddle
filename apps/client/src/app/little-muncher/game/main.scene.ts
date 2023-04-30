@@ -3,17 +3,23 @@ import {
   CommunicatorKeyEvent,
   CommunicatorPauseEvent,
   LittleMuncherGameMode,
-  LittleMuncherGameState
+  LittleMuncherGameState,
+  LittleMuncherPlayer,
+  LittleMuncherSpectator
 } from '@fuzzy-waddle/api-interfaces';
 import BaseScene from '../../shared/game/phaser/scene/base.scene';
 import { Fireworks } from '../../shared/game/phaser/components/fireworks';
 import { LittleMuncherGameData } from './little-muncher-game-data';
-import { CommunicatorService } from './communicator.service';
 
-export default class MainScene extends BaseScene<LittleMuncherGameData, LittleMuncherGameState, LittleMuncherGameMode> {
+export default class MainScene extends BaseScene<
+  LittleMuncherGameData,
+  LittleMuncherGameState,
+  LittleMuncherGameMode,
+  LittleMuncherPlayer,
+  LittleMuncherSpectator
+> {
   private text!: Phaser.GameObjects.Text;
   private fireworks!: Fireworks;
-  private communicator!: CommunicatorService;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -21,7 +27,6 @@ export default class MainScene extends BaseScene<LittleMuncherGameData, LittleMu
 
   override init() {
     super.init();
-    this.communicator = this.baseGameData.communicator;
     this.fireworks = new Fireworks(this);
   }
 
@@ -41,14 +46,17 @@ export default class MainScene extends BaseScene<LittleMuncherGameData, LittleMu
     if (this.input.keyboard == null) {
       return;
     }
-    this.input.keyboard.createCursorKeys();
-    this.input.keyboard.on('keydown', (event: KeyboardEvent) => {
-      const validKeyboardEvent = this.manageKeyboardEvent(event.key);
-      if (validKeyboardEvent) {
-        this.communicator.key?.send({ key: event.key });
-        this.communicator.score?.send({ score: Math.round(Math.random() * 100) });
-      }
-    });
+    if (this.isPlayer) {
+      this.input.keyboard.createCursorKeys();
+      this.input.keyboard.on('keydown', (event: KeyboardEvent) => {
+        const validKeyboardEvent = this.manageKeyboardEvent(event.key);
+        if (validKeyboardEvent) {
+          this.communicator.key?.send({ key: event.key });
+          this.communicator.score?.send({ score: Math.round(Math.random() * 100) });
+        }
+      });
+    }
+
     this.subscribe(
       this.communicator.key?.on.subscribe((event: CommunicatorKeyEvent) => {
         this.manageKeyboardEvent(event.key);

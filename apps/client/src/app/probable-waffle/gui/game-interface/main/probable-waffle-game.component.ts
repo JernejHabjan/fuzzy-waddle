@@ -2,8 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
 import { probableWaffleGameConfig } from '../../../game/world/const/game-config';
 import { BaseGameData } from '../../../../shared/game/phaser/game/base-game-data';
-import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
+import { LittleMuncherGameInstance, LittleMuncherUserInfo } from '@fuzzy-waddle/api-interfaces';
 import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
+import { AuthService } from '../../../../auth/auth.service';
 
 @Component({
   selector: 'fuzzy-waddle-game',
@@ -16,7 +17,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   displayDrawers = true; // todo
   gameData?: BaseGameData; // todo
 
-  constructor(private readonly communicatorService: CommunicatorService) {}
+  constructor(private readonly communicatorService: CommunicatorService, private readonly authService: AuthService) {}
 
   ngOnDestroy(): void {
     SceneCommunicatorService.unsubscribe();
@@ -24,10 +25,11 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     SceneCommunicatorService.setup();
-    const gameSessionInstance = new LittleMuncherGameInstance(); // todo later use ProbabbleWaffleGameInstance
+    const gameSessionInstance = new LittleMuncherGameInstance(); // todo later use ProbableWaffleGameInstance
     this.gameData = {
       gameInstance: gameSessionInstance,
-      communicator: this.communicatorService
+      communicator: this.communicatorService,
+      user: new LittleMuncherUserInfo(this.authService.userId) // todo later use ProbableWaffleUserInfo
     };
 
     // todo properly listen with communicatorService

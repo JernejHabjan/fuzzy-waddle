@@ -5,6 +5,7 @@ import { GameInstanceClientService } from '../game-instance-client.service';
 import { CommunicatorService } from '../../game/communicator.service';
 import { Subscription } from 'rxjs';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'fuzzy-waddle-game-interface',
@@ -16,7 +17,8 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   @ViewChild('modal') private modalComponent!: ModalComponent;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
-  paused = false;
+  protected paused = false;
+  protected isPlayer = false;
 
   protected leaveModalConfirm: ModalConfig = {
     modalTitle: 'Leave the game?',
@@ -28,25 +30,31 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   private pauseSubscription?: Subscription;
 
   constructor(
+    private readonly authService: AuthService,
     private readonly gameInstanceClientService: GameInstanceClientService,
     private readonly communicatorService: CommunicatorService,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 
-  async leave() {
+  protected async leave() {
     await this.openModal();
   }
 
-  async openModal() {
+  protected async openModal() {
     return await this.modalComponent.open();
   }
 
   ngOnInit(): void {
+    this.manageUiElementVisibility();
     this.manageScore();
     this.managePause();
   }
 
-  manageScore() {
+  private manageUiElementVisibility() {
+    this.isPlayer = this.gameInstanceClientService.gameInstance!.isPlayer(this.authService.userId);
+  }
+
+  private manageScore() {
     // set initial score:
     // todo this.score = this.gameInstanceClientService.gameInstance!.players.find((player) => player.id === this.gameInstanceClientService.playerId)!.score;
     this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
@@ -55,7 +63,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     });
   }
 
-  managePause() {
+  private managePause() {
     // set initial pause:
     this.paused = this.gameInstanceClientService.gameInstance!.gameState!.pause;
     this.pauseSubscription = this.communicatorService.pause?.on.subscribe((event) => {
@@ -69,7 +77,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     this.pauseSubscription?.unsubscribe();
   }
 
-  pauseToggle() {
+  protected pauseToggle() {
     this.paused = !this.paused;
     this.communicatorService.pause?.send({ pause: this.paused });
   }

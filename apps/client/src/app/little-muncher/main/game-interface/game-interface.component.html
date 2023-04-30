@@ -6,6 +6,7 @@
 </fuzzy-waddle-modal>
 
 <button
+  *ngIf="isPlayer"
   (click)='pauseToggle()'
   class='btn btn-danger m-1 position-absolute'
   style='right: 20px; top: 20px'

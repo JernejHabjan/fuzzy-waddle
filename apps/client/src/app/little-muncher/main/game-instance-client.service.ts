@@ -68,7 +68,8 @@ export class GameInstanceClientService {
   }
 
   openLevelSpectator(gameInstance: LittleMuncherGameInstance) {
-    this.gameInstance = gameInstance;
+    // create new game instance from data we received from server
+    this.gameInstance = new LittleMuncherGameInstance(gameInstance);
     this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.gameInstanceId);
   }
 
