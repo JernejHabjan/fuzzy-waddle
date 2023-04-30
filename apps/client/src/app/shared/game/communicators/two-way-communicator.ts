@@ -8,8 +8,13 @@ export class TwoWayCommunicator<T> {
   private sendLocallySubject: Subject<T> = new Subject<T>();
   private subscriptions: Subscription[] = [];
 
-  constructor(private readonly eventName: string, private readonly communicator: CommunicatorType, socket?: Socket) {
-    this.listenToCommunication(eventName, socket);
+  constructor(
+    private readonly eventName: string,
+    private readonly communicator: CommunicatorType,
+    gameInstanceId: string,
+    socket?: Socket
+  ) {
+    this.listenToCommunication(eventName, gameInstanceId, socket);
   }
 
   destroy(): void {
@@ -34,7 +39,7 @@ export class TwoWayCommunicator<T> {
    * if socket is provided, it will also listen to the server
    * otherwise, it will only listen to the UI and Game events and send them to each other
    */
-  private listenToCommunication(eventName: string, socket?: Socket): void {
+  private listenToCommunication(eventName: string, gameInstanceId: string, socket?: Socket): void {
     // send from UI->Game or Game->UI
     this.subscriptions.push(
       this.sendLocallySubject.subscribe((event) => {
@@ -46,6 +51,7 @@ export class TwoWayCommunicator<T> {
     this.subscriptions.push(
       this.sendSubject.subscribe((data) => {
         socket?.emit(eventName, {
+          gameInstanceId,
           communicator: this.communicator,
           data: data
         } as CommunicatorEvent<T>);

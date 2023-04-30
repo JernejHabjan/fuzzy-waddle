@@ -13,8 +13,8 @@ export class SceneCommunicatorClientService {
     private readonly authenticatedSocketService: AuthenticatedSocketService
   ) {}
 
-  startListeningToEvents() {
-    this.communicator.startCommunication(this.authenticatedSocketService.socket);
+  startListeningToEvents(gameInstanceId: string) {
+    this.communicator.startCommunication(gameInstanceId, this.authenticatedSocketService.socket);
   }
 
   stopListeningToEvents() {

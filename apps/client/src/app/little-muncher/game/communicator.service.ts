@@ -16,20 +16,23 @@ export class CommunicatorService implements OnDestroy {
   score?: TwoWayCommunicator<CommunicatorScoreEvent>;
   pause?: TwoWayCommunicator<CommunicatorPauseEvent>;
 
-  startCommunication(socket?: Socket) {
+  startCommunication(gameInstanceId: string, socket?: Socket) {
     this.key = new TwoWayCommunicator<CommunicatorKeyEvent>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       'key',
+      gameInstanceId,
       socket
     );
     this.score = new TwoWayCommunicator<CommunicatorScoreEvent>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       'score',
+      gameInstanceId,
       socket
     );
     this.pause = new TwoWayCommunicator<CommunicatorPauseEvent>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       'pause',
+      gameInstanceId,
       socket
     );
   }

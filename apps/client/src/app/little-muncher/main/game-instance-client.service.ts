@@ -64,16 +64,16 @@ export class GameInstanceClientService {
   openLevel(littleMuncherLevel: LittleMuncherLevel) {
     if (!this.gameInstance) return;
     this.gameInstance.initGame(new LittleMuncherGameMode(littleMuncherLevel.hillName), new LittleMuncherGameState());
-    this.openLevelCommunication();
+    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.gameInstanceId);
   }
 
   openLevelSpectator(gameInstance: LittleMuncherGameInstance) {
     this.gameInstance = gameInstance;
-    this.openLevelCommunication();
+    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.gameInstanceId);
   }
 
-  private openLevelCommunication() {
-    this.sceneCommunicatorClientService.startListeningToEvents();
+  private openLevelCommunication(gameInstanceId: string) {
+    this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
   }
 
   /**

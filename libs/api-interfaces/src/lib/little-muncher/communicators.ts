@@ -1,6 +1,7 @@
 export type CommunicatorType = 'key' | 'score' | 'pause';
 
 export interface CommunicatorEvent<T> {
+  gameInstanceId: string;
   communicator: CommunicatorType;
   data: T;
 }

@@ -42,10 +42,22 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.manageScore();
+    this.managePause();
+  }
+
+  manageScore() {
+    // set initial score:
+    // todo this.score = this.gameInstanceClientService.gameInstance!.players.find((player) => player.id === this.gameInstanceClientService.playerId)!.score;
     this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
       this.score = event.score;
       this.changeDetectorRef.detectChanges();
     });
+  }
+
+  managePause() {
+    // set initial pause:
+    this.paused = this.gameInstanceClientService.gameInstance!.gameState!.pause;
     this.pauseSubscription = this.communicatorService.pause?.on.subscribe((event) => {
       this.paused = event.pause;
       this.changeDetectorRef.detectChanges();

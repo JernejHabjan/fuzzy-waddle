@@ -9,6 +9,7 @@ export abstract class GameInstanceMetadata {
   readonly gameInstanceId: string;
   readonly createdOn: Date;
   readonly createdBy: string | null;
+  updatedOn: Date | null = null;
   sessionState: GameSessionState;
 
   constructor(gameInstanceId: string | null = null, userId: string | null) {

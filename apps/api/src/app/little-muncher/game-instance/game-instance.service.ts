@@ -114,10 +114,14 @@ export class GameInstanceService {
   @Cron(CronExpression.EVERY_2_HOURS)
   handleCron() {
     this.openGameInstances = this.openGameInstances.filter((gi) => {
-      const timeInMs = 1000 * 60 * 60 * 2; // 2 hours
-      const started = gi.gameInstanceMetadata.createdOn; // todo change this to lastUpdated
+      const minutesAgo = 1000 * 60 * 15; // 15 minutes
+      const started = gi.gameInstanceMetadata.createdOn;
+      const lastUpdated = gi.gameInstanceMetadata.updatedOn;
       const now = new Date();
-      const isOld = now.getTime() - started.getTime() > timeInMs;
+      // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
+      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
+      const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
+      const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
         this.gameInstanceGateway.emitRoom(this.getRoomEvent(gi, 'removed'));
       }
@@ -125,7 +129,7 @@ export class GameInstanceService {
     });
   }
 
-  private findGameInstance(gameInstanceId: string): LittleMuncherGameInstance {
+  findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {
     return this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceMetadata.gameInstanceId === gameInstanceId
     );

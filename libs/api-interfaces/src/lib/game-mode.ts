@@ -27,6 +27,7 @@ export abstract class BaseGameState {}
 
 export class LittleMuncherGameState extends BaseGameState {
   timeClimbing = 0; // in seconds
+  pause = false;
 }
 
 export abstract class BasePlayerState {

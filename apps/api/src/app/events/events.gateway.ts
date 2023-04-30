@@ -4,8 +4,9 @@ import { AuthUser } from '@supabase/supabase-js';
 import { UseGuards } from '@nestjs/common';
 import { SupabaseAuthGuard } from '../../auth/guards/supabase-auth.guard';
 import { ChatService } from '../chat/chat.service';
-import { Server, Socket } from 'net';
+import { Server } from 'net';
 import { ChatMessage, GatewayChatEvent } from '@fuzzy-waddle/api-interfaces';
+import { MyConnectedSocket } from '../little-muncher/game-instance/game-state.gateway';
 
 @WebSocketGateway({
   cors: {
@@ -29,7 +30,7 @@ export class EventsGateway {
   async broadcastMessage(
     @CurrentUser() user: AuthUser,
     @MessageBody() payload: ChatMessage,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: MyConnectedSocket
   ) {
     // clone the payload
     const newPayload = { ...payload };

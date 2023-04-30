@@ -26,8 +26,10 @@ export default class MainScene extends BaseScene<LittleMuncherGameData> {
 
     console.log('hill to climb on:', this.baseGameData.gameInstance.gameMode!.hillToClimbOn);
     console.log('time climbing:', this.baseGameData.gameInstance.gameState!.timeClimbing);
+    console.log('should be paused:', this.baseGameData.gameInstance.gameState!.pause);
 
     this.setupKeyboard();
+    this.setupPause();
   }
 
   private setupKeyboard() {
@@ -47,15 +49,23 @@ export default class MainScene extends BaseScene<LittleMuncherGameData> {
         this.manageKeyboardEvent(event.key);
       })
     );
+  }
+
+  private setupPause() {
+    // check initial paused gameState
+    this.manageGamePause(this.baseGameData.gameInstance.gameState!.pause);
     this.subscribe(
-      this.communicator.pause?.on.subscribe((event: CommunicatorPauseEvent) => {
-        if (event.pause) {
-          this.scene.pause();
-        } else {
-          this.scene.resume();
-        }
-      })
+      this.communicator.pause?.on.subscribe((event: CommunicatorPauseEvent) => this.manageGamePause(event.pause))
     );
+  }
+
+  private manageGamePause(pause: boolean) {
+    this.baseGameData.gameInstance.gameState!.pause = pause;
+    if (pause) {
+      this.scene.pause();
+    } else {
+      this.scene.resume();
+    }
   }
 
   private manageKeyboardEvent(key: string): boolean {
