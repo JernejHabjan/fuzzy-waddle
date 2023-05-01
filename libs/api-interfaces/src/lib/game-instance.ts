@@ -61,17 +61,17 @@ export abstract class GameInstance<
 
   protected constructor(
     private readonly constructors: {
-      gameInstanceMetadata: new (data?: TGameInstanceMetadataData) => TGameInstanceMetadata;
-      gameMode: new (data?: any /*TGameModeData*/) => TGameMode;
-      gameState: new (data?: any /*TGameStateData */) => TGameState;
-      playerState: new (data?: any /*TPlayerStateData */) => TPlayerState;
-      playerController: new (data?: any /*TPlayerControllerData */) => TPlayerController;
+      gameInstanceMetadata: new (...args: any /*TGameInstanceMetadataData*/) => TGameInstanceMetadata;
+      gameMode: new (...args: any /*TGameModeData*/) => TGameMode;
+      gameState: new (...args: any /*TGameStateData */) => TGameState;
+      playerState: new (...args: any /*TPlayerStateData */) => TPlayerState;
+      playerController: new (...args: any /*TPlayerControllerData */) => TPlayerController;
       player: new (
         userId: string | null,
         playerState: any /*TPlayerState*/,
         playerController: any /*TPlayerController*/
       ) => TPlayer;
-      spectator: new (data?: any /*TSpectatorData*/) => TSpectator;
+      spectator: new (...args: any /*TSpectatorData*/) => TSpectator;
     },
     gameInstanceData?: GameInstanceData<
       TGameInstanceMetadataData,
