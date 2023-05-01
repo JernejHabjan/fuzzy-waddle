@@ -15,7 +15,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
   drawerWidth = '150px';
   displayDrawers = true; // todo
-  gameData?: BaseGameData; // todo
+  gameData?: BaseGameData<CommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>; // todo
 
   constructor(private readonly communicatorService: CommunicatorService, private readonly authService: AuthService) {}
 

@@ -5,9 +5,7 @@ import {
   GameSessionState,
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameMode,
-  LittleMuncherGameState,
-  LittleMuncherSpectator,
+  LittleMuncherGameInstanceData,
   Room,
   RoomAction,
   RoomEvent,
@@ -24,8 +22,10 @@ export class GameInstanceService {
   openGameInstances: LittleMuncherGameInstance[] = [];
 
   async startGame(body: GameInstanceDataDto, user: User) {
-    const newGameInstance = new LittleMuncherGameInstance();
-    newGameInstance.init(body.gameInstanceId, user.id);
+    const newGameInstance = new LittleMuncherGameInstance({
+      gameInstanceMetadataData: { gameInstanceId: body.gameInstanceId, createdBy: user.id },
+      players: [{ userId: user.id }]
+    });
     this.openGameInstances.push(newGameInstance);
     console.log('game instance created on server', this.openGameInstances.length);
   }
@@ -44,26 +44,25 @@ export class GameInstanceService {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
-    gameInstance.initGame(
-      new LittleMuncherGameMode({
-        hillToClimbOn: body.level.hillName
-      }),
-      new LittleMuncherGameState()
-    );
+    gameInstance.initGame({
+      hill: body.level.hill
+    });
     gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.StartingLevel;
-    console.log('game mode set on server', body.level.hillName);
+    console.log('game mode set on server', body.level.hill);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'added'));
   }
 
-  async spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstance> {
+  async spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData> {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    gameInstance.initSpectator(new LittleMuncherSpectator(user.id));
+    gameInstance.initSpectator({
+      userId: user.id
+    });
     console.log('spectator joined', user.id);
     this.gameInstanceGateway.emitSpectator(
       this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'joined')
     );
-    return gameInstance;
+    return gameInstance.data;
   }
 
   async spectatorLeft(body: GameInstanceDataDto, user: User) {

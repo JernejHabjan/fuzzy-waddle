@@ -28,7 +28,7 @@ export default class LittleMuncherScene extends BaseScene<
   LittleMuncherSpectatorData,
   LittleMuncherSpectator
 > {
-  private text!: Phaser.GameObjects.Text;
+  private characterGameObject!: Phaser.GameObjects.Text;
   private playerInputController!: PlayerInputController;
 
   constructor() {
@@ -45,18 +45,18 @@ export default class LittleMuncherScene extends BaseScene<
     super.init();
     new Pause(this);
     this.playerInputController = new PlayerInputController(this);
+    new Fireworks(this); // todo it must be here until we rework registration engine
   }
 
   override create() {
     super.create();
-    this.text = this.add.text(100, 100, 'Hello World!');
-    this.playerInputController.init(this.text);
+    this.characterGameObject = this.add.text(100, 100, 'Hello World!');
+    this.playerInputController.init(this.characterGameObject);
 
-    console.log('hill to climb on:', this.gameMode.data.hillToClimbOn);
+    console.log('hill to climb on:', this.gameMode.data.hill);
     console.log('time climbing:', this.gameState.data.timeClimbing);
     console.log('should be paused:', this.gameState.data.pause);
 
     this.communicator.score?.send({ score: Math.round(Math.random() * 100) }); // todo just for testing
-    new Fireworks(this);
   }
 }

@@ -3,12 +3,14 @@ import LittleMuncherScene from './little-muncher-scene';
 export class PlayerInputController {
   constructor(private readonly littleMuncherScene: LittleMuncherScene) {}
 
-  init(character: any) {
-    // todo restrict to type
+  private character!: Phaser.GameObjects.Text;
+
+  init(character: Phaser.GameObjects.Text) {
+    this.character = character;
     this.littleMuncherScene.subscribe(
       this.littleMuncherScene.communicator.key?.onWithInitial(
-        () => this.setPosition(character),
-        (position) => (this.littleMuncherScene.player.playerState.position = position)
+        this.setPosition,
+        (position) => (this.littleMuncherScene.player.playerState.data.position = position)
       )
     );
 
@@ -21,8 +23,8 @@ export class PlayerInputController {
         const validKeyboardEvent = this.manageKeyboardEvent(event.key);
         if (validKeyboardEvent) {
           this.littleMuncherScene.communicator.key?.sendWithStateChange(
-            this.littleMuncherScene.player.playerState.position,
-            () => this.setPosition(character)
+            this.littleMuncherScene.player.playerState.data.position,
+            this.setPosition
           );
         }
       });
@@ -30,7 +32,7 @@ export class PlayerInputController {
   }
 
   private manageKeyboardEvent(key: string): boolean {
-    const position = this.littleMuncherScene.player.playerState.position;
+    const position = this.littleMuncherScene.player.playerState.data.position;
     switch (key) {
       case 'ArrowLeft':
         position.x = Phaser.Math.Clamp(position.x - 1, -1, 1);
@@ -44,9 +46,8 @@ export class PlayerInputController {
     return true;
   }
 
-  private setPosition = (character: any) => {
-    // todo restrict to type
-    const position = this.littleMuncherScene.player.playerState.position;
+  private setPosition = () => {
+    const position = this.littleMuncherScene.player.playerState.data.position;
 
     const width = this.littleMuncherScene.game.scale.width;
     const height = this.littleMuncherScene.game.scale.height;
@@ -57,6 +58,6 @@ export class PlayerInputController {
     // if 1 set it to 2/3 from left
     const x = width / 2 + (position.x * width) / 6;
 
-    character.setPosition(x, y);
+    this.character.setPosition(x, y);
   };
 }

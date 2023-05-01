@@ -1,6 +1,34 @@
 import { GameInstanceMetadata, GameInstanceMetadataData } from './game-instance-metadata';
-import { BaseGameMode } from './base-game-mode';
-import { BaseData, BaseGameState, BasePlayer, BaseSpectator, BaseSpectatorData, GameSessionState } from './game-mode';
+import {
+  BaseData,
+  BaseGameMode,
+  BaseGameState,
+  BasePlayer,
+  BasePlayerController,
+  BasePlayerState,
+  BaseSpectator,
+  BaseSpectatorData,
+  GameSessionState
+} from './game-mode';
+
+export type GameInstanceData<
+  TGameInstanceMetadataData extends GameInstanceMetadataData = GameInstanceMetadataData,
+  TGameStateData extends BaseData = BaseData,
+  TGameModeData extends BaseData = BaseData,
+  TPlayerStateData extends BaseData = BaseData,
+  TPlayerControllerData extends BaseData = BaseData,
+  TSpectatorData extends BaseSpectatorData = BaseSpectatorData
+> = {
+  gameInstanceMetadataData?: TGameInstanceMetadataData;
+  gameStateData?: TGameStateData;
+  gameModeData?: TGameModeData;
+  players?: {
+    userId: string | null;
+    playerControllerData?: TPlayerControllerData;
+    playerStateData?: TPlayerStateData;
+  }[];
+  spectators?: TSpectatorData[];
+};
 
 /**
  * Lives from lobby start to score screen
@@ -14,59 +42,97 @@ export abstract class GameInstance<
   TGameMode extends BaseGameMode<TGameModeData> = BaseGameMode<TGameModeData>,
   TPlayerStateData extends BaseData = BaseData,
   TPlayerControllerData extends BaseData = BaseData,
-  TPlayer extends BasePlayer<TPlayerStateData, TPlayerControllerData> = BasePlayer<
+  TPlayerState extends BasePlayerState<TPlayerStateData> = BasePlayerState<TPlayerStateData>,
+  TPlayerController extends BasePlayerController<TPlayerControllerData> = BasePlayerController<TPlayerControllerData>,
+  TPlayer extends BasePlayer<TPlayerStateData, TPlayerControllerData, TPlayerState, TPlayerController> = BasePlayer<
     TPlayerStateData,
-    TPlayerControllerData
+    TPlayerControllerData,
+    TPlayerState,
+    TPlayerController
   >,
   TSpectatorData extends BaseSpectatorData = BaseSpectatorData,
   TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>
 > {
-  constructor(gameInstanceData?: {
-    gameInstanceMetadataData: TGameInstanceMetadataData;
-    gameStateData: TGameStateData;
-    gameModeData: TGameModeData;
-    players: {
-      playerControllerData: TPlayerControllerData;
-      playerStateData: TPlayerStateData;
-    }[];
-    spectators: TSpectatorData[];
-  }) {
-    if (gameInstanceData) {
-      // create a new game instance from existing one
-      // WE SHOULD NOT GET WHOLE GAME INSTANCE FROM SEVER BUT ONLY GAMEMODEDATA, GameInstanceMetadataData, GAMESTATEDATA, PLAYER[playerControllerData, playerStateData], SPECTATORDATA
-      // this.gameMode = gameInstance.gameMode; FIX
-      // this.gameInstanceMetadata = gameInstance.gameInstanceMetadata; FIX
-      // this.gameState = gameInstance.gameState; FIX
-      // this.players = gameInstance.players; FIX
-      // this.spectators = gameInstance.spectators; FIX
-
-      this.gameMode = new BaseGameMode(gameInstanceData.gameModeData);
-    }
-  }
-
-  abstract init(gameInstanceId: string | null, userId: string | null);
-
   gameMode: TGameMode | null = null;
   gameInstanceMetadata: TGameInstanceMetadata | null = null;
   gameState: TGameState | null = null;
   players: TPlayer[] = [];
   spectators: TSpectator[] = [];
 
-  protected initMetadata(gameInstanceMetadata: TGameInstanceMetadata) {
-    this.gameInstanceMetadata = gameInstanceMetadata;
+  protected constructor(
+    private readonly constructors: {
+      gameInstanceMetadata: new (data?: TGameInstanceMetadataData) => TGameInstanceMetadata;
+      gameMode: new (data?: any /*TGameModeData*/) => TGameMode;
+      gameState: new (data?: any /*TGameStateData */) => TGameState;
+      playerState: new (data?: any /*TPlayerStateData */) => TPlayerState;
+      playerController: new (data?: any /*TPlayerControllerData */) => TPlayerController;
+      player: new (
+        userId: string | null,
+        playerState: any /*TPlayerState*/,
+        playerController: any /*TPlayerController*/
+      ) => TPlayer;
+      spectator: new (data?: any /*TSpectatorData*/) => TSpectator;
+    },
+    gameInstanceData?: GameInstanceData<
+      TGameInstanceMetadataData,
+      TGameStateData,
+      TGameModeData,
+      TPlayerStateData,
+      TPlayerControllerData,
+      TSpectatorData
+    >
+  ) {
+    this.gameInstanceMetadata = new constructors.gameInstanceMetadata(gameInstanceData?.gameInstanceMetadataData);
+    this.gameMode = new constructors.gameMode(gameInstanceData?.gameModeData);
+    this.gameState = new constructors.gameState(gameInstanceData?.gameStateData);
+    this.players =
+      gameInstanceData?.players?.map(
+        (playerData) =>
+          new constructors.player(
+            playerData.userId,
+            new constructors.playerState(playerData.playerStateData),
+            new constructors.playerController(playerData.playerControllerData)
+          )
+      ) ?? [];
+    this.spectators = gameInstanceData?.spectators?.map((spectator) => new constructors.spectator(spectator)) ?? [];
   }
 
-  initGame(gameMode: TGameMode, gameState: TGameState) {
-    this.gameMode = gameMode;
-    this.gameState = gameState;
+  get data(): GameInstanceData<
+    TGameInstanceMetadataData,
+    TGameStateData,
+    TGameModeData,
+    TPlayerStateData,
+    TPlayerControllerData,
+    TSpectatorData
+  > {
+    return {
+      gameInstanceMetadataData: this.gameInstanceMetadata?.data,
+      gameStateData: this.gameState?.data,
+      gameModeData: this.gameMode?.data,
+      players: this.players.map((player) => ({
+        userId: player.userId,
+        playerStateData: player.playerState.data,
+        playerControllerData: player.playerController.data
+      })),
+      spectators: this.spectators.map((spectator) => spectator.data)
+    };
   }
 
-  initPlayer(player: TPlayer) {
-    this.players.push(player);
+  initGame(gameModeData: TGameModeData) {
+    if (!this.gameMode || !this.gameInstanceMetadata)
+      throw new Error('Game mode or game instance metadata is not initialized');
+    this.gameMode.data = gameModeData;
+    this.gameInstanceMetadata.data.sessionState = GameSessionState.StartingLevel;
   }
 
-  initSpectator(spectator: TSpectator) {
-    this.spectators.push(spectator);
+  initPlayer(userId: string | null, playerStateData: TPlayerStateData, playerControllerData: TPlayerControllerData) {
+    const playerState = new this.constructors.playerState(playerStateData);
+    const playerController = new this.constructors.playerController(playerControllerData);
+    this.players.push(new this.constructors.player(userId, playerState, playerController));
+  }
+
+  initSpectator(spectatorData: TSpectatorData) {
+    this.spectators.push(new this.constructors.spectator(spectatorData));
   }
 
   removeSpectator(userId: string) {

@@ -7,8 +7,7 @@ import {
   LittleMuncherGameCreate,
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameMode,
-  LittleMuncherGameState,
+  LittleMuncherGameInstanceData,
   LittleMuncherLevel
 } from '@fuzzy-waddle/api-interfaces';
 import { ServerHealthService } from '../../shared/services/server-health.service';
@@ -29,8 +28,10 @@ export class GameInstanceClientService {
   ) {}
 
   async startGame(): Promise<void> {
-    this.gameInstance = new LittleMuncherGameInstance();
-    this.gameInstance.init(null, this.authService.userId);
+    this.gameInstance = new LittleMuncherGameInstance({
+      gameInstanceMetadataData: { createdBy: this.authService.userId },
+      players: [{ userId: this.authService.userId }]
+    });
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + 'api/little-muncher/start-game';
       const body: GameInstanceDataDto = { gameInstanceId: this.gameInstanceId! };
@@ -63,14 +64,16 @@ export class GameInstanceClientService {
 
   openLevel(littleMuncherLevel: LittleMuncherLevel) {
     if (!this.gameInstance) return;
-    this.gameInstance.initGame(new LittleMuncherGameMode(littleMuncherLevel.hillName), new LittleMuncherGameState());
-    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.gameInstanceId);
+    this.gameInstance.initGame({
+      hill: littleMuncherLevel.hill
+    });
+    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
   }
 
-  openLevelSpectator(gameInstance: LittleMuncherGameInstance) {
+  openLevelSpectator(gameInstanceData: LittleMuncherGameInstanceData) {
     // create new game instance from data we received from server
-    this.gameInstance = new LittleMuncherGameInstance(gameInstance);
-    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.gameInstanceId);
+    this.gameInstance = new LittleMuncherGameInstance(gameInstanceData);
+    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
   }
 
   private openLevelCommunication(gameInstanceId: string) {
@@ -98,6 +101,6 @@ export class GameInstanceClientService {
   }
 
   get gameInstanceId(): string | null {
-    return this.gameInstance?.gameInstanceMetadata?.gameInstanceId ?? null;
+    return this.gameInstance?.gameInstanceMetadata?.data.gameInstanceId ?? null;
   }
 }

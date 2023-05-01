@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
-  LittleMuncherGameInstance,
-  LittleMuncherGameInstanceMetadata,
+  GameInstanceDataDto,
+  LittleMuncherGameInstanceData,
   LittleMuncherGatewayEvent,
   Room,
   RoomEvent
@@ -44,9 +44,9 @@ export class SpectateService {
     // create post with LittleMuncherGameInstance dto
     const url = environment.api + 'api/little-muncher/spectator-join';
     const gameInstance = await firstValueFrom(
-      this.httpClient.post<LittleMuncherGameInstance>(url, {
+      this.httpClient.post<LittleMuncherGameInstanceData>(url, {
         gameInstanceId
-      } as LittleMuncherGameInstanceMetadata)
+      } as GameInstanceDataDto)
     );
     this.gameInstanceClientService.openLevelSpectator(gameInstance);
   }
@@ -59,7 +59,7 @@ export class SpectateService {
       this.httpClient.delete(url, {
         body: {
           gameInstanceId
-        } as LittleMuncherGameInstanceMetadata
+        } as GameInstanceDataDto
       })
     );
   }

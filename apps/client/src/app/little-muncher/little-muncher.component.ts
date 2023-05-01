@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { LittleMuncherGameCreate } from '@fuzzy-waddle/api-interfaces';
+import { GameSessionState, LittleMuncherGameCreate } from '@fuzzy-waddle/api-interfaces';
 import { GameInstanceClientService } from './main/game-instance-client.service';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -33,5 +33,10 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     await this.gameInstanceClientService.startGame();
+  }
+
+  get startingOrStopping() {
+    const currentState = this.gameInstanceClientService.gameInstance!.gameInstanceMetadata!.data.sessionState!;
+    return currentState === GameSessionState.WaitingForPlayers || currentState === GameSessionState.EndingLevel;
   }
 }

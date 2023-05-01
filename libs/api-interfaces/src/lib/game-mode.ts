@@ -1,10 +1,18 @@
-import { BaseGameMode } from './base-game-mode';
-import { GameInstance } from './game-instance';
-import { LittleMuncherGameInstanceMetadata, LittleMuncherHills } from './little-muncher/little-muncher';
-import { GameInstanceMetadataData } from './game-instance-metadata';
+import { GameInstance, GameInstanceData } from './game-instance';
+import { LittleMuncherHill } from './little-muncher/little-muncher';
+import { LittleMuncherGameInstanceMetadata, LittleMuncherGameInstanceMetadataData } from './game-instance-metadata';
+
+export type LittleMuncherGameInstanceData = GameInstanceData<
+  LittleMuncherGameInstanceMetadataData,
+  LittleMuncherGameStateData,
+  LittleMuncherGameModeData,
+  LittleMuncherPlayerStateData,
+  LittleMuncherPlayerControllerData,
+  LittleMuncherSpectatorData
+>;
 
 export class LittleMuncherGameInstance extends GameInstance<
-  GameInstanceMetadataData,
+  LittleMuncherGameInstanceMetadataData,
   LittleMuncherGameInstanceMetadata,
   LittleMuncherGameStateData,
   LittleMuncherGameState,
@@ -12,29 +20,41 @@ export class LittleMuncherGameInstance extends GameInstance<
   LittleMuncherGameMode,
   LittleMuncherPlayerStateData,
   LittleMuncherPlayerControllerData,
+  LittleMuncherPlayerState,
+  LittleMuncherPlayerController,
   LittleMuncherPlayer,
   LittleMuncherSpectatorData,
   LittleMuncherSpectator
 > {
-  init(gameInstanceId: string | null, userId: string | null) {
-    this.initMetadata(new LittleMuncherGameInstanceMetadata(gameInstanceId, userId));
-    // add player to game instance
-    this.initPlayer(
-      new LittleMuncherPlayer(userId, new LittleMuncherPlayerState(), new LittleMuncherPlayerController())
+  constructor(gameInstanceData?: LittleMuncherGameInstanceData) {
+    super(
+      {
+        gameInstanceMetadata: LittleMuncherGameInstanceMetadata,
+        gameMode: LittleMuncherGameMode,
+        gameState: LittleMuncherGameState,
+        spectator: LittleMuncherSpectator,
+        playerController: LittleMuncherPlayerController,
+        player: LittleMuncherPlayer,
+        playerState: LittleMuncherPlayerState
+      },
+      gameInstanceData
     );
   }
 }
 
-export abstract class BaseData<T = Record<string, any>> {}
+export interface BaseData {}
 
-export class LittleMuncherGameModeData extends BaseData<LittleMuncherGameModeData> {
-  hillToClimbOn: LittleMuncherHills;
+export abstract class BaseGameMode<TData extends BaseData = BaseData> {
+  protected constructor(public data: TData) {}
+}
+
+export interface LittleMuncherGameModeData extends BaseData {
+  hill: LittleMuncherHill | null;
 }
 
 export class LittleMuncherGameMode extends BaseGameMode<LittleMuncherGameModeData> {
-  constructor(data: LittleMuncherGameModeData) {
-    super();
-    this.data = data;
+  constructor(data?: LittleMuncherGameModeData) {
+    super(data ?? { hill: null });
   }
 }
 
@@ -44,17 +64,24 @@ export abstract class BaseUserInfo {
 
 export class LittleMuncherUserInfo extends BaseUserInfo {}
 
-export abstract class BaseGameState<TData extends BaseData = BaseData> {
-  data: TData;
+export abstract class BaseGameState<TData> {
+  protected constructor(public data: TData) {}
 }
 
-export class LittleMuncherGameStateData extends BaseData<LittleMuncherGameModeData> {
-  timeClimbing = 0; // in seconds
-  pause = false;
+export interface LittleMuncherGameStateData extends BaseData {
+  timeClimbing: number;
+  pause: boolean;
 }
 
 export class LittleMuncherGameState extends BaseGameState<LittleMuncherGameStateData> {
-  data: LittleMuncherGameStateData = new LittleMuncherGameStateData();
+  constructor(data?: LittleMuncherGameStateData) {
+    super(
+      data ?? {
+        pause: false,
+        timeClimbing: 0
+      }
+    );
+  }
 }
 
 export abstract class BasePlayer<
@@ -77,47 +104,55 @@ export class LittleMuncherPlayer extends BasePlayer<
   LittleMuncherPlayerController
 > {}
 
-export class LittleMuncherPlayerStateData extends BaseData<LittleMuncherPlayerStateData> {
-  score = 0;
-  position = new LittleMuncherPosition();
-  boost = new LittleMuncherBoost();
+export interface LittleMuncherPlayerStateData extends BaseData {
+  score: number;
+  position: LittleMuncherPosition;
+  boost: LittleMuncherBoost;
 }
 
 export abstract class BasePlayerState<TData extends BaseData = BaseData> {
-  data: TData;
+  protected constructor(public data: TData) {}
 }
 
 export class LittleMuncherPlayerState extends BasePlayerState<LittleMuncherPlayerStateData> {
-  data: LittleMuncherPlayerStateData = new LittleMuncherPlayerStateData();
-}
-
-export class LittleMuncherPlayerControllerData extends BaseData<LittleMuncherPlayerControllerData> {
-  data: LittleMuncherPlayerControllerData = new LittleMuncherPlayerControllerData();
-}
-
-export abstract class BasePlayerController<TData extends BaseData = BaseData> {
-  data: TData;
-}
-
-export class LittleMuncherPlayerController extends BasePlayerController<LittleMuncherPlayerControllerData> {}
-
-export class BaseSpectatorData extends BaseData<LittleMuncherSpectatorData> {
-  userId: string;
-}
-
-export class LittleMuncherSpectatorData extends BaseSpectatorData {
-  data = new LittleMuncherSpectatorData();
-}
-
-export abstract class BaseSpectator<TData extends BaseSpectatorData = BaseSpectatorData> {
-  data: TData;
-
-  constructor(userId: string) {
-    this.data.userId = userId;
+  constructor(data?: LittleMuncherPlayerStateData) {
+    super(
+      data ?? {
+        score: 0,
+        position: new LittleMuncherPosition(),
+        boost: new LittleMuncherBoost()
+      }
+    );
   }
 }
 
-export class LittleMuncherSpectator extends BaseSpectator<LittleMuncherSpectatorData> {}
+export interface LittleMuncherPlayerControllerData {}
+
+export abstract class BasePlayerController<TData extends BaseData = BaseData> {
+  protected constructor(public data: TData) {}
+}
+
+export class LittleMuncherPlayerController extends BasePlayerController<LittleMuncherPlayerControllerData> {
+  constructor(data?: LittleMuncherPlayerControllerData) {
+    super(data ?? {});
+  }
+}
+
+export interface BaseSpectatorData {
+  userId: string;
+}
+
+export interface LittleMuncherSpectatorData extends BaseSpectatorData {}
+
+export abstract class BaseSpectator<TData extends BaseSpectatorData = BaseSpectatorData> {
+  protected constructor(public data: TData) {}
+}
+
+export class LittleMuncherSpectator extends BaseSpectator<LittleMuncherSpectatorData> {
+  constructor(data?: LittleMuncherSpectatorData) {
+    super(data ?? ({} as LittleMuncherSpectatorData));
+  }
+}
 
 export enum GameSessionState {
   WaitingForPlayers,

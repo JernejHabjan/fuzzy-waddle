@@ -6,7 +6,7 @@ import { GameInstanceService } from './game-instance.service';
 import {
   GameInstanceDataDto,
   LittleMuncherGameCreateDto,
-  LittleMuncherGameInstance,
+  LittleMuncherGameInstanceData,
   Room
 } from '@fuzzy-waddle/api-interfaces';
 
@@ -43,7 +43,7 @@ export class GameInstanceController {
   async spectatorJoin(
     @CurrentUser() user: AuthUser,
     @Body() body: GameInstanceDataDto
-  ): Promise<LittleMuncherGameInstance> {
+  ): Promise<LittleMuncherGameInstanceData> {
     return await this.gameInstanceService.spectatorJoined(body, user);
   }
 

@@ -7,7 +7,9 @@
 </div>
 <ng-template #content>
   <ng-container *ngIf="gameInstanceClientService.gameInstance">
-    <little-muncher-home *ngIf="!gameInstanceClientService.gameInstance.gameMode" (startLevel)="startLevel($event)" />
-    <little-muncher-main *ngIf="gameInstanceClientService.gameInstance.gameMode" />
+    <little-muncher-home *ngIf="startingOrStopping; else gameStart" (startLevel)="startLevel($event)" />
+    <ng-template #gameStart>
+      <little-muncher-main *ngIf="gameInstanceClientService.gameInstance.gameMode" />
+    </ng-template>
   </ng-container>
 </ng-template>

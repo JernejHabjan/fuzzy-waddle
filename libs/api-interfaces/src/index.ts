@@ -1,7 +1,6 @@
 export * from './lib/game-state';
 export * from './lib/game-mode';
 export * from './lib/player-state';
-export * from './lib/base-game-mode';
 export * from './lib/game-instance';
 export * from './lib/game-instance-metadata';
 export * from './lib/room';
