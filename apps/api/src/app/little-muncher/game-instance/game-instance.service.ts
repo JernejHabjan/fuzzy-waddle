@@ -47,7 +47,7 @@ export class GameInstanceService {
     gameInstance.initGame({
       hill: body.level.hill
     });
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.StartingLevel;
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.Playing;
     console.log('game mode set on server', body.level.hill);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'added'));
   }
@@ -87,7 +87,11 @@ export class GameInstanceService {
 
   async getSpectatorRooms(user: User): Promise<Room[]> {
     return this.openGameInstances
-      .filter((gi) => gi.gameMode)
+      .filter(
+        (gi) =>
+          gi.gameInstanceMetadata.data.sessionState === GameSessionState.Playing ||
+          gi.gameInstanceMetadata.data.sessionState === GameSessionState.PlayingLevel
+      )
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
   }
 

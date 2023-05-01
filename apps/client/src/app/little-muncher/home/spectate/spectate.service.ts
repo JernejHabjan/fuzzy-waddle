@@ -8,7 +8,7 @@ import {
   Room,
   RoomEvent
 } from '@fuzzy-waddle/api-interfaces';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, Observable, Subject, Subscription } from 'rxjs';
 import { AuthenticatedSocketService } from '../../../data-access/chat/authenticated-socket.service';
 import { map } from 'rxjs/operators';
 import { GameInstanceClientService } from '../../main/game-instance-client.service';
@@ -19,6 +19,10 @@ import { ServerHealthService } from '../../../shared/services/server-health.serv
   providedIn: 'root'
 })
 export class SpectateService {
+  private spectateRoomsSubscription?: Subscription;
+  rooms: Room[] = [];
+  spectatorDisconnected: Subject<void> = new Subject<void>();
+
   constructor(
     private readonly authService: AuthService,
     private readonly httpClient: HttpClient,
@@ -26,6 +30,38 @@ export class SpectateService {
     private readonly authenticatedSocketService: AuthenticatedSocketService,
     private readonly gameInstanceClientService: GameInstanceClientService
   ) {}
+
+  /**
+   * we need to listen to room events, so we know if we're spectating a room that is removed
+   */
+  listenToRoomEvents() {
+    this.spectateRoomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
+      const room = roomEvent.room;
+      if (roomEvent.action === 'added') {
+        this.rooms.push(room);
+      } else if (roomEvent.action === 'removed') {
+        this.rooms = this.rooms.filter((room) => room.gameInstanceId !== room.gameInstanceId);
+        await this.handleRemovalOfSpectatedRoom(room);
+      }
+    });
+  }
+
+  private async handleRemovalOfSpectatedRoom(room: Room) {
+    const currentGameInstanceId =
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data.gameInstanceId;
+    if (!currentGameInstanceId) return;
+
+    // check if we're spectating the room that was removed
+    const currentlySpectating = this.gameInstanceClientService.gameInstance!.isSpectator(this.authService.userId);
+    if (!currentlySpectating) return;
+
+    // check if spectated room is the same as the room that was removed
+    if (room.gameInstanceId !== currentGameInstanceId) return;
+
+    await this.gameInstanceClientService.stopLevel('local');
+
+    this.spectatorDisconnected.next();
+  }
 
   async getRooms() {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return [];
@@ -62,5 +98,10 @@ export class SpectateService {
         } as GameInstanceDataDto
       })
     );
+  }
+
+  destroy(): void {
+    this.spectateRoomsSubscription?.unsubscribe();
+    this.rooms = [];
   }
 }

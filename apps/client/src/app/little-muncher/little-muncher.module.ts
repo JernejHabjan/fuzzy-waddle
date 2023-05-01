@@ -8,9 +8,10 @@ import { HomeComponent } from './home/home.component';
 import { SpectateComponent } from './home/spectate/spectate.component';
 import { LoaderComponent } from '../shared/loader/loader.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [LittleMuncherComponent, HomeComponent, SpectateComponent],
-  imports: [CommonModule, LittleMuncherRoutingModule, MainModule, LoaderComponent, FontAwesomeModule]
+  imports: [CommonModule, LittleMuncherRoutingModule, MainModule, LoaderComponent, FontAwesomeModule, NgbToast]
 })
 export class LittleMuncherModule {}

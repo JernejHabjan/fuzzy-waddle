@@ -20,7 +20,7 @@ export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataDat
     this.data = data ?? ({} as TData);
     this.data.gameInstanceId ??= new Guid().value;
     this.data.createdOn ??= new Date();
-    this.data.sessionState ??= GameSessionState.WaitingForPlayers;
+    this.data.sessionState ??= GameSessionState.NotPlaying;
   }
 }
 

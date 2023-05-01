@@ -122,7 +122,7 @@ export abstract class GameInstance<
     if (!this.gameMode || !this.gameInstanceMetadata)
       throw new Error('Game mode or game instance metadata is not initialized');
     this.gameMode.data = gameModeData;
-    this.gameInstanceMetadata.data.sessionState = GameSessionState.StartingLevel;
+    this.gameInstanceMetadata.data.sessionState = GameSessionState.Playing;
   }
 
   initPlayer(userId: string | null, playerStateData: TPlayerStateData, playerControllerData: TPlayerControllerData) {
@@ -145,7 +145,7 @@ export abstract class GameInstance<
     this.players = [];
     this.spectators = [];
     if (this.gameInstanceMetadata) {
-      this.gameInstanceMetadata.data.sessionState = GameSessionState.EndingLevel;
+      this.gameInstanceMetadata.data.sessionState = GameSessionState.NotPlaying;
     }
   }
 

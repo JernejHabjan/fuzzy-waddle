@@ -155,10 +155,8 @@ export class LittleMuncherSpectator extends BaseSpectator<LittleMuncherSpectator
 }
 
 export enum GameSessionState {
-  WaitingForPlayers,
-  StartingLevel,
-  PlayingLevel,
-  EndingLevel
+  NotPlaying,
+  Playing
 }
 
 export class LittleMuncherPosition {
