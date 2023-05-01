@@ -45,7 +45,9 @@ export class LittleMuncherGameInstance extends GameInstance<
 export interface BaseData {}
 
 export abstract class BaseGameMode<TData extends BaseData = BaseData> {
-  protected constructor(public data: TData) {}
+  protected constructor(public data: TData) {
+    if (!data) this.resetData();
+  }
 
   resetData() {
     this.data = {} as TData;
@@ -58,8 +60,7 @@ export interface LittleMuncherGameModeData extends BaseData {
 
 export class LittleMuncherGameMode extends BaseGameMode<LittleMuncherGameModeData> {
   constructor(data?: LittleMuncherGameModeData) {
-    super(data ?? {});
-    if (!data) this.resetData();
+    super(data as LittleMuncherGameModeData);
   }
 }
 
@@ -70,7 +71,9 @@ export abstract class BaseUserInfo {
 export class LittleMuncherUserInfo extends BaseUserInfo {}
 
 export abstract class BaseGameState<TData> {
-  protected constructor(public data: TData) {}
+  protected constructor(public data: TData) {
+    if (!data) this.resetData();
+  }
 
   resetData() {
     this.data = {} as TData;
@@ -78,14 +81,13 @@ export abstract class BaseGameState<TData> {
 }
 
 export interface LittleMuncherGameStateData extends BaseData {
-  timeClimbing?: number;
-  pause?: boolean;
+  timeClimbing: number;
+  pause: boolean;
 }
 
 export class LittleMuncherGameState extends BaseGameState<LittleMuncherGameStateData> {
   constructor(data?: LittleMuncherGameStateData) {
-    super(data ?? {});
-    if (!data) this.resetData();
+    super(data as LittleMuncherGameStateData);
   }
 
   override resetData() {
@@ -118,13 +120,15 @@ export class LittleMuncherPlayer extends BasePlayer<
 > {}
 
 export interface LittleMuncherPlayerStateData extends BaseData {
-  score?: number;
-  position?: LittleMuncherPosition;
-  boost?: LittleMuncherBoost;
+  score: number;
+  position: LittleMuncherPosition;
+  boost: LittleMuncherBoost;
 }
 
 export abstract class BasePlayerState<TData extends BaseData = BaseData> {
-  protected constructor(public data: TData) {}
+  protected constructor(public data: TData) {
+    if (!data) this.resetData();
+  }
 
   resetData() {
     this.data = {} as TData;
@@ -133,8 +137,7 @@ export abstract class BasePlayerState<TData extends BaseData = BaseData> {
 
 export class LittleMuncherPlayerState extends BasePlayerState<LittleMuncherPlayerStateData> {
   constructor(data?: LittleMuncherPlayerStateData) {
-    super(data ?? {});
-    if (!data) this.resetData();
+    super(data as LittleMuncherPlayerStateData);
   }
 
   override resetData() {
@@ -150,7 +153,9 @@ export class LittleMuncherPlayerState extends BasePlayerState<LittleMuncherPlaye
 export interface LittleMuncherPlayerControllerData {}
 
 export abstract class BasePlayerController<TData extends BaseData = BaseData> {
-  protected constructor(public data: TData) {}
+  protected constructor(public data: TData) {
+    if (!data) this.resetData();
+  }
 
   resetData() {
     this.data = {} as TData;
@@ -159,8 +164,7 @@ export abstract class BasePlayerController<TData extends BaseData = BaseData> {
 
 export class LittleMuncherPlayerController extends BasePlayerController<LittleMuncherPlayerControllerData> {
   constructor(data?: LittleMuncherPlayerControllerData) {
-    super(data ?? {});
-    if (!data) this.resetData();
+    super(data as LittleMuncherPlayerControllerData);
   }
 }
 
@@ -171,7 +175,9 @@ export interface BaseSpectatorData {
 export interface LittleMuncherSpectatorData extends BaseSpectatorData {}
 
 export abstract class BaseSpectator<TData extends BaseSpectatorData = BaseSpectatorData> {
-  protected constructor(public data: TData) {}
+  protected constructor(public data: TData) {
+    if (!data) this.resetData();
+  }
 
   resetData() {
     this.data = {} as TData;
@@ -180,7 +186,7 @@ export abstract class BaseSpectator<TData extends BaseSpectatorData = BaseSpecta
 
 export class LittleMuncherSpectator extends BaseSpectator<LittleMuncherSpectatorData> {
   constructor(data?: LittleMuncherSpectatorData) {
-    super(data ?? ({} as LittleMuncherSpectatorData));
+    super(data as LittleMuncherSpectatorData);
   }
 }
 

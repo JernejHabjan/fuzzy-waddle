@@ -89,8 +89,8 @@ export class GameInstanceService {
     return this.openGameInstances
       .filter(
         (gi) =>
-          gi.gameInstanceMetadata.data.sessionState === GameSessionState.Playing ||
-          gi.gameInstanceMetadata.data.sessionState === GameSessionState.PlayingLevel
+          gi.gameInstanceMetadata.data.sessionState === GameSessionState.Playing &&
+          gi.gameInstanceMetadata.data.createdBy !== user.id
       )
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
   }

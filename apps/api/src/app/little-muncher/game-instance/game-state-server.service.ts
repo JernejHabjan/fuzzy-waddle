@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CommunicatorEvent, CommunicatorPauseEvent } from '@fuzzy-waddle/api-interfaces';
+import { CommunicatorEvent, CommunicatorPauseEvent, LittleMuncherPosition } from '@fuzzy-waddle/api-interfaces';
 import { GameInstanceService } from './game-instance.service';
 import { User } from '@supabase/supabase-js';
 
@@ -29,6 +29,7 @@ export class GameStateServerService {
           return false;
         }
         gameInstance.gameState.data.pause = (body.data as CommunicatorPauseEvent).pause;
+        console.log('updating pause', body.data);
         console.log('pausing game');
         break;
       case 'score':
@@ -44,7 +45,8 @@ export class GameStateServerService {
           console.log('User is not a player in this game instance');
           return false;
         }
-        player.playerState.data.position = body.data.position;
+        player.playerState.data.position = body.data as LittleMuncherPosition;
+        console.log('updating position', body.data);
         break;
       default:
         throw new Error('Unknown communicator');
