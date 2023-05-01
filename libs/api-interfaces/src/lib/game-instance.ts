@@ -1,26 +1,46 @@
-import {GameInstanceMetadata, GameInstanceMetadataData} from './game-instance-metadata';
+import { GameInstanceMetadata, GameInstanceMetadataData } from './game-instance-metadata';
 import { BaseGameMode } from './base-game-mode';
-import { BaseGameState, BasePlayer, BaseSpectator, GameSessionState } from './game-mode';
+import { BaseData, BaseGameState, BasePlayer, BaseSpectator, BaseSpectatorData, GameSessionState } from './game-mode';
 
 /**
  * Lives from lobby start to score screen
  */
 export abstract class GameInstance<
-  TGameMode extends BaseGameMode = BaseGameMode,
-  TGameInstanceMetadata extends GameInstanceMetadata = GameInstanceMetadata,
-  TGameState extends BaseGameState = BaseGameState,
-  TPlayer extends BasePlayer = BasePlayer,
-  TSpectator extends BaseSpectator = BaseSpectator
+  TGameInstanceMetadataData extends GameInstanceMetadataData = GameInstanceMetadataData,
+  TGameInstanceMetadata extends GameInstanceMetadata<TGameInstanceMetadataData> = GameInstanceMetadata<TGameInstanceMetadataData>,
+  TGameStateData extends BaseData = BaseData,
+  TGameState extends BaseGameState<TGameStateData> = BaseGameState<TGameStateData>,
+  TGameModeData extends BaseData = BaseData,
+  TGameMode extends BaseGameMode<TGameModeData> = BaseGameMode<TGameModeData>,
+  TPlayerStateData extends BaseData = BaseData,
+  TPlayerControllerData extends BaseData = BaseData,
+  TPlayer extends BasePlayer<TPlayerStateData, TPlayerControllerData> = BasePlayer<
+    TPlayerStateData,
+    TPlayerControllerData
+  >,
+  TSpectatorData extends BaseSpectatorData = BaseSpectatorData,
+  TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>
 > {
-  constructor(gameInstance?: GameInstance<TGameMode, TGameInstanceMetadata, TGameState, TPlayer, TSpectator>) {
-    if (gameInstance) {
+  constructor(gameInstanceData?: {
+    gameInstanceMetadataData: TGameInstanceMetadataData;
+    gameStateData: TGameStateData;
+    gameModeData: TGameModeData;
+    players: {
+      playerControllerData: TPlayerControllerData;
+      playerStateData: TPlayerStateData;
+    }[];
+    spectators: TSpectatorData[];
+  }) {
+    if (gameInstanceData) {
       // create a new game instance from existing one
-      WE SHOULD NOT GET WHOLE GAME INSTANCE FROM SEVER BUT ONLY GAMEMODEDATA, GameInstanceMetadataData, GAMESTATEDATA, PLAYER[playerControllerData, playerStateData], SPECTATORDATA
-      this.gameMode = gameInstance.gameMode; FIX
-      this.gameInstanceMetadata = gameInstance.gameInstanceMetadata; FIX
-      this.gameState = gameInstance.gameState; FIX
-      this.players = gameInstance.players; FIX
-      this.spectators = gameInstance.spectators; FIX
+      // WE SHOULD NOT GET WHOLE GAME INSTANCE FROM SEVER BUT ONLY GAMEMODEDATA, GameInstanceMetadataData, GAMESTATEDATA, PLAYER[playerControllerData, playerStateData], SPECTATORDATA
+      // this.gameMode = gameInstance.gameMode; FIX
+      // this.gameInstanceMetadata = gameInstance.gameInstanceMetadata; FIX
+      // this.gameState = gameInstance.gameState; FIX
+      // this.players = gameInstance.players; FIX
+      // this.spectators = gameInstance.spectators; FIX
+
+      this.gameMode = new BaseGameMode(gameInstanceData.gameModeData);
     }
   }
 
@@ -50,7 +70,7 @@ export abstract class GameInstance<
   }
 
   removeSpectator(userId: string) {
-    this.spectators = this.spectators.filter((s) => s.userId !== userId);
+    this.spectators = this.spectators.filter((s) => s.data.userId !== userId);
   }
 
   stopLevel() {
@@ -59,7 +79,7 @@ export abstract class GameInstance<
     this.players = [];
     this.spectators = [];
     if (this.gameInstanceMetadata) {
-      this.gameInstanceMetadata.sessionState = GameSessionState.EndingLevel;
+      this.gameInstanceMetadata.data.sessionState = GameSessionState.EndingLevel;
     }
   }
 
@@ -68,11 +88,11 @@ export abstract class GameInstance<
   }
 
   getSpectator(userId: string | null): TSpectator | null {
-    return this.spectators.find((s) => s.userId === userId) ?? null;
+    return this.spectators.find((s) => s.data.userId === userId) ?? null;
   }
 
   isHost(userId: string | null): boolean {
-    return this.gameInstanceMetadata?.createdBy === userId;
+    return this.gameInstanceMetadata?.data.createdBy === userId;
   }
 
   isPlayer(userId: string | null): boolean {
@@ -80,6 +100,6 @@ export abstract class GameInstance<
   }
 
   isSpectator(userId: string | null): boolean {
-    return this.spectators.some((s) => s.userId === userId);
+    return this.spectators.some((s) => s.data.userId === userId);
   }
 }

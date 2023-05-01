@@ -35,7 +35,7 @@ export class GameInstanceService {
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
     this.openGameInstances = this.openGameInstances.filter(
-      (gameInstance) => gameInstance.gameInstanceMetadata.gameInstanceId !== body.gameInstanceId
+      (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId !== body.gameInstanceId
     );
     console.log('game instance deleted on server', this.openGameInstances.length);
   }
@@ -44,8 +44,13 @@ export class GameInstanceService {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
-    gameInstance.initGame(new LittleMuncherGameMode(body.level.hillName), new LittleMuncherGameState());
-    gameInstance.gameInstanceMetadata.sessionState = GameSessionState.StartingLevel;
+    gameInstance.initGame(
+      new LittleMuncherGameMode({
+        hillToClimbOn: body.level.hillName
+      }),
+      new LittleMuncherGameState()
+    );
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.StartingLevel;
     console.log('game mode set on server', body.level.hillName);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'added'));
   }
@@ -89,7 +94,7 @@ export class GameInstanceService {
 
   getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): Room {
     return {
-      gameInstanceId: gameInstance.gameInstanceMetadata.gameInstanceId
+      gameInstanceId: gameInstance.gameInstanceMetadata.data.gameInstanceId
     };
   }
 
@@ -115,8 +120,8 @@ export class GameInstanceService {
   handleCron() {
     this.openGameInstances = this.openGameInstances.filter((gi) => {
       const minutesAgo = 1000 * 60 * 15; // 15 minutes
-      const started = gi.gameInstanceMetadata.createdOn;
-      const lastUpdated = gi.gameInstanceMetadata.updatedOn;
+      const started = gi.gameInstanceMetadata.data.createdOn;
+      const lastUpdated = gi.gameInstanceMetadata.data.updatedOn;
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
       const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
@@ -131,11 +136,11 @@ export class GameInstanceService {
 
   findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {
     return this.openGameInstances.find(
-      (gameInstance) => gameInstance.gameInstanceMetadata.gameInstanceId === gameInstanceId
+      (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId === gameInstanceId
     );
   }
 
   private checkIfPlayerIsCreator(gameInstance: LittleMuncherGameInstance, user: User) {
-    return gameInstance.gameInstanceMetadata.createdBy === user.id;
+    return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
   }
 }

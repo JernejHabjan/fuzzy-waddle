@@ -1,12 +1,19 @@
 import { BaseGameMode } from './base-game-mode';
 import { GameInstance } from './game-instance';
 import { LittleMuncherGameInstanceMetadata, LittleMuncherHills } from './little-muncher/little-muncher';
+import { GameInstanceMetadataData } from './game-instance-metadata';
 
 export class LittleMuncherGameInstance extends GameInstance<
-  LittleMuncherGameMode,
+  GameInstanceMetadataData,
   LittleMuncherGameInstanceMetadata,
+  LittleMuncherGameStateData,
   LittleMuncherGameState,
+  LittleMuncherGameModeData,
+  LittleMuncherGameMode,
+  LittleMuncherPlayerStateData,
+  LittleMuncherPlayerControllerData,
   LittleMuncherPlayer,
+  LittleMuncherSpectatorData,
   LittleMuncherSpectator
 > {
   init(gameInstanceId: string | null, userId: string | null) {
@@ -63,7 +70,12 @@ export abstract class BasePlayer<
   ) {}
 }
 
-export class LittleMuncherPlayer extends BasePlayer<LittleMuncherPlayerState, LittleMuncherPlayerController> {}
+export class LittleMuncherPlayer extends BasePlayer<
+  LittleMuncherPlayerStateData,
+  LittleMuncherPlayerControllerData,
+  LittleMuncherPlayerState,
+  LittleMuncherPlayerController
+> {}
 
 export class LittleMuncherPlayerStateData extends BaseData<LittleMuncherPlayerStateData> {
   score = 0;
@@ -105,7 +117,7 @@ export abstract class BaseSpectator<TData extends BaseSpectatorData = BaseSpecta
   }
 }
 
-export class LittleMuncherSpectator extends BaseSpectator {}
+export class LittleMuncherSpectator extends BaseSpectator<LittleMuncherSpectatorData> {}
 
 export enum GameSessionState {
   WaitingForPlayers,
