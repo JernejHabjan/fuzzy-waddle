@@ -46,15 +46,20 @@ export interface BaseData {}
 
 export abstract class BaseGameMode<TData extends BaseData = BaseData> {
   protected constructor(public data: TData) {}
+
+  resetData() {
+    this.data = {} as TData;
+  }
 }
 
 export interface LittleMuncherGameModeData extends BaseData {
-  hill: LittleMuncherHill | null;
+  hill?: LittleMuncherHill;
 }
 
 export class LittleMuncherGameMode extends BaseGameMode<LittleMuncherGameModeData> {
   constructor(data?: LittleMuncherGameModeData) {
-    super(data ?? { hill: null });
+    super(data ?? {});
+    if (!data) this.resetData();
   }
 }
 
@@ -66,21 +71,29 @@ export class LittleMuncherUserInfo extends BaseUserInfo {}
 
 export abstract class BaseGameState<TData> {
   protected constructor(public data: TData) {}
+
+  resetData() {
+    this.data = {} as TData;
+  }
 }
 
 export interface LittleMuncherGameStateData extends BaseData {
-  timeClimbing: number;
-  pause: boolean;
+  timeClimbing?: number;
+  pause?: boolean;
 }
 
 export class LittleMuncherGameState extends BaseGameState<LittleMuncherGameStateData> {
   constructor(data?: LittleMuncherGameStateData) {
-    super(
-      data ?? {
-        pause: false,
-        timeClimbing: 0
-      }
-    );
+    super(data ?? {});
+    if (!data) this.resetData();
+  }
+
+  override resetData() {
+    super.resetData();
+    this.data = {
+      timeClimbing: 0,
+      pause: false
+    };
   }
 }
 
@@ -105,24 +118,32 @@ export class LittleMuncherPlayer extends BasePlayer<
 > {}
 
 export interface LittleMuncherPlayerStateData extends BaseData {
-  score: number;
-  position: LittleMuncherPosition;
-  boost: LittleMuncherBoost;
+  score?: number;
+  position?: LittleMuncherPosition;
+  boost?: LittleMuncherBoost;
 }
 
 export abstract class BasePlayerState<TData extends BaseData = BaseData> {
   protected constructor(public data: TData) {}
+
+  resetData() {
+    this.data = {} as TData;
+  }
 }
 
 export class LittleMuncherPlayerState extends BasePlayerState<LittleMuncherPlayerStateData> {
   constructor(data?: LittleMuncherPlayerStateData) {
-    super(
-      data ?? {
-        score: 0,
-        position: new LittleMuncherPosition(),
-        boost: new LittleMuncherBoost()
-      }
-    );
+    super(data ?? {});
+    if (!data) this.resetData();
+  }
+
+  override resetData() {
+    super.resetData();
+    this.data = {
+      score: 0,
+      position: new LittleMuncherPosition(),
+      boost: new LittleMuncherBoost()
+    };
   }
 }
 
@@ -130,11 +151,16 @@ export interface LittleMuncherPlayerControllerData {}
 
 export abstract class BasePlayerController<TData extends BaseData = BaseData> {
   protected constructor(public data: TData) {}
+
+  resetData() {
+    this.data = {} as TData;
+  }
 }
 
 export class LittleMuncherPlayerController extends BasePlayerController<LittleMuncherPlayerControllerData> {
   constructor(data?: LittleMuncherPlayerControllerData) {
     super(data ?? {});
+    if (!data) this.resetData();
   }
 }
 
@@ -146,6 +172,10 @@ export interface LittleMuncherSpectatorData extends BaseSpectatorData {}
 
 export abstract class BaseSpectator<TData extends BaseSpectatorData = BaseSpectatorData> {
   protected constructor(public data: TData) {}
+
+  resetData() {
+    this.data = {} as TData;
+  }
 }
 
 export class LittleMuncherSpectator extends BaseSpectator<LittleMuncherSpectatorData> {

@@ -140,13 +140,14 @@ export abstract class GameInstance<
   }
 
   stopLevel() {
-    this.gameMode = null;
-    this.gameState = null;
-    this.players = [];
-    this.spectators = [];
-    if (this.gameInstanceMetadata) {
-      this.gameInstanceMetadata.data.sessionState = GameSessionState.NotPlaying;
-    }
+    this.gameInstanceMetadata?.resetData();
+    this.gameMode?.resetData();
+    this.gameState?.resetData();
+    this.players?.forEach((p) => {
+      p.playerState?.resetData();
+      p.playerController?.resetData();
+    });
+    this.spectators?.forEach((s) => s.resetData());
   }
 
   getPlayer(userId: string | null): TPlayer | null {

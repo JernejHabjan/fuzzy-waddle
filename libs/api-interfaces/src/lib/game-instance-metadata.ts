@@ -22,6 +22,10 @@ export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataDat
     this.data.createdOn ??= new Date();
     this.data.sessionState ??= GameSessionState.NotPlaying;
   }
+
+  resetData() {
+    this.data.sessionState = GameSessionState.NotPlaying;
+  }
 }
 
 export interface LittleMuncherGameInstanceMetadataData extends GameInstanceMetadataData {}

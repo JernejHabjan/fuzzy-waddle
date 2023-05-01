@@ -65,7 +65,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
 
   private managePause() {
     // set initial pause:
-    this.paused = this.gameInstanceClientService.gameInstance!.gameState!.data.pause;
+    this.paused = this.gameInstanceClientService.gameInstance!.gameState!.data.pause!;
     this.pauseSubscription = this.communicatorService.pause?.on.subscribe((event) => {
       this.paused = event.pause;
       this.changeDetectorRef.detectChanges();

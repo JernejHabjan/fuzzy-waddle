@@ -23,7 +23,7 @@ export class PlayerInputController {
         const validKeyboardEvent = this.manageKeyboardEvent(event.key);
         if (validKeyboardEvent) {
           this.littleMuncherScene.communicator.key?.sendWithStateChange(
-            this.littleMuncherScene.player.playerState.data.position,
+            this.littleMuncherScene.player.playerState.data.position!,
             this.setPosition
           );
         }
@@ -32,7 +32,7 @@ export class PlayerInputController {
   }
 
   private manageKeyboardEvent(key: string): boolean {
-    const position = this.littleMuncherScene.player.playerState.data.position;
+    const position = this.littleMuncherScene.player.playerState.data.position!;
     switch (key) {
       case 'ArrowLeft':
         position.x = Phaser.Math.Clamp(position.x - 1, -1, 1);
@@ -47,7 +47,7 @@ export class PlayerInputController {
   }
 
   private setPosition = () => {
-    const position = this.littleMuncherScene.player.playerState.data.position;
+    const position = this.littleMuncherScene.player.playerState.data.position!;
 
     const width = this.littleMuncherScene.game.scale.width;
     const height = this.littleMuncherScene.game.scale.height;
