@@ -1,6 +1,9 @@
 import LittleMuncherScene from './little-muncher-scene';
+import { Subscription } from 'rxjs';
 
 export class PlayerInputController {
+  private subscriptions: Subscription[] = [];
+
   constructor(private readonly littleMuncherScene: LittleMuncherScene) {}
 
   private character!: Phaser.GameObjects.Text;
@@ -29,6 +32,14 @@ export class PlayerInputController {
         }
       });
     }
+    this.registerEvents();
+  }
+
+  private registerEvents() {
+    this.subscriptions = [
+      this.littleMuncherScene.onDestroy.subscribe(this.destroy),
+      this.littleMuncherScene.onResize.subscribe(this.setPosition)
+    ];
   }
 
   private manageKeyboardEvent(key: string): boolean {
@@ -59,5 +70,9 @@ export class PlayerInputController {
     const x = width / 2 + (position.x * width) / 6;
 
     this.character.setPosition(x, y);
+  };
+
+  private destroy = () => {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   };
 }
