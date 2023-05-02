@@ -32,13 +32,14 @@ export default class LittleMuncherScene extends BaseScene<
   private playerInputController!: PlayerInputController;
 
   private worldSpeed = 3; // pixels per frame
-  private objectGroup!: Phaser.Physics.Arcade.Group;
-  private character!: any;
-  private objectSpawnTimer!: any;
-  private characterHealth = 30;
-  private healthDisplayText: any;
+  private objectGroup: Phaser.GameObjects.GameObject[] = [];
+  private character!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private objectSpawnTimer!: Phaser.Time.TimerEvent;
+  private readonly maxCharacterHealth = 30;
+  private characterHealth = this.maxCharacterHealth;
+  private healthDisplayText!: Phaser.GameObjects.Text;
   private characterSpeed = 400; // the speed at which the character moves
-  private cursors?: any; // variable to store the cursor keys
+  private cursors?: Phaser.Types.Input.Keyboard.CursorKeys; // variable to store the cursor keys
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -76,7 +77,6 @@ export default class LittleMuncherScene extends BaseScene<
     this.communicator.score?.send({ score: Math.round(Math.random() * 100) }); // todo just for testing
 
     this.createCharacter();
-    this.objectGroup = this.physics.add.group(); // group for random objects
 
     this.objectSpawnTimer = this.time.addEvent({
       delay: 2000, // spawn an object every 2 seconds
@@ -118,7 +118,7 @@ export default class LittleMuncherScene extends BaseScene<
     this.handleCharacterMovement();
 
     // move world objects down
-    this.objectGroup.getChildren().forEach((object: Phaser.GameObjects.GameObject) => {
+    this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => {
       const sprite = object as Phaser.Physics.Arcade.Sprite;
       sprite.y += this.worldSpeed;
     });
@@ -127,11 +127,12 @@ export default class LittleMuncherScene extends BaseScene<
     this.physics.overlap(this.character, this.objectGroup, this.objectCollisionHandler);
 
     // dispose of objects that have gone off-screen
-    this.objectGroup.getChildren().forEach((object: any) => {
+    this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => {
       // check if object has gone off-screen
+      const sprite = object as Phaser.Physics.Arcade.Sprite;
       const camera = this.cameras.main;
-      if (object.y + object.height > camera.y + camera.height) {
-        object.destroy();
+      if (sprite.y + sprite.height > camera.y + camera.height) {
+        sprite.destroy();
       }
     });
   }
@@ -149,12 +150,15 @@ export default class LittleMuncherScene extends BaseScene<
   };
 
   spawnObject = () => {
-    const object = this.objectGroup.create(Math.random() * 800, -50, 'object');
+    const object = this.physics.add.sprite(Math.random() * 800, -50, 'object'); // todo enum
+    this.objectGroup.push(object);
     object.name = 'obstacle'; // todo enum
     object.setVelocityY(100);
   };
 
-  objectCollisionHandler = (character: any, object: any) => {
+  objectCollisionHandler = (characterIn: any, objectIn: any) => {
+    const character = characterIn as Phaser.Physics.Arcade.Sprite;
+    const object = objectIn as Phaser.Physics.Arcade.Sprite;
     // remove the object from the group
     object.destroy();
 
@@ -208,11 +212,12 @@ export default class LittleMuncherScene extends BaseScene<
         'keydown',
         () => {
           // reset the game state
-          this.characterHealth = 100;
+          this.characterHealth = this.maxCharacterHealth;
           this.updateHealthDisplay();
           this.worldSpeed = 3;
           gameOverText.destroy();
-          this.objectGroup.clear(true, true); // remove all objects from the group
+          this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
+          this.objectGroup = [];
           this.objectSpawnTimer = this.time.addEvent({
             delay: 2000,
             loop: true,
@@ -227,4 +232,15 @@ export default class LittleMuncherScene extends BaseScene<
       );
     }
   };
+
+  override destroy() {
+    super.destroy();
+    this.objectSpawnTimer.destroy();
+
+    this.character.destroy();
+    this.characterGameObject.destroy();
+    this.healthDisplayText.destroy();
+    this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
+    this.objectGroup = [];
+  }
 }

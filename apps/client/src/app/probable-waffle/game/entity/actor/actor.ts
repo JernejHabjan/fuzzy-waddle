@@ -9,8 +9,9 @@ export abstract class Actor implements IComponent {
   readonly name: string;
   destroyed = false;
   killed = false;
+  
   /**
-   * time until actor is finally destroyed from scene
+   * time until actor is finally destroyed from scene (in sec)
    */
   despawnTime = 10;
 
