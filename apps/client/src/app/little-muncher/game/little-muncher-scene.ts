@@ -36,6 +36,7 @@ export default class LittleMuncherScene extends BaseScene<
   private objectGroup: Phaser.GameObjects.GameObject[] = [];
   private character!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private objectSpawnTimer!: Phaser.Time.TimerEvent;
+  private powerUpSpawnTimer!: Phaser.Time.TimerEvent;
   private readonly maxCharacterHealth = 30;
   private characterHealth = this.maxCharacterHealth;
   private healthDisplayText!: Phaser.GameObjects.Text;
@@ -43,6 +44,9 @@ export default class LittleMuncherScene extends BaseScene<
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys; // variable to store the cursor keys
   private background!: Phaser.GameObjects.TileSprite;
   private gameOverFlag = false;
+  private readonly spawnY = -50;
+  private powerUpDuration = 5000;
+  private poweredUp: Date | null = null;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -58,6 +62,7 @@ export default class LittleMuncherScene extends BaseScene<
     super.preload();
     this.load.image('character', 'assets/character.png');
     this.load.image('object', 'assets/object.png');
+    this.load.image('powerUp', 'assets/powerUp.png');
     this.load.image('background', 'assets/background.png');
   }
 
@@ -82,11 +87,7 @@ export default class LittleMuncherScene extends BaseScene<
 
     this.createCharacter();
 
-    this.objectSpawnTimer = this.time.addEvent({
-      delay: 2000, // spawn an object every 2 seconds
-      loop: true,
-      callback: this.spawnObject
-    });
+    this.setupTimers();
   }
 
   private drawBackground = () => {
@@ -142,11 +143,23 @@ export default class LittleMuncherScene extends BaseScene<
       // check if object has gone off-screen
       const sprite = object as Phaser.Physics.Arcade.Sprite;
       const camera = this.cameras.main;
-      if (sprite.y + sprite.height > camera.y + camera.height) {
+      const offsetTop = sprite.height * 2 + Math.abs(this.spawnY) * 2;
+      const offsetBottom = sprite.y + sprite.height;
+      if (offsetBottom > camera.height || sprite.y < -offsetTop) {
         sprite.destroy();
       }
     });
+
+    this.handlePowerUpUpdate(time, delta);
   }
+
+  private handlePowerUpUpdate = (time: number, delta: number) => {
+    if (!this.poweredUp) return;
+    const now = new Date();
+    if (now.getTime() - this.poweredUp.getTime() > this.powerUpDuration) {
+      this.setupPowerUp(false);
+    }
+  };
 
   private handleCharacterMovement = () => {
     if (!this.cursors) return;
@@ -160,10 +173,11 @@ export default class LittleMuncherScene extends BaseScene<
     }
   };
 
-  spawnObject = () => {
-    const object = this.physics.add.sprite(Math.random() * 800, -50, 'object'); // todo enum
+  spawnObject = (key: string, name: string) => {
+    // todo enum
+    const object = this.physics.add.sprite(Math.random() * 800, this.spawnY, key);
     this.objectGroup.push(object);
-    object.name = 'obstacle'; // todo enum
+    object.name = name;
     object.setVelocityY(100);
   };
 
@@ -171,26 +185,45 @@ export default class LittleMuncherScene extends BaseScene<
     const character = characterIn as Phaser.Physics.Arcade.Sprite;
     const object = objectIn as Phaser.Physics.Arcade.Sprite;
     // remove the object from the group
-    object.destroy();
 
     // do something based on the type of object collided with
-    if (object.name === 'powerup') {
+    if (object.name === 'powerUp') {
       // todo to enum
       // add a powerup to the character
-      // TODO addPowerup();
+      this.setupPowerUp(true);
+      object.destroy();
     } else if (object.name === 'obstacle') {
-      // todo to enum
-      // reduce the character's health
-      this.characterHealth -= 10;
-      this.updateHealthDisplay();
-      if (this.characterHealth <= 0) {
-        // game over
-        this.gameOver();
+      if (this.poweredUp) {
+        // bounce the object
+        object.body!.velocity.y *= -5;
+        // offset the object's position to prevent multiple collisions
+        object.y -= this.worldSpeed * 2;
+      } else {
+        // todo to enum
+        object.destroy();
+
+        // reduce the character's health
+        this.characterHealth -= 10;
+        this.updateHealthDisplay();
+        if (this.characterHealth <= 0) {
+          // game over
+          this.gameOver();
+        }
       }
     } else {
       // do nothing
     }
   };
+
+  private setupPowerUp(poweredUp: boolean) {
+    if (poweredUp) {
+      this.poweredUp = new Date();
+      this.worldSpeed = this.worldSpeed * 2;
+    } else {
+      this.poweredUp = null;
+      this.worldSpeed = this.initialWorldSpeed;
+    }
+  }
 
   private updateHealthDisplay = () => {
     // remove the old health display text, if it exists
@@ -207,6 +240,7 @@ export default class LittleMuncherScene extends BaseScene<
     this.gameOverFlag = true;
     // stop the object spawn timer
     this.objectSpawnTimer.destroy();
+    this.powerUpSpawnTimer.destroy();
 
     // stop the character from moving
     this.character.setVelocityX(0);
@@ -227,15 +261,11 @@ export default class LittleMuncherScene extends BaseScene<
           this.gameOverFlag = false;
           this.characterHealth = this.maxCharacterHealth;
           this.updateHealthDisplay();
-          this.worldSpeed = this.initialWorldSpeed;
+          this.setupPowerUp(false);
           gameOverText.destroy();
           this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
           this.objectGroup = [];
-          this.objectSpawnTimer = this.time.addEvent({
-            delay: 2000,
-            loop: true,
-            callback: this.spawnObject
-          });
+          this.setupTimers();
 
           // restart the game
           this.character.setVelocityX(0);
@@ -244,6 +274,19 @@ export default class LittleMuncherScene extends BaseScene<
         this
       );
     }
+  };
+
+  private setupTimers = () => {
+    this.objectSpawnTimer = this.time.addEvent({
+      delay: 2000, // spawn an object every 2 seconds
+      loop: true,
+      callback: () => this.spawnObject('object', 'obstacle')
+    });
+    this.powerUpSpawnTimer = this.time.addEvent({
+      delay: 5000, // spawn an object every 2 seconds
+      loop: true,
+      callback: () => this.spawnObject('powerUp', 'powerUp')
+    });
   };
 
   override destroy() {
