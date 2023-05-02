@@ -32,11 +32,12 @@ export default class LittleMuncherScene extends BaseScene<
   private readonly initialWorldSpeed = 3;
   private readonly maxWorldSpeed = this.initialWorldSpeed * 3;
   private readonly maxCharacterHealth = 30;
-  private readonly spawnY = -50;
   private readonly powerUpDuration = 3000;
   private readonly objectVelocity = 100;
   private readonly objectMaxVelocity = this.objectVelocity * 3;
   private readonly worldWidth = 800;
+  private readonly objectMargin = 100;
+  private readonly objectDestroyMargin = 200;
 
   private worldSpeed = this.initialWorldSpeed; // pixels per frame
   private objectGroup: Phaser.GameObjects.GameObject[] = [];
@@ -46,7 +47,7 @@ export default class LittleMuncherScene extends BaseScene<
   private powerUpSpawnTimer!: Phaser.Time.TimerEvent;
   private characterHealth = this.maxCharacterHealth;
   private healthDisplayText!: Phaser.GameObjects.Text;
-  private characterSpeed = 5; // the speed at which the character moves
+  private characterSpeed = 2; // the speed at which the character moves
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys; // variable to store the cursor keys
   private background!: Phaser.GameObjects.TileSprite;
   private gameOverFlag = false;
@@ -101,6 +102,8 @@ export default class LittleMuncherScene extends BaseScene<
     const screenWidth = this.scale.width;
     const screenHeight = this.scale.height;
     this.cameras.main.setViewport(screenWidth / 2 - this.worldWidth / 2, 0, this.worldWidth, screenHeight);
+
+    this.cameras.main.setZoom(1); // todo
 
     // Set the physics world bounds to match the camera's bounds
     this.physics.world.setBounds(0, 0, this.worldWidth, this.cameras.main.height);
@@ -202,29 +205,33 @@ export default class LittleMuncherScene extends BaseScene<
 
     // dispose of objects that have gone off-screen
     this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => {
-      this.destroyOffScreenSprite(object as Phaser.Physics.Arcade.Sprite);
+      this.destroyOffScreenSprite(this.objectGroup, object as Phaser.Physics.Arcade.Sprite);
     });
     this.nonCollidableGroup.forEach((object: Phaser.GameObjects.GameObject) => {
-      this.destroyOffScreenSprite(object as Phaser.Physics.Arcade.Sprite);
+      this.destroyOffScreenSprite(this.nonCollidableGroup, object as Phaser.Physics.Arcade.Sprite);
     });
 
     this.handlePowerUpUpdate(time, delta);
   }
 
-  private destroyOffScreenSprite = (sprite: Phaser.Physics.Arcade.Sprite) => {
+  private destroyOffScreenSprite = (group: Phaser.GameObjects.GameObject[], sprite: Phaser.Physics.Arcade.Sprite) => {
     const camera = this.cameras.main;
-    const offsetTop = sprite.height * 2 + Math.abs(this.spawnY) * 2;
-    const offsetBottom = sprite.y + sprite.height;
-    const offsetLeft = sprite.x + sprite.width;
-    const offsetRight = sprite.x + sprite.width;
-    if (
-      offsetBottom > camera.height ||
-      sprite.y < -offsetTop ||
-      sprite.x < -offsetLeft ||
-      sprite.x > this.worldWidth + offsetRight
-    ) {
-      // todo test this
+    const zoom = camera.zoom;
+    const height = camera.height;
+    const width = camera.width;
+    const y = sprite.y;
+    const x = sprite.x;
+    const margin = this.objectMargin * zoom + this.objectDestroyMargin;
+
+    const overTop = y < -margin;
+    const overBottom = y > height + margin;
+    const overLeft = x < -margin;
+    const overRight = x > width + margin;
+
+    if (overTop || overBottom || overLeft || overRight) {
       sprite.destroy();
+      // remove the sprite from the group
+      group.splice(group.indexOf(sprite), 1);
     }
   };
 
@@ -254,7 +261,7 @@ export default class LittleMuncherScene extends BaseScene<
 
   spawnObject = (key: string, name: 'obstacle' | 'powerUp') => {
     // todo enum
-    const object = this.physics.add.sprite(Math.random() * this.worldWidth, this.spawnY, 'lm-atlas', key);
+    const object = this.physics.add.sprite(Math.random() * this.worldWidth, -this.objectMargin, 'lm-atlas', key);
     if (key === 'tree') {
       this.spawnBird(object);
     }
@@ -266,6 +273,7 @@ export default class LittleMuncherScene extends BaseScene<
     if (Math.random() > 0.3) return; // 30% chance of spawning a bird
 
     const bird = this.physics.add.sprite(object.x, object.y - 40, 'lm-atlas', 'bird/0');
+    bird.setDepth(1);
     bird.anims.play('bird-idle', true);
     bird.setOrigin(0.5, 0.5);
     object.setData('type', 'tree');
