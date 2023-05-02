@@ -185,7 +185,7 @@ export default class LittleMuncherScene extends BaseScene<
 
     // create a new health display text object
     const healthDisplayString = 'Health: ' + this.characterHealth;
-    this.healthDisplayText = this.add.text(100, 100, healthDisplayString, { font: '32px Arial', color: '#ffffff' });
+    this.healthDisplayText = this.add.text(100, 100, healthDisplayString, { font: '32px Arial', color: '#000000' });
   };
 
   private gameOver = () => {
@@ -196,7 +196,10 @@ export default class LittleMuncherScene extends BaseScene<
     this.character.setVelocityX(0);
 
     // show a game over message
-    const gameOverText = this.add.text(400, 300, 'Game Over', { font: '32px Arial', color: '#ffffff' });
+    const gameOverText = this.add.text(400, 300, 'Game Over - press "Space" to restart', {
+      font: '32px Arial',
+      color: '#000000'
+    });
     gameOverText.setOrigin(0.5);
 
     // allow the player to restart the game by pressing a key
