@@ -14,6 +14,7 @@ import {
   BaseSpectatorData
 } from '@fuzzy-waddle/api-interfaces';
 import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
+import { Loader } from '../../../../little-muncher/game/loader';
 
 export default class BaseScene<
     TGameData extends BaseGameData = BaseGameData,
@@ -47,6 +48,7 @@ export default class BaseScene<
   baseGameData!: TGameData;
 
   preload() {
+    new Loader(this);
     this.onPreload.emit();
   }
 
