@@ -10,8 +10,8 @@ export const littleMuncherGameConfig: Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       fps: 60,
-      gravity: { y: 0 },
-      debug: !environment.production
+      gravity: { y: 0 }
+      // todo debug: !environment.production
     }
   },
   pixelArt: true,
