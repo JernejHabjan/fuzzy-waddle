@@ -46,7 +46,7 @@ export default class LittleMuncherScene extends BaseScene<
   private powerUpSpawnTimer!: Phaser.Time.TimerEvent;
   private characterHealth = this.maxCharacterHealth;
   private healthDisplayText!: Phaser.GameObjects.Text;
-  private characterSpeed = 150; // the speed at which the character moves
+  private characterSpeed = 5; // the speed at which the character moves
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys; // variable to store the cursor keys
   private background!: Phaser.GameObjects.TileSprite;
   private gameOverFlag = false;
@@ -82,6 +82,7 @@ export default class LittleMuncherScene extends BaseScene<
 
   override create() {
     super.create();
+    this.setViewport();
     this.createAnims();
     this.drawBackground();
     this.createCharacter();
@@ -94,6 +95,15 @@ export default class LittleMuncherScene extends BaseScene<
     this.communicator.score?.send({ score: Math.round(Math.random() * 100) }); // todo just for testing
 
     this.setupTimers();
+  }
+
+  private setViewport() {
+    const screenWidth = this.scale.width;
+    const screenHeight = this.scale.height;
+    this.cameras.main.setViewport(screenWidth / 2 - this.worldWidth / 2, 0, this.worldWidth, screenHeight);
+
+    // Set the physics world bounds to match the camera's bounds
+    this.physics.world.setBounds(0, 0, this.worldWidth, this.cameras.main.height);
   }
 
   private createCharacterAnim(end: number, prefix: string) {
@@ -142,20 +152,15 @@ export default class LittleMuncherScene extends BaseScene<
     this.background = this.add.tileSprite(0, 0, this.worldWidth, this.cameras.main.height, 'lm-atlas', 'background');
     this.background.setScrollFactor(0); // make the background stationary
     this.background.setOrigin(0, 0); // set the origin of the sprite to the top-left corner
-
-    // set bounds
-    this.physics.world.setBounds(0, 0, this.worldWidth, this.cameras.main.height);
-
-    // todo zoom camera
   };
 
   private createCharacter = () => {
     // create the character sprite
 
-    const height = this.game.scale.height;
+    const height = this.cameras.main.height;
     // set y to first 1/8 from bottom up
     const y = height - height / 8;
-    this.character = this.physics.add.sprite(400, y, 'lm-atlas', 'character/idle/1');
+    this.character = this.physics.add.sprite(this.cameras.main.width / 2, y, 'lm-atlas', 'character/idle/1');
 
     this.character.anims.play('character-walk-back', true);
 
@@ -190,7 +195,7 @@ export default class LittleMuncherScene extends BaseScene<
       sprite.y += this.worldSpeed;
     });
 
-    this.background.tilePositionY -= this.worldSpeed * 1.5;
+    this.background.tilePositionY -= this.worldSpeed;
 
     // check for collision with random objects
     this.physics.overlap(this.character, this.objectGroup, this.objectCollisionHandler);
@@ -235,11 +240,15 @@ export default class LittleMuncherScene extends BaseScene<
     if (!this.cursors) return;
     // move the character left or right based on the arrow keys
     if (this.cursors.left.isDown) {
-      this.character.setVelocityX(-this.characterSpeed * this.worldSpeed);
+      // move left
+      this.character.anims.play('character-walk-left', true);
+      this.character.x -= this.characterSpeed * this.worldSpeed;
     } else if (this.cursors.right.isDown) {
-      this.character.setVelocityX(this.characterSpeed * this.worldSpeed);
+      // move right
+      this.character.anims.play('character-walk-right', true);
+      this.character.x += this.characterSpeed * this.worldSpeed;
     } else {
-      this.character.setVelocityX(0);
+      this.character.anims.play('character-walk-back', true);
     }
   };
 
@@ -251,7 +260,6 @@ export default class LittleMuncherScene extends BaseScene<
     }
     this.objectGroup.push(object);
     object.name = name;
-    object.setVelocityY(this.objectVelocity);
   };
 
   private spawnBird = (object: Phaser.Physics.Arcade.Sprite) => {
@@ -260,7 +268,6 @@ export default class LittleMuncherScene extends BaseScene<
     const bird = this.physics.add.sprite(object.x, object.y - 40, 'lm-atlas', 'bird/0');
     bird.anims.play('bird-idle', true);
     bird.setOrigin(0.5, 0.5);
-    bird.setVelocityY(this.objectVelocity);
     object.setData('type', 'tree');
     object.setData('bird', bird);
     this.nonCollidableGroup.push(bird);
@@ -367,8 +374,6 @@ export default class LittleMuncherScene extends BaseScene<
     this.objectSpawnTimer.destroy();
     this.powerUpSpawnTimer.destroy();
 
-    // stop the character from moving
-    this.character.setVelocityX(0);
     // play the death animation
     this.character.anims.play('character-death');
 
@@ -401,8 +406,8 @@ export default class LittleMuncherScene extends BaseScene<
           this.setupTimers();
 
           // restart the game
-          this.character.setVelocityX(0);
-          this.character.setPosition(400, 550);
+          const width = this.cameras.main.width;
+          this.character.setPosition(width / 2, this.character.y);
         },
         this
       );
