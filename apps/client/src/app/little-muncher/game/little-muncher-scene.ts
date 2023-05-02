@@ -31,7 +31,8 @@ export default class LittleMuncherScene extends BaseScene<
   private characterGameObject!: Phaser.GameObjects.Text;
   private playerInputController!: PlayerInputController;
 
-  private worldSpeed = 3; // pixels per frame
+  private readonly initialWorldSpeed = 3;
+  private worldSpeed = this.initialWorldSpeed; // pixels per frame
   private objectGroup: Phaser.GameObjects.GameObject[] = [];
   private character!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private objectSpawnTimer!: Phaser.Time.TimerEvent;
@@ -40,6 +41,8 @@ export default class LittleMuncherScene extends BaseScene<
   private healthDisplayText!: Phaser.GameObjects.Text;
   private characterSpeed = 400; // the speed at which the character moves
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys; // variable to store the cursor keys
+  private background!: Phaser.GameObjects.TileSprite;
+  private gameOverFlag = false;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -55,6 +58,7 @@ export default class LittleMuncherScene extends BaseScene<
     super.preload();
     this.load.image('character', 'assets/character.png');
     this.load.image('object', 'assets/object.png');
+    this.load.image('background', 'assets/background.png');
   }
 
   override init() {
@@ -87,13 +91,17 @@ export default class LittleMuncherScene extends BaseScene<
 
   private drawBackground = () => {
     // create a graphics object to draw on
-    const graphics = this.add.graphics();
+    // const graphics = this.add.graphics();
+    //
+    // // draw a white rectangle on the graphics object
+    // graphics.fillStyle(0xffffff, 1);
+    // // get viewport height
+    // const height = this.cameras.main.height;
+    // graphics.fillRect(0, 0, 800, height);
 
-    // draw a white rectangle on the graphics object
-    graphics.fillStyle(0xffffff, 1);
-    // get viewport height
-    const height = this.cameras.main.height;
-    graphics.fillRect(0, 0, 800, height);
+    this.background = this.add.tileSprite(0, 0, 800, 600, 'background');
+    this.background.setScrollFactor(0); // make the background stationary
+    this.background.setOrigin(0, 0); // set the origin of the sprite to the top-left corner
   };
 
   private createCharacter = () => {
@@ -115,6 +123,7 @@ export default class LittleMuncherScene extends BaseScene<
   override update(time: number, delta: number) {
     super.update(time, delta);
 
+    if (this.gameOverFlag) return;
     this.handleCharacterMovement();
 
     // move world objects down
@@ -122,6 +131,8 @@ export default class LittleMuncherScene extends BaseScene<
       const sprite = object as Phaser.Physics.Arcade.Sprite;
       sprite.y += this.worldSpeed;
     });
+
+    this.background.tilePositionY -= this.worldSpeed * 1.5;
 
     // check for collision with random objects
     this.physics.overlap(this.character, this.objectGroup, this.objectCollisionHandler);
@@ -193,6 +204,7 @@ export default class LittleMuncherScene extends BaseScene<
   };
 
   private gameOver = () => {
+    this.gameOverFlag = true;
     // stop the object spawn timer
     this.objectSpawnTimer.destroy();
 
@@ -212,9 +224,10 @@ export default class LittleMuncherScene extends BaseScene<
         'keydown',
         () => {
           // reset the game state
+          this.gameOverFlag = false;
           this.characterHealth = this.maxCharacterHealth;
           this.updateHealthDisplay();
-          this.worldSpeed = 3;
+          this.worldSpeed = this.initialWorldSpeed;
           gameOverText.destroy();
           this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
           this.objectGroup = [];
