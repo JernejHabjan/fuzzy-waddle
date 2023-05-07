@@ -9,12 +9,12 @@ import { AtlasFrame } from '../atlas-loader.service';
 })
 export class AtlasDisplayComponent {
   displaySize = 64;
-  @Input() atlasFrame!: AtlasFrame;
+  @Input({ required: true }) atlasFrame!: AtlasFrame;
   src: string | null = null;
 
   private _textureName!: string;
 
-  @Input()
+  @Input({ required: true })
   set textureName(value: string) {
     this._textureName = value;
     this.src = `assets/probable-waffle/atlas/${this._textureName}.png`;

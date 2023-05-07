@@ -9,9 +9,9 @@ import { SceneCommunicatorService } from '../../../../communicators/scene-commun
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TileSelectorComponent {
-  @Input() frameWithMeta!: TileFrame;
-  @Input() selectedTile: number | null = null;
-  @Input() textureName!: string;
+  @Input({ required: true }) frameWithMeta!: TileFrame;
+  @Input({ required: true }) selectedTile: number | null = null;
+  @Input({ required: true }) textureName!: string;
 
   selectTile() {
     SceneCommunicatorService.tileEmitterSubject.next(this.frameWithMeta.id);

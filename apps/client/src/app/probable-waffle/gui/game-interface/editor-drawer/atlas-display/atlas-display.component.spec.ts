@@ -7,8 +7,8 @@ import { AtlasFrame } from '../atlas-loader.service';
 
 @Component({ selector: 'fuzzy-waddle-atlas-display', template: '' })
 export class AtlasDisplayTestingComponent {
-  @Input() atlasFrame!: AtlasFrame;
-  @Input() textureName!: string;
+  @Input({ required: true }) atlasFrame!: AtlasFrame;
+  @Input({ required: true }) textureName!: string;
 }
 
 describe('AtlasDisplayComponent', () => {
