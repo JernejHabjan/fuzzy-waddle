@@ -12,11 +12,15 @@ and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
 
 ### Supabase:
 
+#### Authentication
+
 - Setup Google OAuth2: https://supabase.io/docs/guides/auth#google
 - URL config:
   - Site URL: `https://fuzzy-waddle.onrender.com`
-  - Add `http://localhost:4200/`
-  - Add `https://fuzzy-waddle.onrender.com/`
+  - Redirect URLs
+    - Add `http://localhost:4200/`
+    - Add `https://fuzzy-waddle.onrender.com/`
+    - Add `https://jernejhabjan.github.io/fuzzy-waddle/`
 
 ## Deployment
 
@@ -36,7 +40,7 @@ and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
   - add health check: `/api/health`
   - Add supabase environmental variables: `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`
   - Add `CORS_ORIGIN` environmental
-    variable: `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io/fuzzy-waddle`
+    variable: `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io`
 
 ## Tiled
 
