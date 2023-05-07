@@ -10,7 +10,7 @@ import { MyConnectedSocket } from '../little-muncher/game-instance/game-state.ga
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN
+    origin: process.env.CORS_ORIGIN?.split(',')
   }
 })
 export class EventsGateway {

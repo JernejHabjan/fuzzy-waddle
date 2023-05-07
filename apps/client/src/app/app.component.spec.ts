@@ -1,12 +1,26 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ServerHealthService } from './shared/services/server-health.service';
+import { serverHealthServiceStub } from './shared/services/server-health.service.spec';
+import { AuthService } from './auth/auth.service';
+import { authServiceStub } from './auth/auth.service.spec';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
+      providers: [
+        {
+          provide: ServerHealthService,
+          useValue: serverHealthServiceStub
+        },
+        {
+          provide: AuthService,
+          useValue: authServiceStub
+        }
+      ]
     }).compileComponents();
   }));
 

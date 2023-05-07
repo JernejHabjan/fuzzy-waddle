@@ -11,7 +11,7 @@ export type MyConnectedSocket = Socket & { broadcast: { emit: (event: string, da
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN
+    origin: process.env.CORS_ORIGIN?.split(',')
   }
 })
 export class GameStateGateway {

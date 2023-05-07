@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 export class LittleMuncherComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;
   protected loading = false;
-  private spectatorDisconnectedSubscription!: Subscription;
+  private spectatorDisconnectedSubscription?: Subscription;
   protected toastData = {
     show: false,
     title: '',
@@ -41,7 +41,7 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
   async ngOnDestroy(): Promise<void> {
     await this.gameInstanceClientService.stopGame();
     this.spectateService.destroy();
-    this.spectatorDisconnectedSubscription.unsubscribe();
+    this.spectatorDisconnectedSubscription?.unsubscribe();
   }
 
   async ngOnInit(): Promise<void> {
