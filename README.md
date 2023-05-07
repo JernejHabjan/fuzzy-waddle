@@ -1,5 +1,8 @@
 # Fuzzy Waddle
 
+[Available on Render](https://fuzzy-waddle.onrender.com/)
+and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
+
 ## Setup dev environment
 
 ### Api
@@ -32,7 +35,8 @@
   - Start command in render.com: `node dist/apps/api/main.js`
   - add health check: `/api/health`
   - Add supabase environmental variables: `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`
-  - Add `CORS_ORIGIN` environmental variable: `https://fuzzy-waddle.onrender.com`
+  - Add `CORS_ORIGIN` environmental
+    variable: `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io/fuzzy-waddle`
 
 ## Tiled
 

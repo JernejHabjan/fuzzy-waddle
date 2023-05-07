@@ -19,7 +19,7 @@ export const GameInstanceGatewayStub = {
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN
+    origin: process.env.CORS_ORIGIN.split(',')
   }
 })
 export class GameInstanceGateway implements GameInstanceGatewayInterface {
