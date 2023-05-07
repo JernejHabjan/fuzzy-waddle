@@ -14,9 +14,10 @@ import {
 } from '@fuzzy-waddle/api-interfaces';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { GameInstanceGateway } from './game-instance.gateway';
+import { GameInstanceServiceInterface } from './game-instance.service.interface';
 
 @Injectable()
-export class GameInstanceService {
+export class GameInstanceService implements GameInstanceServiceInterface {
   constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
 
   openGameInstances: LittleMuncherGameInstance[] = [];

@@ -6,13 +6,23 @@ import {
   RoomEvent,
   SpectatorEvent
 } from '@fuzzy-waddle/api-interfaces';
+import { GameInstanceGatewayInterface } from './game-instance.gateway.interface';
+
+export const GameInstanceGatewayStub = {
+  emitRoom(roomEvent: RoomEvent) {
+    //
+  },
+  emitSpectator(spectatorEvent: SpectatorEvent) {
+    //
+  }
+} as GameInstanceGatewayInterface;
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN
   }
 })
-export class GameInstanceGateway {
+export class GameInstanceGateway implements GameInstanceGatewayInterface {
   @WebSocketServer()
   private server: Server;
 
