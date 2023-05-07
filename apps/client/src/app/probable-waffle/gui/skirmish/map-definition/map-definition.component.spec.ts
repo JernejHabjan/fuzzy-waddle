@@ -9,7 +9,7 @@ import { TriggerTestingComponent } from '../trigger/trigger.component.spec';
 
 @Component({ selector: 'fuzzy-waddle-map-definition', template: '' })
 export class MapDefinitionTestingComponent {
-  @Input() mapPlayerDefinition!: MapPlayerDefinition;
+  @Input({ required: true }) mapPlayerDefinition!: MapPlayerDefinition;
 }
 
 describe('MapDefinitionComponent', () => {

@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({ selector: 'fuzzy-waddle-modal', template: '' })
 export class ModalTestComponent {
-  @Input() modalConfig: unknown;
+  @Input({ required: true }) modalConfig: unknown;
 }
 
 describe('ModalComponent', () => {

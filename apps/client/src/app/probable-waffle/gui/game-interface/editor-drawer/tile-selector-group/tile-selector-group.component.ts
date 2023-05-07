@@ -8,9 +8,9 @@ import { TileAtlasFrame, TileFrame } from '../atlas-loader.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TileSelectorGroupComponent {
-  @Input() tileAtlasFrames: TileAtlasFrame[] | null = null;
-  @Input() selectedTile: number | null = null;
-  @Input() frameWithMetaFilter: (tileFrame: TileFrame) => boolean = () => true;
+  @Input({ required: true }) tileAtlasFrames: TileAtlasFrame[] | null = null;
+  @Input({ required: true }) selectedTile: number | null = null;
+  @Input({ required: true }) frameWithMetaFilter: (tileFrame: TileFrame) => boolean = () => true;
 
   getFiltered(tileFrame: TileFrame[]): TileFrame[] {
     return tileFrame.filter((frameWithMeta) => this.frameWithMetaFilter(frameWithMeta));

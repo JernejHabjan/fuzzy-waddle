@@ -8,7 +8,7 @@ import { MapPlayerDefinition } from '../skirmish.component';
 
 @Component({ selector: 'fuzzy-waddle-player-definition', template: '' })
 export class PlayerDefinitionTestingComponent {
-  @Input() selectedMap?: MapPlayerDefinition;
+  @Input({ required: true }) selectedMap?: MapPlayerDefinition;
 }
 
 describe('PlayerDefinitionComponent', () => {

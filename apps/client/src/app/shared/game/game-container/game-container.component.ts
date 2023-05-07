@@ -14,8 +14,12 @@ import { LittleMuncherGameInstance, LittleMuncherUserInfo } from '@fuzzy-waddle/
 export class GameContainerComponent implements OnDestroy {
   protected readonly GameContainerElement = GameContainerElement;
 
-  @Input() gameConfig!: Types.Core.GameConfig;
-  @Input() gameData!: BaseGameData<CommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>;
+  @Input({ required: true }) gameConfig!: Types.Core.GameConfig;
+  @Input({ required: true }) gameData!: BaseGameData<
+    CommunicatorService,
+    LittleMuncherGameInstance,
+    LittleMuncherUserInfo
+  >;
 
   private gameRef?: BaseGame;
 

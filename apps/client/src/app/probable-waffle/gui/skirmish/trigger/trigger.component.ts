@@ -8,7 +8,7 @@ import { MapPlayerDefinition } from '../skirmish.component';
   styleUrls: ['./trigger.component.scss']
 })
 export class TriggerComponent {
-  @Input() selectedMap?: MapPlayerDefinition;
+  @Input({ required: true }) selectedMap?: MapPlayerDefinition;
 
   constructor(private router: Router) {}
 
