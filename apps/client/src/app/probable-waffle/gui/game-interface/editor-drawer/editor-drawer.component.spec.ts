@@ -7,6 +7,10 @@ import { TileSelectorGroupTestingComponent } from './tile-selector-group/tile-se
 import { AtlasLoaderService } from './atlas-loader.service';
 import { ModalTestComponent } from '../../../../shared/components/modal/modal.component.spec';
 import { atlasLoaderServiceStub } from './atlas-loader.service.spec';
+import { Component } from '@angular/core';
+
+@Component({ selector: 'probable-waffle-editor-drawer', template: '' })
+export class EditorDrawerTestingComponent {}
 
 describe('EditorDrawerComponent', () => {
   let component: EditorDrawerComponent;

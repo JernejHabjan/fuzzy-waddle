@@ -9,31 +9,54 @@ export abstract class Actor implements IComponent {
   readonly name: string;
   destroyed = false;
   killed = false;
+  
   /**
-   * time until actor is finally destroyed from scene
+   * time until actor is finally destroyed from scene (in sec)
    */
   despawnTime = 10;
-  private started = false;
 
   protected constructor() {
     this.name = Utils.String.UUID();
     this.components = new ComponentService(this.name);
   }
 
-  init(): void {
+  /**
+   * initialize all mandatory actor properties that cannot be set in constructor
+   */
+  init() {
     // pass
   }
 
+  /**
+   * init all components for the actor
+   */
+  initComponents(): void {
+    // pass
+  }
+
+  /**
+   * as actor is fully initialized, init and start all components
+   */
   start(): void {
-    // as actor is fully initialized, init all components
     this.components.init();
   }
 
+  /**
+   * post initialize - to additionally prepare actor for world
+   */
+  postStart(): void {
+    // pass
+  }
+
+  registerGameObject(): void {
+    // todo call from registration engine
+    this.init();
+    this.initComponents();
+    this.start();
+    this.postStart();
+  }
+
   update(time: number, delta: number) {
-    if (!this.started) {
-      this.started = true;
-      this.start();
-    }
     this.components.update(time, delta);
   }
 

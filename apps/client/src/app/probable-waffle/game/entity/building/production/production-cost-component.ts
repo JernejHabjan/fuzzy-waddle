@@ -3,7 +3,7 @@ import { PaymentType } from '../payment-type';
 import { ResourceType } from '../../economy/resource/resource-type';
 
 export class CostData {
-  static NoCost = {
+  static NoCost: CostData = {
     costType: PaymentType.PayImmediately,
     resources: new Map(),
     productionTime: 0,
@@ -16,10 +16,6 @@ export class CostData {
     public resources: Map<ResourceType, number>,
     public refundFactor: number
   ) {}
-}
-
-export interface Costs {
-  productionCostComponent: ProductionCostComponent;
 }
 
 export class ProductionCostComponent implements IComponent {

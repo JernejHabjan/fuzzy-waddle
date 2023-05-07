@@ -1,7 +1,7 @@
 import { PawnInfoDefinition } from '../../actor/character';
-import { Gatherer, GathererComponent } from '../../actor/components/gatherer-component';
+import { GathererComponent } from '../../actor/components/gatherer-component';
 import { PlayerCharacter } from '../../actor/player-character';
-import { Builder, BuilderComponent } from '../../actor/components/builder-component';
+import { BuilderComponent } from '../../actor/components/builder-component';
 import { Barracks } from '../buildings/barracks';
 import { Mine } from '../buildings/mine';
 
@@ -24,14 +24,13 @@ export const WorkerDefinition: PawnInfoDefinition = {
   }
 };
 
-export class Worker extends PlayerCharacter implements Builder, Gatherer {
+export class Worker extends PlayerCharacter {
   pawnDefinition: PawnInfoDefinition = WorkerDefinition;
-  builderComponent!: BuilderComponent;
-  gathererComponent!: GathererComponent;
 
-  override init() {
-    super.init();
-    this.builderComponent = this.components.addComponent(new BuilderComponent(this, [Barracks], true, 10));
-    this.gathererComponent = this.components.addComponent(new GathererComponent(this, [Mine], 100));
+  override initComponents() {
+    super.initComponents();
+
+    this.components.addComponent(new BuilderComponent(this, [Barracks], true, 10));
+    this.components.addComponent(new GathererComponent(this, [Mine], 100));
   }
 }

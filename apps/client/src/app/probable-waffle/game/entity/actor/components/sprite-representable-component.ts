@@ -5,13 +5,6 @@ import { TransformComponent } from './transformable-component';
 import { Actor } from '../actor';
 import { GameObjects, Scene } from 'phaser';
 
-export interface ISpriteRepresentable {
-  spriteRepresentationComponent: SpriteRepresentationComponent;
-}
-
-export const hasSpriteRepresentationComponent = (o: object): o is ISpriteRepresentable =>
-  (o as ISpriteRepresentable).spriteRepresentationComponent !== undefined;
-
 export class SpriteRepresentationComponent implements IComponent {
   scene: Scene;
   sprite: GameObjects.Sprite;

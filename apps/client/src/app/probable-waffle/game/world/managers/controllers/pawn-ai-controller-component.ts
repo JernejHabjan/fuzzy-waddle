@@ -9,10 +9,6 @@ import { GathererComponent } from '../../../entity/actor/components/gatherer-com
 import { PawnAiBlackboard } from '../../../entity/character/ai/pawn-ai-blackboard';
 import { PawnBehaviorTree } from '../../../entity/character/ai/behavior-trees';
 
-export interface IPawnAiControllable {
-  pawnAiControllerComponent: PawnAiControllerComponent;
-}
-
 export class PawnAiControllerComponent implements IComponent {
   // declare queue of OrderData
   orders: Queue<OrderData> = new Queue<OrderData>();
@@ -38,7 +34,7 @@ export class PawnAiControllerComponent implements IComponent {
     if (!order.orderType) {
       return;
     }
-    this.addOrder(order);
+    this.orders.enqueueBack(order);
   }
 
   insertOrder(order: OrderData): void {

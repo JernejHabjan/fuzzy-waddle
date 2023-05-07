@@ -1,7 +1,10 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
-import { GameContainerElement, probableWaffleGameConfig } from '../../../game/world/const/game-config';
-import { Game } from 'phaser';
+import { probableWaffleGameConfig } from '../../../game/world/const/game-config';
+import { BaseGameData } from '../../../../shared/game/phaser/game/base-game-data';
+import { LittleMuncherGameInstance, LittleMuncherUserInfo } from '@fuzzy-waddle/api-interfaces';
+import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
+import { AuthService } from '../../../../auth/auth.service';
 
 @Component({
   selector: 'fuzzy-waddle-game',
@@ -9,41 +12,30 @@ import { Game } from 'phaser';
   styleUrls: ['./probable-waffle-game.component.scss']
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
-  GameContainerElement = GameContainerElement;
-  gameRef!: Game;
+  protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
   drawerWidth = '150px';
   displayDrawers = true; // todo
+  gameData?: BaseGameData<CommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>; // todo
 
-  constructor(private ngZone: NgZone) {}
-
-  private _gameContainerElement!: HTMLDivElement;
-
-  @ViewChild('gameContainerElement')
-  get gameContainerElement(): HTMLDivElement {
-    return this._gameContainerElement;
-  }
-
-  set gameContainerElement(value: HTMLDivElement) {
-    this._gameContainerElement = value;
-    this.setupGameContainer();
-  }
+  constructor(private readonly communicatorService: CommunicatorService, private readonly authService: AuthService) {}
 
   ngOnDestroy(): void {
-    this.gameRef.destroy(true);
     SceneCommunicatorService.unsubscribe();
   }
 
   ngOnInit(): void {
     SceneCommunicatorService.setup();
+    const gameSessionInstance = new LittleMuncherGameInstance(); // todo later use ProbableWaffleGameInstance
+    this.gameData = {
+      gameInstance: gameSessionInstance,
+      communicator: this.communicatorService,
+      user: new LittleMuncherUserInfo(this.authService.userId) // todo later use ProbableWaffleUserInfo
+    };
+
+    // todo properly listen with communicatorService
 
     if (window.innerWidth < 800) {
       this.displayDrawers = false; // todo for now
     }
-  }
-
-  private setupGameContainer() {
-    this.ngZone.runOutsideAngular(() => {
-      this.gameRef = new Game(probableWaffleGameConfig);
-    });
   }
 }

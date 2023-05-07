@@ -1,23 +1,23 @@
 <div
-  class='align-items-center d-flex flex-column justify-content-center map-display-center ml-auto mr-auto overflow-auto'
+  class="align-items-center d-flex flex-column justify-content-center map-display-center ml-auto mr-auto overflow-auto"
 >
   <!-- dropdown to select a map -->
-  <div class='d-flex flex-wrap justify-content-center align-items-start'>
+  <div class="d-flex flex-wrap justify-content-center align-items-start">
     <fuzzy-waddle-map-definition
-      class='p-4 card-container'
+      class="card-container"
       #mapDefinition
-      (mapPlayerDefinitionChange)='mapChanged($event)'
-      [mapPlayerDefinition]='selectedMap'
+      (mapPlayerDefinitionChange)="mapChanged($event)"
+      [mapPlayerDefinition]="selectedMap"
     ></fuzzy-waddle-map-definition>
     <fuzzy-waddle-player-definition
-      class='p-4 card-container'
-      (playerJoined)='playerCountChanged()'
-      (playerRemoved)='playerRemoved($event)'
-      [selectedMap]='selectedMap'
+      class="card-container"
+      (playerJoined)="playerCountChanged()"
+      (playerRemoved)="playerRemoved($event)"
+      [selectedMap]="selectedMap"
     ></fuzzy-waddle-player-definition>
     <fuzzy-waddle-game-mode-definition
-      class='p-4 card-container'
-      (gameModeLobbyChange)='gameModeLobby = $event'
+      class="card-container"
+      (gameModeLobbyChange)="gameModeLobby = $event"
     ></fuzzy-waddle-game-mode-definition>
   </div>
 </div>

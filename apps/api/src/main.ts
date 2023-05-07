@@ -32,8 +32,9 @@ async function bootstrap() {
   }
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN
+    origin: process.env.CORS_ORIGIN?.split(',')
   });
+  // https://docs.nestjs.com/security/helmet
   app.use(helmet());
 
   await app.listen(port);

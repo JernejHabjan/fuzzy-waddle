@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
 import { DataAccessService } from '../data-access/data-access.service';
+import { AuthServiceInterface } from './auth.service.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements AuthServiceInterface {
   processing: Promise<unknown> | null = null;
 
   constructor(private dataAccessService: DataAccessService) {}
@@ -63,9 +64,6 @@ export class AuthService {
   async autoSignIn(): Promise<Session | null> {
     const signInPromise = (this.processing = this.dataAccessService.supabase.auth.getSession());
     const { data, error } = await signInPromise;
-    // if (data) {
-    //   console.log('data', data);
-    // }
 
     if (error) {
       console.error('error', error);

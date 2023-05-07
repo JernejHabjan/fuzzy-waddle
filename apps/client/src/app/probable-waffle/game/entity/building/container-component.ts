@@ -2,10 +2,6 @@ import { IComponent } from '../../core/component.service';
 import { Actor } from '../actor/actor';
 import { SpriteRepresentationComponent } from '../actor/components/sprite-representable-component';
 
-export interface CharacterContainer {
-  containerComponent: ContainerComponent;
-}
-
 // apply to resource source that needs actors to enter to gather
 export class ContainerComponent implements IComponent {
   containedActors = new Set<Actor>();

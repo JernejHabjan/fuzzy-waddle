@@ -15,10 +15,6 @@ export type ProductionQueueItem = {
   costData: CostData;
 };
 
-export interface Producer {
-  productionComponent: ProductionComponent;
-}
-
 export class ProductionComponent implements IComponent {
   productionQueues: ProductionQueue[] = [];
   rallyPoint?: RallyPoint;
@@ -57,6 +53,9 @@ export class ProductionComponent implements IComponent {
 
         let productionCostPaid = false;
         if (costData.costType == PaymentType.PayOverTime) {
+          if (!this.ownerComponent.playerController) {
+            throw new Error('Player controller not found');
+          }
           // get player resources and pay for production
           const playerResourcesComponent =
             this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
@@ -142,13 +141,9 @@ export class ProductionComponent implements IComponent {
       z: tilePlacementData.z
     };
 
-    const actor = new actorClass(
-      this.spriteRepresentationComponent.scene,
-      spawnPosition,
-      this.ownerComponent.playerController
-    );
-    actor.init(); // todo should be called by registration engine
-    actor.start(); // todo should be called by registration engine
+    const actor = new actorClass(this.spriteRepresentationComponent.scene, spawnPosition);
+    actor.registerGameObject(); // todo should be called by registration engine
+    actor.possess(this.ownerComponent.playerController);
     return actor;
   }
 
@@ -182,6 +177,7 @@ export class ProductionComponent implements IComponent {
     }
 
     // check if player has enough resources
+    if (!this.ownerComponent.playerController) throw new Error('Player controller not found');
     const playerResourcesComponent =
       this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
     return playerResourcesComponent.canPayAllResources(item.costData.resources);

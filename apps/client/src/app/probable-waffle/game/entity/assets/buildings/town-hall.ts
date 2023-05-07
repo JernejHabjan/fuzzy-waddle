@@ -1,12 +1,12 @@
 import { Building, BuildingInfoDefinition } from './building';
-import { Producer, ProductionComponent } from '../../building/production/production-component';
+import { ProductionComponent } from '../../building/production/production-component';
 import { Warrior } from '../characters/warrior';
 import { Worker } from '../characters/worker';
 import { CostData } from '../../building/production/production-cost-component';
 import { PaymentType } from '../../building/payment-type';
 import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { CharacterContainer, ContainerComponent } from '../../building/container-component';
-import { ResourceDrain, ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
+import { ContainerComponent } from '../../building/container-component';
+import { ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
 
 export const TownHallDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -52,16 +52,14 @@ export const TownHallDefinition: BuildingInfoDefinition = {
   }
 };
 
-export class TownHall extends Building implements Producer, CharacterContainer, ResourceDrain {
-  productionComponent!: ProductionComponent;
-  resourceDrainComponent!: ResourceDrainComponent;
+export class TownHall extends Building {
   buildingInfoDefinition: BuildingInfoDefinition = TownHallDefinition;
-  containerComponent!: ContainerComponent;
 
-  override init() {
-    super.init();
-    this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
-    this.containerComponent = this.components.addComponent(new ContainerComponent(10));
-    this.resourceDrainComponent = this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
+  override initComponents() {
+    super.initComponents();
+
+    this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
+    this.components.addComponent(new ContainerComponent(10));
+    this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
   }
 }

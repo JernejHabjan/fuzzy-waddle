@@ -11,13 +11,10 @@ import { GameModeSkirmish } from '../../../world/managers/game-mode/game-modes/g
 import { GameplayLibrary } from '../../../library/gameplay-library';
 import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
 import { OwnerComponent } from './owner-component';
+import { SpriteRepresentationComponent } from './sprite-representable-component';
 
 export type ActorAbleToBeBuilt = Barracks | Mine;
 export type ActorAbleToBeBuiltClass = typeof Barracks | typeof Mine;
-
-export interface Builder {
-  builderComponent: BuilderComponent;
-}
 
 // Allows the actor to construct building
 export class BuilderComponent implements IComponent {
@@ -90,7 +87,13 @@ export class BuilderComponent implements IComponent {
 
     // spawn building
     const ownerController = this.actor.components.findComponent(OwnerComponent);
-    const building = gameMode.spawnActorForPlayer(buildingClass, ownerController.playerController, targetLocation);
+    const scene = this.actor.components.findComponent(SpriteRepresentationComponent).scene;
+    const building = gameMode.spawnActorForPlayer(
+      scene,
+      buildingClass,
+      targetLocation,
+      ownerController.playerController
+    );
 
     if (!building) {
       console.log('building could not be spawned');

@@ -9,6 +9,6 @@ export interface ChatMessage {
   createdAt: Date;
 }
 
-export enum GatewayEvent {
+export enum GatewayChatEvent {
   CHAT_MESSAGE = 'chat-message'
 }

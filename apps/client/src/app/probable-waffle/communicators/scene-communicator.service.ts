@@ -39,9 +39,7 @@ export class SceneCommunicatorService {
   }
 
   static unsubscribe() {
-    for (const sub of SceneCommunicatorService.subscriptions) {
-      sub.unsubscribe();
-    }
+    SceneCommunicatorService.subscriptions.forEach((sub) => sub.unsubscribe());
     SceneCommunicatorService.subscriptions = [];
   }
 }

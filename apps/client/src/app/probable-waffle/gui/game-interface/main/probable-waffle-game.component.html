@@ -1,20 +1,22 @@
-<div
-  *ngIf="displayDrawers"
-  [ngStyle]="{
+<ng-container *ngIf="gameData">
+  <fuzzy-waddle-game-container [gameConfig]="probableWaffleGameConfig" [gameData]="gameData"/>
+  <div
+    *ngIf="displayDrawers"
+    [ngStyle]="{
     width: drawerWidth
   }"
-  class="position-absolute h-100 overflow-auto"
-  style="top: 0; background: #fffecf"
->
-  <fuzzy-waddle-editor-drawer></fuzzy-waddle-editor-drawer>
-</div>
-<div #gameContainerElement id="{{ GameContainerElement }}"></div>
-<div
-  *ngIf="displayDrawers"
-  [ngStyle]="{
+    class="position-absolute h-100 overflow-auto"
+    style="top: 0; background: #fffecf"
+  >
+    <probable-waffle-editor-drawer/>
+  </div>
+  <div
+    *ngIf="displayDrawers"
+    [ngStyle]="{
     width: 'calc(100% - ' + drawerWidth + ')'
   }"
-  style="position: absolute; right: 0; bottom: 0; height: 100px; background: #fffecf"
->
-  <fuzzy-waddle-selection-group></fuzzy-waddle-selection-group>
-</div>
+    style="position: absolute; right: 0; bottom: 0; height: 100px; background: #fffecf"
+  >
+    <probable-waffle-selection-group/>
+  </div>
+</ng-container>

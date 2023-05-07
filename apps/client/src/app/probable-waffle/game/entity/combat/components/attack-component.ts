@@ -6,10 +6,6 @@ import HealthComponent from './health-component';
 import { RepresentableActor } from '../../actor/representable-actor';
 import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
 
-export interface Attacker {
-  attackComponent: AttackComponent;
-}
-
 export class AttackComponent implements IComponent {
   // when cooldown has expired
   onCooldownReady: EventEmitter<Actor> = new EventEmitter<Actor>();
@@ -46,9 +42,8 @@ export class AttackComponent implements IComponent {
 
     if (attack.projectileClass) {
       const projectile = new attack.projectileClass(this.spriteRepresentationComponent.scene, this.owner); // todo here it should be getWorld.SpawnActor<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
-      projectile.init(); // todo should be called by registration engine
-      projectile.start(); // todo should be called by registration engine
-      projectile.fireAtActor(enemy); // todo should be triggered only after init and start
+      projectile.registerGameObject(); // todo should be called by registration engine
+      projectile.fireAtActor(enemy);
     } else {
       const enemyHealthComponent = enemy.components.findComponent(HealthComponent);
       enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);

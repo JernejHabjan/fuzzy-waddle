@@ -17,10 +17,10 @@
         "inlineStyleLanguage": "scss",
         "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets", "apps/client/src/manifest.webmanifest"],
         "styles": ["apps/client/src/styles/styles.scss"],
-        "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
+        "scripts": [],
         "serviceWorker": true,
         "ngswConfigPath": "apps/client/ngsw-config.json",
-        "allowedCommonJsDependencies": ["phaser"]
+        "allowedCommonJsDependencies": ["phaser", "websocket", "cross-fetch"]
       },
       "configurations": {
         "production": {
@@ -74,13 +74,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/client/**/*.ts", "apps/client/**/*.html"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/client/jest.config.ts",

@@ -13,6 +13,7 @@ export interface CreateSceneFromObjectConfig {
    * The scene's create callback.
    */
   create?: Types.Scenes.SceneCreateCallback;
+  destroy?: () => void;
   /**
    * Any additional properties, which will be copied to the Scene after it's created (except `data` or `sys`).
    */

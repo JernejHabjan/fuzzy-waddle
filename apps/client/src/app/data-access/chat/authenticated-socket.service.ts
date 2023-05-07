@@ -8,9 +8,19 @@ import { IAuthenticatedSocketService } from './authenticated-socket.service.inte
   providedIn: 'root'
 })
 export class AuthenticatedSocketService implements IAuthenticatedSocketService {
+  private authenticatedSocket?: Socket;
+
   constructor(private readonly authService: AuthService) {}
 
-  createAuthSocket() {
+  get socket(): Socket | undefined {
+    if (!this.authenticatedSocket && this.authService.accessToken) {
+      this.authenticatedSocket = this.createAuthSocket();
+    }
+
+    return this.authenticatedSocket;
+  }
+
+  private createAuthSocket() {
     return new Socket({
       ...environment.socketIoConfig,
       options: {

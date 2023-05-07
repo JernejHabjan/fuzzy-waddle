@@ -2,12 +2,12 @@ import { PlayerController } from '../../../world/managers/controllers/player-con
 import { IComponent } from '../../../core/component.service';
 import { Actor } from '../actor';
 
-export interface Ownable {
-  ownerComponent: OwnerComponent;
-}
-
 export class OwnerComponent implements IComponent {
-  constructor(public playerController: PlayerController) {}
+  public playerController?: PlayerController;
+
+  constructor(playerController?: PlayerController) {
+    this.playerController = playerController;
+  }
 
   init(): void {
     // pass
@@ -15,15 +15,19 @@ export class OwnerComponent implements IComponent {
 
   isSameTeamAsActor(actor: Actor): boolean {
     const ownerComponent = actor.components.findComponentOrNull(OwnerComponent);
-    if (!ownerComponent) {
-      return false;
-    }
+    if (!ownerComponent) return false;
+    if (!this.playerController || !ownerComponent.playerController) return false;
     return (
       ownerComponent.playerController.playerState.teamInfo.teamId === this.playerController.playerState.teamInfo.teamId
     );
   }
 
-  isSameTeamAsController(controller: PlayerController): boolean {
+  isSameTeamAsController(controller?: PlayerController): boolean {
+    if (!controller || !this.playerController) return false;
     return controller.playerState.teamInfo.teamId === this.playerController.playerState.teamInfo.teamId;
+  }
+
+  possess(playerController: PlayerController) {
+    this.playerController = playerController;
   }
 }

@@ -11,6 +11,7 @@ import { SelectionDisplayComponent } from '../selection/selection-display/select
 import { AtlasDisplayComponent } from '../editor-drawer/atlas-display/atlas-display.component';
 import { SelectionGroupComponent } from '../selection/selection-group/selection-group.component';
 import { ComponentsModule } from '../../../../shared/components/components.module';
+import { GameContainerModule } from '../../../../shared/game/game-container/game-container.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,6 @@ import { ComponentsModule } from '../../../../shared/components/components.modul
     AtlasDisplayComponent,
     SelectionGroupComponent
   ],
-  imports: [CommonModule, FormsModule, ProbableWaffleGameRoutingModule, ComponentsModule]
+  imports: [CommonModule, FormsModule, ProbableWaffleGameRoutingModule, ComponentsModule, GameContainerModule]
 })
 export class ProbableWaffleGameModule {}

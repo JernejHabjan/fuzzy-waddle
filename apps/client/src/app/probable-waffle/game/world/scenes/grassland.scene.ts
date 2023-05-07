@@ -4,7 +4,7 @@ import {
   GameObjectSelection,
   SceneCommunicatorService
 } from '../../../communicators/scene-communicator.service';
-import { CreateSceneFromObjectConfig } from './interfaces/scene-config.interface';
+import { CreateSceneFromObjectConfig } from '../../../../shared/game/phaser/scene/scene-config.interface';
 import { InputHandler } from '../managers/controllers/input/input.handler';
 import { ScaleHandler } from '../map/scale.handler';
 import { MapDefinitions, TileDefinitions } from '../const/map-size.info';
@@ -34,7 +34,7 @@ import { GameObjectsHelper } from '../map/game-objects-helper';
 import { LpcAnimationHelper } from '../../entity/character/animation/lpc-animation-helper';
 import { Actor } from '../../entity/actor/actor';
 import { RepresentableActor } from '../../entity/actor/representable-actor';
-import { hasSpriteRepresentationComponent } from '../../entity/actor/components/sprite-representable-component';
+import { SpriteRepresentationComponent } from '../../entity/actor/components/sprite-representable-component';
 import { PlayerController } from '../managers/controllers/player-controller';
 import { Barracks } from '../../entity/assets/buildings/barracks';
 import { PlayerResourcesComponent } from '../managers/controllers/player-resources-component';
@@ -43,6 +43,12 @@ import { TownHall } from '../../entity/assets/buildings/town-hall';
 import { Minerals } from '../../entity/assets/resources/minerals';
 import { Worker } from '../../entity/assets/characters/worker';
 import { GameObjects, Geom, Input, Scale, Scene } from 'phaser';
+import { ResourceSourceComponent } from '../../entity/economy/resource/resource-source-component';
+import { ResourceDrainComponent } from '../../entity/economy/resource/resource-drain-component';
+import { GathererComponent } from '../../entity/actor/components/gatherer-component';
+import HealthComponent from '../../entity/combat/components/health-component';
+import { DamageTypes } from '../../entity/combat/damage-types';
+import { BuilderComponent } from '../../entity/actor/components/builder-component';
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -362,7 +368,8 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
     // });
     const children = this.warriorGroup;
     return children.filter((o) => {
-      const bounds = o.spriteRepresentationComponent.sprite.getBounds();
+      const sprite = o.components.findComponent(SpriteRepresentationComponent).sprite;
+      const bounds = sprite.getBounds();
       return this.multiSelectionHandler.overlapsBounds(rect, bounds);
     });
   }
@@ -377,7 +384,8 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
         o.spriteInstance.clearTint();
       });
       selected.forEach((s) => {
-        s.spriteRepresentationComponent.sprite.setTint(0x0000ff);
+        const sprite = s.components.findComponent(SpriteRepresentationComponent).sprite;
+        sprite.setTint(0x0000ff);
       });
     });
     // todo move this
@@ -388,9 +396,7 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
         o.spriteInstance.clearTint();
       });
       this.selected.forEach((s) => {
-        if (hasSpriteRepresentationComponent(s)) {
-          s.spriteRepresentationComponent.sprite.setTint(0xff0000);
-        }
+        s.components.findComponentOrNull(SpriteRepresentationComponent)?.sprite.setTint(0xff0000);
       });
 
       // extract sprite frame name
@@ -519,21 +525,25 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
     const townHall = this.placeTownHall({ tileXY: { x: 1, y: 4 }, z: 0 });
     const minerals = this.placeMinerals({ tileXY: { x: 1, y: 6 }, z: 0 });
 
-    setTimeout(() => {
-      // test for periodically take damage
-      // window.setInterval(() => {
-      //   warrior.healthComponent.takeDamage(10, DamageTypes.DamageTypeNormal);
-      // }, 300);
+    // test for periodically take damage
+    const warriorHealthComponent = warrior.components.findComponent(HealthComponent);
+    window.setInterval(() => {
+      // disabled for now
+      const takeDamage = false;
+      if (takeDamage) {
+        warriorHealthComponent.takeDamage(10, DamageTypes.DamageTypeNormal);
+      }
+    }, 300);
 
-      minerals.resourceSourceComponent.extractResources(worker, 10); // todo where to get this value from
-      townHall.resourceDrainComponent.returnResources(
-        worker,
-        worker.gathererComponent.carriedResourceType as ResourceType,
-        worker.gathererComponent.carriedResourceAmount
-      );
+    const resourceSource = minerals.components.findComponent(ResourceSourceComponent);
+    resourceSource.extractResources(worker, 10); // todo where to get this value from
+    const resourceDrain = townHall.components.findComponent(ResourceDrainComponent);
+    const gatherer = worker.components.findComponent(GathererComponent);
+    resourceDrain.returnResources(worker, gatherer.carriedResourceType as ResourceType, gatherer.carriedResourceAmount);
 
-      // worker.builderComponent.beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 }); // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer
-    }, 500);
+    const builderComponent = worker.components.findComponent(BuilderComponent);
+    // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer
+    builderComponent.beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 });
 
     // todo this.demoPlaceWarriors();
   }
@@ -552,36 +562,40 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {
-    const warrior = new Warrior(this, tilePlacementData, this.playerController);
-    warrior.init(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior) // todo it also registers on "update" hook
+    const warrior = new Warrior(this, tilePlacementData);
+    warrior.registerGameObject(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior) // todo it also registers on "update" hook
+    warrior.possess(this.playerController);
     this.warriorGroup.push(warrior);
     return warrior;
   }
 
   private placeWorker(tilePlacementData: TilePlacementData) {
-    const worker = new Worker(this, tilePlacementData, this.playerController);
-    worker.init(); // todo should be called by registration engine -
+    const worker = new Worker(this, tilePlacementData);
+    worker.registerGameObject(); // todo should be called by registration engine -
+    worker.possess(this.playerController);
     this.warriorGroup.push(worker);
     return worker;
   }
 
   private placeBarracks(tilePlacementData: TilePlacementData) {
-    const barracks = new Barracks(this, tilePlacementData, this.playerController);
-    barracks.init(); // todo should be called by registration engine
+    const barracks = new Barracks(this, tilePlacementData);
+    barracks.registerGameObject(); // todo should be called by registration engine
+    barracks.possess(this.playerController);
     this.warriorGroup.push(barracks); // todo
     return barracks;
   }
 
   private placeTownHall(tilePlacementData: TilePlacementData) {
-    const townHall = new TownHall(this, tilePlacementData, this.playerController);
-    townHall.init(); // todo should be called by registration engine
+    const townHall = new TownHall(this, tilePlacementData);
+    townHall.registerGameObject(); // todo should be called by registration engine
+    townHall.possess(this.playerController);
     this.warriorGroup.push(townHall); // todo
     return townHall;
   }
 
   private placeMinerals(tilePlacementData: TilePlacementData) {
     const minerals = new Minerals(this, tilePlacementData);
-    minerals.init(); // todo should be called by registration engine
+    minerals.registerGameObject(); // todo should be called by registration engine
     this.warriorGroup.push(minerals); // todo
     return minerals;
   }

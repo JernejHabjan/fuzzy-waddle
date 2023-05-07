@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentsModule } from './shared/components/components.module';
 import { AccessTokenInterceptor } from './auth/access-token.interceptor';
+import { LoaderComponent } from './shared/loader/loader.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,7 +31,8 @@ import { AccessTokenInterceptor } from './auth/access-token.interceptor';
     SocketIoModule.forRoot(environment.socketIoConfig),
     FontAwesomeModule,
     NgbModule,
-    ComponentsModule
+    ComponentsModule,
+    LoaderComponent
   ],
   providers: [AuthGuard, { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true }],
   bootstrap: [AppComponent]

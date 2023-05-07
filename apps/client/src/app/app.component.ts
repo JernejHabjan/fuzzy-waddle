@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth.service';
+import { ServerHealthService } from './shared/services/server-health.service';
 
 @Component({
   selector: 'fuzzy-waddle-root',
@@ -7,9 +8,9 @@ import { AuthService } from './auth/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(protected authService: AuthService) {}
+  constructor(protected readonly authService: AuthService, private readonly serverHealthService: ServerHealthService) {}
 
   async ngOnInit() {
-    await this.authService.autoSignIn();
+    await Promise.all([this.serverHealthService.checkHealth(), this.authService.autoSignIn()]);
   }
 }

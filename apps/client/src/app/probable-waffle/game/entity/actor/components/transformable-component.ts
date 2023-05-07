@@ -3,10 +3,6 @@ import { SpriteHelper, SpriteWorldPlacementInfo } from '../sprite-helper';
 import { IComponent } from '../../../core/component.service';
 import { EventEmitter } from '@angular/core';
 
-export interface ITransformable {
-  transformComponent: TransformComponent;
-}
-
 export type TransformChange = [TilePlacementData, SpriteWorldPlacementInfo];
 
 export class TransformComponent implements IComponent {

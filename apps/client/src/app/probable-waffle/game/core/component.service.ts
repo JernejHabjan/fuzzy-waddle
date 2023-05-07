@@ -9,7 +9,6 @@ export interface IComponent {
 
 export default class ComponentService {
   private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObjectName
-  private queuedForStart: IComponent[] = [];
 
   constructor(private gameObjectName: string) {}
 
@@ -35,7 +34,7 @@ export default class ComponentService {
           component.init();
         }
         if (component.start) {
-          this.queuedForStart.push(component);
+          component.start();
         }
       }
     }
@@ -59,12 +58,6 @@ export default class ComponentService {
   }
 
   update(time: number, delta: number) {
-    while (this.queuedForStart.length) {
-      const component = this.queuedForStart.shift();
-      if (component?.start) {
-        component.start();
-      }
-    }
     const entries = this.componentsByGameObject.entries();
     for (const [, value] of entries) {
       for (const component of value) {

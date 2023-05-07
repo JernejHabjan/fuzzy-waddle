@@ -8,10 +8,6 @@ import { ConstructionStateEnum } from './construction-state-enum';
 import HealthComponent from '../../combat/components/health-component';
 import { EventEmitter } from '@angular/core';
 
-export interface Constructable {
-  constructionSiteComponent: ConstructionSiteComponent;
-}
-
 export type ConstructionSiteDefinition = {
   constructionCosts: Map<ResourceType, number>;
   // Whether to check collision for each grid cell
@@ -35,15 +31,11 @@ export class ConstructionSiteComponent implements IComponent {
   public constructionStarted: EventEmitter<number> = new EventEmitter<number>();
   public constructionProgressChanged: EventEmitter<number> = new EventEmitter<number>();
   private remainingConstructionTime = 0;
-  private playerResourcesComponent: PlayerResourcesComponent;
   private state: ConstructionStateEnum = ConstructionStateEnum.NotStarted;
   private assignedBuilders: Actor[] = [];
   private onConstructionFinished: EventEmitter<Actor> = new EventEmitter<Actor>();
 
-  constructor(private owner: Actor, private constructionSiteDefinition: ConstructionSiteDefinition) {
-    const ownerComponent = this.owner.components.findComponent(OwnerComponent);
-    this.playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
-  }
+  constructor(private owner: Actor, private constructionSiteDefinition: ConstructionSiteDefinition) {}
 
   init(): void {
     // pass
@@ -91,11 +83,13 @@ export class ConstructionSiteComponent implements IComponent {
       throw new Error('ConstructionSiteComponent can only be started once');
     }
     if (this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately) {
-      const canAfford = this.playerResourcesComponent.canPayAllResources(
-        this.constructionSiteDefinition.constructionCosts
-      );
+      const ownerComponent = this.owner.components.findComponent(OwnerComponent);
+      if (!ownerComponent.playerController) throw new Error('PlayerController not found');
+      const playerResourcesComponent =
+        ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
+      const canAfford = playerResourcesComponent.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
       if (canAfford) {
-        this.playerResourcesComponent.payAllResources(this.constructionSiteDefinition.constructionCosts);
+        playerResourcesComponent.payAllResources(this.constructionSiteDefinition.constructionCosts);
       } else {
         throw new Error('Cannot afford building costs');
       }
@@ -122,6 +116,10 @@ export class ConstructionSiteComponent implements IComponent {
     }
     // refund resources
 
+    const ownerComponent = this.owner.components.findComponent(OwnerComponent);
+    if (!ownerComponent.playerController) throw new Error('PlayerController not found');
+    const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
+
     const TimeRefundFactor =
       this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately
         ? this.getProgressPercentage()
@@ -134,7 +132,7 @@ export class ConstructionSiteComponent implements IComponent {
       refundCosts.set(key, value * actualRefundFactor);
     });
 
-    this.playerResourcesComponent.addResources(refundCosts);
+    playerResourcesComponent.addResources(refundCosts);
 
     // destroy building
     this.owner.kill();

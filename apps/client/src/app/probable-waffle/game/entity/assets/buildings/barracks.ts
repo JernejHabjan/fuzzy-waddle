@@ -1,11 +1,11 @@
 import { Building, BuildingInfoDefinition } from './building';
-import { Producer, ProductionComponent } from '../../building/production/production-component';
+import { ProductionComponent } from '../../building/production/production-component';
 import { Warrior, WarriorDefinition } from '../characters/warrior';
 import { Worker } from '../characters/worker';
 import { CostData } from '../../building/production/production-cost-component';
 import { PaymentType } from '../../building/payment-type';
 import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { CharacterContainer, ContainerComponent } from '../../building/container-component';
+import { ContainerComponent } from '../../building/container-component';
 
 export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -51,16 +51,19 @@ export const BarracksDefinition: BuildingInfoDefinition = {
   }
 };
 
-export class Barracks extends Building implements Producer, CharacterContainer {
-  productionComponent!: ProductionComponent;
+export class Barracks extends Building {
   buildingInfoDefinition: BuildingInfoDefinition = BarracksDefinition;
-  containerComponent!: ContainerComponent;
+  private productionComponent!: ProductionComponent;
 
-  override init() {
-    super.init();
+  override initComponents() {
+    super.initComponents();
+
     this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
+    this.components.addComponent(new ContainerComponent(10));
+  }
 
-    this.containerComponent = this.components.addComponent(new ContainerComponent(10));
+  override postStart() {
+    super.postStart();
 
     setTimeout(() => {
       this.productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });

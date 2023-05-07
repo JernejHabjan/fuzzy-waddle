@@ -1,25 +1,19 @@
 <fuzzy-waddle-home-nav></fuzzy-waddle-home-nav>
-<div class='align-items-start d-flex editor justify-content-center'>
-  <div class='p-4 card-container'>
-    <div class='card-title'>Create a new map</div>
-    <fuzzy-waddle-map-selector (selectedMapChange)='startMap($event)'></fuzzy-waddle-map-selector>
-    <div style='margin-top: 40px; text-align: left'>
-      <button type='button' class='btn btn-outline-primary' (click)='leave()'>Leave</button>
+<div class="align-items-start d-flex editor justify-content-center">
+  <div class="card-container">
+    <div class="card-title">Create a new map</div>
+    <fuzzy-waddle-map-selector (selectedMapChange)="startMap($event)" />
+    <div style="margin-top: 40px; text-align: left">
+      <button type="button" class="btn btn-outline-primary" (click)="leave()">Leave</button>
     </div>
   </div>
-  <div class='p-4 card-container'>
-    <div class='text-center card-title'>Load your map</div>
-    <div class='d-flex flex-wrap' style='max-width: 1000px'>
-      <div *ngFor='let map of maps' class='align-items-center d-flex map-tile m-3 p-3'>
+  <div class="card-container">
+    <div class="text-center card-title">Load your map</div>
+    <div class="d-flex flex-wrap" style="max-width: 1000px">
+      <div *ngFor="let map of maps" class="align-items-center d-flex map-tile m-3 p-3">
         <div>{{ map.name }}</div>
-        <img
-          alt='map preview'
-          class='m-4'
-          height='100'
-          src='{{ map.imageSrc }}'
-          width='100'
-        />
-        <button (click)='loadMap(map)' class='btn btn-primary' type='button'>Load</button>
+        <img alt="map preview" class="m-4" height="100" src="{{ map.imageSrc }}" width="100" />
+        <button (click)="loadMap(map)" class="btn btn-primary" type="button">Load</button>
       </div>
     </div>
   </div>

@@ -1,11 +1,10 @@
 import { RepresentableActor, RepresentableActorDefinition } from '../../actor/representable-actor';
 import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { Ownable, OwnerComponent } from '../../actor/components/owner-component';
+import { OwnerComponent } from '../../actor/components/owner-component';
 import { PlayerController } from '../../../world/managers/controllers/player-controller';
-import { CostData, Costs, ProductionCostComponent } from '../../building/production/production-cost-component';
+import { CostData, ProductionCostComponent } from '../../building/production/production-cost-component';
 import { PawnInfoDefinition } from '../../actor/character';
 import {
-  Constructable,
   ConstructionSiteComponent,
   ConstructionSiteDefinition
 } from '../../building/construction/construction-site-component';
@@ -16,27 +15,36 @@ export type BuildingInfoDefinition = PawnInfoDefinition & {
 };
 
 // used for actors that don't move
-export abstract class Building extends RepresentableActor implements Ownable, Costs, Constructable {
+export abstract class Building extends RepresentableActor {
   abstract buildingInfoDefinition: BuildingInfoDefinition;
   representableActorDefinition!: RepresentableActorDefinition;
-  ownerComponent!: OwnerComponent;
-  productionCostComponent!: ProductionCostComponent;
-  constructionSiteComponent!: ConstructionSiteComponent;
 
   // make it public constructor
-  constructor(scene: Scene, tilePlacementData: TilePlacementData, private playerController: PlayerController) {
+  private cost!: CostData;
+
+  constructor(scene: Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
   }
 
-  override init(): void {
-    this.representableActorDefinition = this.buildingInfoDefinition;
-
+  override init() {
     super.init();
-    this.ownerComponent = this.components.addComponent(new OwnerComponent(this.playerController));
-    this.constructionSiteComponent = this.components.addComponent(
+
+    this.representableActorDefinition = this.buildingInfoDefinition;
+    this.cost = this.buildingInfoDefinition.cost ?? CostData.NoCost;
+  }
+
+  override initComponents(): void {
+    super.initComponents();
+
+    this.components.addComponent(new OwnerComponent());
+    this.components.addComponent(
       new ConstructionSiteComponent(this, this.buildingInfoDefinition.constructionSiteDefinition)
     );
-    const cost = this.buildingInfoDefinition.cost ?? CostData.NoCost;
-    this.components.addComponent(new ProductionCostComponent(cost));
+    this.components.addComponent(new ProductionCostComponent(this.cost));
+  }
+
+  possess(playerController?: PlayerController) {
+    if (!playerController) return;
+    this.components.findComponent(OwnerComponent).possess(playerController);
   }
 }

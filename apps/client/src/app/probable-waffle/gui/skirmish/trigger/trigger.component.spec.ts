@@ -7,7 +7,7 @@ import { MapPlayerDefinition } from '../skirmish.component';
 
 @Component({ selector: 'fuzzy-waddle-trigger', template: '' })
 export class TriggerTestingComponent {
-  @Input() selectedMap?: MapPlayerDefinition;
+  @Input({ required: true }) selectedMap?: MapPlayerDefinition;
 }
 
 describe('TriggerComponent', () => {

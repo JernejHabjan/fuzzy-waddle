@@ -1,4 +1,4 @@
-<fuzzy-waddle-home-page-nav></fuzzy-waddle-home-page-nav>
+<fuzzy-waddle-home-page-nav />
 
 <a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ probableWaffle.route }}">
   <img
@@ -25,10 +25,12 @@
     </div>
   </a>
 </div>
-<fuzzy-waddle-chat-float *ngIf="authService.isAuthenticated"></fuzzy-waddle-chat-float>
+<fuzzy-waddle-chat-float
+  *ngIf="serverHealthService.serverAvailable && authService.isAuthenticated"
+></fuzzy-waddle-chat-float>
 <div *ngIf="authService.isAuthenticated && !environment.production">
-  <button class="button button-clear" (click)="dbAccessTestService.add()">Add Test</button>
-  <button class="button button-clear" (click)="addViaMw()">Add Test via MW</button>
-  <button class="button button-clear" (click)="dbAccessTestService.get()">Get Test</button>
-  <button class="button button-clear" (click)="dbAccessTestService.getStorageEntry()">Get Storage Entry</button>
+  <button class="btn btn-outline-primary" (click)="dbAccessTestService.add()">Add Test</button>
+  <button class="btn btn-outline-primary" (click)="addViaMw()">Add Test via MW</button>
+  <button class="btn btn-outline-primary" (click)="dbAccessTestService.get()">Get Test</button>
+  <button class="btn btn-outline-primary" (click)="dbAccessTestService.getStorageEntry()">Get Storage Entry</button>
 </div>

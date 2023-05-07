@@ -1,27 +1,33 @@
 import { Character } from './character';
 import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { Ownable, OwnerComponent } from './components/owner-component';
-import { PlayerController } from '../../world/managers/controllers/player-controller';
-import { CostData, Costs, ProductionCostComponent } from '../building/production/production-cost-component';
+import { OwnerComponent } from './components/owner-component';
+import { CostData, ProductionCostComponent } from '../building/production/production-cost-component';
 import { Scene } from 'phaser';
+import { PlayerController } from '../../world/managers/controllers/player-controller';
 
-export abstract class PlayerCharacter extends Character implements Ownable, Costs {
-  ownerComponent: OwnerComponent;
-  productionCostComponent!: ProductionCostComponent;
+export abstract class PlayerCharacter extends Character {
+  cost!: CostData;
 
   // making constructor public
-  constructor(scene: Scene, tilePlacementData: TilePlacementData, playerController: PlayerController) {
+  constructor(scene: Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
-    this.ownerComponent = this.components.addComponent(new OwnerComponent(playerController));
   }
 
   override init() {
     super.init();
-    this.setupProductionCostComponent();
+
+    this.cost = this.pawnDefinition.cost ?? CostData.NoCost;
   }
 
-  private setupProductionCostComponent() {
-    const cost = this.pawnDefinition.cost ?? CostData.NoCost;
-    this.productionCostComponent = this.components.addComponent(new ProductionCostComponent(cost));
+  override initComponents() {
+    super.initComponents();
+
+    this.components.addComponent(new OwnerComponent());
+    this.components.addComponent(new ProductionCostComponent(this.cost));
+  }
+
+  possess(playerController?: PlayerController) {
+    if (!playerController) return;
+    this.components.findComponent(OwnerComponent).possess(playerController);
   }
 }
