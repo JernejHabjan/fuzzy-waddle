@@ -8,6 +8,7 @@
     "start:api": "nx serve api",
     "start:client": "nx serve client",
     "build": "nx run-many --all --target=build",
+    "build-gh-pages": "nx run build -- --base-href=/fuzzy-waddle/",
     "test": "nx run-many --all --target=test",
     "lint": "nx run-many --all --target=lint",
     "e2e": "nx run client-e2e:e2e",
