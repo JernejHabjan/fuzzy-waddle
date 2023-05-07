@@ -31,8 +31,8 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(
-      routes,
-      { useHash: true } // not needed
+      routes
+      // { useHash: true } // not needed
       // when deployed, set a rewrite rule for SPA application:
       // source: "/*"
       // destination: "/index.html"
