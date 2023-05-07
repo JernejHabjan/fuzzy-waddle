@@ -15,7 +15,8 @@
           }
         ],
         "@angular-eslint/component-selector": "off",
-        "@typescript-eslint/no-non-null-assertion": "off"
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-inferrable-types": "warn"
       }
     },
     {
