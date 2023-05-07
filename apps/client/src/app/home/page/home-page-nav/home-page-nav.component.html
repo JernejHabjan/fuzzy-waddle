@@ -6,13 +6,13 @@
       class="nav-item"
     >
       <a class="nav-link active cursor-pointer">
-        <fa-icon [icon]="faGoogle"></fa-icon>
+        <fa-icon [icon]="faGoogle"/>
         Sign In
       </a>
     </li>
     <li *ngIf="!authService.processing && authService.isAuthenticated" class="nav-item">
       <a class="nav-link active" routerLink="/profile">
-        <fa-icon [icon]="faUser"></fa-icon>
+        <fa-icon [icon]="faUser"/>
         Profile
       </a>
     </li>

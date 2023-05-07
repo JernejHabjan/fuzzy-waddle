@@ -77,7 +77,7 @@ export class MapDefinitionComponent {
 
   private _mapPlayerDefinition?: MapPlayerDefinition;
 
-  @Input()
+  @Input({ required: true })
   get mapPlayerDefinition(): MapPlayerDefinition | undefined {
     return this._mapPlayerDefinition;
   }

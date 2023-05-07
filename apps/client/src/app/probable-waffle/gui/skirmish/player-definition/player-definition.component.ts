@@ -42,7 +42,7 @@ export class PlayerDefinitionComponent {
   PlayerType = PlayerType;
   FactionDefinitions = FactionDefinitions;
   DifficultyDefinitions = DifficultyDefinitions;
-  @Input() selectedMap?: MapPlayerDefinition;
+  @Input({ required: true }) selectedMap?: MapPlayerDefinition;
   @Output() playerJoined: EventEmitter<void> = new EventEmitter<void>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 

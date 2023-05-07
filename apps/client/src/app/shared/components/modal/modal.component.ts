@@ -9,7 +9,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 })
 @Injectable()
 export class ModalComponent {
-  @Input() public modalConfig!: ModalConfig;
+  @Input({ required: true }) public modalConfig!: ModalConfig;
   @ViewChild('modal') private modalContent!: TemplateRef<ModalComponent>;
   private modalRef!: NgbModalRef;
 

@@ -6,9 +6,9 @@ export class PlayerInputController {
 
   constructor(private readonly littleMuncherScene: LittleMuncherScene) {}
 
-  private character!: Phaser.GameObjects.Text;
+  private character!: Phaser.GameObjects.Sprite;
 
-  init(character: Phaser.GameObjects.Text) {
+  init(character: Phaser.GameObjects.Sprite) {
     this.character = character;
     this.littleMuncherScene.subscribe(
       this.littleMuncherScene.communicator.key?.onWithInitial(
@@ -69,7 +69,7 @@ export class PlayerInputController {
     // if 1 set it to 2/3 from left
     const x = width / 2 + (position.x * width) / 6;
 
-    this.character.setPosition(x, y);
+    // todo this.character.setPosition(x, y);
   };
 
   private destroy = () => {
