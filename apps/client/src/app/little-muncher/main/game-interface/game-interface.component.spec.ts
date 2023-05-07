@@ -5,6 +5,10 @@ import { GameInstanceClientService } from '../game-instance-client.service';
 import { gameInstanceClientServiceStub } from '../game-instance-client.service.spec';
 import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
 import { ModalTestComponent } from '../../../shared/components/modal/modal.component.spec';
+import { Component } from '@angular/core';
+
+@Component({ selector: 'fuzzy-waddle-game-interface', template: '' })
+export class GameInterfaceTestingComponent {}
 
 describe('GameInterfaceComponent', () => {
   let component: GameInterfaceComponent;

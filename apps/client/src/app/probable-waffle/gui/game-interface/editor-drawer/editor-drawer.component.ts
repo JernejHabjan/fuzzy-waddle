@@ -11,7 +11,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
 type TileType = 'flat' | 'water' | 'slopes' | 'blocks' | 'other';
 
 @Component({
-  selector: 'fuzzy-waddle-editor-drawer',
+  selector: 'probable-waffle-editor-drawer',
   templateUrl: './editor-drawer.component.html',
   styleUrls: ['./editor-drawer.component.scss']
 })
