@@ -1,0 +1,31 @@
+@import '../../../../../styles/_variables';
+
+.start-position-container {
+  .player-rows {
+    border-radius: $app-border-radius;
+    overflow: hidden;
+
+    // todo display: grid;
+    .start-position-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .color-box {
+        width: 1rem;
+        height: 1rem;
+        border: 1px solid black;
+        margin: 0.5rem;
+        border-radius: 4px;
+      }
+    }
+  }
+}
+
+.start-position-row:nth-child(odd) {
+  background: $app-row-odd;
+}
+
+.start-position-row:nth-child(even) {
+  background: $app-row-even;
+}

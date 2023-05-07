@@ -1,0 +1,21 @@
+<div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
+  <div style="max-width: 500px">
+    <h2 class="achievement-header">Achievements:</h2>
+    <div
+      *ngFor="let achievement of gameInstanceService.getAchievements()"
+      class="d-flex achievement align-items-center"
+    >
+      <div>
+        <h3 class="achievement-title">{{ achievement.name }}</h3>
+        <div>{{ achievement.description }}</div>
+      </div>
+      <img [alt]="achievement.name" [src]="achievement.image" class="achievement-image" />
+    </div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-left">
+    <button (click)="leaveClick()" class="button button-clear">Leave</button>
+  </div>
+</div>

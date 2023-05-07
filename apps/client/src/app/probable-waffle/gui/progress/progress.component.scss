@@ -1,0 +1,36 @@
+@import '../../../../styles/_variables.scss';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.achievement-header {
+  text-align: center;
+  color: $primary;
+  font-family: $app-font-bold;
+}
+
+.achievement {
+  border-radius: 5px;
+  border: 1px solid $primary;
+  padding: 10px;
+  margin: 10px;
+  background-color: white;
+  color: $primary;
+
+  .achievement-title {
+    font-family: $app-font-bold;
+  }
+
+  .achievement-image {
+    // max 200x200
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+  }
+}

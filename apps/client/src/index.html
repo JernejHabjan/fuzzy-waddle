@@ -2,12 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Client</title>
+    <title>Fuzzy Waddle</title>
     <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta content="Game development with Phaser and networking" name="description" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="favicon.ico" rel="icon" type="image/x-icon" />
+    <!-- google search console site verification -->
+    <meta content="6Sqn3pCjBIN23BmtR_p98cCJ7pceyoAIZFvmaF7jt48" name="google-site-verification" />
+    <link href="manifest.webmanifest" rel="manifest" />
+    <meta content="#9f3000" name="theme-color" />
+    <link href="assets/icons/pwa/192.png" rel="apple-touch-icon" />
   </head>
   <body>
-    <fuzzy-waddle-root></fuzzy-waddle-root>
+    <fuzzy-waddle-root>
+      <style>
+        .loader {
+          margin: 50px auto 0;
+          border: 16px solid #ffe6c2;
+          border-top: 16px solid #9f3000;
+          border-radius: 50%;
+          width: 120px;
+          height: 120px;
+          animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      </style>
+      <div class="loader"></div>
+    </fuzzy-waddle-root>
+    <noscript>Please enable JavaScript to continue using this application.</noscript>
   </body>
 </html>

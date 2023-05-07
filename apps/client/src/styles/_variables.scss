@@ -1,0 +1,16 @@
+@import 'fonts';
+
+/* custom */
+$app-font-bold: 'EagleLake', sans-serif;
+$app-row-odd: #ffbda0;
+$app-row-even: #ffe4d9;
+$app-border-radius: 10px !default;
+$tertiary: #fbc085;
+$quaternary: #ffeaa1;
+$dark: rgb(32, 33, 36);
+
+/* bootstrap overrides */
+$primary: #9f3000;
+$secondary: #ffe6c2;
+$font-family-base: 'WorkSans', sans-serif !default;
+$btn-font-family: $app-font-bold !default;

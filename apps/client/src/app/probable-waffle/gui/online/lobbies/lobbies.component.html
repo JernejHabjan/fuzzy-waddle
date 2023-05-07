@@ -1,0 +1,58 @@
+<div class="lobbies">
+  <div>Open Lobbies</div>
+  <p>Browse currently open game lobbies to join</p>
+
+  <div class="d-flex">
+    <div>
+      <div>
+        Filter:
+        <div *ngFor="let map of Maps.maps">
+          <input
+            (change)="filter($event)"
+            id="{{ map.id }}"
+            name="{{ map.name }}"
+            type="checkbox"
+            value="{{ map.id }}"
+          />
+          <label for="{{ map.id }}">{{ map.name }}</label>
+        </div>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Map</th>
+            <th scope="col">Host</th>
+            <th scope="col">Players</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            (click)="select(lobby)"
+            *ngFor="let lobby of lobbies"
+            class="cursor-pointer {{ lobby === selectedLobby ? 'bg-primary' : '' }}"
+          >
+            <td>{{ lobby.map }}</td>
+            <td>{{ lobby.host }}</td>
+            <td>{{ lobby.players.length }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div>
+        <div>Map Preview</div>
+        <img alt="map preview" src="https://via.placeholder.com/300x300" />
+        <div>Map Description</div>
+      </div>
+      <div>
+        <div>Joined players</div>
+        <div>Player 1</div>
+        <div>Player 2</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <button (click)="join()" [disabled]="!selectedLobby" class="btn btn-primary" type="button">Join</button>
+  </div>
+</div>

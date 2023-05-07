@@ -1,0 +1,13 @@
+<div [ngClass]="{ 'chat-container-minimized': !maximized }" class="chat-container">
+  <div class="chat">
+    <div class="chat-header">
+      <div class="chat-title">Chat</div>
+      <!-- minimize button -->
+      <div (click)="toggleChatVisibility()" class="chat-minimize">
+        <fa-icon [icon]="maximized ? faWindowMinimize : faWindowMaximize" />
+      </div>
+    </div>
+
+    <fuzzy-waddle-chat *ngIf="maximized" />
+  </div>
+</div>

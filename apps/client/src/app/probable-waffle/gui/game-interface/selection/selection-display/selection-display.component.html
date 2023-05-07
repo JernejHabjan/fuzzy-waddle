@@ -1,0 +1,19 @@
+<div style="display: flex">
+  <div
+    (click)="select(s)"
+    *ngFor="let s of selection"
+    style="
+      height: 50px;
+      width: 100px;
+      background-color: #caffed;
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2px;
+      border-radius: 5px;
+    "
+  >
+    {{ formatAtlasFileName(s.name) }}
+  </div>
+</div>

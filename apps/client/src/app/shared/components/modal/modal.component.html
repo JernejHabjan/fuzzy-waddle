@@ -1,0 +1,28 @@
+<ng-template #modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ modalConfig.modalTitle }}</h5>
+  </div>
+  <div class="modal-body">
+    <ng-content />
+  </div>
+  <div class="modal-footer">
+    <button
+      (click)="dismiss()"
+      *ngIf="modalConfig.hideDismissButton === undefined || !modalConfig.hideDismissButton()"
+      [disabled]="modalConfig.disableDismissButton !== undefined && modalConfig.disableDismissButton()"
+      class="btn btn-outline-secondary"
+      type="button"
+    >
+      {{ modalConfig.dismissButtonLabel }}
+    </button>
+    <button
+      (click)="close()"
+      *ngIf="modalConfig.hideCloseButton === undefined || !modalConfig.hideCloseButton()"
+      [disabled]="modalConfig.disableCloseButton !== undefined && modalConfig.disableCloseButton()"
+      class="btn btn-outline-primary"
+      type="button"
+    >
+      {{ modalConfig.closeButtonLabel }}
+    </button>
+  </div>
+</ng-template>

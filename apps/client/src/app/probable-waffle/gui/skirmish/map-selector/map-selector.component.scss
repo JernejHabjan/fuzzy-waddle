@@ -1,0 +1,15 @@
+@import '../../../../../styles/_variables';
+
+:host {
+  margin-bottom: 10px;
+}
+
+.map-preview {
+  width: 100px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.menu-border {
+  border: 2px solid $primary;
+}

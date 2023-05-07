@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Message } from '@fuzzy-waddle/api-interfaces';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
+import { ServerHealthService } from './shared/services/server-health.service';
 
 @Component({
   selector: 'fuzzy-waddle-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  hello$ = this.http.get<Message>('/api/hello');
-  constructor(private http: HttpClient) {}
+export class AppComponent implements OnInit {
+  constructor(protected readonly authService: AuthService, private readonly serverHealthService: ServerHealthService) {}
+
+  async ngOnInit() {
+    await Promise.all([this.serverHealthService.checkHealth(), this.authService.autoSignIn()]);
+  }
 }

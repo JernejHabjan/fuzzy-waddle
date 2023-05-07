@@ -1,0 +1,20 @@
+<fuzzy-waddle-profile-nav />
+<div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
+  <div style="max-width: 500px">
+    <h2>Profile info:</h2>
+
+    <div>
+      <h3 class="achievement-header">Email:</h3>
+      {{ authService.session?.user?.email }}
+    </div>
+    <div>
+      <h3 class="achievement-header">Joined:</h3>
+      {{ authService.session?.user?.created_at | date : 'medium' }}
+    </div>
+
+    <div>
+      <h3 class="achievement-header">Preferred games:</h3>
+      {{ userInstanceService.getPreferredGames() }}
+    </div>
+  </div>
+</div>

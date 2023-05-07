@@ -1,0 +1,20 @@
+@import '../../../../styles/_variables.scss';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  overflow: auto;
+  background-color: $tertiary;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+  @media (max-width: 576px) {
+    padding: 0.5rem;
+  }
+}
