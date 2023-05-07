@@ -1,4 +1,4 @@
-name: CI
+name: CI Branches
 
 on:
   pull_request:
@@ -43,11 +43,6 @@ jobs:
 
       - name: Build Packages
         run: npm run build
-
-      - name: Spa index.html
-        run: |
-          cd dist/apps/client
-          cp index.html 404.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
