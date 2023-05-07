@@ -14,11 +14,12 @@ import { map } from 'rxjs/operators';
 import { GameInstanceClientService } from '../../main/game-instance-client.service';
 import { AuthService } from '../../../auth/auth.service';
 import { ServerHealthService } from '../../../shared/services/server-health.service';
+import { SpectateServiceInterface } from './spectate.service.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SpectateService {
+export class SpectateService implements SpectateServiceInterface {
   private spectateRoomsSubscription?: Subscription;
   rooms: Room[] = [];
   spectatorDisconnected: Subject<void> = new Subject<void>();

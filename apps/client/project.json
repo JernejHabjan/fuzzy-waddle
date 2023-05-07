@@ -94,7 +94,7 @@
       }
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:jest",
+      "executor": "@nx/jest:jest",
       "outputs": [
         "{workspaceRoot}/coverage/{projectRoot}"
       ],

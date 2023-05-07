@@ -13,11 +13,12 @@ import {
 import { ServerHealthService } from '../../shared/services/server-health.service';
 import { SceneCommunicatorClientService } from './scene-communicator-client.service';
 import { AuthService } from '../../auth/auth.service';
+import { GameInstanceClientServiceInterface } from './game-instance-client.service.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GameInstanceClientService {
+export class GameInstanceClientService implements GameInstanceClientServiceInterface {
   gameInstance?: LittleMuncherGameInstance;
 
   constructor(

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
+import { ServerHealthServiceInterface } from './server-health.service.interface';
 
 export enum ServerState {
   available = 0,
@@ -12,8 +13,8 @@ export enum ServerState {
 @Injectable({
   providedIn: 'root'
 })
-export class ServerHealthService {
-  serverState: ServerState = ServerState.checking;
+export class ServerHealthService implements ServerHealthServiceInterface {
+  private serverState: ServerState = ServerState.checking;
 
   get serverAvailable(): boolean {
     return this.serverState === ServerState.available;
@@ -28,6 +29,7 @@ export class ServerHealthService {
   }
 
   constructor(private readonly httpClient: HttpClient) {}
+
   async checkHealth() {
     const url = environment.api + 'api/health';
     try {
