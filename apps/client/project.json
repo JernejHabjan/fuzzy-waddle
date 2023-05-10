@@ -17,7 +17,7 @@
         "inlineStyleLanguage": "scss",
         "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets", "apps/client/src/manifest.webmanifest"],
         "styles": ["apps/client/src/styles/styles.scss"],
-        "scripts": [],
+        "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
         "serviceWorker": true,
         "ngswConfigPath": "apps/client/ngsw-config.json",
         "allowedCommonJsDependencies": ["phaser", "websocket", "cross-fetch"]
