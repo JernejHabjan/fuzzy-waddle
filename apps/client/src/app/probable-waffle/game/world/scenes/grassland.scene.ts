@@ -323,7 +323,7 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
         tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
       },
       {
-        tilePlacementData: { tileXY: { x: 2, y: 4 }, z: 0 },
+        tilePlacementData: { tileXY: { x: 4, y: 6 }, z: 0 },
         tileIndexProperties: { tileIndex: buildingStairsSouthWestIndex }
       },
       { tilePlacementData: { tileXY: { x: 0, y: 2 }, z: 0 }, tileIndexProperties: { tileIndex: waterIndex } },
