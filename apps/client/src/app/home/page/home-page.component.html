@@ -1,13 +1,7 @@
 <fuzzy-waddle-home-page-nav />
 
 <a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ probableWaffle.route }}">
-  <img
-    [alt]="probableWaffle.name"
-    [src]="'assets/games/images/' + probableWaffle.image"
-    class="featured-image"
-    height="100px"
-    width="200px"
-  />
+  <img [alt]="probableWaffle.name" [src]="'assets/games/images/' + probableWaffle.image" class="featured-image" />
   <div class="featured-title">
     <div>Featured</div>
     <div style="margin-left: 30px">{{ probableWaffle.name }}</div>

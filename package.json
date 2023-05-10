@@ -6,7 +6,7 @@
     "preinstall": "npx only-allow pnpm",
     "start": "nx run-many --all --target=serve",
     "start:api": "nx serve api",
-    "start:client": "nx serve client",
+    "start:client": "nx serve client --hmr",
     "build": "nx run-many --all --target=build",
     "build-gh-pages": "nx run build -- --base-href=/fuzzy-waddle/",
     "test": "nx run-many --all --target=test",
