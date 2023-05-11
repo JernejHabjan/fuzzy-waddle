@@ -32,16 +32,16 @@ export default class LittleMuncherScene extends BaseScene<
   private readonly initialWorldSpeed = 3;
   private readonly maxWorldSpeed = this.initialWorldSpeed * 3;
   private readonly maxCharacterHealth = 30;
-  private readonly powerUpDuration = 3000;
+  private readonly powerUpDuration = 2000;
   private readonly objectVelocity = 100;
   private readonly objectMaxVelocity = this.objectVelocity * 3;
-  private readonly worldWidth = 800;
+  private worldWidth!: number;
   private readonly objectMargin = 100;
   private readonly objectDestroyMargin = 200;
 
   private worldSpeed = this.initialWorldSpeed; // pixels per frame
-  private objectGroup: Phaser.GameObjects.GameObject[] = [];
-  private nonCollidableGroup: Phaser.GameObjects.GameObject[] = [];
+  private objectGroup: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = [];
+  private nonCollidableGroup: Phaser.Physics.Arcade.Sprite[] = [];
   private character!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private objectSpawnTimer!: Phaser.Time.TimerEvent;
   private powerUpSpawnTimer!: Phaser.Time.TimerEvent;
@@ -52,6 +52,9 @@ export default class LittleMuncherScene extends BaseScene<
   private background!: Phaser.GameObjects.TileSprite;
   private gameOverFlag = false;
   private poweredUp: Date | null = null;
+  private objectScale = -1;
+  private swipeInput!: any;
+  private viewPortX!: number;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -72,6 +75,11 @@ export default class LittleMuncherScene extends BaseScene<
     );
     this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
     this.load.audio('bird', 'assets/little-muncher/sfx/bird.mp3');
+    this.load.scenePlugin({
+      key: 'rexgesturesplugin',
+      url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexgesturesplugin.min.js',
+      sceneKey: 'rexGestures'
+    });
   }
 
   override init() {
@@ -84,8 +92,22 @@ export default class LittleMuncherScene extends BaseScene<
   override create() {
     super.create();
     this.setViewport();
-    this.createAnims();
     this.drawBackground();
+
+    this.swipeInput = (this as any).rexGestures.add.swipe({ velocityThreshold: 1000 });
+
+    // bind resize event
+    this.subscribe(
+      this.onResize.subscribe(() => {
+        this.setViewport();
+        this.setBackgroundSize();
+        this.handleResizeCharacter();
+        this.objectGroup.forEach((o) => o.setScale(this.objectScale));
+        this.nonCollidableGroup.forEach((o) => o.setScale(this.objectScale));
+      })
+    );
+
+    this.createAnims();
     this.createCharacter();
     this.playerInputController.init(this.character);
 
@@ -101,9 +123,13 @@ export default class LittleMuncherScene extends BaseScene<
   private setViewport() {
     const screenWidth = this.scale.width;
     const screenHeight = this.scale.height;
-    this.cameras.main.setViewport(screenWidth / 2 - this.worldWidth / 2, 0, this.worldWidth, screenHeight);
 
-    this.cameras.main.setZoom(1); // todo
+    this.worldWidth = screenWidth > 800 ? 800 : screenWidth;
+    this.objectScale = screenWidth > 800 ? 2 : 1.5;
+
+    this.viewPortX = screenWidth / 2 - this.worldWidth / 2;
+
+    this.cameras.main.setViewport(this.viewPortX, 0, this.worldWidth, screenHeight);
 
     // Set the physics world bounds to match the camera's bounds
     this.physics.world.setBounds(0, 0, this.worldWidth, this.cameras.main.height);
@@ -152,23 +178,23 @@ export default class LittleMuncherScene extends BaseScene<
   };
 
   private drawBackground = () => {
-    this.background = this.add.tileSprite(0, 0, this.worldWidth, this.cameras.main.height, 'lm-atlas', 'background');
+    this.background = this.add.tileSprite(0, 0, 0, 0, 'lm-atlas', 'background');
     this.background.setScrollFactor(0); // make the background stationary
     this.background.setOrigin(0, 0); // set the origin of the sprite to the top-left corner
+    this.background.setSize(this.worldWidth, this.cameras.main.height);
+    this.background.setDepth(-1);
+  };
+  private setBackgroundSize = () => {
+    this.background.setSize(this.worldWidth, this.cameras.main.height);
   };
 
   private createCharacter = () => {
     // create the character sprite
-
-    const height = this.cameras.main.height;
-    // set y to first 1/8 from bottom up
-    const y = height - height / 8;
-    this.character = this.physics.add.sprite(this.cameras.main.width / 2, y, 'lm-atlas', 'character/idle/1');
-
+    this.character = this.physics.add.sprite(0, 0, 'lm-atlas', 'character/idle/1');
+    this.handleResizeCharacter();
     this.character.anims.play('character-walk-back', true);
 
     // set the character's size and physics properties
-    this.character.setSize(64, 64);
     this.character.setCollideWorldBounds(true);
 
     // create the cursor keys
@@ -179,6 +205,15 @@ export default class LittleMuncherScene extends BaseScene<
     this.updateHealthDisplay();
   };
 
+  private handleResizeCharacter = () => {
+    const height = this.cameras.main.height;
+    // set y to first 1/8 from bottom up
+    const y = height - height / 8;
+    this.character.setPosition(this.cameras.main.width / 2, y);
+
+    this.character.setScale(this.objectScale);
+  };
+
   override update(time: number, delta: number) {
     super.update(time, delta);
 
@@ -186,15 +221,13 @@ export default class LittleMuncherScene extends BaseScene<
     this.handleCharacterMovement();
 
     // move world objects down
-    this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => {
-      const sprite = object as Phaser.Physics.Arcade.Sprite;
+    this.objectGroup.forEach((sprite) => {
       const bounced = sprite.getData('bounced'); // todo static type
       if (!bounced) {
         sprite.y += this.worldSpeed;
       }
     });
-    this.nonCollidableGroup.forEach((object: Phaser.GameObjects.GameObject) => {
-      const sprite = object as Phaser.Physics.Arcade.Sprite;
+    this.nonCollidableGroup.forEach((sprite: Phaser.Physics.Arcade.Sprite) => {
       sprite.y += this.worldSpeed;
     });
 
@@ -204,17 +237,13 @@ export default class LittleMuncherScene extends BaseScene<
     this.physics.overlap(this.character, this.objectGroup, this.objectCollisionHandler);
 
     // dispose of objects that have gone off-screen
-    this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => {
-      this.destroyOffScreenSprite(this.objectGroup, object as Phaser.Physics.Arcade.Sprite);
-    });
-    this.nonCollidableGroup.forEach((object: Phaser.GameObjects.GameObject) => {
-      this.destroyOffScreenSprite(this.nonCollidableGroup, object as Phaser.Physics.Arcade.Sprite);
-    });
+    this.objectGroup.forEach((object) => this.destroyOffScreenSprite(this.objectGroup, object));
+    this.nonCollidableGroup.forEach((object) => this.destroyOffScreenSprite(this.nonCollidableGroup, object));
 
     this.handlePowerUpUpdate(time, delta);
   }
 
-  private destroyOffScreenSprite = (group: Phaser.GameObjects.GameObject[], sprite: Phaser.Physics.Arcade.Sprite) => {
+  private destroyOffScreenSprite = (group: Phaser.Physics.Arcade.Sprite[], sprite: Phaser.Physics.Arcade.Sprite) => {
     const camera = this.cameras.main;
     const zoom = camera.zoom;
     const height = camera.height;
@@ -244,7 +273,10 @@ export default class LittleMuncherScene extends BaseScene<
   };
 
   private handleCharacterMovement = () => {
-    if (!this.cursors) return;
+    if (!this.cursors) {
+      this.handleSwipe();
+      return;
+    }
     // move the character left or right based on the arrow keys
     if (this.cursors.left.isDown) {
       // move left
@@ -259,12 +291,64 @@ export default class LittleMuncherScene extends BaseScene<
     }
   };
 
+  private handleSwipe() {
+    if (!this.swipeInput.isSwiped) return;
+    // https://codepen.io/rexrainbow/pen/joWZbw
+
+    // check if character is on left or right side of screen or middle
+    // if on left, only allow right swipe
+    // if on right, only allow left swipe
+    const x = Math.round(this.character.x);
+    const isCharacterOnLeftSideOfScreen = x < this.worldWidth / 2;
+    const isCharacterOnRightSideOfScreen = x > this.worldWidth / 2;
+
+    if (this.swipeInput.left) {
+      if (isCharacterOnRightSideOfScreen) return;
+      // move character left by 1/3 of screen
+      this.character.x += this.worldWidth / 3;
+    } else if (this.swipeInput.right) {
+      if (isCharacterOnLeftSideOfScreen) return;
+      // move character right by 1/3 of screen
+      this.character.x -= this.worldWidth / 3;
+    }
+  }
+
   spawnObject = (key: string, name: 'obstacle' | 'powerUp') => {
     // todo enum
-    const object = this.physics.add.sprite(Math.random() * this.worldWidth, -this.objectMargin, 'lm-atlas', key);
+
+    let x = Math.random() * this.worldWidth;
+    const y = -this.objectMargin;
+
+    const keyboardEnabled = !!this.cursors;
+
+    if (!keyboardEnabled) {
+      // spawn object in one of 3 columns
+      const column = Math.floor(Math.random() * 3);
+      const columnWidth = this.worldWidth / 3;
+      x = column * columnWidth + columnWidth / 2;
+    }
+
+    const object = this.physics.add.sprite(x, y, 'lm-atlas', key);
+    object.setScale(this.objectScale);
+    const objectBounds = object.getBounds();
+
+    // ensure the object is not spawned on top of other objects, if it is, destroy it
+    let wouldOverlap = false;
+    this.objectGroup.forEach((existingObject) => {
+      const existingObjectBounds = existingObject.getBounds();
+      if (Phaser.Geom.Intersects.RectangleToRectangle(objectBounds, existingObjectBounds)) {
+        wouldOverlap = true;
+      }
+    });
+    if (wouldOverlap) {
+      object.destroy(true);
+      return;
+    }
+
     if (key === 'tree') {
       this.spawnBird(object);
     }
+    object.setData('type', key);
     this.objectGroup.push(object);
     object.name = name;
   };
@@ -272,11 +356,11 @@ export default class LittleMuncherScene extends BaseScene<
   private spawnBird = (object: Phaser.Physics.Arcade.Sprite) => {
     if (Math.random() > 0.3) return; // 30% chance of spawning a bird
 
-    const bird = this.physics.add.sprite(object.x, object.y - 40, 'lm-atlas', 'bird/0');
+    const bird = this.physics.add.sprite(object.x, object.y - 40 * object.scale, 'lm-atlas', 'bird/0');
     bird.setDepth(1);
     bird.anims.play('bird-idle', true);
+    object.setScale(this.objectScale);
     bird.setOrigin(0.5, 0.5);
-    object.setData('type', 'tree');
     object.setData('bird', bird);
     this.nonCollidableGroup.push(bird);
   };
@@ -294,11 +378,12 @@ export default class LittleMuncherScene extends BaseScene<
       object.destroy();
     } else if (object.name === 'obstacle') {
       if (!object.getData('bounced')) {
-        this.manageBirdCollision(object);
+        this.manageBirdOnTreeCollision(object);
 
-        if (this.poweredUp) {
+        if (this.poweredUp && object.getData('type') !== 'tree') {
           // bounce the object
-          object.body!.velocity.y = -this.objectVelocity * 2;
+          const randomVelocityBetween4And5 = Math.random() + 4;
+          object.body!.velocity.y = -this.objectVelocity * randomVelocityBetween4And5;
           object.setData('bounced', true); // todo static type
         } else {
           this.crashCharacter(character, object);
@@ -309,7 +394,7 @@ export default class LittleMuncherScene extends BaseScene<
     }
   };
 
-  private manageBirdCollision = (object: Phaser.Physics.Arcade.Sprite) => {
+  private manageBirdOnTreeCollision = (object: Phaser.Physics.Arcade.Sprite) => {
     if (object.getData('type') !== 'tree') return;
     // get bird
     const bird = object.getData('bird');
@@ -334,16 +419,19 @@ export default class LittleMuncherScene extends BaseScene<
 
   private readonly crashCharacter = (character: Phaser.Physics.Arcade.Sprite, object: Phaser.Physics.Arcade.Sprite) => {
     // todo to enum
-    object.destroy();
-
+    object.destroy(true);
+    // todo play explosion animation
+    this.sound.play('hit');
     // shake screen
     this.cameras.main.shake(100, 0.003);
 
+    if (this.poweredUp) {
+      return;
+    }
     // reduce the character's health
     this.characterHealth -= 10;
     character.tint = 0xff0000;
     // play sound effect
-    this.sound.play('hit');
     setTimeout(() => {
       character.clearTint();
     }, 100);
@@ -407,9 +495,9 @@ export default class LittleMuncherScene extends BaseScene<
           this.updateHealthDisplay();
           this.setupPowerUp(false);
           gameOverText.destroy();
-          this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
+          this.objectGroup.forEach((object) => object.destroy(true));
           this.objectGroup = [];
-          this.nonCollidableGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
+          this.nonCollidableGroup.forEach((object) => object.destroy(true));
           this.nonCollidableGroup = [];
           this.setupTimers();
 
@@ -443,9 +531,9 @@ export default class LittleMuncherScene extends BaseScene<
 
     this.character.destroy();
     this.healthDisplayText.destroy();
-    this.objectGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
+    this.objectGroup.forEach((object) => object.destroy(true));
     this.objectGroup = [];
-    this.nonCollidableGroup.forEach((object: Phaser.GameObjects.GameObject) => object.destroy(true));
+    this.nonCollidableGroup.forEach((object) => object.destroy(true));
     this.nonCollidableGroup = [];
   }
 }

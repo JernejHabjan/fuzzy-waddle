@@ -64,11 +64,11 @@ export class Loader {
     });
 
     scene.load.on(Phaser.Loader.Events.COMPLETE, function () {
-      progressBar.destroy();
-      progressBox.destroy();
-      loadingText.destroy();
-      percentText.destroy();
-      assetText.destroy();
+      progressBar.destroy(true);
+      progressBox.destroy(true);
+      loadingText.destroy(true);
+      percentText.destroy(true);
+      assetText.destroy(true);
       scene.load.off(Phaser.Loader.Events.PROGRESS);
       scene.load.off(Phaser.Loader.Events.FILE_PROGRESS);
       scene.load.off(Phaser.Loader.Events.COMPLETE);
