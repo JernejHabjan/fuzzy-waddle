@@ -46,3 +46,7 @@ and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
 
 - When exporting `.json`, make sure to check `Embed Tilesets` in `Tiled > Preferences`
   until [this](https://github.com/JernejHabjan/fuzzy-waddle/issues/60) is fixed
+
+## Pixilart
+
+- https://www.pixilart.com/darkneess10

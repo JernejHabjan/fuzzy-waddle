@@ -14,6 +14,7 @@ import BaseScene from '../../shared/game/phaser/scene/base.scene';
 import { LittleMuncherGameData } from './little-muncher-game-data';
 import { Pause } from './pause';
 import { PlayerInputController } from './player-input-controller';
+import { UiCommunicator, UiCommunicatorData } from './ui-communicator';
 
 export default class LittleMuncherScene extends BaseScene<
   LittleMuncherGameData,
@@ -31,10 +32,10 @@ export default class LittleMuncherScene extends BaseScene<
 
   private readonly initialWorldSpeed = 3;
   private readonly maxWorldSpeed = this.initialWorldSpeed * 3;
-  private readonly maxCharacterHealth = 30;
+  private readonly maxCharacterHealth = 3;
   private readonly powerUpDuration = 2000;
   private readonly objectVelocity = 100;
-  private readonly objectMaxVelocity = this.objectVelocity * 3;
+  private readonly fullWorldWidth = 800;
   private worldWidth!: number;
   private readonly objectMargin = 100;
   private readonly objectDestroyMargin = 200;
@@ -46,7 +47,6 @@ export default class LittleMuncherScene extends BaseScene<
   private objectSpawnTimer!: Phaser.Time.TimerEvent;
   private powerUpSpawnTimer!: Phaser.Time.TimerEvent;
   private characterHealth = this.maxCharacterHealth;
-  private healthDisplayText!: Phaser.GameObjects.Text;
   private characterSpeed = 2; // the speed at which the character moves
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys; // variable to store the cursor keys
   private background!: Phaser.GameObjects.TileSprite;
@@ -55,6 +55,8 @@ export default class LittleMuncherScene extends BaseScene<
   private objectScale = -1;
   private swipeInput!: any;
   private viewPortX!: number;
+  private gameOverText?: Phaser.GameObjects.Text | undefined;
+  private uiCommunicator = new UiCommunicator();
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -94,7 +96,7 @@ export default class LittleMuncherScene extends BaseScene<
     this.setViewport();
     this.drawBackground();
 
-    this.swipeInput = (this as any).rexGestures.add.swipe({ velocityThreshold: 1000 });
+    this.swipeInput = (this as any).rexGestures.add.swipe({ velocityThreshold: 500 });
 
     // bind resize event
     this.subscribe(
@@ -102,6 +104,7 @@ export default class LittleMuncherScene extends BaseScene<
         this.setViewport();
         this.setBackgroundSize();
         this.handleResizeCharacter();
+        this.handlePositionGameOverText();
         this.objectGroup.forEach((o) => o.setScale(this.objectScale));
         this.nonCollidableGroup.forEach((o) => o.setScale(this.objectScale));
       })
@@ -118,14 +121,24 @@ export default class LittleMuncherScene extends BaseScene<
     this.communicator.score?.send({ score: Math.round(Math.random() * 100) }); // todo just for testing
 
     this.setupTimers();
+
+    this.setupUiScene();
+  }
+
+  private setupUiScene() {
+    const data: UiCommunicatorData = {
+      maxCharacterHealth: this.maxCharacterHealth,
+      communicator: this.uiCommunicator
+    };
+    this.scene.run(Scenes.UiScene, data);
   }
 
   private setViewport() {
     const screenWidth = this.scale.width;
     const screenHeight = this.scale.height;
 
-    this.worldWidth = screenWidth > 800 ? 800 : screenWidth;
-    this.objectScale = screenWidth > 800 ? 2 : 1.5;
+    this.worldWidth = screenWidth > this.fullWorldWidth ? this.fullWorldWidth : screenWidth;
+    this.objectScale = screenWidth > this.fullWorldWidth ? 2 : 1.5;
 
     this.viewPortX = screenWidth / 2 - this.worldWidth / 2;
 
@@ -194,6 +207,8 @@ export default class LittleMuncherScene extends BaseScene<
     this.handleResizeCharacter();
     this.character.anims.play('character-walk-back', true);
 
+    // change hitbox size
+    this.character.setSize(24, 36);
     // set the character's size and physics properties
     this.character.setCollideWorldBounds(true);
 
@@ -201,8 +216,6 @@ export default class LittleMuncherScene extends BaseScene<
     if (this.input.keyboard) {
       this.cursors = this.input.keyboard.createCursorKeys();
     }
-
-    this.updateHealthDisplay();
   };
 
   private handleResizeCharacter = () => {
@@ -273,7 +286,7 @@ export default class LittleMuncherScene extends BaseScene<
   };
 
   private handleCharacterMovement = () => {
-    if (!this.cursors) {
+    if (!this.cursors || !this.game.device.os.desktop) {
       this.handleSwipe();
       return;
     }
@@ -299,14 +312,14 @@ export default class LittleMuncherScene extends BaseScene<
     // if on left, only allow right swipe
     // if on right, only allow left swipe
     const x = Math.round(this.character.x);
-    const isCharacterOnLeftSideOfScreen = x < this.worldWidth / 2;
-    const isCharacterOnRightSideOfScreen = x > this.worldWidth / 2;
+    const isCharacterOnLeftSideOfScreen = x < Math.round(this.worldWidth / 2);
+    const isCharacterOnRightSideOfScreen = x > Math.round(this.worldWidth / 2);
 
-    if (this.swipeInput.left) {
+    if (this.swipeInput.right) {
       if (isCharacterOnRightSideOfScreen) return;
       // move character left by 1/3 of screen
       this.character.x += this.worldWidth / 3;
-    } else if (this.swipeInput.right) {
+    } else if (this.swipeInput.left) {
       if (isCharacterOnLeftSideOfScreen) return;
       // move character right by 1/3 of screen
       this.character.x -= this.worldWidth / 3;
@@ -319,9 +332,8 @@ export default class LittleMuncherScene extends BaseScene<
     let x = Math.random() * this.worldWidth;
     const y = -this.objectMargin;
 
-    const keyboardEnabled = !!this.cursors;
-
-    if (!keyboardEnabled) {
+    // on mobile, only spawn objects in 3 columns
+    if (!this.game.device.os.desktop) {
       // spawn object in one of 3 columns
       const column = Math.floor(Math.random() * 3);
       const columnWidth = this.worldWidth / 3;
@@ -341,11 +353,14 @@ export default class LittleMuncherScene extends BaseScene<
       }
     });
     if (wouldOverlap) {
-      object.destroy(true);
+      object.destroy();
       return;
     }
 
     if (key === 'tree') {
+      // decrease the tree collision box y by 40px
+      object.body.setSize(object.width, object.height - 40);
+      object.body.setOffset(0, 40);
       this.spawnBird(object);
     }
     object.setData('type', key);
@@ -419,7 +434,7 @@ export default class LittleMuncherScene extends BaseScene<
 
   private readonly crashCharacter = (character: Phaser.Physics.Arcade.Sprite, object: Phaser.Physics.Arcade.Sprite) => {
     // todo to enum
-    object.destroy(true);
+    object.destroy();
     // todo play explosion animation
     this.sound.play('hit');
     // shake screen
@@ -429,13 +444,13 @@ export default class LittleMuncherScene extends BaseScene<
       return;
     }
     // reduce the character's health
-    this.characterHealth -= 10;
+    this.characterHealth -= 1;
     character.tint = 0xff0000;
     // play sound effect
     setTimeout(() => {
       character.clearTint();
     }, 100);
-    this.updateHealthDisplay();
+    this.uiCommunicator.setHealth.next(this.characterHealth);
     if (this.characterHealth <= 0) {
       // game over
       this.gameOver();
@@ -453,17 +468,6 @@ export default class LittleMuncherScene extends BaseScene<
     }
   }
 
-  private updateHealthDisplay = () => {
-    // remove the old health display text, if it exists
-    if (this.healthDisplayText) {
-      this.healthDisplayText.destroy();
-    }
-
-    // create a new health display text object
-    const healthDisplayString = 'Health: ' + this.characterHealth;
-    this.healthDisplayText = this.add.text(100, 100, healthDisplayString, { font: '32px Arial', color: '#000000' });
-  };
-
   private gameOver = () => {
     this.gameOverFlag = true;
     // stop the object spawn timer
@@ -473,53 +477,68 @@ export default class LittleMuncherScene extends BaseScene<
     // play the death animation
     this.character.anims.play('character-death');
 
+    const keyboardAvailable = this.input.keyboard?.isActive() && this.game.device.os.desktop;
+    let text: string;
+    if (keyboardAvailable) {
+      text = 'Game Over - press "Space" to restart';
+    } else {
+      text = 'Game Over - tap to restart';
+    }
     // show a game over message
-    const gameOverText = this.add.text(400, 300, 'Game Over - press "Space" to restart', {
-      font: '32px Arial',
-      color: '#000000'
-    });
-    gameOverText.setOrigin(0.5);
+    this.gameOverText = this.add.text(0, 0, text, { font: '32px Arial', color: '#000000' });
+    this.handlePositionGameOverText();
+    this.gameOverText.setOrigin(0.5);
 
     // allow the player to restart the game by pressing a key
-    if (this.input.keyboard) {
-      this.input.keyboard.once(
-        'keydown',
-        () => {
-          // reset the game state
-          this.gameOverFlag = false;
-
-          this.characterHealth = this.maxCharacterHealth;
-          this.character.anims.play('character-walk-back', true);
-          this.character.clearTint();
-
-          this.updateHealthDisplay();
-          this.setupPowerUp(false);
-          gameOverText.destroy();
-          this.objectGroup.forEach((object) => object.destroy(true));
-          this.objectGroup = [];
-          this.nonCollidableGroup.forEach((object) => object.destroy(true));
-          this.nonCollidableGroup = [];
-          this.setupTimers();
-
-          // restart the game
-          const width = this.cameras.main.width;
-          this.character.setPosition(width / 2, this.character.y);
-        },
-        this
-      );
+    if (keyboardAvailable) {
+      this.input.keyboard!.once('keydown', () => this.resetGame(), this);
+    } else {
+      this.input.once('pointerdown', () => this.resetGame(), this);
     }
   };
 
+  private handlePositionGameOverText = () => {
+    const x = this.worldWidth / 2;
+    const y = this.cameras.main.height / 2;
+    if (this.gameOverText) {
+      this.gameOverText.setPosition(x, y);
+    }
+  };
+
+  private resetGame = () => {
+    // reset the game state
+    this.gameOverFlag = false;
+
+    this.characterHealth = this.maxCharacterHealth;
+    this.character.anims.play('character-walk-back', true);
+    this.character.clearTint();
+
+    this.uiCommunicator.setHealth.next(this.characterHealth);
+    this.setupPowerUp(false);
+    this.gameOverText?.destroy();
+    this.gameOverText = undefined;
+    this.objectGroup.forEach((object) => object.destroy());
+    this.objectGroup = [];
+    this.nonCollidableGroup.forEach((object) => object.destroy());
+    this.nonCollidableGroup = [];
+    this.setupTimers();
+
+    // restart the game
+    const width = this.cameras.main.width;
+    this.character.setPosition(width / 2, this.character.y);
+  };
+
   private setupTimers = () => {
+    const largeWordWidth = this.worldWidth === this.fullWorldWidth;
     const obstacles = ['rock', 'tree'];
     this.objectSpawnTimer = this.time.addEvent({
-      delay: 500, // spawn an object every 2 seconds
+      delay: largeWordWidth ? 1000 : 2000, // spawn an object every 2 seconds
       loop: true,
       callback: () => this.spawnObject(obstacles[Math.floor(Math.random() * obstacles.length)], 'obstacle')
     });
     const powerUps = ['cake1', 'cake2', 'cake3', 'cake4'];
     this.powerUpSpawnTimer = this.time.addEvent({
-      delay: 1000, // spawn an object every 1 second
+      delay: largeWordWidth ? 4000 : 5000, // spawn an object every 5 seconds
       loop: true,
       callback: () => this.spawnObject(powerUps[Math.floor(Math.random() * powerUps.length)], 'powerUp')
     });
@@ -530,10 +549,9 @@ export default class LittleMuncherScene extends BaseScene<
     this.objectSpawnTimer.destroy();
 
     this.character.destroy();
-    this.healthDisplayText.destroy();
-    this.objectGroup.forEach((object) => object.destroy(true));
+    this.objectGroup.forEach((object) => object.destroy());
     this.objectGroup = [];
-    this.nonCollidableGroup.forEach((object) => object.destroy(true));
+    this.nonCollidableGroup.forEach((object) => object.destroy());
     this.nonCollidableGroup = [];
   }
 }

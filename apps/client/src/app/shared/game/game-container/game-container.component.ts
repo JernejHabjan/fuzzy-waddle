@@ -47,5 +47,6 @@ export class GameContainerComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.gameRef?.destroy(true);
+    this.gameRef = undefined;
   }
 }

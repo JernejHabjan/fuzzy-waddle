@@ -237,7 +237,7 @@ export default class GrasslandScene extends Scene implements CreateSceneFromObje
         const worldXY: Vector2Simple = { x: pointer.worldX, y: pointer.worldY };
         if (pointer.rightButtonReleased()) {
           // if (this.warningText) {
-          //   this.warningText.destroy(true);
+          //   this.warningText.destroy();
           // }
           // this.warningText = this.add.text(-100, 0, 'Note that nav z index checks only last node now', {
           //   fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
