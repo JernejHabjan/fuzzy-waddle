@@ -19,13 +19,16 @@ export class Fireworks {
   private emitter3Event?: Phaser.Time.TimerEvent;
   private subscriptions: Subscription[] = [];
 
-  constructor(private readonly scene: BaseScene) {
-    this.registerEvents();
+  constructor(private readonly scene: BaseScene, autoStart = false) {
+    this.registerEvents(autoStart);
+    if (autoStart) {
+      this.create();
+    }
   }
 
-  private registerEvents() {
+  private registerEvents(autoStart: boolean) {
     this.subscriptions = [
-      this.scene.onCreate.subscribe(this.create),
+      ...(autoStart ? [] : [this.scene.onCreate.subscribe(this.create)]),
       this.scene.onUpdate.subscribe(this.update),
       this.scene.onDestroy.subscribe(this.destroy),
       this.scene.onResize.subscribe(this.resize)
@@ -93,7 +96,7 @@ export class Fireworks {
     this.renderTexture?.fill(0, 0.01 * updateEventData.delta).draw([this.emitter1, this.emitter2, this.emitter3]);
   };
 
-  private destroy = () => {
+  destroy = () => {
     this.emitter1?.destroy();
     this.emitter2?.destroy();
     this.emitter3?.destroy();

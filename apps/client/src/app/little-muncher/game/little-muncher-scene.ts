@@ -4,6 +4,7 @@ import {
   LittleMuncherGameModeData,
   LittleMuncherGameState,
   LittleMuncherGameStateData,
+  LittleMuncherHills,
   LittleMuncherPlayer,
   LittleMuncherPlayerControllerData,
   LittleMuncherPlayerStateData,
@@ -15,6 +16,7 @@ import { LittleMuncherGameData } from './little-muncher-game-data';
 import { Pause } from './pause';
 import { PlayerInputController } from './player-input-controller';
 import { UiCommunicator, UiCommunicatorData } from './ui-communicator';
+import { Fireworks } from '../../shared/game/phaser/components/fireworks';
 
 export default class LittleMuncherScene extends BaseScene<
   LittleMuncherGameData,
@@ -36,10 +38,14 @@ export default class LittleMuncherScene extends BaseScene<
   private readonly powerUpDuration = 2000;
   private readonly objectVelocity = 100;
   private readonly fullWorldWidth = 800;
-  private worldWidth!: number;
   private readonly objectMargin = 100;
   private readonly objectDestroyMargin = 200;
+  private readonly powerUpScore = 1200;
+  private readonly scoreBroadcastInterval = 500;
+  private readonly scoreBroadcastIntervalLocally = 100;
+  private readonly climbedBroadcastIntervalLocally = 100;
 
+  private worldWidth!: number;
   private worldSpeed = this.initialWorldSpeed; // pixels per frame
   private objectGroup: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = [];
   private nonCollidableGroup: Phaser.Physics.Arcade.Sprite[] = [];
@@ -57,6 +63,7 @@ export default class LittleMuncherScene extends BaseScene<
   private viewPortX!: number;
   private gameOverText?: Phaser.GameObjects.Text | undefined;
   private uiCommunicator = new UiCommunicator();
+  private fireworks?: Fireworks;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -88,7 +95,6 @@ export default class LittleMuncherScene extends BaseScene<
     super.init();
     new Pause(this);
     this.playerInputController = new PlayerInputController(this);
-    // todo new Fireworks(this); // todo it must be here until we rework registration engine
   }
 
   override create() {
@@ -115,15 +121,30 @@ export default class LittleMuncherScene extends BaseScene<
     this.playerInputController.init(this.character);
 
     console.log('hill to climb on:', this.gameMode.data.hill);
-    console.log('time climbing:', this.gameState.data.timeClimbing);
+    console.log('time climbing:', this.gameState.data.climbedHeight);
     console.log('should be paused:', this.gameState.data.pause);
-
-    this.communicator.score?.send({ score: Math.round(Math.random() * 100) }); // todo just for testing
 
     this.setupTimers();
 
     this.setupUiScene();
+
+    this.subscribe(
+      this.communicator.timeClimbing?.onWithInitial(
+        this.manageTimeClimbing,
+        (event) => (this.gameState.data.climbedHeight = event.timeClimbing)
+      )
+    );
   }
+
+  private manageTimeClimbing = () => {
+    const hill = LittleMuncherHills[this.gameMode.data.hill!];
+    const climbedHeight = this.gameState.data.climbedHeight;
+    const timeToClimb = hill.height;
+
+    if (climbedHeight >= timeToClimb) {
+      this.gameOver(true);
+    }
+  };
 
   private setupUiScene() {
     const data: UiCommunicatorData = {
@@ -172,8 +193,8 @@ export default class LittleMuncherScene extends BaseScene<
 
     // create anims for the character
     this.anims.create({ key: 'character-death', frames: characterDeath, frameRate: 10, repeat: 0 });
-    this.anims.create({ key: 'character-victory-front', frames: characterVictoryFront, frameRate: 10, repeat: 0 });
-    this.anims.create({ key: 'character-victory-back', frames: characterVictoryBack, frameRate: 10, repeat: 0 });
+    this.anims.create({ key: 'character-victory-front', frames: characterVictoryFront, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: 'character-victory-back', frames: characterVictoryBack, frameRate: 10, repeat: -1 });
     this.anims.create({ key: 'character-walk-back', frames: characterWalkBack, frameRate: 10, repeat: -1 });
     this.anims.create({ key: 'character-walk-front', frames: characterWalkFront, frameRate: 10, repeat: -1 });
     this.anims.create({ key: 'character-walk-left', frames: characterWalkLeft, frameRate: 10, repeat: -1 });
@@ -254,6 +275,46 @@ export default class LittleMuncherScene extends BaseScene<
     this.nonCollidableGroup.forEach((object) => this.destroyOffScreenSprite(this.nonCollidableGroup, object));
 
     this.handlePowerUpUpdate(time, delta);
+
+    this.updateScore(this.worldSpeed);
+    this.updateClimbed(this.worldSpeed);
+  }
+
+  private updateScore(scoreToAdd: number) {
+    const prevScore = this.gameState.data.score;
+    this.gameState.data.score += scoreToAdd;
+
+    const scoreData = { score: this.gameState.data.score };
+
+    if (
+      Math.floor(this.gameState.data.score / this.scoreBroadcastIntervalLocally) >
+      Math.floor(prevScore / this.scoreBroadcastIntervalLocally)
+    ) {
+      // broadcast locally every N ticks
+      this.communicator.score?.sendLocally(scoreData);
+      if (
+        Math.floor(this.gameState.data.score / this.scoreBroadcastInterval) >
+        Math.floor(prevScore / this.scoreBroadcastInterval)
+      ) {
+        // Broadcast to all observers every N points
+        this.communicator.score?.send(scoreData);
+      }
+    }
+  }
+
+  private updateClimbed(climbedToAdd: number) {
+    const prevClimbed = this.gameState.data.climbedHeight;
+    this.gameState.data.climbedHeight += climbedToAdd;
+
+    const climbedData = { timeClimbing: this.gameState.data.climbedHeight };
+
+    if (
+      Math.floor(this.gameState.data.climbedHeight / this.climbedBroadcastIntervalLocally) >
+      Math.floor(prevClimbed / this.climbedBroadcastIntervalLocally)
+    ) {
+      // Broadcast to all observers every N points
+      this.communicator.timeClimbing?.send(climbedData);
+    }
   }
 
   private destroyOffScreenSprite = (group: Phaser.Physics.Arcade.Sprite[], sprite: Phaser.Physics.Arcade.Sprite) => {
@@ -453,13 +514,14 @@ export default class LittleMuncherScene extends BaseScene<
     this.uiCommunicator.setHealth.next(this.characterHealth);
     if (this.characterHealth <= 0) {
       // game over
-      this.gameOver();
+      this.gameOver(false);
       character.tint = 0xff0000;
     }
   };
 
   private setupPowerUp(poweredUp: boolean) {
     if (poweredUp) {
+      this.updateScore(this.powerUpScore);
       this.poweredUp = new Date();
       this.worldSpeed = Math.min(this.worldSpeed * 2, this.maxWorldSpeed);
     } else {
@@ -468,21 +530,34 @@ export default class LittleMuncherScene extends BaseScene<
     }
   }
 
-  private gameOver = () => {
+  private gameOver = (success: boolean) => {
+    if (success) {
+      this.fireworks = new Fireworks(this, true);
+    }
     this.gameOverFlag = true;
     // stop the object spawn timer
     this.objectSpawnTimer.destroy();
     this.powerUpSpawnTimer.destroy();
 
-    // play the death animation
-    this.character.anims.play('character-death');
+    if (success) {
+      // play victory animation
+      const victoryAnimations = ['character-victory-front', 'character-victory-back'];
+      this.character.anims.play(victoryAnimations[Math.floor(Math.random() * victoryAnimations.length)]);
+    } else {
+      this.character.anims.play('character-death');
+    }
 
     const keyboardAvailable = this.input.keyboard?.isActive() && this.game.device.os.desktop;
     let text: string;
-    if (keyboardAvailable) {
-      text = 'Game Over - press "Space" to restart';
+    if (success) {
+      text = 'Victory!';
     } else {
-      text = 'Game Over - tap to restart';
+      text = 'Game Over';
+    }
+    if (keyboardAvailable) {
+      text += ' - press "Space" to restart';
+    } else {
+      text += ' - tap to restart';
     }
     // show a game over message
     this.gameOverText = this.add.text(0, 0, text, { font: '32px Arial', color: '#000000' });
@@ -522,6 +597,11 @@ export default class LittleMuncherScene extends BaseScene<
     this.nonCollidableGroup.forEach((object) => object.destroy());
     this.nonCollidableGroup = [];
     this.setupTimers();
+    this.fireworks?.destroy();
+    this.fireworks = undefined;
+
+    this.updateScore(this.worldSpeed); // todo
+    this.updateClimbed(this.worldSpeed); // todo
 
     // restart the game
     const width = this.cameras.main.width;

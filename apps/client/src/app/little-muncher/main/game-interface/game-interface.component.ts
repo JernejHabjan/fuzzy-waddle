@@ -6,6 +6,7 @@ import { CommunicatorService } from '../../game/communicator.service';
 import { Subscription } from 'rxjs';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../auth/auth.service';
+import { LittleMuncherHillEnum, LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
 
 @Component({
   selector: 'fuzzy-waddle-game-interface',
@@ -14,6 +15,7 @@ import { AuthService } from '../../../auth/auth.service';
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   score = 0;
+  remaining = 0;
   @ViewChild('modal') private modalComponent!: ModalComponent;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
@@ -47,6 +49,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.manageUiElementVisibility();
     this.manageScore();
+    this.manageRemaining();
     this.managePause();
   }
 
@@ -56,11 +59,31 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
 
   private manageScore() {
     // set initial score:
-    // todo this.score = this.gameInstanceClientService.gameInstance!.players.find((player) => player.id === this.gameInstanceClientService.playerId)!.score;
+    this.score = this.gameInstanceClientService.gameInstance!.players[0].playerState.data.score;
     this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
       this.score = event.score;
       this.changeDetectorRef.detectChanges();
     });
+  }
+
+  private manageRemaining() {
+    // set initial remaining:
+    this.remaining = this.getRemaining(
+      this.gameInstanceClientService.gameInstance!.gameMode!.data.hill!,
+      this.gameInstanceClientService.gameInstance!.gameState!.data.climbedHeight
+    );
+    this.scoreSubscription = this.communicatorService.timeClimbing?.on.subscribe((event) => {
+      this.remaining = this.getRemaining(
+        this.gameInstanceClientService.gameInstance!.gameMode!.data.hill!,
+        event.timeClimbing
+      );
+      this.changeDetectorRef.detectChanges();
+    });
+  }
+
+  private getRemaining(hillType: LittleMuncherHillEnum, timeClimbing: number): number {
+    const hill = LittleMuncherHills[hillType];
+    return hill.height - timeClimbing;
   }
 
   private managePause() {

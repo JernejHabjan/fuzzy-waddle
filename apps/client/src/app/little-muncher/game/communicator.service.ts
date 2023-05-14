@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TwoWayCommunicator } from '../../shared/game/communicators/two-way-communicator';
 import { Socket } from 'ngx-socket-io';
 import {
+  CommunicatorClimbingEvent,
   CommunicatorPauseEvent,
   CommunicatorScoreEvent,
   LittleMuncherGatewayEvent,
@@ -14,6 +15,7 @@ import {
 export class CommunicatorService implements OnDestroy {
   key?: TwoWayCommunicator<LittleMuncherPosition>;
   score?: TwoWayCommunicator<CommunicatorScoreEvent>;
+  timeClimbing?: TwoWayCommunicator<CommunicatorClimbingEvent>;
   pause?: TwoWayCommunicator<CommunicatorPauseEvent>;
 
   startCommunication(gameInstanceId: string, socket?: Socket) {
@@ -26,6 +28,12 @@ export class CommunicatorService implements OnDestroy {
     this.score = new TwoWayCommunicator<CommunicatorScoreEvent>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       'score',
+      gameInstanceId,
+      socket
+    );
+    this.timeClimbing = new TwoWayCommunicator<CommunicatorClimbingEvent>(
+      LittleMuncherGatewayEvent.LittleMuncherAction,
+      'timeClimbing',
       gameInstanceId,
       socket
     );
