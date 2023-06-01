@@ -67,7 +67,7 @@
     "@nestjs/swagger": "6.3.0",
     "@nestjs/throttler": "^4.0.0",
     "@nestjs/websockets": "^9.4.0",
-    "@ng-bootstrap/ng-bootstrap": "^14.1.1",
+    "@ng-bootstrap/ng-bootstrap": "^15.0.0",
     "@nx/angular": "16.1.2",
     "@popperjs/core": "^2.11.7",
     "@schematics/angular": "16.0.0",
