@@ -70,7 +70,7 @@
     "@ng-bootstrap/ng-bootstrap": "^14.1.1",
     "@nx/angular": "16.1.2",
     "@popperjs/core": "^2.11.7",
-    "@schematics/angular": "16.0.0",
+    "@schematics/angular": "16.0.4",
     "@supabase/supabase-js": "^2.21.0",
     "@types/cron": "^2.0.1",
     "bad-words-plus": "^3.0.4",
