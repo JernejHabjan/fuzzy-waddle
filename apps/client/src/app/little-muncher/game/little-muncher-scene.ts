@@ -17,6 +17,7 @@ import { Pause } from './pause';
 import { PlayerInputController } from './player-input-controller';
 import { UiCommunicator, UiCommunicatorData } from './ui-communicator';
 import { Fireworks } from '../../shared/game/phaser/components/fireworks';
+import Swipe from 'phaser3-rex-plugins/plugins/input/gestures/swipe/Swipe';
 
 export default class LittleMuncherScene extends BaseScene<
   LittleMuncherGameData,
@@ -59,7 +60,7 @@ export default class LittleMuncherScene extends BaseScene<
   private gameOverFlag = false;
   private poweredUp: Date | null = null;
   private objectScale = -1;
-  private swipeInput!: any;
+  private swipeInput!: Swipe & { left: boolean; right: boolean };
   private viewPortX!: number;
   private gameOverText?: Phaser.GameObjects.Text | undefined;
   private uiCommunicator = new UiCommunicator();
@@ -84,11 +85,6 @@ export default class LittleMuncherScene extends BaseScene<
     );
     this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
     this.load.audio('bird', 'assets/little-muncher/sfx/bird.mp3');
-    this.load.scenePlugin({
-      key: 'rexgesturesplugin',
-      url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexgesturesplugin.min.js',
-      sceneKey: 'rexGestures'
-    });
   }
 
   override init() {
@@ -102,7 +98,10 @@ export default class LittleMuncherScene extends BaseScene<
     this.setViewport();
     this.drawBackground();
 
-    this.swipeInput = (this as any).rexGestures.add.swipe({ velocityThreshold: 500 });
+    this.swipeInput = new Swipe(this, { velocityThreshold: 500, dir: 'left&right' }) as Swipe & {
+      left: boolean;
+      right: boolean;
+    };
 
     // bind resize event
     this.subscribe(
