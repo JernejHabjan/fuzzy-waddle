@@ -4,6 +4,7 @@ import { Socket } from 'ngx-socket-io';
 import {
   CommunicatorClimbingEvent,
   CommunicatorPauseEvent,
+  CommunicatorResetEvent,
   CommunicatorScoreEvent,
   LittleMuncherGatewayEvent,
   LittleMuncherPosition
@@ -13,15 +14,16 @@ import {
   providedIn: 'root'
 })
 export class CommunicatorService implements OnDestroy {
-  key?: TwoWayCommunicator<LittleMuncherPosition>;
+  move?: TwoWayCommunicator<LittleMuncherPosition>;
   score?: TwoWayCommunicator<CommunicatorScoreEvent>;
   timeClimbing?: TwoWayCommunicator<CommunicatorClimbingEvent>;
   pause?: TwoWayCommunicator<CommunicatorPauseEvent>;
+  reset?: TwoWayCommunicator<CommunicatorResetEvent>;
 
   startCommunication(gameInstanceId: string, socket?: Socket) {
-    this.key = new TwoWayCommunicator<LittleMuncherPosition>(
+    this.move = new TwoWayCommunicator<LittleMuncherPosition>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
-      'key',
+      'move',
       gameInstanceId,
       socket
     );
@@ -43,10 +45,16 @@ export class CommunicatorService implements OnDestroy {
       gameInstanceId,
       socket
     );
+    this.reset = new TwoWayCommunicator<CommunicatorResetEvent>(
+      LittleMuncherGatewayEvent.LittleMuncherAction,
+      'reset',
+      gameInstanceId,
+      socket
+    );
   }
 
   stopCommunication() {
-    this.key?.destroy();
+    this.move?.destroy();
     this.score?.destroy();
     this.pause?.destroy();
   }

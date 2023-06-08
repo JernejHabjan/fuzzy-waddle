@@ -83,7 +83,8 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
 
   private getRemaining(hillType: LittleMuncherHillEnum, timeClimbing: number): number {
     const hill = LittleMuncherHills[hillType];
-    return hill.height - timeClimbing;
+    const res = hill.height - timeClimbing;
+    return res >= 0 ? res : 0;
   }
 
   private managePause() {

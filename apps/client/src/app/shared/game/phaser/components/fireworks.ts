@@ -97,6 +97,9 @@ export class Fireworks {
   };
 
   destroy = () => {
+    this.emitter1?.stop();
+    this.emitter2?.stop();
+    this.emitter3?.stop();
     this.emitter1?.destroy();
     this.emitter2?.destroy();
     this.emitter3?.destroy();

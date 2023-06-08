@@ -46,6 +46,15 @@ export class GameStateServerService {
         console.log('updating pause', body.data);
         console.log('pausing game');
         break;
+      case 'reset':
+        if (!authUserPlayer) {
+          console.log('User is not a player in this game instance');
+          return false;
+        }
+        gameInstance.gameState.data.climbedHeight = 0;
+        gameInstance.gameState.data.score = 0;
+        console.log('resetting game');
+        break;
       case 'score':
         if (!authUserPlayer) {
           console.log('User is not a player in this game instance');
@@ -54,7 +63,7 @@ export class GameStateServerService {
         player.playerState.data.score = (body.data as CommunicatorScoreEvent).score;
         console.log('updating score', body.data);
         break;
-      case 'key':
+      case 'move':
         if (!authUserPlayer) {
           console.log('User is not a player in this game instance');
           return false;

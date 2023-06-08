@@ -11,7 +11,7 @@ export class PlayerInputController {
   init(character: Phaser.GameObjects.Sprite) {
     this.character = character;
     this.littleMuncherScene.subscribe(
-      this.littleMuncherScene.communicator.key?.onWithInitial(
+      this.littleMuncherScene.communicator.move?.onWithInitial(
         this.setPosition,
         (position) => (this.littleMuncherScene.player.playerState.data.position = position)
       )
@@ -25,7 +25,7 @@ export class PlayerInputController {
       this.littleMuncherScene.input.keyboard.on('keydown', (event: KeyboardEvent) => {
         const validKeyboardEvent = this.manageKeyboardEvent(event.key);
         if (validKeyboardEvent) {
-          this.littleMuncherScene.communicator.key?.sendWithStateChange(
+          this.littleMuncherScene.communicator.move?.sendWithStateChange(
             this.littleMuncherScene.player.playerState.data.position,
             this.setPosition
           );

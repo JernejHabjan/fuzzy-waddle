@@ -41,11 +41,12 @@ export default class LittleMuncherScene extends BaseScene<
   private readonly fullWorldWidth = 800;
   private readonly objectMargin = 100;
   private readonly objectDestroyMargin = 200;
-  private readonly powerUpScore = 1200;
-  private readonly scoreBroadcastInterval = 500;
-  private readonly scoreBroadcastIntervalLocally = 100;
-  private readonly climbedBroadcastIntervalLocally = 100;
-
+  private readonly climbedPerSecond = 100;
+  private readonly powerUpScore = this.climbedPerSecond * 5;
+  private readonly scorePerSecond = this.climbedPerSecond;
+  private readonly scoreBroadcastInterval = this.powerUpScore;
+  private readonly scoreBroadcastIntervalLocally = this.scorePerSecond;
+  private readonly climbedBroadcastIntervalLocally = this.climbedPerSecond;
   private worldWidth!: number;
   private worldSpeed = this.initialWorldSpeed; // pixels per frame
   private objectGroup: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = [];
@@ -65,6 +66,9 @@ export default class LittleMuncherScene extends BaseScene<
   private gameOverText?: Phaser.GameObjects.Text | undefined;
   private uiCommunicator = new UiCommunicator();
   private fireworks?: Fireworks;
+  private prevBroadcastScoreLocally = 0;
+  private prevBroadcastScore = 0;
+  private prevBroadcastClimbed = 0;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -133,6 +137,7 @@ export default class LittleMuncherScene extends BaseScene<
         (event) => (this.gameState.data.climbedHeight = event.timeClimbing)
       )
     );
+    this.subscribe(this.communicator.reset?.on.subscribe(() => this.resetGame(false)));
   }
 
   private manageTimeClimbing = () => {
@@ -275,44 +280,48 @@ export default class LittleMuncherScene extends BaseScene<
 
     this.handlePowerUpUpdate(time, delta);
 
-    this.updateScore(this.worldSpeed);
-    this.updateClimbed(this.worldSpeed);
+    const scoreThisFrame = this.scorePerSecond * (delta / 1000);
+    this.updateScore(scoreThisFrame);
+
+    const climbedThisFrame = this.climbedPerSecond * (delta / 1000);
+    this.updateClimbed(climbedThisFrame);
   }
 
   private updateScore(scoreToAdd: number) {
-    const prevScore = this.gameState.data.score;
     this.gameState.data.score += scoreToAdd;
 
     const scoreData = { score: this.gameState.data.score };
 
     if (
       Math.floor(this.gameState.data.score / this.scoreBroadcastIntervalLocally) >
-      Math.floor(prevScore / this.scoreBroadcastIntervalLocally)
+      Math.floor(this.prevBroadcastScoreLocally / this.scoreBroadcastIntervalLocally)
     ) {
       // broadcast locally every N ticks
       this.communicator.score?.sendLocally(scoreData);
+      this.prevBroadcastScoreLocally = this.gameState.data.score;
       if (
         Math.floor(this.gameState.data.score / this.scoreBroadcastInterval) >
-        Math.floor(prevScore / this.scoreBroadcastInterval)
+        Math.floor(this.prevBroadcastScore / this.scoreBroadcastInterval)
       ) {
         // Broadcast to all observers every N points
         this.communicator.score?.send(scoreData);
+        this.prevBroadcastScore = this.gameState.data.score;
       }
     }
   }
 
   private updateClimbed(climbedToAdd: number) {
-    const prevClimbed = this.gameState.data.climbedHeight;
     this.gameState.data.climbedHeight += climbedToAdd;
 
     const climbedData = { timeClimbing: this.gameState.data.climbedHeight };
 
     if (
       Math.floor(this.gameState.data.climbedHeight / this.climbedBroadcastIntervalLocally) >
-      Math.floor(prevClimbed / this.climbedBroadcastIntervalLocally)
+      Math.floor(this.prevBroadcastClimbed / this.climbedBroadcastIntervalLocally)
     ) {
       // Broadcast to all observers every N points
       this.communicator.timeClimbing?.send(climbedData);
+      this.prevBroadcastClimbed = this.gameState.data.climbedHeight;
     }
   }
 
@@ -579,7 +588,7 @@ export default class LittleMuncherScene extends BaseScene<
     }
   };
 
-  private resetGame = () => {
+  private resetGame = (broadcast = true) => {
     // reset the game state
     this.gameOverFlag = false;
 
@@ -599,12 +608,23 @@ export default class LittleMuncherScene extends BaseScene<
     this.fireworks?.destroy();
     this.fireworks = undefined;
 
-    this.updateScore(this.worldSpeed); // todo
-    this.updateClimbed(this.worldSpeed); // todo
+    this.gameState.data.score = 0;
+    this.updateScore(0);
+
+    this.gameState.data.climbedHeight = 0;
+    this.updateClimbed(0);
+
+    this.prevBroadcastScoreLocally = 0;
+    this.prevBroadcastScore = 0;
+    this.prevBroadcastClimbed = 0;
 
     // restart the game
     const width = this.cameras.main.width;
     this.character.setPosition(width / 2, this.character.y);
+
+    if (broadcast) {
+      this.communicator.reset?.send({ reset: true });
+    }
   };
 
   private setupTimers = () => {
