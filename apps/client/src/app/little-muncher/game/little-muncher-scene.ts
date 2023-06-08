@@ -17,7 +17,6 @@ import { Pause } from './pause';
 import { PlayerInputController } from './player-input-controller';
 import { UiCommunicator, UiCommunicatorData } from './ui-communicator';
 import { Fireworks } from '../../shared/game/phaser/components/fireworks';
-import Swipe from 'phaser3-rex-plugins/plugins/input/gestures/swipe/Swipe';
 
 export default class LittleMuncherScene extends BaseScene<
   LittleMuncherGameData,
@@ -33,8 +32,8 @@ export default class LittleMuncherScene extends BaseScene<
 > {
   private playerInputController!: PlayerInputController;
 
-  private readonly initialWorldSpeed = 3;
-  private readonly maxWorldSpeed = this.initialWorldSpeed * 3;
+  private readonly initialWorldSpeedPerFrame = 0.5;
+  private readonly maxWorldSpeedPerFrame = this.initialWorldSpeedPerFrame * 3;
   private readonly maxCharacterHealth = 3;
   private readonly powerUpDuration = 2000;
   private readonly objectVelocity = 100;
@@ -48,20 +47,17 @@ export default class LittleMuncherScene extends BaseScene<
   private readonly scoreBroadcastIntervalLocally = this.scorePerSecond;
   private readonly climbedBroadcastIntervalLocally = this.climbedPerSecond;
   private worldWidth!: number;
-  private worldSpeed = this.initialWorldSpeed; // pixels per frame
+  private worldSpeedPerFrame = this.initialWorldSpeedPerFrame; // pixels per frame
   private objectGroup: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = [];
   private nonCollidableGroup: Phaser.Physics.Arcade.Sprite[] = [];
   private character!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private objectSpawnTimer!: Phaser.Time.TimerEvent;
   private powerUpSpawnTimer!: Phaser.Time.TimerEvent;
   private characterHealth = this.maxCharacterHealth;
-  private characterSpeed = 2; // the speed at which the character moves
-  private cursors?: Phaser.Types.Input.Keyboard.CursorKeys; // variable to store the cursor keys
   private background!: Phaser.GameObjects.TileSprite;
   private gameOverFlag = false;
   private poweredUp: Date | null = null;
   private objectScale = -1;
-  private swipeInput!: Swipe & { left: boolean; right: boolean };
   private viewPortX!: number;
   private gameOverText?: Phaser.GameObjects.Text | undefined;
   private uiCommunicator = new UiCommunicator();
@@ -101,11 +97,6 @@ export default class LittleMuncherScene extends BaseScene<
     super.create();
     this.setViewport();
     this.drawBackground();
-
-    this.swipeInput = new Swipe(this, { velocityThreshold: 500, dir: 'left&right' }) as Swipe & {
-      left: boolean;
-      right: boolean;
-    };
 
     // bind resize event
     this.subscribe(
@@ -163,6 +154,7 @@ export default class LittleMuncherScene extends BaseScene<
     const screenHeight = this.scale.height;
 
     this.worldWidth = screenWidth > this.fullWorldWidth ? this.fullWorldWidth : screenWidth;
+    this.playerInputController.setWorldWidth(this.worldWidth);
     this.objectScale = screenWidth > this.fullWorldWidth ? 2 : 1.5;
 
     this.viewPortX = screenWidth / 2 - this.worldWidth / 2;
@@ -236,11 +228,6 @@ export default class LittleMuncherScene extends BaseScene<
     this.character.setSize(24, 36);
     // set the character's size and physics properties
     this.character.setCollideWorldBounds(true);
-
-    // create the cursor keys
-    if (this.input.keyboard) {
-      this.cursors = this.input.keyboard.createCursorKeys();
-    }
   };
 
   private handleResizeCharacter = () => {
@@ -256,20 +243,23 @@ export default class LittleMuncherScene extends BaseScene<
     super.update(time, delta);
 
     if (this.gameOverFlag) return;
-    this.handleCharacterMovement();
+
+    const worldSpeedThisFrame = Math.round(this.worldSpeedPerFrame * delta);
+
+    this.playerInputController.handleCharacterMovement(worldSpeedThisFrame);
 
     // move world objects down
     this.objectGroup.forEach((sprite) => {
       const bounced = sprite.getData('bounced'); // todo static type
       if (!bounced) {
-        sprite.y += this.worldSpeed;
+        sprite.y += worldSpeedThisFrame;
       }
     });
     this.nonCollidableGroup.forEach((sprite: Phaser.Physics.Arcade.Sprite) => {
-      sprite.y += this.worldSpeed;
+      sprite.y += worldSpeedThisFrame;
     });
 
-    this.background.tilePositionY -= this.worldSpeed;
+    this.background.tilePositionY -= worldSpeedThisFrame;
 
     // check for collision with random objects
     this.physics.overlap(this.character, this.objectGroup, this.objectCollisionHandler);
@@ -353,47 +343,6 @@ export default class LittleMuncherScene extends BaseScene<
       this.setupPowerUp(false);
     }
   };
-
-  private handleCharacterMovement = () => {
-    if (!this.cursors || !this.game.device.os.desktop) {
-      this.handleSwipe();
-      return;
-    }
-    // move the character left or right based on the arrow keys
-    if (this.cursors.left.isDown) {
-      // move left
-      this.character.anims.play('character-walk-left', true);
-      this.character.x -= this.characterSpeed * this.worldSpeed;
-    } else if (this.cursors.right.isDown) {
-      // move right
-      this.character.anims.play('character-walk-right', true);
-      this.character.x += this.characterSpeed * this.worldSpeed;
-    } else {
-      this.character.anims.play('character-walk-back', true);
-    }
-  };
-
-  private handleSwipe() {
-    if (!this.swipeInput.isSwiped) return;
-    // https://codepen.io/rexrainbow/pen/joWZbw
-
-    // check if character is on left or right side of screen or middle
-    // if on left, only allow right swipe
-    // if on right, only allow left swipe
-    const x = Math.round(this.character.x);
-    const isCharacterOnLeftSideOfScreen = x < Math.round(this.worldWidth / 2);
-    const isCharacterOnRightSideOfScreen = x > Math.round(this.worldWidth / 2);
-
-    if (this.swipeInput.right) {
-      if (isCharacterOnRightSideOfScreen) return;
-      // move character left by 1/3 of screen
-      this.character.x += this.worldWidth / 3;
-    } else if (this.swipeInput.left) {
-      if (isCharacterOnLeftSideOfScreen) return;
-      // move character right by 1/3 of screen
-      this.character.x -= this.worldWidth / 3;
-    }
-  }
 
   spawnObject = (key: string, name: 'obstacle' | 'powerUp') => {
     // todo enum
@@ -531,18 +480,19 @@ export default class LittleMuncherScene extends BaseScene<
     if (poweredUp) {
       this.updateScore(this.powerUpScore);
       this.poweredUp = new Date();
-      this.worldSpeed = Math.min(this.worldSpeed * 2, this.maxWorldSpeed);
+      this.worldSpeedPerFrame = Math.min(this.worldSpeedPerFrame * 2, this.maxWorldSpeedPerFrame);
     } else {
       this.poweredUp = null;
-      this.worldSpeed = this.initialWorldSpeed;
+      this.worldSpeedPerFrame = this.initialWorldSpeedPerFrame;
     }
   }
 
   private gameOver = (success: boolean) => {
+    if (this.gameOverFlag) return;
+    this.gameOverFlag = true;
     if (success) {
       this.fireworks = new Fireworks(this, true);
     }
-    this.gameOverFlag = true;
     // stop the object spawn timer
     this.objectSpawnTimer.destroy();
     this.powerUpSpawnTimer.destroy();
@@ -625,6 +575,7 @@ export default class LittleMuncherScene extends BaseScene<
     if (broadcast) {
       this.communicator.reset?.send({ reset: true });
     }
+    this.gameOverFlag = false;
   };
 
   private setupTimers = () => {

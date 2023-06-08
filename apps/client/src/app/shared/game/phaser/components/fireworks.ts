@@ -89,6 +89,7 @@ export class Fireworks {
     emitter.particleX = Between(0, this.scene.cameras.main.width);
     emitter.particleY = Between(0, this.scene.cameras.main.height);
     emitter.setParticleTint(GetRandom(this.tints));
+    emitter.setParticleLifespan(Between(3000, 5000));
     emitter.explode();
   }
 
@@ -97,17 +98,24 @@ export class Fireworks {
   };
 
   destroy = () => {
-    this.emitter1?.stop();
-    this.emitter2?.stop();
-    this.emitter3?.stop();
-    this.emitter1?.destroy();
-    this.emitter2?.destroy();
-    this.emitter3?.destroy();
-    this.renderTexture?.destroy();
+    this.emitter1?.stop(true);
+    this.emitter2?.stop(true);
+    this.emitter3?.stop(true);
+    this.emitter1?.destroy(true);
+    this.emitter2?.destroy(true);
+    this.emitter3?.destroy(true);
+    this.renderTexture?.destroy(true);
     this.emitter1Event?.destroy();
     this.emitter2Event?.destroy();
     this.emitter3Event?.destroy();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.emitter1 = undefined;
+    this.emitter2 = undefined;
+    this.emitter3 = undefined;
+    this.renderTexture = undefined;
+    this.emitter1Event = undefined;
+    this.emitter2Event = undefined;
+    this.emitter3Event = undefined;
   };
 
   private resize = () => {
