@@ -111,8 +111,7 @@ export class PlayerInputController {
     // set y to first 1/8 from bottom up
     this.character.y = height - height / 8;
     if (this.littleMuncherScene.isPlayer) {
-      const width = this.littleMuncherScene.game.scale.width;
-      position.x = width / 2;
+      position.x = this.worldWidth / 2;
       this.send();
     } else {
       this.setPosition();

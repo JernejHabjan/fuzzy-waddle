@@ -19,7 +19,10 @@ export const spectateServiceStub = {
     return undefined;
   },
   getRooms() {
-    //
+    return Promise.resolve([]);
+  },
+  initiallyPullRooms(): Promise<void> {
+    return Promise.resolve();
   },
   joinRoom() {
     //

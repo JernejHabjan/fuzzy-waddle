@@ -18,6 +18,26 @@ import { PlayerInputController } from './player-input-controller';
 import { UiCommunicator, UiCommunicatorData } from './ui-communicator';
 import { Fireworks } from '../../shared/game/phaser/components/fireworks';
 
+export enum ObjectName {
+  'obstacle' = 'obstacle',
+  'powerUp' = 'powerUp'
+}
+
+export enum ObjectProperty {
+  'type' = 'type',
+  'bounced' = 'bounced'
+}
+
+export enum ObjectType {
+  'bird' = 'bird',
+  'tree' = 'tree',
+  'rock' = 'rock',
+  'cake1' = 'cake1',
+  'cake2' = 'cake2',
+  'cake3' = 'cake3',
+  'cake4' = 'cake4'
+}
+
 export default class LittleMuncherScene extends BaseScene<
   LittleMuncherGameData,
   LittleMuncherGameStateData,
@@ -32,15 +52,15 @@ export default class LittleMuncherScene extends BaseScene<
 > {
   private playerInputController!: PlayerInputController;
 
+  private readonly climbedPerSecond = 30;
   private readonly initialWorldSpeedPerFrame = 0.5;
   private readonly maxWorldSpeedPerFrame = this.initialWorldSpeedPerFrame * 3;
   private readonly maxCharacterHealth = 3;
   private readonly powerUpDuration = 2000;
   private readonly objectVelocity = 100;
-  private readonly fullWorldWidth = 800;
+  private readonly fullWorldWidth = 600;
   private readonly objectMargin = 100;
   private readonly objectDestroyMargin = 200;
-  private readonly climbedPerSecond = 100;
   private readonly powerUpScore = this.climbedPerSecond * 5;
   private readonly scorePerSecond = this.climbedPerSecond;
   private readonly scoreBroadcastInterval = this.powerUpScore;
@@ -51,8 +71,8 @@ export default class LittleMuncherScene extends BaseScene<
   private objectGroup: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = [];
   private nonCollidableGroup: Phaser.Physics.Arcade.Sprite[] = [];
   private character!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  private objectSpawnTimer!: Phaser.Time.TimerEvent;
-  private powerUpSpawnTimer!: Phaser.Time.TimerEvent;
+  private objectSpawnTimer?: Phaser.Time.TimerEvent;
+  private powerUpSpawnTimer?: Phaser.Time.TimerEvent;
   private characterHealth = this.maxCharacterHealth;
   private background!: Phaser.GameObjects.TileSprite;
   private gameOverFlag = false;
@@ -117,6 +137,7 @@ export default class LittleMuncherScene extends BaseScene<
     console.log('hill to climb on:', this.gameMode.data.hill);
     console.log('time climbing:', this.gameState.data.climbedHeight);
     console.log('should be paused:', this.gameState.data.pause);
+    // todo console.log('game started at:', this.baseGameData.gameInstance.data.gameInstanceMetadataData!.createdOn);
 
     this.setupTimers();
 
@@ -268,7 +289,7 @@ export default class LittleMuncherScene extends BaseScene<
     this.objectGroup.forEach((object) => this.destroyOffScreenSprite(this.objectGroup, object));
     this.nonCollidableGroup.forEach((object) => this.destroyOffScreenSprite(this.nonCollidableGroup, object));
 
-    this.handlePowerUpUpdate(time, delta);
+    this.handlePowerUpUpdate();
 
     const scoreThisFrame = this.scorePerSecond * (delta / 1000);
     this.updateScore(scoreThisFrame);
@@ -336,7 +357,7 @@ export default class LittleMuncherScene extends BaseScene<
     }
   };
 
-  private handlePowerUpUpdate = (time: number, delta: number) => {
+  private handlePowerUpUpdate = () => {
     if (!this.poweredUp) return;
     const now = new Date();
     if (now.getTime() - this.poweredUp.getTime() > this.powerUpDuration) {
@@ -344,16 +365,14 @@ export default class LittleMuncherScene extends BaseScene<
     }
   };
 
-  spawnObject = (key: string, name: 'obstacle' | 'powerUp') => {
-    // todo enum
-
-    let x = Math.random() * this.worldWidth;
+  spawnObject = (key: ObjectType, name: ObjectName) => {
+    let x = this.seededRandomByTime() * this.worldWidth;
     const y = -this.objectMargin;
 
     // on mobile, only spawn objects in 3 columns
     if (!this.game.device.os.desktop) {
       // spawn object in one of 3 columns
-      const column = Math.floor(Math.random() * 3);
+      const column = Math.floor(this.seededRandomByTime() * 3);
       const columnWidth = this.worldWidth / 3;
       x = column * columnWidth + columnWidth / 2;
     }
@@ -375,49 +394,49 @@ export default class LittleMuncherScene extends BaseScene<
       return;
     }
 
-    if (key === 'tree') {
+    if (key === ObjectType.tree) {
       // decrease the tree collision box y by 40px
       object.body.setSize(object.width, object.height - 40);
       object.body.setOffset(0, 40);
       this.spawnBird(object);
     }
-    object.setData('type', key);
+    object.setData(ObjectProperty.type, key);
     this.objectGroup.push(object);
     object.name = name;
   };
 
   private spawnBird = (object: Phaser.Physics.Arcade.Sprite) => {
-    if (Math.random() > 0.3) return; // 30% chance of spawning a bird
+    const rnd = this.seededRandomByTime();
+    if (rnd > 0.3) return; // 30% chance of spawning a bird
 
     const bird = this.physics.add.sprite(object.x, object.y - 40 * object.scale, 'lm-atlas', 'bird/0');
     bird.setDepth(1);
     bird.anims.play('bird-idle', true);
     object.setScale(this.objectScale);
     bird.setOrigin(0.5, 0.5);
-    object.setData('bird', bird);
+    object.setData(ObjectType.bird, bird);
     this.nonCollidableGroup.push(bird);
   };
 
-  private objectCollisionHandler = (characterIn: any, objectIn: any) => {
+  private objectCollisionHandler: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (characterIn, objectIn): void => {
     const character = characterIn as Phaser.Physics.Arcade.Sprite;
     const object = objectIn as Phaser.Physics.Arcade.Sprite;
     // remove the object from the group
 
-    // do something based on the type of object collided with
-    if (object.name === 'powerUp') {
-      // todo to enum
-      // add a powerup to the character
+    // do something with the object
+    if (object.name === ObjectName.powerUp) {
+      // add a power-up to the character
       this.setupPowerUp(true);
       object.destroy();
-    } else if (object.name === 'obstacle') {
-      if (!object.getData('bounced')) {
+    } else if (object.name === ObjectName.obstacle) {
+      if (!object.getData(ObjectProperty.bounced)) {
         this.manageBirdOnTreeCollision(object);
 
-        if (this.poweredUp && object.getData('type') !== 'tree') {
+        if (this.poweredUp && object.getData(ObjectProperty.type) !== ObjectType.tree) {
           // bounce the object
-          const randomVelocityBetween4And5 = Math.random() + 4;
+          const randomVelocityBetween4And5 = this.seededRandomByTime() + 4;
           object.body!.velocity.y = -this.objectVelocity * randomVelocityBetween4And5;
-          object.setData('bounced', true); // todo static type
+          object.setData(ObjectProperty.bounced, true);
         } else {
           this.crashCharacter(character, object);
         }
@@ -427,15 +446,28 @@ export default class LittleMuncherScene extends BaseScene<
     }
   };
 
+  /**
+   * returns "random" number, that is same for all clients on same date time
+   * This number is between 0 and 1
+   */
+  seededRandomByTime(): number {
+    // todo const now = new Date();
+    // todo const seed =
+    // todo   now.getFullYear() + now.getMonth() + now.getDate() + now.getHours() + now.getMinutes() + now.getSeconds();
+    // todo use the seed that is same for all clients
+    const random = new Phaser.Math.RandomDataGenerator(/*[seed.toString()]*/);
+    return random.frac();
+  }
+
   private manageBirdOnTreeCollision = (object: Phaser.Physics.Arcade.Sprite) => {
-    if (object.getData('type') !== 'tree') return;
+    if (object.getData(ObjectProperty.type) !== ObjectType.tree) return;
     // get bird
-    const bird = object.getData('bird');
+    const bird = object.getData(ObjectType.bird);
     if (!bird) return;
     // set random x,y velocity, but only up
     const birdVelocity = this.objectVelocity;
-    const birdXVelocity = Math.random() * 2 * birdVelocity - birdVelocity;
-    const birdYVelocity = -Math.random() * 2 * birdVelocity;
+    const birdXVelocity = this.seededRandomByTime() * 2 * birdVelocity - birdVelocity;
+    const birdYVelocity = -this.seededRandomByTime() * 2 * birdVelocity;
     bird.setVelocityX(birdXVelocity * 4);
     bird.setVelocityY(birdYVelocity * 4);
     // play sound effect
@@ -451,7 +483,6 @@ export default class LittleMuncherScene extends BaseScene<
   };
 
   private readonly crashCharacter = (character: Phaser.Physics.Arcade.Sprite, object: Phaser.Physics.Arcade.Sprite) => {
-    // todo to enum
     object.destroy();
     // todo play explosion animation
     this.sound.play('hit');
@@ -493,14 +524,12 @@ export default class LittleMuncherScene extends BaseScene<
     if (success) {
       this.fireworks = new Fireworks(this, true);
     }
-    // stop the object spawn timer
-    this.objectSpawnTimer.destroy();
-    this.powerUpSpawnTimer.destroy();
+    this.stopTimers();
 
     if (success) {
       // play victory animation
       const victoryAnimations = ['character-victory-front', 'character-victory-back'];
-      this.character.anims.play(victoryAnimations[Math.floor(Math.random() * victoryAnimations.length)]);
+      this.character.anims.play(victoryAnimations[Math.floor(this.seededRandomByTime() * victoryAnimations.length)]);
     } else {
       this.character.anims.play('character-death');
     }
@@ -529,6 +558,15 @@ export default class LittleMuncherScene extends BaseScene<
       this.input.once('pointerdown', () => this.resetGame(), this);
     }
   };
+
+  private stopTimers() {
+    if (this.objectSpawnTimer) {
+      this.objectSpawnTimer.paused = true;
+    }
+    if (this.powerUpSpawnTimer) {
+      this.powerUpSpawnTimer.paused = true;
+    }
+  }
 
   private handlePositionGameOverText = () => {
     const x = this.worldWidth / 2;
@@ -580,23 +618,39 @@ export default class LittleMuncherScene extends BaseScene<
 
   private setupTimers = () => {
     const largeWordWidth = this.worldWidth === this.fullWorldWidth;
-    const obstacles = ['rock', 'tree'];
-    this.objectSpawnTimer = this.time.addEvent({
-      delay: largeWordWidth ? 1000 : 2000, // spawn an object every 2 seconds
-      loop: true,
-      callback: () => this.spawnObject(obstacles[Math.floor(Math.random() * obstacles.length)], 'obstacle')
-    });
-    const powerUps = ['cake1', 'cake2', 'cake3', 'cake4'];
-    this.powerUpSpawnTimer = this.time.addEvent({
-      delay: largeWordWidth ? 4000 : 5000, // spawn an object every 5 seconds
-      loop: true,
-      callback: () => this.spawnObject(powerUps[Math.floor(Math.random() * powerUps.length)], 'powerUp')
-    });
+    const obstacles: ObjectType[] = [ObjectType.rock, ObjectType.tree];
+
+    // todo const now = new Date();
+    // todo const gameStarted = this.baseGameData.gameInstance.data.gameInstanceMetadataData!.createdOn as Date;
+    // todo const timeSinceGameStarted = now.getTime() - gameStarted.getTime(); // todo use this?
+
+    if (this.objectSpawnTimer) {
+      this.objectSpawnTimer.paused = false;
+    } else {
+      this.objectSpawnTimer = this.time.addEvent({
+        delay: largeWordWidth ? 500 : 600, // spawn an object every 2 seconds
+        loop: true,
+        callback: () =>
+          this.spawnObject(obstacles[Math.floor(this.seededRandomByTime() * obstacles.length)], ObjectName.obstacle)
+      });
+    }
+
+    const powerUps: ObjectType[] = [ObjectType.cake1, ObjectType.cake2, ObjectType.cake3, ObjectType.cake4];
+    if (this.powerUpSpawnTimer) {
+      this.powerUpSpawnTimer.paused = false;
+    } else {
+      this.powerUpSpawnTimer = this.time.addEvent({
+        delay: largeWordWidth ? 3000 : 4000, // spawn an object every 5 seconds
+        loop: true,
+        callback: () =>
+          this.spawnObject(powerUps[Math.floor(this.seededRandomByTime() * powerUps.length)], ObjectName.powerUp)
+      });
+    }
   };
 
   override destroy() {
     super.destroy();
-    this.objectSpawnTimer.destroy();
+    this.stopTimers();
 
     this.character.destroy();
     this.objectGroup.forEach((object) => object.destroy());

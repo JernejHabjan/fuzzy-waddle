@@ -1,3 +1,5 @@
+import { GameInstanceMetadataData } from './game-instance-metadata';
+
 export interface Room {
   gameInstanceId: string;
 }
@@ -5,6 +7,7 @@ export interface Room {
 export interface RoomEvent {
   room: Room;
   action: RoomAction;
+  gameInstanceMetadataData: GameInstanceMetadataData;
 }
 
 export type RoomAction = 'added' | 'existing' | 'removed';
@@ -20,4 +23,3 @@ export type SpectatorAction = 'joined' | 'left';
 export enum GatewaySpectatorEvent {
   Spectator = 'room-spectator'
 }
-
