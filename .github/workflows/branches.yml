@@ -2,7 +2,7 @@ name: CI Branches
 
 on:
   pull_request:
-    branches-ignore:
+    branches:
       - main
       - develop
 jobs:
