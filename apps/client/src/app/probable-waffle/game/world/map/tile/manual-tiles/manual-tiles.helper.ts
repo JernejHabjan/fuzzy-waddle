@@ -233,7 +233,7 @@ export class ManualTilesHelper {
     );
     if (existingTileOnLayer) {
       manualTilesLayer.splice(manualTilesLayer.indexOf(existingTileOnLayer), 1);
-      existingTileOnLayer.gameObjectImage.destroy(true);
+      existingTileOnLayer.gameObjectImage.destroy();
     }
 
     this.placeTileOnManualLayer(

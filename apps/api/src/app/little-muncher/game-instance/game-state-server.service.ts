@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CommunicatorEvent, CommunicatorPauseEvent, LittleMuncherPosition } from '@fuzzy-waddle/api-interfaces';
+import {
+  CommunicatorClimbingEvent,
+  CommunicatorEvent,
+  CommunicatorPauseEvent,
+  CommunicatorScoreEvent,
+  LittleMuncherPosition
+} from '@fuzzy-waddle/api-interfaces';
 import { GameInstanceService } from './game-instance.service';
 import { User } from '@supabase/supabase-js';
 
@@ -23,6 +29,14 @@ export class GameStateServerService {
     const authUserPlayer = gameInstance.isPlayer(user.id);
     const player = gameInstance.players[0];
     switch (body.communicator) {
+      case 'timeClimbing':
+        if (!authUserPlayer) {
+          console.log('User is not a player in this game instance');
+          return false;
+        }
+        gameInstance.gameState.data.climbedHeight = (body.data as CommunicatorClimbingEvent).timeClimbing;
+        console.log('updating time climbing', body.data);
+        break;
       case 'pause':
         if (!authUserPlayer) {
           console.log('User is not a player in this game instance');
@@ -32,15 +46,24 @@ export class GameStateServerService {
         console.log('updating pause', body.data);
         console.log('pausing game');
         break;
+      case 'reset':
+        if (!authUserPlayer) {
+          console.log('User is not a player in this game instance');
+          return false;
+        }
+        gameInstance.gameState.data.climbedHeight = 0;
+        gameInstance.gameState.data.score = 0;
+        console.log('resetting game');
+        break;
       case 'score':
         if (!authUserPlayer) {
           console.log('User is not a player in this game instance');
           return false;
         }
-        // todo
-        console.log('updating score');
+        player.playerState.data.score = (body.data as CommunicatorScoreEvent).score;
+        console.log('updating score', body.data);
         break;
-      case 'key':
+      case 'move':
         if (!authUserPlayer) {
           console.log('User is not a player in this game instance');
           return false;

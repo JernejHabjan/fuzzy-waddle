@@ -105,7 +105,8 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): RoomEvent {
     return {
       room: this.getGameInstanceToRoom(gameInstance),
-      action
+      action,
+      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data
     };
   }
 

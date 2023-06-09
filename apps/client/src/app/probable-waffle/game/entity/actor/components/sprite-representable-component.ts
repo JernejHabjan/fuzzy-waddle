@@ -40,6 +40,6 @@ export class SpriteRepresentationComponent implements IComponent {
 
   destroy(): void {
     this.transformSubscription?.unsubscribe();
-    this.sprite.destroy(true);
+    this.sprite.destroy();
   }
 }

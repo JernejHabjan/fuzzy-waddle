@@ -6,6 +6,7 @@ import { CommunicatorService } from '../../game/communicator.service';
 import { Subscription } from 'rxjs';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../auth/auth.service';
+import { LittleMuncherHillEnum, LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
 
 @Component({
   selector: 'fuzzy-waddle-game-interface',
@@ -14,6 +15,7 @@ import { AuthService } from '../../../auth/auth.service';
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   score = 0;
+  remaining = 0;
   @ViewChild('modal') private modalComponent!: ModalComponent;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
@@ -47,25 +49,65 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.manageUiElementVisibility();
     this.manageScore();
+    this.manageRemaining();
     this.managePause();
   }
 
   private manageUiElementVisibility() {
-    this.isPlayer = this.gameInstanceClientService.gameInstance!.isPlayer(this.authService.userId);
+    if (!this.gameInstanceClientService.gameInstance) {
+      return;
+    }
+    this.isPlayer = this.gameInstanceClientService.gameInstance.isPlayer(this.authService.userId);
   }
 
   private manageScore() {
+    if (!this.gameInstanceClientService.gameInstance?.players.length) {
+      return;
+    }
     // set initial score:
-    // todo this.score = this.gameInstanceClientService.gameInstance!.players.find((player) => player.id === this.gameInstanceClientService.playerId)!.score;
+    this.score = this.gameInstanceClientService.gameInstance.players[0].playerState.data.score;
     this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
       this.score = event.score;
       this.changeDetectorRef.detectChanges();
     });
   }
 
+  private manageRemaining() {
+    if (
+      !this.gameInstanceClientService.gameInstance?.gameMode?.data.hill ||
+      !this.gameInstanceClientService.gameInstance?.gameState
+    ) {
+      return;
+    }
+    // set initial remaining:
+    this.remaining = this.getRemaining(
+      this.gameInstanceClientService.gameInstance.gameMode.data.hill,
+      this.gameInstanceClientService.gameInstance.gameState.data.climbedHeight
+    );
+    this.scoreSubscription = this.communicatorService.timeClimbing?.on.subscribe((event) => {
+      if (!this.gameInstanceClientService.gameInstance?.gameMode?.data.hill) {
+        return;
+      }
+      this.remaining = this.getRemaining(
+        this.gameInstanceClientService.gameInstance.gameMode.data.hill,
+        event.timeClimbing
+      );
+      this.changeDetectorRef.detectChanges();
+    });
+  }
+
+  private getRemaining(hillType: LittleMuncherHillEnum, timeClimbing: number): number {
+    const hill = LittleMuncherHills[hillType];
+    const res = hill.height - timeClimbing;
+    return res >= 0 ? res : 0;
+  }
+
   private managePause() {
+    if (!this.gameInstanceClientService.gameInstance?.gameState) {
+      return;
+    }
     // set initial pause:
-    this.paused = this.gameInstanceClientService.gameInstance!.gameState!.data.pause!;
+    this.paused = this.gameInstanceClientService.gameInstance.gameState.data.pause;
     this.pauseSubscription = this.communicatorService.pause?.on.subscribe((event) => {
       this.paused = event.pause;
       this.changeDetectorRef.detectChanges();

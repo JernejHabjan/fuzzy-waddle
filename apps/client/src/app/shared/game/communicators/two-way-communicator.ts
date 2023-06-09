@@ -26,11 +26,19 @@ export class TwoWayCommunicator<T> {
   }
 
   /**
-   * Sends data to the game from the server
+   * Sends data to UI + Server from Game or Server + Game from UI
    * @param data
    */
   send(data: T): void {
     this.sendSubject.next(data);
+    this.sendLocallySubject.next(data);
+  }
+
+  /**
+   * Sends data to UI + Game from Game or UI + Game from UI
+   * @param data
+   */
+  sendLocally(data: T): void {
     this.sendLocallySubject.next(data);
   }
 

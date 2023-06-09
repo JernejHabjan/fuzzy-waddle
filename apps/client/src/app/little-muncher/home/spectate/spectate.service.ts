@@ -39,6 +39,7 @@ export class SpectateService implements SpectateServiceInterface {
     this.spectateRoomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
       if (roomEvent.action === 'added') {
+        if (roomEvent.gameInstanceMetadataData.createdBy === this.authService.userId) return;
         this.rooms.push(room);
       } else if (roomEvent.action === 'removed') {
         this.rooms = this.rooms.filter((room) => room.gameInstanceId !== room.gameInstanceId);
@@ -68,6 +69,10 @@ export class SpectateService implements SpectateServiceInterface {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return [];
     const url = environment.api + 'api/little-muncher/get-rooms';
     return await firstValueFrom(this.httpClient.get<Room[]>(url));
+  }
+
+  async initiallyPullRooms(): Promise<void> {
+    this.rooms = await this.getRooms();
   }
 
   get roomEvent(): Observable<RoomEvent> | undefined {

@@ -7,7 +7,9 @@ export interface SpectateServiceInterface {
 
   listenToRoomEvents(): void;
 
-  getRooms(): void;
+  getRooms(): Promise<Room[]>;
+
+  initiallyPullRooms(): Promise<void>;
 
   get roomEvent(): Observable<RoomEvent> | undefined;
 

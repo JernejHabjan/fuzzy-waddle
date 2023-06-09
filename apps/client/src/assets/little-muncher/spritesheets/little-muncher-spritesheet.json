@@ -1583,6 +1583,27 @@
 						"w": 23,
 						"h": 13
 					}
+				},
+				{
+					"filename": "health",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 16,
+						"h": 15
+					},
+					"frame": {
+						"x": 237,
+						"y": 770,
+						"w": 16,
+						"h": 15
+					}
 				}
 			]
 		}
@@ -1590,6 +1611,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:eebc5d2763843ee0e72afa7d235089ec:004d298296d7e9ff94d4bafa1c279703:ead5a3f7da56e1c4289a0a2d6785a7ea$"
+		"smartupdate": "$TexturePacker:SmartUpdate:b65e11a31639545e35b0533600b49d04:02144957baf5b1a7f7ed8093334ca60d:ead5a3f7da56e1c4289a0a2d6785a7ea$"
 	}
 }

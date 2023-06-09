@@ -1,5 +1,5 @@
 import { GameInstance, GameInstanceData } from './game-instance';
-import { LittleMuncherHill } from './little-muncher/little-muncher';
+import { LittleMuncherHillEnum } from './little-muncher/little-muncher';
 import { LittleMuncherGameInstanceMetadata, LittleMuncherGameInstanceMetadataData } from './game-instance-metadata';
 
 export type LittleMuncherGameInstanceData = GameInstanceData<
@@ -55,7 +55,7 @@ export abstract class BaseGameMode<TData extends BaseData = BaseData> {
 }
 
 export interface LittleMuncherGameModeData extends BaseData {
-  hill?: LittleMuncherHill;
+  hill?: LittleMuncherHillEnum;
 }
 
 export class LittleMuncherGameMode extends BaseGameMode<LittleMuncherGameModeData> {
@@ -81,8 +81,9 @@ export abstract class BaseGameState<TData> {
 }
 
 export interface LittleMuncherGameStateData extends BaseData {
-  timeClimbing: number;
+  climbedHeight: number;
   pause: boolean;
+  score: number;
 }
 
 export class LittleMuncherGameState extends BaseGameState<LittleMuncherGameStateData> {
@@ -93,7 +94,8 @@ export class LittleMuncherGameState extends BaseGameState<LittleMuncherGameState
   override resetData() {
     super.resetData();
     this.data = {
-      timeClimbing: 0,
+      climbedHeight: 0,
+      score: 0,
       pause: false
     };
   }

@@ -1,4 +1,4 @@
-export type CommunicatorType = 'key' | 'score' | 'pause';
+export type CommunicatorType = 'move' | 'score' | 'pause' | 'timeClimbing' | 'reset';
 
 export interface CommunicatorEvent<T> {
   gameInstanceId: string;
@@ -10,8 +10,16 @@ export interface CommunicatorScoreEvent {
   score: number;
 }
 
+export interface CommunicatorClimbingEvent {
+  timeClimbing: number;
+}
+
 export interface CommunicatorPauseEvent {
   pause: boolean;
+}
+
+export interface CommunicatorResetEvent {
+  reset: boolean;
 }
 
 export enum LittleMuncherGatewayEvent {

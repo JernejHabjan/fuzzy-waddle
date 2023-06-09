@@ -19,13 +19,16 @@ export class Fireworks {
   private emitter3Event?: Phaser.Time.TimerEvent;
   private subscriptions: Subscription[] = [];
 
-  constructor(private readonly scene: BaseScene) {
-    this.registerEvents();
+  constructor(private readonly scene: BaseScene, autoStart = false) {
+    this.registerEvents(autoStart);
+    if (autoStart) {
+      this.create();
+    }
   }
 
-  private registerEvents() {
+  private registerEvents(autoStart: boolean) {
     this.subscriptions = [
-      this.scene.onCreate.subscribe(this.create),
+      ...(autoStart ? [] : [this.scene.onCreate.subscribe(this.create)]),
       this.scene.onUpdate.subscribe(this.update),
       this.scene.onDestroy.subscribe(this.destroy),
       this.scene.onResize.subscribe(this.resize)
@@ -86,6 +89,7 @@ export class Fireworks {
     emitter.particleX = Between(0, this.scene.cameras.main.width);
     emitter.particleY = Between(0, this.scene.cameras.main.height);
     emitter.setParticleTint(GetRandom(this.tints));
+    emitter.setParticleLifespan(Between(3000, 5000));
     emitter.explode();
   }
 
@@ -93,15 +97,25 @@ export class Fireworks {
     this.renderTexture?.fill(0, 0.01 * updateEventData.delta).draw([this.emitter1, this.emitter2, this.emitter3]);
   };
 
-  private destroy = () => {
-    this.emitter1?.destroy();
-    this.emitter2?.destroy();
-    this.emitter3?.destroy();
-    this.renderTexture?.destroy();
+  destroy = () => {
+    this.emitter1?.stop(true);
+    this.emitter2?.stop(true);
+    this.emitter3?.stop(true);
+    this.emitter1?.destroy(true);
+    this.emitter2?.destroy(true);
+    this.emitter3?.destroy(true);
+    this.renderTexture?.destroy(true);
     this.emitter1Event?.destroy();
     this.emitter2Event?.destroy();
     this.emitter3Event?.destroy();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.emitter1 = undefined;
+    this.emitter2 = undefined;
+    this.emitter3 = undefined;
+    this.renderTexture = undefined;
+    this.emitter1Event = undefined;
+    this.emitter2Event = undefined;
+    this.emitter3Event = undefined;
   };
 
   private resize = () => {
