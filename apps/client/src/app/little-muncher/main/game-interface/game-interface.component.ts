@@ -54,12 +54,18 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private manageUiElementVisibility() {
-    this.isPlayer = this.gameInstanceClientService.gameInstance!.isPlayer(this.authService.userId);
+    if (!this.gameInstanceClientService.gameInstance) {
+      return;
+    }
+    this.isPlayer = this.gameInstanceClientService.gameInstance.isPlayer(this.authService.userId);
   }
 
   private manageScore() {
+    if (!this.gameInstanceClientService.gameInstance?.players.length) {
+      return;
+    }
     // set initial score:
-    this.score = this.gameInstanceClientService.gameInstance!.players[0].playerState.data.score;
+    this.score = this.gameInstanceClientService.gameInstance.players[0].playerState.data.score;
     this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
       this.score = event.score;
       this.changeDetectorRef.detectChanges();
@@ -67,14 +73,23 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private manageRemaining() {
+    if (
+      !this.gameInstanceClientService.gameInstance?.gameMode?.data.hill ||
+      !this.gameInstanceClientService.gameInstance?.gameState
+    ) {
+      return;
+    }
     // set initial remaining:
     this.remaining = this.getRemaining(
-      this.gameInstanceClientService.gameInstance!.gameMode!.data.hill!,
-      this.gameInstanceClientService.gameInstance!.gameState!.data.climbedHeight
+      this.gameInstanceClientService.gameInstance.gameMode.data.hill,
+      this.gameInstanceClientService.gameInstance.gameState.data.climbedHeight
     );
     this.scoreSubscription = this.communicatorService.timeClimbing?.on.subscribe((event) => {
+      if (!this.gameInstanceClientService.gameInstance?.gameMode?.data.hill) {
+        return;
+      }
       this.remaining = this.getRemaining(
-        this.gameInstanceClientService.gameInstance!.gameMode!.data.hill!,
+        this.gameInstanceClientService.gameInstance.gameMode.data.hill,
         event.timeClimbing
       );
       this.changeDetectorRef.detectChanges();
@@ -88,8 +103,11 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private managePause() {
+    if (!this.gameInstanceClientService.gameInstance?.gameState) {
+      return;
+    }
     // set initial pause:
-    this.paused = this.gameInstanceClientService.gameInstance!.gameState!.data.pause!;
+    this.paused = this.gameInstanceClientService.gameInstance.gameState.data.pause;
     this.pauseSubscription = this.communicatorService.pause?.on.subscribe((event) => {
       this.paused = event.pause;
       this.changeDetectorRef.detectChanges();

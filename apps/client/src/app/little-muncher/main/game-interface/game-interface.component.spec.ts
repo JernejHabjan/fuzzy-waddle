@@ -6,6 +6,7 @@ import { gameInstanceClientServiceStub } from '../game-instance-client.service.s
 import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
 import { ModalTestComponent } from '../../../shared/components/modal/modal.component.spec';
 import { Component } from '@angular/core';
+import { WrapPipe } from './wrap.pipe';
 
 @Component({ selector: 'fuzzy-waddle-game-interface', template: '' })
 export class GameInterfaceTestingComponent {}
@@ -15,8 +16,9 @@ describe('GameInterfaceComponent', () => {
   let fixture: ComponentFixture<GameInterfaceComponent>;
 
   beforeEach(async () => {
+    // provide also WrapPipe
     await TestBed.configureTestingModule({
-      declarations: [GameInterfaceComponent, ModalTestComponent],
+      declarations: [GameInterfaceComponent, ModalTestComponent, WrapPipe],
       providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
     }).compileComponents();
 
