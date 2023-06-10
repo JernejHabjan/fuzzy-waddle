@@ -23,6 +23,10 @@ const routes: Routes = [
     loadChildren: () => import('./probable-waffle/gui/main/probable-waffle.module').then((m) => m.ProbableWaffleModule)
   },
   {
+    path: 'fly-squasher',
+    loadChildren: () => import('./fly-squasher/fly-squasher.module').then((m) => m.FlySquasherModule)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
