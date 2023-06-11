@@ -1,9 +1,5 @@
-import { GameSessionState } from './game-mode';
-import { Guid } from './uuid';
-
-export interface GameInstanceDataDto {
-  gameInstanceId: string;
-}
+import { Guid } from '../uuid';
+import { GameSessionState } from './session';
 
 export interface GameInstanceMetadataData {
   gameInstanceId?: string;
@@ -27,7 +23,3 @@ export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataDat
     this.data.sessionState = GameSessionState.NotPlaying;
   }
 }
-
-export interface LittleMuncherGameInstanceMetadataData extends GameInstanceMetadataData {}
-
-export class LittleMuncherGameInstanceMetadata extends GameInstanceMetadata<LittleMuncherGameInstanceMetadataData> {}

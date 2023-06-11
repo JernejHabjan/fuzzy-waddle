@@ -43,10 +43,6 @@ const routes: Routes = [
         component: OptionsComponent
       },
       {
-        path: 'playground',
-        loadChildren: () => import('../playground/playground.module').then((m) => m.PlaygroundModule)
-      },
-      {
         path: 'game',
         loadChildren: () =>
           import('../game-interface/main/probable-waffle-game.module').then((m) => m.ProbableWaffleGameModule)

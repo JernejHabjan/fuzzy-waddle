@@ -1,15 +1,16 @@
 import { GameInstanceMetadata, GameInstanceMetadataData } from './game-instance-metadata';
-import {
-  BaseData,
-  BaseGameMode,
-  BaseGameState,
-  BasePlayer,
-  BasePlayerController,
-  BasePlayerState,
-  BaseSpectator,
-  BaseSpectatorData,
-  GameSessionState
-} from './game-mode';
+import { GameSessionState } from './session';
+import { BaseData } from './data';
+import { BaseSpectator, BaseSpectatorData } from './spectator';
+import { BaseGameState } from './game-state';
+import { BaseGameMode } from './game-mode';
+import { BasePlayerState } from './player/player-state';
+import { BasePlayerController } from './player/player-controller';
+import { BasePlayer } from './player/player';
+
+export interface GameInstanceDataDto {
+  gameInstanceId: string;
+}
 
 export type GameInstanceData<
   TGameInstanceMetadataData extends GameInstanceMetadataData = GameInstanceMetadataData,

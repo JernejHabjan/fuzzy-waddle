@@ -1,10 +1,4 @@
-export type CommunicatorType = 'move' | 'score' | 'pause' | 'timeClimbing' | 'reset';
-
-export interface CommunicatorEvent<T> {
-  gameInstanceId: string;
-  communicator: CommunicatorType;
-  data: T;
-}
+export type LittleMuncherCommunicatorType = 'move' | 'score' | 'pause' | 'timeClimbing' | 'reset';
 
 export interface CommunicatorScoreEvent {
   score: number;

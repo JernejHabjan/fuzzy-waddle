@@ -1,6 +1,6 @@
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
-import { CommunicatorEvent, CommunicatorType } from '@fuzzy-waddle/api-interfaces';
+import { CommunicatorEvent, LittleMuncherCommunicatorType } from '@fuzzy-waddle/api-interfaces';
 
 export class TwoWayCommunicator<T> {
   private onSubject: Subject<T> = new Subject<T>();
@@ -10,7 +10,7 @@ export class TwoWayCommunicator<T> {
 
   constructor(
     private readonly eventName: string,
-    private readonly communicator: CommunicatorType,
+    private readonly communicator: LittleMuncherCommunicatorType,
     gameInstanceId: string,
     socket?: Socket
   ) {
@@ -62,14 +62,14 @@ export class TwoWayCommunicator<T> {
           gameInstanceId,
           communicator: this.communicator,
           data: data
-        } as CommunicatorEvent<T>);
+        } as CommunicatorEvent<T, unknown>);
       })
     );
 
     // listen from server
     if (socket) {
       this.subscriptions.push(
-        socket.fromEvent<CommunicatorEvent<T>>(eventName).subscribe((event) => {
+        socket.fromEvent<CommunicatorEvent<T, unknown>>(eventName).subscribe((event) => {
           if (event.communicator !== this.communicator) return;
           this.onSubject.next(event.data);
         })
