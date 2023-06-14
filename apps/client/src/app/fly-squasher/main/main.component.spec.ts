@@ -5,7 +5,7 @@ import { GameContainerTestingComponent } from '../../shared/game/game-container/
 import { AuthService } from '../../auth/auth.service';
 import { authServiceStub } from '../../auth/auth.service.spec';
 
-jest.mock('../game/const/game-config', () => ({
+jest.mock('../game/consts/game-config', () => ({
   flySquasherGameConfig: {}
 }));
 
