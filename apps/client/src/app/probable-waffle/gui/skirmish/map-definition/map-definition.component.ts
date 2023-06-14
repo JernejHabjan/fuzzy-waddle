@@ -37,15 +37,16 @@ interface DisplayRect {
   styleUrls: ['./map-definition.component.scss']
 })
 export class MapDefinitionComponent {
-  preferredCanvasWidth = 400;
-  preferredCanvasHeight = 200;
-  canvasWidth = this.preferredCanvasWidth;
-  canvasHeight = this.preferredCanvasHeight;
-  selectedMap?: MapPlayerDefinition;
+  private readonly preferredCanvasWidth = 400;
+  private readonly preferredCanvasHeight = 200;
+  protected canvasWidth = this.preferredCanvasWidth;
+  protected canvasHeight = this.preferredCanvasHeight;
+  protected selectedMap?: MapPlayerDefinition;
   @Output() mapPlayerDefinitionChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
   private img!: HTMLImageElement;
   // get canvas related references
   private ctx!: CanvasRenderingContext2D;
+  private _canvas?: ElementRef;
   private canvasOffsetX!: number;
   private canvasOffsetY!: number;
   private contextWidth!: number;
@@ -59,9 +60,7 @@ export class MapDefinitionComponent {
   private rectangleWidth = 30;
   private rectangleHeight = 30;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
-
-  private _canvas?: ElementRef;
+  constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
 
   @ViewChild('canvas')
   get canvas(): ElementRef | undefined {
@@ -133,7 +132,13 @@ export class MapDefinitionComponent {
   onResize() {
     this.setCanvasSize();
     this.recalculateOffset();
+    this.reInitializePlayerPositions();
     this.draw();
+  }
+
+  private reInitializePlayerPositions() {
+    this.rects = [];
+    this.initializePlayerPositions();
   }
 
   /**
@@ -182,7 +187,7 @@ export class MapDefinitionComponent {
     this.drawPlayerRectangles();
   }
 
-  mapChanged(selectedMap: MapPlayerDefinition) {
+  protected mapChanged(selectedMap: MapPlayerDefinition) {
     this.selectedMap = selectedMap;
     this.mapPlayerDefinitionChange.next(selectedMap);
   }
@@ -192,7 +197,7 @@ export class MapDefinitionComponent {
       this.initialize();
       return;
     }
-    const margin = 100;
+    const margin = 140;
     const canvas = this.canvas.nativeElement as HTMLCanvasElement;
     // if innerWidth is smaller than preferred width, use innerWidth
     if (window.innerWidth - margin < this.preferredCanvasWidth) {
