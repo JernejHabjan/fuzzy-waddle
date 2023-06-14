@@ -10,6 +10,7 @@ export type DisplayGame = {
   name: string;
   description: string;
   image: string;
+  bannerImage: string;
   route: string;
 };
 
@@ -19,27 +20,35 @@ export type DisplayGame = {
 })
 export class HomePageComponent {
   protected readonly environment = environment;
-  probableWaffle: DisplayGame = {
-    name: 'Probable Waffle',
-    description: 'A real-time strategy game',
-    image: 'probable-waffle.webp',
-    route: 'probable-waffle'
-  };
+  private readonly currentlyFeaturedGame = 'fly-squasher';
   displayGames: DisplayGame[] = [
-    this.probableWaffle,
+    {
+      name: 'Probable Waffle',
+      description: 'A real-time strategy game',
+      image: 'probable-waffle.webp',
+      bannerImage: 'probable-waffle-banner.webp',
+      route: 'probable-waffle'
+    },
     {
       name: 'Little Muncher',
       description: 'Infinite scroller',
       image: 'little-muncher.webp',
+      bannerImage: 'probable-waffle-banner.webp',
+
       route: 'little-muncher'
     },
     {
       name: 'Fly Squasher',
       description: 'Squash dem bugs',
       image: 'little-muncher.webp', // todo
+      bannerImage: 'little-muncher-banner.webp', // todo
       route: 'fly-squasher'
     }
   ];
+
+  protected get featuredGame(): DisplayGame {
+    return this.displayGames.find((g) => g.route === this.currentlyFeaturedGame)!;
+  }
 
   constructor(
     protected readonly authService: AuthService,
