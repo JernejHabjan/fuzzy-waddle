@@ -14,5 +14,5 @@ export const flySquasherGameConfig: Types.Core.GameConfig = {
     }
   },
   pixelArt: true,
-  backgroundColor: '#dbc1dc'
+  backgroundColor: '#D1C4E9'
 };

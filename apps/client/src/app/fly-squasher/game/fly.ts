@@ -1,8 +1,8 @@
 import { Subject } from 'rxjs';
 
 export class Fly {
-  private readonly initialWorldSpeedPerFrame = 0.5;
-  private readonly worldSpeedIncreasePerSquash = 0.05;
+  private readonly initialWorldSpeedPerFrame = 0.1;
+  private readonly worldSpeedIncreasePerSquash = 0.01;
   private worldSpeedPerFrame = this.initialWorldSpeedPerFrame; // pixels per frame
 
   private readonly _fly: Phaser.GameObjects.Sprite;
@@ -13,7 +13,8 @@ export class Fly {
     this._fly = this.scene.add.sprite(0, 0, 'lm-atlas', 'health'); // todo
     this._fly.setInteractive();
     // set scale
-    this._fly.setScale(4);
+    this._fly.setScale(6);
+
     // set origin
     this._fly.setOrigin(0.5, 0.5);
     this._fly.on('pointerdown', this.flyHit);

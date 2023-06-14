@@ -43,7 +43,12 @@ export default class FlySquasherScene extends BaseScene<
     this.setupTexts();
     this.fly = new Fly(this);
 
-    this.subscribe(this.onResize.subscribe(this.handlePositionGameOverText));
+    this.subscribe(
+      this.onResize.subscribe(() => {
+        this.handlePositionGameOverText();
+        this.handlePositionHudTexts();
+      })
+    );
     this.subscribe(this.fly.onFlyHit.subscribe(this.flyHit));
   }
 
@@ -53,10 +58,11 @@ export default class FlySquasherScene extends BaseScene<
   };
 
   private setupTexts() {
-    this._scoreText = this.add.text(100, 100, 'Score: ' + this._scoreNumber, { color: '#00000' });
-    this._livesText = this.add.text(100, 200, 'Lives: ' + this._livesNumber, { color: '#00000' });
-    this._livesText.setOrigin(0, 0);
-    this._scoreText.setOrigin(0, 0);
+    this._scoreText = this.add.text(0, 0, 'Score: ' + this._scoreNumber, { color: '#00000' });
+    this._livesText = this.add.text(0, 0, 'Lives: ' + this._livesNumber, { color: '#00000' });
+    this._livesText.setOrigin(1, 0);
+    this._scoreText.setOrigin(1, 0);
+    this.handlePositionHudTexts();
   }
 
   override update(time: number, delta: number) {
@@ -99,6 +105,15 @@ export default class FlySquasherScene extends BaseScene<
     this._scoreNumber = 0;
     this._livesText.setText('Lives: ' + this._livesNumber);
     this._scoreText.setText('Score: ' + this._scoreNumber);
+  };
+
+  private handlePositionHudTexts = () => {
+    if (this._livesText) {
+      this._livesText.setPosition(this.cameras.main.width - 5, 5);
+    }
+    if (this._scoreText) {
+      this._scoreText.setPosition(this.cameras.main.width - 5, this._livesText ? this._livesText.height + 5 : 5);
+    }
   };
 
   private handlePositionGameOverText = () => {
