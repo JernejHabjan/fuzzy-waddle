@@ -4,6 +4,7 @@ import {
   CommunicatorEvent,
   CommunicatorPauseEvent,
   CommunicatorScoreEvent,
+  LittleMuncherCommunicatorType,
   LittleMuncherPosition
 } from '@fuzzy-waddle/api-interfaces';
 import { GameInstanceService } from './game-instance.service';
@@ -13,7 +14,7 @@ import { User } from '@supabase/supabase-js';
 export class GameStateServerService {
   constructor(private readonly gameInstanceService: GameInstanceService) {}
 
-  updateGameState(body: CommunicatorEvent<any>, user: User): boolean {
+  updateGameState(body: CommunicatorEvent<any, LittleMuncherCommunicatorType>, user: User): boolean {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
     if (!gameInstance) {
       console.log('game instance not found');

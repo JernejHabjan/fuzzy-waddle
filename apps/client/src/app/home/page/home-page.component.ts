@@ -32,6 +32,12 @@ export class HomePageComponent {
       description: 'Infinite scroller',
       image: 'little-muncher.webp',
       route: 'little-muncher'
+    },
+    {
+      name: 'Fly Squasher',
+      description: 'Squash dem bugs',
+      image: 'little-muncher.webp', // todo
+      route: 'fly-squasher'
     }
   ];
 

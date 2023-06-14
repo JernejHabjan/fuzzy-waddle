@@ -1,0 +1,12 @@
+<button routerLink="/fly-squasher" class="btn btn-danger m-1 position-absolute" style="left: 20px; top: 20px"
+        type="button">
+  Leave
+</button>
+
+<div class="card-container">
+  <div class="general-title">High score:</div>
+
+  <ol>
+    <li *ngFor="let score of highScores; let i = index">{{ score.name }} - {{ score.level }} - {{ score.score }}</li>
+  </ol>
+</div>

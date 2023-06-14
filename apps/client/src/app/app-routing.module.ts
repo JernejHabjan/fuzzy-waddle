@@ -23,6 +23,10 @@ const routes: Routes = [
     loadChildren: () => import('./probable-waffle/gui/main/probable-waffle.module').then((m) => m.ProbableWaffleModule)
   },
   {
+    path: 'fly-squasher',
+    loadChildren: () => import('./fly-squasher/fly-squasher.module').then((m) => m.FlySquasherModule)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
@@ -31,8 +35,11 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(
-      routes
-      // { useHash: true } // not needed
+      routes,
+      {
+        bindToComponentInputs: true
+        // useHash: true // not needed
+      }
       // when deployed, set a rewrite rule for SPA application:
       // source: "/*"
       // destination: "/index.html"

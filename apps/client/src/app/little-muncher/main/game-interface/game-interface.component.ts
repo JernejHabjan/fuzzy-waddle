@@ -22,7 +22,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   protected paused = false;
   protected isPlayer = false;
 
-  protected leaveModalConfirm: ModalConfig = {
+  protected readonly leaveModalConfirm: ModalConfig = {
     modalTitle: 'Leave the game?',
     dismissButtonLabel: 'Continue',
     closeButtonLabel: 'Leave',

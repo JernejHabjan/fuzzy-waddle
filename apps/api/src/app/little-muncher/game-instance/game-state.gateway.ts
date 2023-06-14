@@ -4,7 +4,11 @@ import { UseGuards } from '@nestjs/common';
 import { SupabaseAuthGuard } from '../../../auth/guards/supabase-auth.guard';
 import { CurrentUser } from '../../../auth/current-user';
 import { AuthUser } from '@supabase/supabase-js';
-import { CommunicatorEvent, LittleMuncherGatewayEvent } from '@fuzzy-waddle/api-interfaces';
+import {
+  CommunicatorEvent,
+  LittleMuncherCommunicatorType,
+  LittleMuncherGatewayEvent
+} from '@fuzzy-waddle/api-interfaces';
 import { GameStateServerService } from './game-state-server.service';
 
 export type MyConnectedSocket = Socket & { broadcast: { emit: (event: string, data: any) => void } };
@@ -24,7 +28,7 @@ export class GameStateGateway {
   @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherAction)
   async broadcastLittleMuncherAction(
     @CurrentUser() user: AuthUser,
-    @MessageBody() payload: CommunicatorEvent<any>,
+    @MessageBody() payload: CommunicatorEvent<any, LittleMuncherCommunicatorType>,
     @ConnectedSocket() client: MyConnectedSocket
   ) {
     console.log('broadcasting little muncher action', payload.communicator);
