@@ -1,0 +1,146 @@
+{
+	"textures": [
+		{
+			"image": "fly-squasher-spritesheet.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 43,
+				"h": 242
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "fly/body",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 40,
+						"h": 82
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 38,
+						"h": 80
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 38,
+						"h": 80
+					}
+				},
+				{
+					"filename": "fly/wing",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 38,
+						"h": 78
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 37,
+						"h": 77
+					},
+					"frame": {
+						"x": 0,
+						"y": 80,
+						"w": 37,
+						"h": 77
+					}
+				},
+				{
+					"filename": "fly/leg-back",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 28,
+						"h": 46
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 27,
+						"h": 46
+					},
+					"frame": {
+						"x": 0,
+						"y": 157,
+						"w": 27,
+						"h": 46
+					}
+				},
+				{
+					"filename": "fly/head",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 36,
+						"h": 21
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 34,
+						"h": 20
+					},
+					"frame": {
+						"x": 0,
+						"y": 203,
+						"w": 34,
+						"h": 20
+					}
+				},
+				{
+					"filename": "fly/leg-front",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 17,
+						"h": 35
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 16,
+						"h": 34
+					},
+					"frame": {
+						"x": 27,
+						"y": 157,
+						"w": 16,
+						"h": 34
+					}
+				},
+				{
+					"filename": "fly/leg-middle",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 45,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 43,
+						"h": 19
+					},
+					"frame": {
+						"x": 0,
+						"y": 223,
+						"w": 43,
+						"h": 19
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:08dd300e845c1331ba234fed01abc95f:b78e94c763bc0332492b40c3d396b90d:961a868c5ea4829259058255565d0d64$"
+	}
+}
