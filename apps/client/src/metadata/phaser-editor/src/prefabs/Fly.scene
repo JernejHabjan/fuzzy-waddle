@@ -1,0 +1,176 @@
+{
+    "id": "8ff88bcb-5911-4b19-a529-9ab61af0902c",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT"
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "f051ebd5-e293-400b-b7b2-c68fd4e9ffdd",
+            "label": "fly_wing",
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "393128bd-a70a-4ef5-90ce-d78458993147",
+                    "label": "leg_back_right",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/leg-back"
+                    },
+                    "x": 14.450684318372382,
+                    "y": -0.6341442773239621,
+                    "originX": 0,
+                    "originY": 1
+                },
+                {
+                    "type": "Image",
+                    "id": "a9807cd4-8eac-41dd-be00-b15eb48b3082",
+                    "label": "leg_back_left",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/leg-back"
+                    },
+                    "x": -15.549315681627625,
+                    "y": -2.634144277323962,
+                    "originX": 1,
+                    "originY": 1,
+                    "flipX": true
+                },
+                {
+                    "type": "Image",
+                    "id": "017786ab-1c01-4da0-bb9b-92dacff8a160",
+                    "label": "leg_front_right",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/leg-front"
+                    },
+                    "x": 12.450684318372382,
+                    "y": 31.365855722676038,
+                    "originX": 0,
+                    "originY": 0
+                },
+                {
+                    "type": "Image",
+                    "id": "c01db514-0164-4949-9744-0f6efc8706e7",
+                    "label": "leg_front_left",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/leg-front"
+                    },
+                    "x": -13.549315681627625,
+                    "y": 31.365855722676038,
+                    "originX": 1,
+                    "originY": 0,
+                    "flipX": true
+                },
+                {
+                    "type": "Image",
+                    "id": "6b20fb8e-0524-41e6-8cbe-ad6562087465",
+                    "label": "leg_middle_right",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/leg-middle"
+                    },
+                    "x": 12.450684318372382,
+                    "y": 8.365855722676038,
+                    "originX": 0
+                },
+                {
+                    "type": "Image",
+                    "id": "3adb8794-3417-49d0-9029-b20225645862",
+                    "label": "leg_middle_left",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/leg-middle"
+                    },
+                    "x": -13.549315681627625,
+                    "y": 7.365855722676038,
+                    "originX": 1,
+                    "flipX": true
+                },
+                {
+                    "type": "Image",
+                    "id": "4a12c09c-5f9a-46bf-8810-4daa5a4917c9",
+                    "label": "body",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/body"
+                    },
+                    "y": -4
+                },
+                {
+                    "type": "Image",
+                    "id": "184284f5-ae86-422c-85b5-318d07e497a3",
+                    "label": "wing_left",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/wing"
+                    },
+                    "x": -16,
+                    "y": 21,
+                    "originX": 0.27,
+                    "originY": 0.98
+                },
+                {
+                    "type": "Image",
+                    "id": "74b0900e-2d3b-4532-82c4-48bf4f407b4f",
+                    "label": "wing_right",
+                    "texture": {
+                        "key": "fly-squasher-spritesheet",
+                        "frame": "fly/wing"
+                    },
+                    "x": 15.770684318372375,
+                    "y": 22.39585572267604,
+                    "originX": 0.7,
+                    "originY": 0.99,
+                    "flipX": true
+                },
+                {
+                    "type": "Container",
+                    "id": "7ad2a5e4-f8b8-4c2f-b5ed-7e4e6d8c3d2d",
+                    "label": "head_container",
+                    "x": -0.949315681627624,
+                    "y": 35.59585572267604,
+                    "list": [
+                        {
+                            "type": "Image",
+                            "id": "5ffde51a-99ab-4173-9e50-a34fd85e9c57",
+                            "label": "fly_head",
+                            "texture": {
+                                "key": "fly-squasher-spritesheet",
+                                "frame": "fly/head"
+                            },
+                            "x": 0.4,
+                            "originY": 0
+                        },
+                        {
+                            "type": "Image",
+                            "id": "62b15afe-016b-4923-83fd-51267a682ad8",
+                            "label": "fly_suckler",
+                            "texture": {
+                                "key": "fly-squasher-spritesheet",
+                                "frame": "fly/suckler"
+                            },
+                            "y": 19.8,
+                            "originX": 0.58,
+                            "originY": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    }
+}

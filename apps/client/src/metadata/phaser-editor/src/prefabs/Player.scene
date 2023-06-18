@@ -1,0 +1,109 @@
+{
+    "id": "3168bc06-abd4-4154-bd16-8450e14d1012",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "67cb30f0-fa85-405f-95cd-54eaf563eea6",
+            "label": "idle_001",
+            "components": [],
+            "texture": {
+                "key": "player",
+                "frame": "Idle_001"
+            },
+            "x": 290.96234741048465,
+            "y": 207.0022148582068,
+            "originY": 0.8096661022845779,
+            "ArcadeComponent.active": true,
+            "body.gravity.y": 1400,
+            "allowDrag": false,
+            "body.width": 81,
+            "body.height": 87,
+            "body.offset.x": 99.5,
+            "body.offset.y": 124,
+            "list": []
+        }
+    ],
+    "plainObjects": [
+        {
+            "id": "8bea7bb1-35ad-492c-b4a3-b72c0709b9a4",
+            "type": "Collider",
+            "label": "platformsCollider",
+            "object1": "this",
+            "object2": "[]"
+        },
+        {
+            "id": "7a5fd533-39dd-4fb9-81b2-1679238f3bc1",
+            "type": "Collider",
+            "label": "foodsCollider",
+            "object1": "this",
+            "object2": "[]",
+            "overlapOnly": true,
+            "collideCallback": "this.playerVsFood",
+            "callbackContext": "this"
+        },
+        {
+            "id": "e5331745-2301-40c7-8e9f-817721bf972f",
+            "type": "Keyboard.Key",
+            "label": "leftKey",
+            "keyCode": "LEFT"
+        },
+        {
+            "id": "c199fd4a-9d4a-42db-acfd-14c1cc61d00f",
+            "type": "Keyboard.Key",
+            "label": "rightKey",
+            "keyCode": "RIGHT"
+        },
+        {
+            "id": "ee5b3e6d-d560-48fa-a6b2-09915c1c16e5",
+            "type": "Keyboard.Key",
+            "label": "upKey",
+            "keyCode": "UP"
+        },
+        {
+            "id": "ddef1f73-1a53-4e55-9ca9-b71ae4879392",
+            "type": "Keyboard.Key",
+            "label": "spaceKey"
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 3
+    },
+    "prefabProperties": [
+        {
+            "name": "platforms",
+            "label": "Platforms",
+            "tooltip": "The objects where the player jumps.",
+            "defValue": "[]",
+            "customDefinition": false,
+            "type": {
+                "id": "expression",
+                "expressionType": "Phaser.GameObjects.GameObject[]"
+            }
+        },
+        {
+            "name": "foodItems",
+            "label": "Food Items",
+            "tooltip": "List of FoodItem",
+            "defValue": "[]",
+            "customDefinition": false,
+            "type": {
+                "id": "expression",
+                "expressionType": "FoodItem[]"
+            }
+        }
+    ]
+}

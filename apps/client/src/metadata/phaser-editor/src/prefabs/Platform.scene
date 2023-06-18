@@ -1,0 +1,44 @@
+{
+    "id": "9cd01380-cd4d-4b82-aeab-d2af9c7f111a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "a2f8fd8a-9c7d-4d22-9fcd-7c235d6dac7b",
+            "label": "volcano_Level_Set_Platformer___Stone_png",
+            "components": [],
+            "texture": {
+                "key": "volcano",
+                "frame": "Volcano Level Set_Platformer - Stone.png"
+            },
+            "x": 399,
+            "y": 147,
+            "ArcadeComponent.active": true,
+            "down": false,
+            "left": false,
+            "right": false,
+            "pushable": false,
+            "immovable": true,
+            "body.width": 128,
+            "body.height": 128,
+            "list": []
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 3
+    }
+}
