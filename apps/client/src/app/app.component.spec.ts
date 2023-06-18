@@ -5,11 +5,12 @@ import { ServerHealthService } from './shared/services/server-health.service';
 import { serverHealthServiceStub } from './shared/services/server-health.service.spec';
 import { AuthService } from './auth/auth.service';
 import { authServiceStub } from './auth/auth.service.spec';
+import { SwRefreshTestingComponent } from './shared/components/sw-refresh/sw-refresh.component.spec';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [AppComponent, SwRefreshTestingComponent],
       imports: [RouterTestingModule],
       providers: [
         {

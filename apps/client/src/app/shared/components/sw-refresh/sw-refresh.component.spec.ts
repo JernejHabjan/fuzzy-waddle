@@ -1,0 +1,32 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SwRefreshComponent } from './sw-refresh.component';
+import { Component } from '@angular/core';
+import { SwUpdate } from '@angular/service-worker';
+
+@Component({ selector: 'fuzzy-waddle-sw-refresh', template: '' })
+export class SwRefreshTestingComponent {}
+
+describe('SwRefreshComponent', () => {
+  let component: SwRefreshComponent;
+  let fixture: ComponentFixture<SwRefreshComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [SwRefreshComponent],
+      providers: [
+        {
+          provide: SwUpdate,
+          useValue: {}
+        }
+      ]
+    });
+    fixture = TestBed.createComponent(SwRefreshComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
