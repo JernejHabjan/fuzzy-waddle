@@ -3,6 +3,7 @@ import { BaseGameMode, BasePlayer, BaseSpectator, BaseSpectatorData } from '@fuz
 import { BaseGameData } from '../../shared/game/phaser/game/base-game-data';
 import { Scenes } from './consts/scenes';
 import { Fly } from './fly/fly';
+import { Scenery } from './scenery/Scenery';
 
 export class FlySquasherScene extends BaseScene<
   BaseGameData,
@@ -23,6 +24,7 @@ export class FlySquasherScene extends BaseScene<
   private fly!: Fly;
   private gameOverFlag = false;
   private gameOverText?: Phaser.GameObjects.Text;
+  private scenery!: Scenery;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -35,14 +37,24 @@ export class FlySquasherScene extends BaseScene<
       'assets/fly-squasher/spritesheets/fly-squasher-spritesheet.json',
       'assets/fly-squasher/spritesheets'
     );
+    this.load.multiatlas(
+      'croissants-spritesheet',
+      'assets/fly-squasher/spritesheets/scenes/croissants-spritesheet.json',
+      'assets/fly-squasher/spritesheets/scenes'
+    );
+    this.load.audio('ost-fly-squasher', 'assets/fly-squasher/sound/ost/fly-squasher.m4a');
+    this.load.audio('flying', 'assets/fly-squasher/sound/sfx/fly.mp3');
+    this.load.audio('squish', 'assets/fly-squasher/sound/sfx/squish.mp3');
+    this.load.audio('restaurant', 'assets/fly-squasher/sound/background/restaurant.mp3');
+    this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
   }
 
   override create() {
     super.create();
 
+    this.scenery = new Scenery(this);
     this.setupTexts();
     this.fly = new Fly(this);
-
     this.subscribe(
       this.onResize.subscribe(() => {
         this.handlePositionGameOverText();
@@ -50,6 +62,10 @@ export class FlySquasherScene extends BaseScene<
       })
     );
     this.subscribe(this.fly.onFlyHit.subscribe(this.flyHit));
+
+    this.sound.play('ost-fly-squasher', {
+      loop: true
+    });
   }
 
   private flyHit = () => {
@@ -73,22 +89,16 @@ export class FlySquasherScene extends BaseScene<
 
     if (this.fly.y > maxHeight) {
       this._livesNumber -= 1;
+      this.sound.play('hit');
       this._livesText.setText('Lives: ' + this._livesNumber);
       if (this._livesNumber === 0) {
+        this.fly.gameOver();
         this.gameOver();
       } else {
         this.fly.generateCoordinates();
       }
       return;
     }
-
-    this.fly.update(time, delta);
-  }
-
-  override destroy() {
-    super.destroy();
-
-    this.fly?.destroy();
   }
 
   private gameOver() {

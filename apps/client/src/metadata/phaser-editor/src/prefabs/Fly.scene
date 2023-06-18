@@ -14,6 +14,8 @@
             "type": "Container",
             "id": "f051ebd5-e293-400b-b7b2-c68fd4e9ffdd",
             "label": "fly_wing",
+            "x": 60,
+            "y": 57,
             "list": [
                 {
                     "type": "Image",

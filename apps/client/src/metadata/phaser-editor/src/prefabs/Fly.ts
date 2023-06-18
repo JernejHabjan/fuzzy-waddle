@@ -10,7 +10,7 @@ import Phaser from "phaser";
 export default class Fly extends Phaser.GameObjects.Container {
 
 	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 0, y ?? 0);
+		super(scene, x ?? 60, y ?? 57);
 
 		// leg_back_right
 		const leg_back_right = scene.add.image(14.450684318372382, -0.6341442773239621, "fly-squasher-spritesheet", "fly/leg-back");

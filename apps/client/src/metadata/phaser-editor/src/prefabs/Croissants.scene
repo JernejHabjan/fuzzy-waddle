@@ -1,0 +1,75 @@
+{
+    "id": "8ff88bcb-5911-4b19-a529-9ab61af0902f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT"
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "f051ebd5-e293-400b-b7b2-c68fd4e9fede",
+            "label": "towel",
+            "x": 2.221526863075212,
+            "y": 1.6450976306480243,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "1a8d263a-a75f-461f-b118-488376087856",
+                    "label": "towel",
+                    "texture": {
+                        "key": "croissants-spritesheet",
+                        "frame": "croissants/towel"
+                    },
+                    "x": 124.77847146244132,
+                    "y": 103.35489880789905
+                },
+                {
+                    "type": "Image",
+                    "id": "b82205dc-aa41-46c5-9866-4ebd43b555a4",
+                    "label": "plate",
+                    "texture": {
+                        "key": "croissants-spritesheet",
+                        "frame": "croissants/plate"
+                    },
+                    "x": 129.7784714624413,
+                    "y": 91.35489880789905
+                },
+                {
+                    "type": "Image",
+                    "id": "a2770333-2086-4e24-bee2-b8c24236c91d",
+                    "label": "croissant_bottom",
+                    "texture": {
+                        "key": "croissants-spritesheet",
+                        "frame": "croissants/croissant"
+                    },
+                    "x": 153.7784714624413,
+                    "y": 65.35489880789905,
+                    "angle": 132
+                },
+                {
+                    "type": "Image",
+                    "id": "da686d76-31d8-4753-a1fc-0cb5f3b5f9fa",
+                    "label": "croissant_top",
+                    "texture": {
+                        "key": "croissants-spritesheet",
+                        "frame": "croissants/croissant"
+                    },
+                    "x": 99.77847146244132,
+                    "y": 66.35489880789905
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    }
+}

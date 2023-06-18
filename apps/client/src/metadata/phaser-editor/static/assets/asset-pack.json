@@ -34,7 +34,13 @@
                 "url": "assets/atlas/fly-squasher/fly-squasher-spritesheet.json",
                 "path": "assets/atlas/fly-squasher",
                 "key": "fly-squasher-spritesheet"
-              }
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/atlas/fly-squasher/scenes/croissants-spritesheet.json",
+                "path": "assets/atlas/fly-squasher/scenes",
+                "key": "croissants-spritesheet"
+            }
         ]
     },
     "meta": {

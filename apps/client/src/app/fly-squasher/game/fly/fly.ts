@@ -1,5 +1,6 @@
 import { Subject, Subscription } from 'rxjs';
 import { FlyPrefab } from './fly-prefab';
+import { BaseScene } from '../../../shared/game/phaser/scene/base.scene';
 
 export class Fly {
   private readonly initialWorldSpeedPerFrame = 0.2;
@@ -11,19 +12,27 @@ export class Fly {
   readonly onFlyHit: Subject<void> = new Subject<void>();
   private flyPrefabPointerHitSubscription: Subscription;
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(private readonly scene: BaseScene) {
     this._fly = new FlyPrefab(scene);
     scene.add.existing(this._fly);
     this.flyPrefabPointerHitSubscription = this._fly.pointerDown.subscribe(this.flyHit);
 
+    this.scene.subscribe(this.scene.onResize.subscribe(this.setFlyRandomPosition));
+    this.scene.subscribe(this.scene.onUpdate.subscribe((u) => this.update(u.time, u.delta)));
+    this.scene.subscribe(this.scene.onDestroy.subscribe(this.destroy));
+
     this.setFlyRandomPosition();
+
+    this.scene.sound.play('flying', {
+      loop: true
+    });
   }
 
   get y() {
     return this._fly.y;
   }
 
-  update(time: number, delta: number) {
+  private update = (time: number, delta: number) => {
     const rotationSpeed = 0.002; // Adjust this value to control the rotation speed
     const rotationAmplitude = 0.02; // Adjust this value to control the rotation amplitude
 
@@ -46,23 +55,24 @@ export class Fly {
     if (newX > this.scene.cameras.main.width - margin) {
       this._fly.rotation = this._fly.rotation + Math.PI / 4;
     }
-  }
+  };
 
   generateCoordinates() {
     this.setFlyRandomPosition();
   }
 
-  private setFlyRandomPosition() {
+  private setFlyRandomPosition = () => {
     const position = this.getR();
     this._fly.setPosition(position.x, position.y);
     // reset rotation
     this._fly.rotation = 0;
-  }
+  };
 
   private flyHit = () => {
     this.generateCoordinates();
     this.worldSpeedPerFrame += this.worldSpeedIncreasePerSquash;
     this.onFlyHit.next();
+    this.scene.sound.play('squish');
   };
 
   /**
@@ -79,14 +89,19 @@ export class Fly {
     };
   }
 
-  destroy() {
+  private destroy = () => {
     this.flyPrefabPointerHitSubscription.unsubscribe();
     this._fly.destroy();
     this._fly.off('pointerdown');
-  }
+  };
 
   reset() {
     this.worldSpeedPerFrame = this.initialWorldSpeedPerFrame;
     this.setFlyRandomPosition();
+    this.scene.sound.get('flying').resume();
+  }
+
+  gameOver() {
+    this.scene.sound.get('flying').pause();
   }
 }

@@ -105,6 +105,7 @@ export class LittleMuncherScene extends BaseScene<
     );
     this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
     this.load.audio('bird', 'assets/little-muncher/sfx/bird.mp3');
+    this.load.audio('ost-little-muncher', 'assets/little-muncher/ost/little-muncher.m4a');
   }
 
   override init() {
@@ -150,6 +151,10 @@ export class LittleMuncherScene extends BaseScene<
       )
     );
     this.subscribe(this.communicator.reset?.on.subscribe(() => this.resetGame(false)));
+
+    this.sound.play('ost-little-muncher', {
+      loop: true
+    });
   }
 
   private manageTimeClimbing = () => {

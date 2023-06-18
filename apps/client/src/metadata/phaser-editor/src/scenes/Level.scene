@@ -756,6 +756,17 @@
             "type": "Layer",
             "id": "a1228d0a-4239-4d26-814e-4de26353bdb2",
             "label": "debugLayer"
+        },
+        {
+            "prefabId": "8ff88bcb-5911-4b19-a529-9ab61af0902f",
+            "id": "46d66b33-e9e0-42d6-8a6c-086052e0ec24",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "croissants",
+            "x": 515,
+            "y": 121
         }
     ],
     "plainObjects": [],
