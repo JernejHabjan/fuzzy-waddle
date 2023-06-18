@@ -7,7 +7,7 @@ export interface IComponent {
   destroy?: () => void;
 }
 
-export default class ComponentService {
+export class ComponentService {
   private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObjectName
 
   constructor(private gameObjectName: string) {}

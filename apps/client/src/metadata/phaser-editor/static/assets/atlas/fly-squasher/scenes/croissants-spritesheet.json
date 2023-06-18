@@ -1,0 +1,83 @@
+{
+	"textures": [
+		{
+			"image": "croissants-spritesheet.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 410,
+				"h": 225
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "croissants/towel",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 250,
+						"h": 168
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 249,
+						"h": 168
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 249,
+						"h": 168
+					}
+				},
+				{
+					"filename": "croissants/plate",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 163,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 161,
+						"h": 99
+					},
+					"frame": {
+						"x": 249,
+						"y": 0,
+						"w": 161,
+						"h": 99
+					}
+				},
+				{
+					"filename": "croissants/croissant",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 127
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 126,
+						"h": 126
+					},
+					"frame": {
+						"x": 249,
+						"y": 99,
+						"w": 126,
+						"h": 126
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:41f232f5c76cfe9621546d15f02debcc:4cd4689046bc86b2ae8113419dc48616:63434a12c2c364104268a1fb61e91790$"
+	}
+}

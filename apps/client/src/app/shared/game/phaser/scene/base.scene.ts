@@ -16,7 +16,7 @@ import {
 import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
 import { Loader } from '../../../../little-muncher/game/loader';
 
-export default class BaseScene<
+export class BaseScene<
     TGameData extends BaseGameData = BaseGameData,
     TGameStateData extends BaseData = BaseData,
     TGameState extends BaseGameState<TGameStateData> = BaseGameState<TGameStateData>,

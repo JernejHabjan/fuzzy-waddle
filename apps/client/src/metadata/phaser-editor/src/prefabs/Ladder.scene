@@ -1,0 +1,54 @@
+{
+    "id": "37217272-2539-426e-97ba-49812099c17b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111a",
+            "id": "c2321382-e9f1-48a2-800e-feccdc697613",
+            "unlock": [
+                "x",
+                "y",
+                "body.offset.x",
+                "body.offset.y",
+                "body.width",
+                "body.height",
+                "texture",
+                "originX",
+                "originY"
+            ],
+            "label": "ladder1",
+            "components": [],
+            "texture": {
+                "key": "volcano",
+                "frame": "Volcano Level Set_Platformer - Ladder.png"
+            },
+            "x": 251,
+            "y": 128,
+            "originX": 0,
+            "originY": 0,
+            "body.width": 113,
+            "body.height": 48,
+            "body.offset.x": 7,
+            "body.offset.y": 80,
+            "nestedPrefabs": [],
+            "list": []
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 3
+    }
+}

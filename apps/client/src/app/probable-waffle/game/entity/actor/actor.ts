@@ -1,5 +1,5 @@
 import { Utils } from 'phaser';
-import ComponentService, { IComponent } from '../../core/component.service';
+import { ComponentService, IComponent } from '../../core/component.service';
 
 export abstract class Actor implements IComponent {
   components: ComponentService;
@@ -9,7 +9,7 @@ export abstract class Actor implements IComponent {
   readonly name: string;
   destroyed = false;
   killed = false;
-  
+
   /**
    * time until actor is finally destroyed from scene (in sec)
    */

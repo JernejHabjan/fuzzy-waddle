@@ -18,7 +18,7 @@ export class MainComponent implements OnInit {
   constructor(private readonly authService: AuthService, private readonly communicatorService: CommunicatorService) {}
 
   ngOnInit(): void {
-    console.log('this level is ', this.level);
+    console.log('this level is', this.level);
     const gameSessionInstance = new LittleMuncherGameInstance({
       gameModeData: {
         // todo level: this.level

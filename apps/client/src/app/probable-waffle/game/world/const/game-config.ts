@@ -1,7 +1,7 @@
-import GrasslandScene from '../scenes/grassland.scene';
+import { GrasslandScene } from '../scenes/grassland.scene';
 import { environment } from '../../../../../environments/environment';
-import PlaygroundScene from '../scenes/playground.scene';
-import { Scale, Types } from 'phaser';
+import { PlaygroundScene } from '../scenes/playground.scene';
+import { Types } from 'phaser';
 import { baseGameConfig } from '../../../../shared/game/base-game.config';
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {

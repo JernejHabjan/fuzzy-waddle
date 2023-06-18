@@ -1,5 +1,5 @@
 import { Types } from 'phaser';
-import FlySquasherScene from '../fly-squasher-scene';
+import { FlySquasherScene } from '../fly-squasher-scene';
 import { baseGameConfig } from '../../../shared/game/base-game.config';
 
 export const flySquasherGameConfig: Types.Core.GameConfig = {

@@ -1,4 +1,4 @@
-import BaseScene from '../../shared/game/phaser/scene/base.scene';
+import { BaseScene } from '../../shared/game/phaser/scene/base.scene';
 
 export class Loader {
   constructor(scene: BaseScene) {

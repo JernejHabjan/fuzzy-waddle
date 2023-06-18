@@ -2,7 +2,7 @@ import { IComponent } from '../../../core/component.service';
 import { Actor } from '../../actor/actor';
 import { AttackData } from '../attack-data';
 import { EventEmitter } from '@angular/core';
-import HealthComponent from './health-component';
+import { HealthComponent } from './health-component';
 import { RepresentableActor } from '../../actor/representable-actor';
 import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
 

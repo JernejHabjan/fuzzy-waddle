@@ -11,7 +11,7 @@ import {
   LittleMuncherSpectator,
   LittleMuncherSpectatorData
 } from '@fuzzy-waddle/api-interfaces';
-import BaseScene from '../../shared/game/phaser/scene/base.scene';
+import { BaseScene } from '../../shared/game/phaser/scene/base.scene';
 import { LittleMuncherGameData } from './little-muncher-game-data';
 import { Pause } from './pause';
 import { PlayerInputController } from './player-input-controller';
@@ -38,7 +38,7 @@ export enum ObjectType {
   'cake4' = 'cake4'
 }
 
-export default class LittleMuncherScene extends BaseScene<
+export class LittleMuncherScene extends BaseScene<
   LittleMuncherGameData,
   LittleMuncherGameStateData,
   LittleMuncherGameState,
@@ -105,6 +105,7 @@ export default class LittleMuncherScene extends BaseScene<
     );
     this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
     this.load.audio('bird', 'assets/little-muncher/sfx/bird.mp3');
+    this.load.audio('ost-little-muncher', 'assets/little-muncher/ost/little-muncher.m4a');
   }
 
   override init() {
@@ -150,6 +151,10 @@ export default class LittleMuncherScene extends BaseScene<
       )
     );
     this.subscribe(this.communicator.reset?.on.subscribe(() => this.resetGame(false)));
+
+    this.sound.play('ost-little-muncher', {
+      loop: true
+    });
   }
 
   private manageTimeClimbing = () => {

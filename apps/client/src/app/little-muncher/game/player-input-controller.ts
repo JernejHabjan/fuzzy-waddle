@@ -1,4 +1,4 @@
-import LittleMuncherScene from './little-muncher-scene';
+import { LittleMuncherScene } from './little-muncher-scene';
 import { Subscription } from 'rxjs';
 import Swipe from 'phaser3-rex-plugins/plugins/input/gestures/swipe/Swipe';
 

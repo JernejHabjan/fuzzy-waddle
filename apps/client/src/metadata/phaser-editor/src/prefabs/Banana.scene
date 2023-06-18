@@ -1,0 +1,50 @@
+{
+    "id": "d014133a-564c-4eb6-8938-64c1aacc60bb",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "prefabId": "ad30b4e1-19b5-4a8c-8b9b-bdecec788df1",
+            "id": "dcaab1e8-4ab6-42db-88cc-18c0f3756bac",
+            "unlock": [
+                "x",
+                "y",
+                "texture",
+                "body.offset.x",
+                "body.offset.y",
+                "body.width",
+                "body.height"
+            ],
+            "label": "foodItem",
+            "components": [],
+            "texture": {
+                "key": "volcano",
+                "frame": "Tiny Caveman_Game Object - Banana.png"
+            },
+            "x": 441,
+            "y": 147,
+            "body.width": 73,
+            "body.height": 68,
+            "body.offset.x": 4,
+            "body.offset.y": 8,
+            "nestedPrefabs": [],
+            "list": []
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 3
+    }
+}
