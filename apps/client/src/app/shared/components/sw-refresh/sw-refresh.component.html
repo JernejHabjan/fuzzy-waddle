@@ -1,0 +1,7 @@
+<ngb-alert *ngIf="showVersionReady" type="info" [dismissible]="false">
+  <div><strong>Update Available</strong></div>
+  <div>
+    <button class="btn btn-sm btn-outline-primary me-2" (click)="onVersionRefreshClick()">Update</button>
+    <button class="btn btn-sm btn-outline-warning" (click)="this.showVersionReady =false">Dismiss</button>
+  </div>
+</ngb-alert>

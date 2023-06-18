@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { HomeNavComponent } from './home-nav/home-nav.component';
 import { RouterLink } from '@angular/router';
 import { ModalComponent } from './modal/modal.component';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { SwRefreshComponent } from './sw-refresh/sw-refresh.component';
 
 @NgModule({
-  declarations: [HomeNavComponent, ModalComponent],
-  imports: [CommonModule, RouterLink],
-  exports: [HomeNavComponent, ModalComponent],
+  declarations: [HomeNavComponent, ModalComponent, SwRefreshComponent],
+  imports: [CommonModule, RouterLink, NgbAlert],
+  exports: [HomeNavComponent, ModalComponent, SwRefreshComponent],
   providers: [NgbActiveModal]
 })
 export class ComponentsModule {}

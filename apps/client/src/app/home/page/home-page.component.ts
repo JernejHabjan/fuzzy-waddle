@@ -12,6 +12,7 @@ export type DisplayGame = {
   image: string;
   bannerImage: string;
   route: string;
+  inDevelopment?: boolean;
 };
 
 @Component({
@@ -27,7 +28,8 @@ export class HomePageComponent {
       description: 'A real-time strategy game',
       image: 'probable-waffle.webp',
       bannerImage: 'probable-waffle-banner.webp',
-      route: 'probable-waffle'
+      route: 'probable-waffle',
+      inDevelopment: true
     },
     {
       name: 'Little Muncher',
@@ -40,8 +42,8 @@ export class HomePageComponent {
     {
       name: 'Fly Squasher',
       description: 'Squash dem bugs',
-      image: 'little-muncher.webp', // todo
-      bannerImage: 'little-muncher-banner.webp', // todo
+      image: 'fly-squasher.webp',
+      bannerImage: 'fly-squasher-banner.webp',
       route: 'fly-squasher'
     }
   ];
