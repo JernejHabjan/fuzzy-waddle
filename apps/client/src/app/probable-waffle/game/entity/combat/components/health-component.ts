@@ -10,7 +10,7 @@ export type HealthDefinition = {
   // todo maybe armor type..
 };
 
-export default class HealthComponent implements IComponent {
+export class HealthComponent implements IComponent {
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
   private currentHealth: number;
   private healthUiComponent!: HealthUiComponent;

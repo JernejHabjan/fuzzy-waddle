@@ -1,10 +1,10 @@
-import BaseScene from '../../shared/game/phaser/scene/base.scene';
+import { BaseScene } from '../../shared/game/phaser/scene/base.scene';
 import { BaseGameMode, BasePlayer, BaseSpectator, BaseSpectatorData } from '@fuzzy-waddle/api-interfaces';
 import { BaseGameData } from '../../shared/game/phaser/game/base-game-data';
-import { Fly } from './fly';
 import { Scenes } from './consts/scenes';
+import { Fly } from './fly/fly';
 
-export default class FlySquasherScene extends BaseScene<
+export class FlySquasherScene extends BaseScene<
   BaseGameData,
   any,
   any,
@@ -31,9 +31,9 @@ export default class FlySquasherScene extends BaseScene<
   override preload() {
     super.preload();
     this.load.multiatlas(
-      'lm-atlas',
-      'assets/little-muncher/spritesheets/little-muncher-spritesheet.json', // todo
-      'assets/little-muncher/spritesheets' // todo
+      'fly-squasher-spritesheet',
+      'assets/fly-squasher/spritesheets/fly-squasher-spritesheet.json',
+      'assets/fly-squasher/spritesheets'
     );
   }
 
@@ -88,7 +88,7 @@ export default class FlySquasherScene extends BaseScene<
   override destroy() {
     super.destroy();
 
-    this.fly.destroy();
+    this.fly?.destroy();
   }
 
   private gameOver() {

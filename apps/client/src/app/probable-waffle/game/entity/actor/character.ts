@@ -4,7 +4,7 @@ import {
   IsoAngleToAnimDirectionEnum,
   LPCAnimTypeEnum
 } from '../character/animation/lpc-animation-helper';
-import HealthComponent, { HealthDefinition } from '../combat/components/health-component';
+import { HealthComponent, HealthDefinition } from '../combat/components/health-component';
 import { StateMachine } from '../character/animation/state-machine';
 import { CharacterMovementComponent, MoveEventTypeEnum } from './components/character-movement-component';
 import { CharacterSoundComponent, SoundDefinition } from './components/character-sound-component';

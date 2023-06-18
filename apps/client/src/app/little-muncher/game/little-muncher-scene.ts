@@ -11,7 +11,7 @@ import {
   LittleMuncherSpectator,
   LittleMuncherSpectatorData
 } from '@fuzzy-waddle/api-interfaces';
-import BaseScene from '../../shared/game/phaser/scene/base.scene';
+import { BaseScene } from '../../shared/game/phaser/scene/base.scene';
 import { LittleMuncherGameData } from './little-muncher-game-data';
 import { Pause } from './pause';
 import { PlayerInputController } from './player-input-controller';
@@ -38,7 +38,7 @@ export enum ObjectType {
   'cake4' = 'cake4'
 }
 
-export default class LittleMuncherScene extends BaseScene<
+export class LittleMuncherScene extends BaseScene<
   LittleMuncherGameData,
   LittleMuncherGameStateData,
   LittleMuncherGameState,

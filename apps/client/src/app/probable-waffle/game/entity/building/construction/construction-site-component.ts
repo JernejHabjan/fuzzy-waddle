@@ -5,7 +5,7 @@ import { Actor } from '../../actor/actor';
 import { OwnerComponent } from '../../actor/components/owner-component';
 import { PlayerResourcesComponent } from '../../../world/managers/controllers/player-resources-component';
 import { ConstructionStateEnum } from './construction-state-enum';
-import HealthComponent from '../../combat/components/health-component';
+import { HealthComponent } from '../../combat/components/health-component';
 import { EventEmitter } from '@angular/core';
 
 export type ConstructionSiteDefinition = {

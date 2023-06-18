@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import BaseScene from '../scene/base.scene';
+import { BaseScene } from '../scene/base.scene';
 import { UpdateEventData } from '../scene/update-event-data';
 
 const { Between } = Phaser.Math;

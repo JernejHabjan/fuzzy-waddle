@@ -2,7 +2,7 @@ import { GameObjects } from 'phaser';
 import { IComponent } from '../../../core/component.service';
 import { Actor } from '../../actor/actor';
 import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
-import HealthComponent from './health-component';
+import { HealthComponent } from './health-component';
 
 export class HealthUiComponent implements IComponent {
   private healthComponent!: HealthComponent;

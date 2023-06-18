@@ -46,7 +46,7 @@ import { GameObjects, Geom, Input, Scale, Scene } from 'phaser';
 import { ResourceSourceComponent } from '../../entity/economy/resource/resource-source-component';
 import { ResourceDrainComponent } from '../../entity/economy/resource/resource-drain-component';
 import { GathererComponent } from '../../entity/actor/components/gatherer-component';
-import HealthComponent from '../../entity/combat/components/health-component';
+import { HealthComponent } from '../../entity/combat/components/health-component';
 import { DamageTypes } from '../../entity/combat/damage-types';
 import { BuilderComponent } from '../../entity/actor/components/builder-component';
 
@@ -57,7 +57,7 @@ export interface TilemapToAtlasMap {
   tileProperties: TilePossibleProperties | null;
 }
 
-export default class GrasslandScene extends Scene implements CreateSceneFromObjectConfig {
+export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig {
   private inputHandler!: InputHandler;
   private scaleHandler!: ScaleHandler;
   private cursorHandler!: CursorHandler;

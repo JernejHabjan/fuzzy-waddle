@@ -1,23 +1,21 @@
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { FlyPrefab } from './fly-prefab';
 
 export class Fly {
-  private readonly initialWorldSpeedPerFrame = 0.1;
+  private readonly initialWorldSpeedPerFrame = 0.2;
   private readonly worldSpeedIncreasePerSquash = 0.01;
   private worldSpeedPerFrame = this.initialWorldSpeedPerFrame; // pixels per frame
 
-  private readonly _fly: Phaser.GameObjects.Sprite;
+  private readonly _fly: FlyPrefab;
 
   readonly onFlyHit: Subject<void> = new Subject<void>();
+  private flyPrefabPointerHitSubscription: Subscription;
 
   constructor(private readonly scene: Phaser.Scene) {
-    this._fly = this.scene.add.sprite(0, 0, 'lm-atlas', 'health'); // todo
-    this._fly.setInteractive();
-    // set scale
-    this._fly.setScale(6);
+    this._fly = new FlyPrefab(scene);
+    scene.add.existing(this._fly);
+    this.flyPrefabPointerHitSubscription = this._fly.pointerDown.subscribe(this.flyHit);
 
-    // set origin
-    this._fly.setOrigin(0.5, 0.5);
-    this._fly.on('pointerdown', this.flyHit);
     this.setFlyRandomPosition();
   }
 
@@ -26,8 +24,28 @@ export class Fly {
   }
 
   update(time: number, delta: number) {
+    const rotationSpeed = 0.002; // Adjust this value to control the rotation speed
+    const rotationAmplitude = 0.02; // Adjust this value to control the rotation amplitude
+
+    const margin = this._fly.width / 2;
+
     const worldSpeedThisFrame = Math.round(this.worldSpeedPerFrame * delta);
     this._fly.y = this._fly.y + worldSpeedThisFrame;
+    // assign new rotation from current rotation + some value
+    this._fly.rotation = this._fly.rotation + rotationAmplitude * Math.sin(rotationSpeed * time);
+
+    const newX = this._fly.x - worldSpeedThisFrame * Math.sin(this._fly.rotation);
+    if (newX > margin && newX < this.scene.cameras.main.width - margin) {
+      this._fly.x = newX;
+    }
+
+    // if fly is out of screen, take current rotation mirror it over x and y axis
+    if (newX < margin) {
+      this._fly.rotation = this._fly.rotation - Math.PI / 4;
+    }
+    if (newX > this.scene.cameras.main.width - margin) {
+      this._fly.rotation = this._fly.rotation + Math.PI / 4;
+    }
   }
 
   generateCoordinates() {
@@ -37,6 +55,8 @@ export class Fly {
   private setFlyRandomPosition() {
     const position = this.getR();
     this._fly.setPosition(position.x, position.y);
+    // reset rotation
+    this._fly.rotation = 0;
   }
 
   private flyHit = () => {
@@ -60,6 +80,7 @@ export class Fly {
   }
 
   destroy() {
+    this.flyPrefabPointerHitSubscription.unsubscribe();
     this._fly.destroy();
     this._fly.off('pointerdown');
   }
