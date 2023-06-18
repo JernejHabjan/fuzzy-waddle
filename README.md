@@ -50,3 +50,21 @@ and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
 ## Pixilart
 
 - https://www.pixilart.com/darkneess10
+
+## Attribution
+
+This project utilizes the following works:
+
+- [Pixilart](https://www.pixilart.com/) by Pixilart Inc
+- [Phaser](https://github.com/photonstorm/phaser) by Richard Davey (License: [MIT License](https://github.com/photonstorm/phaser/blob/master/LICENSE.md))
+- [Phaser Editor 2D](https://github.com/PhaserEditor2D/PhaserEditor2D-v3) by PhaserEditor2D Team (License: [MIT License](https://github.com/PhaserEditor2D/PhaserEditor2D-v3/blob/master/LICENSE))
+- [Universal LPC Spritesheet Character Generator](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator) by Sander Frenken (License: [GPL-3.0 license](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator/blob/master/LICENSE))
+- [Tiled](https://github.com/mapeditor/tiled) by Thorbjørn Lindeijer (License: [3 licenses](https://github.com/mapeditor/tiled))
+- [TexturePacker](https://www.codeandweb.com/texturepacker) by CodeAndWeb GmbH
+- [Angular](https://angular.io/) by Google LLC (License: [MIT License](https://github.com/angular/angular/blob/master/LICENSE))
+- [NestJS](https://nestjs.com/) by Kamil Myśliwiec and the NestJS contributors (License: [MIT License](https://github.com/nestjs/nest/blob/master/LICENSE))
+- [Supabase](https://supabase.io/) by Supabase Pte. Ltd. (License: [Apache License 2.0](https://github.com/supabase/supabase/blob/master/LICENSE))
+
+Parts of this project utilize the features, code, or assets provided by these sources.
+
+Please refer to the respective sources and licenses for more details.
