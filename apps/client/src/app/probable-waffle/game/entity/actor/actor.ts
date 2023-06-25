@@ -10,6 +10,7 @@ export abstract class Actor implements IComponent {
   readonly name: string;
   destroyed = false;
   killed = false;
+  killedAt?: Date;
 
   /**
    * time until actor is finally destroyed from scene (in sec)
@@ -72,6 +73,7 @@ export abstract class Actor implements IComponent {
 
   kill(): void {
     this.killed = true;
+    this.killedAt = new Date();
 
     // destroy actor after a delay
     setTimeout(() => {

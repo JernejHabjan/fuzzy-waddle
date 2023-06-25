@@ -55,7 +55,13 @@ export abstract class Character extends MovableActor {
     this.spriteRepresentationComponent.sprite.setInteractive();
     this.characterMovementComponent = this.components.findComponent(CharacterMovementComponent);
     this.healthComponent = this.components.addComponent(
-      new HealthComponent(this, this.pawnDefinition.healthDefinition)
+      new HealthComponent(this, this.spriteRepresentationComponent.scene, this.pawnDefinition.healthDefinition, () => ({
+        spriteDepth: this.spriteRepresentationComponent.sprite.depth,
+        spriteWidth: this.spriteRepresentationComponent.sprite.width,
+        spriteHeight: this.spriteRepresentationComponent.sprite.height,
+        spriteObjectCenterX: this.spriteRepresentationComponent.sprite.x,
+        spriteObjectCenterY: this.spriteRepresentationComponent.sprite.y
+      }))
     );
     this.characterSoundComponent = this.components.addComponent(
       new CharacterSoundComponent(this.spriteRepresentationComponent.sprite)

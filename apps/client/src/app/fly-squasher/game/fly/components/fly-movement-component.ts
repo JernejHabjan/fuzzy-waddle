@@ -3,12 +3,20 @@ import { BaseScene } from '../../../../shared/game/phaser/scene/base.scene';
 import { FlyRepresentableComponent } from './fly-representable-component';
 import { Actor } from '../../../../probable-waffle/game/entity/actor/actor';
 
+export type WorldSpeedState = {
+  worldSpeedPerFrame: number;
+  initialWorldSpeedPerFrame: number;
+};
+
 export class FlyMovementComponent implements IComponent {
-  private readonly initialWorldSpeedPerFrame = 0.2;
-  private readonly worldSpeedIncreasePerSquash = 0.01;
-  private worldSpeedPerFrame = this.initialWorldSpeedPerFrame; // pixels per frame
+  public static readonly worldSpeedIncreasePerSquash = 0.01;
   private representableComponent!: FlyRepresentableComponent;
-  constructor(private readonly fly: Actor, private readonly scene: BaseScene) {}
+
+  constructor(
+    private readonly fly: Actor,
+    private readonly scene: BaseScene,
+    private readonly worldSpeedState: WorldSpeedState
+  ) {}
 
   init() {
     this.scene.subscribe(this.scene.onResize.subscribe(this.setFlyRandomPosition));
@@ -20,12 +28,15 @@ export class FlyMovementComponent implements IComponent {
   }
 
   update(time: number, delta: number): void {
+    if (this.fly.killed) {
+      return;
+    }
     const rotationSpeed = 0.002; // Adjust this value to control the rotation speed
     const rotationAmplitude = 0.02; // Adjust this value to control the rotation amplitude
 
     const margin = this.representableComponent.width / 2;
 
-    const worldSpeedThisFrame = Math.round(this.worldSpeedPerFrame * delta);
+    const worldSpeedThisFrame = Math.round(this.worldSpeedState.worldSpeedPerFrame * delta);
     this.representableComponent.y = this.representableComponent.y + worldSpeedThisFrame;
     // assign new rotation from current rotation + some value
     this.representableComponent.rotation =
@@ -45,7 +56,7 @@ export class FlyMovementComponent implements IComponent {
     }
   }
 
-  setFlyRandomPosition = () => {
+  private setFlyRandomPosition = () => {
     const position = this.getR();
     this.representableComponent.setPosition(position.x, position.y);
     // reset rotation
@@ -67,12 +78,11 @@ export class FlyMovementComponent implements IComponent {
   }
 
   reset() {
-    this.worldSpeedPerFrame = this.initialWorldSpeedPerFrame;
+    this.worldSpeedState.worldSpeedPerFrame = this.worldSpeedState.initialWorldSpeedPerFrame;
     this.setFlyRandomPosition();
   }
 
-  hit() {
-    this.setFlyRandomPosition();
-    this.worldSpeedPerFrame += this.worldSpeedIncreasePerSquash;
+  kill() {
+    this.worldSpeedState.worldSpeedPerFrame += FlyMovementComponent.worldSpeedIncreasePerSquash;
   }
 }

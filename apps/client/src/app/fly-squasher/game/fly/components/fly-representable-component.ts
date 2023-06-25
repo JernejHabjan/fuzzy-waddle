@@ -1,11 +1,12 @@
 import { IComponent } from '../../../../probable-waffle/game/core/component.service';
 import { FlyPrefab } from '../fly-prefab';
 import { BaseScene } from '../../../../shared/game/phaser/scene/base.scene';
+import { Actor } from '../../../../probable-waffle/game/entity/actor/actor';
 
 export class FlyRepresentableComponent implements IComponent {
   private _fly!: FlyPrefab;
 
-  constructor(private readonly scene: BaseScene) {}
+  constructor(private readonly fly: Actor, private readonly scene: BaseScene) {}
 
   init() {
     this._fly = new FlyPrefab(this.scene);
@@ -20,12 +21,18 @@ export class FlyRepresentableComponent implements IComponent {
     return this._fly.width;
   }
 
+  get height() {
+    return this._fly.height;
+  }
+
   get y() {
     return this._fly.y;
   }
+
   set y(value: number) {
     this._fly.y = value;
   }
+
   get rotation() {
     return this._fly.rotation;
   }
@@ -37,6 +44,7 @@ export class FlyRepresentableComponent implements IComponent {
   get x() {
     return this._fly.x;
   }
+
   set x(value: number) {
     this._fly.x = value;
   }
@@ -51,5 +59,29 @@ export class FlyRepresentableComponent implements IComponent {
 
   off(eventName: string) {
     this._fly.off(eventName);
+  }
+
+  kill() {
+    this._fly.stopMoving();
+  }
+
+  update(): void {
+    if (!this.fly.killedAt) {
+      return;
+    }
+    const killedAt: Date = this.fly.killedAt;
+    const despawnTimeInMilliseconds = this.fly.despawnTime * 1000;
+    const millisecondsSinceKilled = new Date().getTime() - killedAt.getTime();
+
+    const hexColor = Phaser.Display.Color.Interpolate.ColorWithColor(
+      Phaser.Display.Color.HexStringToColor('#ffffff'),
+      Phaser.Display.Color.HexStringToColor('#ff0000'),
+      despawnTimeInMilliseconds,
+      millisecondsSinceKilled
+    );
+
+    // TODO ENSURE THAT UPDATE DOESN'T RUN AFTER COMPONENT IS DESTROYED SOMEHOW
+
+    this._fly.setTint(hexColor.color); // TODO THIS DOESN'T WORK OK
   }
 }
