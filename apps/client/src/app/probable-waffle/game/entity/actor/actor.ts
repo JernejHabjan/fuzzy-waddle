@@ -1,5 +1,6 @@
 import { Utils } from 'phaser';
 import { ComponentService, IComponent } from '../../core/component.service';
+import { BaseScene } from '../../../../shared/game/phaser/scene/base.scene';
 
 export abstract class Actor implements IComponent {
   components: ComponentService;
@@ -15,9 +16,17 @@ export abstract class Actor implements IComponent {
    */
   despawnTime = 10;
 
-  protected constructor() {
+  protected constructor(
+    protected readonly options?: {
+      scene?: BaseScene;
+    }
+  ) {
     this.name = Utils.String.UUID();
     this.components = new ComponentService(this.name);
+    if (options?.scene) {
+      options.scene.subscribe(options.scene.onUpdate.subscribe((u) => this.update(u.time, u.delta)));
+      options.scene.subscribe(options.scene.onDestroy.subscribe(() => this.destroy()));
+    }
   }
 
   /**
@@ -39,6 +48,7 @@ export abstract class Actor implements IComponent {
    */
   start(): void {
     this.components.init();
+    this.components.start();
   }
 
   /**

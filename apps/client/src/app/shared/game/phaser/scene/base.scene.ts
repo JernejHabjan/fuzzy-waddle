@@ -37,6 +37,7 @@ export class BaseScene<
   onInit: EventEmitter<void> = new EventEmitter<void>();
   onPreload: EventEmitter<void> = new EventEmitter<void>();
   onCreate: EventEmitter<void> = new EventEmitter<void>();
+  postCreate: EventEmitter<void> = new EventEmitter<void>();
   onDestroy: EventEmitter<void> = new EventEmitter<void>();
   onUpdate: EventEmitter<UpdateEventData> = new EventEmitter<UpdateEventData>();
   onResize: EventEmitter<void> = new EventEmitter<void>();
@@ -58,6 +59,7 @@ export class BaseScene<
     this.communicator = this.baseGameData.communicator;
     this.registerSceneDestroy();
     this.registerSceneResize();
+    this.registerScenePostCreate();
     this.onInit.emit();
   }
 
@@ -73,6 +75,12 @@ export class BaseScene<
   private registerSceneResize() {
     this.scale.on(Phaser.Scale.Events.RESIZE, () => {
       this.onResize.emit();
+    });
+  }
+
+  private registerScenePostCreate() {
+    this.events.once(Phaser.Scenes.Events.CREATE, () => {
+      this.postCreate.emit();
     });
   }
 

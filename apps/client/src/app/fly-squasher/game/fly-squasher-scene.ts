@@ -55,6 +55,7 @@ export class FlySquasherScene extends BaseScene<
     this.scenery = new Scenery(this);
     this.setupTexts();
     this.fly = new Fly(this);
+    this.fly.registerGameObject();
     this.subscribe(
       this.onResize.subscribe(() => {
         this.handlePositionGameOverText();
