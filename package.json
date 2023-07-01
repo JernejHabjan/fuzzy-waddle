@@ -104,7 +104,7 @@
     "@angular/language-service": "16.0.0",
     "@nestjs/schematics": "9.1.0",
     "@nestjs/testing": "9.4.0",
-    "@nx/cypress": "16.3.2",
+    "@nx/cypress": "16.4.2",
     "@nx/eslint-plugin": "16.3.2",
     "@nx/jest": "16.3.2",
     "@nx/js": "16.3.2",
