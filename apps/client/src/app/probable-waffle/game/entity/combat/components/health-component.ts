@@ -3,7 +3,7 @@ import { Actor } from '../../actor/actor';
 import { DamageType } from '../damage-type';
 import { EventEmitter } from '@angular/core';
 import { ActorDeathType } from '../actor-death-type';
-import { HealthUiComponent } from './health-ui-component';
+import { HealthBarOptions, HealthUiComponent } from './health-ui-component';
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -17,7 +17,9 @@ export class HealthComponent implements IComponent {
 
   constructor(
     private readonly actor: Actor,
-    public healthDefinition: HealthDefinition,
+    private readonly scene: Phaser.Scene,
+    public readonly healthDefinition: HealthDefinition,
+    private readonly barOptions: () => HealthBarOptions,
     regenerateHealth: boolean = false,
     private regenerateHealthRate: number = 0,
     private actorDeathType?: ActorDeathType,
@@ -27,7 +29,7 @@ export class HealthComponent implements IComponent {
   }
 
   init() {
-    this.healthUiComponent = new HealthUiComponent(this.actor);
+    this.healthUiComponent = new HealthUiComponent(this.actor, this.scene, this.barOptions);
   }
 
   start() {
@@ -61,7 +63,19 @@ export class HealthComponent implements IComponent {
     }
   }
 
+  setVisibilityUiComponent(visibility: boolean) {
+    this.healthUiComponent.setVisibility(visibility);
+  }
+
   getCurrentHealth() {
     return this.currentHealth;
+  }
+
+  resetHealth() {
+    this.setCurrentHealth(this.healthDefinition.maxHealth);
+  }
+
+  destroy() {
+    this.healthUiComponent.destroy();
   }
 }

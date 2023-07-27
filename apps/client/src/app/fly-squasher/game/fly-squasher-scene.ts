@@ -4,6 +4,9 @@ import { BaseGameData } from '../../shared/game/phaser/game/base-game-data';
 import { Scenes } from './consts/scenes';
 import { Fly } from './fly/fly';
 import { Scenery } from './scenery/Scenery';
+import { FlyFactory } from './fly/fly.factory';
+import { Subscription } from 'rxjs';
+import { FlyMovementComponent } from './fly/components/fly-movement-component';
 
 export class FlySquasherScene extends BaseScene<
   BaseGameData,
@@ -17,14 +20,20 @@ export class FlySquasherScene extends BaseScene<
   BaseSpectatorData,
   BaseSpectator
 > {
+  private readonly worldSpeedState = {
+    initialWorldSpeedPerFrame: 0.2,
+    worldSpeedPerFrame: 0.2 // pixels per frame
+  };
   private _livesNumber = 3;
   private _scoreNumber = 0;
   private _scoreText!: Phaser.GameObjects.Text;
   private _livesText!: Phaser.GameObjects.Text;
-  private fly!: Fly;
+  private fly?: Fly;
   private gameOverFlag = false;
   private gameOverText?: Phaser.GameObjects.Text;
   private scenery!: Scenery;
+  private flyHitSubscription?: Subscription;
+  private flyKillSubscription?: Subscription;
 
   constructor() {
     super({ key: Scenes.MainScene });
@@ -47,6 +56,7 @@ export class FlySquasherScene extends BaseScene<
     this.load.audio('squish', 'assets/fly-squasher/sound/sfx/squish.mp3');
     this.load.audio('restaurant', 'assets/fly-squasher/sound/background/restaurant.mp3');
     this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
+    this.load.audio('tap', 'assets/fly-squasher/sound/sfx/tap.mp3');
   }
 
   override create() {
@@ -54,19 +64,40 @@ export class FlySquasherScene extends BaseScene<
 
     this.scenery = new Scenery(this);
     this.setupTexts();
-    this.fly = new Fly(this);
     this.subscribe(
       this.onResize.subscribe(() => {
         this.handlePositionGameOverText();
         this.handlePositionHudTexts();
       })
     );
-    this.subscribe(this.fly.onFlyHit.subscribe(this.flyHit));
 
     this.sound.play('ost-fly-squasher', {
       loop: true
     });
+    this.spawnFly();
   }
+
+  private spawnFly = () => {
+    setTimeout(() => {
+      this.flyHitSubscription?.unsubscribe();
+      this.flyKillSubscription?.unsubscribe();
+      if (
+        this.worldSpeedState.initialWorldSpeedPerFrame + FlyMovementComponent.worldSpeedIncreasePerSquash * 4 > // todo fix later
+        this.worldSpeedState.worldSpeedPerFrame
+      ) {
+        this.fly = FlyFactory.spawnFly(this, this.worldSpeedState);
+      } else {
+        this.fly = FlyFactory.spawnFlyBoss(this, this.worldSpeedState);
+      }
+
+      this.flyHitSubscription = this.fly.onFlyHit.subscribe(this.flyHit);
+      this.flyKillSubscription = this.fly.onFlyKill.subscribe(this.flyKill);
+    }, 50);
+  };
+
+  private flyKill = () => {
+    this.spawnFly();
+  };
 
   private flyHit = () => {
     this._scoreNumber += 1;
@@ -84,21 +115,25 @@ export class FlySquasherScene extends BaseScene<
   override update(time: number, delta: number) {
     super.update(time, delta);
     if (this.gameOverFlag) return;
+    if (!this.fly || this.fly.destroyed) return;
 
     const maxHeight = this.cameras.main.height;
 
     if (this.fly.y > maxHeight) {
-      this._livesNumber -= 1;
-      this.sound.play('hit');
-      this._livesText.setText('Lives: ' + this._livesNumber);
+      this.reducePlayerHealth();
+      this.fly.despawn();
       if (this._livesNumber === 0) {
-        this.fly.gameOver();
         this.gameOver();
       } else {
-        this.fly.generateCoordinates();
+        this.spawnFly();
       }
-      return;
     }
+  }
+
+  private reducePlayerHealth() {
+    this._livesNumber -= 1;
+    this.sound.play('hit');
+    this._livesText.setText('Lives: ' + this._livesNumber);
   }
 
   private gameOver() {
@@ -144,9 +179,15 @@ export class FlySquasherScene extends BaseScene<
   };
 
   private resetGame = () => {
-    this.fly.reset();
     this.gameOverText?.destroy();
     this.resetGameState();
     this.gameOverFlag = false;
+    this.spawnFly();
   };
+
+  override destroy() {
+    super.destroy();
+    this.flyHitSubscription?.unsubscribe();
+    this.flyKillSubscription?.unsubscribe();
+  }
 }

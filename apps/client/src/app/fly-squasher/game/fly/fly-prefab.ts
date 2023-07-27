@@ -15,6 +15,7 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
   private readonly head_container: Phaser.GameObjects.Container;
   private readonly head: Phaser.GameObjects.Image;
   private readonly suckler: Phaser.GameObjects.Image;
+  private readonly allImages: Phaser.GameObjects.Image[] = [];
 
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
@@ -114,6 +115,20 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.suckler.setOrigin(0.58, 0);
     this.head_container.add(this.suckler);
 
+    this.allImages.push(
+      this.leg_back_right,
+      this.leg_back_left,
+      this.leg_front_right,
+      this.leg_front_left,
+      this.leg_middle_right,
+      this.leg_middle_left,
+      this.fly_body,
+      this.wing_left,
+      this.wing_right,
+      this.head,
+      this.suckler
+    );
+
     this.applyToNonContainerChildren(this, (child) => {
       child.setInteractive();
       child.on('pointerdown', () => {
@@ -150,7 +165,7 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.tweenLimb(this.wing_right, -90, 50);
   }
 
-  override destroy(fromScene?: boolean) {
+  stopMoving() {
     this.scene.tweens.killTweensOf([
       this.leg_back_right,
       this.leg_back_left,
@@ -161,6 +176,10 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
       this.wing_left,
       this.wing_right
     ]);
+  }
+
+  override destroy(fromScene?: boolean) {
+    this.stopMoving();
 
     this.pointerDown.complete();
     // remove all listeners
@@ -184,6 +203,13 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
       } else {
         fn(child);
       }
+    });
+  }
+
+  setTint(tint: number) {
+    // loop over all images and set the tint
+    this.allImages.forEach((image) => {
+      image.setTint(tint);
     });
   }
 }
