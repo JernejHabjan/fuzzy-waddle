@@ -117,12 +117,18 @@
  "nextobjectid":1,
  "orientation":"isometric",
  "renderorder":"right-down",
- "tiledversion":"1.10.0",
+ "tiledversion":"1.10.2",
  "tileheight":32,
  "tilesets":[
         {
          "columns":8,
          "firstgid":1,
+         "grid":
+            {
+             "height":64,
+             "orientation":"isometric",
+             "width":64
+            },
          "image":"..\/atlas\/iso-64x64-outside.png",
          "imageheight":1088,
          "imagewidth":512,
@@ -722,6 +728,12 @@
         {
          "columns":4,
          "firstgid":137,
+         "grid":
+            {
+             "height":64,
+             "orientation":"isometric",
+             "width":64
+            },
          "image":"..\/atlas\/iso-64x64-building.png",
          "imageheight":1280,
          "imagewidth":256,
