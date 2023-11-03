@@ -11,7 +11,8 @@ export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
     textureName: 'warrior',
     spriteSheet: {
-      name: 'warrior',
+      name: 'barracks',
+      path: 'general/barracks/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

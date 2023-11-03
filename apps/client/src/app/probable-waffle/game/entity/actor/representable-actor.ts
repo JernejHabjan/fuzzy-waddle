@@ -12,6 +12,7 @@ export type TextureMapDefinition = {
   textureName: string;
   spriteSheet: {
     name: string;
+    path: string;
     frameConfig: {
       frameWidth: number;
       frameHeight: number;
@@ -26,7 +27,10 @@ export abstract class RepresentableActor extends Actor {
   private transformComponent!: TransformComponent;
   abstract representableActorDefinition: RepresentableActorDefinition;
 
-  protected constructor(private scene: Scene, private tilePlacementData: TilePlacementData) {
+  protected constructor(
+    private scene: Scene,
+    private tilePlacementData: TilePlacementData
+  ) {
     super();
   }
 

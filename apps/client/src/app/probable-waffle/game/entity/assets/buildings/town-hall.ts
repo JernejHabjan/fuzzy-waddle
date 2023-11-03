@@ -13,6 +13,7 @@ export const TownHallDefinition: BuildingInfoDefinition = {
     textureName: 'warrior',
     spriteSheet: {
       name: 'warrior',
+      path: 'general/town-hall/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

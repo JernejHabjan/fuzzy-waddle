@@ -12,7 +12,8 @@ export const WorkerDefinition: PawnInfoDefinition = {
   textureMapDefinition: {
     textureName: 'warrior',
     spriteSheet: {
-      name: 'warrior',
+      name: 'worker',
+      path: 'general/worker/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

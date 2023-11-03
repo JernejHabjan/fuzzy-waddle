@@ -11,7 +11,8 @@ export const MineDefinitions: BuildingInfoDefinition = {
   textureMapDefinition: {
     textureName: 'warrior',
     spriteSheet: {
-      name: 'warrior',
+      name: 'mine',
+      path: 'general/mine/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

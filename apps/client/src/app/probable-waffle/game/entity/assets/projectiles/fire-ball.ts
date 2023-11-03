@@ -9,6 +9,7 @@ export const FireBallTextureMapDefinition: RepresentableActorDefinition = {
     textureName: 'fireball',
     spriteSheet: {
       name: 'fireball',
+      path: 'general/fireball/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

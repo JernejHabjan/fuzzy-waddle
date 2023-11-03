@@ -16,6 +16,7 @@ export const WarriorDefinition: PawnInfoDefinition = {
     textureName: 'warrior',
     spriteSheet: {
       name: 'warrior',
+      path: 'characters/general/warrior/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

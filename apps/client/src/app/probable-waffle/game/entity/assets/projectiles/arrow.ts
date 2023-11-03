@@ -9,6 +9,7 @@ export const ArrowTextureMapDefinition: RepresentableActorDefinition = {
     textureName: 'arrow',
     spriteSheet: {
       name: 'arrow',
+      path: 'general/arrow/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64
