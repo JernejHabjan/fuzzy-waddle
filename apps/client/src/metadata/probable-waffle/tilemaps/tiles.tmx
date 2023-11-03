@@ -123,7 +123,7 @@
 </data>
  </layer>
  <objectgroup id="3" name="GameObjects">
-  <object id="32" name="span_player_2" x="677.333" y="1338.67">
+  <object id="32" name="spawn_player_2" x="677.333" y="1338.67">
    <point/>
   </object>
   <object id="36" gid="275" x="83.6667" y="856.333" width="64" height="192"/>
