@@ -170,8 +170,11 @@
             <key type="filename">../sprites/tiles/sand_2.png</key>
             <key type="filename">../sprites/tiles/sandstone_2.png</key>
             <key type="filename">../sprites/tiles/transition sand_2 - sandstone_2.png</key>
+            <key type="filename">../sprites/tiles/transition sand_2 border full.png</key>
             <key type="filename">../sprites/tiles/transition sand_2 border.png</key>
+            <key type="filename">../sprites/tiles/transition sandstone_2 border full.png</key>
             <key type="filename">../sprites/tiles/transition sandstone_2 border.png</key>
+            <key type="filename">../sprites/tiles/water.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
