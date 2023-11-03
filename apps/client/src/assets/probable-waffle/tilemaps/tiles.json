@@ -50,7 +50,7 @@
          "name":"SampleDisplay",
          "objects":[
                 {
-                 "gid":302,
+                 "gid":166,
                  "height":320,
                  "id":1,
                  "name":"",
@@ -62,7 +62,7 @@
                  "y":575.5
                 }, 
                 {
-                 "gid":303,
+                 "gid":167,
                  "height":64,
                  "id":2,
                  "name":"",
@@ -74,7 +74,7 @@
                  "y":327
                 }, 
                 {
-                 "gid":303,
+                 "gid":167,
                  "height":64,
                  "id":3,
                  "name":"",
@@ -86,7 +86,7 @@
                  "y":289.5
                 }, 
                 {
-                 "gid":303,
+                 "gid":167,
                  "height":64,
                  "id":4,
                  "name":"",
@@ -98,7 +98,7 @@
                  "y":551.5
                 }, 
                 {
-                 "gid":305,
+                 "gid":169,
                  "height":256,
                  "id":5,
                  "name":"",
@@ -110,7 +110,7 @@
                  "y":206.5
                 }, 
                 {
-                 "gid":306,
+                 "gid":170,
                  "height":192,
                  "id":9,
                  "name":"",
@@ -122,7 +122,7 @@
                  "y":299
                 }, 
                 {
-                 "gid":307,
+                 "gid":171,
                  "height":128,
                  "id":10,
                  "name":"",
@@ -134,7 +134,7 @@
                  "y":528
                 }, 
                 {
-                 "gid":314,
+                 "gid":178,
                  "height":64,
                  "id":11,
                  "name":"",
@@ -146,7 +146,7 @@
                  "y":454.5
                 }, 
                 {
-                 "gid":315,
+                 "gid":179,
                  "height":64,
                  "id":12,
                  "name":"",
@@ -158,7 +158,7 @@
                  "y":189
                 }, 
                 {
-                 "gid":316,
+                 "gid":180,
                  "height":64,
                  "id":14,
                  "name":"",
@@ -170,7 +170,7 @@
                  "y":225.5
                 }, 
                 {
-                 "gid":317,
+                 "gid":181,
                  "height":64,
                  "id":16,
                  "name":"",
@@ -207,7 +207,7 @@
          "imageheight":480,
          "imagewidth":704,
          "margin":0,
-         "name":"rew",
+         "name":"tiles",
          "spacing":0,
          "tilecount":165,
          "tileheight":32,
@@ -824,615 +824,8 @@
                 }]
         }, 
         {
-         "columns":8,
-         "firstgid":166,
-         "grid":
-            {
-             "height":32,
-             "orientation":"isometric",
-             "width":64
-            },
-         "image":"..\/atlas\/iso-64x64-outside.png",
-         "imageheight":1088,
-         "imagewidth":512,
-         "margin":0,
-         "name":"iso-64x64-outside",
-         "spacing":0,
-         "tilecount":136,
-         "tileheight":64,
-         "tiles":[
-                {
-                 "id":0,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":1,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":2,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":3,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":4,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":5,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":6,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":7,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":8,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":9,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":10,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":11,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":12,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":13,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":14,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":15,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":16,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":17,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":18,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":0
-                        }]
-                }, 
-                {
-                 "id":20,
-                 "properties":[
-                        {
-                         "name":"fillsRootHeight",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"slopeDir",
-                         "propertytype":"slopeDir",
-                         "type":"int",
-                         "value":2
-                        }, 
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":16
-                        }]
-                }, 
-                {
-                 "id":21,
-                 "properties":[
-                        {
-                         "name":"fillsRootHeight",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"slopeDir",
-                         "propertytype":"slopeDir",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":16
-                        }]
-                }, 
-                {
-                 "id":23,
-                 "properties":[
-                        {
-                         "name":"fillsRootHeight",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":36,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":37,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":42,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":43,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":44,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":45,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":46,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":47,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                },
-            
-                {
-                 "id":53,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":54,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":55,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":56,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":57,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":58,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":59,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":60,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":61,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":32
-                        }]
-                }, 
-                {
-                 "id":62,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":63,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":64,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":65,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":66,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":67,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":68,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":69,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":70,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":71,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":72,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":73,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":74,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":75,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":76,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":77,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":78,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":79,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":80,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":81,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":82,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                },
-            
-                {
-                 "id":83,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }, 
-                {
-                 "id":84,
-                 "properties":[
-                        {
-                         "name":"stepHeight",
-                         "type":"int",
-                         "value":-8
-                        }]
-                }],
-         "tilewidth":64
-        }, 
-        {
          "columns":0,
-         "firstgid":302,
+         "firstgid":166,
          "grid":
             {
              "height":320,
@@ -1455,7 +848,7 @@
         }, 
         {
          "columns":0,
-         "firstgid":303,
+         "firstgid":167,
          "grid":
             {
              "height":64,
@@ -1478,7 +871,7 @@
         }, 
         {
          "columns":0,
-         "firstgid":304,
+         "firstgid":168,
          "grid":
             {
              "height":256,
@@ -1501,7 +894,7 @@
         }, 
         {
          "columns":0,
-         "firstgid":306,
+         "firstgid":170,
          "grid":
             {
              "height":192,
@@ -1524,7 +917,7 @@
         }, 
         {
          "columns":0,
-         "firstgid":307,
+         "firstgid":171,
          "grid":
             {
              "height":128,
@@ -1547,7 +940,7 @@
         }, 
         {
          "columns":0,
-         "firstgid":308,
+         "firstgid":172,
          "grid":
             {
              "height":64,
