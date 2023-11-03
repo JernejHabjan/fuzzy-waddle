@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.0.3</string>
+        <string>7.1.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -175,6 +175,7 @@
             <key type="filename">../sprites/tiles/0006_water.png</key>
             <key type="filename">../sprites/tiles/0007_sand_water.png</key>
             <key type="filename">../sprites/tiles/0008_sandstone_water.png</key>
+            <key type="filename">../sprites/tiles/0009_grass-light.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
