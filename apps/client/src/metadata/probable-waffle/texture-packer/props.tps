@@ -161,7 +161,7 @@
             <key>trimMargin</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>tracerTolerance</key>
             <int>200</int>
             <key>heuristicMask</key>
@@ -174,6 +174,30 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">../sprites/props/arrow.png</key>
+            <key type="filename">../sprites/props/bushes/bush_downwards_large.png</key>
+            <key type="filename">../sprites/props/bushes/bush_downwards_small.png</key>
+            <key type="filename">../sprites/props/bushes/bush_dry.png</key>
+            <key type="filename">../sprites/props/bushes/bush_upwards_large.png</key>
+            <key type="filename">../sprites/props/bushes/bush_upwards_small.png</key>
+            <key type="filename">../sprites/props/bushes/leaves_large.png</key>
+            <key type="filename">../sprites/props/bushes/leaves_small.png</key>
+            <key type="filename">../sprites/props/grass/grass_0.png</key>
+            <key type="filename">../sprites/props/grass/grass_1.png</key>
+            <key type="filename">../sprites/props/grass/grass_2.png</key>
+            <key type="filename">../sprites/props/grass/grass_3.png</key>
+            <key type="filename">../sprites/props/grass/grass_4.png</key>
+            <key type="filename">../sprites/props/grass/grass_5.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_0.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_1.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_2.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_3.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_4.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_5.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_6.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_7.png</key>
+            <key type="filename">../sprites/props/tall grass/tall_grass_8.png</key>
+            <key type="filename">../sprites/props/tree trunks/tree_trunk_left.png</key>
+            <key type="filename">../sprites/props/tree trunks/tree_trunk_right.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -185,6 +209,70 @@
                 <rect>16,16,32,32</rect>
                 <key>scale9Paddings</key>
                 <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/props/trees/tree1.png</key>
+            <key type="filename">../sprites/props/trees/tree6.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,48,32,96</rect>
+                <key>scale9Paddings</key>
+                <rect>16,48,32,96</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/props/trees/tree2.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>48,48,96,96</rect>
+                <key>scale9Paddings</key>
+                <rect>48,48,96,96</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/props/trees/tree3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>48,32,96,64</rect>
+                <key>scale9Paddings</key>
+                <rect>48,32,96,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/props/trees/tree4.png</key>
+            <key type="filename">../sprites/props/trees/tree5.png</key>
+            <key type="filename">../sprites/props/trees/tree7.png</key>
+            <key type="filename">../sprites/props/trees/tree8.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,32,32,64</rect>
+                <key>scale9Paddings</key>
+                <rect>16,32,32,64</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
