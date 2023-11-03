@@ -1,0 +1,20 @@
+{"frames": [
+
+{
+	"filename": "arrow.png",
+	"frame": {"x":0,"y":0,"w":31,"h":4},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":31,"h":4},
+	"sourceSize": {"w":31,"h":4}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "props.png",
+	"format": "RGBA8888",
+	"size": {"w":31,"h":4},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:0fc82b3bfe81798f68437cd278c15065:afa8f64d8db5e7527642b602f5486fce:f4c39b94f5b79b4c461da96ae5609d50$"
+}
+}
