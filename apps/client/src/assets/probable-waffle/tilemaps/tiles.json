@@ -1,0 +1,1599 @@
+{ "compressionlevel":-1,
+ "height":20,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[33, 33, 33, 33, 33, 33, 33, 67, 68, 69, 78, 11, 11, 11, 11, 11, 19, 22, 114, 102, 33, 33, 33, 33, 33, 33, 100, 101, 115, 22,
+            33, 33, 33, 33, 67, 69, 33, 78, 11, 81, 82, 11, 11, 11, 11, 11, 20, 8, 22, 114, 101, 102, 33, 100, 101, 101, 115, 22, 22, 22,
+            33, 33, 33, 33, 78, 81, 68, 82, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20, 8, 22, 22, 113, 33, 122, 104, 22, 22, 22, 22, 22,
+            33, 33, 33, 67, 82, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20, 8, 22, 114, 102, 33, 111, 22, 22, 22, 22, 22,
+            33, 67, 68, 82, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20, 8, 22, 113, 33, 111, 22, 22, 6, 7, 7,
+            68, 82, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 22, 22, 17, 11, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 22, 6, 21, 11, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 114, 102, 111, 22, 28, 10, 11, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20, 8, 22, 113, 122, 104, 22, 28, 10, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 22, 22, 17, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 114, 102, 122, 104, 22, 17, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20, 8, 22, 113, 33, 111, 6, 21, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 28, 10, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 22, 17, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 22, 17, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 22, 17, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 113, 33, 111, 22, 17, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 19, 22, 114, 102, 111, 22, 17, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20, 8, 22, 113, 111, 6, 21, 11,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20, 8, 113, 111, 17, 11, 11],
+         "height":20,
+         "id":1,
+         "name":"TileMap",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":30,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"GameObjects",
+         "objects":[],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"SampleDisplay",
+         "objects":[
+                {
+                 "gid":302,
+                 "height":320,
+                 "id":1,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":320,
+                 "x":550.5,
+                 "y":575.5
+                }, 
+                {
+                 "gid":303,
+                 "height":64,
+                 "id":2,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":615,
+                 "y":327
+                }, 
+                {
+                 "gid":303,
+                 "height":64,
+                 "id":3,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":72.5,
+                 "y":289.5
+                }, 
+                {
+                 "gid":303,
+                 "height":64,
+                 "id":4,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":710.5,
+                 "y":551.5
+                }, 
+                {
+                 "gid":305,
+                 "height":256,
+                 "id":5,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":256,
+                 "x":579.5,
+                 "y":206.5
+                }, 
+                {
+                 "gid":306,
+                 "height":192,
+                 "id":9,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":192,
+                 "x":289,
+                 "y":299
+                }, 
+                {
+                 "gid":307,
+                 "height":128,
+                 "id":10,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":160,
+                 "y":528
+                }, 
+                {
+                 "gid":314,
+                 "height":64,
+                 "id":11,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":599.5,
+                 "y":454.5
+                }, 
+                {
+                 "gid":315,
+                 "height":64,
+                 "id":12,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":599,
+                 "y":189
+                }, 
+                {
+                 "gid":316,
+                 "height":64,
+                 "id":14,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":472.5,
+                 "y":225.5
+                }, 
+                {
+                 "gid":317,
+                 "height":64,
+                 "id":16,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":633,
+                 "y":455
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":8,
+ "nextobjectid":17,
+ "orientation":"isometric",
+ "renderorder":"right-down",
+ "tiledversion":"1.10.2",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "columns":11,
+         "firstgid":1,
+         "grid":
+            {
+             "height":32,
+             "orientation":"isometric",
+             "width":64
+            },
+         "image":"..\/..\/..\/metadata\/probable-waffle\/tilesetter\/exports\/tilesets\/tiles.png",
+         "imageheight":480,
+         "imagewidth":704,
+         "margin":0,
+         "name":"rew",
+         "spacing":0,
+         "tilecount":165,
+         "tileheight":32,
+         "tilewidth":64,
+         "wangsets":[
+                {
+                 "colors":[
+                        {
+                         "color":"#ff0000",
+                         "name":"Sand",
+                         "probability":1,
+                         "tile":10
+                        }, 
+                        {
+                         "color":"#00ff00",
+                         "name":"Stone",
+                         "probability":1,
+                         "tile":21
+                        }, 
+                        {
+                         "color":"#0000ff",
+                         "name":"Water",
+                         "probability":1,
+                         "tile":32
+                        }],
+                 "name":"Tiles terrain set",
+                 "tile":-1,
+                 "type":"corner",
+                 "wangtiles":[
+                        {
+                         "tileid":0,
+                         "wangid":[0, 0, 0, 1, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":1,
+                         "wangid":[0, 0, 0, 1, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":2,
+                         "wangid":[0, 0, 0, 0, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":3,
+                         "wangid":[0, 1, 0, 0, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":4,
+                         "wangid":[0, 1, 0, 1, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":5,
+                         "wangid":[0, 2, 0, 1, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":6,
+                         "wangid":[0, 2, 0, 1, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":7,
+                         "wangid":[0, 2, 0, 2, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":8,
+                         "wangid":[0, 1, 0, 2, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":9,
+                         "wangid":[0, 1, 0, 1, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":10,
+                         "wangid":[0, 1, 0, 1, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":11,
+                         "wangid":[0, 1, 0, 1, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":13,
+                         "wangid":[0, 0, 0, 0, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":14,
+                         "wangid":[0, 0, 0, 1, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":15,
+                         "wangid":[0, 1, 0, 1, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":16,
+                         "wangid":[0, 1, 0, 1, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":18,
+                         "wangid":[0, 2, 0, 2, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":19,
+                         "wangid":[0, 2, 0, 1, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":20,
+                         "wangid":[0, 1, 0, 1, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":21,
+                         "wangid":[0, 2, 0, 2, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":22,
+                         "wangid":[0, 1, 0, 0, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":23,
+                         "wangid":[0, 1, 0, 0, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":24,
+                         "wangid":[0, 0, 0, 0, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":25,
+                         "wangid":[0, 0, 0, 1, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":26,
+                         "wangid":[0, 1, 0, 0, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":27,
+                         "wangid":[0, 1, 0, 2, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":28,
+                         "wangid":[0, 1, 0, 2, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":29,
+                         "wangid":[0, 2, 0, 2, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":30,
+                         "wangid":[0, 2, 0, 1, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":31,
+                         "wangid":[0, 1, 0, 2, 0, 1, 0, 2]
+                        },
+                    
+                        {
+                         "tileid":32,
+                         "wangid":[0, 3, 0, 3, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":33,
+                         "wangid":[0, 0, 0, 2, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":34,
+                         "wangid":[0, 0, 0, 2, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":35,
+                         "wangid":[0, 0, 0, 0, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":36,
+                         "wangid":[0, 2, 0, 0, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":37,
+                         "wangid":[0, 2, 0, 2, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":38,
+                         "wangid":[0, 1, 0, 2, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":39,
+                         "wangid":[0, 1, 0, 2, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":40,
+                         "wangid":[0, 2, 0, 1, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":41,
+                         "wangid":[0, 1, 0, 0, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":42,
+                         "wangid":[0, 2, 0, 2, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":43,
+                         "wangid":[0, 1, 0, 0, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":44,
+                         "wangid":[0, 2, 0, 2, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":46,
+                         "wangid":[0, 0, 0, 0, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":47,
+                         "wangid":[0, 0, 0, 2, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":48,
+                         "wangid":[0, 2, 0, 2, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":49,
+                         "wangid":[0, 2, 0, 1, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":50,
+                         "wangid":[0, 0, 0, 1, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":51,
+                         "wangid":[0, 1, 0, 2, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":52,
+                         "wangid":[0, 0, 0, 1, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":53,
+                         "wangid":[0, 2, 0, 2, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":54,
+                         "wangid":[0, 0, 0, 1, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":55,
+                         "wangid":[0, 2, 0, 0, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":56,
+                         "wangid":[0, 2, 0, 0, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":57,
+                         "wangid":[0, 0, 0, 0, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":58,
+                         "wangid":[0, 0, 0, 2, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":59,
+                         "wangid":[0, 2, 0, 0, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":60,
+                         "wangid":[0, 2, 0, 0, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":61,
+                         "wangid":[0, 1, 0, 1, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":62,
+                         "wangid":[0, 2, 0, 0, 0, 2, 0, 1]
+                        },
+                    
+                        {
+                         "tileid":63,
+                         "wangid":[0, 1, 0, 2, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":64,
+                         "wangid":[0, 2, 0, 0, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":65,
+                         "wangid":[0, 1, 0, 0, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":66,
+                         "wangid":[0, 3, 0, 1, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":67,
+                         "wangid":[0, 3, 0, 1, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":68,
+                         "wangid":[0, 3, 0, 3, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":69,
+                         "wangid":[0, 1, 0, 3, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":70,
+                         "wangid":[0, 1, 0, 1, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":71,
+                         "wangid":[0, 0, 0, 2, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":72,
+                         "wangid":[0, 1, 0, 1, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":73,
+                         "wangid":[0, 0, 0, 2, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":74,
+                         "wangid":[0, 2, 0, 1, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":75,
+                         "wangid":[0, 0, 0, 2, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":76,
+                         "wangid":[0, 0, 0, 1, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":77,
+                         "wangid":[0, 1, 0, 1, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":79,
+                         "wangid":[0, 3, 0, 3, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":80,
+                         "wangid":[0, 3, 0, 1, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":81,
+                         "wangid":[0, 1, 0, 1, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":82,
+                         "wangid":[0, 0, 0, 2, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":83,
+                         "wangid":[0, 1, 0, 2, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":84,
+                         "wangid":[0, 0, 0, 2, 0, 0, 0, 1]
+                        }, 
+                        {
+                         "tileid":85,
+                         "wangid":[0, 1, 0, 0, 0, 2, 0, 0]
+                        }, 
+                        {
+                         "tileid":86,
+                         "wangid":[0, 0, 0, 0, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":87,
+                         "wangid":[0, 1, 0, 2, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":88,
+                         "wangid":[0, 1, 0, 3, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":89,
+                         "wangid":[0, 1, 0, 3, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":90,
+                         "wangid":[0, 3, 0, 3, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":91,
+                         "wangid":[0, 3, 0, 1, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":92,
+                         "wangid":[0, 1, 0, 3, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":93,
+                         "wangid":[0, 2, 0, 0, 0, 1, 0, 2]
+                        },
+                    
+                        {
+                         "tileid":94,
+                         "wangid":[0, 2, 0, 1, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":95,
+                         "wangid":[0, 2, 0, 0, 0, 1, 0, 0]
+                        }, 
+                        {
+                         "tileid":96,
+                         "wangid":[0, 0, 0, 1, 0, 0, 0, 2]
+                        }, 
+                        {
+                         "tileid":97,
+                         "wangid":[0, 0, 0, 0, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":98,
+                         "wangid":[0, 2, 0, 1, 0, 0, 0, 0]
+                        }, 
+                        {
+                         "tileid":99,
+                         "wangid":[0, 3, 0, 2, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":100,
+                         "wangid":[0, 3, 0, 2, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":101,
+                         "wangid":[0, 3, 0, 3, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":102,
+                         "wangid":[0, 2, 0, 3, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":103,
+                         "wangid":[0, 2, 0, 2, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":104,
+                         "wangid":[0, 2, 0, 3, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":105,
+                         "wangid":[0, 2, 0, 1, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":106,
+                         "wangid":[0, 3, 0, 2, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":107,
+                         "wangid":[0, 2, 0, 1, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":108,
+                         "wangid":[0, 3, 0, 3, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":109,
+                         "wangid":[0, 2, 0, 1, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":110,
+                         "wangid":[0, 2, 0, 2, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":112,
+                         "wangid":[0, 3, 0, 3, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":113,
+                         "wangid":[0, 3, 0, 2, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":114,
+                         "wangid":[0, 2, 0, 2, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":115,
+                         "wangid":[0, 3, 0, 2, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":116,
+                         "wangid":[0, 1, 0, 2, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":117,
+                         "wangid":[0, 2, 0, 3, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":118,
+                         "wangid":[0, 1, 0, 2, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":119,
+                         "wangid":[0, 3, 0, 3, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":120,
+                         "wangid":[0, 1, 0, 2, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":121,
+                         "wangid":[0, 2, 0, 3, 0, 3, 0, 3]
+                        }, 
+                        {
+                         "tileid":122,
+                         "wangid":[0, 2, 0, 3, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":123,
+                         "wangid":[0, 3, 0, 3, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":124,
+                         "wangid":[0, 3, 0, 2, 0, 3, 0, 2]
+                        },
+                    
+                        {
+                         "tileid":125,
+                         "wangid":[0, 2, 0, 3, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":126,
+                         "wangid":[0, 3, 0, 1, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":127,
+                         "wangid":[0, 2, 0, 2, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":128,
+                         "wangid":[0, 3, 0, 1, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":129,
+                         "wangid":[0, 2, 0, 3, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":130,
+                         "wangid":[0, 3, 0, 1, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":131,
+                         "wangid":[0, 2, 0, 1, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":137,
+                         "wangid":[0, 1, 0, 3, 0, 2, 0, 2]
+                        }, 
+                        {
+                         "tileid":138,
+                         "wangid":[0, 2, 0, 2, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":139,
+                         "wangid":[0, 1, 0, 3, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":140,
+                         "wangid":[0, 3, 0, 2, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":141,
+                         "wangid":[0, 1, 0, 3, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":142,
+                         "wangid":[0, 1, 0, 2, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":148,
+                         "wangid":[0, 1, 0, 3, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":149,
+                         "wangid":[0, 2, 0, 3, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":150,
+                         "wangid":[0, 1, 0, 3, 0, 1, 0, 2]
+                        }, 
+                        {
+                         "tileid":151,
+                         "wangid":[0, 2, 0, 1, 0, 3, 0, 1]
+                        }, 
+                        {
+                         "tileid":152,
+                         "wangid":[0, 1, 0, 1, 0, 3, 0, 2]
+                        }, 
+                        {
+                         "tileid":153,
+                         "wangid":[0, 2, 0, 3, 0, 1, 0, 1]
+                        }, 
+                        {
+                         "tileid":159,
+                         "wangid":[0, 3, 0, 1, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":160,
+                         "wangid":[0, 3, 0, 2, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":161,
+                         "wangid":[0, 3, 0, 1, 0, 2, 0, 1]
+                        }, 
+                        {
+                         "tileid":162,
+                         "wangid":[0, 1, 0, 2, 0, 1, 0, 3]
+                        }, 
+                        {
+                         "tileid":163,
+                         "wangid":[0, 1, 0, 1, 0, 2, 0, 3]
+                        }, 
+                        {
+                         "tileid":164,
+                         "wangid":[0, 3, 0, 2, 0, 1, 0, 1]
+                        }]
+                }]
+        }, 
+        {
+         "columns":8,
+         "firstgid":166,
+         "grid":
+            {
+             "height":32,
+             "orientation":"isometric",
+             "width":64
+            },
+         "image":"..\/atlas\/iso-64x64-outside.png",
+         "imageheight":1088,
+         "imagewidth":512,
+         "margin":0,
+         "name":"iso-64x64-outside",
+         "spacing":0,
+         "tilecount":136,
+         "tileheight":64,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":20,
+                 "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"slopeDir",
+                         "propertytype":"slopeDir",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":16
+                        }]
+                }, 
+                {
+                 "id":21,
+                 "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"slopeDir",
+                         "propertytype":"slopeDir",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":16
+                        }]
+                }, 
+                {
+                 "id":23,
+                 "properties":[
+                        {
+                         "name":"fillsRootHeight",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":36,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":37,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":42,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":43,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":44,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":45,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":46,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":47,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                },
+            
+                {
+                 "id":53,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":54,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":55,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":56,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":57,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":58,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":59,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":60,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":61,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":32
+                        }]
+                }, 
+                {
+                 "id":62,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":63,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":64,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":65,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":66,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":67,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":68,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":69,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":70,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":71,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":72,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":73,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":74,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":75,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":76,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":77,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":78,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":79,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":80,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":81,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":82,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                },
+            
+                {
+                 "id":83,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }, 
+                {
+                 "id":84,
+                 "properties":[
+                        {
+                         "name":"stepHeight",
+                         "type":"int",
+                         "value":-8
+                        }]
+                }],
+         "tilewidth":64
+        }, 
+        {
+         "columns":0,
+         "firstgid":302,
+         "grid":
+            {
+             "height":320,
+             "orientation":"isometric",
+             "width":320
+            },
+         "margin":0,
+         "name":"320_320",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":320,
+         "tiles":[
+                {
+                 "id":0,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/sandhold.png",
+                 "imageheight":320,
+                 "imagewidth":320
+                }],
+         "tilewidth":320
+        }, 
+        {
+         "columns":0,
+         "firstgid":303,
+         "grid":
+            {
+             "height":64,
+             "orientation":"isometric",
+             "width":32
+            },
+         "margin":0,
+         "name":"32_64",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":64,
+         "tiles":[
+                {
+                 "id":0,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/olival.png",
+                 "imageheight":64,
+                 "imagewidth":32
+                }],
+         "tilewidth":32
+        }, 
+        {
+         "columns":0,
+         "firstgid":304,
+         "grid":
+            {
+             "height":256,
+             "orientation":"isometric",
+             "width":256
+            },
+         "margin":0,
+         "name":"256_256",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":256,
+         "tiles":[
+                {
+                 "id":1,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/ankguard.png",
+                 "imageheight":256,
+                 "imagewidth":256
+                }],
+         "tilewidth":256
+        }, 
+        {
+         "columns":0,
+         "firstgid":306,
+         "grid":
+            {
+             "height":192,
+             "orientation":"isometric",
+             "width":192
+            },
+         "margin":0,
+         "name":"192_192",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":192,
+         "tiles":[
+                {
+                 "id":0,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/temple.png",
+                 "imageheight":192,
+                 "imagewidth":192
+                }],
+         "tilewidth":192
+        }, 
+        {
+         "columns":0,
+         "firstgid":307,
+         "grid":
+            {
+             "height":128,
+             "orientation":"isometric",
+             "width":128
+            },
+         "margin":0,
+         "name":"128_128",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":128,
+         "tiles":[
+                {
+                 "id":0,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/workmill.png",
+                 "imageheight":128,
+                 "imagewidth":128
+                }],
+         "tilewidth":128
+        }, 
+        {
+         "columns":0,
+         "firstgid":308,
+         "grid":
+            {
+             "height":64,
+             "orientation":"isometric",
+             "width":64
+            },
+         "margin":0,
+         "name":"64_64",
+         "spacing":0,
+         "tilecount":5,
+         "tileheight":64,
+         "tiles":[
+                {
+                 "id":5,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/characters\/general\/warrior.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":6,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/characters\/tivara\/worker_male.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":7,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/characters\/tivara\/archer_female.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":8,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/characters\/tivara\/maceman_male.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":9,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/characters\/tivara\/worker_female.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }],
+         "tilewidth":64
+        }],
+ "tilewidth":64,
+ "type":"map",
+ "version":"1.10",
+ "width":30
+}
