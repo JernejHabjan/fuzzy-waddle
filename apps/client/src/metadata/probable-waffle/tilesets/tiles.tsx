@@ -28,7 +28,7 @@
    <wangcolor name="Sand" color="#ff0000" tile="10" probability="1"/>
    <wangcolor name="Stone" color="#00ff00" tile="22" probability="1"/>
    <wangcolor name="Water" color="#0000ff" tile="34" probability="1"/>
-   <wangcolor name="Grass light" color="#ff7700" tile="157" probability="1"/>
+   <wangcolor name="Grass light" color="#ff7700" tile="11" probability="1"/>
    <wangcolor name="Open water" color="#00e9ff" tile="-1" probability="1"/>
    <wangtile tileid="0" wangid="0,0,0,1,0,0,0,0"/>
    <wangtile tileid="1" wangid="0,0,0,1,0,1,0,0"/>
