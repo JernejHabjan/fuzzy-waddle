@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="isometric" renderorder="right-down" width="50" height="50" tilewidth="64" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="69">
+<map version="1.10" tiledversion="1.10.2" orientation="isometric" renderorder="right-down" width="50" height="50" tilewidth="64" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="72">
  <editorsettings>
   <export target="../../../assets/probable-waffle/tilemaps/tiles.json" format="json"/>
  </editorsettings>
@@ -10,11 +10,11 @@
  <tileset firstgid="237" source="../tilesets/samples/192_192.tsx"/>
  <tileset firstgid="238" source="../tilesets/samples/128_128.tsx"/>
  <tileset firstgid="239" source="../tilesets/samples/64_64.tsx"/>
- <tileset firstgid="273" source="../tilesets/samples/320_192.tsx"/>
- <tileset firstgid="274" source="../tilesets/samples/64_192.tsx"/>
- <tileset firstgid="278" source="../tilesets/samples/64_128.tsx"/>
- <tileset firstgid="280" source="../tilesets/samples/192_128.tsx"/>
- <tileset firstgid="281" source="../tilesets/samples/32_32.tsx"/>
+ <tileset firstgid="274" source="../tilesets/samples/320_192.tsx"/>
+ <tileset firstgid="275" source="../tilesets/samples/64_192.tsx"/>
+ <tileset firstgid="279" source="../tilesets/samples/64_128.tsx"/>
+ <tileset firstgid="281" source="../tilesets/samples/192_128.tsx"/>
+ <tileset firstgid="282" source="../tilesets/samples/32_32.tsx"/>
  <layer id="1" name="TileMap" width="50" height="50">
   <data encoding="csv">
 11,11,11,11,11,11,11,11,11,70,90,91,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,78,11,11,11,11,11,11,11,11,11,11,11,
@@ -117,7 +117,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,256,258,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,256,256,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,256,
-0,0,0,0,280,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,281,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -127,11 +127,11 @@
   <object id="32" name="spawn_player_2" x="677.333" y="1338.67">
    <point/>
   </object>
-  <object id="36" gid="275" x="83.6667" y="856.333" width="64" height="192"/>
-  <object id="38" gid="276" x="16" y="652" width="64" height="128"/>
-  <object id="39" gid="277" x="34.6667" y="930.667" width="64" height="128"/>
-  <object id="40" gid="277" x="254" y="758" width="64" height="128"/>
-  <object id="41" gid="276" x="246.333" y="649.667" width="64" height="128"/>
+  <object id="36" gid="276" x="83.6667" y="856.333" width="64" height="192"/>
+  <object id="38" gid="277" x="16" y="652" width="64" height="128"/>
+  <object id="39" gid="278" x="34.6667" y="930.667" width="64" height="128"/>
+  <object id="40" gid="278" x="254" y="758" width="64" height="128"/>
+  <object id="41" gid="277" x="246.333" y="649.667" width="64" height="128"/>
  </objectgroup>
  <group id="8" name="DisplayOnly">
   <objectgroup id="5" name="SampleDisplay">
@@ -151,21 +151,21 @@
     <point/>
    </object>
    <object id="30" gid="232" x="752.667" y="1415.33" width="320" height="320"/>
-   <object id="35" gid="273" x="946" y="1009.33" width="320" height="192"/>
-   <object id="42" gid="278" x="1552" y="1288" width="64" height="128"/>
-   <object id="43" gid="279" x="379.333" y="1503.33" width="64" height="128"/>
-   <object id="44" gid="276" x="1571.33" y="1044.67" width="64" height="128"/>
-   <object id="45" gid="276" x="1614" y="1114" width="64" height="128"/>
-   <object id="46" gid="276" x="1610.67" y="1160" width="64" height="128"/>
-   <object id="49" gid="276" x="1598" y="1375.33" width="64" height="128"/>
-   <object id="50" gid="276" x="1492" y="1374.67" width="64" height="128"/>
-   <object id="51" gid="276" x="1538.67" y="1442.67" width="64" height="128"/>
-   <object id="52" gid="277" x="1450" y="1160.67" width="64" height="128"/>
-   <object id="53" gid="277" x="1455.33" y="1214" width="64" height="128"/>
-   <object id="54" gid="277" x="1476.67" y="1475.33" width="64" height="128"/>
-   <object id="55" gid="277" x="1576" y="1517.33" width="64" height="128"/>
-   <object id="56" gid="277" x="1500" y="1009.33" width="64" height="128"/>
-   <object id="57" gid="277" x="1608.67" y="978" width="64" height="128"/>
+   <object id="35" gid="274" x="946" y="1009.33" width="320" height="192"/>
+   <object id="42" gid="279" x="1552" y="1288" width="64" height="128"/>
+   <object id="43" gid="280" x="379.333" y="1503.33" width="64" height="128"/>
+   <object id="44" gid="277" x="1571.33" y="1044.67" width="64" height="128"/>
+   <object id="45" gid="277" x="1614" y="1114" width="64" height="128"/>
+   <object id="46" gid="277" x="1610.67" y="1160" width="64" height="128"/>
+   <object id="49" gid="277" x="1598" y="1375.33" width="64" height="128"/>
+   <object id="50" gid="277" x="1492" y="1374.67" width="64" height="128"/>
+   <object id="51" gid="277" x="1538.67" y="1442.67" width="64" height="128"/>
+   <object id="52" gid="278" x="1450" y="1160.67" width="64" height="128"/>
+   <object id="53" gid="278" x="1455.33" y="1214" width="64" height="128"/>
+   <object id="54" gid="278" x="1476.67" y="1475.33" width="64" height="128"/>
+   <object id="55" gid="278" x="1576" y="1517.33" width="64" height="128"/>
+   <object id="56" gid="278" x="1500" y="1009.33" width="64" height="128"/>
+   <object id="57" gid="278" x="1608.67" y="978" width="64" height="128"/>
    <object id="58" gid="250" x="1550" y="1186" width="64" height="64"/>
    <object id="59" gid="250" x="1418.67" y="1426.67" width="64" height="64"/>
    <object id="60" gid="245" x="818.857" y="1437.31" width="64" height="64"/>
@@ -176,7 +176,8 @@
    <object id="65" gid="233" x="871.333" y="1219.33" width="32" height="64"/>
   </objectgroup>
   <objectgroup id="10" name="SampleDisplay2">
-   <object id="68" gid="282" x="806.167" y="589.833" width="32" height="32" rotation="121"/>
+   <object id="68" gid="283" x="806.167" y="589.833" width="32" height="32" rotation="121"/>
+   <object id="69" gid="273" x="735" y="442.333" width="64" height="64"/>
   </objectgroup>
  </group>
 </map>

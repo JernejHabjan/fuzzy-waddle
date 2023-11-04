@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="64_64" tilewidth="64" tileheight="64" tilecount="29" columns="0">
+<tileset version="1.10" tiledversion="1.10.2" name="64_64" tilewidth="64" tileheight="64" tilecount="30" columns="0">
  <grid orientation="isometric" width="64" height="64"/>
  <tile id="5">
   <image width="64" height="64" source="../../sprites/characters/general/warrior.png"/>
@@ -87,5 +87,8 @@
  </tile>
  <tile id="33">
   <image width="64" height="64" source="../../sprites/props/tree trunks/tree_trunk_left.png"/>
+ </tile>
+ <tile id="34">
+  <image width="64" height="64" source="../../sprites/buildings/tivara/sandhold/sandhold-crystal.png"/>
  </tile>
 </tileset>
