@@ -181,6 +181,8 @@
             <key type="filename">../sprites/tiles/0012_water_2.png</key>
             <key type="filename">../sprites/tiles/0013_water_3.png</key>
             <key type="filename">../sprites/tiles/0014_water_4.png</key>
+            <key type="filename">../sprites/tiles/0015_snow.png</key>
+            <key type="filename">../sprites/tiles/0016_ice.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

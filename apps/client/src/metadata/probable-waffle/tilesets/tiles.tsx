@@ -29,7 +29,9 @@
    <wangcolor name="Stone" color="#00ff00" tile="22" probability="1"/>
    <wangcolor name="Water" color="#0000ff" tile="34" probability="1"/>
    <wangcolor name="Grass light" color="#ff7700" tile="11" probability="1"/>
-   <wangcolor name="Open water" color="#00e9ff" tile="-1" probability="1"/>
+   <wangcolor name="Open water" color="#00e9ff" tile="47" probability="1"/>
+   <wangcolor name="Snow" color="#ff00d8" tile="59" probability="1"/>
+   <wangcolor name="Ice" color="#ffff00" tile="71" probability="1"/>
    <wangtile tileid="0" wangid="0,0,0,1,0,0,0,0"/>
    <wangtile tileid="1" wangid="0,0,0,1,0,1,0,0"/>
    <wangtile tileid="2" wangid="0,0,0,0,0,1,0,0"/>
@@ -86,6 +88,7 @@
    <wangtile tileid="56" wangid="0,0,0,1,0,2,0,1"/>
    <wangtile tileid="57" wangid="0,2,0,2,0,1,0,0"/>
    <wangtile tileid="58" wangid="0,0,0,1,0,2,0,2"/>
+   <wangtile tileid="59" wangid="0,6,0,6,0,6,0,6"/>
    <wangtile tileid="60" wangid="0,2,0,0,0,0,0,0"/>
    <wangtile tileid="61" wangid="0,2,0,0,0,0,0,2"/>
    <wangtile tileid="62" wangid="0,0,0,0,0,0,0,2"/>
@@ -97,6 +100,7 @@
    <wangtile tileid="68" wangid="0,1,0,2,0,0,0,2"/>
    <wangtile tileid="69" wangid="0,2,0,0,0,0,0,1"/>
    <wangtile tileid="70" wangid="0,1,0,0,0,0,0,2"/>
+   <wangtile tileid="71" wangid="0,7,0,7,0,7,0,7"/>
    <wangtile tileid="72" wangid="0,3,0,1,0,3,0,3"/>
    <wangtile tileid="73" wangid="0,3,0,1,0,1,0,3"/>
    <wangtile tileid="74" wangid="0,3,0,3,0,1,0,3"/>
