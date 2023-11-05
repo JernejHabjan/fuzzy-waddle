@@ -79,12 +79,12 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 293, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 275, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 320, 319, 310, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 314, 312, 313, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 275, 0, 0, 0, 0, 0, 314, 321, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 275, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            288, 0, 0, 0, 282, 282, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            288, 0, 0, 0, 282, 282, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 307, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             288, 288, 282, 282, 282, 282, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 273, 0, 0, 0, 0, 0, 0, 0, 0,
             288, 288, 282, 282, 282, 282, 282, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             288, 288, 288, 282, 282, 280, 282, 282, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -658,6 +658,18 @@
                          "width":32,
                          "x":871.333,
                          "y":1219.33
+                        }, 
+                        {
+                         "gid":267,
+                         "height":64,
+                         "id":72,
+                         "name":"",
+                         "rotation":0,
+                         "type":"",
+                         "visible":true,
+                         "width":64,
+                         "x":472.75,
+                         "y":551.583
                         }],
                  "opacity":1,
                  "type":"objectgroup",
@@ -708,7 +720,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":72,
+ "nextobjectid":73,
  "orientation":"isometric",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -2157,6 +2169,135 @@
                  "imagewidth":32
                 }],
          "tilewidth":32
+        }, 
+        {
+         "columns":0,
+         "firstgid":307,
+         "grid":
+            {
+             "height":1,
+             "orientation":"orthogonal",
+             "width":1
+            },
+         "margin":0,
+         "name":"128_176",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":176,
+         "tileoffset":
+            {
+             "x":0,
+             "y":16
+            },
+         "tiles":[
+                {
+                 "id":0,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/watchtower.png",
+                 "imageheight":176,
+                 "imagewidth":128
+                }],
+         "tilewidth":128
+        }, 
+        {
+         "columns":0,
+         "firstgid":308,
+         "grid":
+            {
+             "height":1,
+             "orientation":"orthogonal",
+             "width":1
+            },
+         "margin":0,
+         "name":"64_96",
+         "spacing":0,
+         "tilecount":14,
+         "tileheight":96,
+         "tiles":[
+                {
+                 "id":0,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall00.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":1,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall01.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":2,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/stairs_left.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":3,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/stairs_right.png",
+                 "imageheight":64,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":4,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall02.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":5,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall10.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":6,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall07.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":7,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall03.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":8,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall02_for_shadow_only.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":9,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall04.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":10,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall05.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":11,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall06.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":12,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall08.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }, 
+                {
+                 "id":13,
+                 "image":"..\/..\/..\/metadata\/probable-waffle\/sprites\/buildings\/tivara\/wall\/wall09.png",
+                 "imageheight":96,
+                 "imagewidth":64
+                }],
+         "tilewidth":64
         }],
  "tilewidth":64,
  "type":"map",
