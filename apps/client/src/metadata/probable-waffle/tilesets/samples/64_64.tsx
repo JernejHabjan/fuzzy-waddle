@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="64_64" tilewidth="64" tileheight="64" tilecount="30" columns="0">
+<tileset version="1.10" tiledversion="1.10.2" name="64_64" tilewidth="64" tileheight="64" tilecount="35" columns="0">
  <grid orientation="isometric" width="64" height="64"/>
  <tile id="5">
   <image width="64" height="64" source="../../sprites/characters/general/warrior.png"/>
@@ -90,5 +90,20 @@
  </tile>
  <tile id="34">
   <image width="64" height="64" source="../../sprites/buildings/tivara/sandhold/sandhold-crystal.png"/>
+ </tile>
+ <tile id="35">
+  <image width="64" height="64" source="../../sprites/characters/skaduwee/worker_male.png"/>
+ </tile>
+ <tile id="36">
+  <image width="64" height="64" source="../../sprites/characters/skaduwee/magician_female.png"/>
+ </tile>
+ <tile id="37">
+  <image width="64" height="64" source="../../sprites/characters/skaduwee/ranged_female.png"/>
+ </tile>
+ <tile id="38">
+  <image width="64" height="64" source="../../sprites/characters/skaduwee/warrior_male.png"/>
+ </tile>
+ <tile id="39">
+  <image width="64" height="64" source="../../sprites/characters/skaduwee/worker_female.png"/>
  </tile>
 </tileset>
