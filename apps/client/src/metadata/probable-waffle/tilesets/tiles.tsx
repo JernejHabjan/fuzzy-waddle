@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="tiles" tilewidth="64" tileheight="32" tilecount="252" columns="12">
+<tileset version="1.10" tiledversion="1.10.2" name="tiles" tilewidth="64" tileheight="32" tilecount="288" columns="12">
  <grid orientation="isometric" width="64" height="32"/>
- <image source="../tilesetter/exports/tilesets/tiles.png" width="768" height="672"/>
+ <image source="../tilesetter/exports/tilesets/tiles.png" width="768" height="768"/>
  <tile id="23">
   <animation>
    <frame tileid="23" duration="1300"/>
@@ -229,24 +229,52 @@
    <wangtile tileid="212" wangid="0,3,0,4,0,1,0,4"/>
    <wangtile tileid="213" wangid="0,4,0,1,0,1,0,3"/>
    <wangtile tileid="214" wangid="0,3,0,1,0,1,0,4"/>
+   <wangtile tileid="216" wangid="0,7,0,6,0,7,0,7"/>
+   <wangtile tileid="217" wangid="0,7,0,6,0,6,0,7"/>
+   <wangtile tileid="218" wangid="0,7,0,7,0,6,0,7"/>
+   <wangtile tileid="219" wangid="0,6,0,7,0,6,0,6"/>
+   <wangtile tileid="220" wangid="0,6,0,6,0,7,0,6"/>
    <wangtile tileid="221" wangid="0,1,0,4,0,3,0,3"/>
    <wangtile tileid="222" wangid="0,3,0,3,0,4,0,1"/>
    <wangtile tileid="223" wangid="0,1,0,4,0,3,0,4"/>
    <wangtile tileid="224" wangid="0,4,0,3,0,4,0,1"/>
    <wangtile tileid="225" wangid="0,1,0,4,0,3,0,1"/>
    <wangtile tileid="226" wangid="0,1,0,3,0,4,0,1"/>
+   <wangtile tileid="228" wangid="0,6,0,6,0,7,0,7"/>
+   <wangtile tileid="230" wangid="0,7,0,7,0,6,0,6"/>
+   <wangtile tileid="231" wangid="0,7,0,6,0,6,0,6"/>
+   <wangtile tileid="232" wangid="0,6,0,6,0,6,0,7"/>
    <wangtile tileid="233" wangid="0,1,0,4,0,4,0,3"/>
    <wangtile tileid="234" wangid="0,3,0,4,0,4,0,1"/>
    <wangtile tileid="235" wangid="0,1,0,4,0,1,0,3"/>
    <wangtile tileid="236" wangid="0,3,0,1,0,4,0,1"/>
    <wangtile tileid="237" wangid="0,1,0,1,0,4,0,3"/>
    <wangtile tileid="238" wangid="0,3,0,4,0,1,0,1"/>
+   <wangtile tileid="240" wangid="0,6,0,7,0,7,0,7"/>
+   <wangtile tileid="241" wangid="0,6,0,7,0,7,0,6"/>
+   <wangtile tileid="242" wangid="0,7,0,7,0,7,0,6"/>
+   <wangtile tileid="243" wangid="0,7,0,6,0,7,0,6"/>
+   <wangtile tileid="244" wangid="0,6,0,7,0,6,0,7"/>
    <wangtile tileid="245" wangid="0,4,0,1,0,3,0,4"/>
    <wangtile tileid="246" wangid="0,4,0,3,0,1,0,4"/>
    <wangtile tileid="247" wangid="0,4,0,1,0,3,0,1"/>
    <wangtile tileid="248" wangid="0,1,0,3,0,1,0,4"/>
    <wangtile tileid="249" wangid="0,1,0,1,0,3,0,4"/>
    <wangtile tileid="250" wangid="0,4,0,3,0,1,0,1"/>
+   <wangtile tileid="252" wangid="0,7,0,3,0,7,0,7"/>
+   <wangtile tileid="253" wangid="0,7,0,3,0,3,0,7"/>
+   <wangtile tileid="254" wangid="0,7,0,7,0,3,0,7"/>
+   <wangtile tileid="255" wangid="0,3,0,7,0,3,0,3"/>
+   <wangtile tileid="256" wangid="0,3,0,3,0,7,0,3"/>
+   <wangtile tileid="264" wangid="0,3,0,3,0,7,0,7"/>
+   <wangtile tileid="266" wangid="0,7,0,7,0,3,0,3"/>
+   <wangtile tileid="267" wangid="0,7,0,3,0,3,0,3"/>
+   <wangtile tileid="268" wangid="0,3,0,3,0,3,0,7"/>
+   <wangtile tileid="276" wangid="0,3,0,7,0,7,0,7"/>
+   <wangtile tileid="277" wangid="0,3,0,7,0,7,0,3"/>
+   <wangtile tileid="278" wangid="0,7,0,7,0,7,0,3"/>
+   <wangtile tileid="279" wangid="0,7,0,3,0,7,0,3"/>
+   <wangtile tileid="280" wangid="0,3,0,7,0,3,0,7"/>
   </wangset>
  </wangsets>
 </tileset>
