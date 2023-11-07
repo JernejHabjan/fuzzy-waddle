@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="tiles" tilewidth="64" tileheight="32" tilecount="288" columns="12">
  <grid orientation="isometric" width="64" height="32"/>
- <image source="../tilesetter/exports/tilesets/tiles.png" width="768" height="768"/>
+ <image source="../../../assets/probable-waffle/tilesets/tiles.png" width="768" height="768"/>
  <tile id="23">
   <animation>
    <frame tileid="23" duration="1300"/>
