@@ -185,6 +185,12 @@
             <key type="filename">../sprites/tiles/0016_ice.png</key>
             <key type="filename">../sprites/tiles/0017_ice_snow.png</key>
             <key type="filename">../sprites/tiles/0018_ice_water.png</key>
+            <key type="filename">../sprites/tiles/0019_stone_1.png</key>
+            <key type="filename">../sprites/tiles/0020_stone_2.png</key>
+            <key type="filename">../sprites/tiles/0021_stone_3.png</key>
+            <key type="filename">../sprites/tiles/0022_wood_1.png</key>
+            <key type="filename">../sprites/tiles/0023_wood_2.png</key>
+            <key type="filename">../sprites/tiles/0024_wood_3.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
