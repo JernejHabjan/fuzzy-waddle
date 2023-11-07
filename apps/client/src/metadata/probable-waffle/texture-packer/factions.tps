@@ -124,7 +124,7 @@
             <key>json</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../assets/probable-waffle/spritesheets/factions.json</filename>
+                <filename>../../../assets/probable-waffle/atlas/factions.json</filename>
             </struct>
         </map>
         <key>multiPackMode</key>
