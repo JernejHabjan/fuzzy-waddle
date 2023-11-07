@@ -1,7 +1,14 @@
 ## Editor:
+
 https://pflat.itch.io/lpc-character-generator
 
-## Editor online 
-https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator
+### Configuration:
 
-additional sources - https://lpc.opengameart.org/
+- open .ini and change `export_individual_sheets` to `true`
+
+## Compressing 
+ - compress exported spritesheets using https://tinypng.com/
+
+## additional sources 
+- https://lpc.opengameart.org/
+- https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator
