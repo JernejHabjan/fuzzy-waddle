@@ -1,0 +1,1 @@
+export image of tiles used in the map to `src\assets\probable-waffle\tilesets\` for example `tiles.png`
