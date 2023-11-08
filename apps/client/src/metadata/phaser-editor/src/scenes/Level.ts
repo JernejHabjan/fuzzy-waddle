@@ -13,9 +13,7 @@ import FollowObjectScript from "../script-nodes/FollowObjectScript";
 import Ladder from "../prefabs/Ladder";
 import Player from "../prefabs/Player";
 import FoodItem from "../prefabs/FoodItem";
-import Fly from "../prefabs/Fly";
 import PlayerButton from "../prefabs/PlayerButton";
-import Croissants from "../prefabs/Croissants";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -243,10 +241,6 @@ export default class Level extends Phaser.Scene {
 		const meet1 = new FoodItem(this, 747, 386);
 		pickItemsLayer.add(meet1);
 
-		// fly
-		const fly = new Fly(this, 816, 112);
-		pickItemsLayer.add(fly);
-
 		// controlsLayer
 		const controlsLayer = this.add.layer();
 
@@ -264,10 +258,6 @@ export default class Level extends Phaser.Scene {
 
 		// debugLayer
 		this.add.layer();
-
-		// croissants
-		const croissants = new Croissants(this, 515, 121);
-		this.add.existing(croissants);
 
 		// lists
 		const platforms = [p1, movingPlatform1, movingPlatform2, movingPlatform3, movingPlatform4, p8, p12, p13, p10, p11, ladder1, ladder2, ladder3, ladder5, ladder4, ladder6];

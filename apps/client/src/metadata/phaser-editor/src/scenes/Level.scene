@@ -639,17 +639,6 @@
                     "label": "meet1",
                     "x": 747,
                     "y": 386
-                },
-                {
-                    "prefabId": "8ff88bcb-5911-4b19-a529-9ab61af0902c",
-                    "id": "50fd19ae-bbc7-4405-986f-990627055472",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "fly",
-                    "x": 816,
-                    "y": 112
                 }
             ]
         },
@@ -756,17 +745,6 @@
             "type": "Layer",
             "id": "a1228d0a-4239-4d26-814e-4de26353bdb2",
             "label": "debugLayer"
-        },
-        {
-            "prefabId": "8ff88bcb-5911-4b19-a529-9ab61af0902f",
-            "id": "46d66b33-e9e0-42d6-8a6c-086052e0ec24",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "croissants",
-            "x": 515,
-            "y": 121
         }
     ],
     "plainObjects": [],
