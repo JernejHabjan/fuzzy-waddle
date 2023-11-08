@@ -2,35 +2,58 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
+import Phaser from "phaser";
+import Sandhold from "../prefabs/Sandhold";
+import Owlery from "../prefabs/Owlery";
+import Bridge from "../prefabs/Bridge";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
-  constructor() {
-    super('Map1');
 
-    /* START-USER-CTR-CODE */
+	constructor() {
+		super("Map1");
+
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  editorCreate(): void {
-    // tiles
-    const tiles = this.add.tilemap('tiles');
-    tiles.addTilesetImage('tiles', 'tiles_1');
+	editorCreate(): void {
 
-    // tileMap_level
-    tiles.createLayer('TileMap_level_1', ['tiles'], 715, -205);
+		// tiles
+		const tiles = this.add.tilemap("tiles");
+		tiles.addTilesetImage("tiles", "tiles_1");
 
-    this.tiles = tiles;
+		// tiles_1
+		const tiles_1 = this.add.tilemap("tiles");
+		tiles_1.addTilesetImage("tiles", "tiles_1");
 
-    this.events.emit('scene-awake');
-  }
+		// tileMap_level
+		tiles_1.createLayer("TileMap_level_1", ["tiles"], 608, -272);
 
-  private tiles!: Phaser.Tilemaps.Tilemap;
+		// sandhold
+		const sandhold = new Sandhold(this, 864, 368);
+		this.add.existing(sandhold);
 
-  /* START-USER-CODE */
+		// owlery
+		const owlery = new Owlery(this, 703, 286);
+		this.add.existing(owlery);
+
+		// bridge
+		const bridge = new Bridge(this, 544, 592);
+		this.add.existing(bridge);
+
+		this.tiles = tiles;
+		this.tiles_1 = tiles_1;
+
+		this.events.emit("scene-awake");
+	}
+
+	private tiles!: Phaser.Tilemaps.Tilemap;
+	private tiles_1!: Phaser.Tilemaps.Tilemap;
+
+	/* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;

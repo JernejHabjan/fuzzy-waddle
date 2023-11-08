@@ -1,0 +1,35 @@
+{
+    "id": "0cc17b18-78e8-4586-807f-a9af2b3e4de9",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 320,
+        "borderHeight": 300
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "8237fd70-80b3-4593-89e1-5df7f25442c4",
+            "label": "image_1",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/river/bridge - stone.png"
+            },
+            "x": 160,
+            "y": 96
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    }
+}

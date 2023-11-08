@@ -1,0 +1,52 @@
+{
+    "id": "3e9f68eb-dfb2-48a6-9297-29d66e962fa4",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "2b215193-38dc-4b1b-a858-aad59668b550",
+            "label": "container_1",
+            "x": 129,
+            "y": 132,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "ff08562d-2fe9-40fa-b76d-1d303cf8dede",
+                    "label": "image_1",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/owlery/owlery.png"
+                    }
+                },
+                {
+                    "type": "Image",
+                    "id": "c91acfcc-a084-46c0-9149-86d8ad914645",
+                    "label": "image_2",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png"
+                    },
+                    "x": 3,
+                    "y": -54
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    }
+}

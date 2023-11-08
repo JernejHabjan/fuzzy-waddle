@@ -33,6 +33,7 @@ window.addEventListener('load', function () {
     input: {
       activePointers: 2
     },
+    pixelArt: true,
     // scene: [Boot, Preload, Level]
     // scene: [Boot, PreloadFlySquasher, FlySquasherScene]
     scene: [Boot, PreloadProbableWaffle, Map1]

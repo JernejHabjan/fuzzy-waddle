@@ -16,15 +16,48 @@
     "displayList": [
         {
             "type": "TilemapLayer",
-            "id": "e51f21c4-d77a-4b14-82ff-00c71006994b",
+            "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
             "label": "tileMap_level",
-            "x": 715,
-            "y": -205,
-            "tilemapId": "7d574b18-8d9c-4f5e-a0eb-a641aa2d47ef",
+            "x": 608,
+            "y": -272,
+            "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "layerName": "TileMap_level_1",
             "tilesets": [
                 "tiles"
             ]
+        },
+        {
+            "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
+            "id": "05c36924-96a6-4963-8188-94545aeddb09",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sandhold",
+            "x": 864,
+            "y": 368
+        },
+        {
+            "prefabId": "3e9f68eb-dfb2-48a6-9297-29d66e962fa4",
+            "id": "57cc06f3-2a81-4e7f-a859-f6fed682accd",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "owlery",
+            "x": 703,
+            "y": 286
+        },
+        {
+            "prefabId": "0cc17b18-78e8-4586-807f-a9af2b3e4de9",
+            "id": "5af6fa76-500d-4cbf-8910-ed85683732f4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bridge",
+            "x": 544,
+            "y": 592
         }
     ],
     "plainObjects": [
@@ -32,6 +65,18 @@
             "id": "7d574b18-8d9c-4f5e-a0eb-a641aa2d47ef",
             "type": "Tilemap",
             "label": "tiles",
+            "key": "tiles",
+            "tilesets": [
+                {
+                    "name": "tiles",
+                    "imageKey": "tiles_1"
+                }
+            ]
+        },
+        {
+            "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
+            "type": "Tilemap",
+            "label": "tiles_1",
             "key": "tiles",
             "tilesets": [
                 {

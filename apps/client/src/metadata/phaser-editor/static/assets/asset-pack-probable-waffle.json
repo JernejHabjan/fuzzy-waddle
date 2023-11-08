@@ -2,6 +2,18 @@
     "section1": {
         "files": [
             {
+                "type": "multiatlas",
+                "url": "shared-assets/probable-waffle/atlas/factions.json",
+                "path": "shared-assets/probable-waffle/atlas",
+                "key": "factions"
+            },
+            {
+                "type": "multiatlas",
+                "url": "shared-assets/probable-waffle/atlas/outside.json",
+                "path": "shared-assets/probable-waffle/atlas",
+                "key": "outside"
+            },
+            {
                 "url": "shared-assets/probable-waffle/tilemaps/tiles.json",
                 "type": "tilemapTiledJSON",
                 "key": "tiles"
