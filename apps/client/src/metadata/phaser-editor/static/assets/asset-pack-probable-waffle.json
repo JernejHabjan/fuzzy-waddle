@@ -1,0 +1,31 @@
+{
+    "section1": {
+        "files": [
+            {
+                "url": "shared-assets/probable-waffle/tilemaps/tiles.json",
+                "type": "tilemapTiledJSON",
+                "key": "tiles"
+            },
+            {
+                "url": "shared-assets/probable-waffle/tilesets/tiles.png",
+                "frameConfig": {
+                    "frameWidth": 32,
+                    "frameHeight": 32,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "tiles_1"
+            }
+        ]
+    },
+    "meta": {
+        "app": "Phaser Editor 2D - Asset Pack Editor",
+        "contentType": "phasereditor2d.pack.core.AssetContentType",
+        "url": "https://phasereditor2d.com",
+        "version": 2,
+        "showAllFilesInBlocks": false
+    }
+}

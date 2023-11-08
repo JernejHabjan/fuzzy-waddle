@@ -5,10 +5,10 @@
 import Phaser from 'phaser';
 import PreloadBarUpdaterScript from '../../Template/script-nodes/PreloadBarUpdaterScript';
 /* START-USER-IMPORTS */
-import assetPackUrl from '../../../static/assets/asset-pack-fly-squasher.json';
+import assetPackUrl from '../../../static/assets/asset-pack-probable-waffle.json';
 /* END-USER-IMPORTS */
 
-export default class PreloadFlySquasher extends Phaser.Scene {
+export default class PreloadProbableWaffle extends Phaser.Scene {
   constructor() {
     super('Preload');
 
@@ -57,7 +57,7 @@ export default class PreloadFlySquasher extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start('FlySquasher');
+    this.scene.start('Map1');
   }
 
   /* END-USER-CODE */

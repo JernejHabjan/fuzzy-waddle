@@ -1,0 +1,50 @@
+{
+    "id": "dba459ed-b5e7-4548-9d60-a8837740d253",
+    "sceneType": "SCENE",
+    "settings": {
+        "snapEnabled": true,
+        "snapWidth": 32,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "Map1",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "TilemapLayer",
+            "id": "e51f21c4-d77a-4b14-82ff-00c71006994b",
+            "label": "tileMap_level",
+            "x": 715,
+            "y": -205,
+            "tilemapId": "7d574b18-8d9c-4f5e-a0eb-a641aa2d47ef",
+            "layerName": "TileMap_level_1",
+            "tilesets": [
+                "tiles"
+            ]
+        }
+    ],
+    "plainObjects": [
+        {
+            "id": "7d574b18-8d9c-4f5e-a0eb-a641aa2d47ef",
+            "type": "Tilemap",
+            "label": "tiles",
+            "key": "tiles",
+            "tilesets": [
+                {
+                    "name": "tiles",
+                    "imageKey": "tiles_1"
+                }
+            ]
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    }
+}

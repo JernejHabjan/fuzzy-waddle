@@ -28,18 +28,6 @@
         "url": "assets/Background/Volcano Level Set_Background - Layer 00.png",
         "type": "image",
         "key": "Volcano Level Set_Background - Layer 00"
-      },
-      {
-        "type": "multiatlas",
-        "url": "shared-assets/fly-squasher/spritesheets/fly-squasher-spritesheet.json",
-        "path": "shared-assets/fly-squasher/spritesheets",
-        "key": "fly-squasher-spritesheet"
-      },
-      {
-        "type": "multiatlas",
-        "url": "shared-assets/fly-squasher/spritesheets/scenes/croissants-spritesheet.json",
-        "path": "shared-assets/fly-squasher/spritesheets/scenes",
-        "key": "croissants-spritesheet"
       }
     ]
   },

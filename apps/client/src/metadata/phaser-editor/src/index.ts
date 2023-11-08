@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import preloadAssetPackUrl from '../static/assets/preload-asset-pack.json';
-import Preload from './Template/scenes/Preload';
-import Level from './Template/scenes/Level';
+import Map1 from './ProbableWaffle/scenes/Map1';
+import PreloadProbableWaffle from './ProbableWaffle/scenes/PreloadProbableWaffle';
 
 class Boot extends Phaser.Scene {
   constructor() {
@@ -33,8 +33,9 @@ window.addEventListener('load', function () {
     input: {
       activePointers: 2
     },
-    scene: [Boot, Preload, Level]
+    // scene: [Boot, Preload, Level]
     // scene: [Boot, PreloadFlySquasher, FlySquasherScene]
+    scene: [Boot, PreloadProbableWaffle, Map1]
   });
 
   game.scene.start('Boot');
