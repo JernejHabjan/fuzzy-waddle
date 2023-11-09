@@ -32,6 +32,11 @@
         "key": "tiles_1"
       },
       {
+        "url": "shared-assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",
+        "type": "animation",
+        "key": "warrior_anim"
+      },
+      {
         "url": "shared-assets/probable-waffle/spritesheets/characters/general/warrior/warrior_hurt.png",
         "frameConfig": {
           "frameWidth": 64,

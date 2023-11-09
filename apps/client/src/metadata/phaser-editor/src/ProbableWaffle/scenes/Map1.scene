@@ -58,6 +58,19 @@
             "label": "bridge",
             "x": 544,
             "y": 592
+        },
+        {
+            "type": "Sprite",
+            "id": "d484b8cb-7cdc-47b3-83e2-81f208fdcbf9",
+            "label": "idle_downwarrior_idle",
+            "texture": {
+                "key": "warrior_idle",
+                "frame": 4
+            },
+            "x": 824,
+            "y": 359,
+            "animationPlayMethod": 1,
+            "animationKey": "idle_downwarrior_idle"
         }
     ],
     "plainObjects": [
@@ -90,6 +103,6 @@
         "app": "Phaser Editor 2D - Scene Editor",
         "url": "https://phasereditor2d.com",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
-        "version": 4
+        "version": 5
     }
 }
