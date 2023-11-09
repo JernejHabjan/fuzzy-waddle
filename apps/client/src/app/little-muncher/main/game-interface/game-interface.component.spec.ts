@@ -7,6 +7,8 @@ import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
 import { ModalTestComponent } from '../../../shared/components/modal/modal.component.spec';
 import { Component } from '@angular/core';
 import { WrapPipe } from './wrap.pipe';
+import { AuthService } from '../../../auth/auth.service';
+import { authServiceStub } from '../../../auth/auth.service.spec';
 
 @Component({ selector: 'fuzzy-waddle-game-interface', template: '' })
 export class GameInterfaceTestingComponent {}
@@ -19,7 +21,10 @@ describe('GameInterfaceComponent', () => {
     // provide also WrapPipe
     await TestBed.configureTestingModule({
       declarations: [GameInterfaceComponent, ModalTestComponent, WrapPipe],
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
+      providers: [
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: AuthService, useValue: authServiceStub }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GameInterfaceComponent);

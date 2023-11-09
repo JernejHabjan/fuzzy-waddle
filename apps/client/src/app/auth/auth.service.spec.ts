@@ -3,6 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { AuthServiceInterface } from './auth.service.interface';
 import { Session } from '@supabase/supabase-js';
+import { DataAccessService } from '../data-access/data-access.service';
+import { dataAccessServiceStub } from '../data-access/data-access.service.spec';
 
 export const authServiceStub = {
   get session(): Session | null {
@@ -28,13 +30,14 @@ export const authServiceStub = {
   },
   signInWithGoogle(): Promise<void> {
     return Promise.resolve();
-  }
-} as AuthServiceInterface;
+  },
+  processing: null
+} satisfies AuthServiceInterface;
 describe('AuthService', () => {
   let service: AuthService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [{ provide: DataAccessService, useValue: dataAccessServiceStub }] });
     service = TestBed.inject(AuthService);
   });
 
