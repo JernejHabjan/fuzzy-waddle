@@ -45,8 +45,16 @@ export default class Map1 extends Phaser.Scene {
 		this.add.existing(bridge);
 
 		// idle_downwarrior_idle
-		const idle_downwarrior_idle = this.add.sprite(824, 359, "warrior_idle", 4);
+		const idle_downwarrior_idle = this.add.sprite(800, 368, "warrior_idle", 4);
 		idle_downwarrior_idle.play("idle_downwarrior_idle");
+
+		// large_thrust_right
+		const large_thrust_right = this.add.sprite(896, 368, "magician_female_large_thrust", 21);
+		large_thrust_right.play("large_thrust_right");
+
+		// shoot_left
+		const shoot_left = this.add.sprite(1024, 368, "ranged_female_shoot", 12);
+		shoot_left.play("shoot_left");
 
 		this.tiles = tiles;
 		this.tiles_1 = tiles_1;

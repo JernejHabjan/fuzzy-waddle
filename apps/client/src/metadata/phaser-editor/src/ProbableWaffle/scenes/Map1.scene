@@ -67,10 +67,36 @@
                 "key": "warrior_idle",
                 "frame": 4
             },
-            "x": 824,
-            "y": 359,
+            "x": 800,
+            "y": 368,
             "animationPlayMethod": 1,
             "animationKey": "idle_downwarrior_idle"
+        },
+        {
+            "type": "Sprite",
+            "id": "95cc5828-848c-48fd-a0d3-b92ab16aa7ea",
+            "label": "large_thrust_right",
+            "texture": {
+                "key": "magician_female_large_thrust",
+                "frame": 21
+            },
+            "x": 896,
+            "y": 368,
+            "animationPlayMethod": 1,
+            "animationKey": "large_thrust_right"
+        },
+        {
+            "type": "Sprite",
+            "id": "6db06774-138a-4fdf-b540-9c153bd7f7b9",
+            "label": "shoot_left",
+            "texture": {
+                "key": "ranged_female_shoot",
+                "frame": 12
+            },
+            "x": 1024,
+            "y": 368,
+            "animationPlayMethod": 1,
+            "animationKey": "shoot_left"
         }
     ],
     "plainObjects": [
