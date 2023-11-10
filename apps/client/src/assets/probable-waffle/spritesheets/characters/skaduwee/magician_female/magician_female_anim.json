@@ -1,7 +1,7 @@
 {
     "anims": [
         {
-            "key": "hurt",
+            "key": "skaduwee_magician_female_hurt",
             "type": "frame",
             "frames": [
                 {
@@ -35,12 +35,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 5,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": 0
         },
         {
-            "key": "large_thrust_up",
+            "key": "skaduwee_magician_female_large_thrust_up",
             "type": "frame",
             "frames": [
                 {
@@ -86,12 +86,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "large_thrust_left",
+            "key": "skaduwee_magician_female_large_thrust_left",
             "type": "frame",
             "frames": [
                 {
@@ -137,12 +137,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "large_thrust_down",
+            "key": "skaduwee_magician_female_large_thrust_down",
             "type": "frame",
             "frames": [
                 {
@@ -188,12 +188,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "large_thrust_right",
+            "key": "skaduwee_magician_female_large_thrust_right",
             "type": "frame",
             "frames": [
                 {
@@ -239,12 +239,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "idle_up",
+            "key": "skaduwee_magician_female_idle_up",
             "type": "frame",
             "frames": [
                 {
@@ -260,12 +260,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "idle_left",
+            "key": "skaduwee_magician_female_idle_left",
             "type": "frame",
             "frames": [
                 {
@@ -281,12 +281,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "idle_down",
+            "key": "skaduwee_magician_female_idle_down",
             "type": "frame",
             "frames": [
                 {
@@ -302,12 +302,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "idle_right",
+            "key": "skaduwee_magician_female_idle_right",
             "type": "frame",
             "frames": [
                 {
@@ -323,12 +323,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "cast_up",
+            "key": "skaduwee_magician_female_cast_up",
             "type": "frame",
             "frames": [
                 {
@@ -368,12 +368,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "cast_left",
+            "key": "skaduwee_magician_female_cast_left",
             "type": "frame",
             "frames": [
                 {
@@ -413,12 +413,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "cast_down",
+            "key": "skaduwee_magician_female_cast_down",
             "type": "frame",
             "frames": [
                 {
@@ -458,12 +458,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "cast_right",
+            "key": "skaduwee_magician_female_cast_right",
             "type": "frame",
             "frames": [
                 {
@@ -503,12 +503,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_up",
+            "key": "skaduwee_magician_female_walk_up",
             "type": "frame",
             "frames": [
                 {
@@ -560,12 +560,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_left",
+            "key": "skaduwee_magician_female_walk_left",
             "type": "frame",
             "frames": [
                 {
@@ -617,12 +617,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_down",
+            "key": "skaduwee_magician_female_walk_down",
             "type": "frame",
             "frames": [
                 {
@@ -674,12 +674,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_right",
+            "key": "skaduwee_magician_female_walk_right",
             "type": "frame",
             "frames": [
                 {
@@ -731,7 +731,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         }

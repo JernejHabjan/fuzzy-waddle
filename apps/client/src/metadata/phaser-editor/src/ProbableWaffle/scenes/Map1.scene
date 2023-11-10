@@ -17,9 +17,7 @@
         {
             "type": "TilemapLayer",
             "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
-            "label": "tileMap_level",
-            "x": 608,
-            "y": -272,
+            "label": "tilemap_level_1",
             "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "layerName": "TileMap_level_1",
             "tilesets": [
@@ -34,8 +32,8 @@
                 "y"
             ],
             "label": "sandhold",
-            "x": 864,
-            "y": 368
+            "x": 32,
+            "y": 592
         },
         {
             "prefabId": "3e9f68eb-dfb2-48a6-9297-29d66e962fa4",
@@ -45,8 +43,8 @@
                 "y"
             ],
             "label": "owlery",
-            "x": 703,
-            "y": 286
+            "x": 320,
+            "y": 656
         },
         {
             "prefabId": "0cc17b18-78e8-4586-807f-a9af2b3e4de9",
@@ -56,47 +54,137 @@
                 "y"
             ],
             "label": "bridge",
-            "x": 544,
-            "y": 592
+            "x": 32,
+            "y": 912
         },
         {
             "type": "Sprite",
-            "id": "d484b8cb-7cdc-47b3-83e2-81f208fdcbf9",
-            "label": "idle_downwarrior_idle",
+            "id": "f0c600c5-ab49-4459-9d51-41e005fda14e",
+            "label": "general_warrior_idle_left",
             "texture": {
                 "key": "warrior_idle",
+                "frame": 2
+            },
+            "x": 448,
+            "y": 896,
+            "animationPlayMethod": 1,
+            "animationKey": "general_warrior_idle_left"
+        },
+        {
+            "type": "Sprite",
+            "id": "e06f08cb-a4a2-4df1-810b-5474b9083a56",
+            "label": "skaduwee_magician_female_idle_left",
+            "texture": {
+                "key": "magician_female_idle",
+                "frame": 2
+            },
+            "x": 512,
+            "y": 880,
+            "animationPlayMethod": 1,
+            "animationKey": "skaduwee_magician_female_idle_left"
+        },
+        {
+            "type": "Sprite",
+            "id": "24b1e790-49cc-4773-8f61-2c8dbc79a65e",
+            "label": "skaduwee_warrior_male_idle_left",
+            "texture": {
+                "key": "warrior_male_idle",
+                "frame": 2
+            },
+            "x": 416,
+            "y": 944,
+            "animationPlayMethod": 1,
+            "animationKey": "skaduwee_warrior_male_idle_left"
+        },
+        {
+            "type": "Sprite",
+            "id": "c3d0bcba-f610-4ba9-a1d9-52a612607227",
+            "label": "skaduwee_ranged_female_idle_right",
+            "texture": {
+                "key": "ranged_female_idle",
+                "frame": 6
+            },
+            "x": 192,
+            "y": 752,
+            "animationPlayMethod": 1,
+            "animationKey": "skaduwee_ranged_female_idle_right"
+        },
+        {
+            "type": "Sprite",
+            "id": "2d594748-20d8-4106-88f8-e7e3e9412dda",
+            "label": "tivara_maceman_male_idle_down",
+            "texture": {
+                "key": "maceman_male_idle",
                 "frame": 4
             },
-            "x": 800,
-            "y": 368,
+            "x": 288,
+            "y": 800,
             "animationPlayMethod": 1,
-            "animationKey": "idle_downwarrior_idle"
+            "animationKey": "tivara_maceman_male_idle_down"
         },
         {
             "type": "Sprite",
-            "id": "95cc5828-848c-48fd-a0d3-b92ab16aa7ea",
-            "label": "large_thrust_right",
+            "id": "c03ec273-432a-49cb-b0b7-858b35582919",
+            "label": "tivara_slingshot_female_idle_down",
             "texture": {
-                "key": "magician_female_large_thrust",
-                "frame": 21
+                "key": "slingshot_female_idle",
+                "frame": 4
             },
-            "x": 896,
-            "y": 368,
+            "x": 480,
+            "y": 832,
             "animationPlayMethod": 1,
-            "animationKey": "large_thrust_right"
+            "animationKey": "tivara_slingshot_female_idle_down"
         },
         {
             "type": "Sprite",
-            "id": "6db06774-138a-4fdf-b540-9c153bd7f7b9",
-            "label": "shoot_left",
+            "id": "269e1c31-cd69-4223-979e-a8b035a23e51",
+            "label": "tivara_worker_female_idle_right",
             "texture": {
-                "key": "ranged_female_shoot",
-                "frame": 12
+                "key": "worker_female_idle_1",
+                "frame": 6
             },
-            "x": 1024,
-            "y": 368,
+            "y": 784,
             "animationPlayMethod": 1,
-            "animationKey": "shoot_left"
+            "animationKey": "tivara_worker_female_idle_right"
+        },
+        {
+            "type": "Sprite",
+            "id": "8bcf3bb4-4899-4bf2-9e6b-76178902051d",
+            "label": "skaduwee_worker_female_idle_left",
+            "texture": {
+                "key": "worker_female_idle",
+                "frame": 2
+            },
+            "x": 352,
+            "y": 768,
+            "animationPlayMethod": 1,
+            "animationKey": "skaduwee_worker_female_idle_left"
+        },
+        {
+            "type": "Sprite",
+            "id": "99be65a2-500f-4491-8e0e-2987b52891d0",
+            "label": "skaduwee_worker_male_idle_down",
+            "texture": {
+                "key": "worker_male_idle",
+                "frame": 4
+            },
+            "x": 384,
+            "y": 816,
+            "animationPlayMethod": 1,
+            "animationKey": "skaduwee_worker_male_idle_down"
+        },
+        {
+            "type": "Sprite",
+            "id": "37bc48dc-6d7a-47d7-8e5a-b441d3c70b37",
+            "label": "tivara_worker_male_idle_down",
+            "texture": {
+                "key": "worker_male_idle_1",
+                "frame": 4
+            },
+            "x": 96,
+            "y": 768,
+            "animationPlayMethod": 1,
+            "animationKey": "tivara_worker_male_idle_down"
         }
     ],
     "plainObjects": [

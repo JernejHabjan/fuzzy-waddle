@@ -1,0 +1,41 @@
+{
+    "anims": [
+        {
+            "key": "tivara_olival_small_buildings/tivara/olival_small/olival_small",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/olival_small/olival_small-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/olival_small/olival_small-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/olival_small/olival_small-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "JAVA_SCRIPT",
+        "esModule": false,
+        "generateCode": false
+    }
+}

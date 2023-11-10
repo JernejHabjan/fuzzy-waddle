@@ -1,0 +1,56 @@
+{
+    "anims": [
+        {
+            "key": "skaduwee_owlery_buildings/skaduwee/owlery/owlery-owl/owlery-owl",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "skaduwee_infantry_inn_buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.5,
+            "skipMissedFrames": true,
+            "repeat": -1
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "JAVA_SCRIPT",
+        "esModule": false,
+        "generateCode": false
+    }
+}

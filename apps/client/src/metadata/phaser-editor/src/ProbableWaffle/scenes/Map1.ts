@@ -2,68 +2,98 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
-import Sandhold from '../prefabs/Sandhold';
-import Owlery from '../prefabs/Owlery';
-import Bridge from '../prefabs/Bridge';
+import Phaser from "phaser";
+import Sandhold from "../prefabs/Sandhold";
+import Owlery from "../prefabs/Owlery";
+import Bridge from "../prefabs/Bridge";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
-  constructor() {
-    super('Map1');
 
-    /* START-USER-CTR-CODE */
+	constructor() {
+		super("Map1");
+
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  editorCreate(): void {
-    // tiles
-    const tiles = this.add.tilemap('tiles');
-    tiles.addTilesetImage('tiles', 'tiles_1');
+	editorCreate(): void {
 
-    // tiles_1
-    const tiles_1 = this.add.tilemap('tiles');
-    tiles_1.addTilesetImage('tiles', 'tiles_1');
+		// tiles
+		const tiles = this.add.tilemap("tiles");
+		tiles.addTilesetImage("tiles", "tiles_1");
 
-    // tileMap_level
-    tiles_1.createLayer('TileMap_level_1', ['tiles'], 608, -272);
+		// tiles_1
+		const tiles_1 = this.add.tilemap("tiles");
+		tiles_1.addTilesetImage("tiles", "tiles_1");
 
-    // sandhold
-    const sandhold = new Sandhold(this, 864, 368);
-    this.add.existing(sandhold);
+		// tilemap_level_1
+		tiles_1.createLayer("TileMap_level_1", ["tiles"], 0, 0);
 
-    // owlery
-    const owlery = new Owlery(this, 703, 286);
-    this.add.existing(owlery);
+		// sandhold
+		const sandhold = new Sandhold(this, 32, 592);
+		this.add.existing(sandhold);
 
-    // bridge
-    const bridge = new Bridge(this, 544, 592);
-    this.add.existing(bridge);
+		// owlery
+		const owlery = new Owlery(this, 320, 656);
+		this.add.existing(owlery);
 
-    // idle_downwarrior_idle
-    const idle_downwarrior_idle = this.add.sprite(800, 368, 'warrior_idle', 4);
-    idle_downwarrior_idle.play('idle_downwarrior_idle');
+		// bridge
+		const bridge = new Bridge(this, 32, 912);
+		this.add.existing(bridge);
 
-    // large_thrust_right
-    const large_thrust_right = this.add.sprite(896, 368, 'magician_female_large_thrust', 21);
-    large_thrust_right.play('large_thrust_right');
+		// general_warrior_idle_left
+		const general_warrior_idle_left = this.add.sprite(448, 896, "warrior_idle", 2);
+		general_warrior_idle_left.play("general_warrior_idle_left");
 
-    // shoot_left
-    const shoot_left = this.add.sprite(1024, 368, 'ranged_female_shoot', 12);
-    shoot_left.play('shoot_left');
+		// skaduwee_magician_female_idle_left
+		const skaduwee_magician_female_idle_left = this.add.sprite(512, 880, "magician_female_idle", 2);
+		skaduwee_magician_female_idle_left.play("skaduwee_magician_female_idle_left");
 
-    this.tiles = tiles;
-    this.tiles_1 = tiles_1;
+		// skaduwee_warrior_male_idle_left
+		const skaduwee_warrior_male_idle_left = this.add.sprite(416, 944, "warrior_male_idle", 2);
+		skaduwee_warrior_male_idle_left.play("skaduwee_warrior_male_idle_left");
 
-    this.events.emit('scene-awake');
-  }
+		// skaduwee_ranged_female_idle_right
+		const skaduwee_ranged_female_idle_right = this.add.sprite(192, 752, "ranged_female_idle", 6);
+		skaduwee_ranged_female_idle_right.play("skaduwee_ranged_female_idle_right");
 
-  private tiles!: Phaser.Tilemaps.Tilemap;
-  private tiles_1!: Phaser.Tilemaps.Tilemap;
+		// tivara_maceman_male_idle_down
+		const tivara_maceman_male_idle_down = this.add.sprite(288, 800, "maceman_male_idle", 4);
+		tivara_maceman_male_idle_down.play("tivara_maceman_male_idle_down");
 
-  /* START-USER-CODE */
+		// tivara_slingshot_female_idle_down
+		const tivara_slingshot_female_idle_down = this.add.sprite(480, 832, "slingshot_female_idle", 4);
+		tivara_slingshot_female_idle_down.play("tivara_slingshot_female_idle_down");
+
+		// tivara_worker_female_idle_right
+		const tivara_worker_female_idle_right = this.add.sprite(0, 784, "worker_female_idle_1", 6);
+		tivara_worker_female_idle_right.play("tivara_worker_female_idle_right");
+
+		// skaduwee_worker_female_idle_left
+		const skaduwee_worker_female_idle_left = this.add.sprite(352, 768, "worker_female_idle", 2);
+		skaduwee_worker_female_idle_left.play("skaduwee_worker_female_idle_left");
+
+		// skaduwee_worker_male_idle_down
+		const skaduwee_worker_male_idle_down = this.add.sprite(384, 816, "worker_male_idle", 4);
+		skaduwee_worker_male_idle_down.play("skaduwee_worker_male_idle_down");
+
+		// tivara_worker_male_idle_down
+		const tivara_worker_male_idle_down = this.add.sprite(96, 768, "worker_male_idle_1", 4);
+		tivara_worker_male_idle_down.play("tivara_worker_male_idle_down");
+
+		this.tiles = tiles;
+		this.tiles_1 = tiles_1;
+
+		this.events.emit("scene-awake");
+	}
+
+	private tiles!: Phaser.Tilemaps.Tilemap;
+	private tiles_1!: Phaser.Tilemaps.Tilemap;
+
+	/* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;

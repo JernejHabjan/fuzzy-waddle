@@ -1,7 +1,7 @@
 {
     "anims": [
         {
-            "key": "hurt",
+            "key": "skaduwee_ranged_female_hurt",
             "type": "frame",
             "frames": [
                 {
@@ -35,12 +35,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 5,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": 0
         },
         {
-            "key": "idle_up",
+            "key": "skaduwee_ranged_female_idle_up",
             "type": "frame",
             "frames": [
                 {
@@ -56,12 +56,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "idle_left",
+            "key": "skaduwee_ranged_female_idle_left",
             "type": "frame",
             "frames": [
                 {
@@ -77,12 +77,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "idle_down",
+            "key": "skaduwee_ranged_female_idle_down",
             "type": "frame",
             "frames": [
                 {
@@ -98,12 +98,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "idle_right",
+            "key": "skaduwee_ranged_female_idle_right",
             "type": "frame",
             "frames": [
                 {
@@ -119,12 +119,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "shoot_up",
+            "key": "skaduwee_ranged_female_shoot_up",
             "type": "frame",
             "frames": [
                 {
@@ -200,12 +200,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "shoot_left",
+            "key": "skaduwee_ranged_female_shoot_left",
             "type": "frame",
             "frames": [
                 {
@@ -281,12 +281,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "shoot_down",
+            "key": "skaduwee_ranged_female_shoot_down",
             "type": "frame",
             "frames": [
                 {
@@ -362,12 +362,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "shoot_right",
+            "key": "skaduwee_ranged_female_shoot_right",
             "type": "frame",
             "frames": [
                 {
@@ -443,12 +443,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_up",
+            "key": "skaduwee_ranged_female_walk_up",
             "type": "frame",
             "frames": [
                 {
@@ -500,12 +500,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_left",
+            "key": "skaduwee_ranged_female_walk_left",
             "type": "frame",
             "frames": [
                 {
@@ -557,12 +557,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_down",
+            "key": "skaduwee_ranged_female_walk_down",
             "type": "frame",
             "frames": [
                 {
@@ -614,12 +614,12 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         },
         {
-            "key": "walk_right",
+            "key": "skaduwee_ranged_female_walk_right",
             "type": "frame",
             "frames": [
                 {
@@ -671,7 +671,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1
         }

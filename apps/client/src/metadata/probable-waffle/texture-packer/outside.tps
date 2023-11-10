@@ -277,7 +277,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/outside/architecture/river/bridge - stone.png</key>
+            <key type="filename">../sprites/outside/architecture/river/bridge_stone.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

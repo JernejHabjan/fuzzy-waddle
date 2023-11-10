@@ -1,35 +1,35 @@
 {
     "anims": [
         {
-            "key": "general_warrior_hurt",
+            "key": "tivara_worker_female_hurt",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_hurt",
+                    "key": "worker_female_hurt_1",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_hurt",
+                    "key": "worker_female_hurt_1",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_hurt",
+                    "key": "worker_female_hurt_1",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_hurt",
+                    "key": "worker_female_hurt_1",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_hurt",
+                    "key": "worker_female_hurt_1",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
@@ -40,17 +40,17 @@
             "repeat": 0
         },
         {
-            "key": "general_warrior_idle_up",
+            "key": "tivara_worker_female_idle_up",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
@@ -61,17 +61,17 @@
             "repeat": -1
         },
         {
-            "key": "general_warrior_idle_left",
+            "key": "tivara_worker_female_idle_left",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
@@ -82,17 +82,17 @@
             "repeat": -1
         },
         {
-            "key": "general_warrior_idle_down",
+            "key": "tivara_worker_female_idle_down",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
@@ -103,17 +103,17 @@
             "repeat": -1
         },
         {
-            "key": "general_warrior_idle_right",
+            "key": "tivara_worker_female_idle_right",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_idle",
+                    "key": "worker_female_idle_1",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
@@ -124,47 +124,203 @@
             "repeat": -1
         },
         {
-            "key": "general_warrior_thrust_up",
+            "key": "tivara_worker_female_slash_up",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_slash_1",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_slash_1",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_slash_1",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_slash_1",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_slash_1",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
-                },
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "tivara_worker_female_slash_left",
+            "type": "frame",
+            "frames": [
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_slash_1",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_slash_1",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "tivara_worker_female_slash_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "tivara_worker_female_slash_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_slash_1",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "tivara_worker_female_thrust_up",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "worker_female_thrust_1",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_thrust_1",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_thrust_1",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_thrust_1",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_thrust_1",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_thrust_1",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "worker_female_thrust_1",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
@@ -175,47 +331,47 @@
             "repeat": -1
         },
         {
-            "key": "general_warrior_thrust_left",
+            "key": "tivara_worker_female_thrust_left",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 8,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 9,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 10,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 11,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 12,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 13,
                     "duration": 0,
                     "keyframe": false
@@ -226,47 +382,47 @@
             "repeat": -1
         },
         {
-            "key": "general_warrior_thrust_down",
+            "key": "tivara_worker_female_thrust_down",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 14,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 15,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 16,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 17,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 18,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 19,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 20,
                     "duration": 0,
                     "keyframe": false
@@ -277,276 +433,48 @@
             "repeat": -1
         },
         {
-            "key": "general_warrior_thrust_right",
+            "key": "tivara_worker_female_thrust_right",
             "type": "frame",
             "frames": [
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 21,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 22,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 23,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 24,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 25,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 26,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "warrior_thrust",
+                    "key": "worker_female_thrust_1",
                     "frame": 27,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "general_warrior_walk_up",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "warrior_walk",
-                    "frame": 0,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 1,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 2,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 3,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 4,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 5,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 6,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 7,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "general_warrior_walk_left",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "warrior_walk",
-                    "frame": 8,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 9,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 10,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 11,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 12,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 13,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 14,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 15,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "general_warrior_walk_down",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "warrior_walk",
-                    "frame": 16,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 17,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 18,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 19,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 20,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 21,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 22,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 23,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "general_warrior_walk_right",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "warrior_walk",
-                    "frame": 24,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 25,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 26,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 27,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 28,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 29,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 30,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "warrior_walk",
-                    "frame": 31,
                     "duration": 0,
                     "keyframe": false
                 }

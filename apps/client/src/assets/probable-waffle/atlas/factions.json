@@ -178,7 +178,7 @@
 					}
 				},
 				{
-					"filename": "buildings/skaduwee/barracks/barracks.png",
+					"filename": "buildings/skaduwee/infantry_inn/infantry_inn.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -220,7 +220,7 @@
 					}
 				},
 				{
-					"filename": "buildings/skaduwee/barracks/cloud-vertical.png",
+					"filename": "buildings/skaduwee/infantry_inn/cloud-vertical.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -514,7 +514,7 @@
 					}
 				},
 				{
-					"filename": "buildings/skaduwee/barracks/barracks-entrance/barracks-entrance-0.png",
+					"filename": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -577,7 +577,7 @@
 					}
 				},
 				{
-					"filename": "buildings/skaduwee/barracks/barracks-entrance/barracks-entrance-1.png",
+					"filename": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-1.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -876,6 +876,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:0aba0375b3358230c68debe35a08a922:948e8d97db6a7c476b153ec80a6aa381:a9758daa4601cfd09e71f5a21b84c376$"
+		"smartupdate": "$TexturePacker:SmartUpdate:3559e255834c90ee5ac3e5f17619cf2f:0ac0fde8f3317d8138e3bb861ddb2200:a9758daa4601cfd09e71f5a21b84c376$"
 	}
 }

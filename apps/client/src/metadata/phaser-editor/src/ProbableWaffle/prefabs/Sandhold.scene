@@ -2,7 +2,6 @@
     "id": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
     "sceneType": "PREFAB",
     "settings": {
-        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -17,30 +16,29 @@
             "type": "Container",
             "id": "75d98e32-5bb9-40eb-b3dc-40dff0670310",
             "label": "container_1",
-            "x": 624,
-            "y": 288,
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-155.18823546354855 78.30324261950545 -0.02994250870855808 -145.74275716590668 154.48454010192052 79.59086330792735 110.06162635136468 134.95855291006944 1.2576781797133663 161.35477702271857 -106.90245964772697 136.88998394270232",
+            "x": 160,
+            "y": 160,
             "list": [
                 {
                     "type": "Image",
                     "id": "c2521bdc-2237-48fc-a234-e24d31a901db",
-                    "label": "sprite_1",
+                    "label": "sandhold_building",
                     "texture": {
                         "key": "factions",
                         "frame": "buildings/tivara/sandhold/sandhold.png"
-                    },
-                    "x": -466,
-                    "y": -124
+                    }
                 },
                 {
                     "type": "Image",
                     "id": "a459f271-db15-401d-a2aa-969756c1fbdd",
-                    "label": "image_1",
+                    "label": "hover_crystal",
                     "texture": {
                         "key": "factions",
                         "frame": "buildings/tivara/sandhold/sandhold-crystal.png"
                     },
-                    "x": -466,
-                    "y": -236
+                    "y": -112
                 }
             ]
         }
@@ -50,6 +48,6 @@
         "app": "Phaser Editor 2D - Scene Editor",
         "url": "https://phasereditor2d.com",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
-        "version": 4
+        "version": 5
     }
 }

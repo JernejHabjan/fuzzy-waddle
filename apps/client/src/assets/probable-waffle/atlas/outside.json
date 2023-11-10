@@ -10,7 +10,7 @@
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "architecture/river/bridge - stone.png",
+					"filename": "architecture/river/bridge_stone.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {

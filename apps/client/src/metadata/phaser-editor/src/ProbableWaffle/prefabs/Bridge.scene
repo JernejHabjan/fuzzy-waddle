@@ -10,7 +10,7 @@
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
         "borderWidth": 320,
-        "borderHeight": 300
+        "borderHeight": 192
     },
     "displayList": [
         {
@@ -19,7 +19,7 @@
             "label": "image_1",
             "texture": {
                 "key": "outside",
-                "frame": "architecture/river/bridge - stone.png"
+                "frame": "architecture/river/bridge_stone.png"
             },
             "x": 160,
             "y": 96
@@ -30,6 +30,6 @@
         "app": "Phaser Editor 2D - Scene Editor",
         "url": "https://phasereditor2d.com",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
-        "version": 4
+        "version": 5
     }
 }
