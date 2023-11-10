@@ -8,7 +8,7 @@ import Phaser from 'phaser';
 
 export default class Sandhold extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 160, y ?? 160);
+    super(scene, x ?? 160, y ?? 240);
 
     this.setInteractive(
       new Phaser.Geom.Polygon(
@@ -18,11 +18,11 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     );
 
     // sandhold_building
-    const sandhold_building = scene.add.image(0, 0, 'factions', 'buildings/tivara/sandhold/sandhold.png');
+    const sandhold_building = scene.add.image(0, -80, 'factions', 'buildings/tivara/sandhold/sandhold.png');
     this.add(sandhold_building);
 
     // hover_crystal
-    const hover_crystal = scene.add.image(0, -112, 'factions', 'buildings/tivara/sandhold/sandhold-crystal.png');
+    const hover_crystal = scene.add.image(0, -192, 'factions', 'buildings/tivara/sandhold/sandhold-crystal.png');
     this.add(hover_crystal);
 
     /* START-USER-CTR-CODE */
@@ -45,7 +45,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
 
   spawnCrystal(scene: Phaser.Scene) {
-    const span = scene.add.sprite(-50, 30, 'factions', 'buildings/tivara/olival_small/olival_small-0.png');
+    const span = scene.add.sprite(-48, -48, 'factions', 'buildings/tivara/olival_small/olival_small-0.png');
     span.scaleX = 0.5;
     span.scaleY = 0.5;
     span.angle = -70;
@@ -55,8 +55,8 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     scene.tweens.add({
       targets: span,
       duration: 1000,
-      x: -100,
-      y: 130,
+      x: -112,
+      y: 64,
       onComplete: function () {
         span.destroy(); // destroy the sprite after the tween completes
       }

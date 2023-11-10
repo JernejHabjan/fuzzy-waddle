@@ -2,6 +2,7 @@
     "id": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
     "sceneType": "PREFAB",
     "settings": {
+        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -19,7 +20,7 @@
             "hitArea.shape": "POLYGON",
             "hitArea.points": "-155.18823546354855 78.30324261950545 -0.02994250870855808 -145.74275716590668 154.48454010192052 79.59086330792735 110.06162635136468 134.95855291006944 1.2576781797133663 161.35477702271857 -106.90245964772697 136.88998394270232",
             "x": 160,
-            "y": 160,
+            "y": 240,
             "list": [
                 {
                     "type": "Image",
@@ -28,7 +29,8 @@
                     "texture": {
                         "key": "factions",
                         "frame": "buildings/tivara/sandhold/sandhold.png"
-                    }
+                    },
+                    "y": -80
                 },
                 {
                     "type": "Image",
@@ -38,7 +40,7 @@
                         "key": "factions",
                         "frame": "buildings/tivara/sandhold/sandhold-crystal.png"
                     },
-                    "y": -112
+                    "y": -192
                 }
             ]
         }
