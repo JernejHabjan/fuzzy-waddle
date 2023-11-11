@@ -150,8 +150,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       phaser:
-        specifier: ^3.60.0
-        version: 3.60.0
+        specifier: ^3.70.0
+        version: 3.70.0
       phaser3-rex-plugins:
         specifier: ^1.60.7
         version: 1.60.7
@@ -298,8 +298,8 @@ importers:
   apps/client/src/metadata/phaser-editor:
     dependencies:
       phaser:
-        specifier: ^3.60.0
-        version: 3.60.0
+        specifier: ^3.70.0
+        version: 3.70.0
     devDependencies:
       clean-webpack-plugin:
         specifier: ^4.0.0
@@ -7744,8 +7744,8 @@ packages:
   /eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
 
-  /eventemitter3@5.0.0:
-    resolution: {integrity: sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==}
+  /eventemitter3@5.0.1:
+    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
     dev: false
 
   /events@3.3.0:
@@ -11312,10 +11312,10 @@ packages:
       - encoding
     dev: false
 
-  /phaser@3.60.0:
-    resolution: {integrity: sha512-IKUy35EnoEVcl2EmJ8WOyK4X8OoxHYdlhZLgRGpNrvD1fEagYffhVmwHcapE/tGiLgyrnezmXIo5RrH2NcrTHw==}
+  /phaser@3.70.0:
+    resolution: {integrity: sha512-2g+gh+Jp9f/Ho9FOXOYbIJMGf3UZXyMbW2iLScFaLQw11e/LqVyxj/YmaBauWbHabeTnZjiWkPklDnxhesMH0g==}
     dependencies:
-      eventemitter3: 5.0.0
+      eventemitter3: 5.0.1
     dev: false
 
   /phasereditor2d-launcher@3.64.0:

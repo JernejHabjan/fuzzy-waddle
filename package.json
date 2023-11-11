@@ -86,7 +86,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "passport-strategy": "^1.0.0",
-    "phaser": "^3.60.0",
+    "phaser": "^3.70.0",
     "phaser3-rex-plugins": "^1.60.7",
     "profanity-cleaner": "^0.0.3",
     "reflect-metadata": "^0.1.13",

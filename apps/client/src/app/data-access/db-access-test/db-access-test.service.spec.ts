@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DbAccessTestService } from './db-access-test.service';
+import { DataAccessService } from '../data-access.service';
+import { dataAccessServiceStub } from '../data-access.service.spec';
 
 export const dbAccessTestServiceStub = {
   get(): void {
@@ -17,7 +19,7 @@ describe('DbAccessTest', () => {
   let service: DbAccessTestService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [{ provide: DataAccessService, useValue: dataAccessServiceStub }] });
     service = TestBed.inject(DbAccessTestService);
   });
 
