@@ -1,0 +1,36 @@
+{
+    "id": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "ab4a54ef-0776-45f7-bcd8-d3bd1467a5ae",
+            "label": "buildings_tivara_ankguard_png",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/ankguard.png"
+            },
+            "x": 128,
+            "y": 193.44103594227,
+            "originY": 0.7556290182509188
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

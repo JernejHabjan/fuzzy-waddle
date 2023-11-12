@@ -2,30 +2,26 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 160, y ?? 240);
 
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        '-155.18823546354855 78.30324261950545 -0.02994250870855808 -145.74275716590668 154.48454010192052 79.59086330792735 110.06162635136468 134.95855291006944 1.2576781797133663 161.35477702271857 -106.90245964772697 136.88998394270232'
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 160, y ?? 240);
 
-    // sandhold_building
-    const sandhold_building = scene.add.image(0, -80, 'factions', 'buildings/tivara/sandhold/sandhold.png');
-    this.add(sandhold_building);
+		this.setInteractive(new Phaser.Geom.Polygon("-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22"), Phaser.Geom.Polygon.Contains);
 
-    // hover_crystal
-    const hover_crystal = scene.add.image(0, -192, 'factions', 'buildings/tivara/sandhold/sandhold-crystal.png');
-    this.add(hover_crystal);
+		// sandhold_building
+		const sandhold_building = scene.add.image(0, -80, "factions", "buildings/tivara/sandhold/sandhold.png");
+		this.add(sandhold_building);
 
-    /* START-USER-CTR-CODE */
+		// hover_crystal
+		const hover_crystal = scene.add.image(0, -192, "factions", "buildings/tivara/sandhold/sandhold-crystal.png");
+		this.add(hover_crystal);
+
+		/* START-USER-CTR-CODE */
     // Create a continuous hover effect for hover_crystal
     scene.tweens.add({
       targets: hover_crystal,
@@ -40,9 +36,9 @@ export default class Sandhold extends Phaser.GameObjects.Container {
       sandhold_building.setTint(0xff0000); // Tint to red
     });
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   spawnCrystal(scene: Phaser.Scene) {
     const span = scene.add.sprite(-48, -48, 'factions', 'buildings/tivara/olival_small/olival_small-0.png');

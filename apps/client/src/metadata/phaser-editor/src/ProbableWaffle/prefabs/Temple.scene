@@ -1,0 +1,36 @@
+{
+    "id": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 192,
+        "borderHeight": 192
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "f61b468d-f09c-4eeb-b80e-059f01e4db7d",
+            "label": "buildings_tivara_temple_png",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/temple.png"
+            },
+            "x": 96,
+            "y": 144.01421393111485,
+            "originY": 0.7500740308912232
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "id": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "0cd44f0e-8e11-4add-87e2-7a0577339d01",
+            "label": "buildings_tivara_workmill_png",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/workmill.png"
+            },
+            "x": 64,
+            "y": 95.9987593553798,
+            "originY": 0.7499903219215333
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

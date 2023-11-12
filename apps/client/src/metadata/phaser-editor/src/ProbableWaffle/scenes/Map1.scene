@@ -218,6 +218,50 @@
             "x": 384,
             "y": 880,
             "originY": 0.75
+        },
+        {
+            "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
+            "id": "adc87d90-96a4-4335-bfd0-2472752d30b7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "infantryInn",
+            "x": 480,
+            "y": 608
+        },
+        {
+            "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
+            "id": "8992b5da-da70-489c-81d6-477a57ead729",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "ankGuard",
+            "x": 704,
+            "y": 592
+        },
+        {
+            "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
+            "id": "02812b72-2a7e-49fa-b81b-3edaf9e35854",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "temple",
+            "x": -192,
+            "y": 400
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "cbfe3de8-8bdc-40ae-b7b2-c94b0cded7fc",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill",
+            "x": -608,
+            "y": 866
         }
     ],
     "plainObjects": [

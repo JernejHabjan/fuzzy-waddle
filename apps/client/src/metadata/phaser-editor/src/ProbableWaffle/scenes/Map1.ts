@@ -2,123 +2,140 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
-import Sandhold from '../prefabs/Sandhold';
-import Owlery from '../prefabs/Owlery';
-import Bridge from '../prefabs/Bridge';
+import Phaser from "phaser";
+import Sandhold from "../prefabs/Sandhold";
+import Owlery from "../prefabs/Owlery";
+import Bridge from "../prefabs/Bridge";
+import InfantryInn from "../prefabs/InfantryInn";
+import AnkGuard from "../prefabs/AnkGuard";
+import Temple from "../prefabs/Temple";
+import WorkMill from "../prefabs/WorkMill";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
-  constructor() {
-    super('Map1');
 
-    /* START-USER-CTR-CODE */
+	constructor() {
+		super("Map1");
+
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  editorCreate(): void {
-    // tiles
-    const tiles = this.add.tilemap('tiles');
-    tiles.addTilesetImage('tiles', 'tiles_1');
+	editorCreate(): void {
 
-    // tiles_1
-    const tiles_1 = this.add.tilemap('tiles');
-    tiles_1.addTilesetImage('tiles', 'tiles_1');
+		// tiles
+		const tiles = this.add.tilemap("tiles");
+		tiles.addTilesetImage("tiles", "tiles_1");
 
-    // tilemap_level_1
-    tiles_1.createLayer('TileMap_level_1', ['tiles'], 0, 0);
+		// tiles_1
+		const tiles_1 = this.add.tilemap("tiles");
+		tiles_1.addTilesetImage("tiles", "tiles_1");
 
-    // sandhold
-    const sandhold = new Sandhold(this, 32, 592);
-    this.add.existing(sandhold);
+		// tilemap_level_1
+		tiles_1.createLayer("TileMap_level_1", ["tiles"], 0, 0);
 
-    // owlery
-    const owlery = new Owlery(this, 288, 640);
-    this.add.existing(owlery);
+		// sandhold
+		const sandhold = new Sandhold(this, 32, 592);
+		this.add.existing(sandhold);
 
-    // bridge
-    const bridge = new Bridge(this, 32, 912);
-    this.add.existing(bridge);
+		// owlery
+		const owlery = new Owlery(this, 288, 640);
+		this.add.existing(owlery);
 
-    // general_warrior_idle_left
-    const general_warrior_idle_left = this.add.sprite(448, 896, 'warrior_idle', 2);
-    general_warrior_idle_left.setOrigin(0.5, 0.9);
-    general_warrior_idle_left.play('general_warrior_idle_left');
+		// bridge
+		const bridge = new Bridge(this, 32, 912);
+		this.add.existing(bridge);
 
-    // skaduwee_magician_female_idle_left
-    const skaduwee_magician_female_idle_left = this.add.sprite(512, 880, 'magician_female_idle', 2);
-    skaduwee_magician_female_idle_left.setOrigin(0.5, 0.9);
-    skaduwee_magician_female_idle_left.play('skaduwee_magician_female_idle_left');
+		// general_warrior_idle_left
+		const general_warrior_idle_left = this.add.sprite(448, 896, "warrior_idle", 2);
+		general_warrior_idle_left.setOrigin(0.5, 0.9);
+		general_warrior_idle_left.play("general_warrior_idle_left");
 
-    // skaduwee_warrior_male_idle_left
-    const skaduwee_warrior_male_idle_left = this.add.sprite(416, 944, 'warrior_male_idle', 2);
-    skaduwee_warrior_male_idle_left.setOrigin(0.5, 0.9);
-    skaduwee_warrior_male_idle_left.play('skaduwee_warrior_male_idle_left');
+		// skaduwee_magician_female_idle_left
+		const skaduwee_magician_female_idle_left = this.add.sprite(512, 880, "magician_female_idle", 2);
+		skaduwee_magician_female_idle_left.setOrigin(0.5, 0.9);
+		skaduwee_magician_female_idle_left.play("skaduwee_magician_female_idle_left");
 
-    // skaduwee_ranged_female_idle_right
-    const skaduwee_ranged_female_idle_right = this.add.sprite(192, 752, 'ranged_female_idle', 6);
-    skaduwee_ranged_female_idle_right.setOrigin(0.5, 0.9);
-    skaduwee_ranged_female_idle_right.play('skaduwee_ranged_female_idle_right');
+		// skaduwee_warrior_male_idle_left
+		const skaduwee_warrior_male_idle_left = this.add.sprite(416, 944, "warrior_male_idle", 2);
+		skaduwee_warrior_male_idle_left.setOrigin(0.5, 0.9);
+		skaduwee_warrior_male_idle_left.play("skaduwee_warrior_male_idle_left");
 
-    // tivara_maceman_male_idle_down
-    const tivara_maceman_male_idle_down = this.add.sprite(320, 896, 'maceman_male_idle', 4);
-    tivara_maceman_male_idle_down.setOrigin(0.5, 0.9);
-    tivara_maceman_male_idle_down.play('tivara_maceman_male_idle_down');
+		// skaduwee_ranged_female_idle_right
+		const skaduwee_ranged_female_idle_right = this.add.sprite(192, 752, "ranged_female_idle", 6);
+		skaduwee_ranged_female_idle_right.setOrigin(0.5, 0.9);
+		skaduwee_ranged_female_idle_right.play("skaduwee_ranged_female_idle_right");
 
-    // tivara_slingshot_female_idle_down
-    const tivara_slingshot_female_idle_down = this.add.sprite(480, 832, 'slingshot_female_idle', 4);
-    tivara_slingshot_female_idle_down.setOrigin(0.5, 0.9);
-    tivara_slingshot_female_idle_down.play('tivara_slingshot_female_idle_down');
+		// tivara_maceman_male_idle_down
+		const tivara_maceman_male_idle_down = this.add.sprite(320, 896, "maceman_male_idle", 4);
+		tivara_maceman_male_idle_down.setOrigin(0.5, 0.9);
+		tivara_maceman_male_idle_down.play("tivara_maceman_male_idle_down");
 
-    // tivara_worker_female_idle_right
-    const tivara_worker_female_idle_right = this.add.sprite(0, 784, 'worker_female_idle_1', 6);
-    tivara_worker_female_idle_right.play('tivara_worker_female_idle_right');
+		// tivara_slingshot_female_idle_down
+		const tivara_slingshot_female_idle_down = this.add.sprite(480, 832, "slingshot_female_idle", 4);
+		tivara_slingshot_female_idle_down.setOrigin(0.5, 0.9);
+		tivara_slingshot_female_idle_down.play("tivara_slingshot_female_idle_down");
 
-    // skaduwee_worker_female_idle_left
-    const skaduwee_worker_female_idle_left = this.add.sprite(352, 768, 'worker_female_idle', 2);
-    skaduwee_worker_female_idle_left.setOrigin(0.5, 0.9);
-    skaduwee_worker_female_idle_left.play('skaduwee_worker_female_idle_left');
+		// tivara_worker_female_idle_right
+		const tivara_worker_female_idle_right = this.add.sprite(0, 784, "worker_female_idle_1", 6);
+		tivara_worker_female_idle_right.play("tivara_worker_female_idle_right");
 
-    // skaduwee_worker_male_idle_down
-    const skaduwee_worker_male_idle_down = this.add.sprite(384, 816, 'worker_male_idle', 4);
-    skaduwee_worker_male_idle_down.setOrigin(0.5, 0.9);
-    skaduwee_worker_male_idle_down.play('skaduwee_worker_male_idle_down');
+		// skaduwee_worker_female_idle_left
+		const skaduwee_worker_female_idle_left = this.add.sprite(352, 768, "worker_female_idle", 2);
+		skaduwee_worker_female_idle_left.setOrigin(0.5, 0.9);
+		skaduwee_worker_female_idle_left.play("skaduwee_worker_female_idle_left");
 
-    // tivara_worker_male_idle_down
-    const tivara_worker_male_idle_down = this.add.sprite(96, 768, 'worker_male_idle_1', 4);
-    tivara_worker_male_idle_down.setOrigin(0.5, 0.9);
-    tivara_worker_male_idle_down.play('tivara_worker_male_idle_down');
+		// skaduwee_worker_male_idle_down
+		const skaduwee_worker_male_idle_down = this.add.sprite(384, 816, "worker_male_idle", 4);
+		skaduwee_worker_male_idle_down.setOrigin(0.5, 0.9);
+		skaduwee_worker_male_idle_down.play("skaduwee_worker_male_idle_down");
 
-    // architecture_blocks_height_4_png
-    const architecture_blocks_height_4_png = this.add.image(352, 864, 'outside', 'architecture/blocks/height_4.png');
-    architecture_blocks_height_4_png.setOrigin(0.5, 0.75);
+		// tivara_worker_male_idle_down
+		const tivara_worker_male_idle_down = this.add.sprite(96, 768, "worker_male_idle_1", 4);
+		tivara_worker_male_idle_down.setOrigin(0.5, 0.9);
+		tivara_worker_male_idle_down.play("tivara_worker_male_idle_down");
 
-    // architecture_blocks_hollow_bottom_png
-    const architecture_blocks_hollow_bottom_png = this.add.image(
-      384,
-      880,
-      'outside',
-      'architecture/blocks/hollow_bottom.png'
-    );
-    architecture_blocks_hollow_bottom_png.setOrigin(0.5, 0.75);
+		// architecture_blocks_height_4_png
+		const architecture_blocks_height_4_png = this.add.image(352, 864, "outside", "architecture/blocks/height_4.png");
+		architecture_blocks_height_4_png.setOrigin(0.5, 0.75);
 
-    // lists
-    const terrain = [architecture_blocks_hollow_bottom_png, architecture_blocks_height_4_png];
+		// architecture_blocks_hollow_bottom_png
+		const architecture_blocks_hollow_bottom_png = this.add.image(384, 880, "outside", "architecture/blocks/hollow_bottom.png");
+		architecture_blocks_hollow_bottom_png.setOrigin(0.5, 0.75);
 
-    this.tiles = tiles;
-    this.tiles_1 = tiles_1;
-    this.terrain = terrain;
+		// infantryInn
+		const infantryInn = new InfantryInn(this, 480, 608);
+		this.add.existing(infantryInn);
 
-    this.events.emit('scene-awake');
-  }
+		// ankGuard
+		const ankGuard = new AnkGuard(this, 704, 592);
+		this.add.existing(ankGuard);
 
-  private tiles!: Phaser.Tilemaps.Tilemap;
-  private tiles_1!: Phaser.Tilemaps.Tilemap;
-  private terrain!: Phaser.GameObjects.Image[];
+		// temple
+		const temple = new Temple(this, -192, 400);
+		this.add.existing(temple);
 
-  /* START-USER-CODE */
+		// workMill
+		const workMill = new WorkMill(this, -608, 866);
+		this.add.existing(workMill);
+
+		// lists
+		const terrain = [architecture_blocks_hollow_bottom_png, architecture_blocks_height_4_png];
+
+		this.tiles = tiles;
+		this.tiles_1 = tiles_1;
+		this.terrain = terrain;
+
+		this.events.emit("scene-awake");
+	}
+
+	private tiles!: Phaser.Tilemaps.Tilemap;
+	private tiles_1!: Phaser.Tilemaps.Tilemap;
+	private terrain!: Phaser.GameObjects.Image[];
+
+	/* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
