@@ -2,140 +2,142 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
-import Sandhold from "../prefabs/Sandhold";
-import Owlery from "../prefabs/Owlery";
-import Bridge from "../prefabs/Bridge";
-import InfantryInn from "../prefabs/InfantryInn";
-import AnkGuard from "../prefabs/AnkGuard";
-import Temple from "../prefabs/Temple";
-import WorkMill from "../prefabs/WorkMill";
+import Phaser from 'phaser';
+import Sandhold from '../prefabs/Sandhold';
+import Owlery from '../prefabs/Owlery';
+import Bridge from '../prefabs/Bridge';
+import InfantryInn from '../prefabs/InfantryInn';
+import AnkGuard from '../prefabs/AnkGuard';
+import Temple from '../prefabs/Temple';
+import WorkMill from '../prefabs/WorkMill';
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
+  constructor() {
+    super('Map1');
 
-	constructor() {
-		super("Map1");
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	editorCreate(): void {
+  editorCreate(): void {
+    // tiles
+    const tiles = this.add.tilemap('tiles');
+    tiles.addTilesetImage('tiles', 'tiles_1');
 
-		// tiles
-		const tiles = this.add.tilemap("tiles");
-		tiles.addTilesetImage("tiles", "tiles_1");
+    // tilemap_level_1
+    tiles.createLayer('TileMap_level_1', ['tiles'], 0, 0);
 
-		// tiles_1
-		const tiles_1 = this.add.tilemap("tiles");
-		tiles_1.addTilesetImage("tiles", "tiles_1");
+    // sandhold
+    const sandhold = new Sandhold(this, 32, 592);
+    this.add.existing(sandhold);
 
-		// tilemap_level_1
-		tiles_1.createLayer("TileMap_level_1", ["tiles"], 0, 0);
+    // owlery
+    const owlery = new Owlery(this, 288, 640);
+    this.add.existing(owlery);
 
-		// sandhold
-		const sandhold = new Sandhold(this, 32, 592);
-		this.add.existing(sandhold);
+    // bridge
+    const bridge = new Bridge(this, 32, 912);
+    this.add.existing(bridge);
 
-		// owlery
-		const owlery = new Owlery(this, 288, 640);
-		this.add.existing(owlery);
+    // general_warrior_idle_left
+    const general_warrior_idle_left = this.add.sprite(448, 896, 'warrior_idle', 2);
+    general_warrior_idle_left.setOrigin(0.5, 0.9);
+    general_warrior_idle_left.play('general_warrior_idle_left');
 
-		// bridge
-		const bridge = new Bridge(this, 32, 912);
-		this.add.existing(bridge);
+    // skaduwee_magician_female_idle_left
+    const skaduwee_magician_female_idle_left = this.add.sprite(512, 880, 'magician_female_idle', 2);
+    skaduwee_magician_female_idle_left.setOrigin(0.5, 0.9);
+    skaduwee_magician_female_idle_left.play('skaduwee_magician_female_idle_left');
 
-		// general_warrior_idle_left
-		const general_warrior_idle_left = this.add.sprite(448, 896, "warrior_idle", 2);
-		general_warrior_idle_left.setOrigin(0.5, 0.9);
-		general_warrior_idle_left.play("general_warrior_idle_left");
+    // skaduwee_warrior_male_idle_left
+    const skaduwee_warrior_male_idle_left = this.add.sprite(416, 944, 'warrior_male_idle', 2);
+    skaduwee_warrior_male_idle_left.setOrigin(0.5, 0.9);
+    skaduwee_warrior_male_idle_left.play('skaduwee_warrior_male_idle_left');
 
-		// skaduwee_magician_female_idle_left
-		const skaduwee_magician_female_idle_left = this.add.sprite(512, 880, "magician_female_idle", 2);
-		skaduwee_magician_female_idle_left.setOrigin(0.5, 0.9);
-		skaduwee_magician_female_idle_left.play("skaduwee_magician_female_idle_left");
+    // skaduwee_ranged_female_idle_right
+    const skaduwee_ranged_female_idle_right = this.add.sprite(96, 784, 'ranged_female_idle', 6);
+    skaduwee_ranged_female_idle_right.setOrigin(0.5, 0.9);
+    skaduwee_ranged_female_idle_right.play('skaduwee_ranged_female_idle_right');
 
-		// skaduwee_warrior_male_idle_left
-		const skaduwee_warrior_male_idle_left = this.add.sprite(416, 944, "warrior_male_idle", 2);
-		skaduwee_warrior_male_idle_left.setOrigin(0.5, 0.9);
-		skaduwee_warrior_male_idle_left.play("skaduwee_warrior_male_idle_left");
+    // tivara_maceman_male_idle_down
+    const tivara_maceman_male_idle_down = this.add.sprite(320, 896, 'maceman_male_idle', 4);
+    tivara_maceman_male_idle_down.setOrigin(0.5, 0.9);
+    tivara_maceman_male_idle_down.play('tivara_maceman_male_idle_down');
 
-		// skaduwee_ranged_female_idle_right
-		const skaduwee_ranged_female_idle_right = this.add.sprite(96, 784, "ranged_female_idle", 6);
-		skaduwee_ranged_female_idle_right.setOrigin(0.5, 0.9);
-		skaduwee_ranged_female_idle_right.play("skaduwee_ranged_female_idle_right");
+    // tivara_slingshot_female_idle_down
+    const tivara_slingshot_female_idle_down = this.add.sprite(480, 832, 'slingshot_female_idle', 4);
+    tivara_slingshot_female_idle_down.setOrigin(0.5, 0.9);
+    tivara_slingshot_female_idle_down.play('tivara_slingshot_female_idle_down');
 
-		// tivara_maceman_male_idle_down
-		const tivara_maceman_male_idle_down = this.add.sprite(320, 896, "maceman_male_idle", 4);
-		tivara_maceman_male_idle_down.setOrigin(0.5, 0.9);
-		tivara_maceman_male_idle_down.play("tivara_maceman_male_idle_down");
+    // tivara_worker_female_idle_right
+    const tivara_worker_female_idle_right = this.add.sprite(0, 784, 'worker_female_idle_1', 6);
+    tivara_worker_female_idle_right.play('tivara_worker_female_idle_right');
 
-		// tivara_slingshot_female_idle_down
-		const tivara_slingshot_female_idle_down = this.add.sprite(480, 832, "slingshot_female_idle", 4);
-		tivara_slingshot_female_idle_down.setOrigin(0.5, 0.9);
-		tivara_slingshot_female_idle_down.play("tivara_slingshot_female_idle_down");
+    // skaduwee_worker_female_idle_left
+    const skaduwee_worker_female_idle_left = this.add.sprite(352, 768, 'worker_female_idle', 2);
+    skaduwee_worker_female_idle_left.setOrigin(0.5, 0.9);
+    skaduwee_worker_female_idle_left.play('skaduwee_worker_female_idle_left');
 
-		// tivara_worker_female_idle_right
-		const tivara_worker_female_idle_right = this.add.sprite(0, 784, "worker_female_idle_1", 6);
-		tivara_worker_female_idle_right.play("tivara_worker_female_idle_right");
+    // skaduwee_worker_male_idle_down
+    const skaduwee_worker_male_idle_down = this.add.sprite(384, 816, 'worker_male_idle', 4);
+    skaduwee_worker_male_idle_down.setOrigin(0.5, 0.9);
+    skaduwee_worker_male_idle_down.play('skaduwee_worker_male_idle_down');
 
-		// skaduwee_worker_female_idle_left
-		const skaduwee_worker_female_idle_left = this.add.sprite(352, 768, "worker_female_idle", 2);
-		skaduwee_worker_female_idle_left.setOrigin(0.5, 0.9);
-		skaduwee_worker_female_idle_left.play("skaduwee_worker_female_idle_left");
+    // tivara_worker_male_idle_down
+    const tivara_worker_male_idle_down = this.add.sprite(96, 768, 'worker_male_idle_1', 4);
+    tivara_worker_male_idle_down.setOrigin(0.5, 0.9);
+    tivara_worker_male_idle_down.play('tivara_worker_male_idle_down');
 
-		// skaduwee_worker_male_idle_down
-		const skaduwee_worker_male_idle_down = this.add.sprite(384, 816, "worker_male_idle", 4);
-		skaduwee_worker_male_idle_down.setOrigin(0.5, 0.9);
-		skaduwee_worker_male_idle_down.play("skaduwee_worker_male_idle_down");
+    // infantryInn
+    const infantryInn = new InfantryInn(this, 480, 608);
+    this.add.existing(infantryInn);
 
-		// tivara_worker_male_idle_down
-		const tivara_worker_male_idle_down = this.add.sprite(96, 768, "worker_male_idle_1", 4);
-		tivara_worker_male_idle_down.setOrigin(0.5, 0.9);
-		tivara_worker_male_idle_down.play("tivara_worker_male_idle_down");
+    // ankGuard
+    const ankGuard = new AnkGuard(this, 704, 592);
+    this.add.existing(ankGuard);
 
-		// infantryInn
-		const infantryInn = new InfantryInn(this, 480, 608);
-		this.add.existing(infantryInn);
+    // temple
+    const temple = new Temple(this, -192, 400);
+    this.add.existing(temple);
 
-		// ankGuard
-		const ankGuard = new AnkGuard(this, 704, 592);
-		this.add.existing(ankGuard);
+    // workMill
+    const workMill = new WorkMill(this, -608, 866);
+    this.add.existing(workMill);
 
-		// temple
-		const temple = new Temple(this, -192, 400);
-		this.add.existing(temple);
+    // TileMap_level_2
+    const tileMap_level_2 = this.add.container(0, 0);
 
-		// workMill
-		const workMill = new WorkMill(this, -608, 866);
-		this.add.existing(workMill);
+    // architecture_blocks_doors_left_png
+    const architecture_blocks_doors_left_png = this.add.image(
+      288,
+      832,
+      'outside',
+      'architecture/blocks/doors_left.png'
+    );
+    architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
+    tileMap_level_2.add(architecture_blocks_doors_left_png);
 
-		// TileMap_level_2
-		const tileMap_level_2 = this.add.container(0, 0);
+    // architecture_blocks_doors_right_png
+    const architecture_blocks_doors_right_png = this.add.image(
+      256,
+      816,
+      'outside',
+      'architecture/blocks/doors_right.png'
+    );
+    architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
+    tileMap_level_2.add(architecture_blocks_doors_right_png);
 
-		// architecture_blocks_doors_left_png
-		const architecture_blocks_doors_left_png = this.add.image(288, 832, "outside", "architecture/blocks/doors_left.png");
-		architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
-		tileMap_level_2.add(architecture_blocks_doors_left_png);
+    this.tiles = tiles;
 
-		// architecture_blocks_doors_right_png
-		const architecture_blocks_doors_right_png = this.add.image(256, 816, "outside", "architecture/blocks/doors_right.png");
-		architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
-		tileMap_level_2.add(architecture_blocks_doors_right_png);
+    this.events.emit('scene-awake');
+  }
 
-		this.tiles = tiles;
-		this.tiles_1 = tiles_1;
+  private tiles!: Phaser.Tilemaps.Tilemap;
 
-		this.events.emit("scene-awake");
-	}
-
-	private tiles!: Phaser.Tilemaps.Tilemap;
-	private tiles_1!: Phaser.Tilemaps.Tilemap;
-
-	/* START-USER-CODE */
+  /* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
@@ -169,16 +171,16 @@ export default class Map1 extends Phaser.Scene {
     });
 
     // iterate also over tileMap_level_2 and set depth - todo is this needed?
-    this.tileMapLevel2.list.forEach((child: any) => {
-      child.depth = child.y;
-    });
+    // this.tileMapLevel2.list.forEach((child: any) => {
+    //   child.depth = child.y;
+    // });
   };
   handleCameraCenter = () => {
     // set camera to the center of isometric tilemap
-    const mapLeft = 0 + 32 - this.tiles_1.widthInPixels / 2;
-    const mapRight = 0 + 32 + this.tiles_1.widthInPixels / 2;
+    const mapLeft = 0 + 32 - this.tiles.widthInPixels / 2;
+    const mapRight = 0 + 32 + this.tiles.widthInPixels / 2;
     const mapTop = 0;
-    const mapBottom = this.tiles_1.heightInPixels;
+    const mapBottom = this.tiles.heightInPixels;
 
     this.cameras.main.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, true);
   };

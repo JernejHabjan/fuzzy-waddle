@@ -273,21 +273,9 @@
     ],
     "plainObjects": [
         {
-            "id": "7d574b18-8d9c-4f5e-a0eb-a641aa2d47ef",
-            "type": "Tilemap",
-            "label": "tiles",
-            "key": "tiles",
-            "tilesets": [
-                {
-                    "name": "tiles",
-                    "imageKey": "tiles_1"
-                }
-            ]
-        },
-        {
             "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "type": "Tilemap",
-            "label": "tiles_1",
+            "label": "tiles",
             "key": "tiles",
             "tilesets": [
                 {
