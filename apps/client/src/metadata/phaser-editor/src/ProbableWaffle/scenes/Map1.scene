@@ -57,74 +57,6 @@
             "y": 912
         },
         {
-            "type": "Sprite",
-            "id": "f0c600c5-ab49-4459-9d51-41e005fda14e",
-            "label": "general_warrior_idle_left",
-            "texture": {
-                "key": "warrior_idle",
-                "frame": 2
-            },
-            "x": 448,
-            "y": 896,
-            "originY": 0.9,
-            "animationPlayMethod": 1,
-            "animationKey": "general_warrior_idle_left"
-        },
-        {
-            "type": "Sprite",
-            "id": "2d594748-20d8-4106-88f8-e7e3e9412dda",
-            "label": "tivara_maceman_male_idle_down",
-            "texture": {
-                "key": "maceman_male_idle",
-                "frame": 4
-            },
-            "x": 320,
-            "y": 896,
-            "originY": 0.9,
-            "animationPlayMethod": 1,
-            "animationKey": "tivara_maceman_male_idle_down"
-        },
-        {
-            "type": "Sprite",
-            "id": "c03ec273-432a-49cb-b0b7-858b35582919",
-            "label": "tivara_slingshot_female_idle_down",
-            "texture": {
-                "key": "slingshot_female_idle",
-                "frame": 4
-            },
-            "x": 480,
-            "y": 832,
-            "originY": 0.9,
-            "animationPlayMethod": 1,
-            "animationKey": "tivara_slingshot_female_idle_down"
-        },
-        {
-            "type": "Sprite",
-            "id": "269e1c31-cd69-4223-979e-a8b035a23e51",
-            "label": "tivara_worker_female_idle_right",
-            "texture": {
-                "key": "worker_female_idle_1",
-                "frame": 6
-            },
-            "y": 784,
-            "animationPlayMethod": 1,
-            "animationKey": "tivara_worker_female_idle_right"
-        },
-        {
-            "type": "Sprite",
-            "id": "37bc48dc-6d7a-47d7-8e5a-b441d3c70b37",
-            "label": "tivara_worker_male_idle_down",
-            "texture": {
-                "key": "worker_male_idle_1",
-                "frame": 4
-            },
-            "x": 96,
-            "y": 768,
-            "originY": 0.9,
-            "animationPlayMethod": 1,
-            "animationKey": "tivara_worker_male_idle_down"
-        },
-        {
             "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
             "id": "adc87d90-96a4-4335-bfd0-2472752d30b7",
             "unlock": [
@@ -246,6 +178,61 @@
             "label": "skaduweeWarriorMale",
             "x": 208,
             "y": 720
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-e0ec3446c7a8",
+            "id": "060ac9c8-3ad3-41d1-be6e-51f62b58b564",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "generalWarrior",
+            "x": 400,
+            "y": 864
+        },
+        {
+            "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
+            "id": "8122d69d-4be8-42bf-a787-14b598f26f46",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraSlingshotFemale",
+            "x": 208,
+            "y": 848
+        },
+        {
+            "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
+            "id": "d6017f59-c654-46b9-9f2d-a2de4490f9a7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerFemale",
+            "x": 301,
+            "y": 874
+        },
+        {
+            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
+            "id": "eb554ade-cbf6-43b4-9dac-53bb8e92863b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerMale",
+            "x": 357,
+            "y": 889
+        },
+        {
+            "prefabId": "54836fe4-5089-4b7e-9db4-b71382bcb55f",
+            "id": "7b69f7f9-2bcc-4ccd-8a59-07e0ae53e6a3",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraMacemanMale",
+            "x": 448,
+            "y": 880
         }
     ],
     "plainObjects": [

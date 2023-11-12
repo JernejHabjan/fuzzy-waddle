@@ -1,0 +1,41 @@
+{
+    "id": "004276d5-437a-44f5-b7ca-161086c4ad5e",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "23b1e901-ae98-4eb5-b260-46be79d96f2f",
+            "label": "tivara_worker_female_idle_down",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 32,
+            "texture": {
+                "key": "worker_female_idle_1",
+                "frame": 4
+            },
+            "x": 32,
+            "y": 57.107040025447624,
+            "originY": 0.8922974795475218,
+            "animationPlayMethod": 1,
+            "animationKey": "tivara_worker_female_idle_down"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

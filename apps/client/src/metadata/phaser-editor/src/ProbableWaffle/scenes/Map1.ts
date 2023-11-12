@@ -15,6 +15,11 @@ import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/SkaduweeWorkerF
 import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/SkaduweeRangedFemale";
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/SkaduweeWarriorMale";
+import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
+import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
+import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
+import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
+import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -48,30 +53,6 @@ export default class Map1 extends Phaser.Scene {
 		// bridge
 		const bridge = new Bridge(this, 32, 912);
 		this.add.existing(bridge);
-
-		// general_warrior_idle_left
-		const general_warrior_idle_left = this.add.sprite(448, 896, "warrior_idle", 2);
-		general_warrior_idle_left.setOrigin(0.5, 0.9);
-		general_warrior_idle_left.play("general_warrior_idle_left");
-
-		// tivara_maceman_male_idle_down
-		const tivara_maceman_male_idle_down = this.add.sprite(320, 896, "maceman_male_idle", 4);
-		tivara_maceman_male_idle_down.setOrigin(0.5, 0.9);
-		tivara_maceman_male_idle_down.play("tivara_maceman_male_idle_down");
-
-		// tivara_slingshot_female_idle_down
-		const tivara_slingshot_female_idle_down = this.add.sprite(480, 832, "slingshot_female_idle", 4);
-		tivara_slingshot_female_idle_down.setOrigin(0.5, 0.9);
-		tivara_slingshot_female_idle_down.play("tivara_slingshot_female_idle_down");
-
-		// tivara_worker_female_idle_right
-		const tivara_worker_female_idle_right = this.add.sprite(0, 784, "worker_female_idle_1", 6);
-		tivara_worker_female_idle_right.play("tivara_worker_female_idle_right");
-
-		// tivara_worker_male_idle_down
-		const tivara_worker_male_idle_down = this.add.sprite(96, 768, "worker_male_idle_1", 4);
-		tivara_worker_male_idle_down.setOrigin(0.5, 0.9);
-		tivara_worker_male_idle_down.play("tivara_worker_male_idle_down");
 
 		// infantryInn
 		const infantryInn = new InfantryInn(this, 480, 608);
@@ -116,6 +97,26 @@ export default class Map1 extends Phaser.Scene {
 		// skaduweeWarriorMale
 		const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 208, 720);
 		this.add.existing(skaduweeWarriorMale);
+
+		// generalWarrior
+		const generalWarrior = new GeneralWarrior(this, 400, 864);
+		this.add.existing(generalWarrior);
+
+		// tivaraSlingshotFemale
+		const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 208, 848);
+		this.add.existing(tivaraSlingshotFemale);
+
+		// tivaraWorkerFemale
+		const tivaraWorkerFemale = new TivaraWorkerFemale(this, 301, 874);
+		this.add.existing(tivaraWorkerFemale);
+
+		// tivaraWorkerMale
+		const tivaraWorkerMale = new TivaraWorkerMale(this, 357, 889);
+		this.add.existing(tivaraWorkerMale);
+
+		// tivaraMacemanMale
+		const tivaraMacemanMale = new TivaraMacemanMale(this, 448, 880);
+		this.add.existing(tivaraMacemanMale);
 
 		// lists
 		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
