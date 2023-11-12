@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -16,31 +16,30 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
     const infantry_inn_building = scene.add.image(
       -0.16910280030724323,
       -31.74029716298027,
-      'factions',
-      'buildings/skaduwee/infantry_inn/infantry_inn.png'
+      "factions",
+      "buildings/skaduwee/infantry_inn/infantry_inn.png"
     );
     this.add(infantry_inn_building);
 
     // cloud_1
-    const cloud_1 = scene.add.image(24, -82, 'factions', 'buildings/skaduwee/infantry_inn/cloud-vertical.png');
+    const cloud_1 = scene.add.image(24, -82, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
     this.add(cloud_1);
+
+    // cloud_2
+    const cloud_2 = scene.add.image(13, -110, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
+    this.add(cloud_2);
 
     // infantry_inn_entrance
     const infantry_inn_entrance = scene.add.sprite(
-      10.830897199692757,
-      -38.74029716298027,
-      'factions',
-      'buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png'
+      24,
+      -8,
+      "factions",
+      "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
     );
-    infantry_inn_entrance.setOrigin(0, 0);
     infantry_inn_entrance.play(
-      'skaduwee_infantry_inn_buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn'
+      "skaduwee_infantry_inn_buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn"
     );
     this.add(infantry_inn_entrance);
-
-    // cloud_2
-    const cloud_2 = scene.add.image(13, -110, 'factions', 'buildings/skaduwee/infantry_inn/cloud-vertical.png');
-    this.add(cloud_2);
 
     /* START-USER-CTR-CODE */
     this.cloud1 = cloud_1;
@@ -48,7 +47,7 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
     this.setupCloudsTween(this.cloud1);
     this.setupCloudsTween(this.cloud2);
 
-    this.on('pointerdown', () => {
+    this.on("pointerdown", () => {
       infantry_inn_building.setTint(0xff0000); // Tint to red
     });
     /* END-USER-CTR-CODE */

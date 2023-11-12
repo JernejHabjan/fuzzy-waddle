@@ -45,21 +45,6 @@
                     "y": -82
                 },
                 {
-                    "type": "Sprite",
-                    "id": "dd1ee6b3-626f-458b-98a6-648390362e32",
-                    "label": "infantry_inn_entrance",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
-                    },
-                    "x": 10.830897199692757,
-                    "y": -38.74029716298027,
-                    "originX": 0,
-                    "originY": 0,
-                    "animationPlayMethod": 1,
-                    "animationKey": "skaduwee_infantry_inn_buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn"
-                },
-                {
                     "type": "Image",
                     "id": "48628aa0-8206-45d1-9ce5-db362dd16fdc",
                     "label": "cloud_2",
@@ -69,6 +54,19 @@
                     },
                     "x": 13,
                     "y": -110
+                },
+                {
+                    "type": "Sprite",
+                    "id": "4fd1317d-df7a-438f-aed1-d361b0c9c29e",
+                    "label": "infantry_inn_entrance",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
+                    },
+                    "x": 24,
+                    "y": -8,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skaduwee_infantry_inn_buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn"
                 }
             ]
         }

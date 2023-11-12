@@ -64,7 +64,7 @@ export default class Map1 extends Phaser.Scene {
 		skaduwee_warrior_male_idle_left.play("skaduwee_warrior_male_idle_left");
 
 		// skaduwee_ranged_female_idle_right
-		const skaduwee_ranged_female_idle_right = this.add.sprite(192, 752, "ranged_female_idle", 6);
+		const skaduwee_ranged_female_idle_right = this.add.sprite(96, 784, "ranged_female_idle", 6);
 		skaduwee_ranged_female_idle_right.setOrigin(0.5, 0.9);
 		skaduwee_ranged_female_idle_right.play("skaduwee_ranged_female_idle_right");
 
@@ -97,14 +97,6 @@ export default class Map1 extends Phaser.Scene {
 		tivara_worker_male_idle_down.setOrigin(0.5, 0.9);
 		tivara_worker_male_idle_down.play("tivara_worker_male_idle_down");
 
-		// architecture_blocks_height_4_png
-		const architecture_blocks_height_4_png = this.add.image(352, 864, "outside", "architecture/blocks/height_4.png");
-		architecture_blocks_height_4_png.setOrigin(0.5, 0.75);
-
-		// architecture_blocks_hollow_bottom_png
-		const architecture_blocks_hollow_bottom_png = this.add.image(384, 880, "outside", "architecture/blocks/hollow_bottom.png");
-		architecture_blocks_hollow_bottom_png.setOrigin(0.5, 0.75);
-
 		// infantryInn
 		const infantryInn = new InfantryInn(this, 480, 608);
 		this.add.existing(infantryInn);
@@ -121,19 +113,27 @@ export default class Map1 extends Phaser.Scene {
 		const workMill = new WorkMill(this, -608, 866);
 		this.add.existing(workMill);
 
-		// lists
-		const terrain = [architecture_blocks_hollow_bottom_png, architecture_blocks_height_4_png];
+		// TileMap_level_2
+		const tileMap_level_2 = this.add.container(0, 0);
+
+		// architecture_blocks_doors_left_png
+		const architecture_blocks_doors_left_png = this.add.image(288, 832, "outside", "architecture/blocks/doors_left.png");
+		architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
+		tileMap_level_2.add(architecture_blocks_doors_left_png);
+
+		// architecture_blocks_doors_right_png
+		const architecture_blocks_doors_right_png = this.add.image(256, 816, "outside", "architecture/blocks/doors_right.png");
+		architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
+		tileMap_level_2.add(architecture_blocks_doors_right_png);
 
 		this.tiles = tiles;
 		this.tiles_1 = tiles_1;
-		this.terrain = terrain;
 
 		this.events.emit("scene-awake");
 	}
 
 	private tiles!: Phaser.Tilemaps.Tilemap;
 	private tiles_1!: Phaser.Tilemaps.Tilemap;
-	private terrain!: Phaser.GameObjects.Image[];
 
 	/* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -167,6 +167,11 @@ export default class Map1 extends Phaser.Scene {
     this.children.each((child: any) => {
       child.depth = child.y;
     });
+
+    // iterate also over tileMap_level_2 and set depth - todo is this needed?
+    this.tileMapLevel2.list.forEach((child: any) => {
+      child.depth = child.y;
+    });
   };
   handleCameraCenter = () => {
     // set camera to the center of isometric tilemap
@@ -177,6 +182,7 @@ export default class Map1 extends Phaser.Scene {
 
     this.cameras.main.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, true);
   };
+
   update(time: number, delta: number): void {
     this.controls.update(delta);
 
