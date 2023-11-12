@@ -1,0 +1,46 @@
+{
+    "id": "6b5df2a7-6f41-4fc7-a3bb-96dc39de0188",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e3eab3aa-044f-4556-93bd-9eeb512c8199",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.radius": 32,
+            "x": 32,
+            "y": 57.77331682786765,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "960d95c4-89c9-4ecd-a1f5-1ad5cb37dd45",
+                    "label": "skaduwee_warrior_male_idle_down",
+                    "texture": {
+                        "key": "warrior_male_idle",
+                        "frame": 4
+                    },
+                    "y": -25.773318048605454,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skaduwee_warrior_male_idle_down"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,5 +1,5 @@
 {
-    "id": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
+    "id": "415773de-cdc9-4a20-afd1-61fd57044e8a",
     "sceneType": "PREFAB",
     "settings": {
         "exportClass": true,
@@ -14,21 +14,21 @@
     "displayList": [
         {
             "type": "Sprite",
-            "id": "b783a307-b034-4706-a996-8daabb3655ca",
-            "label": "skaduwee_worker_male_idle_down",
+            "id": "789c7e2c-df08-4569-9679-a9c3a0309e4e",
+            "label": "skaduwee_worker_female_idle_down",
             "hitArea.shape": "CIRCLE",
             "hitArea.x": 32,
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "worker_male_idle",
+                "key": "worker_female_idle",
                 "frame": 4
             },
             "x": 32,
-            "y": 57.56281114690988,
-            "originY": 0.8994189111288416,
+            "y": 58.00236660260104,
+            "originY": 0.9062870143450004,
             "animationPlayMethod": 1,
-            "animationKey": "skaduwee_worker_male_idle_down"
+            "animationKey": "skaduwee_worker_female_idle_down"
         }
     ],
     "plainObjects": [],

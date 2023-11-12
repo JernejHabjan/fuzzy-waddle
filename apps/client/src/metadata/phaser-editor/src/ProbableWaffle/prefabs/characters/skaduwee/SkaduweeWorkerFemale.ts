@@ -5,29 +5,29 @@
 import Phaser from 'phaser';
 /* START-USER-IMPORTS */
 import {
-  ANIM_SKADUWEE_WORKER_MALE_IDLE_DOWN,
-  ANIM_SKADUWEE_WORKER_MALE_SLASH_DOWN
-} from '../../../../../static/shared-assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_anims';
+  ANIM_SKADUWEE_WORKER_FEMALE_IDLE_DOWN,
+  ANIM_SKADUWEE_WORKER_FEMALE_SLASH_DOWN
+} from '../../../../../static/shared-assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_anims';
 /* END-USER-IMPORTS */
 
-export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
+export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 57.56281114690988, texture || 'worker_male_idle', frame ?? 4);
+    super(scene, x ?? 32, y ?? 58.00236660260104, texture || 'worker_female_idle', frame ?? 4);
 
     this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-    this.setOrigin(0.5, 0.8994189111288416);
-    this.play('skaduwee_worker_male_idle_down');
+    this.setOrigin(0.5, 0.9062870143450004);
+    this.play('skaduwee_worker_female_idle_down');
 
     /* START-USER-CTR-CODE */
     this.on('pointerdown', () => {
       this.setTint(0xff0000); // Tint to red
 
       // and play anim skaduwee_worker_male_slash_down
-      this.play(ANIM_SKADUWEE_WORKER_MALE_SLASH_DOWN, true);
+      this.play(ANIM_SKADUWEE_WORKER_FEMALE_SLASH_DOWN, true);
       // after anim complete, remove tint
       this.once('animationcomplete', () => {
         this.clearTint();
-        this.play(ANIM_SKADUWEE_WORKER_MALE_IDLE_DOWN, true);
+        this.play(ANIM_SKADUWEE_WORKER_FEMALE_IDLE_DOWN, true);
       });
     });
     /* END-USER-CTR-CODE */

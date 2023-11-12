@@ -11,6 +11,10 @@ import AnkGuard from "../prefabs/AnkGuard";
 import Temple from "../prefabs/Temple";
 import WorkMill from "../prefabs/WorkMill";
 import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
+import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/SkaduweeWorkerFemale";
+import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/SkaduweeRangedFemale";
+import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
+import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/SkaduweeWarriorMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -50,21 +54,6 @@ export default class Map1 extends Phaser.Scene {
 		general_warrior_idle_left.setOrigin(0.5, 0.9);
 		general_warrior_idle_left.play("general_warrior_idle_left");
 
-		// skaduwee_magician_female_idle_left
-		const skaduwee_magician_female_idle_left = this.add.sprite(512, 880, "magician_female_idle", 2);
-		skaduwee_magician_female_idle_left.setOrigin(0.5, 0.9);
-		skaduwee_magician_female_idle_left.play("skaduwee_magician_female_idle_left");
-
-		// skaduwee_warrior_male_idle_left
-		const skaduwee_warrior_male_idle_left = this.add.sprite(416, 944, "warrior_male_idle", 2);
-		skaduwee_warrior_male_idle_left.setOrigin(0.5, 0.9);
-		skaduwee_warrior_male_idle_left.play("skaduwee_warrior_male_idle_left");
-
-		// skaduwee_ranged_female_idle_right
-		const skaduwee_ranged_female_idle_right = this.add.sprite(96, 784, "ranged_female_idle", 6);
-		skaduwee_ranged_female_idle_right.setOrigin(0.5, 0.9);
-		skaduwee_ranged_female_idle_right.play("skaduwee_ranged_female_idle_right");
-
 		// tivara_maceman_male_idle_down
 		const tivara_maceman_male_idle_down = this.add.sprite(320, 896, "maceman_male_idle", 4);
 		tivara_maceman_male_idle_down.setOrigin(0.5, 0.9);
@@ -78,16 +67,6 @@ export default class Map1 extends Phaser.Scene {
 		// tivara_worker_female_idle_right
 		const tivara_worker_female_idle_right = this.add.sprite(0, 784, "worker_female_idle_1", 6);
 		tivara_worker_female_idle_right.play("tivara_worker_female_idle_right");
-
-		// skaduwee_worker_female_idle_left
-		const skaduwee_worker_female_idle_left = this.add.sprite(352, 768, "worker_female_idle", 2);
-		skaduwee_worker_female_idle_left.setOrigin(0.5, 0.9);
-		skaduwee_worker_female_idle_left.play("skaduwee_worker_female_idle_left");
-
-		// skaduwee_worker_male_idle_down
-		const skaduwee_worker_male_idle_down = this.add.sprite(384, 816, "worker_male_idle", 4);
-		skaduwee_worker_male_idle_down.setOrigin(0.5, 0.9);
-		skaduwee_worker_male_idle_down.play("skaduwee_worker_male_idle_down");
 
 		// tivara_worker_male_idle_down
 		const tivara_worker_male_idle_down = this.add.sprite(96, 768, "worker_male_idle_1", 4);
@@ -121,6 +100,22 @@ export default class Map1 extends Phaser.Scene {
 		// skaduweeWorkerMale
 		const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 145, 776);
 		this.add.existing(skaduweeWorkerMale);
+
+		// skaduweeWorkerFemale
+		const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 192, 800);
+		this.add.existing(skaduweeWorkerFemale);
+
+		// skaduweeRangedFemale
+		const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 352, 758);
+		this.add.existing(skaduweeRangedFemale);
+
+		// skaduweeMagicianFemale
+		const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 416, 784);
+		this.add.existing(skaduweeMagicianFemale);
+
+		// skaduweeWarriorMale
+		const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 208, 720);
+		this.add.existing(skaduweeWarriorMale);
 
 		// lists
 		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
