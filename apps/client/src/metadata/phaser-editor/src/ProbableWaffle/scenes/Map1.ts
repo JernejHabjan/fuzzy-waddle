@@ -10,6 +10,7 @@ import InfantryInn from "../prefabs/InfantryInn";
 import AnkGuard from "../prefabs/AnkGuard";
 import Temple from "../prefabs/Temple";
 import WorkMill from "../prefabs/WorkMill";
+import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -116,6 +117,10 @@ export default class Map1 extends Phaser.Scene {
 		// architecture_blocks_doors_right_png
 		const architecture_blocks_doors_right_png = this.add.image(256, 784, "outside", "architecture/blocks/doors_right.png");
 		architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
+
+		// skaduweeWorkerMale
+		const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 145, 776);
+		this.add.existing(skaduweeWorkerMale);
 
 		// lists
 		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];

@@ -261,6 +261,17 @@
             "x": 256,
             "y": 784,
             "originY": 0.75
+        },
+        {
+            "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
+            "id": "51378d6e-7b97-410e-aa18-0462e8abbb64",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWorkerMale",
+            "x": 145,
+            "y": 776
         }
     ],
     "plainObjects": [
