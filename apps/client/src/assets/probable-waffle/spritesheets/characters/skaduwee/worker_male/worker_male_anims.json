@@ -36,8 +36,7 @@
                 }
             ],
             "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": 0
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_idle_up",
@@ -159,8 +158,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_slash_left",
@@ -198,8 +196,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_slash_down",
@@ -237,8 +234,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_slash_right",
@@ -276,8 +272,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_thrust_up",
@@ -327,8 +322,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_thrust_left",
@@ -378,8 +372,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_thrust_down",
@@ -429,8 +422,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_thrust_right",
@@ -480,8 +472,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_worker_male_walk_up",
@@ -718,8 +709,8 @@
         "contentType": "Phaser v3 Animations"
     },
     "settings": {
-        "sourceLang": "JAVA_SCRIPT",
-        "esModule": false,
-        "generateCode": false
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
     }
 }

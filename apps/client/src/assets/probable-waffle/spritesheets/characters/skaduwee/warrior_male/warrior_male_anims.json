@@ -36,8 +36,7 @@
                 }
             ],
             "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": 0
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_idle_up",
@@ -159,8 +158,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_islash_left",
@@ -198,8 +196,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_islash_down",
@@ -237,8 +234,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_islash_right",
@@ -276,8 +272,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_smash_up",
@@ -309,8 +304,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_smash_left",
@@ -342,8 +336,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_smash_down",
@@ -375,8 +368,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_smash_right",
@@ -408,8 +400,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_slash_up",
@@ -447,8 +438,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_slash_left",
@@ -486,8 +476,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_slash_down",
@@ -525,8 +514,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_slash_right",
@@ -564,8 +552,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_warrior_male_walk_up",
@@ -802,8 +789,8 @@
         "contentType": "Phaser v3 Animations"
     },
     "settings": {
-        "sourceLang": "JAVA_SCRIPT",
-        "esModule": false,
-        "generateCode": false
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
     }
 }

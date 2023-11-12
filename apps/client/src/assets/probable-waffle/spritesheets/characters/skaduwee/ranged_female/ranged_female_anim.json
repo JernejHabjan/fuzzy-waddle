@@ -36,8 +36,7 @@
                 }
             ],
             "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": 0
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_ranged_female_idle_up",
@@ -201,8 +200,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_ranged_female_shoot_left",
@@ -282,8 +280,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_ranged_female_shoot_down",
@@ -363,8 +360,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_ranged_female_shoot_right",
@@ -444,8 +440,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_ranged_female_walk_up",
@@ -682,8 +677,8 @@
         "contentType": "Phaser v3 Animations"
     },
     "settings": {
-        "sourceLang": "JAVA_SCRIPT",
-        "esModule": false,
-        "generateCode": false
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
     }
 }

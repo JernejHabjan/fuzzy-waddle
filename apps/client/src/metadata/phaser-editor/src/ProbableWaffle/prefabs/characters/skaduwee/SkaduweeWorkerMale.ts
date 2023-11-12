@@ -4,6 +4,10 @@
 
 import Phaser from 'phaser';
 /* START-USER-IMPORTS */
+import {
+  ANIM_SKADUWEE_WORKER_MALE_IDLE_DOWN,
+  ANIM_SKADUWEE_WORKER_MALE_SLASH_DOWN
+} from '../../../../../static/shared-assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_anims';
 /* END-USER-IMPORTS */
 
 export default class skaduweeWorkerMale extends Phaser.GameObjects.Sprite {
@@ -19,11 +23,11 @@ export default class skaduweeWorkerMale extends Phaser.GameObjects.Sprite {
       this.setTint(0xff0000); // Tint to red
 
       // and play anim skaduwee_worker_male_slash_down
-      this.play('skaduwee_worker_male_slash_down');
+      this.play(ANIM_SKADUWEE_WORKER_MALE_SLASH_DOWN);
       // after anim complete, remove tint
       this.once('animationcomplete', () => {
         this.clearTint();
-        this.play('skaduwee_worker_male_idle_down');
+        this.play(ANIM_SKADUWEE_WORKER_MALE_IDLE_DOWN);
       });
     }); // Write your code here.
     /* END-USER-CTR-CODE */

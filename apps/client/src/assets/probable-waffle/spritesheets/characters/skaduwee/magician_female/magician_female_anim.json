@@ -36,8 +36,7 @@
                 }
             ],
             "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": 0
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_large_thrust_up",
@@ -87,8 +86,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_large_thrust_left",
@@ -138,8 +136,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_large_thrust_down",
@@ -189,8 +186,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_large_thrust_right",
@@ -240,8 +236,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_idle_up",
@@ -369,8 +364,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_cast_left",
@@ -414,8 +408,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_cast_down",
@@ -459,8 +452,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_cast_right",
@@ -504,8 +496,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+            "skipMissedFrames": true
         },
         {
             "key": "skaduwee_magician_female_walk_up",
@@ -742,8 +733,8 @@
         "contentType": "Phaser v3 Animations"
     },
     "settings": {
-        "sourceLang": "JAVA_SCRIPT",
-        "esModule": false,
-        "generateCode": false
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
     }
 }
