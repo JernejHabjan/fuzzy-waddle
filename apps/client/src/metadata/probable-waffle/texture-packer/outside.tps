@@ -169,7 +169,7 @@
             <key>defaultPivotPoint</key>
             <point_f>0.5,0.5</point_f>
             <key>writePivotPoints</key>
-            <false/>
+            <true/>
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
@@ -183,7 +183,6 @@
             <key type="filename">../sprites/outside/architecture/blocks/hollow_bottom.png</key>
             <key type="filename">../sprites/outside/architecture/blocks/hollow_left.png</key>
             <key type="filename">../sprites/outside/architecture/blocks/hollow_right.png</key>
-            <key type="filename">../sprites/outside/architecture/chimneys/chimney_large.png</key>
             <key type="filename">../sprites/outside/architecture/chimneys/chimney_short.png</key>
             <key type="filename">../sprites/outside/architecture/roof ramp/empty_bottom.png</key>
             <key type="filename">../sprites/outside/architecture/roof ramp/empty_left.png</key>
@@ -212,8 +211,6 @@
             <key type="filename">../sprites/outside/foliage/tall_grass/tall_grass_6.png</key>
             <key type="filename">../sprites/outside/foliage/tall_grass/tall_grass_7.png</key>
             <key type="filename">../sprites/outside/foliage/tall_grass/tall_grass_8.png</key>
-            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_left.png</key>
-            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_right.png</key>
             <key type="filename">../sprites/outside/nature/block_stone/1.png</key>
             <key type="filename">../sprites/outside/nature/block_stone/2.png</key>
             <key type="filename">../sprites/outside/nature/block_stone_grass/bottom_left.png</key>
@@ -265,7 +262,22 @@
             <key type="filename">../sprites/outside/nature/rocks/5.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
+                <point_f>0.5,0.75</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/architecture/chimneys/chimney_large.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.833333</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
@@ -309,10 +321,26 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/outside/foliage/trees/large/no_leaves.png</key>
+            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_left.png</key>
+            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_right.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/foliage/trees/large/no_leaves.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.851563</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
@@ -327,7 +355,7 @@
             <key type="filename">../sprites/outside/foliage/trees/large/with_leaves.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
+                <point_f>0.5,0.885417</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
@@ -343,7 +371,7 @@
             <key type="filename">../sprites/outside/foliage/trees/resources/tree6.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
+                <point_f>0.5,0.911458</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
@@ -357,11 +385,25 @@
             </struct>
             <key type="filename">../sprites/outside/foliage/trees/resources/tree4.png</key>
             <key type="filename">../sprites/outside/foliage/trees/resources/tree5.png</key>
-            <key type="filename">../sprites/outside/foliage/trees/resources/tree7.png</key>
             <key type="filename">../sprites/outside/foliage/trees/resources/tree8.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
+                <point_f>0.5,0.859375</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,32,32,64</rect>
+                <key>scale9Paddings</key>
+                <rect>16,32,32,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/foliage/trees/resources/tree7.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.86719</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>

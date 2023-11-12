@@ -4,7 +4,7 @@
 			"image": "outside.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 1763,
+				"w": 1756,
 				"h": 256
 			},
 			"scale": 1,
@@ -28,6 +28,10 @@
 						"y": 1,
 						"w": 294,
 						"h": 162
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
@@ -49,6 +53,10 @@
 						"y": 165,
 						"w": 45,
 						"h": 73
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.859375
 					}
 				},
 				{
@@ -70,6 +78,10 @@
 						"y": 240,
 						"w": 10,
 						"h": 12
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
@@ -91,6 +103,10 @@
 						"y": 165,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -112,27 +128,35 @@
 						"y": 231,
 						"w": 44,
 						"h": 24
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
-					"filename": "foliage/tree_trunks/tree_trunk_right.png",
+					"filename": "foliage/tree_trunks/tree_trunk_left.png",
 					"rotated": false,
-					"trimmed": true,
+					"trimmed": false,
 					"sourceSize": {
-						"w": 64,
-						"h": 64
+						"w": 38,
+						"h": 23
 					},
 					"spriteSourceSize": {
-						"x": 4,
-						"y": 37,
-						"w": 43,
-						"h": 24
+						"x": 0,
+						"y": 0,
+						"w": 38,
+						"h": 23
 					},
 					"frame": {
 						"x": 94,
 						"y": 231,
-						"w": 43,
-						"h": 24
+						"w": 38,
+						"h": 23
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
@@ -154,6 +178,35 @@
 						"y": 165,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "foliage/tree_trunks/tree_trunk_right.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 41,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 41,
+						"h": 22
+					},
+					"frame": {
+						"x": 134,
+						"y": 231,
+						"w": 41,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
@@ -171,31 +224,14 @@
 						"h": 21
 					},
 					"frame": {
-						"x": 139,
+						"x": 177,
 						"y": 231,
 						"w": 23,
 						"h": 21
-					}
-				},
-				{
-					"filename": "nature/rocks/3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
 					},
-					"spriteSourceSize": {
-						"x": 22,
-						"y": 24,
-						"w": 19,
-						"h": 21
-					},
-					"frame": {
-						"x": 164,
-						"y": 231,
-						"w": 19,
-						"h": 21
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
@@ -217,6 +253,35 @@
 						"y": 165,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/rocks/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 24,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 202,
+						"y": 231,
+						"w": 19,
+						"h": 21
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -234,31 +299,14 @@
 						"h": 19
 					},
 					"frame": {
-						"x": 185,
+						"x": 223,
 						"y": 231,
 						"w": 37,
 						"h": 19
-					}
-				},
-				{
-					"filename": "nature/rocks/2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
 					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 33,
-						"w": 20,
-						"h": 17
-					},
-					"frame": {
-						"x": 224,
-						"y": 231,
-						"w": 20,
-						"h": 17
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
@@ -280,6 +328,35 @@
 						"y": 165,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/rocks/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 33,
+						"w": 20,
+						"h": 17
+					},
+					"frame": {
+						"x": 262,
+						"y": 231,
+						"w": 20,
+						"h": 17
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -301,6 +378,10 @@
 						"y": 1,
 						"w": 174,
 						"h": 147
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.8854166666666666
 					}
 				},
 				{
@@ -322,6 +403,10 @@
 						"y": 150,
 						"w": 39,
 						"h": 105
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.859375
 					}
 				},
 				{
@@ -343,6 +428,10 @@
 						"y": 150,
 						"w": 48,
 						"h": 97
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.86719
 					}
 				},
 				{
@@ -364,6 +453,10 @@
 						"y": 150,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -385,6 +478,10 @@
 						"y": 216,
 						"w": 64,
 						"h": 39
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -406,6 +503,10 @@
 						"y": 150,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -427,6 +528,10 @@
 						"y": 216,
 						"w": 64,
 						"h": 39
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -448,6 +553,10 @@
 						"y": 1,
 						"w": 63,
 						"h": 141
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9114583333333334
 					}
 				},
 				{
@@ -469,6 +578,10 @@
 						"y": 144,
 						"w": 50,
 						"h": 108
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.859375
 					}
 				},
 				{
@@ -490,6 +603,10 @@
 						"y": 1,
 						"w": 59,
 						"h": 135
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9114583333333334
 					}
 				},
 				{
@@ -511,6 +628,10 @@
 						"y": 138,
 						"w": 144,
 						"h": 115
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.8515625
 					}
 				},
 				{
@@ -532,6 +653,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -553,6 +678,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -574,6 +703,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -595,6 +728,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -616,6 +753,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -637,6 +778,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -658,6 +803,10 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -679,6 +828,10 @@
 						"y": 199,
 						"w": 55,
 						"h": 54
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -700,6 +853,10 @@
 						"y": 199,
 						"w": 60,
 						"h": 53
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -721,6 +878,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -742,6 +903,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -763,6 +928,10 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -784,6 +953,10 @@
 						"y": 199,
 						"w": 55,
 						"h": 51
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -805,6 +978,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -826,6 +1003,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -847,6 +1028,10 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -868,6 +1053,10 @@
 						"y": 199,
 						"w": 64,
 						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -889,6 +1078,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -910,6 +1103,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -931,6 +1128,10 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -952,6 +1153,10 @@
 						"y": 199,
 						"w": 64,
 						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -973,6 +1178,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -994,6 +1203,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1015,6 +1228,10 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1036,6 +1253,10 @@
 						"y": 199,
 						"w": 62,
 						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1057,6 +1278,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1078,6 +1303,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1099,6 +1328,10 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1120,6 +1353,10 @@
 						"y": 199,
 						"w": 59,
 						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1141,6 +1378,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1162,6 +1403,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1183,10 +1428,14 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
-					"filename": "architecture/chimneys/chimney_large.png",
+					"filename": "architecture/blocks/height_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1194,16 +1443,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 15,
-						"y": 7,
-						"w": 34,
-						"h": 50
+						"x": 0,
+						"y": 15,
+						"w": 64,
+						"h": 49
 					},
 					"frame": {
 						"x": 1166,
 						"y": 199,
-						"w": 34,
-						"h": 50
+						"w": 64,
+						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1225,6 +1478,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1246,6 +1503,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1267,10 +1528,14 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
-					"filename": "architecture/blocks/height_2.png",
+					"filename": "nature/ramp/earth/platform_bottom.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1284,10 +1549,14 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1202,
+						"x": 1232,
 						"y": 199,
 						"w": 64,
 						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1309,6 +1578,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1330,6 +1603,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1351,10 +1628,14 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
-					"filename": "nature/ramp/earth/platform_bottom.png",
+					"filename": "nature/ramp/earth/ramp_bottom_left.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1368,10 +1649,14 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1268,
+						"x": 1298,
 						"y": 199,
 						"w": 64,
 						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1393,6 +1678,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1414,6 +1703,10 @@
 						"y": 67,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1435,10 +1728,14 @@
 						"y": 133,
 						"w": 64,
 						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
-					"filename": "nature/ramp/earth/ramp_bottom_left.png",
+					"filename": "nature/ramp/earth/ramp_bottom_right.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1452,10 +1749,14 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1334,
+						"x": 1364,
 						"y": 199,
 						"w": 64,
 						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1477,6 +1778,10 @@
 						"y": 1,
 						"w": 64,
 						"h": 57
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1498,10 +1803,14 @@
 						"y": 60,
 						"w": 57,
 						"h": 57
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
-					"filename": "nature/ramp/earth/ramp_bottom_right.png",
+					"filename": "nature/ramp/earth/spike_left.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1519,6 +1828,10 @@
 						"y": 119,
 						"w": 64,
 						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1540,27 +1853,10 @@
 						"y": 170,
 						"w": 52,
 						"h": 26
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/spike_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
 					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 1450,
-						"y": 60,
-						"w": 64,
-						"h": 49
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1578,10 +1874,14 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1457,
-						"y": 1,
+						"x": 1450,
+						"y": 60,
 						"w": 64,
 						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1599,10 +1899,39 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1400,
-						"y": 198,
+						"x": 1457,
+						"y": 1,
 						"w": 64,
 						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "foliage/tall_grass/tall_grass_7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 16,
+						"w": 64,
+						"h": 48
+					},
+					"frame": {
+						"x": 1430,
+						"y": 198,
+						"w": 64,
+						"h": 48
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1624,27 +1953,10 @@
 						"y": 170,
 						"w": 35,
 						"h": 26
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_7.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
 					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 16,
-						"w": 64,
-						"h": 48
-					},
-					"frame": {
-						"x": 1466,
-						"y": 198,
-						"w": 64,
-						"h": 48
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1666,6 +1978,10 @@
 						"y": 111,
 						"w": 51,
 						"h": 48
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1687,6 +2003,35 @@
 						"y": 161,
 						"w": 53,
 						"h": 35
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "architecture/chimneys/chimney_large.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 48
+					},
+					"frame": {
+						"x": 1512,
+						"y": 111,
+						"w": 32,
+						"h": 48
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.8333333333333334
 					}
 				},
 				{
@@ -1704,10 +2049,14 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 1512,
-						"y": 111,
+						"x": 1516,
+						"y": 52,
 						"w": 64,
 						"h": 47
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1725,10 +2074,64 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 1532,
-						"y": 198,
+						"x": 1523,
+						"y": 1,
 						"w": 55,
 						"h": 47
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/rock_piles/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 14,
+						"w": 54,
+						"h": 46
+					},
+					"frame": {
+						"x": 1580,
+						"y": 1,
+						"w": 54,
+						"h": 46
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "foliage/bushes/bush_upwards_large.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 15,
+						"w": 58,
+						"h": 45
+					},
+					"frame": {
+						"x": 1496,
+						"y": 198,
+						"w": 58,
+						"h": 45
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1747,72 +2150,13 @@
 					},
 					"frame": {
 						"x": 1539,
-						"y": 160,
+						"y": 161,
 						"w": 21,
 						"h": 35
-					}
-				},
-				{
-					"filename": "architecture/chimneys/chimney_short.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
 					},
-					"spriteSourceSize": {
-						"x": 15,
-						"y": 23,
-						"w": 34,
-						"h": 34
-					},
-					"frame": {
-						"x": 1562,
-						"y": 160,
-						"w": 34,
-						"h": 34
-					}
-				},
-				{
-					"filename": "nature/rock_piles/6.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 14,
-						"w": 54,
-						"h": 46
-					},
-					"frame": {
-						"x": 1516,
-						"y": 52,
-						"w": 54,
-						"h": 46
-					}
-				},
-				{
-					"filename": "foliage/bushes/bush_upwards_large.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 15,
-						"w": 58,
-						"h": 45
-					},
-					"frame": {
-						"x": 1523,
-						"y": 1,
-						"w": 58,
-						"h": 45
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1830,10 +2174,14 @@
 						"h": 42
 					},
 					"frame": {
-						"x": 1589,
-						"y": 196,
+						"x": 1556,
+						"y": 198,
 						"w": 64,
 						"h": 42
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1851,10 +2199,14 @@
 						"h": 42
 					},
 					"frame": {
-						"x": 1572,
-						"y": 48,
+						"x": 1546,
+						"y": 101,
 						"w": 59,
 						"h": 42
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1872,10 +2224,14 @@
 						"h": 42
 					},
 					"frame": {
-						"x": 1583,
-						"y": 1,
+						"x": 1582,
+						"y": 49,
 						"w": 54,
 						"h": 42
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1893,10 +2249,14 @@
 						"h": 42
 					},
 					"frame": {
-						"x": 1578,
-						"y": 92,
+						"x": 1636,
+						"y": 1,
 						"w": 52,
 						"h": 42
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1914,10 +2274,14 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1598,
-						"y": 136,
+						"x": 1690,
+						"y": 1,
 						"w": 64,
 						"h": 41
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1935,10 +2299,14 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1632,
-						"y": 92,
+						"x": 1690,
+						"y": 44,
 						"w": 64,
 						"h": 41
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1956,31 +2324,14 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1698,
-						"y": 1,
+						"x": 1562,
+						"y": 145,
 						"w": 64,
 						"h": 41
-					}
-				},
-				{
-					"filename": "nature/rock_piles/1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
 					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 24,
-						"w": 56,
-						"h": 40
-					},
-					"frame": {
-						"x": 1639,
-						"y": 1,
-						"w": 56,
-						"h": 40
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -1998,10 +2349,39 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1639,
-						"y": 43,
+						"x": 1607,
+						"y": 93,
 						"w": 55,
 						"h": 41
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "architecture/chimneys/chimney_short.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 1638,
+						"y": 45,
+						"w": 32,
+						"h": 32
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -2019,14 +2399,18 @@
 						"h": 40
 					},
 					"frame": {
-						"x": 1698,
-						"y": 44,
+						"x": 1622,
+						"y": 188,
 						"w": 64,
 						"h": 40
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
-					"filename": "nature/grass/grass_4.png",
+					"filename": "nature/rock_piles/1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2034,37 +2418,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 25,
-						"w": 64,
-						"h": 39
+						"x": 5,
+						"y": 24,
+						"w": 56,
+						"h": 40
 					},
 					"frame": {
-						"x": 1698,
-						"y": 86,
-						"w": 64,
-						"h": 39
-					}
-				},
-				{
-					"filename": "nature/grass/grass_0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
+						"x": 1628,
+						"y": 136,
+						"w": 56,
+						"h": 40
 					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 26,
-						"w": 64,
-						"h": 38
-					},
-					"frame": {
-						"x": 1698,
-						"y": 127,
-						"w": 64,
-						"h": 38
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -2082,52 +2449,14 @@
 						"h": 40
 					},
 					"frame": {
-						"x": 1655,
-						"y": 179,
+						"x": 1664,
+						"y": 87,
 						"w": 54,
 						"h": 40
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/spike_bottom.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
 					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 31,
-						"w": 64,
-						"h": 33
-					},
-					"frame": {
-						"x": 1655,
-						"y": 221,
-						"w": 64,
-						"h": 33
-					}
-				},
-				{
-					"filename": "foliage/tree_trunks/tree_trunk_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 8,
-						"y": 29,
-						"w": 40,
-						"h": 25
-					},
-					"frame": {
-						"x": 1721,
-						"y": 167,
-						"w": 40,
-						"h": 25
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				},
 				{
@@ -2145,10 +2474,89 @@
 						"h": 29
 					},
 					"frame": {
-						"x": 1721,
-						"y": 194,
+						"x": 1720,
+						"y": 87,
 						"w": 35,
 						"h": 29
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/grass/grass_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 25,
+						"w": 64,
+						"h": 39
+					},
+					"frame": {
+						"x": 1688,
+						"y": 129,
+						"w": 64,
+						"h": 39
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/grass/grass_0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 26,
+						"w": 64,
+						"h": 38
+					},
+					"frame": {
+						"x": 1688,
+						"y": 170,
+						"w": 64,
+						"h": 38
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/ramp/earth/spike_bottom.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 31,
+						"w": 64,
+						"h": 33
+					},
+					"frame": {
+						"x": 1688,
+						"y": 210,
+						"w": 64,
+						"h": 33
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
 					}
 				}
 			]
@@ -2157,6 +2565,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:7fda007a72b22374d3f9b818489da285:d663608ec38a109db68553756aefcf91:abb19a90748d26f4f55b50cb9c7aab1d$"
+		"smartupdate": "$TexturePacker:SmartUpdate:26eaa9fe44d8c7905595fce53f276366:121220eea734510647f9eecc746b40ca:abb19a90748d26f4f55b50cb9c7aab1d$"
 	}
 }
