@@ -10,6 +10,7 @@ import InfantryInn from '../prefabs/InfantryInn';
 import AnkGuard from '../prefabs/AnkGuard';
 import Temple from '../prefabs/Temple';
 import WorkMill from '../prefabs/WorkMill';
+import GameObject = Phaser.GameObjects.GameObject;
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -162,12 +163,17 @@ export default class Map1 extends Phaser.Scene {
     };
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(this.controlConfig);
     this.handleCameraCenter();
-    this.handleZSort();
+    this.handleZSort(this.children.list);
   }
 
-  handleZSort = () => {
-    this.children.each((child: any) => {
+  handleZSort = (list: GameObject[]) => {
+    list.forEach((child: any) => {
       child.depth = child.y;
+
+      // if of gameObject container, iterate over its children and set depth
+      if (child instanceof Phaser.GameObjects.Container) {
+        this.handleZSort(child.list);
+      }
     });
 
     // iterate also over tileMap_level_2 and set depth - todo is this needed?
