@@ -253,10 +253,62 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/factions/buildings/tivara/ankguard.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flag/flag-0.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flag/flag-1.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
-                <point_f>0.503906,0.5</point_f>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,5,7,9</rect>
+                <key>scale9Paddings</key>
+                <rect>4,5,7,9</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-3.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-4.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>2,2,5,5</rect>
+                <key>scale9Paddings</key>
+                <rect>2,2,5,5</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame/ankguard-flame-0.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame/ankguard-flame-1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame/ankguard-flame-2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard-flame/ankguard-flame-3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,6,9,12</rect>
+                <key>scale9Paddings</key>
+                <rect>5,6,9,12</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
@@ -268,7 +320,22 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/factions/buildings/tivara/olival.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/olival/olival-floor.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,3,16,5</rect>
+                <key>scale9Paddings</key>
+                <rect>8,3,16,5</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/factions/buildings/tivara/olival/olival.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

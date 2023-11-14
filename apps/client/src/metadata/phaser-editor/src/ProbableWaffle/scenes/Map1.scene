@@ -42,8 +42,8 @@
                 "y"
             ],
             "label": "owlery",
-            "x": 288,
-            "y": 640
+            "x": 1184,
+            "y": 880
         },
         {
             "prefabId": "0cc17b18-78e8-4586-807f-a9af2b3e4de9",
@@ -64,8 +64,8 @@
                 "y"
             ],
             "label": "infantryInn",
-            "x": 480,
-            "y": 608
+            "x": 1360,
+            "y": 800
         },
         {
             "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
@@ -75,8 +75,8 @@
                 "y"
             ],
             "label": "ankGuard",
-            "x": 704,
-            "y": 592
+            "x": 480,
+            "y": 608
         },
         {
             "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
@@ -86,8 +86,8 @@
                 "y"
             ],
             "label": "temple",
-            "x": -192,
-            "y": 400
+            "x": -176,
+            "y": 448
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
@@ -108,8 +108,8 @@
                 "key": "outside",
                 "frame": "architecture/blocks/doors_left.png"
             },
-            "x": 288,
-            "y": 800,
+            "x": -416,
+            "y": 256,
             "originY": 0.75
         },
         {
@@ -120,8 +120,8 @@
                 "key": "outside",
                 "frame": "architecture/blocks/doors_right.png"
             },
-            "x": 256,
-            "y": 784,
+            "x": -384,
+            "y": 240,
             "originY": 0.75
         },
         {
@@ -132,8 +132,8 @@
                 "y"
             ],
             "label": "skaduweeWorkerMale",
-            "x": 145,
-            "y": 776
+            "x": 1472,
+            "y": 800
         },
         {
             "prefabId": "415773de-cdc9-4a20-afd1-61fd57044e8a",
@@ -143,8 +143,8 @@
                 "y"
             ],
             "label": "skaduweeWorkerFemale",
-            "x": 192,
-            "y": 800
+            "x": 1136,
+            "y": 960
         },
         {
             "prefabId": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
@@ -154,8 +154,8 @@
                 "y"
             ],
             "label": "skaduweeRangedFemale",
-            "x": 352,
-            "y": 758
+            "x": 1264,
+            "y": 720
         },
         {
             "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
@@ -165,8 +165,8 @@
                 "y"
             ],
             "label": "skaduweeMagicianFemale",
-            "x": 416,
-            "y": 784
+            "x": 1312,
+            "y": 896
         },
         {
             "prefabId": "6b5df2a7-6f41-4fc7-a3bb-96dc39de0188",
@@ -176,8 +176,8 @@
                 "y"
             ],
             "label": "skaduweeWarriorMale",
-            "x": 208,
-            "y": 720
+            "x": 1216,
+            "y": 784
         },
         {
             "prefabId": "1457b917-a97a-463b-9989-e0ec3446c7a8",
@@ -187,8 +187,8 @@
                 "y"
             ],
             "label": "generalWarrior",
-            "x": 400,
-            "y": 864
+            "x": 144,
+            "y": 1360
         },
         {
             "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
@@ -198,8 +198,8 @@
                 "y"
             ],
             "label": "tivaraSlingshotFemale",
-            "x": 208,
-            "y": 848
+            "x": 160,
+            "y": 704
         },
         {
             "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
@@ -209,8 +209,8 @@
                 "y"
             ],
             "label": "tivaraWorkerFemale",
-            "x": 301,
-            "y": 874
+            "x": 288,
+            "y": 640
         },
         {
             "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
@@ -220,8 +220,8 @@
                 "y"
             ],
             "label": "tivaraWorkerMale",
-            "x": 357,
-            "y": 889
+            "x": 320,
+            "y": 736
         },
         {
             "prefabId": "54836fe4-5089-4b7e-9db4-b71382bcb55f",
@@ -231,8 +231,19 @@
                 "y"
             ],
             "label": "tivaraMacemanMale",
-            "x": 448,
-            "y": 880
+            "x": 544,
+            "y": 704
+        },
+        {
+            "prefabId": "562e6de3-f2af-48c3-b297-7d67a34dfe90",
+            "id": "ebd31899-fae0-43bb-9b59-2e0b66c54431",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "olival",
+            "x": 160,
+            "y": 784
         }
     ],
     "plainObjects": [

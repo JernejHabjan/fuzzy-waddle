@@ -2,7 +2,6 @@
     "id": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
     "sceneType": "PREFAB",
     "settings": {
-        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -14,16 +13,77 @@
     },
     "displayList": [
         {
-            "type": "Image",
+            "type": "Container",
             "id": "ab4a54ef-0776-45f7-bcd8-d3bd1467a5ae",
             "label": "buildings_tivara_ankguard_png",
-            "texture": {
-                "key": "factions",
-                "frame": "buildings/tivara/ankguard.png"
-            },
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-72.22985939462845 -86.73420955564553 0.01286537585883707 -123.56383394844298 68.9503674444284 -88.15073357075313 69.89471678783346 -63.12547597051896 110.02956388254862 -46.12718778922783 115.22348527127645 -20.62975551729116 114.75131059957391 17.616392890613866 51.95207926313728 47.835571879575866 0.48504004756136965 65.30603473256951 -101.97686371188792 14.7833448603987 -101.97686371188792 -13.074960770050666 -83.08987684378667 -13.547135441753198",
             "x": 128,
-            "y": 193.44103594227,
-            "originY": 0.7556290182509188
+            "y": 182.8318108210126,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "777b9299-21ca-47c0-b340-58cc30eec3d3",
+                    "label": "ankguard-building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard.png"
+                    },
+                    "y": -54.83180956776931
+                },
+                {
+                    "type": "Sprite",
+                    "id": "48e1cb45-52bc-43bb-8e87-33adaa6bb9b1",
+                    "label": "tivara_buildings_aknguard_flame",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-0.png"
+                    },
+                    "x": -4,
+                    "y": 41.16819043223069,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-aknguard-flame"
+                },
+                {
+                    "type": "Sprite",
+                    "id": "0a10dde3-ba8e-467f-a310-a24795e0cd03",
+                    "label": "tivara_buildings_ankguard_flame_stick_right",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
+                    },
+                    "x": -43,
+                    "y": 15,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-ankguard-flame-stick"
+                },
+                {
+                    "type": "Sprite",
+                    "id": "423d9d4c-cbff-4af1-a0fe-f7b76cc52bbc",
+                    "label": "tivara_buildings_ankguard_flame_stick_left",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
+                    },
+                    "x": -97,
+                    "y": -11,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-ankguard-flame-stick"
+                },
+                {
+                    "type": "Sprite",
+                    "id": "46b16d0b-4dcf-4c10-aa25-d647df728dd4",
+                    "label": "tivara_buildings_ankguard_flag",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flag/flag-0.png"
+                    },
+                    "x": -29,
+                    "y": -123,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-ankguard-flag"
+                }
+            ]
         }
     ],
     "plainObjects": [],
