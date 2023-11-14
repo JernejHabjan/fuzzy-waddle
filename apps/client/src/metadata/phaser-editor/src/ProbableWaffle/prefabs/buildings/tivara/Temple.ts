@@ -36,8 +36,11 @@ export default class Temple extends Phaser.GameObjects.Container {
     this.add(buildings_tivara_temple_temple_olival);
 
     /* START-USER-CTR-CODE */
-    this.addGlow(scene, buildings_tivara_temple_temple_olival);
 
+    this.bounce(buildings_tivara_temple_temple_olival);
+    setTimeout(() => {
+      this.addGlow(scene, buildings_tivara_temple_temple_olival);
+    }, 1000);
     this.on('pointerdown', () => {
       buildings_tivara_temple.setTint(0xff0000); // Tint to red
     });
@@ -60,6 +63,17 @@ export default class Temple extends Phaser.GameObjects.Container {
       yoyo: true,
       loop: -1,
       ease: 'sine.inout'
+    });
+  };
+  private bounce = (image: Phaser.GameObjects.Image) => {
+    // bounce the sprite up and down forever with a 2 seconds duration
+    this.scene.tweens.add({
+      targets: image,
+      y: '-=4', // move up by 4
+      duration: 1000, // takes 1000ms
+      ease: 'Sine.InOut',
+      yoyo: true, // reverse the animation after it completes
+      loop: -1 // loop indefinitely
     });
   };
 
