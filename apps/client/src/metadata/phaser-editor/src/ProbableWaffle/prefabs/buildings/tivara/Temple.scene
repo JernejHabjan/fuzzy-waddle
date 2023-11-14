@@ -2,7 +2,6 @@
     "id": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
     "sceneType": "PREFAB",
     "settings": {
-        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -14,16 +13,37 @@
     },
     "displayList": [
         {
-            "type": "Image",
+            "type": "Container",
             "id": "f61b468d-f09c-4eeb-b80e-059f01e4db7d",
             "label": "buildings_tivara_temple_png",
-            "texture": {
-                "key": "factions",
-                "frame": "buildings/tivara/temple.png"
-            },
-            "x": 96,
-            "y": 144.01421393111485,
-            "originY": 0.7500740308912232
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-88.23719084310648 -38.365544262746845 -16.707434009762693 -74.50609893811041 -7.786674255499165 -68.09430286473349 0.018990529481428098 -71.43958777258231 12.006261449273069 -66.14288666848834 18.418057522649974 -73.94855145346894 88.11149310283386 -39.65938114801847 87.94781430359839 46.10289966043604 0.13408547256668157 90.70669843175372 -89.07351207006869 46.93922088739822",
+            "x": 96.3076677868738,
+            "y": 132.66656040978646,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "2a225345-fea6-477d-b465-8668a5b443ca",
+                    "label": "buildings_tivara_temple",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/temple/temple.png"
+                    },
+                    "x": -0.30766778687379315,
+                    "y": -36.666560409786456
+                },
+                {
+                    "type": "Image",
+                    "id": "787a34d8-176b-43a0-9c81-cd66f9df70a6",
+                    "label": "buildings_tivara_temple_temple_olival",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/temple/temple-olival.png"
+                    },
+                    "x": -2,
+                    "y": -13
+                }
+            ]
         }
     ],
     "plainObjects": [],

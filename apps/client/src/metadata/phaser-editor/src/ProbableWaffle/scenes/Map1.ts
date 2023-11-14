@@ -64,7 +64,7 @@ export default class Map1 extends Phaser.Scene {
 		this.add.existing(ankGuard);
 
 		// temple
-		const temple = new Temple(this, -176, 448);
+		const temple = new Temple(this, -176, 464);
 		this.add.existing(temple);
 
 		// workMill
