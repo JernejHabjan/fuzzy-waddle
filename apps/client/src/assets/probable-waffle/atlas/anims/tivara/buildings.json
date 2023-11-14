@@ -1,7 +1,7 @@
 {
     "anims": [
         {
-            "key": "tivara_olival_small_buildings/tivara/olival_small/olival_small",
+            "key": "tivara-buildings-olival-small",
             "type": "frame",
             "frames": [
                 {
@@ -34,8 +34,8 @@
         "contentType": "Phaser v3 Animations"
     },
     "settings": {
-        "sourceLang": "JAVA_SCRIPT",
-        "esModule": false,
-        "generateCode": false
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
     }
 }

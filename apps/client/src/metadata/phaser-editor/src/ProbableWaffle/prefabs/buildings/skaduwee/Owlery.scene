@@ -33,16 +33,16 @@
                 },
                 {
                     "type": "Sprite",
-                    "id": "a37e3cb3-8093-44bc-8402-a7ab43c7fe92",
-                    "label": "owl",
+                    "id": "2342d4f1-6d17-4fd3-8ca2-001408894983",
+                    "label": "skaduwee_buildings_owlery_owl",
                     "texture": {
                         "key": "factions",
                         "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png"
                     },
                     "x": 3,
-                    "y": -133.43393355052257,
+                    "y": -134,
                     "animationPlayMethod": 1,
-                    "animationKey": "skaduwee_owlery_buildings/skaduwee/owlery/owlery-owl/owlery-owl"
+                    "animationKey": "skaduwee-buildings-owlery-owl"
                 }
             ]
         }

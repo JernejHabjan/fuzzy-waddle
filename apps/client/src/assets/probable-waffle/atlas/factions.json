@@ -55,7 +55,7 @@
 						"h": 198
 					},
 					"anchor": {
-						"x": 0.50390625,
+						"x": 0.503906,
 						"y": 0.5
 					}
 				},
@@ -160,7 +160,7 @@
 					}
 				},
 				{
-					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-1.png",
+					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -235,6 +235,31 @@
 					}
 				},
 				{
+					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 22,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 22,
+						"h": 22
+					},
+					"frame": {
+						"x": 578,
+						"y": 171,
+						"w": 22,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
 					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png",
 					"rotated": false,
 					"trimmed": true,
@@ -249,7 +274,32 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 578,
+						"x": 602,
+						"y": 171,
+						"w": 15,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 22,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 0,
+						"w": 15,
+						"h": 22
+					},
+					"frame": {
+						"x": 619,
 						"y": 171,
 						"w": 15,
 						"h": 22
@@ -274,7 +324,7 @@
 						"h": 24
 					},
 					"frame": {
-						"x": 595,
+						"x": 636,
 						"y": 171,
 						"w": 12,
 						"h": 24
@@ -1040,6 +1090,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:1baec3dfb25c3d14d227777613738e5b:0ac0fde8f3317d8138e3bb861ddb2200:a9758daa4601cfd09e71f5a21b84c376$"
+		"smartupdate": "$TexturePacker:SmartUpdate:baff7173133472b7e81ce74116d5d708:1f346a4c89da360a745cd84d652a3ab5:a9758daa4601cfd09e71f5a21b84c376$"
 	}
 }

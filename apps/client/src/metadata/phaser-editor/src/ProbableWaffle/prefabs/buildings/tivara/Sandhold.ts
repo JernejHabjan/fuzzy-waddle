@@ -4,6 +4,7 @@
 
 import Phaser from 'phaser';
 /* START-USER-IMPORTS */
+import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from '../../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings';
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -55,7 +56,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     span.scaleX = 0.5;
     span.scaleY = 0.5;
     span.angle = -70;
-    span.play('tivara_olival_small_buildings/tivara/olival_small/olival_small');
+    span.play(ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL);
     this.add(span);
 
     scene.tweens.add({
