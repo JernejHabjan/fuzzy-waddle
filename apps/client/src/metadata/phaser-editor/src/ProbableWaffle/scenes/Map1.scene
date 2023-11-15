@@ -17,6 +17,7 @@
             "type": "TilemapLayer",
             "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
             "label": "tilemap_level_1",
+            "x": -32,
             "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "layerName": "TileMap_level_1",
             "tilesets": [
@@ -108,8 +109,7 @@
                 "key": "outside",
                 "frame": "architecture/blocks/doors_left.png"
             },
-            "x": -416,
-            "y": 256,
+            "y": 16,
             "originY": 0.75
         },
         {
@@ -120,8 +120,8 @@
                 "key": "outside",
                 "frame": "architecture/blocks/doors_right.png"
             },
-            "x": -384,
-            "y": 240,
+            "x": -160,
+            "y": 144,
             "originY": 0.75
         },
         {

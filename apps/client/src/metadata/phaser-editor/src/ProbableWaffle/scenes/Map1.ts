@@ -41,7 +41,7 @@ export default class Map1 extends Phaser.Scene {
 		tiles.addTilesetImage("tiles", "tiles_1");
 
 		// tilemap_level_1
-		tiles.createLayer("TileMap_level_1", ["tiles"], 0, 0);
+		tiles.createLayer("TileMap_level_1", ["tiles"], -32, 0);
 
 		// sandhold
 		const sandhold = new Sandhold(this, 32, 592);
@@ -72,11 +72,11 @@ export default class Map1 extends Phaser.Scene {
 		this.add.existing(workMill);
 
 		// architecture_blocks_doors_left_png
-		const architecture_blocks_doors_left_png = this.add.image(-416, 256, "outside", "architecture/blocks/doors_left.png");
+		const architecture_blocks_doors_left_png = this.add.image(0, 16, "outside", "architecture/blocks/doors_left.png");
 		architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
 
 		// architecture_blocks_doors_right_png
-		const architecture_blocks_doors_right_png = this.add.image(-384, 240, "outside", "architecture/blocks/doors_right.png");
+		const architecture_blocks_doors_right_png = this.add.image(-160, 144, "outside", "architecture/blocks/doors_right.png");
 		architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
 
 		// skaduweeWorkerMale
@@ -170,9 +170,11 @@ export default class Map1 extends Phaser.Scene {
   };
   handleCameraCenter = () => {
     // set camera to the center of isometric tilemap
-    const mapLeft = 0 + 32 - this.tiles.widthInPixels / 2;
-    const mapRight = 0 + 32 + this.tiles.widthInPixels / 2;
-    const mapTop = 0;
+
+    const maxMapLayers = 1;
+    const mapLeft =  - this.tiles.widthInPixels / 2;
+    const mapRight = + this.tiles.widthInPixels / 2;
+    const mapTop = -maxMapLayers * 32;
     const mapBottom = this.tiles.heightInPixels;
 
     this.cameras.main.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, true);
