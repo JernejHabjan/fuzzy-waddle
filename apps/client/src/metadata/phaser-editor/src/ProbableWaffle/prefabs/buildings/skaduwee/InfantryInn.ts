@@ -2,15 +2,16 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
+import ActorContainer from "../../../Core/ActorContainer";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class InfantryInn extends Phaser.GameObjects.Container {
+export default class InfantryInn extends ActorContainer {
 
 	constructor(scene: Phaser.Scene, x?: number, y?: number) {
 		super(scene, x ?? 64, y ?? 128);
 
+		this.removeInteractive();
 		this.setInteractive(new Phaser.Geom.Circle(0, -35, 59.91620797027979), Phaser.Geom.Circle.Contains);
 
 		// infantry_inn_building

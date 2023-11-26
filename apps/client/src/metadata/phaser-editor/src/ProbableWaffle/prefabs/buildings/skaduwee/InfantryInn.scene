@@ -13,10 +13,23 @@
     },
     "displayList": [
         {
-            "type": "Container",
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
             "id": "c586f07d-1ddf-4bc1-8a74-83b89a5f7988",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance"
+            ],
             "label": "container_1",
             "hitArea.shape": "CIRCLE",
+            "hitArea.x": 0,
             "hitArea.y": -35,
             "hitArea.radius": 59.91620797027979,
             "x": 64,

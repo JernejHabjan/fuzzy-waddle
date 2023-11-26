@@ -22,6 +22,7 @@ import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
 import Olival from "../prefabs/buildings/tivara/Olival";
 /* START-USER-IMPORTS */
+import ActorContainer from "../Core/ActorContainer";
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
@@ -92,7 +93,7 @@ export default class Map1 extends Phaser.Scene {
 		this.add.existing(skaduweeRangedFemale);
 
 		// skaduweeMagicianFemale
-		const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1312, 896);
+		const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1312, 848);
 		this.add.existing(skaduweeMagicianFemale);
 
 		// skaduweeWarriorMale
@@ -126,6 +127,9 @@ export default class Map1 extends Phaser.Scene {
 		// lists
 		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
 
+		// infantryInn (prefab fields)
+		infantryInn.z = 32;
+
 		this.tiles = tiles;
 		this.tileMapLayer2 = tileMapLayer2;
 
@@ -139,10 +143,6 @@ export default class Map1 extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
-
-  edgeThickness = 20; // Change this value to adjust the 'sensitivity' of your screen edge.
-  moveSpeed = 10; // Change this value to adjust the speed of your camera movement.
-  // Write your code here
 
   preload(): void {
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -166,6 +166,10 @@ export default class Map1 extends Phaser.Scene {
   handleZSort = () => {
     this.children.each((child: any) => {
       child.depth = child.y;
+      if(child instanceof ActorContainer){
+        const z = child.z;
+        child.depth = child.y + z;
+      }
     });
   };
   handleCameraCenter = () => {
@@ -182,21 +186,6 @@ export default class Map1 extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.controls.update(delta);
-
-    const cam = this.cameras.main;
-    const pointer = this.input.activePointer;
-
-    // if (pointer.x < this.edgeThickness) {
-    //   cam.scrollX -= this.moveSpeed;
-    // } else if (pointer.x > cam.width - this.edgeThickness) {
-    //   cam.scrollX += this.moveSpeed;
-    // }
-    //
-    // if (pointer.y < this.edgeThickness) {
-    //   cam.scrollY -= this.moveSpeed;
-    // } else if (pointer.y > cam.height - this.edgeThickness) {
-    //   cam.scrollY += this.moveSpeed;
-    // }
   }
 
   /* END-USER-CODE */

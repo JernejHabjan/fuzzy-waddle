@@ -62,9 +62,11 @@
             "id": "adc87d90-96a4-4335-bfd0-2472752d30b7",
             "unlock": [
                 "x",
-                "y"
+                "y",
+                "z"
             ],
             "label": "infantryInn",
+            "z": 32,
             "x": 1360,
             "y": 800
         },
@@ -166,7 +168,7 @@
             ],
             "label": "skaduweeMagicianFemale",
             "x": 1312,
-            "y": 896
+            "y": 848
         },
         {
             "prefabId": "6b5df2a7-6f41-4fc7-a3bb-96dc39de0188",
