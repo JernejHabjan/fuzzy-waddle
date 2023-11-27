@@ -46,6 +46,9 @@ and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
 
 - https://www.pixilart.com/darkneess10
 
+## Phaser Editor 2D
+- `.skip` files are used to skip files from being processed by Phaser Editor 2D
+
 ## Attribution
 
 This project utilizes the following works:

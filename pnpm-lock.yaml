@@ -279,6 +279,12 @@ importers:
       nx-cloud:
         specifier: 16.5.2
         version: 16.5.2
+      phaser-asset-pack-hashing:
+        specifier: ^1.0.6
+        version: 1.0.6
+      phasereditor2d-launcher:
+        specifier: ^3.64.0
+        version: 3.64.0
       prettier:
         specifier: ^3.0.3
         version: 3.0.3

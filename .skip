@@ -1,0 +1,12 @@
+apps/api/*
+apps/client/src/app/home/*
+apps/client/src/app/auth/*
+apps/client/src/app/data-access/*
+apps/client/src/app/probable-waffle/gui/*
+apps/client-e2e/*
+libs/*
+.nx/*
+.github/*
+.run/*
+.vscode/*
+DBMs/*
