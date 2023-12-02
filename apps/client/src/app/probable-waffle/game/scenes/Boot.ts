@@ -9,6 +9,6 @@ export class Boot extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start('Preload');
+    this.scene.start('PreloadProbableWaffle');
   }
 }

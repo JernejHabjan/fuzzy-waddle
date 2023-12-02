@@ -2,14 +2,15 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
+import ActorContainer from '../../../entity/actor/ActorContainer';
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class Temple extends Phaser.GameObjects.Container {
+export default class Temple extends ActorContainer {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 96.3076677868738, y ?? 132.66656040978646);
 
+    this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon(
         '-88.23719084310648 -38.365544262746845 -16.707434009762693 -74.50609893811041 -7.786674255499165 -68.09430286473349 0.018990529481428098 -71.43958777258231 12.006261449273069 -66.14288666848834 18.418057522649974 -73.94855145346894 88.11149310283386 -39.65938114801847 87.94781430359839 46.10289966043604 0.13408547256668157 90.70669843175372 -89.07351207006869 46.93922088739822'

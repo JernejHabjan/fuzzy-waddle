@@ -2,17 +2,15 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
-import {
-  ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL
-} from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
+import ActorContainer from '../../../entity/actor/ActorContainer';
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class Sandhold extends Phaser.GameObjects.Container {
+export default class Sandhold extends ActorContainer {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 160, y ?? 240);
 
+    this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon('-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22'),
       Phaser.Geom.Polygon.Contains
@@ -58,7 +56,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     span.scaleX = 0.5;
     span.scaleY = 0.5;
     span.angle = -70;
-    span.play(ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL);
+    span.play('anim-tivara-buildings-olival-small');
     this.add(span);
 
     scene.tweens.add({

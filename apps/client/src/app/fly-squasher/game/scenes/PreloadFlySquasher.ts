@@ -10,7 +10,7 @@ import assetPackUrl from '../../../../assets/fly-squasher/asset-packers/asset-pa
 
 export default class PreloadFlySquasher extends Phaser.Scene {
   constructor() {
-    super('Preload');
+    super('PreloadFlySquasher');
 
     /* START-USER-CTR-CODE */
     // Write your code here.

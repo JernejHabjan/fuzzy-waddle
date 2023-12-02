@@ -14,16 +14,36 @@
     },
     "displayList": [
         {
-            "type": "Image",
-            "id": "0cd44f0e-8e11-4add-87e2-7a0577339d01",
-            "label": "buildings_tivara_workmill_png",
-            "texture": {
-                "key": "factions",
-                "frame": "buildings/tivara/workmill.png"
-            },
+            "type": "Container",
+            "id": "4abdf3c4-2b20-45f6-80d4-950df34b0430",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -32 -36.234159332489156 -63.0211994554259 15.742874893184435 -37.80157338143043 16.050431308720974 -16.887737124946376 44.038065122545206 -30.727775824090237 52.34208834203153 -23.038865435676982 52.649644757568055 10.792340273341338 63.72167571688314 21.86437123265641 56.64787815954294 37.24219200948292 8.976633751380774 63.07693091455144 -49.45908520055995 58.46358468150349 -59.91600332880197 37.24219200948292",
             "x": 64,
-            "y": 95.9987593553798,
-            "originY": 0.7499903219215333
+            "y": 96.29342343955079,
+            "list": [
+                {
+                    "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+                    "id": "0cd44f0e-8e11-4add-87e2-7a0577339d01",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "buildings_tivara_workmill_png",
+                    "x": 0,
+                    "y": -32.29342343955079
+                },
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "buildings_tivara_workmill_png_1",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/workmill.png"
+                    },
+                    "y": -32.29342343955079
+                }
+            ]
         }
     ],
     "plainObjects": [],

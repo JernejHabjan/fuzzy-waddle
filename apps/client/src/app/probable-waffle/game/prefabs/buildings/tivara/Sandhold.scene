@@ -14,8 +14,20 @@
     },
     "displayList": [
         {
-            "type": "Container",
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
             "id": "75d98e32-5bb9-40eb-b3dc-40dff0670310",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance"
+            ],
             "label": "container_1",
             "hitArea.shape": "POLYGON",
             "hitArea.points": "-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22",

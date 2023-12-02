@@ -10,7 +10,7 @@ import assetPackUrl from '../../../../assets/probable-waffle/asset-packers/asset
 
 export default class PreloadProbableWaffle extends Phaser.Scene {
   constructor() {
-    super('Preload');
+    super('PreloadProbableWaffle');
 
     /* START-USER-CTR-CODE */
     // Write your code here.
