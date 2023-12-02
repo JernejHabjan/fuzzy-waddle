@@ -1,32 +1,32 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ModalConfig } from '../../../shared/components/modal/modal-config';
-import { ModalComponent } from '../../../shared/components/modal/modal.component';
-import { GameInstanceClientService } from '../game-instance-client.service';
-import { CommunicatorService } from '../../game/communicator.service';
-import { Subscription } from 'rxjs';
-import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '../../../auth/auth.service';
-import { LittleMuncherHillEnum, LittleMuncherHills } from '@fuzzy-waddle/api-interfaces';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ModalConfig } from "../../../shared/components/modal/modal-config";
+import { ModalComponent } from "../../../shared/components/modal/modal.component";
+import { GameInstanceClientService } from "../game-instance-client.service";
+import { LittleMuncherCommunicatorService } from "../../game/little-muncher-communicator.service";
+import { Subscription } from "rxjs";
+import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { AuthService } from "../../../auth/auth.service";
+import { LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
-  selector: 'fuzzy-waddle-game-interface',
-  templateUrl: './game-interface.component.html',
-  styleUrls: ['./game-interface.component.scss']
+  selector: "fuzzy-waddle-game-interface",
+  templateUrl: "./game-interface.component.html",
+  styleUrls: ["./game-interface.component.scss"]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   score = 0;
   remaining = 0;
-  @ViewChild('modal') private modalComponent!: ModalComponent;
+  @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
   protected paused = false;
   protected isPlayer = false;
 
   protected readonly leaveModalConfirm: ModalConfig = {
-    modalTitle: 'Leave the game?',
-    dismissButtonLabel: 'Continue',
-    closeButtonLabel: 'Leave',
-    onClose: async () => await this.gameInstanceClientService.stopLevel('localAndRemote').then()
+    modalTitle: "Leave the game?",
+    dismissButtonLabel: "Continue",
+    closeButtonLabel: "Leave",
+    onClose: async () => await this.gameInstanceClientService.stopLevel("localAndRemote").then()
   };
   private scoreSubscription?: Subscription;
   private pauseSubscription?: Subscription;
@@ -34,7 +34,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authService: AuthService,
     private readonly gameInstanceClientService: GameInstanceClientService,
-    private readonly communicatorService: CommunicatorService,
+    private readonly communicatorService: LittleMuncherCommunicatorService,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 

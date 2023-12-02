@@ -1,0 +1,41 @@
+{
+  "anims": [
+    {
+      "key": "blood-splatter",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "fly-squasher-spritesheet",
+          "frame": "blood-splatter/0",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "fly-squasher-spritesheet",
+          "frame": "blood-splatter/1",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "fly-squasher-spritesheet",
+          "frame": "blood-splatter/2",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true
+    }
+  ],
+  "globalTimeScale": 1,
+  "meta": {
+    "app": "Phaser Editor 2D v3",
+    "contentType": "Phaser v3 Animations"
+  },
+  "settings": {
+    "sourceLang": "TYPE_SCRIPT",
+    "esModule": true,
+    "generateCode": true,
+    "outputFolder": "fuzzy-waddle/apps/client/src/app/fly-squasher/game/fly"
+  }
+}

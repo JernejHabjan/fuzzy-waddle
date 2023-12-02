@@ -1,35 +1,43 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { flySquasherGameConfig } from '../game/consts/game-config';
-import { LittleMuncherGameInstance, LittleMuncherUserInfo } from '@fuzzy-waddle/api-interfaces';
-import { AuthService } from '../../auth/auth.service';
-import { CommunicatorService } from '../../little-muncher/game/communicator.service';
-import { LittleMuncherGameData } from '../../little-muncher/game/little-muncher-game-data';
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { flySquasherGameConfig } from "../game/consts/game-config";
+import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
+import { AuthService } from "../../auth/auth.service";
+import { FlySquasherGameData } from "../game/fly-squasher-game-data";
+import { FlySquasherCommunicatorService } from "../game/fly-squasher-communicator.service";
+import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 
 @Component({
-  selector: 'fly-squasher-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss']
+  templateUrl: "./main.component.html",
+  styleUrls: ["./main.component.scss"]
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   protected readonly flySquasherGameConfig = flySquasherGameConfig;
-  protected gameData!: LittleMuncherGameData; // todo
-  @Input() level!: number;
+  protected gameData!: FlySquasherGameData;
+  @Input() level!: string;
 
   constructor(
     private readonly authService: AuthService,
-    private readonly communicatorService: CommunicatorService
+    private readonly communicatorService: FlySquasherCommunicatorService,
+    private readonly sceneCommunicatorClientService: SceneCommunicatorClientService
   ) {}
 
   ngOnInit(): void {
-    const gameSessionInstance = new LittleMuncherGameInstance({
+    const levelData = Object.values(FlySquasherLevels).find((level) => level.id === Number.parseInt(this.level))!;
+
+    const gameSessionInstance = new FlySquasherGameInstance({
       gameModeData: {
-        // todo level: this.level
+        level: levelData
       }
-    }); // todo later use ProbableWaffleGameInstance
+    });
     this.gameData = {
       gameInstance: gameSessionInstance,
       communicator: this.communicatorService,
-      user: new LittleMuncherUserInfo(this.authService.userId) // todo later use ProbableWaffleUserInfo
+      user: new FlySquasherUserInfo(this.authService.userId)
     };
+    this.sceneCommunicatorClientService.startCommunication();
+  }
+
+  ngOnDestroy(): void {
+    this.sceneCommunicatorClientService.stopCommunication();
   }
 }

@@ -1,14 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { AppController } from './app.controller';
-import { AuthModule } from '../auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-import { EventsModule } from './events/events.module';
-import { ChatModule } from './chat/chat.module';
-import { GameSessionModule } from './game-session/game-session.module';
-import { LittleMuncherModule } from './little-muncher/little-muncher.module';
-import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { AppController } from "./app.controller";
+import { AuthModule } from "../auth/auth.module";
+import { ConfigModule } from "@nestjs/config";
+import { EventsModule } from "./events/events.module";
+import { ChatModule } from "./chat/chat.module";
+import { GameSessionModule } from "./game-session/game-session.module";
+import { LittleMuncherModule } from "./little-muncher/little-muncher.module";
+import { APP_GUARD } from "@nestjs/core";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { FlySquasherModule } from "./fly-squasher/fly-squasher.module";
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     EventsModule,
     ChatModule,
     GameSessionModule,
-    LittleMuncherModule
+    LittleMuncherModule,
+    FlySquasherModule
   ],
   controllers: [AppController],
   providers: [

@@ -47,7 +47,11 @@ and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
 - https://www.pixilart.com/darkneess10
 
 ## Phaser Editor 2D
+
 - `.skip` files are used to skip files from being processed by Phaser Editor 2D
+- investigate issues: `Ctrl+Shift+I`
+- if crashing: - if there's an issue with the Phaser shaders, try to switch the IDE to Canvas
+  press `Ctrl+K`, and execute this command: `set default render type to CANVAS`, then reload the editor `Ctrl+R`
 
 ## Attribution
 
