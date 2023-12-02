@@ -5,4 +5,10 @@ import { Component } from '@angular/core';
   templateUrl: './online.component.html',
   styleUrls: ['./online.component.scss']
 })
-export class OnlineComponent {}
+export class OnlineComponent {
+  protected selectedTab: string = 'ranked';
+
+  selectTab(tab: string) {
+    this.selectedTab = tab;
+  }
+}

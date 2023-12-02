@@ -15,10 +15,12 @@ export class MainComponent implements OnInit {
   protected gameData!: LittleMuncherGameData; // todo
   @Input() level!: number;
 
-  constructor(private readonly authService: AuthService, private readonly communicatorService: CommunicatorService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly communicatorService: CommunicatorService
+  ) {}
 
   ngOnInit(): void {
-    console.log('this level is', this.level);
     const gameSessionInstance = new LittleMuncherGameInstance({
       gameModeData: {
         // todo level: this.level
