@@ -1,23 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
-import { probableWaffleGameConfig } from '../../../game/world/const/game-config';
-import { BaseGameData } from '../../../../shared/game/phaser/game/base-game-data';
-import { LittleMuncherGameInstance, LittleMuncherUserInfo } from '@fuzzy-waddle/api-interfaces';
-import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
-import { AuthService } from '../../../../auth/auth.service';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { SceneCommunicatorService } from "../../../communicators/scene-communicator.service";
+import { probableWaffleGameConfig } from "../../../game/world/const/game-config";
+import { BaseGameData } from "../../../../shared/game/phaser/game/base-game-data";
+import { LittleMuncherGameInstance, LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherCommunicatorService } from "../../../../little-muncher/game/little-muncher-communicator.service";
+import { AuthService } from "../../../../auth/auth.service";
 
 @Component({
-  selector: 'fuzzy-waddle-game',
-  templateUrl: './probable-waffle-game.component.html',
-  styleUrls: ['./probable-waffle-game.component.scss']
+  selector: "fuzzy-waddle-game",
+  templateUrl: "./probable-waffle-game.component.html",
+  styleUrls: ["./probable-waffle-game.component.scss"]
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
-  drawerWidth = '150px';
+  drawerWidth = "150px";
   displayDrawers = true; // todo
-  gameData?: BaseGameData<CommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>; // todo
+  gameData?: BaseGameData<LittleMuncherCommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>; // todo
 
-  constructor(private readonly communicatorService: CommunicatorService, private readonly authService: AuthService) {}
+  constructor(
+    private readonly communicatorService: LittleMuncherCommunicatorService,
+    private readonly authService: AuthService
+  ) {}
 
   ngOnDestroy(): void {
     SceneCommunicatorService.unsubscribe();

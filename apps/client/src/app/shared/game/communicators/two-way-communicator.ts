@@ -1,6 +1,6 @@
-import { Observable, Subject, Subscription } from 'rxjs';
-import { Socket } from 'ngx-socket-io';
-import { CommunicatorEvent, LittleMuncherCommunicatorType } from '@fuzzy-waddle/api-interfaces';
+import { Observable, Subject, Subscription } from "rxjs";
+import { Socket } from "ngx-socket-io";
+import { CommunicatorEvent, LittleMuncherCommunicatorType } from "@fuzzy-waddle/api-interfaces";
 
 export class TwoWayCommunicator<T> {
   private onSubject: Subject<T> = new Subject<T>();
@@ -11,7 +11,7 @@ export class TwoWayCommunicator<T> {
   constructor(
     private readonly eventName: string,
     private readonly communicator: LittleMuncherCommunicatorType,
-    gameInstanceId: string,
+    gameInstanceId?: string,
     socket?: Socket
   ) {
     this.listenToCommunication(eventName, gameInstanceId, socket);
@@ -47,7 +47,7 @@ export class TwoWayCommunicator<T> {
    * if socket is provided, it will also listen to the server
    * otherwise, it will only listen to the UI and Game events and send them to each other
    */
-  private listenToCommunication(eventName: string, gameInstanceId: string, socket?: Socket): void {
+  private listenToCommunication(eventName: string, gameInstanceId?: string, socket?: Socket): void {
     // send from UI->Game or Game->UI
     this.subscriptions.push(
       this.sendLocallySubject.subscribe((event) => {

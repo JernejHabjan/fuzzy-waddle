@@ -1,18 +1,22 @@
-import { Croissants } from './Croissants';
-import { BaseScene } from '../../../shared/game/phaser/scene/base.scene';
+import { Croissants } from "./Croissants";
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { FlySquasherAudio } from "../audio";
 
 export class Scenery {
   scenePrefab: Croissants;
 
-  constructor(private readonly scene: BaseScene) {
+  constructor(
+    private readonly scene: BaseScene,
+    private readonly audio: FlySquasherAudio
+  ) {
     this.scenePrefab = new Croissants(scene);
     scene.add.existing(this.scenePrefab);
     this.setSceneSize();
     this.scene.subscribe(scene.onResize.subscribe(this.resize));
 
-    this.scene.sound.play('restaurant', {
+    this.scene.sound.play("restaurant", {
       loop: true,
-      volume: 0.7
+      volume: this.audio.sfxVolumeNormalized
     });
   }
 

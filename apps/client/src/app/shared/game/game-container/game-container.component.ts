@@ -1,25 +1,19 @@
-import { Component, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
-import { BaseGame } from '../phaser/game/base-game';
-import { Types } from 'phaser';
-import { BaseGameData } from '../phaser/game/base-game-data';
-import { GameContainerElement } from './game-container';
-import { CommunicatorService } from '../../../little-muncher/game/communicator.service';
-import { LittleMuncherGameInstance, LittleMuncherUserInfo } from '@fuzzy-waddle/api-interfaces';
+import { Component, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
+import { BaseGame } from "../phaser/game/base-game";
+import { Types } from "phaser";
+import { BaseGameData } from "../phaser/game/base-game-data";
+import { GameContainerElement } from "./game-container";
 
 @Component({
-  selector: 'fuzzy-waddle-game-container',
-  templateUrl: './game-container.component.html',
-  styleUrls: ['./game-container.component.scss']
+  selector: "fuzzy-waddle-game-container",
+  templateUrl: "./game-container.component.html",
+  styleUrls: ["./game-container.component.scss"]
 })
 export class GameContainerComponent implements OnDestroy {
   protected readonly GameContainerElement = GameContainerElement;
 
   @Input({ required: true }) gameConfig!: Types.Core.GameConfig;
-  @Input({ required: true }) gameData!: BaseGameData<
-    CommunicatorService,
-    LittleMuncherGameInstance,
-    LittleMuncherUserInfo
-  >;
+  @Input({ required: true }) gameData!: BaseGameData<any, any, any>;
 
   private gameRef?: BaseGame;
 
@@ -27,7 +21,7 @@ export class GameContainerComponent implements OnDestroy {
 
   private _gameContainerElement!: HTMLDivElement;
 
-  @ViewChild('gameContainerElement')
+  @ViewChild("gameContainerElement")
   get gameContainerElement(): HTMLDivElement {
     return this._gameContainerElement;
   }

@@ -1,22 +1,22 @@
-export type LittleMuncherCommunicatorType = 'move' | 'score' | 'pause' | 'timeClimbing' | 'reset';
+export type LittleMuncherCommunicatorType = "move" | "score" | "pause" | "timeClimbing" | "reset";
 
-export interface CommunicatorScoreEvent {
+export interface LittleMuncherCommunicatorScoreEvent {
   score: number;
 }
 
-export interface CommunicatorClimbingEvent {
+export interface LittleMuncherCommunicatorClimbingEvent {
   timeClimbing: number;
 }
 
-export interface CommunicatorPauseEvent {
+export interface LittleMuncherCommunicatorPauseEvent {
   pause: boolean;
 }
 
-export interface CommunicatorResetEvent {
+export interface LittleMuncherCommunicatorResetEvent {
   reset: boolean;
 }
 
 export enum LittleMuncherGatewayEvent {
-  LittleMuncherRoom = 'little-muncher-spectate-room',
-  LittleMuncherAction = 'little-muncher-action'
+  LittleMuncherRoom = "little-muncher-spectate-room",
+  LittleMuncherAction = "little-muncher-action"
 }

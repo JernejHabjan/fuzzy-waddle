@@ -1,10 +1,10 @@
-import { Scene } from 'phaser';
-import { CreateSceneFromObjectConfig } from './scene-config.interface';
-import { EventEmitter } from '@angular/core';
-import { UpdateEventData } from './update-event-data';
-import { BaseGame } from '../game/base-game';
-import { BaseGameData } from '../game/base-game-data';
-import { Subscription } from 'rxjs';
+import { Scene } from "phaser";
+import { CreateSceneFromObjectConfig } from "./scene-config.interface";
+import { EventEmitter } from "@angular/core";
+import { UpdateEventData } from "./update-event-data";
+import { BaseGame } from "../game/base-game";
+import { BaseGameData } from "../game/base-game-data";
+import { Subscription } from "rxjs";
 import {
   BaseData,
   BaseGameMode,
@@ -12,9 +12,9 @@ import {
   BasePlayer,
   BaseSpectator,
   BaseSpectatorData
-} from '@fuzzy-waddle/api-interfaces';
-import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
-import { Loader } from '../../../../little-muncher/game/loader';
+} from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherCommunicatorService } from "../../../../little-muncher/game/little-muncher-communicator.service";
+import { Loader } from "../../../../little-muncher/game/loader";
 
 export class BaseScene<
     TGameData extends BaseGameData = BaseGameData,
@@ -45,7 +45,7 @@ export class BaseScene<
   private subscriptions: Subscription[] = [];
 
   override game!: BaseGame<TGameData>;
-  communicator!: CommunicatorService;
+  communicator!: LittleMuncherCommunicatorService;
   baseGameData!: TGameData;
 
   preload() {
@@ -102,12 +102,12 @@ export class BaseScene<
   }
 
   get gameState(): TGameState {
-    if (!this.baseGameData.gameInstance.gameState) throw new Error('GameState is not defined');
+    if (!this.baseGameData.gameInstance.gameState) throw new Error("GameState is not defined");
     return this.baseGameData.gameInstance.gameState as TGameState;
   }
 
   get gameMode(): TGameMode {
-    if (!this.baseGameData.gameInstance.gameMode) throw new Error('GameMode is not defined');
+    if (!this.baseGameData.gameInstance.gameMode) throw new Error("GameMode is not defined");
     return this.baseGameData.gameInstance.gameMode as TGameMode;
   }
 
@@ -121,7 +121,7 @@ export class BaseScene<
 
   get player(): TPlayer {
     const player = this.playerOrNull;
-    if (!player) throw new Error('Player is not defined');
+    if (!player) throw new Error("Player is not defined");
     return player as TPlayer;
   }
 
@@ -135,7 +135,7 @@ export class BaseScene<
 
   get spectator(): TSpectator {
     const spectator = this.spectatorOrNull;
-    if (!spectator) throw new Error('Spectator is not defined');
+    if (!spectator) throw new Error("Spectator is not defined");
     return spectator as TSpectator;
   }
 

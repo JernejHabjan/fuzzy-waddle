@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { flySquasherLevels } from '../consts/levels';
+import { Component } from "@angular/core";
+import { FlySquasherLevels } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
-  selector: 'fly-squasher-choose-level',
-  templateUrl: './choose-level.component.html',
-  styleUrls: ['./choose-level.component.scss']
+  selector: "fly-squasher-choose-level",
+  templateUrl: "./choose-level.component.html",
+  styleUrls: ["./choose-level.component.scss"]
 })
 export class ChooseLevelComponent {
-  protected readonly flySquasherLevels = flySquasherLevels;
+  protected readonly flySquasherLevels = FlySquasherLevels;
 }

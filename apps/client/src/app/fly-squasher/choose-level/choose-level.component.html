@@ -7,10 +7,10 @@
   <div class="general-title">Choose level:</div>
 
   <div class="level-list">
-    <div class="level-list-item" *ngFor="let level of flySquasherLevels">
-      <div class="level-name">{{level.name}}</div>
-      <div class="level-description">{{level.description}}</div>
-      <button class="btn btn-primary" type="button" routerLink="/fly-squasher/play/{{level.id}}">Play</button>
+    <div class="level-list-item" *ngFor="let level of flySquasherLevels | keyvalue">
+      <div class="level-name">{{level.value.name}}</div>
+      <div class="level-description">{{level.value.description}}</div>
+      <button class="btn btn-primary" type="button" routerLink="/fly-squasher/play/{{level.value.id}}">Play</button>
     </div>
   </div>
 </div>

@@ -1,8 +1,8 @@
-import { BaseUserInfo, GameInstance } from '@fuzzy-waddle/api-interfaces';
-import { CommunicatorService } from '../../../../little-muncher/game/communicator.service';
+import { BaseUserInfo, GameInstance } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherCommunicatorService } from "../../../../little-muncher/game/little-muncher-communicator.service";
 
 export interface BaseGameData<
-  TCommunicator extends CommunicatorService = CommunicatorService,
+  TCommunicator = any,
   TGameInstance extends GameInstance = GameInstance,
   TUserInfo extends BaseUserInfo = BaseUserInfo
 > {

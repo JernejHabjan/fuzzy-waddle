@@ -1,16 +1,23 @@
-import { IComponent } from '../../../../probable-waffle/game/core/component.service';
-import { FlyPrefab } from '../fly-prefab';
-import { BaseScene } from '../../../../shared/game/phaser/scene/base.scene';
-import { Actor } from '../../../../probable-waffle/game/entity/actor/actor';
+import { IComponent } from "../../../../probable-waffle/game/core/component.service";
+import { FlyPrefab } from "../fly-prefab";
+import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
+import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
+import { FlyOptions } from "../fly";
+import { ANIM_BLOOD_SPLATTER } from "../blood-splatter";
 
 export class FlyRepresentableComponent implements IComponent {
   private _fly!: FlyPrefab;
 
-  constructor(private readonly fly: Actor, private readonly scene: BaseScene) {}
+  constructor(
+    private readonly fly: Actor,
+    private readonly scene: BaseScene,
+    private readonly actorOptions?: FlyOptions
+  ) {}
 
   init() {
     this._fly = new FlyPrefab(this.scene);
     this.scene.add.existing(this._fly);
+    this.manageSize();
   }
 
   destroy() {
@@ -63,6 +70,23 @@ export class FlyRepresentableComponent implements IComponent {
 
   kill() {
     this._fly.stopMoving();
+    this.displayBlood();
+  }
+
+  private manageSize = () => {
+    this._fly.setScale(this.scale);
+  };
+
+  private get scale() {
+    if (!this.actorOptions) return 1;
+    switch (this.actorOptions.type) {
+      case "boss":
+        return 2;
+      case "large-boss":
+        return 3;
+      default:
+        return 1;
+    }
   }
 
   update(): void {
@@ -74,8 +98,8 @@ export class FlyRepresentableComponent implements IComponent {
     const millisecondsSinceKilled = new Date().getTime() - killedAt.getTime();
 
     const hexColor = Phaser.Display.Color.Interpolate.ColorWithColor(
-      Phaser.Display.Color.HexStringToColor('#ffffff'),
-      Phaser.Display.Color.HexStringToColor('#ff0000'),
+      Phaser.Display.Color.HexStringToColor("#ffffff"),
+      Phaser.Display.Color.HexStringToColor("#ff0000"),
       despawnTimeInMilliseconds,
       millisecondsSinceKilled
     );
@@ -84,4 +108,23 @@ export class FlyRepresentableComponent implements IComponent {
 
     this._fly.setTint(hexColor.color); // TODO THIS DOESN'T WORK OK
   }
+
+  private displayBlood = () => {
+    const bloodSplatter = this.scene.add.sprite(this.x, this.y, "fly-squasher-spritesheet", "blood-splatter/0");
+    bloodSplatter.play(ANIM_BLOOD_SPLATTER);
+    // tint to green
+    bloodSplatter.setTint(0x00ff00);
+    // set scale
+    bloodSplatter.setScale(this.scale);
+    this.scene.time.delayedCall(3 * 1000, () => {
+      this.scene.tweens.add({
+        targets: bloodSplatter,
+        alpha: 0,
+        duration: 2000,
+        onComplete: () => {
+          bloodSplatter.destroy();
+        }
+      });
+    });
+  };
 }

@@ -1,24 +1,34 @@
-import { BaseScene } from '../../shared/game/phaser/scene/base.scene';
-import { BaseGameMode, BasePlayer, BaseSpectator, BaseSpectatorData } from '@fuzzy-waddle/api-interfaces';
-import { BaseGameData } from '../../shared/game/phaser/game/base-game-data';
-import { Scenes } from './consts/scenes';
-import { Fly } from './fly/fly';
-import { Scenery } from './scenery/Scenery';
-import { FlyFactory } from './fly/fly.factory';
-import { Subscription } from 'rxjs';
-import { FlyMovementComponent } from './fly/components/fly-movement-component';
+import { BaseScene } from "../../shared/game/phaser/scene/base.scene";
+import {
+  FlySquasherGameMode,
+  FlySquasherGameModeData,
+  FlySquasherGameState,
+  FlySquasherGameStateData,
+  FlySquasherLevelEnum,
+  FlySquasherPlayer,
+  FlySquasherPlayerControllerData,
+  FlySquasherPlayerStateData,
+  FlySquasherSpectator,
+  FlySquasherSpectatorData
+} from "@fuzzy-waddle/api-interfaces";
+import { Scenes } from "./consts/scenes";
+import { Fly } from "./fly/fly";
+import { Scenery } from "./scenery/Scenery";
+import { FlyFactory } from "./fly/fly.factory";
+import { FlySquasherGameData } from "./fly-squasher-game-data";
+import { FlySquasherAudio } from "./audio";
 
 export class FlySquasherScene extends BaseScene<
-  BaseGameData,
-  any,
-  any,
-  any,
-  BaseGameMode,
-  any,
-  any,
-  BasePlayer,
-  BaseSpectatorData,
-  BaseSpectator
+  FlySquasherGameData,
+  FlySquasherGameStateData,
+  FlySquasherGameState,
+  FlySquasherGameModeData,
+  FlySquasherGameMode,
+  FlySquasherPlayerStateData,
+  FlySquasherPlayerControllerData,
+  FlySquasherPlayer,
+  FlySquasherSpectatorData,
+  FlySquasherSpectator
 > {
   private readonly worldSpeedState = {
     initialWorldSpeedPerFrame: 0.2,
@@ -28,13 +38,12 @@ export class FlySquasherScene extends BaseScene<
   private _scoreNumber = 0;
   private _scoreText!: Phaser.GameObjects.Text;
   private _livesText!: Phaser.GameObjects.Text;
-  private fly?: Fly;
+  private flies: Fly[] = [];
   private gameOverFlag = false;
   private gameOverText?: Phaser.GameObjects.Text;
   private scenery!: Scenery;
-  private flyHitSubscription?: Subscription;
-  private flyKillSubscription?: Subscription;
-
+  private bossSpawnProbability: number = 0;
+  private flySquasherAudio = new FlySquasherAudio();
   constructor() {
     super({ key: Scenes.MainScene });
   }
@@ -42,27 +51,39 @@ export class FlySquasherScene extends BaseScene<
   override preload() {
     super.preload();
     this.load.multiatlas(
-      'fly-squasher-spritesheet',
-      'assets/fly-squasher/spritesheets/fly-squasher-spritesheet.json',
-      'assets/fly-squasher/spritesheets'
+      "fly-squasher-spritesheet",
+      "assets/fly-squasher/spritesheets/fly-squasher-spritesheet.json",
+      "assets/fly-squasher/spritesheets"
     );
     this.load.multiatlas(
-      'croissants-spritesheet',
-      'assets/fly-squasher/spritesheets/scenes/croissants-spritesheet.json',
-      'assets/fly-squasher/spritesheets/scenes'
+      "croissants-spritesheet",
+      "assets/fly-squasher/spritesheets/scenes/croissants-spritesheet.json",
+      "assets/fly-squasher/spritesheets/scenes"
     );
-    this.load.audio('ost-fly-squasher', 'assets/fly-squasher/sound/ost/fly-squasher.m4a');
-    this.load.audio('flying', 'assets/fly-squasher/sound/sfx/fly.mp3');
-    this.load.audio('squish', 'assets/fly-squasher/sound/sfx/squish.mp3');
-    this.load.audio('restaurant', 'assets/fly-squasher/sound/background/restaurant.mp3');
-    this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
-    this.load.audio('tap', 'assets/fly-squasher/sound/sfx/tap.mp3');
+    this.load.audio("ost-fly-squasher", "assets/fly-squasher/sound/ost/fly-squasher.m4a");
+    this.load.audio("flying", "assets/fly-squasher/sound/sfx/fly.mp3");
+    this.load.audio("squish", "assets/fly-squasher/sound/sfx/squish.mp3");
+    this.load.audio("restaurant", "assets/fly-squasher/sound/background/restaurant.mp3");
+    this.load.audio("hit", "assets/probable-waffle/sfx/character/death/death1.mp3");
+    this.load.audio("tap", "assets/fly-squasher/sound/sfx/tap.mp3");
+    this.load.animation("blood-splatter", "assets/fly-squasher/spritesheets/anims/blood-splatter.json");
+  }
+
+  private sendScore = () => {
+    const score = this._scoreNumber;
+    const level = this.level;
+    this.game.data.communicator.score?.send({ score, level });
+  };
+
+  override init() {
+    super.init();
+    this.bossSpawnProbability = this.defaultBossSpawnProbability;
   }
 
   override create() {
     super.create();
 
-    this.scenery = new Scenery(this);
+    this.scenery = new Scenery(this, this.flySquasherAudio);
     this.setupTexts();
     this.subscribe(
       this.onResize.subscribe(() => {
@@ -71,29 +92,106 @@ export class FlySquasherScene extends BaseScene<
       })
     );
 
-    this.sound.play('ost-fly-squasher', {
-      loop: true
-    });
-    this.spawnFly();
+    this.playOst();
+    this.spawnFlies();
   }
 
-  private spawnFly = () => {
-    setTimeout(() => {
-      this.flyHitSubscription?.unsubscribe();
-      this.flyKillSubscription?.unsubscribe();
-      if (
-        this.worldSpeedState.initialWorldSpeedPerFrame + FlyMovementComponent.worldSpeedIncreasePerSquash * 4 > // todo fix later
-        this.worldSpeedState.worldSpeedPerFrame
-      ) {
-        this.fly = FlyFactory.spawnFly(this, this.worldSpeedState);
-      } else {
-        this.fly = FlyFactory.spawnFlyBoss(this, this.worldSpeedState);
-      }
-
-      this.flyHitSubscription = this.fly.onFlyHit.subscribe(this.flyHit);
-      this.flyKillSubscription = this.fly.onFlyKill.subscribe(this.flyKill);
-    }, 50);
+  private playOst = () => {
+    if (!this.sound.locked) {
+      // already unlocked so play
+      this.sound.play(this.ost, { loop: true, volume: this.flySquasherAudio.musicVolumeNormalized });
+    } else {
+      // wait for 'unlocked' to fire and then play
+      this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        this.sound.play(this.ost, { loop: true, volume: this.flySquasherAudio.musicVolumeNormalized });
+      });
+    }
   };
+
+  private get ost() {
+    switch (this.level) {
+      default:
+        return "ost-fly-squasher";
+    }
+  }
+
+  private spawnFlies = () => {
+    for (let i = 0; i < this.nrOfFliesToSpawn; i++) {
+      // Generate a random delay between 0 and 1000 milliseconds (1 second)
+      const delay = Math.random() * 1000;
+
+      setTimeout(() => {
+        this.spawnFly();
+      }, delay);
+    }
+  };
+
+  private spawnFly = () => {
+    const fly = this.flyOrBossSpawn();
+
+    fly.addSubscription(fly.onFlyHit.subscribe(this.flyHit));
+    fly.addSubscription(fly.onFlyKill.subscribe(this.flyKill));
+    this.flies.push(fly);
+  };
+
+  private get nrOfFliesToSpawn() {
+    switch (this.level) {
+      case FlySquasherLevelEnum.BuzzkillBlitz:
+        return 2;
+      default:
+        return 1;
+    }
+  }
+
+  private flyOrBossSpawn = (): Fly => {
+    let fly: Fly;
+    // Probability check for boss spawn
+    const rnd = Math.random();
+    if (this.rareBossSpawnProbability === 1 || rnd < this.bossSpawnProbability) {
+      if (rnd > 1 - this.rareBossSpawnProbability) {
+        fly = FlyFactory.spawnFlyLargeBoss(this, this.worldSpeedState, this.flySquasherAudio);
+      } else {
+        fly = FlyFactory.spawnFlyBoss(this, this.worldSpeedState, this.flySquasherAudio);
+      }
+      // Reset boss spawn probability
+      this.bossSpawnProbability = this.defaultBossSpawnProbability;
+    } else {
+      fly = FlyFactory.spawnFly(this, this.worldSpeedState, this.flySquasherAudio);
+      this.bossSpawnProbability += this.getBossSpawnProbability;
+    }
+    return fly;
+  };
+
+  private get level(): FlySquasherLevelEnum {
+    return this.game.data.gameInstance.gameMode!.data.level!.id;
+  }
+
+  private get defaultBossSpawnProbability() {
+    switch (this.level) {
+      case FlySquasherLevelEnum.BossyBonanza:
+        return 1;
+      default:
+        return 0;
+    }
+  }
+
+  private get getBossSpawnProbability() {
+    switch (this.level) {
+      case FlySquasherLevelEnum.BossyBonanza:
+        return 1;
+      default:
+        return Math.random() * 0.1;
+    }
+  }
+
+  private get rareBossSpawnProbability() {
+    switch (this.level) {
+      case FlySquasherLevelEnum.BeDoomed:
+        return 1;
+      default:
+        return 0.1;
+    }
+  }
 
   private flyKill = () => {
     this.spawnFly();
@@ -101,12 +199,12 @@ export class FlySquasherScene extends BaseScene<
 
   private flyHit = () => {
     this._scoreNumber += 1;
-    this._scoreText.setText('Score: ' + this._scoreNumber);
+    this._scoreText.setText("Score: " + this._scoreNumber);
   };
 
   private setupTexts() {
-    this._scoreText = this.add.text(0, 0, 'Score: ' + this._scoreNumber, { color: '#00000' });
-    this._livesText = this.add.text(0, 0, 'Lives: ' + this._livesNumber, { color: '#00000' });
+    this._scoreText = this.add.text(0, 0, "Score: " + this._scoreNumber, { color: "#00000" });
+    this._livesText = this.add.text(0, 0, "Lives: " + this._livesNumber, { color: "#00000" });
     this._livesText.setOrigin(1, 0);
     this._scoreText.setOrigin(1, 0);
     this.handlePositionHudTexts();
@@ -115,32 +213,39 @@ export class FlySquasherScene extends BaseScene<
   override update(time: number, delta: number) {
     super.update(time, delta);
     if (this.gameOverFlag) return;
-    if (!this.fly || this.fly.destroyed) return;
 
-    const maxHeight = this.cameras.main.height;
+    // Iterate through each fly in the flies array
+    this.flies.forEach((fly, index) => {
+      if (!fly || fly.destroyed) return;
 
-    if (this.fly.y > maxHeight) {
-      this.reducePlayerHealth();
-      this.fly.despawn();
-      if (this._livesNumber === 0) {
-        this.gameOver();
-      } else {
-        this.spawnFly();
+      const maxHeight = this.cameras.main.height;
+
+      if (fly.y > maxHeight) {
+        this.reducePlayerHealth();
+        fly.despawn();
+
+        if (this._livesNumber === 0) {
+          this.gameOver();
+        } else {
+          this.flies.splice(index, 1);
+          this.spawnFly();
+        }
       }
-    }
+    });
   }
 
   private reducePlayerHealth() {
     this._livesNumber -= 1;
-    this.sound.play('hit');
-    this._livesText.setText('Lives: ' + this._livesNumber);
+    this.sound.play("hit", { volume: this.flySquasherAudio.sfxVolumeNormalized });
+    this._livesText.setText("Lives: " + this._livesNumber);
   }
 
   private gameOver() {
-    this.gameOverText = this.add.text(0, 0, 'Game over', { font: '32px Arial', color: '#000000' });
+    this.gameOverText = this.add.text(0, 0, "Game over", { font: "32px Arial", color: "#000000" });
     this.gameOverText.setOrigin(0.5);
     this.handlePositionGameOverText();
     this.gameOverFlag = true;
+    this.sendScore();
 
     this.handleInputOnGameOver();
   }
@@ -148,8 +253,9 @@ export class FlySquasherScene extends BaseScene<
   private resetGameState = () => {
     this._livesNumber = 3;
     this._scoreNumber = 0;
-    this._livesText.setText('Lives: ' + this._livesNumber);
-    this._scoreText.setText('Score: ' + this._scoreNumber);
+    this.bossSpawnProbability = this.defaultBossSpawnProbability;
+    this._livesText.setText("Lives: " + this._livesNumber);
+    this._scoreText.setText("Score: " + this._scoreNumber);
   };
 
   private handlePositionHudTexts = () => {
@@ -172,9 +278,9 @@ export class FlySquasherScene extends BaseScene<
   private handleInputOnGameOver = () => {
     const keyboardAvailable = this.input.keyboard?.isActive() && this.game.device.os.desktop;
     if (keyboardAvailable) {
-      this.input.keyboard!.once('keydown', this.resetGame);
+      this.input.keyboard!.once("keydown", this.resetGame);
     } else {
-      this.input.once('pointerdown', this.resetGame);
+      this.input.once("pointerdown", this.resetGame);
     }
   };
 
@@ -187,7 +293,6 @@ export class FlySquasherScene extends BaseScene<
 
   override destroy() {
     super.destroy();
-    this.flyHitSubscription?.unsubscribe();
-    this.flyKillSubscription?.unsubscribe();
+    this.flies.forEach((fly) => fly.destroy());
   }
 }
