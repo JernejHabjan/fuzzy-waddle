@@ -9,7 +9,8 @@ export const MineralsDefinitions: RepresentableActorDefinition = {
   textureMapDefinition: {
     textureName: 'warrior',
     spriteSheet: {
-      name: 'warrior',
+      name: 'minerals',
+      path: 'general/minerals/',
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

@@ -1,0 +1,128 @@
+{
+    "anims": [
+        {
+            "key": "tivara-buildings-olival-small",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/olival_small/olival_small-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/olival_small/olival_small-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/olival_small/olival_small-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "tivara-buildings-aknguard-flame",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "tivara-buildings-ankguard-flame-stick",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "tivara-buildings-ankguard-flag",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flag/flag-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/tivara/ankguard/ankguard-flag/flag-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.9,
+            "skipMissedFrames": true,
+            "repeat": -1
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
+    }
+}

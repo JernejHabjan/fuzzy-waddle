@@ -1,22 +1,13 @@
-<fuzzy-waddle-home-nav />
-<ul #nav="ngbNav" class="nav-tabs" ngbNav>
-  <li ngbNavItem>
-    <a ngbNavLink>Ranked</a>
-    <ng-template ngbNavContent>
-      <fuzzy-waddle-ranked />
-    </ng-template>
-  </li>
-  <li ngbNavItem>
-    <a ngbNavLink>Join</a>
-    <ng-template ngbNavContent>
-      <fuzzy-waddle-lobbies />
-    </ng-template>
-  </li>
-  <li ngbNavItem>
-    <a ngbNavLink>Host</a>
-    <ng-template ngbNavContent>
-      <fuzzy-waddle-host />
-    </ng-template>
-  </li>
+<fuzzy-waddle-home-nav/>
+
+<ul class="nav-tabs">
+  <li (click)="selectTab('ranked')"><a [class.active]="selectedTab === 'ranked'" routerLink="/ranked">Ranked</a></li>
+  <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'" routerLink="/join">Join</a></li>
+  <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'" routerLink="/host">Host</a></li>
 </ul>
-<div [ngbNavOutlet]="nav"></div>
+
+<div [ngSwitch]="selectedTab">
+  <fuzzy-waddle-ranked *ngSwitchCase="'ranked'"></fuzzy-waddle-ranked>
+  <fuzzy-waddle-lobbies *ngSwitchCase="'join'"></fuzzy-waddle-lobbies>
+  <fuzzy-waddle-host *ngSwitchCase="'host'"></fuzzy-waddle-host>
+</div>

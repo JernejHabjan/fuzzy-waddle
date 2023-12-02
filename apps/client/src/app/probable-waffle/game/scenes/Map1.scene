@@ -1,0 +1,281 @@
+{
+    "id": "dba459ed-b5e7-4548-9d60-a8837740d253",
+    "sceneType": "SCENE",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "Map1",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "TilemapLayer",
+            "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
+            "label": "tilemap_level_1",
+            "x": -32,
+            "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
+            "layerName": "TileMap_level_1",
+            "tilesets": [
+                "tiles"
+            ]
+        },
+        {
+            "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
+            "id": "05c36924-96a6-4963-8188-94545aeddb09",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sandhold",
+            "x": 32,
+            "y": 592
+        },
+        {
+            "prefabId": "3e9f68eb-dfb2-48a6-9297-29d66e962fa4",
+            "id": "57cc06f3-2a81-4e7f-a859-f6fed682accd",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "owlery",
+            "x": 1184,
+            "y": 880
+        },
+        {
+            "prefabId": "0cc17b18-78e8-4586-807f-a9af2b3e4de9",
+            "id": "5af6fa76-500d-4cbf-8910-ed85683732f4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bridge",
+            "x": 32,
+            "y": 912
+        },
+        {
+            "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
+            "id": "adc87d90-96a4-4335-bfd0-2472752d30b7",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "infantryInn",
+            "z": 32,
+            "x": 1360,
+            "y": 800
+        },
+        {
+            "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
+            "id": "8992b5da-da70-489c-81d6-477a57ead729",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "ankGuard",
+            "x": 480,
+            "y": 608
+        },
+        {
+            "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
+            "id": "02812b72-2a7e-49fa-b81b-3edaf9e35854",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "temple",
+            "x": -176,
+            "y": 464
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "cbfe3de8-8bdc-40ae-b7b2-c94b0cded7fc",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill",
+            "x": -608,
+            "y": 866
+        },
+        {
+            "type": "Image",
+            "id": "13e16380-a1ba-4490-bd2d-bc63f32918ed",
+            "label": "architecture_blocks_doors_left_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/blocks/doors_left.png"
+            },
+            "y": 16,
+            "originY": 0.75
+        },
+        {
+            "type": "Image",
+            "id": "579cf57b-d3e0-4e07-b208-f7175ecfb97a",
+            "label": "architecture_blocks_doors_right_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/blocks/doors_right.png"
+            },
+            "x": -160,
+            "y": 144,
+            "originY": 0.75
+        },
+        {
+            "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
+            "id": "51378d6e-7b97-410e-aa18-0462e8abbb64",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWorkerMale",
+            "x": 1472,
+            "y": 800
+        },
+        {
+            "prefabId": "415773de-cdc9-4a20-afd1-61fd57044e8a",
+            "id": "760d4176-106c-41b8-8c22-351f6f8456a0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWorkerFemale",
+            "x": 1136,
+            "y": 960
+        },
+        {
+            "prefabId": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
+            "id": "35ba62f2-997b-41dd-969b-83491339e4b0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeRangedFemale",
+            "x": 1264,
+            "y": 720
+        },
+        {
+            "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
+            "id": "42375fdb-141c-411a-8455-995eea79deec",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeMagicianFemale",
+            "x": 1312,
+            "y": 848
+        },
+        {
+            "prefabId": "6b5df2a7-6f41-4fc7-a3bb-96dc39de0188",
+            "id": "d2d99b99-42f0-4fa9-9e9b-ec8d73244400",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWarriorMale",
+            "x": 1216,
+            "y": 784
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-e0ec3446c7a8",
+            "id": "060ac9c8-3ad3-41d1-be6e-51f62b58b564",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "generalWarrior",
+            "x": 144,
+            "y": 1360
+        },
+        {
+            "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
+            "id": "8122d69d-4be8-42bf-a787-14b598f26f46",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraSlingshotFemale",
+            "x": 160,
+            "y": 704
+        },
+        {
+            "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
+            "id": "d6017f59-c654-46b9-9f2d-a2de4490f9a7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerFemale",
+            "x": 288,
+            "y": 640
+        },
+        {
+            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
+            "id": "eb554ade-cbf6-43b4-9dac-53bb8e92863b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerMale",
+            "x": 320,
+            "y": 736
+        },
+        {
+            "prefabId": "54836fe4-5089-4b7e-9db4-b71382bcb55f",
+            "id": "7b69f7f9-2bcc-4ccd-8a59-07e0ae53e6a3",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraMacemanMale",
+            "x": 544,
+            "y": 704
+        },
+        {
+            "prefabId": "562e6de3-f2af-48c3-b297-7d67a34dfe90",
+            "id": "ebd31899-fae0-43bb-9b59-2e0b66c54431",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "olival",
+            "x": 160,
+            "y": 784
+        }
+    ],
+    "plainObjects": [
+        {
+            "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
+            "type": "Tilemap",
+            "label": "tiles",
+            "key": "tiles",
+            "tilesets": [
+                {
+                    "name": "tiles",
+                    "imageKey": "tiles_1"
+                }
+            ]
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "lists": [
+        {
+            "id": "2fc2dcc6-1f52-40b3-8f7a-6b497f9681e8",
+            "label": "tileMapLayer2",
+            "objectIds": [
+                "579cf57b-d3e0-4e07-b208-f7175ecfb97a",
+                "13e16380-a1ba-4490-bd2d-bc63f32918ed"
+            ]
+        }
+    ]
+}

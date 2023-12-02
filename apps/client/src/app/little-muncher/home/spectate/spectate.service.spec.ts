@@ -5,6 +5,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SpectateServiceInterface } from './spectate.service.interface';
 import { RoomEvent } from '@fuzzy-waddle/api-interfaces';
 import { Observable, Subject } from 'rxjs';
+import { AuthService } from '../../../auth/auth.service';
+import { authServiceStub } from '../../../auth/auth.service.spec';
 
 export const spectateServiceStub = {
   rooms: [],
@@ -35,7 +37,10 @@ describe('SpectateService', () => {
   let service: SpectateService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [{ provide: AuthService, useValue: authServiceStub }]
+    });
     service = TestBed.inject(SpectateService);
   });
 

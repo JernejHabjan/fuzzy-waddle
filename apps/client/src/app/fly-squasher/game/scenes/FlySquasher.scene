@@ -1,0 +1,44 @@
+{
+    "id": "d0faa641-d06b-4c9a-8a4b-20f402eca0a5",
+    "sceneType": "SCENE",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "FlySquasher",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 500
+    },
+    "displayList": [
+        {
+            "prefabId": "8ff88bcb-5911-4b19-a529-9ab61af0902f",
+            "id": "24f4c790-dbd9-4445-866e-cbab269a49a7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "croissants",
+            "x": 148,
+            "y": 302
+        },
+        {
+            "prefabId": "8ff88bcb-5911-4b19-a529-9ab61af0902c",
+            "id": "9936aeb2-55c1-4274-80ff-9ae2e14c9762",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fly",
+            "x": 299,
+            "y": 150
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    }
+}

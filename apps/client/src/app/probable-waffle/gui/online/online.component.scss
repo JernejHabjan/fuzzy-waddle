@@ -1,0 +1,27 @@
+@import '../../../../styles/_variables.scss';
+
+/* Start with resetting the list style */
+.nav-tabs {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Style each list item */
+.nav-tabs li {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+/* Style for the anchor elements in the list */
+.nav-tabs li a {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+/* Coloring for the active state */
+.nav-tabs li a.active {
+  color: $primary;
+}

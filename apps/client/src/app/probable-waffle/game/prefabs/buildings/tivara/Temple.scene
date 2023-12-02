@@ -1,0 +1,68 @@
+{
+    "id": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 192,
+        "borderHeight": 192
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "id": "f61b468d-f09c-4eeb-b80e-059f01e4db7d",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance"
+            ],
+            "label": "buildings_tivara_temple_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-87.4233523303501 -76.75060092556245 -16.50738820893966 -110.3423734041253 -8.36392821413655 -103.21684590867258 0.11884261378335736 -107.28857590607413 10.298167607287255 -101.52029174308859 19.459560101440744 -108.98513007165812 87.32172672479999 -74.71473592686168 87.66103755791679 10.791594018571004 0.45815344690015536 53.544758991287324 -89.11990649593407 9.095039852987014",
+            "x": 96.3076677868738,
+            "y": 132.66656040978646,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "2a225345-fea6-477d-b465-8668a5b443ca",
+                    "label": "buildings_tivara_temple",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/temple/temple.png"
+                    },
+                    "x": -0.30766778687379315,
+                    "y": -36.666560409786456
+                },
+                {
+                    "type": "Image",
+                    "id": "787a34d8-176b-43a0-9c81-cd66f9df70a6",
+                    "label": "buildings_tivara_temple_temple_olival",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/temple/temple-olival.png"
+                    },
+                    "x": -2,
+                    "y": -13
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

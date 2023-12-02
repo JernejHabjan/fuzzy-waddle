@@ -130,7 +130,10 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
 
     this.load.spritesheet(
       WarriorDefinition.textureMapDefinition.textureName,
-      'assets/probable-waffle/spritesheets/' + WarriorDefinition.textureMapDefinition.spriteSheet.name + '.png',
+      'assets/probable-waffle/spritesheets/' +
+        WarriorDefinition.textureMapDefinition.spriteSheet.path +
+        WarriorDefinition.textureMapDefinition.spriteSheet.name +
+        '.png',
       WarriorDefinition.textureMapDefinition.spriteSheet.frameConfig
     );
 
