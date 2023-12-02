@@ -2,30 +2,30 @@
   "section1": {
     "files": [
       {
-        "url": "apps/client/src/metadata/phaser-editor/static/assets/animations.json",
+        "url": "assets/other/Template/animations.json",
         "type": "animation",
         "key": "animations"
       },
       {
         "type": "multiatlas",
-        "url": "apps/client/src/metadata/phaser-editor/static/assets/atlas/player.json",
-        "path": "assets/atlas",
+        "url": "assets/other/Template/atlas/player.json",
+        "path": "assets/other/Template/atlas",
         "key": "player"
       },
       {
-        "atlasURL": "apps/client/src/metadata/phaser-editor/static/assets/atlas/ui.json",
-        "textureURL": "assets/atlas/ui.png",
+        "atlasURL": "assets/other/Template/atlas/ui.json",
+        "textureURL": "assets/other/Template/atlas/ui.png",
         "type": "atlas",
         "key": "ui"
       },
       {
         "type": "multiatlas",
-        "url": "apps/client/src/metadata/phaser-editor/static/assets/atlas/volcano.json",
-        "path": "assets/atlas",
+        "url": "assets/other/Template/atlas/volcano.json",
+        "path": "assets/other/Template/atlas",
         "key": "volcano"
       },
       {
-        "url": "apps/client/src/metadata/phaser-editor/static/assets/Background/Volcano Level Set_Background - Layer 00.png",
+        "url": "assets/other/Template/Background/Volcano Level Set_Background - Layer 00.png",
         "type": "image",
         "key": "Volcano Level Set_Background - Layer 00"
       }

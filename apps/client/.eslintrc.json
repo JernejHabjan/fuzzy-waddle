@@ -3,8 +3,7 @@
     "../../.eslintrc.json"
   ],
   "ignorePatterns": [
-    "!**/*",
-    "**/src/metadata/phaser-editor/*"
+    "!**/*"
   ],
   "overrides": [
     {
