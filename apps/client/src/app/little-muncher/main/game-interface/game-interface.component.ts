@@ -7,6 +7,8 @@ import { Subscription } from "rxjs";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../auth/auth.service";
 import { LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/api-interfaces";
+import { PreventNavigateBack } from "../../../shared/handlers/prevent-navigate-back";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "fuzzy-waddle-game-interface",
@@ -21,12 +23,15 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   protected readonly faPlay = faPlay;
   protected paused = false;
   protected isPlayer = false;
-
+  private preventNavigateBack = new PreventNavigateBack(this.router);
   protected readonly leaveModalConfirm: ModalConfig = {
     modalTitle: "Leave the game?",
     dismissButtonLabel: "Continue",
     closeButtonLabel: "Leave",
-    onClose: async () => await this.gameInstanceClientService.stopLevel("localAndRemote").then()
+    onClose: async () =>
+      await this.gameInstanceClientService
+        .stopLevel("localAndRemote")
+        .then(() => this.preventNavigateBack.allowNavigateBack())
   };
   private scoreSubscription?: Subscription;
   private pauseSubscription?: Subscription;
@@ -35,7 +40,8 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly gameInstanceClientService: GameInstanceClientService,
     private readonly communicatorService: LittleMuncherCommunicatorService,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly router: Router
   ) {}
 
   protected async leave() {
