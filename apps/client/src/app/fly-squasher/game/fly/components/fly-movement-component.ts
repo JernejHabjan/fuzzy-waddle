@@ -1,7 +1,7 @@
-import { IComponent } from '../../../../probable-waffle/game/core/component.service';
-import { BaseScene } from '../../../../shared/game/phaser/scene/base.scene';
-import { FlyRepresentableComponent } from './fly-representable-component';
-import { Actor } from '../../../../probable-waffle/game/entity/actor/actor';
+import { IComponent } from "../../../../probable-waffle/game/core/component.service";
+import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
+import { FlyRepresentableComponent } from "./fly-representable-component";
+import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
 
 export type WorldSpeedState = {
   worldSpeedPerFrame: number;
@@ -9,7 +9,6 @@ export type WorldSpeedState = {
 };
 
 export class FlyMovementComponent implements IComponent {
-  public static readonly worldSpeedIncreasePerSquash = 0.01;
   private representableComponent!: FlyRepresentableComponent;
 
   constructor(
@@ -75,14 +74,5 @@ export class FlyMovementComponent implements IComponent {
       x: Phaser.Math.RND.between(this.representableComponent.width, maxWidth - this.representableComponent.width),
       y: Phaser.Math.RND.between(0, maxHeight / 8)
     };
-  }
-
-  reset() {
-    this.worldSpeedState.worldSpeedPerFrame = this.worldSpeedState.initialWorldSpeedPerFrame;
-    this.setFlyRandomPosition();
-  }
-
-  kill() {
-    this.worldSpeedState.worldSpeedPerFrame += FlyMovementComponent.worldSpeedIncreasePerSquash;
   }
 }

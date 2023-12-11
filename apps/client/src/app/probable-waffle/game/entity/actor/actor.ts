@@ -1,6 +1,6 @@
-import { Utils } from 'phaser';
-import { ComponentService, IComponent } from '../../core/component.service';
-import { BaseScene } from '../../../../shared/game/phaser/scene/base.scene';
+import { Utils } from "phaser";
+import { ComponentService, IComponent } from "../../core/component.service";
+import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
 
 export abstract class Actor implements IComponent {
   components: ComponentService;
@@ -72,6 +72,7 @@ export abstract class Actor implements IComponent {
   }
 
   kill(): void {
+    if (this.killed) return;
     this.killed = true;
     this.killedAt = new Date();
 

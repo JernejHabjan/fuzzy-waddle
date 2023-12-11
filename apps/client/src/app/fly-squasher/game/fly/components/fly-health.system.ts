@@ -1,11 +1,11 @@
 import { IComponent } from "../../../../probable-waffle/game/core/component.service";
-import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
 import { FlyRepresentableComponent } from "./fly-representable-component";
 import { Subject, Subscription } from "rxjs";
 import { FlyMovementComponent } from "./fly-movement-component";
 import { FlySoundComponent } from "./fly-sound-component";
 import { HealthComponent } from "../../../../probable-waffle/game/entity/combat/components/health-component";
 import { Fly } from "../fly";
+import { DamageTypes } from "../../../../probable-waffle/game/entity/combat/damage-types";
 
 export class FlyHealthSystem implements IComponent {
   private flyPrefabPointerHitSubscription!: Subscription;
@@ -27,12 +27,17 @@ export class FlyHealthSystem implements IComponent {
   }
 
   private flyHit = () => {
-    this.healthComponent.setCurrentHealth(this.healthComponent.getCurrentHealth() - 1);
-    if (this.healthComponent.getCurrentHealth() > 0) {
+    if (this.fly.killed) return;
+    this.healthComponent.takeDamage(1, DamageTypes.DamageTypeNormal);
+    if (this.healthComponent.isAlive()) {
       this.flySoundComponent.playHitSound();
     }
     this.onFlyHit.next(this.fly);
   };
+
+  kill() {
+    this.healthComponent.killActor();
+  }
 
   destroy() {
     this.flyPrefabPointerHitSubscription.unsubscribe();

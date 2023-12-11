@@ -31,6 +31,7 @@ export class FlySoundComponent implements IComponent {
   }
 
   stopFlyingSound() {
+    if (!this.scene) return;
     if (this.scene.sound.get("flying")) {
       this.scene.sound.removeByKey("flying");
     }
