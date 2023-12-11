@@ -1,54 +1,54 @@
-import { Scenes } from './scenes';
+import { Scenes } from "./scenes";
 import {
   AtlasEmitValue,
   GameObjectSelection,
   SceneCommunicatorService
-} from '../../../communicators/scene-communicator.service';
-import { CreateSceneFromObjectConfig } from '../../../../shared/game/phaser/scene/scene-config.interface';
-import { InputHandler } from '../managers/controllers/input/input.handler';
-import { ScaleHandler } from '../map/scale.handler';
-import { MapDefinitions, TileDefinitions } from '../const/map-size.info';
-import { CursorHandler } from '../managers/controllers/input/cursor.handler';
-import { TilemapInputHandler, TilePlacementData } from '../managers/controllers/input/tilemap/tilemap-input.handler';
-import { MultiSelectionHandler } from '../managers/controllers/input/multi-selection.handler';
-import { Subscription } from 'rxjs';
-import { TilemapHelper } from '../map/tile/tilemap.helper';
-import { Pathfinder } from '../map/pathfinder';
-import { NavInputHandler } from '../managers/controllers/input/nav-input.handler';
+} from "../../../communicators/scene-communicator.service";
+import { CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
+import { InputHandler } from "../managers/controllers/input/input.handler";
+import { ScaleHandler } from "../map/scale.handler";
+import { MapDefinitions, TileDefinitions } from "../const/map-size.info";
+import { CursorHandler } from "../managers/controllers/input/cursor.handler";
+import { TilemapInputHandler, TilePlacementData } from "../managers/controllers/input/tilemap/tilemap-input.handler";
+import { MultiSelectionHandler } from "../managers/controllers/input/multi-selection.handler";
+import { Subscription } from "rxjs";
+import { TilemapHelper } from "../map/tile/tilemap.helper";
+import { Pathfinder } from "../map/pathfinder";
+import { NavInputHandler } from "../managers/controllers/input/nav-input.handler";
 import {
   ManualTileInputHandler,
   PossibleClickCoords
-} from '../managers/controllers/input/manual-tiles/manual-tile-input.handler';
-import { ManualTile, ManualTilesHelper } from '../map/tile/manual-tiles/manual-tiles.helper';
-import { TileIndexProperties, TilePossibleProperties } from '../map/tile/types/tile-types';
-import { Vector2Simple } from '../../library/math/intersection';
-import { MapPropertiesHelper } from '../map/tile/map-properties-helper';
-import { MapHelper } from '../map/tile/map-helper';
-import { LayerLines } from '../map/tile/layer-lines';
-import { StaticObjectHelper } from '../../entity/placable-objects/static-object';
-import { DynamicObjectHelper } from '../../entity/placable-objects/dynamic-object';
-import { MapNavHelper } from '../map/map-nav-helper';
-import { MinimapTextureHelper } from '../map/minimap-texture.helper';
-import { Warrior, WarriorDefinition } from '../../entity/assets/characters/warrior';
-import { GameObjectsHelper } from '../map/game-objects-helper';
-import { LpcAnimationHelper } from '../../entity/character/animation/lpc-animation-helper';
-import { Actor } from '../../entity/actor/actor';
-import { RepresentableActor } from '../../entity/actor/representable-actor';
-import { SpriteRepresentationComponent } from '../../entity/actor/components/sprite-representable-component';
-import { PlayerController } from '../managers/controllers/player-controller';
-import { Barracks } from '../../entity/assets/buildings/barracks';
-import { PlayerResourcesComponent } from '../managers/controllers/player-resources-component';
-import { Resources, ResourceType } from '../../entity/economy/resource/resource-type';
-import { TownHall } from '../../entity/assets/buildings/town-hall';
-import { Minerals } from '../../entity/assets/resources/minerals';
-import { Worker } from '../../entity/assets/characters/worker';
-import { GameObjects, Geom, Input, Scale, Scene } from 'phaser';
-import { ResourceSourceComponent } from '../../entity/economy/resource/resource-source-component';
-import { ResourceDrainComponent } from '../../entity/economy/resource/resource-drain-component';
-import { GathererComponent } from '../../entity/actor/components/gatherer-component';
-import { HealthComponent } from '../../entity/combat/components/health-component';
-import { DamageTypes } from '../../entity/combat/damage-types';
-import { BuilderComponent } from '../../entity/actor/components/builder-component';
+} from "../managers/controllers/input/manual-tiles/manual-tile-input.handler";
+import { ManualTile, ManualTilesHelper } from "../map/tile/manual-tiles/manual-tiles.helper";
+import { TileIndexProperties, TilePossibleProperties } from "../map/tile/types/tile-types";
+import { Vector2Simple } from "../../library/math/intersection";
+import { MapPropertiesHelper } from "../map/tile/map-properties-helper";
+import { MapHelper } from "../map/tile/map-helper";
+import { LayerLines } from "../map/tile/layer-lines";
+import { StaticObjectHelper } from "../../entity/placable-objects/static-object";
+import { DynamicObjectHelper } from "../../entity/placable-objects/dynamic-object";
+import { MapNavHelper } from "../map/map-nav-helper";
+import { MinimapTextureHelper } from "../map/minimap-texture.helper";
+import { Warrior, WarriorDefinition } from "../../entity/assets/characters/warrior";
+import { GameObjectsHelper } from "../map/game-objects-helper";
+import { LpcAnimationHelper } from "../../entity/character/animation/lpc-animation-helper";
+import { Actor } from "../../entity/actor/actor";
+import { RepresentableActor } from "../../entity/actor/representable-actor";
+import { SpriteRepresentationComponent } from "../../entity/actor/components/sprite-representable-component";
+import { PlayerController } from "../managers/controllers/player-controller";
+import { Barracks } from "../../entity/assets/buildings/barracks";
+import { PlayerResourcesComponent } from "../managers/controllers/player-resources-component";
+import { Resources, ResourceType } from "../../entity/economy/resource/resource-type";
+import { TownHall } from "../../entity/assets/buildings/town-hall";
+import { Minerals } from "../../entity/assets/resources/minerals";
+import { Worker } from "../../entity/assets/characters/worker";
+import { GameObjects, Geom, Input, Scale, Scene } from "phaser";
+import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
+import { ResourceDrainComponent } from "../../entity/economy/resource/resource-drain-component";
+import { GathererComponent } from "../../entity/actor/components/gatherer-component";
+import { HealthComponent } from "../../entity/combat/components/health-component";
+import { DamageTypes } from "../../entity/combat/damage-types";
+import { BuilderComponent } from "../../entity/actor/components/builder-component";
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -130,21 +130,21 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
 
     this.load.spritesheet(
       WarriorDefinition.textureMapDefinition.textureName,
-      'assets/probable-waffle/spritesheets/' +
+      "assets/probable-waffle/spritesheets/" +
         WarriorDefinition.textureMapDefinition.spriteSheet.path +
         WarriorDefinition.textureMapDefinition.spriteSheet.name +
-        '.png',
+        ".png",
       WarriorDefinition.textureMapDefinition.spriteSheet.frameConfig
     );
 
     this.load.audio(
       WarriorDefinition.soundDefinition.move as string,
-      'assets/probable-waffle/sfx/character/move/footstep.mp3'
+      "assets/probable-waffle/sfx/character/move/footstep.mp3"
     );
 
     this.load.audio(
       WarriorDefinition.soundDefinition.death as string,
-      'assets/probable-waffle/sfx/character/death/death1.mp3'
+      "assets/probable-waffle/sfx/character/death/death1.mp3"
     );
   }
 
@@ -277,8 +277,8 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
                 this.tilemapHelper.tileShouldBePlacedOnTilemap(this.tileToBeReplaced, this.editorLayerNr))
             ) {
               const newTileLayerProperties = {
-                tileIndex: this.tileToBeReplaced
-              } as TileIndexProperties;
+                tileIndex: this.tileToBeReplaced!
+              } satisfies TileIndexProperties;
               if (tileOnTilemap) {
                 this.tilemapHelper.replaceTileOnTilemap(tileOnTilemap.tileWorldData, newTileLayerProperties);
               }
@@ -443,7 +443,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private placeAtlasOnCoords(atlasToBePlaced: AtlasEmitValue | null, tilePlacementData: TilePlacementData): void {
     if (atlasToBePlaced === null) return;
 
-    if (atlasToBePlaced.atlasFrame.filename === WarriorDefinition.textureMapDefinition.textureName + '.png') {
+    if (atlasToBePlaced.atlasFrame.filename === WarriorDefinition.textureMapDefinition.textureName + ".png") {
       this.placeWarrior(tilePlacementData);
     } else {
       this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
@@ -561,7 +561,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
 
       i++;
     });
-    console.log('placed ' + i + ' warriors');
+    console.log("placed " + i + " warriors");
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {

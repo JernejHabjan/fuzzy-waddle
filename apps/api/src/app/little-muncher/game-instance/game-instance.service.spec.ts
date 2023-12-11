@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GameInstanceService } from './game-instance.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GameInstanceService } from "./game-instance.service";
 import {
   GameInstanceDataDto,
   LittleMuncherGameCreateDto,
@@ -10,10 +10,10 @@ import {
   RoomEvent,
   SpectatorAction,
   SpectatorEvent
-} from '@fuzzy-waddle/api-interfaces';
-import { GameInstanceServiceInterface } from './game-instance.service.interface';
-import { User } from '../../../users/users.service';
-import { GameInstanceGateway, GameInstanceGatewayStub } from './game-instance.gateway';
+} from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { User } from "../../../users/users.service";
+import { GameInstanceGateway, GameInstanceGatewayStub } from "./game-instance.gateway";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {
@@ -49,9 +49,9 @@ export const GameInstanceServiceStub = {
   stopLevel(body: GameInstanceDataDto, user: User) {
     //
   }
-} as GameInstanceServiceInterface;
+} satisfies GameInstanceServiceInterface;
 
-describe('GameInstanceService', () => {
+describe("GameInstanceService", () => {
   let service: GameInstanceService;
 
   beforeEach(async () => {
@@ -68,7 +68,7 @@ describe('GameInstanceService', () => {
     service = module.get<GameInstanceService>(GameInstanceService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

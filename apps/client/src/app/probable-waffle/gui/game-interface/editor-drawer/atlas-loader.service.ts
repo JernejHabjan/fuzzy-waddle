@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
-import { MapDefinitions } from '../../../game/world/const/map-size.info';
-import { TilePossibleProperties } from '../../../game/world/map/tile/types/tile-types';
-import { AtlasLoaderServiceInterface } from './tile-selector-group/atlas-loader.service.interface';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { firstValueFrom } from "rxjs";
+import { MapDefinitions } from "../../../game/world/const/map-size.info";
+import { TilePossibleProperties } from "../../../game/world/map/tile/types/tile-types";
+import { AtlasLoaderServiceInterface } from "./tile-selector-group/atlas-loader.service.interface";
 
 export interface TileAtlasFrame {
   tilesetName: string;
@@ -62,7 +62,7 @@ export interface AtlasJsonWrapper {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AtlasLoaderService implements AtlasLoaderServiceInterface {
   constructor(private httpClient: HttpClient) {}
@@ -79,7 +79,7 @@ export class AtlasLoaderService implements AtlasLoaderServiceInterface {
         tilesetName: tileset.name,
         firstgid: tileset.firstgid,
         tileFrame: this.extractTileFrames(tileset, atlasJson.atlas)
-      } as TileAtlasFrame;
+      } satisfies TileAtlasFrame;
     });
     return Promise.all(promises);
   }

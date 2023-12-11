@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { SpectateService } from './spectate.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SpectateServiceInterface } from './spectate.service.interface';
-import { RoomEvent } from '@fuzzy-waddle/api-interfaces';
-import { Observable, Subject } from 'rxjs';
-import { AuthService } from '../../../auth/auth.service';
-import { authServiceStub } from '../../../auth/auth.service.spec';
+import { SpectateService } from "./spectate.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { SpectateServiceInterface } from "./spectate.service.interface";
+import { RoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { Observable, Subject } from "rxjs";
+import { AuthService } from "../../../auth/auth.service";
+import { authServiceStub } from "../../../auth/auth.service.spec";
 
 export const spectateServiceStub = {
   rooms: [],
@@ -32,8 +32,8 @@ export const spectateServiceStub = {
   leaveRoom() {
     //
   }
-} as SpectateServiceInterface;
-describe('SpectateService', () => {
+} satisfies SpectateServiceInterface;
+describe("SpectateService", () => {
   let service: SpectateService;
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('SpectateService', () => {
     service = TestBed.inject(SpectateService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

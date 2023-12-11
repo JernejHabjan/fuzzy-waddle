@@ -1,11 +1,11 @@
-import { Vector2Simple } from '../../library/math/intersection';
-import { TilePlacementWorldWithProperties } from './tile/manual-tiles/manual-tiles.helper';
-import { MapHelper } from './tile/map-helper';
-import { TilemapInputHandler } from '../managers/controllers/input/tilemap/tilemap-input.handler';
-import { ManualTileInputHandler } from '../managers/controllers/input/manual-tiles/manual-tile-input.handler';
-import { TileLayerProperties } from './tile/types/tile-types';
-import { GameObjectsHelper } from './game-objects-helper';
-import { Tilemaps } from 'phaser';
+import { Vector2Simple } from "../../library/math/intersection";
+import { TilePlacementWorldWithProperties } from "./tile/manual-tiles/manual-tiles.helper";
+import { MapHelper } from "./tile/map-helper";
+import { TilemapInputHandler } from "../managers/controllers/input/tilemap/tilemap-input.handler";
+import { ManualTileInputHandler } from "../managers/controllers/input/manual-tiles/manual-tile-input.handler";
+import { TileLayerProperties } from "./tile/types/tile-types";
+import { GameObjectsHelper } from "./game-objects-helper";
+import { Tilemaps } from "phaser";
 
 export class MapNavHelper {
   constructor(
@@ -49,8 +49,8 @@ export class MapNavHelper {
             },
             tileLayerProperties: Object.assign(TilemapInputHandler.defaultTilemapLayerProperties, {
               tileIndex: tile.index
-            } as Partial<TileLayerProperties>)
-          } as TilePlacementWorldWithProperties)
+            } satisfies Partial<TileLayerProperties>)
+          }) satisfies TilePlacementWorldWithProperties
       )
     );
   }

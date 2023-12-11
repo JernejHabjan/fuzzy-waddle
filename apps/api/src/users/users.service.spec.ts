@@ -1,14 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { User, UsersService } from './users.service';
-import { IUsersService } from './users.service.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { User, UsersService } from "./users.service";
+import { IUsersService } from "./users.service.interface";
 
 export const usersServiceStub = {
   findOne(): Promise<User> {
-    return Promise.resolve({} as User);
+    return Promise.resolve(null);
   }
-} as IUsersService;
+} satisfies IUsersService;
 
-describe('UsersService', () => {
+describe("UsersService", () => {
   let service: UsersService;
 
   beforeEach(async () => {
@@ -19,7 +19,7 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

@@ -1,5 +1,5 @@
 export interface CommunicatorEvent<T, K> {
-  gameInstanceId: string;
+  gameInstanceId?: string;
   communicator: K;
   data: T;
 }

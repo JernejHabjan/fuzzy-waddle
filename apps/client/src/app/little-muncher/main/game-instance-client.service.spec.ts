@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { GameInstanceClientService } from './game-instance-client.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { GameInstanceClientServiceInterface } from './game-instance-client.service.interface';
-import { AuthService } from '../../auth/auth.service';
-import { authServiceStub } from '../../auth/auth.service.spec';
+import { GameInstanceClientService } from "./game-instance-client.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
+import { AuthService } from "../../auth/auth.service";
+import { authServiceStub } from "../../auth/auth.service.spec";
 
 export const gameInstanceClientServiceStub = {
   get gameInstanceId(): string | null {
@@ -28,8 +28,8 @@ export const gameInstanceClientServiceStub = {
   stopLevel(): Promise<void> {
     return Promise.resolve();
   }
-} as GameInstanceClientServiceInterface;
-describe('GameInstanceClientService', () => {
+} satisfies GameInstanceClientServiceInterface;
+describe("GameInstanceClientService", () => {
   let service: GameInstanceClientService;
 
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('GameInstanceClientService', () => {
     service = TestBed.inject(GameInstanceClientService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });
