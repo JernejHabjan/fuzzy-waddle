@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt } from 'passport-jwt';
-import { AuthStrategies } from './auth-strategies';
-import { SupabaseV2AuthStrategy } from './supabase-auth-strategy/supabase-v2-auth.strategy';
-import { AuthUser } from '@supabase/supabase-js';
-import { SupabaseAuthStrategyOptions } from './supabase-auth-strategy/options.interface';
-import { UserAuthCacheService } from '../../core/cache/user-auth-cache.service.ts/user-auth-cache.service';
-import { SupabaseProviderService } from '../../core/supabase-provider/supabase-provider.service';
+import { Injectable } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt } from "passport-jwt";
+import { AuthStrategies } from "./auth-strategies";
+import { SupabaseV2AuthStrategy } from "./supabase-auth-strategy/supabase-v2-auth.strategy";
+import { AuthUser } from "@supabase/supabase-js";
+import { SupabaseAuthStrategyOptions } from "./supabase-auth-strategy/options.interface";
+import { UserAuthCacheService } from "../../core/cache/user-auth-cache.service.ts/user-auth-cache.service";
+import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 
 @Injectable()
 export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, AuthStrategies.supabase) {
@@ -24,7 +24,7 @@ export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, A
         return ExtractJwt.fromAuthHeaderAsBearerToken()(req);
       },
       userAuthCacheService
-    } as SupabaseAuthStrategyOptions);
+    } satisfies SupabaseAuthStrategyOptions);
   }
 
   async validate(payload: AuthUser | null): Promise<any> {

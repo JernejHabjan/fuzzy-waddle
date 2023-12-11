@@ -62,7 +62,7 @@ export class TwoWayCommunicator<T> {
           gameInstanceId,
           communicator: this.communicator,
           data: data
-        } as CommunicatorEvent<T, unknown>);
+        } satisfies CommunicatorEvent<T, unknown>);
       })
     );
 

@@ -1,12 +1,12 @@
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server } from 'net';
+import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { Server } from "net";
 import {
   GatewaySpectatorEvent,
   LittleMuncherGatewayEvent,
   RoomEvent,
   SpectatorEvent
-} from '@fuzzy-waddle/api-interfaces';
-import { GameInstanceGatewayInterface } from './game-instance.gateway.interface';
+} from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 
 export const GameInstanceGatewayStub = {
   emitRoom(roomEvent: RoomEvent) {
@@ -15,11 +15,11 @@ export const GameInstanceGatewayStub = {
   emitSpectator(spectatorEvent: SpectatorEvent) {
     //
   }
-} as GameInstanceGatewayInterface;
+} satisfies GameInstanceGatewayInterface;
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN?.split(',')
+    origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
 export class GameInstanceGateway implements GameInstanceGatewayInterface {

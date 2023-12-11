@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { AvatarProviderService } from './avatar-provider.service';
-import { IAvatarProviderService } from './avatar-provider.service.interface';
+import { AvatarProviderService } from "./avatar-provider.service";
+import { IAvatarProviderService } from "./avatar-provider.service.interface";
 
 export const avatarProviderServiceStub = {
   getAvatar(seed: string): string {
-    return '';
+    return "";
   }
-} as IAvatarProviderService;
+} satisfies IAvatarProviderService;
 
-describe('AvatarProviderService', () => {
+describe("AvatarProviderService", () => {
   let service: AvatarProviderService;
 
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('AvatarProviderService', () => {
     service = TestBed.inject(AvatarProviderService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

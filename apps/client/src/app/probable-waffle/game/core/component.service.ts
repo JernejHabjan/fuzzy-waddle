@@ -24,7 +24,7 @@ export class ComponentService {
     list.push(component);
 
     // call lifecycle hooks
-    return component as T;
+    return component satisfies T;
   }
 
   init() {

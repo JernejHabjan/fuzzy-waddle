@@ -1,23 +1,23 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../../../environments/environment";
 import {
   GameInstanceDataDto,
   LittleMuncherGameInstanceData,
   LittleMuncherGatewayEvent,
   Room,
   RoomEvent
-} from '@fuzzy-waddle/api-interfaces';
-import { firstValueFrom, Observable, Subject, Subscription } from 'rxjs';
-import { AuthenticatedSocketService } from '../../../data-access/chat/authenticated-socket.service';
-import { map } from 'rxjs/operators';
-import { GameInstanceClientService } from '../../main/game-instance-client.service';
-import { AuthService } from '../../../auth/auth.service';
-import { ServerHealthService } from '../../../shared/services/server-health.service';
-import { SpectateServiceInterface } from './spectate.service.interface';
+} from "@fuzzy-waddle/api-interfaces";
+import { firstValueFrom, Observable, Subject, Subscription } from "rxjs";
+import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
+import { map } from "rxjs/operators";
+import { GameInstanceClientService } from "../../main/game-instance-client.service";
+import { AuthService } from "../../../auth/auth.service";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
+import { SpectateServiceInterface } from "./spectate.service.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class SpectateService implements SpectateServiceInterface {
   private spectateRoomsSubscription?: Subscription;
@@ -38,10 +38,10 @@ export class SpectateService implements SpectateServiceInterface {
   listenToRoomEvents() {
     this.spectateRoomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
-      if (roomEvent.action === 'added') {
+      if (roomEvent.action === "added") {
         if (roomEvent.gameInstanceMetadataData.createdBy === this.authService.userId) return;
         this.rooms.push(room);
-      } else if (roomEvent.action === 'removed') {
+      } else if (roomEvent.action === "removed") {
         this.rooms = this.rooms.filter((room) => room.gameInstanceId !== room.gameInstanceId);
         await this.handleRemovalOfSpectatedRoom(room);
       }
@@ -60,14 +60,14 @@ export class SpectateService implements SpectateServiceInterface {
     // check if spectated room is the same as the room that was removed
     if (room.gameInstanceId !== currentGameInstanceId) return;
 
-    await this.gameInstanceClientService.stopLevel('local');
+    await this.gameInstanceClientService.stopLevel("local");
 
     this.spectatorDisconnected.next();
   }
 
   async getRooms() {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return [];
-    const url = environment.api + 'api/little-muncher/get-rooms';
+    const url = environment.api + "api/little-muncher/get-rooms";
     return await firstValueFrom(this.httpClient.get<Room[]>(url));
   }
 
@@ -84,11 +84,11 @@ export class SpectateService implements SpectateServiceInterface {
 
   async joinRoom(gameInstanceId: string) {
     // create post with LittleMuncherGameInstance dto
-    const url = environment.api + 'api/little-muncher/spectator-join';
+    const url = environment.api + "api/little-muncher/spectator-join";
     const gameInstance = await firstValueFrom(
       this.httpClient.post<LittleMuncherGameInstanceData>(url, {
         gameInstanceId
-      } as GameInstanceDataDto)
+      } satisfies GameInstanceDataDto)
     );
     this.gameInstanceClientService.openLevelSpectator(gameInstance);
   }
@@ -96,12 +96,12 @@ export class SpectateService implements SpectateServiceInterface {
   // todo use
   async leaveRoom(gameInstanceId: string) {
     // create post with LittleMuncherGameInstance dto
-    const url = environment.api + 'api/little-muncher/spectator-leave';
+    const url = environment.api + "api/little-muncher/spectator-leave";
     await firstValueFrom(
       this.httpClient.delete(url, {
         body: {
           gameInstanceId
-        } as GameInstanceDataDto
+        } satisfies GameInstanceDataDto
       })
     );
   }

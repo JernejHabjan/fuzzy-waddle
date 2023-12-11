@@ -1,4 +1,4 @@
-import { Cameras, Geom, Input, Types } from 'phaser';
+import { Cameras, Geom, Input, Types } from "phaser";
 
 export class InputHandler {
   private readonly enabledMouseCornerMovement = false;
@@ -58,7 +58,7 @@ export class InputHandler {
       left: Input.Keyboard.KeyCodes.A,
       down: Input.Keyboard.KeyCodes.S,
       right: Input.Keyboard.KeyCodes.D
-    }) as Types.Input.Keyboard.CursorKeys;
+    }) satisfies Partial<Types.Input.Keyboard.CursorKeys>;
 
     // wasdKey can also be used here
     const controlConfig: Types.Cameras.Controls.FixedKeyControlConfig = {

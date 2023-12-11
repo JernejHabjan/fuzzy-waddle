@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { SceneCommunicatorClientService } from './scene-communicator-client.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SceneCommunicatorClientServiceInterface } from './scene-communicator-client.service.interface';
+import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 
 export const SceneCommunicatorClientServiceStub = {
   startListeningToEvents() {
@@ -11,8 +11,8 @@ export const SceneCommunicatorClientServiceStub = {
   stopListeningToEvents() {
     //
   }
-} as SceneCommunicatorClientServiceInterface;
-describe('SceneCommunicatorClientService', () => {
+} satisfies SceneCommunicatorClientServiceInterface;
+describe("SceneCommunicatorClientService", () => {
   let service: SceneCommunicatorClientService;
 
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe('SceneCommunicatorClientService', () => {
     service = TestBed.inject(SceneCommunicatorClientService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { ServerHealthService } from './server-health.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ServerHealthServiceInterface } from './server-health.service.interface';
+import { ServerHealthService } from "./server-health.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ServerHealthServiceInterface } from "./server-health.service.interface";
 
 export const serverHealthServiceStub = {
   checkHealth(): Promise<void> {
@@ -17,9 +17,9 @@ export const serverHealthServiceStub = {
   get serverUnavailable(): boolean {
     return false;
   }
-} as ServerHealthServiceInterface;
+} satisfies ServerHealthServiceInterface;
 
-describe('ServerHealthService', () => {
+describe("ServerHealthService", () => {
   let service: ServerHealthService;
 
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe('ServerHealthService', () => {
     service = TestBed.inject(ServerHealthService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });
