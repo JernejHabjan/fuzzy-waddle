@@ -31,10 +31,19 @@
       </div>
       <!-- no scores -->
       <ng-template #noScoresBlock>
-        <div>No scores yet</div>
+        <div *ngIf="this.serverHealthService.serverAvailable; else serverUnavailableBlock">
+          <div>No scores yet</div>
 
-        <div>Be the first to play!</div>
-        <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+          <div>Be the first to play!</div>
+          <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+        </div>
+        <ng-template #serverUnavailableBlock>
+          <div>Server unavailable</div>
+          <div>Try again later</div>
+          <ng-container *ngIf="!this.serverHealthService.serverAvailable">
+            <fa-icon [icon]="faExclamationTriangle" class="text-warning"/>
+          </ng-container>
+        </ng-template>
       </ng-template>
     </div>
   </ng-template>

@@ -304,7 +304,7 @@ export class FlySquasherScene extends BaseScene<
     this.retryText?.destroy();
     this.resetGameState();
     this.gameOverFlag = false;
-    this.spawnFly();
+    this.spawnFlies();
   };
 
   override destroy() {

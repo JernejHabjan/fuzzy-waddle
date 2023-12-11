@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { HighScoreService } from "./high-score.service";
 import { FlySquasherLevelEnum, FlySquasherLevels, ScoreDto } from "@fuzzy-waddle/api-interfaces";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationTriangle, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { ServerHealthService } from "../../shared/services/server-health.service";
+import { AuthService } from "../../auth/auth.service";
 
 @Component({
   selector: "fly-squasher-high-score",
@@ -10,13 +12,20 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 })
 export class HighScoreComponent implements OnInit {
   protected readonly faSpinner = faSpinner;
+  protected readonly faExclamationTriangle = faExclamationTriangle;
   protected loading = true;
   protected highScores: ScoreDto[] = [];
 
-  constructor(private readonly highScoreService: HighScoreService) {}
+  constructor(
+    private readonly highScoreService: HighScoreService,
+    protected readonly serverHealthService: ServerHealthService
+  ) {}
 
   async ngOnInit(): Promise<void> {
-    this.highScores = await this.highScoreService.getScores();
+    await this.serverHealthService.checkHealth();
+    if (this.serverHealthService.serverAvailable) {
+      this.highScores = await this.highScoreService.getScores();
+    }
     this.loading = false;
   }
 
