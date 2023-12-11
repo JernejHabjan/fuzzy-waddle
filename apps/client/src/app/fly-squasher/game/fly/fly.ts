@@ -72,7 +72,7 @@ export class Fly extends Actor {
 
   override initComponents() {
     super.initComponents();
-    this.flyHitSubscription = this.components.findComponent(FlyHealthSystem).onFlyHit.subscribe(this.onFlyHit);
+    this.flyHitSubscription = this.components.findComponent(FlyHealthSystem).onFlyHit.subscribe(this._onFlyHit);
   }
 
   get y() {
@@ -82,6 +82,7 @@ export class Fly extends Actor {
   override destroy() {
     super.destroy();
     this.flyHitSubscription.unsubscribe();
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   override kill() {
@@ -90,10 +91,13 @@ export class Fly extends Actor {
     this.flyMovementComponent.kill();
     this.flyRepresentableComponent.kill();
     this.onFlyKill.next(this);
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   despawn() {
     this.destroy();
   }
+
+  private _onFlyHit = () => {
+    this.onFlyHit.next(this);
+  };
 }

@@ -1,9 +1,9 @@
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../../actor/actor';
-import { DamageType } from '../damage-type';
-import { EventEmitter } from '@angular/core';
-import { ActorDeathType } from '../actor-death-type';
-import { HealthBarOptions, HealthUiComponent } from './health-ui-component';
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../../actor/actor";
+import { DamageType } from "../damage-type";
+import { EventEmitter } from "@angular/core";
+import { ActorDeathType } from "../actor-death-type";
+import { HealthBarOptions, HealthUiComponent } from "./health-ui-component";
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -69,6 +69,10 @@ export class HealthComponent implements IComponent {
 
   getCurrentHealth() {
     return this.currentHealth;
+  }
+
+  isAlive() {
+    return this.currentHealth > 0;
   }
 
   resetHealth() {
