@@ -41,6 +41,7 @@ export class FlySquasherScene extends BaseScene<
   private flies: Fly[] = [];
   private gameOverFlag = false;
   private gameOverText?: Phaser.GameObjects.Text;
+  private retryText?: Phaser.GameObjects.Text;
   private scenery!: Scenery;
   private bossSpawnProbability: number = 0;
   private flySquasherAudio = new FlySquasherAudio();
@@ -243,11 +244,22 @@ export class FlySquasherScene extends BaseScene<
   private gameOver() {
     this.gameOverText = this.add.text(0, 0, "Game over", { font: "32px Arial", color: "#000000" });
     this.gameOverText.setOrigin(0.5);
+    // set retryText - countdown 3 seconds. after that allow retry
+    this.retryText = this.add.text(0, 0, "Retry in 3", { font: "32px Arial", color: "#000000" });
+    this.retryText.setOrigin(0.5);
+    setTimeout(() => {
+      this.retryText!.setText("Retry in 2");
+    }, 1000);
+    setTimeout(() => {
+      this.retryText!.setText("Retry in 1");
+    }, 2000);
+    setTimeout(() => {
+      this.retryText!.setText("Retry");
+      this.handleInputOnGameOver();
+    }, 3000);
     this.handlePositionGameOverText();
     this.gameOverFlag = true;
     this.sendScore();
-
-    this.handleInputOnGameOver();
   }
 
   private resetGameState = () => {
@@ -273,19 +285,18 @@ export class FlySquasherScene extends BaseScene<
     if (this.gameOverText) {
       this.gameOverText.setPosition(x, y);
     }
+    if (this.retryText) {
+      this.retryText.setPosition(x, y + 50);
+    }
   };
 
   private handleInputOnGameOver = () => {
-    const keyboardAvailable = this.input.keyboard?.isActive() && this.game.device.os.desktop;
-    if (keyboardAvailable) {
-      this.input.keyboard!.once("keydown", this.resetGame);
-    } else {
-      this.input.once("pointerdown", this.resetGame);
-    }
+    this.input.once("pointerdown", this.resetGame);
   };
 
   private resetGame = () => {
     this.gameOverText?.destroy();
+    this.retryText?.destroy();
     this.resetGameState();
     this.gameOverFlag = false;
     this.spawnFly();
