@@ -47,6 +47,7 @@ export class HealthComponent implements IComponent {
   }
 
   killActor() {
+    this.setCurrentHealth(0);
     this.healthUiComponent.destroy();
     this.actor.kill();
     // todo something else as well

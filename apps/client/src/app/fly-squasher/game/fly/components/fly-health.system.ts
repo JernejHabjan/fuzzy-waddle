@@ -35,6 +35,10 @@ export class FlyHealthSystem implements IComponent {
     this.onFlyHit.next(this.fly);
   };
 
+  kill() {
+    this.healthComponent.killActor();
+  }
+
   destroy() {
     this.flyPrefabPointerHitSubscription.unsubscribe();
     this.flyRepresentableComponent.off("pointerdown");

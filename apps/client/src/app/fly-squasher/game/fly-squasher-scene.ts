@@ -34,6 +34,7 @@ export class FlySquasherScene extends BaseScene<
     initialWorldSpeedPerFrame: 0.2,
     worldSpeedPerFrame: 0.2 // pixels per frame
   };
+  private static readonly worldSpeedIncreasePerSquash = 0.01;
   private _livesNumber = 3;
   private _scoreNumber = 0;
   private _scoreText!: Phaser.GameObjects.Text;
@@ -195,6 +196,8 @@ export class FlySquasherScene extends BaseScene<
   }
 
   private flyKill = () => {
+    if (this.gameOverFlag) return;
+    this.worldSpeedState.worldSpeedPerFrame += FlySquasherScene.worldSpeedIncreasePerSquash;
     this.spawnFly();
   };
 
@@ -227,6 +230,7 @@ export class FlySquasherScene extends BaseScene<
 
         if (this._livesNumber === 0) {
           this.gameOver();
+          this.flies.forEach((fly) => fly.kill());
         } else {
           this.flies.splice(index, 1);
           this.spawnFly();
@@ -254,7 +258,7 @@ export class FlySquasherScene extends BaseScene<
       this.retryText!.setText("Retry in 1");
     }, 2000);
     setTimeout(() => {
-      this.retryText!.setText("Retry");
+      this.retryText!.setText("Press to retry");
       this.handleInputOnGameOver();
     }, 3000);
     this.handlePositionGameOverText();
@@ -266,6 +270,7 @@ export class FlySquasherScene extends BaseScene<
     this._livesNumber = 3;
     this._scoreNumber = 0;
     this.bossSpawnProbability = this.defaultBossSpawnProbability;
+    this.worldSpeedState.worldSpeedPerFrame = this.worldSpeedState.initialWorldSpeedPerFrame;
     this._livesText.setText("Lives: " + this._livesNumber);
     this._scoreText.setText("Score: " + this._scoreNumber);
   };

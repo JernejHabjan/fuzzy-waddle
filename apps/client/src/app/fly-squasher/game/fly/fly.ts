@@ -86,10 +86,11 @@ export class Fly extends Actor {
   }
 
   override kill() {
+    if (this.killed) return;
     super.kill();
     this.flySoundComponent.kill();
-    this.flyMovementComponent.kill();
     this.flyRepresentableComponent.kill();
+    this.flyHealthSystem.kill();
     this.onFlyKill.next(this);
   }
 
