@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject } from "rxjs";
 
 // prefab combined in Phaser Editor 2D
 export class FlyPrefab extends Phaser.GameObjects.Container {
@@ -27,8 +27,8 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.leg_back_right = scene.add.image(
       14.450684318372382,
       -0.6341442773239621,
-      'fly-squasher-spritesheet',
-      'fly/leg-back'
+      "fly-squasher-spritesheet",
+      "fly/leg-back"
     );
     this.leg_back_right.setOrigin(0, 1);
     this.add(this.leg_back_right);
@@ -37,8 +37,8 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.leg_back_left = scene.add.image(
       -15.549315681627625,
       -2.634144277323962,
-      'fly-squasher-spritesheet',
-      'fly/leg-back'
+      "fly-squasher-spritesheet",
+      "fly/leg-back"
     );
     this.leg_back_left.setOrigin(1, 1);
     this.leg_back_left.flipX = true;
@@ -48,8 +48,8 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.leg_front_right = scene.add.image(
       12.450684318372382,
       31.365855722676038,
-      'fly-squasher-spritesheet',
-      'fly/leg-front'
+      "fly-squasher-spritesheet",
+      "fly/leg-front"
     );
     this.leg_front_right.setOrigin(0, 0);
     this.add(this.leg_front_right);
@@ -58,8 +58,8 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.leg_front_left = scene.add.image(
       -13.549315681627625,
       31.365855722676038,
-      'fly-squasher-spritesheet',
-      'fly/leg-front'
+      "fly-squasher-spritesheet",
+      "fly/leg-front"
     );
     this.leg_front_left.setOrigin(1, 0);
     this.leg_front_left.flipX = true;
@@ -69,8 +69,8 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.leg_middle_right = scene.add.image(
       12.450684318372382,
       8.365855722676038,
-      'fly-squasher-spritesheet',
-      'fly/leg-middle'
+      "fly-squasher-spritesheet",
+      "fly/leg-middle"
     );
     this.leg_middle_right.setOrigin(0, 0.5);
     this.add(this.leg_middle_right);
@@ -79,24 +79,24 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.leg_middle_left = scene.add.image(
       -13.549315681627625,
       7.365855722676038,
-      'fly-squasher-spritesheet',
-      'fly/leg-middle'
+      "fly-squasher-spritesheet",
+      "fly/leg-middle"
     );
     this.leg_middle_left.setOrigin(1, 0.5);
     this.leg_middle_left.flipX = true;
     this.add(this.leg_middle_left);
 
     // body
-    this.fly_body = scene.add.image(0, -4, 'fly-squasher-spritesheet', 'fly/body');
+    this.fly_body = scene.add.image(0, -4, "fly-squasher-spritesheet", "fly/body");
     this.add(this.fly_body);
 
     // wing_left
-    this.wing_left = scene.add.image(-16, 21, 'fly-squasher-spritesheet', 'fly/wing');
+    this.wing_left = scene.add.image(-16, 21, "fly-squasher-spritesheet", "fly/wing");
     this.wing_left.setOrigin(0.27, 0.98);
     this.add(this.wing_left);
 
     // wing_right
-    this.wing_right = scene.add.image(15.770684318372375, 22.39585572267604, 'fly-squasher-spritesheet', 'fly/wing');
+    this.wing_right = scene.add.image(15.770684318372375, 22.39585572267604, "fly-squasher-spritesheet", "fly/wing");
     this.wing_right.setOrigin(0.7, 0.99);
     this.wing_right.flipX = true;
     this.add(this.wing_right);
@@ -106,12 +106,12 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
     this.add(this.head_container);
 
     // fly_head
-    this.head = scene.add.image(0.4, 0, 'fly-squasher-spritesheet', 'fly/head');
+    this.head = scene.add.image(0.4, 0, "fly-squasher-spritesheet", "fly/head");
     this.head.setOrigin(0.5, 0);
     this.head_container.add(this.head);
 
     // fly_suckler
-    this.suckler = scene.add.image(0, 19.8, 'fly-squasher-spritesheet', 'fly/suckler');
+    this.suckler = scene.add.image(0, 19.8, "fly-squasher-spritesheet", "fly/suckler");
     this.suckler.setOrigin(0.58, 0);
     this.head_container.add(this.suckler);
 
@@ -131,7 +131,7 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
 
     this.applyToNonContainerChildren(this, (child) => {
       child.setInteractive();
-      child.on('pointerdown', () => {
+      child.on("pointerdown", () => {
         this.pointerDown.next();
       });
     });
@@ -166,6 +166,7 @@ export class FlyPrefab extends Phaser.GameObjects.Container {
   }
 
   stopMoving() {
+    if (!this.scene) return;
     this.scene.tweens.killTweensOf([
       this.leg_back_right,
       this.leg_back_left,
