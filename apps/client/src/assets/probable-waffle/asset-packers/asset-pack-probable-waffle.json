@@ -14,6 +14,17 @@
                 "key": "buildings_1"
             },
             {
+              "url": "assets/probable-waffle/atlas/anims/effects.json",
+              "type": "animation",
+              "key": "effects"
+            },
+          {
+            "type": "multiatlas",
+            "url": "assets/probable-waffle/atlas/effects.json",
+            "path": "assets/probable-waffle/atlas",
+            "key": "effects_1"
+          },
+          {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/factions.json",
                 "path": "assets/probable-waffle/atlas",

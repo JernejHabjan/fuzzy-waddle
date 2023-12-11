@@ -246,6 +246,19 @@
             "label": "olival",
             "x": 160,
             "y": 784
+        },
+        {
+            "type": "Sprite",
+            "id": "aba8a4ae-3f8e-4db4-876e-a025522a6ffc",
+            "label": "blood_splatter_small_1",
+            "texture": {
+                "key": "effects_1",
+                "frame": "blood-splatter-small/1/1_0.png"
+            },
+            "x": 320,
+            "y": 736,
+            "animationPlayMethod": 1,
+            "animationKey": "blood_splatter_small_1"
         }
     ],
     "plainObjects": [
