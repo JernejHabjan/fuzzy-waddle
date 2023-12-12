@@ -195,7 +195,6 @@
             <key type="filename">../../shared/effects/blood-splatter-small/1/1_26.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/1/1_27.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/1/1_28.png</key>
-            <key type="filename">../../shared/effects/blood-splatter-small/1/1_29.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/1/1_3.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/1/1_4.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/1/1_5.png</key>
@@ -225,7 +224,6 @@
             <key type="filename">../../shared/effects/blood-splatter-small/2/1_26.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/2/1_27.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/2/1_28.png</key>
-            <key type="filename">../../shared/effects/blood-splatter-small/2/1_29.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/2/1_3.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/2/1_4.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/2/1_5.png</key>
@@ -255,7 +253,6 @@
             <key type="filename">../../shared/effects/blood-splatter-small/3/1_26.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/3/1_27.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/3/1_28.png</key>
-            <key type="filename">../../shared/effects/blood-splatter-small/3/1_29.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/3/1_3.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/3/1_4.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/3/1_5.png</key>
@@ -285,7 +282,6 @@
             <key type="filename">../../shared/effects/blood-splatter-small/4/1_26.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/4/1_27.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/4/1_28.png</key>
-            <key type="filename">../../shared/effects/blood-splatter-small/4/1_29.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/4/1_3.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/4/1_4.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/4/1_5.png</key>
@@ -315,7 +311,6 @@
             <key type="filename">../../shared/effects/blood-splatter-small/5/1_26.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/5/1_27.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/5/1_28.png</key>
-            <key type="filename">../../shared/effects/blood-splatter-small/5/1_29.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/5/1_3.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/5/1_4.png</key>
             <key type="filename">../../shared/effects/blood-splatter-small/5/1_5.png</key>
@@ -351,6 +346,189 @@
                 <rect>31,28,63,55</rect>
                 <key>scale9Paddings</key>
                 <rect>31,28,63,55</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../../shared/effects/impact/1/1/0.png</key>
+            <key type="filename">../../shared/effects/impact/1/1/1.png</key>
+            <key type="filename">../../shared/effects/impact/1/1/2.png</key>
+            <key type="filename">../../shared/effects/impact/1/1/3.png</key>
+            <key type="filename">../../shared/effects/impact/1/10/54.png</key>
+            <key type="filename">../../shared/effects/impact/1/10/55.png</key>
+            <key type="filename">../../shared/effects/impact/1/10/56.png</key>
+            <key type="filename">../../shared/effects/impact/1/10/57.png</key>
+            <key type="filename">../../shared/effects/impact/1/10/58.png</key>
+            <key type="filename">../../shared/effects/impact/1/10/59.png</key>
+            <key type="filename">../../shared/effects/impact/1/10/60.png</key>
+            <key type="filename">../../shared/effects/impact/1/11/61.png</key>
+            <key type="filename">../../shared/effects/impact/1/11/62.png</key>
+            <key type="filename">../../shared/effects/impact/1/11/63.png</key>
+            <key type="filename">../../shared/effects/impact/1/11/64.png</key>
+            <key type="filename">../../shared/effects/impact/1/11/65.png</key>
+            <key type="filename">../../shared/effects/impact/1/11/66.png</key>
+            <key type="filename">../../shared/effects/impact/1/11/67.png</key>
+            <key type="filename">../../shared/effects/impact/1/12/68.png</key>
+            <key type="filename">../../shared/effects/impact/1/12/69.png</key>
+            <key type="filename">../../shared/effects/impact/1/12/70.png</key>
+            <key type="filename">../../shared/effects/impact/1/12/71.png</key>
+            <key type="filename">../../shared/effects/impact/1/12/72.png</key>
+            <key type="filename">../../shared/effects/impact/1/12/73.png</key>
+            <key type="filename">../../shared/effects/impact/1/12/74.png</key>
+            <key type="filename">../../shared/effects/impact/1/13/75.png</key>
+            <key type="filename">../../shared/effects/impact/1/13/76.png</key>
+            <key type="filename">../../shared/effects/impact/1/13/77.png</key>
+            <key type="filename">../../shared/effects/impact/1/13/78.png</key>
+            <key type="filename">../../shared/effects/impact/1/13/79.png</key>
+            <key type="filename">../../shared/effects/impact/1/13/80.png</key>
+            <key type="filename">../../shared/effects/impact/1/13/81.png</key>
+            <key type="filename">../../shared/effects/impact/1/14/82.png</key>
+            <key type="filename">../../shared/effects/impact/1/14/83.png</key>
+            <key type="filename">../../shared/effects/impact/1/14/84.png</key>
+            <key type="filename">../../shared/effects/impact/1/14/85.png</key>
+            <key type="filename">../../shared/effects/impact/1/14/86.png</key>
+            <key type="filename">../../shared/effects/impact/1/14/87.png</key>
+            <key type="filename">../../shared/effects/impact/1/14/88.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/89.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/90.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/91.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/92.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/93.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/94.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/95.png</key>
+            <key type="filename">../../shared/effects/impact/1/15/96.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/100.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/101.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/102.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/103.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/104.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/97.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/98.png</key>
+            <key type="filename">../../shared/effects/impact/1/16/99.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/105.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/106.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/107.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/108.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/109.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/110.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/111.png</key>
+            <key type="filename">../../shared/effects/impact/1/17/112.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/113.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/114.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/115.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/116.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/117.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/118.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/119.png</key>
+            <key type="filename">../../shared/effects/impact/1/18/120.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/121.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/122.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/123.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/124.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/125.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/126.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/127.png</key>
+            <key type="filename">../../shared/effects/impact/1/19/128.png</key>
+            <key type="filename">../../shared/effects/impact/1/2/4.png</key>
+            <key type="filename">../../shared/effects/impact/1/2/5.png</key>
+            <key type="filename">../../shared/effects/impact/1/2/6.png</key>
+            <key type="filename">../../shared/effects/impact/1/2/7.png</key>
+            <key type="filename">../../shared/effects/impact/1/2/8.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/129.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/130.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/131.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/132.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/133.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/134.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/135.png</key>
+            <key type="filename">../../shared/effects/impact/1/20/136.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/137.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/138.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/139.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/140.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/141.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/142.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/143.png</key>
+            <key type="filename">../../shared/effects/impact/1/21/144.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/145.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/146.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/147.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/148.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/149.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/150.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/151.png</key>
+            <key type="filename">../../shared/effects/impact/1/22/152.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/153.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/154.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/155.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/156.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/157.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/158.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/159.png</key>
+            <key type="filename">../../shared/effects/impact/1/23/160.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/161.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/162.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/163.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/164.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/165.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/166.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/167.png</key>
+            <key type="filename">../../shared/effects/impact/1/24/168.png</key>
+            <key type="filename">../../shared/effects/impact/1/3/10.png</key>
+            <key type="filename">../../shared/effects/impact/1/3/11.png</key>
+            <key type="filename">../../shared/effects/impact/1/3/12.png</key>
+            <key type="filename">../../shared/effects/impact/1/3/13.png</key>
+            <key type="filename">../../shared/effects/impact/1/3/14.png</key>
+            <key type="filename">../../shared/effects/impact/1/3/9.png</key>
+            <key type="filename">../../shared/effects/impact/1/4/15.png</key>
+            <key type="filename">../../shared/effects/impact/1/4/16.png</key>
+            <key type="filename">../../shared/effects/impact/1/4/17.png</key>
+            <key type="filename">../../shared/effects/impact/1/4/18.png</key>
+            <key type="filename">../../shared/effects/impact/1/4/19.png</key>
+            <key type="filename">../../shared/effects/impact/1/4/20.png</key>
+            <key type="filename">../../shared/effects/impact/1/5/21.png</key>
+            <key type="filename">../../shared/effects/impact/1/5/22.png</key>
+            <key type="filename">../../shared/effects/impact/1/5/23.png</key>
+            <key type="filename">../../shared/effects/impact/1/5/24.png</key>
+            <key type="filename">../../shared/effects/impact/1/5/25.png</key>
+            <key type="filename">../../shared/effects/impact/1/5/26.png</key>
+            <key type="filename">../../shared/effects/impact/1/6/27.png</key>
+            <key type="filename">../../shared/effects/impact/1/6/28.png</key>
+            <key type="filename">../../shared/effects/impact/1/6/29.png</key>
+            <key type="filename">../../shared/effects/impact/1/6/30.png</key>
+            <key type="filename">../../shared/effects/impact/1/6/31.png</key>
+            <key type="filename">../../shared/effects/impact/1/6/32.png</key>
+            <key type="filename">../../shared/effects/impact/1/7/33.png</key>
+            <key type="filename">../../shared/effects/impact/1/7/34.png</key>
+            <key type="filename">../../shared/effects/impact/1/7/35.png</key>
+            <key type="filename">../../shared/effects/impact/1/7/36.png</key>
+            <key type="filename">../../shared/effects/impact/1/7/37.png</key>
+            <key type="filename">../../shared/effects/impact/1/7/38.png</key>
+            <key type="filename">../../shared/effects/impact/1/7/39.png</key>
+            <key type="filename">../../shared/effects/impact/1/8/40.png</key>
+            <key type="filename">../../shared/effects/impact/1/8/41.png</key>
+            <key type="filename">../../shared/effects/impact/1/8/42.png</key>
+            <key type="filename">../../shared/effects/impact/1/8/43.png</key>
+            <key type="filename">../../shared/effects/impact/1/8/44.png</key>
+            <key type="filename">../../shared/effects/impact/1/8/45.png</key>
+            <key type="filename">../../shared/effects/impact/1/8/46.png</key>
+            <key type="filename">../../shared/effects/impact/1/9/47.png</key>
+            <key type="filename">../../shared/effects/impact/1/9/48.png</key>
+            <key type="filename">../../shared/effects/impact/1/9/49.png</key>
+            <key type="filename">../../shared/effects/impact/1/9/50.png</key>
+            <key type="filename">../../shared/effects/impact/1/9/51.png</key>
+            <key type="filename">../../shared/effects/impact/1/9/52.png</key>
+            <key type="filename">../../shared/effects/impact/1/9/53.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
