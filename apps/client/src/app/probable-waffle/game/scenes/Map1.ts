@@ -26,127 +26,126 @@ import ActorContainer from "../entity/actor/ActorContainer";
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
-  constructor() {
-    super("Map1");
 
-    /* START-USER-CTR-CODE */
+	constructor() {
+		super("Map1");
+
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  editorCreate(): void {
-    // tiles
-    const tiles = this.add.tilemap("tiles");
-    tiles.addTilesetImage("tiles", "tiles_1");
+	editorCreate(): void {
 
-    // tilemap_level_1
-    tiles.createLayer("TileMap_level_1", ["tiles"], -32, 0);
+		// tiles
+		const tiles = this.add.tilemap("tiles");
+		tiles.addTilesetImage("tiles", "tiles_1");
 
-    // sandhold
-    const sandhold = new Sandhold(this, 32, 592);
-    this.add.existing(sandhold);
+		// tilemap_level_1
+		tiles.createLayer("TileMap_level_1", ["tiles"], -32, 0);
 
-    // owlery
-    const owlery = new Owlery(this, 1184, 880);
-    this.add.existing(owlery);
+		// sandhold
+		const sandhold = new Sandhold(this, 32, 592);
+		this.add.existing(sandhold);
 
-    // bridge
-    const bridge = new Bridge(this, 32, 912);
-    this.add.existing(bridge);
+		// owlery
+		const owlery = new Owlery(this, 1184, 880);
+		this.add.existing(owlery);
 
-    // infantryInn
-    const infantryInn = new InfantryInn(this, 1360, 800);
-    this.add.existing(infantryInn);
+		// bridge
+		const bridge = new Bridge(this, 32, 912);
+		this.add.existing(bridge);
 
-    // ankGuard
-    const ankGuard = new AnkGuard(this, 480, 608);
-    this.add.existing(ankGuard);
+		// infantryInn
+		const infantryInn = new InfantryInn(this, 1360, 800);
+		this.add.existing(infantryInn);
 
-    // temple
-    const temple = new Temple(this, -176, 464);
-    this.add.existing(temple);
+		// ankGuard
+		const ankGuard = new AnkGuard(this, 480, 608);
+		this.add.existing(ankGuard);
 
-    // workMill
-    const workMill = new WorkMill(this, -608, 866);
-    this.add.existing(workMill);
+		// temple
+		const temple = new Temple(this, -176, 464);
+		this.add.existing(temple);
 
-    // architecture_blocks_doors_left_png
-    const architecture_blocks_doors_left_png = this.add.image(0, 16, "outside", "architecture/blocks/doors_left.png");
-    architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
+		// workMill
+		const workMill = new WorkMill(this, -608, 866);
+		this.add.existing(workMill);
 
-    // architecture_blocks_doors_right_png
-    const architecture_blocks_doors_right_png = this.add.image(
-      -160,
-      144,
-      "outside",
-      "architecture/blocks/doors_right.png"
-    );
-    architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
+		// architecture_blocks_doors_left_png
+		const architecture_blocks_doors_left_png = this.add.image(0, 16, "outside", "architecture/blocks/doors_left.png");
+		architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
 
-    // skaduweeWorkerMale
-    const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
-    this.add.existing(skaduweeWorkerMale);
+		// architecture_blocks_doors_right_png
+		const architecture_blocks_doors_right_png = this.add.image(-160, 144, "outside", "architecture/blocks/doors_right.png");
+		architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
 
-    // skaduweeWorkerFemale
-    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1136, 960);
-    this.add.existing(skaduweeWorkerFemale);
+		// skaduweeWorkerMale
+		const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
+		this.add.existing(skaduweeWorkerMale);
 
-    // skaduweeRangedFemale
-    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1264, 720);
-    this.add.existing(skaduweeRangedFemale);
+		// skaduweeWorkerFemale
+		const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1136, 960);
+		this.add.existing(skaduweeWorkerFemale);
 
-    // skaduweeMagicianFemale
-    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1312, 848);
-    this.add.existing(skaduweeMagicianFemale);
+		// skaduweeRangedFemale
+		const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1264, 720);
+		this.add.existing(skaduweeRangedFemale);
 
-    // skaduweeWarriorMale
-    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1216, 784);
-    this.add.existing(skaduweeWarriorMale);
+		// skaduweeMagicianFemale
+		const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1312, 848);
+		this.add.existing(skaduweeMagicianFemale);
 
-    // generalWarrior
-    const generalWarrior = new GeneralWarrior(this, 144, 1360);
-    this.add.existing(generalWarrior);
+		// skaduweeWarriorMale
+		const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1216, 784);
+		this.add.existing(skaduweeWarriorMale);
 
-    // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 160, 704);
-    this.add.existing(tivaraSlingshotFemale);
+		// generalWarrior
+		const generalWarrior = new GeneralWarrior(this, 144, 1360);
+		this.add.existing(generalWarrior);
 
-    // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 288, 640);
-    this.add.existing(tivaraWorkerFemale);
+		// tivaraSlingshotFemale
+		const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 160, 704);
+		this.add.existing(tivaraSlingshotFemale);
 
-    // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 736);
-    this.add.existing(tivaraWorkerMale);
+		// tivaraWorkerFemale
+		const tivaraWorkerFemale = new TivaraWorkerFemale(this, 288, 640);
+		this.add.existing(tivaraWorkerFemale);
 
-    // tivaraMacemanMale
-    const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
-    this.add.existing(tivaraMacemanMale);
+		// tivaraWorkerMale
+		const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 736);
+		this.add.existing(tivaraWorkerMale);
 
-    // olival
-    const olival = new Olival(this, 160, 784);
-    this.add.existing(olival);
+		// tivaraMacemanMale
+		const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
+		this.add.existing(tivaraMacemanMale);
 
-    // blood_splatter_small_1
-    const blood_splatter_small_1 = this.add.sprite(320, 736, "effects_1", "blood-splatter-small/1/1_0.png");
-    blood_splatter_small_1.play("blood_splatter_small_1");
+		// olival
+		const olival = new Olival(this, 160, 784);
+		this.add.existing(olival);
 
-    // lists
-    const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
+		// blood_splatter_small_1
+		const blood_splatter_small_1 = this.add.sprite(272, 720, "effects_1", "blood-splatter-small/1/1_0.png");
+		blood_splatter_small_1.scaleX = 0.5;
+		blood_splatter_small_1.scaleY = 0.5;
+		blood_splatter_small_1.play("blood_splatter_small_1");
 
-    // infantryInn (prefab fields)
-    infantryInn.z = 32;
+		// lists
+		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
 
-    this.tiles = tiles;
-    this.tileMapLayer2 = tileMapLayer2;
+		// infantryInn (prefab fields)
+		infantryInn.z = 32;
 
-    this.events.emit("scene-awake");
-  }
+		this.tiles = tiles;
+		this.tileMapLayer2 = tileMapLayer2;
 
-  private tiles!: Phaser.Tilemaps.Tilemap;
-  private tileMapLayer2!: Phaser.GameObjects.Image[];
+		this.events.emit("scene-awake");
+	}
 
-  /* START-USER-CODE */
+	private tiles!: Phaser.Tilemaps.Tilemap;
+	private tileMapLayer2!: Phaser.GameObjects.Image[];
+
+	/* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;

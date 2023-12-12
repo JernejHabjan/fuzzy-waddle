@@ -177,12 +177,6 @@
           "frame": "blood-splatter-small/1/1_28.png",
           "duration": 0,
           "keyframe": false
-        },
-        {
-          "key": "effects_1",
-          "frame": "blood-splatter-small/1/1_29.png",
-          "duration": 0,
-          "keyframe": false
         }
       ],
       "frameRate": 24,
@@ -363,12 +357,6 @@
         {
           "key": "effects_1",
           "frame": "blood-splatter-small/2/1_28.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "effects_1",
-          "frame": "blood-splatter-small/2/1_29.png",
           "duration": 0,
           "keyframe": false
         }
@@ -553,12 +541,6 @@
           "frame": "blood-splatter-small/3/1_28.png",
           "duration": 0,
           "keyframe": false
-        },
-        {
-          "key": "effects_1",
-          "frame": "blood-splatter-small/3/1_29.png",
-          "duration": 0,
-          "keyframe": false
         }
       ],
       "frameRate": 24,
@@ -741,12 +723,6 @@
           "frame": "blood-splatter-small/4/1_28.png",
           "duration": 0,
           "keyframe": false
-        },
-        {
-          "key": "effects_1",
-          "frame": "blood-splatter-small/4/1_29.png",
-          "duration": 0,
-          "keyframe": false
         }
       ],
       "frameRate": 24,
@@ -927,12 +903,6 @@
         {
           "key": "effects_1",
           "frame": "blood-splatter-small/5/1_28.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "effects_1",
-          "frame": "blood-splatter-small/5/1_29.png",
           "duration": 0,
           "keyframe": false
         }

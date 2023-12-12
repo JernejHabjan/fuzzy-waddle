@@ -255,8 +255,10 @@
                 "key": "effects_1",
                 "frame": "blood-splatter-small/1/1_0.png"
             },
-            "x": 320,
-            "y": 736,
+            "x": 272,
+            "y": 720,
+            "scaleX": 0.5,
+            "scaleY": 0.5,
             "animationPlayMethod": 1,
             "animationKey": "blood_splatter_small_1"
         }

@@ -48,3 +48,6 @@ apps/client/src/**/*.html
 apps/client/src/**/*.scss
 apps/client/src/**/*.spec.ts
 apps/client/src/**/*.module.ts
+migrations.json
+documentation
+tmp
