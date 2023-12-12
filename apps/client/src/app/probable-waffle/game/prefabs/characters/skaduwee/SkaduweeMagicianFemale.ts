@@ -44,6 +44,9 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
     // get 0-23 random number
     const randomFrame = Math.floor(Math.random() * 24);
     animAttack.play("impact_" + randomFrame);
+    //light blue tint
+    animAttack.setTint(0x00bdfc);
+
     // remove sprite after anim complete
     animAttack.once("animationcomplete", () => {
       animAttack.destroy();

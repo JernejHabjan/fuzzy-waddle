@@ -113,7 +113,7 @@ export class FlyRepresentableComponent implements IComponent {
     const bloodSplatter = this.scene.add.sprite(this.x, this.y, "fly-squasher-spritesheet", "blood-splatter/0");
     bloodSplatter.play(ANIM_BLOOD_SPLATTER);
     // tint to green
-    bloodSplatter.setTintFill(0x006000);
+    bloodSplatter.setTint(0x00ff00);
     // set scale
     bloodSplatter.setScale(this.scale);
     this.scene.time.delayedCall(3 * 1000, () => {

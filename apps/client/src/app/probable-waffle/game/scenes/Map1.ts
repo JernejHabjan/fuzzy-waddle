@@ -26,155 +26,168 @@ import Olival from "../prefabs/buildings/tivara/Olival";
 import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
 import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
+import WallTopRightBottomLeft from "../prefabs/buildings/tivara/wall/WallTopRightBottomLeft";
+import WallEmpty from "../prefabs/buildings/tivara/wall/WallEmpty";
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
+  constructor() {
+    super("Map1");
 
-	constructor() {
-		super("Map1");
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	editorCreate(): void {
+  editorCreate(): void {
+    // tiles
+    const tiles = this.add.tilemap("tiles");
+    tiles.addTilesetImage("tiles", "tiles_1");
 
-		// tiles
-		const tiles = this.add.tilemap("tiles");
-		tiles.addTilesetImage("tiles", "tiles_1");
+    // tilemap_level_1
+    tiles.createLayer("TileMap_level_1", ["tiles"], -32, 0);
 
-		// tilemap_level_1
-		tiles.createLayer("TileMap_level_1", ["tiles"], -32, 0);
+    // sandhold
+    const sandhold = new Sandhold(this, 32, 592);
+    this.add.existing(sandhold);
 
-		// sandhold
-		const sandhold = new Sandhold(this, 32, 592);
-		this.add.existing(sandhold);
+    // owlery
+    const owlery = new Owlery(this, 1184, 880);
+    this.add.existing(owlery);
 
-		// owlery
-		const owlery = new Owlery(this, 1184, 880);
-		this.add.existing(owlery);
+    // bridge
+    const bridge = new Bridge(this, 32, 912);
+    this.add.existing(bridge);
 
-		// bridge
-		const bridge = new Bridge(this, 32, 912);
-		this.add.existing(bridge);
+    // infantryInn
+    const infantryInn = new InfantryInn(this, 1360, 800);
+    this.add.existing(infantryInn);
 
-		// infantryInn
-		const infantryInn = new InfantryInn(this, 1360, 800);
-		this.add.existing(infantryInn);
+    // stairsRight
+    const stairsRight = new StairsRight(this, -288, 384);
+    this.add.existing(stairsRight);
 
-		// stairsRight
-		const stairsRight = new StairsRight(this, -288, 384);
-		this.add.existing(stairsRight);
+    // stairsLeft
+    const stairsLeft = new StairsLeft(this, -240, 400);
+    this.add.existing(stairsLeft);
 
-		// stairsLeft
-		const stairsLeft = new StairsLeft(this, -240, 400);
-		this.add.existing(stairsLeft);
+    // ankGuard
+    const ankGuard = new AnkGuard(this, 480, 608);
+    this.add.existing(ankGuard);
 
-		// ankGuard
-		const ankGuard = new AnkGuard(this, 480, 608);
-		this.add.existing(ankGuard);
+    // temple
+    const temple = new Temple(this, -176, 464);
+    this.add.existing(temple);
 
-		// temple
-		const temple = new Temple(this, -176, 464);
-		this.add.existing(temple);
+    // workMill
+    const workMill = new WorkMill(this, -608, 866);
+    this.add.existing(workMill);
 
-		// workMill
-		const workMill = new WorkMill(this, -608, 866);
-		this.add.existing(workMill);
+    // architecture_blocks_doors_left_png
+    const architecture_blocks_doors_left_png = this.add.image(0, 16, "outside", "architecture/blocks/doors_left.png");
+    architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
 
-		// architecture_blocks_doors_left_png
-		const architecture_blocks_doors_left_png = this.add.image(0, 16, "outside", "architecture/blocks/doors_left.png");
-		architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
+    // architecture_blocks_doors_right_png
+    const architecture_blocks_doors_right_png = this.add.image(
+      -160,
+      144,
+      "outside",
+      "architecture/blocks/doors_right.png"
+    );
+    architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
 
-		// architecture_blocks_doors_right_png
-		const architecture_blocks_doors_right_png = this.add.image(-160, 144, "outside", "architecture/blocks/doors_right.png");
-		architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
+    // skaduweeWorkerMale
+    const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
+    this.add.existing(skaduweeWorkerMale);
 
-		// skaduweeWorkerMale
-		const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
-		this.add.existing(skaduweeWorkerMale);
+    // skaduweeWorkerFemale
+    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1136, 960);
+    this.add.existing(skaduweeWorkerFemale);
 
-		// skaduweeWorkerFemale
-		const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1136, 960);
-		this.add.existing(skaduweeWorkerFemale);
+    // skaduweeRangedFemale
+    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1264, 720);
+    this.add.existing(skaduweeRangedFemale);
 
-		// skaduweeRangedFemale
-		const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1264, 720);
-		this.add.existing(skaduweeRangedFemale);
+    // skaduweeMagicianFemale
+    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1312, 848);
+    this.add.existing(skaduweeMagicianFemale);
 
-		// skaduweeMagicianFemale
-		const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1312, 848);
-		this.add.existing(skaduweeMagicianFemale);
+    // skaduweeWarriorMale
+    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1216, 784);
+    this.add.existing(skaduweeWarriorMale);
 
-		// skaduweeWarriorMale
-		const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1216, 784);
-		this.add.existing(skaduweeWarriorMale);
+    // generalWarrior
+    const generalWarrior = new GeneralWarrior(this, 144, 1360);
+    this.add.existing(generalWarrior);
 
-		// generalWarrior
-		const generalWarrior = new GeneralWarrior(this, 144, 1360);
-		this.add.existing(generalWarrior);
+    // tivaraSlingshotFemale
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 160, 704);
+    this.add.existing(tivaraSlingshotFemale);
 
-		// tivaraSlingshotFemale
-		const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 160, 704);
-		this.add.existing(tivaraSlingshotFemale);
+    // tivaraWorkerFemale
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 288, 640);
+    this.add.existing(tivaraWorkerFemale);
 
-		// tivaraWorkerFemale
-		const tivaraWorkerFemale = new TivaraWorkerFemale(this, 288, 640);
-		this.add.existing(tivaraWorkerFemale);
+    // tivaraWorkerMale
+    const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 736);
+    this.add.existing(tivaraWorkerMale);
 
-		// tivaraWorkerMale
-		const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 736);
-		this.add.existing(tivaraWorkerMale);
+    // tivaraMacemanMale
+    const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
+    this.add.existing(tivaraMacemanMale);
 
-		// tivaraMacemanMale
-		const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
-		this.add.existing(tivaraMacemanMale);
+    // olival
+    const olival = new Olival(this, 160, 784);
+    this.add.existing(olival);
 
-		// olival
-		const olival = new Olival(this, 160, 784);
-		this.add.existing(olival);
+    // blood_splatter_small_1
+    const blood_splatter_small_1 = this.add.sprite(272, 720, "effects_1", "blood-splatter-small/1/1_0.png");
+    blood_splatter_small_1.scaleX = 0.5;
+    blood_splatter_small_1.scaleY = 0.5;
+    blood_splatter_small_1.play("blood_splatter_small_1");
 
-		// blood_splatter_small_1
-		const blood_splatter_small_1 = this.add.sprite(272, 720, "effects_1", "blood-splatter-small/1/1_0.png");
-		blood_splatter_small_1.scaleX = 0.5;
-		blood_splatter_small_1.scaleY = 0.5;
-		blood_splatter_small_1.play("blood_splatter_small_1");
+    // wallTopLeftTopRight
+    const wallTopLeftTopRight = new WallTopLeftTopRight(this, -560, 368);
+    this.add.existing(wallTopLeftTopRight);
 
-		// wallTopLeftTopRight
-		const wallTopLeftTopRight = new WallTopLeftTopRight(this, -560, 368);
-		this.add.existing(wallTopLeftTopRight);
+    // wallTopRight
+    const wallTopRight = new WallTopRight(this, -528, 384);
+    this.add.existing(wallTopRight);
 
-		// wallTopRight
-		const wallTopRight = new WallTopRight(this, -528, 384);
-		this.add.existing(wallTopRight);
+    // watchTower
+    const watchTower = new WatchTower(this, -480, 400);
+    this.add.existing(watchTower);
 
-		// watchTower
-		const watchTower = new WatchTower(this, -480, 400);
-		this.add.existing(watchTower);
+    // stairsRight_1
+    const stairsRight_1 = new StairsRight(this, -592, 384);
+    this.add.existing(stairsRight_1);
 
-		// stairsRight_1
-		const stairsRight_1 = new StairsRight(this, -592, 384);
-		this.add.existing(stairsRight_1);
+    // wallTopRightBottomLeft
+    const wallTopRightBottomLeft = new WallTopRightBottomLeft(this, -448, 496);
+    this.add.existing(wallTopRightBottomLeft);
 
-		// lists
-		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
+    // wallEmpty
+    const wallEmpty = new WallEmpty(this, -480, 480);
+    this.add.existing(wallEmpty);
 
-		// infantryInn (prefab fields)
-		infantryInn.z = 32;
+    // lists
+    const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
 
-		this.tiles = tiles;
-		this.tileMapLayer2 = tileMapLayer2;
+    // infantryInn (prefab fields)
+    infantryInn.z = 32;
 
-		this.events.emit("scene-awake");
-	}
+    this.tiles = tiles;
+    this.tileMapLayer2 = tileMapLayer2;
 
-	private tiles!: Phaser.Tilemaps.Tilemap;
-	private tileMapLayer2!: Phaser.GameObjects.Image[];
+    this.events.emit("scene-awake");
+  }
 
-	/* START-USER-CODE */
+  private tiles!: Phaser.Tilemaps.Tilemap;
+  private tileMapLayer2!: Phaser.GameObjects.Image[];
+
+  /* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
@@ -196,6 +209,7 @@ export default class Map1 extends Phaser.Scene {
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(this.controlConfig);
     this.handleCameraCenter();
     this.handleZSort();
+    this.zoomWithScroll();
   }
 
   handleZSort = () => {
@@ -217,6 +231,16 @@ export default class Map1 extends Phaser.Scene {
     const mapBottom = this.tiles.heightInPixels;
 
     this.cameras.main.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, true);
+  };
+
+  zoomWithScroll = () => {
+    this.input.on("wheel", (pointer: any, gameObjects: any, deltaX: any, deltaY: any, deltaZ: any) => {
+      if (deltaY > 0) {
+        this.cameras.main.zoom -= 0.1;
+      } else {
+        this.cameras.main.zoom += 0.1;
+      }
+    });
   };
 
   update(time: number, delta: number): void {

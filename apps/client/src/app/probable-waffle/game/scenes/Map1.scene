@@ -327,6 +327,28 @@
             "label": "stairsRight_1",
             "x": -592,
             "y": 384
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f34",
+            "id": "df036a90-e29c-45ad-9817-6f5898c0a6dc",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wallTopRightBottomLeft",
+            "x": -448,
+            "y": 496
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f29",
+            "id": "b838225c-e928-4c60-9493-76a945dd96c8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wallEmpty",
+            "x": -480,
+            "y": 480
         }
     ],
     "plainObjects": [

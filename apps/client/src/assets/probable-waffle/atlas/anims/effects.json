@@ -1964,8 +1964,7 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
+          "skipMissedFrames": true
         },
         {
             "key": "impact_21",
