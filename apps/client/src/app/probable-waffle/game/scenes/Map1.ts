@@ -124,6 +124,12 @@ export default class Map1 extends Phaser.Scene {
 		const olival = new Olival(this, 160, 784);
 		this.add.existing(olival);
 
+		// blood_splatter_small_1
+		const blood_splatter_small_1 = this.add.sprite(272, 720, "effects_1", "blood-splatter-small/1/1_0.png");
+		blood_splatter_small_1.scaleX = 0.5;
+		blood_splatter_small_1.scaleY = 0.5;
+		blood_splatter_small_1.play("blood_splatter_small_1");
+
 		// lists
 		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
 
@@ -166,7 +172,7 @@ export default class Map1 extends Phaser.Scene {
   handleZSort = () => {
     this.children.each((child: any) => {
       child.depth = child.y;
-      if(child instanceof ActorContainer){
+      if (child instanceof ActorContainer) {
         const z = child.z;
         child.depth = child.y + z;
       }
@@ -176,8 +182,8 @@ export default class Map1 extends Phaser.Scene {
     // set camera to the center of isometric tilemap
 
     const maxMapLayers = 1;
-    const mapLeft =  - this.tiles.widthInPixels / 2;
-    const mapRight = + this.tiles.widthInPixels / 2;
+    const mapLeft = -this.tiles.widthInPixels / 2;
+    const mapRight = +this.tiles.widthInPixels / 2;
     const mapTop = -maxMapLayers * 32;
     const mapBottom = this.tiles.heightInPixels;
 

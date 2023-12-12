@@ -1,0 +1,924 @@
+{
+  "anims": [
+    {
+      "key": "blood_splatter_small_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_0.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_2.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_3.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_4.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_5.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_6.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_7.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_8.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_9.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_10.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_11.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_12.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_13.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_14.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_15.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_16.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_17.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_18.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_19.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_20.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_21.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_22.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_23.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_24.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_25.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_26.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_27.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/1/1_28.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 24,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "blood_splatter_small_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_0.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_2.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_3.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_4.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_5.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_6.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_7.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_8.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_9.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_10.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_11.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_12.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_13.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_14.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_15.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_16.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_17.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_18.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_19.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_20.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_21.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_22.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_23.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_24.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_25.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_26.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_27.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/2/1_28.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 24,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "blood_splatter_small_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_0.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_2.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_3.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_4.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_5.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_6.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_7.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_8.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_9.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_10.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_11.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_12.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_13.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_14.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_15.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_16.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_17.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_18.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_19.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_20.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_21.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_22.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_23.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_24.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_25.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_26.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_27.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/3/1_28.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 24,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "blood_splatter_small_4",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_0.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_2.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_3.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_4.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_5.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_6.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_7.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_8.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_9.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_10.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_11.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_12.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_13.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_14.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_15.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_16.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_17.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_18.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_19.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_20.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_21.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_22.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_23.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_24.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_25.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_26.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_27.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/4/1_28.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 24,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "blood_splatter_small_5",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_0.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_2.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_3.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_4.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_5.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_6.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_7.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_8.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_9.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_10.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_11.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_12.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_13.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_14.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_15.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_16.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_17.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_18.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_19.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_20.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_21.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_22.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_23.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_24.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_25.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_26.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_27.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "effects_1",
+          "frame": "blood-splatter-small/5/1_28.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 24,
+      "skipMissedFrames": true
+    }
+  ],
+  "globalTimeScale": 1,
+  "meta": {
+    "app": "Phaser Editor 2D v3",
+    "contentType": "Phaser v3 Animations"
+  },
+  "settings": {
+    "sourceLang": "TYPE_SCRIPT",
+    "esModule": true,
+    "generateCode": true
+  }
+}
