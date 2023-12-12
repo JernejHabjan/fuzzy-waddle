@@ -71,6 +71,28 @@
             "y": 800
         },
         {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
+            "id": "df98061e-c4b4-455c-b3b2-246ec9dc388f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairsRight",
+            "x": -288,
+            "y": 384
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f24",
+            "id": "60582fa5-4cc7-4cb2-9cde-81992d65bd57",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairsLeft",
+            "x": -240,
+            "y": 400
+        },
+        {
             "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
             "id": "8992b5da-da70-489c-81d6-477a57ead729",
             "unlock": [
@@ -261,6 +283,50 @@
             "scaleY": 0.5,
             "animationPlayMethod": 1,
             "animationKey": "blood_splatter_small_1"
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f32",
+            "id": "46c9a649-4852-476e-88d9-a22703be0c76",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wallTopLeftTopRight",
+            "x": -560,
+            "y": 368
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f36",
+            "id": "64bcd74a-c0df-4806-9d27-87b4bc778021",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wallTopRight",
+            "x": -528,
+            "y": 384
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f37",
+            "id": "ca4a4889-36d9-46ca-a2f4-15a63462dbdd",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "watchTower",
+            "x": -480,
+            "y": 400
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
+            "id": "13fe1506-4809-4bb4-9834-44f64136c6ea",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairsRight_1",
+            "x": -592,
+            "y": 384
         }
     ],
     "plainObjects": [

@@ -7,6 +7,8 @@ import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
 import Bridge from "../prefabs/buildings/general/Bridge";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
+import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
+import StairsLeft from "../prefabs/buildings/tivara/wall/StairsLeft";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
 import Temple from "../prefabs/buildings/tivara/Temple";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
@@ -21,6 +23,9 @@ import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale"
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
 import Olival from "../prefabs/buildings/tivara/Olival";
+import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
+import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
+import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
 /* END-USER-IMPORTS */
@@ -59,6 +64,14 @@ export default class Map1 extends Phaser.Scene {
 		// infantryInn
 		const infantryInn = new InfantryInn(this, 1360, 800);
 		this.add.existing(infantryInn);
+
+		// stairsRight
+		const stairsRight = new StairsRight(this, -288, 384);
+		this.add.existing(stairsRight);
+
+		// stairsLeft
+		const stairsLeft = new StairsLeft(this, -240, 400);
+		this.add.existing(stairsLeft);
 
 		// ankGuard
 		const ankGuard = new AnkGuard(this, 480, 608);
@@ -129,6 +142,22 @@ export default class Map1 extends Phaser.Scene {
 		blood_splatter_small_1.scaleX = 0.5;
 		blood_splatter_small_1.scaleY = 0.5;
 		blood_splatter_small_1.play("blood_splatter_small_1");
+
+		// wallTopLeftTopRight
+		const wallTopLeftTopRight = new WallTopLeftTopRight(this, -560, 368);
+		this.add.existing(wallTopLeftTopRight);
+
+		// wallTopRight
+		const wallTopRight = new WallTopRight(this, -528, 384);
+		this.add.existing(wallTopRight);
+
+		// watchTower
+		const watchTower = new WatchTower(this, -480, 400);
+		this.add.existing(watchTower);
+
+		// stairsRight_1
+		const stairsRight_1 = new StairsRight(this, -592, 384);
+		this.add.existing(stairsRight_1);
 
 		// lists
 		const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
