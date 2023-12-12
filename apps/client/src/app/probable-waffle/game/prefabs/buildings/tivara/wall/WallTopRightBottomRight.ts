@@ -1,4 +1,3 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
@@ -8,27 +7,38 @@ import ActorContainer from "../../../../entity/actor/ActorContainer";
 /* END-USER-IMPORTS */
 
 export default class WallTopRightBottomRight extends ActorContainer {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 32, y ?? 80);
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 32, y ?? 80);
+    this.removeInteractive();
+    this.setInteractive(
+      new Phaser.Geom.Polygon(
+        "-31.930815678498476 -58.63399564111439 -22.230525281304878 -62.43803109099423 -15.002857926533178 -57.30258323365645 -15.19305969902717 -50.26511765137874 -8.345795889243455 -52.54753892130664 -7.96539234425547 -68.71468958329598 -0.16711967200179245 -72.8991285781638 8.201758317733862 -68.144084265814 8.365960782040858 -61.25602280220306 15.46467591766617 -64.04895990474417 32 -56 31.97943800365526 0.4566710480282268 0.18887184018790037 16.109893981309114 -31.924441187883197 1.4249116418394152"
+      ),
+      Phaser.Geom.Polygon.Contains
+    );
 
-		this.removeInteractive();
-		this.setInteractive(new Phaser.Geom.Rectangle(-32, -48, 64, 96), Phaser.Geom.Rectangle.Contains);
+    // buildings_tivara_wall_top_right_bottom_right
+    const buildings_tivara_wall_top_right_bottom_right = scene.add.image(
+      0,
+      -32,
+      "factions",
+      "buildings/tivara/wall/wall_top_right_bottom_right.png"
+    );
+    this.add(buildings_tivara_wall_top_right_bottom_right);
 
-		// buildings_tivara_wall_top_right_bottom_right
-		const buildings_tivara_wall_top_right_bottom_right = scene.add.image(0, -32, "factions", "buildings/tivara/wall/wall_top_right_bottom_right.png");
-		this.add(buildings_tivara_wall_top_right_bottom_right);
+    /* START-USER-CTR-CODE */
+    this.on("pointerdown", () => {
+      buildings_tivara_wall_top_right_bottom_right.setTint(0xff0000); // Tint to red
+    });
+    /* END-USER-CTR-CODE */
+  }
 
-		/* START-USER-CTR-CODE */
-		// Write your code here.
-		/* END-USER-CTR-CODE */
-	}
+  /* START-USER-CODE */
 
-	/* START-USER-CODE */
+  // Write your code here.
 
-	// Write your code here.
-
-	/* END-USER-CODE */
+  /* END-USER-CODE */
 }
 
 /* END OF COMPILED CODE */
