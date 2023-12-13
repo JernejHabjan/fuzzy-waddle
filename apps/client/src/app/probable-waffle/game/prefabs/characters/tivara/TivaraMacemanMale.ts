@@ -20,6 +20,10 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       tivara_maceman_male_idle_down.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        tivara_maceman_male_idle_down.clearTint();
+      }, 1000);
 
       // and play anim skaduwee_worker_male_slash_down
       tivara_maceman_male_idle_down.play("tivara_maceman_male_large_slash_down", true);

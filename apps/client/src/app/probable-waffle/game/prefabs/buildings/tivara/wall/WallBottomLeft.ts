@@ -31,6 +31,10 @@ export default class WallBottomLeft extends ActorContainer {
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       buildings_tivara_wall_bottom_left.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        buildings_tivara_wall_bottom_left.clearTint();
+      }, 1000);
     });
     /* END-USER-CTR-CODE */
   }

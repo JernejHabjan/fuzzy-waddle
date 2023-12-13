@@ -25,6 +25,10 @@ export default class WallEmpty extends ActorContainer {
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       buildings_tivara_wall_empty.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        buildings_tivara_wall_empty.clearTint();
+      }, 1000);
     });
     /* END-USER-CTR-CODE */
   }

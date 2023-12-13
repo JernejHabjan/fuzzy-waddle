@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from '../../../entity/actor/ActorContainer';
+import ActorContainer from "../../../entity/actor/ActorContainer";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -17,27 +17,27 @@ export default class InfantryInn extends ActorContainer {
     const infantry_inn_building = scene.add.image(
       -0.16910280030724323,
       -31.74029716298027,
-      'factions',
-      'buildings/skaduwee/infantry_inn/infantry_inn.png'
+      "factions",
+      "buildings/skaduwee/infantry_inn/infantry_inn.png"
     );
     this.add(infantry_inn_building);
 
     // cloud_1
-    const cloud_1 = scene.add.image(24, -82, 'factions', 'buildings/skaduwee/infantry_inn/cloud-vertical.png');
+    const cloud_1 = scene.add.image(24, -82, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
     this.add(cloud_1);
 
     // cloud_2
-    const cloud_2 = scene.add.image(13, -110, 'factions', 'buildings/skaduwee/infantry_inn/cloud-vertical.png');
+    const cloud_2 = scene.add.image(13, -110, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
     this.add(cloud_2);
 
     // skaduwee_buildings_infantry_inn_entrance
     const skaduwee_buildings_infantry_inn_entrance = scene.add.sprite(
       24,
       -8,
-      'factions',
-      'buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png'
+      "factions",
+      "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
     );
-    skaduwee_buildings_infantry_inn_entrance.play('skaduwee-buildings-infantry-inn-entrance');
+    skaduwee_buildings_infantry_inn_entrance.play("skaduwee-buildings-infantry-inn-entrance");
     this.add(skaduwee_buildings_infantry_inn_entrance);
 
     /* START-USER-CTR-CODE */
@@ -46,8 +46,12 @@ export default class InfantryInn extends ActorContainer {
     this.setupCloudsTween(this.cloud1);
     this.setupCloudsTween(this.cloud2);
 
-    this.on('pointerdown', () => {
+    this.on("pointerdown", () => {
       infantry_inn_building.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        infantry_inn_building.clearTint();
+      }, 1000);
     });
     /* END-USER-CTR-CODE */
   }

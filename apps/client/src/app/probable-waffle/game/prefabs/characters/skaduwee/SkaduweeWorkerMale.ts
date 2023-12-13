@@ -17,6 +17,10 @@ export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       this.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        this.clearTint();
+      }, 1000);
 
       // and play anim skaduwee_worker_male_slash_down
       this.play("skaduwee_worker_male_slash_down", true);
