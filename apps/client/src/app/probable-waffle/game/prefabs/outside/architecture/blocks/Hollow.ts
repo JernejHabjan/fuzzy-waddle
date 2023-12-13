@@ -19,7 +19,13 @@ export default class Hollow extends ActorContainer {
     );
 
     // outside_architecture_blocks_hollow
-    const outside_architecture_blocks_hollow = scene.add.image(0, -16, "outside", "architecture/blocks/hollow.png");
+    const outside_architecture_blocks_hollow = scene.add.image(
+      0,
+      -16.63606503173723,
+      "outside",
+      "architecture/blocks/hollow.png"
+    );
+    outside_architecture_blocks_hollow.setOrigin(0.5, 0.4900614838791058);
     this.add(outside_architecture_blocks_hollow);
 
     /* START-USER-CTR-CODE */

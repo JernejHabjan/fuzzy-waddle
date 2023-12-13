@@ -6,7 +6,7 @@ import ActorContainer from "../../../../entity/actor/ActorContainer";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class HollowRight extends ActorContainer {
+export default class DoorsRight extends ActorContainer {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 32, y ?? 48);
 
@@ -18,15 +18,14 @@ export default class HollowRight extends ActorContainer {
       Phaser.Geom.Polygon.Contains
     );
 
-    // outside_architecture_blocks_hollow_right
-    const outside_architecture_blocks_hollow_right = scene.add.image(
+    // outside_architecture_blocks_doors_right
+    const outside_architecture_blocks_doors_right = scene.add.image(
       0,
-      -16.42350022326395,
+      -16,
       "outside",
-      "architecture/blocks/hollow_right.png"
+      "architecture/blocks/doors_right.png"
     );
-    outside_architecture_blocks_hollow_right.setOrigin(0.5, 0.4933828090115008);
-    this.add(outside_architecture_blocks_hollow_right);
+    this.add(outside_architecture_blocks_doors_right);
 
     /* START-USER-CTR-CODE */
     // Write your code here.

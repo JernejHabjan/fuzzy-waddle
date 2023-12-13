@@ -41,7 +41,8 @@
                         "key": "outside",
                         "frame": "architecture/well/stone_empty.png"
                     },
-                    "y": -16
+                    "y": -15.820647560895388,
+                    "originY": 0.5028023818610096
                 }
             ]
         }

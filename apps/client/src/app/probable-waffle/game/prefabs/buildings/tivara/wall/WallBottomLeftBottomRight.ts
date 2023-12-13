@@ -21,10 +21,11 @@ export default class WallBottomLeftBottomRight extends ActorContainer {
     // buildings_tivara_wall_bottom_left_bottom_right
     const buildings_tivara_wall_bottom_left_bottom_right = scene.add.image(
       0,
-      -32,
+      -48.927180044278884,
       "factions",
       "buildings/tivara/wall/wall_bottom_left_bottom_right.png"
     );
+    buildings_tivara_wall_bottom_left_bottom_right.setOrigin(0.5, 0.3236752078720949);
     this.add(buildings_tivara_wall_bottom_left_bottom_right);
 
     /* START-USER-CTR-CODE */

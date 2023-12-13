@@ -21,10 +21,11 @@ export default class StoneEmpty extends ActorContainer {
     // outside_architecture_well_stone_empty
     const outside_architecture_well_stone_empty = scene.add.image(
       0,
-      -16,
+      -15.820647560895388,
       "outside",
       "architecture/well/stone_empty.png"
     );
+    outside_architecture_well_stone_empty.setOrigin(0.5, 0.5028023818610096);
     this.add(outside_architecture_well_stone_empty);
 
     /* START-USER-CTR-CODE */

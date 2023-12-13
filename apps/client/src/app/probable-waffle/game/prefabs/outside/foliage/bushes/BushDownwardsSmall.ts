@@ -16,10 +16,11 @@ export default class BushDownwardsSmall extends ActorContainer {
     // outside_foliage_bushes_bush_downwards_small
     const outside_foliage_bushes_bush_downwards_small = scene.add.image(
       0,
-      -16,
+      -16.847000446527897,
       "outside",
       "foliage/bushes/bush_downwards_small.png"
     );
+    outside_foliage_bushes_bush_downwards_small.setOrigin(0.5, 0.4867656180230016);
     this.add(outside_foliage_bushes_bush_downwards_small);
 
     /* START-USER-CTR-CODE */

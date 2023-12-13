@@ -21,10 +21,11 @@ export default class HollowLeft extends ActorContainer {
     // outside_architecture_blocks_hollow_left
     const outside_architecture_blocks_hollow_left = scene.add.image(
       0,
-      -16,
+      -16.318032515868616,
       "outside",
       "architecture/blocks/hollow_left.png"
     );
+    outside_architecture_blocks_hollow_left.setOrigin(0.5, 0.4950307419395529);
     this.add(outside_architecture_blocks_hollow_left);
 
     /* START-USER-CTR-CODE */

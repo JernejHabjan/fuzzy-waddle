@@ -41,7 +41,8 @@
                         "key": "outside",
                         "frame": "architecture/blocks/doors_left.png"
                     },
-                    "y": -16
+                    "y": -17.87410141979456,
+                    "originY": 0.470717165742086
                 }
             ]
         }

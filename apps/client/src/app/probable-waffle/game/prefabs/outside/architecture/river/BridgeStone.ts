@@ -21,10 +21,11 @@ export default class BridgeStone extends ActorContainer {
     // outside_architecture_river_bridge_stone
     const outside_architecture_river_bridge_stone = scene.add.image(
       0,
-      -16,
+      -17,
       "outside",
       "architecture/river/bridge_stone.png"
     );
+    outside_architecture_river_bridge_stone.setOrigin(0.5, 0.4947916666666667);
     this.add(outside_architecture_river_bridge_stone);
 
     /* START-USER-CTR-CODE */

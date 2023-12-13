@@ -41,7 +41,8 @@
                         "key": "outside",
                         "frame": "architecture/river/bridge_stone.png"
                     },
-                    "y": -16
+                    "y": -17,
+                    "originY": 0.4947916666666667
                 }
             ]
         }

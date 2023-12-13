@@ -41,7 +41,8 @@
                         "key": "factions",
                         "frame": "buildings/tivara/wall/stairs_left.png"
                     },
-                    "y": -16
+                    "y": -31.962293194621118,
+                    "originY": 0.24952659683163414
                 }
             ]
         }

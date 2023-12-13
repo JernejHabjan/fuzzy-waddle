@@ -41,7 +41,8 @@
                         "key": "factions",
                         "frame": "buildings/tivara/wall/wall_bottom_left.png"
                     },
-                    "y": -31.978960919049555
+                    "y": -47.96466252248314,
+                    "originY": 0.3334822468676007
                 }
             ]
         }

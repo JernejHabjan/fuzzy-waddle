@@ -21,10 +21,11 @@ export default class StairsRight extends ActorContainer {
     // buildings_tivara_wall_stairs_right
     const buildings_tivara_wall_stairs_right = scene.add.image(
       0,
-      -16,
+      -31.962293194621118,
       "factions",
       "buildings/tivara/wall/stairs_right.png"
     );
+    buildings_tivara_wall_stairs_right.setOrigin(0.5, 0.24952659683163414);
     this.add(buildings_tivara_wall_stairs_right);
 
     /* START-USER-CTR-CODE */

@@ -27,6 +27,7 @@ import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
 import BushDownwardsSmall from "../prefabs/outside/foliage/bushes/BushDownwardsSmall";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
+import WallBottomLeft from "../prefabs/buildings/tivara/wall/WallBottomLeft";
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
 /* END-USER-IMPORTS */
@@ -139,7 +140,7 @@ export default class Map1 extends Phaser.Scene {
     this.add.existing(watchTower);
 
     // stairsRight_1
-    const stairsRight_1 = new StairsRight(this, -592, 384);
+    const stairsRight_1 = new StairsRight(this, -224, 688);
     this.add.existing(stairsRight_1);
 
     // bushDownwardsSmall
@@ -149,6 +150,10 @@ export default class Map1 extends Phaser.Scene {
     // bushDownwardsLarge
     const bushDownwardsLarge = new BushDownwardsLarge(this, -256, 352);
     this.add.existing(bushDownwardsLarge);
+
+    // wallBottomLeft
+    const wallBottomLeft = new WallBottomLeft(this, -112, 736);
+    this.add.existing(wallBottomLeft);
 
     // infantryInn (prefab fields)
     infantryInn.z = 32;

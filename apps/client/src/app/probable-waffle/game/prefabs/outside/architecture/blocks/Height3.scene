@@ -41,7 +41,8 @@
                         "key": "outside",
                         "frame": "architecture/blocks/height_3.png"
                     },
-                    "y": -16
+                    "y": -16.716490870088737,
+                    "originY": 0.4888048301548635
                 }
             ]
         }

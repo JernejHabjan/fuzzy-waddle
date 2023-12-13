@@ -19,7 +19,13 @@ export default class StoneFull extends ActorContainer {
     );
 
     // outside_architecture_well_stone_full
-    const outside_architecture_well_stone_full = scene.add.image(0, -16, "outside", "architecture/well/stone_full.png");
+    const outside_architecture_well_stone_full = scene.add.image(
+      0,
+      -15.681967484131384,
+      "outside",
+      "architecture/well/stone_full.png"
+    );
+    outside_architecture_well_stone_full.setOrigin(0.5, 0.5049692580604471);
     this.add(outside_architecture_well_stone_full);
 
     /* START-USER-CTR-CODE */

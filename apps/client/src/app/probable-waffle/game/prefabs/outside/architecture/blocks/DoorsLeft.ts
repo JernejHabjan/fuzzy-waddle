@@ -21,10 +21,11 @@ export default class DoorsLeft extends ActorContainer {
     // outside_architecture_blocks_doors_left
     const outside_architecture_blocks_doors_left = scene.add.image(
       0,
-      -16,
+      -17.87410141979456,
       "outside",
       "architecture/blocks/doors_left.png"
     );
+    outside_architecture_blocks_doors_left.setOrigin(0.5, 0.470717165742086);
     this.add(outside_architecture_blocks_doors_left);
 
     /* START-USER-CTR-CODE */

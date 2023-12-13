@@ -280,8 +280,8 @@
                 "y"
             ],
             "label": "stairsRight_1",
-            "x": -592,
-            "y": 384
+            "x": -224,
+            "y": 688
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
@@ -304,6 +304,17 @@
             "label": "bushDownwardsLarge",
             "x": -256,
             "y": 352
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f27",
+            "id": "6070854e-e562-402e-b47f-41382a43c64a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wallBottomLeft",
+            "x": -112,
+            "y": 736
         }
     ],
     "plainObjects": [

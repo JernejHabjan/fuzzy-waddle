@@ -19,7 +19,13 @@ export default class Height1 extends ActorContainer {
     );
 
     // outside_architecture_blocks_height_1
-    const outside_architecture_blocks_height_1 = scene.add.image(0, -16, "outside", "architecture/blocks/height_1.png");
+    const outside_architecture_blocks_height_1 = scene.add.image(
+      0,
+      -16.89676219552307,
+      "outside",
+      "architecture/blocks/height_1.png"
+    );
+    outside_architecture_blocks_height_1.setOrigin(0.5, 0.485988090694952);
     this.add(outside_architecture_blocks_height_1);
 
     /* START-USER-CTR-CODE */

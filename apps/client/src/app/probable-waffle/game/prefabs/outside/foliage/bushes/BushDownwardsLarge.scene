@@ -43,7 +43,8 @@
                         "key": "outside",
                         "frame": "foliage/bushes/bush_downwards_large.png"
                     },
-                    "y": -16
+                    "y": -16.716490870088737,
+                    "originY": 0.4888048301548635
                 }
             ]
         }

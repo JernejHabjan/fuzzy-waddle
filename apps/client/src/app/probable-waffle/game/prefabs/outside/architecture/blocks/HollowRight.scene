@@ -41,7 +41,8 @@
                         "key": "outside",
                         "frame": "architecture/blocks/hollow_right.png"
                     },
-                    "y": -16
+                    "y": -16.42350022326395,
+                    "originY": 0.4933828090115008
                 }
             ]
         }

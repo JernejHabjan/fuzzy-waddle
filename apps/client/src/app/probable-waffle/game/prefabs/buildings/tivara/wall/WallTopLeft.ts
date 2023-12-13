@@ -21,10 +21,11 @@ export default class WallTopLeft extends ActorContainer {
     // buildings_tivara_wall_top_left
     const buildings_tivara_wall_top_left = scene.add.image(
       0,
-      -32,
+      -47.96466252248314,
       "factions",
       "buildings/tivara/wall/wall_top_left.png"
     );
+    buildings_tivara_wall_top_left.setOrigin(0.5, 0.3334822468676007);
     this.add(buildings_tivara_wall_top_left);
 
     /* START-USER-CTR-CODE */
