@@ -1,0 +1,56 @@
+{
+    "id": "ec58b20e-e04f-4bd3-840e-856ffe433f33",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-31.768330956523076 -49.01579480523985 -24.39703591212195 -52.56981205879039 -24.26540564347193 -58.88806495399136 -16.499219793120744 -63.7583848940421 -8.601403674119535 -60.467628177791596 -8.601403674119535 -67.04914161029261 -0.01794012404728207 -71.96470344189409 8.538027338204024 -67.75253484509344 8.538027338204024 -53.141575024941204 31.968215157907608 -41.031590309139354 31.915173039083946 0.758192548197556 0.06064802577908068 16.027303711599885 -32.057137524825826 0.758192548197556",
+            "x": 32,
+            "y": 80,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "buildings_tivara_wall_top_left",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/wall/wall_top_left.png"
+                    },
+                    "y": -32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

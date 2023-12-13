@@ -1,0 +1,56 @@
+{
+    "id": "ec58b20e-e04f-4bd3-840e-856ffe433f31",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-31.96027388081808 -47.997131230678576 -24.311540340751524 -52.246427641826656 -24.16989712704659 -59.0453018996636 -15.388017877340545 -63.719527951926494 -8.305857192093733 -60.17844760930309 -8.164213978388798 -67.40225150825484 0.3343788439073734 -71.79319113310785 8.549685238793678 -66.69403543973016 8.549685238793678 -52.10478442812172 15.773489137745422 -47.85548801697364 16.0567755651553 -55.22093512963032 23.70550910522185 -59.895161181893215 32 -56 31.920815500108148 0.8697774975244243 0.1927356302024421 16.025601363952603 -31.818630667113144 0.728134283819486",
+            "x": 32,
+            "y": 80,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "buildings_tivara_wall_top_left_bottom_right",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/wall/wall_top_left_bottom_right.png"
+                    },
+                    "y": -32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

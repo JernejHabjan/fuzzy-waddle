@@ -104,29 +104,6 @@
             "y": 866
         },
         {
-            "type": "Image",
-            "id": "13e16380-a1ba-4490-bd2d-bc63f32918ed",
-            "label": "architecture_blocks_doors_left_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/blocks/doors_left.png"
-            },
-            "y": 16,
-            "originY": 0.75
-        },
-        {
-            "type": "Image",
-            "id": "579cf57b-d3e0-4e07-b208-f7175ecfb97a",
-            "label": "architecture_blocks_doors_right_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/blocks/doors_right.png"
-            },
-            "x": -160,
-            "y": 144,
-            "originY": 0.75
-        },
-        {
             "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
             "id": "51378d6e-7b97-410e-aa18-0462e8abbb64",
             "unlock": [
@@ -261,6 +238,50 @@
             "scaleY": 0.5,
             "animationPlayMethod": 1,
             "animationKey": "blood_splatter_small_1"
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f32",
+            "id": "46c9a649-4852-476e-88d9-a22703be0c76",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wallTopLeftTopRight",
+            "x": -560,
+            "y": 368
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f36",
+            "id": "64bcd74a-c0df-4806-9d27-87b4bc778021",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wallTopRight",
+            "x": -528,
+            "y": 384
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f37",
+            "id": "ca4a4889-36d9-46ca-a2f4-15a63462dbdd",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "watchTower",
+            "x": -480,
+            "y": 400
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
+            "id": "13fe1506-4809-4bb4-9834-44f64136c6ea",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairsRight_1",
+            "x": -592,
+            "y": 384
         }
     ],
     "plainObjects": [
@@ -282,15 +303,5 @@
         "url": "https://phasereditor2d.com",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
-    },
-    "lists": [
-        {
-            "id": "2fc2dcc6-1f52-40b3-8f7a-6b497f9681e8",
-            "label": "tileMapLayer2",
-            "objectIds": [
-                "579cf57b-d3e0-4e07-b208-f7175ecfb97a",
-                "13e16380-a1ba-4490-bd2d-bc63f32918ed"
-            ]
-        }
-    ]
+    }
 }

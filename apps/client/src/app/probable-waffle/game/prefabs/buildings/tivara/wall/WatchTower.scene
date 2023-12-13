@@ -1,0 +1,56 @@
+{
+    "id": "ec58b20e-e04f-4bd3-840e-856ffe433f37",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64.23418551822556 -103.52810437148997 -0.749322531581889 -135.59443822698856 64.03114990376878 -103.85200673366671 64.03114990376878 -76.32030594864268 58.84871210894073 -58.181773666744505 58.174081611723054 4.226407461799909 -0.2018238858371788 33.523678385669086 -56.61000223179427 4.882316512334285 -56.09045727460826 -57.196316728098566 -64.18000223119901 -77.31086094448636",
+            "x": 64,
+            "y": 142.47539776925427,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "buildings_tivara_watchtower",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/watchtower.png"
+                    },
+                    "y": 4.872568900448954,
+                    "originY": 0.8372043631692212
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
