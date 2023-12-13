@@ -47,17 +47,6 @@
             "y": 880
         },
         {
-            "prefabId": "0cc17b18-78e8-4586-807f-a9af2b3e4de9",
-            "id": "5af6fa76-500d-4cbf-8910-ed85683732f4",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "bridge",
-            "x": 32,
-            "y": 912
-        },
-        {
             "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
             "id": "adc87d90-96a4-4335-bfd0-2472752d30b7",
             "unlock": [
@@ -315,6 +304,39 @@
             "label": "wallBottomLeft",
             "x": -112,
             "y": 736
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-840e-856ffe433f36",
+            "id": "d892e066-5fc2-4eba-b7f7-c88d10d86d01",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bridgeStone",
+            "x": -64,
+            "y": 896
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+            "id": "2d3db8c9-4a78-4954-9259-5a4aa775ba82",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree5",
+            "x": -448,
+            "y": 288
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+            "id": "abeaf4cf-0832-4cce-b39e-a321e175d91b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree",
+            "x": -320,
+            "y": 613
         }
     ],
     "plainObjects": [

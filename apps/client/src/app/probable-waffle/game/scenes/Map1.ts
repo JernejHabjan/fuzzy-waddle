@@ -5,7 +5,6 @@
 import Phaser from "phaser";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
-import Bridge from "../prefabs/buildings/general/Bridge";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
 import Temple from "../prefabs/buildings/tivara/Temple";
@@ -28,6 +27,8 @@ import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
 import BushDownwardsSmall from "../prefabs/outside/foliage/bushes/BushDownwardsSmall";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
 import WallBottomLeft from "../prefabs/buildings/tivara/wall/WallBottomLeft";
+import BridgeStone from "../prefabs/outside/architecture/river/BridgeStone";
+import Tree5 from "../prefabs/outside/foliage/trees/resources/Tree5";
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
 /* END-USER-IMPORTS */
@@ -56,10 +57,6 @@ export default class Map1 extends Phaser.Scene {
     // owlery
     const owlery = new Owlery(this, 1184, 880);
     this.add.existing(owlery);
-
-    // bridge
-    const bridge = new Bridge(this, 32, 912);
-    this.add.existing(bridge);
 
     // infantryInn
     const infantryInn = new InfantryInn(this, 1360, 800);
@@ -154,6 +151,18 @@ export default class Map1 extends Phaser.Scene {
     // wallBottomLeft
     const wallBottomLeft = new WallBottomLeft(this, -112, 736);
     this.add.existing(wallBottomLeft);
+
+    // bridgeStone
+    const bridgeStone = new BridgeStone(this, -64, 896);
+    this.add.existing(bridgeStone);
+
+    // tree5
+    const tree5 = new Tree5(this, -448, 288);
+    this.add.existing(tree5);
+
+    // tree
+    const tree = new Tree5(this, -320, 613);
+    this.add.existing(tree);
 
     // infantryInn (prefab fields)
     infantryInn.z = 32;
