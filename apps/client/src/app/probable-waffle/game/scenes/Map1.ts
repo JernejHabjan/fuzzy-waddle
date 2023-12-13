@@ -7,8 +7,6 @@ import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
 import Bridge from "../prefabs/buildings/general/Bridge";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
-import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
-import StairsLeft from "../prefabs/buildings/tivara/wall/StairsLeft";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
 import Temple from "../prefabs/buildings/tivara/Temple";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
@@ -26,8 +24,7 @@ import Olival from "../prefabs/buildings/tivara/Olival";
 import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
 import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
-import WallTopRightBottomLeft from "../prefabs/buildings/tivara/wall/WallTopRightBottomLeft";
-import WallEmpty from "../prefabs/buildings/tivara/wall/WallEmpty";
+import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
 /* END-USER-IMPORTS */
@@ -65,14 +62,6 @@ export default class Map1 extends Phaser.Scene {
     const infantryInn = new InfantryInn(this, 1360, 800);
     this.add.existing(infantryInn);
 
-    // stairsRight
-    const stairsRight = new StairsRight(this, -288, 384);
-    this.add.existing(stairsRight);
-
-    // stairsLeft
-    const stairsLeft = new StairsLeft(this, -240, 400);
-    this.add.existing(stairsLeft);
-
     // ankGuard
     const ankGuard = new AnkGuard(this, 480, 608);
     this.add.existing(ankGuard);
@@ -84,19 +73,6 @@ export default class Map1 extends Phaser.Scene {
     // workMill
     const workMill = new WorkMill(this, -608, 866);
     this.add.existing(workMill);
-
-    // architecture_blocks_doors_left_png
-    const architecture_blocks_doors_left_png = this.add.image(0, 16, "outside", "architecture/blocks/doors_left.png");
-    architecture_blocks_doors_left_png.setOrigin(0.5, 0.75);
-
-    // architecture_blocks_doors_right_png
-    const architecture_blocks_doors_right_png = this.add.image(
-      -160,
-      144,
-      "outside",
-      "architecture/blocks/doors_right.png"
-    );
-    architecture_blocks_doors_right_png.setOrigin(0.5, 0.75);
 
     // skaduweeWorkerMale
     const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
@@ -164,28 +140,15 @@ export default class Map1 extends Phaser.Scene {
     const stairsRight_1 = new StairsRight(this, -592, 384);
     this.add.existing(stairsRight_1);
 
-    // wallTopRightBottomLeft
-    const wallTopRightBottomLeft = new WallTopRightBottomLeft(this, -448, 496);
-    this.add.existing(wallTopRightBottomLeft);
-
-    // wallEmpty
-    const wallEmpty = new WallEmpty(this, -480, 480);
-    this.add.existing(wallEmpty);
-
-    // lists
-    const tileMapLayer2 = [architecture_blocks_doors_right_png, architecture_blocks_doors_left_png];
-
     // infantryInn (prefab fields)
     infantryInn.z = 32;
 
     this.tiles = tiles;
-    this.tileMapLayer2 = tileMapLayer2;
 
     this.events.emit("scene-awake");
   }
 
   private tiles!: Phaser.Tilemaps.Tilemap;
-  private tileMapLayer2!: Phaser.GameObjects.Image[];
 
   /* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;

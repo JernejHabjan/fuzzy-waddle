@@ -71,28 +71,6 @@
             "y": 800
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
-            "id": "df98061e-c4b4-455c-b3b2-246ec9dc388f",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "stairsRight",
-            "x": -288,
-            "y": 384
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f24",
-            "id": "60582fa5-4cc7-4cb2-9cde-81992d65bd57",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "stairsLeft",
-            "x": -240,
-            "y": 400
-        },
-        {
             "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
             "id": "8992b5da-da70-489c-81d6-477a57ead729",
             "unlock": [
@@ -124,29 +102,6 @@
             "label": "workMill",
             "x": -608,
             "y": 866
-        },
-        {
-            "type": "Image",
-            "id": "13e16380-a1ba-4490-bd2d-bc63f32918ed",
-            "label": "architecture_blocks_doors_left_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/blocks/doors_left.png"
-            },
-            "y": 16,
-            "originY": 0.75
-        },
-        {
-            "type": "Image",
-            "id": "579cf57b-d3e0-4e07-b208-f7175ecfb97a",
-            "label": "architecture_blocks_doors_right_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/blocks/doors_right.png"
-            },
-            "x": -160,
-            "y": 144,
-            "originY": 0.75
         },
         {
             "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
@@ -327,28 +282,6 @@
             "label": "stairsRight_1",
             "x": -592,
             "y": 384
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f34",
-            "id": "df036a90-e29c-45ad-9817-6f5898c0a6dc",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "wallTopRightBottomLeft",
-            "x": -448,
-            "y": 496
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f29",
-            "id": "b838225c-e928-4c60-9493-76a945dd96c8",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "wallEmpty",
-            "x": -480,
-            "y": 480
         }
     ],
     "plainObjects": [
@@ -370,15 +303,5 @@
         "url": "https://phasereditor2d.com",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
-    },
-    "lists": [
-        {
-            "id": "2fc2dcc6-1f52-40b3-8f7a-6b497f9681e8",
-            "label": "tileMapLayer2",
-            "objectIds": [
-                "579cf57b-d3e0-4e07-b208-f7175ecfb97a",
-                "13e16380-a1ba-4490-bd2d-bc63f32918ed"
-            ]
-        }
-    ]
+    }
 }
