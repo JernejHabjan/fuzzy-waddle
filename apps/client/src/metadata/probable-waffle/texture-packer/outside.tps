@@ -184,15 +184,6 @@
             <key type="filename">../sprites/outside/architecture/blocks/hollow_left.png</key>
             <key type="filename">../sprites/outside/architecture/blocks/hollow_right.png</key>
             <key type="filename">../sprites/outside/architecture/chimneys/chimney_short.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_bottom.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_left.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_right.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_top.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/full_left.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/full_right.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/full_top.png</key>
-            <key type="filename">../sprites/outside/architecture/stairs/top_left.png</key>
-            <key type="filename">../sprites/outside/architecture/stairs/top_right.png</key>
             <key type="filename">../sprites/outside/architecture/well/stone_empty.png</key>
             <key type="filename">../sprites/outside/architecture/well/stone_full.png</key>
             <key type="filename">../sprites/outside/foliage/bushes/bush_downwards_large.png</key>

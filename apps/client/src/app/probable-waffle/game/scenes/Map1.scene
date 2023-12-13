@@ -282,6 +282,28 @@
             "label": "stairsRight_1",
             "x": -592,
             "y": 384
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
+            "id": "b184a51c-7e1a-42c0-963d-a1602a698af5",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDownwardsSmall",
+            "x": -354,
+            "y": 400
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f24",
+            "id": "7c94a578-1a7b-4971-936c-54b850ddd3bb",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDownwardsLarge",
+            "x": -256,
+            "y": 352
         }
     ],
     "plainObjects": [

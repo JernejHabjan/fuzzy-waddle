@@ -4,7 +4,7 @@
 			"image": "outside.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 1756,
+				"w": 1606,
 				"h": 256
 			},
 			"scale": 1,
@@ -381,7 +381,7 @@
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.8854166666666666
+						"y": 0.885417
 					}
 				},
 				{
@@ -556,7 +556,7 @@
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.9114583333333334
+						"y": 0.911458
 					}
 				},
 				{
@@ -606,7 +606,7 @@
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.9114583333333334
+						"y": 0.911458
 					}
 				},
 				{
@@ -631,7 +631,7 @@
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.8515625
+						"y": 0.851563
 					}
 				},
 				{
@@ -660,7 +660,7 @@
 					}
 				},
 				{
-					"filename": "architecture/roof ramp/empty_bottom.png",
+					"filename": "nature/block_stone/1.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -685,7 +685,7 @@
 					}
 				},
 				{
-					"filename": "architecture/roof ramp/empty_left.png",
+					"filename": "nature/block_stone/2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -710,7 +710,7 @@
 					}
 				},
 				{
-					"filename": "architecture/roof ramp/empty_right.png",
+					"filename": "nature/block_stone_grass/bottom_left.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -735,7 +735,7 @@
 					}
 				},
 				{
-					"filename": "architecture/roof ramp/empty_top.png",
+					"filename": "nature/block_stone_grass/bottom_left_bottom_right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -760,7 +760,7 @@
 					}
 				},
 				{
-					"filename": "architecture/roof ramp/full_left.png",
+					"filename": "nature/block_stone_grass/bottom_right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -785,7 +785,7 @@
 					}
 				},
 				{
-					"filename": "architecture/roof ramp/full_right.png",
+					"filename": "nature/block_stone_grass/empty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -860,7 +860,7 @@
 					}
 				},
 				{
-					"filename": "architecture/roof ramp/full_top.png",
+					"filename": "nature/block_stone_grass/top_left.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -885,7 +885,7 @@
 					}
 				},
 				{
-					"filename": "architecture/stairs/top_left.png",
+					"filename": "nature/block_stone_grass/top_left_bottom_left.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -910,7 +910,7 @@
 					}
 				},
 				{
-					"filename": "architecture/stairs/top_right.png",
+					"filename": "nature/block_stone_grass/top_left_top_right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -960,7 +960,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone/1.png",
+					"filename": "nature/block_stone_grass/top_right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -985,7 +985,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone/2.png",
+					"filename": "nature/block_stone_grass/top_right_bottom_right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1010,7 +1010,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/bottom_left.png",
+					"filename": "nature/block_stone_water/1.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1060,7 +1060,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/bottom_left_bottom_right.png",
+					"filename": "nature/block_stone_water/2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1085,7 +1085,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/bottom_right.png",
+					"filename": "nature/block_stone_water/3.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1110,7 +1110,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/empty.png",
+					"filename": "nature/block_stone_water/4.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1160,7 +1160,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/top_left.png",
+					"filename": "nature/block_stone_water/5.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1185,7 +1185,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/top_left_bottom_left.png",
+					"filename": "nature/block_stone_water/6.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1210,7 +1210,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/top_left_top_right.png",
+					"filename": "nature/ramp/earth/empty.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1260,7 +1260,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/top_right.png",
+					"filename": "nature/ramp/earth/platform_left.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1285,7 +1285,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_grass/top_right_bottom_right.png",
+					"filename": "nature/ramp/earth/platform_right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1310,7 +1310,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_water/1.png",
+					"filename": "nature/ramp/earth/platform_top.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1360,7 +1360,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_water/2.png",
+					"filename": "nature/ramp/earth/ramp_top_left.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1385,7 +1385,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_water/3.png",
+					"filename": "nature/ramp/earth/ramp_top_right.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1410,7 +1410,7 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_water/4.png",
+					"filename": "nature/ramp/earth/spike_top.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -1460,306 +1460,6 @@
 					}
 				},
 				{
-					"filename": "nature/block_stone_water/5.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1193,
-						"y": 1,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_water/6.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1193,
-						"y": 67,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/empty.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1195,
-						"y": 133,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_bottom.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 1232,
-						"y": 199,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1259,
-						"y": 1,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1259,
-						"y": 67,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_top.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1261,
-						"y": 133,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_bottom_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 1298,
-						"y": 199,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_top_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1325,
-						"y": 1,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_top_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1325,
-						"y": 67,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/spike_top.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 1327,
-						"y": 133,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 1364,
-						"y": 199,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
 					"filename": "architecture/blocks/height_3.png",
 					"rotated": false,
 					"trimmed": true,
@@ -1774,7 +1474,7 @@
 						"h": 57
 					},
 					"frame": {
-						"x": 1391,
+						"x": 1193,
 						"y": 1,
 						"w": 64,
 						"h": 57
@@ -1799,7 +1499,7 @@
 						"h": 57
 					},
 					"frame": {
-						"x": 1391,
+						"x": 1193,
 						"y": 60,
 						"w": 57,
 						"h": 57
@@ -1810,7 +1510,7 @@
 					}
 				},
 				{
-					"filename": "nature/ramp/earth/spike_left.png",
+					"filename": "nature/ramp/earth/platform_bottom.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1824,7 +1524,7 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1393,
+						"x": 1195,
 						"y": 119,
 						"w": 64,
 						"h": 49
@@ -1849,9 +1549,109 @@
 						"h": 26
 					},
 					"frame": {
-						"x": 1393,
+						"x": 1195,
 						"y": 170,
 						"w": 52,
+						"h": 26
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/ramp/earth/ramp_bottom_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 15,
+						"w": 64,
+						"h": 49
+					},
+					"frame": {
+						"x": 1252,
+						"y": 60,
+						"w": 64,
+						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/ramp/earth/ramp_bottom_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 15,
+						"w": 64,
+						"h": 49
+					},
+					"frame": {
+						"x": 1259,
+						"y": 1,
+						"w": 64,
+						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/ramp/earth/spike_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 15,
+						"w": 64,
+						"h": 49
+					},
+					"frame": {
+						"x": 1232,
+						"y": 198,
+						"w": 64,
+						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "foliage/bushes/leaves_large.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 24,
+						"w": 35,
+						"h": 26
+					},
+					"frame": {
+						"x": 1249,
+						"y": 170,
+						"w": 35,
 						"h": 26
 					},
 					"anchor": {
@@ -1874,10 +1674,35 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1450,
-						"y": 60,
+						"x": 1261,
+						"y": 111,
 						"w": 64,
 						"h": 49
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/ramp/earth/spike_bottom.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 31,
+						"w": 64,
+						"h": 33
+					},
+					"frame": {
+						"x": 1286,
+						"y": 162,
+						"w": 64,
+						"h": 33
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1899,8 +1724,8 @@
 						"h": 49
 					},
 					"frame": {
-						"x": 1457,
-						"y": 1,
+						"x": 1318,
+						"y": 52,
 						"w": 64,
 						"h": 49
 					},
@@ -1924,35 +1749,10 @@
 						"h": 48
 					},
 					"frame": {
-						"x": 1430,
-						"y": 198,
+						"x": 1325,
+						"y": 1,
 						"w": 64,
 						"h": 48
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/bushes/leaves_large.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 13,
-						"y": 24,
-						"w": 35,
-						"h": 26
-					},
-					"frame": {
-						"x": 1447,
-						"y": 170,
-						"w": 35,
-						"h": 26
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1974,35 +1774,10 @@
 						"h": 48
 					},
 					"frame": {
-						"x": 1459,
-						"y": 111,
+						"x": 1327,
+						"y": 103,
 						"w": 51,
 						"h": 48
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rocks/5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 25,
-						"w": 53,
-						"h": 35
-					},
-					"frame": {
-						"x": 1484,
-						"y": 161,
-						"w": 53,
-						"h": 35
 					},
 					"anchor": {
 						"x": 0.5,
@@ -2024,14 +1799,14 @@
 						"h": 48
 					},
 					"frame": {
-						"x": 1512,
-						"y": 111,
+						"x": 1298,
+						"y": 197,
 						"w": 32,
 						"h": 48
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0.8333333333333334
+						"y": 0.833333
 					}
 				},
 				{
@@ -2049,10 +1824,35 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 1516,
-						"y": 52,
+						"x": 1332,
+						"y": 197,
 						"w": 64,
 						"h": 47
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/grass/grass_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 22,
+						"w": 64,
+						"h": 42
+					},
+					"frame": {
+						"x": 1352,
+						"y": 153,
+						"w": 64,
+						"h": 42
 					},
 					"anchor": {
 						"x": 0.5,
@@ -2074,8 +1874,8 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 1523,
-						"y": 1,
+						"x": 1380,
+						"y": 103,
 						"w": 55,
 						"h": 47
 					},
@@ -2099,8 +1899,8 @@
 						"h": 46
 					},
 					"frame": {
-						"x": 1580,
-						"y": 1,
+						"x": 1384,
+						"y": 51,
 						"w": 54,
 						"h": 46
 					},
@@ -2124,60 +1924,10 @@
 						"h": 45
 					},
 					"frame": {
-						"x": 1496,
-						"y": 198,
+						"x": 1391,
+						"y": 1,
 						"w": 58,
 						"h": 45
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rocks/1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 22,
-						"y": 23,
-						"w": 21,
-						"h": 35
-					},
-					"frame": {
-						"x": 1539,
-						"y": 161,
-						"w": 21,
-						"h": 35
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/grass/grass_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 22,
-						"w": 64,
-						"h": 42
-					},
-					"frame": {
-						"x": 1556,
-						"y": 198,
-						"w": 64,
-						"h": 42
 					},
 					"anchor": {
 						"x": 0.5,
@@ -2199,8 +1949,8 @@
 						"h": 42
 					},
 					"frame": {
-						"x": 1546,
-						"y": 101,
+						"x": 1398,
+						"y": 197,
 						"w": 59,
 						"h": 42
 					},
@@ -2224,8 +1974,8 @@
 						"h": 42
 					},
 					"frame": {
-						"x": 1582,
-						"y": 49,
+						"x": 1418,
+						"y": 152,
 						"w": 54,
 						"h": 42
 					},
@@ -2249,8 +1999,8 @@
 						"h": 42
 					},
 					"frame": {
-						"x": 1636,
-						"y": 1,
+						"x": 1437,
+						"y": 99,
 						"w": 52,
 						"h": 42
 					},
@@ -2274,8 +2024,8 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1690,
-						"y": 1,
+						"x": 1440,
+						"y": 48,
 						"w": 64,
 						"h": 41
 					},
@@ -2299,8 +2049,8 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1690,
-						"y": 44,
+						"x": 1451,
+						"y": 1,
 						"w": 64,
 						"h": 41
 					},
@@ -2324,8 +2074,8 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1562,
-						"y": 145,
+						"x": 1459,
+						"y": 196,
 						"w": 64,
 						"h": 41
 					},
@@ -2349,35 +2099,10 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 1607,
-						"y": 93,
+						"x": 1474,
+						"y": 143,
 						"w": 55,
 						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/chimneys/chimney_short.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 1638,
-						"y": 45,
-						"w": 32,
-						"h": 32
 					},
 					"anchor": {
 						"x": 0.5,
@@ -2399,8 +2124,8 @@
 						"h": 40
 					},
 					"frame": {
-						"x": 1622,
-						"y": 188,
+						"x": 1491,
+						"y": 91,
 						"w": 64,
 						"h": 40
 					},
@@ -2424,8 +2149,8 @@
 						"h": 40
 					},
 					"frame": {
-						"x": 1628,
-						"y": 136,
+						"x": 1506,
+						"y": 44,
 						"w": 56,
 						"h": 40
 					},
@@ -2449,10 +2174,35 @@
 						"h": 40
 					},
 					"frame": {
-						"x": 1664,
-						"y": 87,
+						"x": 1517,
+						"y": 1,
 						"w": 54,
 						"h": 40
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "architecture/chimneys/chimney_short.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 1573,
+						"y": 1,
+						"w": 32,
+						"h": 32
 					},
 					"anchor": {
 						"x": 0.5,
@@ -2474,8 +2224,8 @@
 						"h": 29
 					},
 					"frame": {
-						"x": 1720,
-						"y": 87,
+						"x": 1564,
+						"y": 43,
 						"w": 35,
 						"h": 29
 					},
@@ -2499,10 +2249,35 @@
 						"h": 39
 					},
 					"frame": {
-						"x": 1688,
-						"y": 129,
+						"x": 1531,
+						"y": 133,
 						"w": 64,
 						"h": 39
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "nature/rocks/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 23,
+						"w": 21,
+						"h": 35
+					},
+					"frame": {
+						"x": 1557,
+						"y": 86,
+						"w": 21,
+						"h": 35
 					},
 					"anchor": {
 						"x": 0.5,
@@ -2524,8 +2299,8 @@
 						"h": 38
 					},
 					"frame": {
-						"x": 1688,
-						"y": 170,
+						"x": 1531,
+						"y": 174,
 						"w": 64,
 						"h": 38
 					},
@@ -2535,7 +2310,7 @@
 					}
 				},
 				{
-					"filename": "nature/ramp/earth/spike_bottom.png",
+					"filename": "nature/rocks/5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2543,16 +2318,16 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 31,
-						"w": 64,
-						"h": 33
+						"x": 6,
+						"y": 25,
+						"w": 53,
+						"h": 35
 					},
 					"frame": {
-						"x": 1688,
-						"y": 210,
-						"w": 64,
-						"h": 33
+						"x": 1525,
+						"y": 214,
+						"w": 53,
+						"h": 35
 					},
 					"anchor": {
 						"x": 0.5,
@@ -2565,6 +2340,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:26eaa9fe44d8c7905595fce53f276366:121220eea734510647f9eecc746b40ca:abb19a90748d26f4f55b50cb9c7aab1d$"
+		"smartupdate": "$TexturePacker:SmartUpdate:502210d6eccf850ba54a10b2cfd6b8c0:9dc6a4588f20799a5ee280e5b719c838:abb19a90748d26f4f55b50cb9c7aab1d$"
 	}
 }
