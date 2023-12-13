@@ -1252,6 +1252,24 @@
             "key": "impact_7",
             "type": "frame",
             "frames": [
+              {
+                "key": "effects_1",
+                "frame": "impact/1/16/97.png",
+                "duration": 0,
+                "keyframe": false
+              },
+              {
+                "key": "effects_1",
+                "frame": "impact/1/16/98.png",
+                "duration": 0,
+                "keyframe": false
+              },
+              {
+                "key": "effects_1",
+                "frame": "impact/1/16/99.png",
+                "duration": 0,
+                "keyframe": false
+              },
                 {
                     "key": "effects_1",
                     "frame": "impact/1/16/100.png",
@@ -1279,24 +1297,6 @@
                 {
                     "key": "effects_1",
                     "frame": "impact/1/16/104.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "effects_1",
-                    "frame": "impact/1/16/97.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "effects_1",
-                    "frame": "impact/1/16/98.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "effects_1",
-                    "frame": "impact/1/16/99.png",
                     "duration": 0,
                     "keyframe": false
                 }
