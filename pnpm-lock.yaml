@@ -283,8 +283,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       phasereditor2d-launcher:
-        specifier: ^3.64.0
-        version: 3.64.0
+        specifier: ^3.65.0
+        version: 3.65.0
       prettier:
         specifier: ^3.0.3
         version: 3.0.3
@@ -11011,8 +11011,8 @@ packages:
       eventemitter3: 5.0.1
     dev: false
 
-  /phasereditor2d-launcher@3.64.0:
-    resolution: {integrity: sha512-7AIuwfvCzpoa3oW18BOdUzWRdnXK6WAaMI6lV9pnajby6MVlZzA4YnCpyYXcHfUqV7EuJ96OtehgXwzWRNNwTw==}
+  /phasereditor2d-launcher@3.65.0:
+    resolution: { integrity: sha512-2ucHdBN+3lSHDyZsRc6EIPURhIhAhyIIHVwRBAIIFs8WscLtN3U6b5MpuEEnW7KKaueAwSV0/5GsC8vvFQzHlQ== }
     hasBin: true
     dependencies:
       adm-zip: 0.5.10

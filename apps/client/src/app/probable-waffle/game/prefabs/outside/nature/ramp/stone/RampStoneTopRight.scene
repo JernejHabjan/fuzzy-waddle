@@ -1,0 +1,59 @@
+{
+    "id": "ec58b20e-e04f-4bd4-140e-8561fe432f32",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "container_1",
+            "z": 0,
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-11.47784760037866 -20.430076407574912 0.11236239279749327 -41.52686313672701 27.46004889355021 -32.4109676364761 29.82786052149946 1.6522508487481744 -0.1480917643525359 12.25692031475333 -25.67259916505507 -1.6773770927730496 -21.76578680780468 -13.918722478824264",
+            "x": 32,
+            "y": 48,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_nature_ramp_stone_top_right",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/ramp/stone/top_right.png"
+                    },
+                    "y": -17.87410141979456,
+                    "originY": 0.470717165742086
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

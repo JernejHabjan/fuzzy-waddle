@@ -1,0 +1,58 @@
+{
+    "id": "ec58b20e-e04f-4bd4-140e-856ffe432f30",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-25.122610246584916 -6.1665140784925185 4.564578396656913 -25.26596411470404 24.909644739577885 -11.979390176469934 29.476904530845857 0.8919783261943479 0.28628033313970036 16 -27.198637424433993 1.5147864795490733",
+            "x": 32,
+            "y": 48,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_nature_rock_piles_1",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/rock_piles/1.png"
+                    },
+                    "y": -17.87410141979456,
+                    "originY": 0.470717165742086
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

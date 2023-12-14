@@ -1,0 +1,58 @@
+{
+    "id": "ec58b20e-e04f-4bd4-140e-856ffe432f31",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-22.14014494534083 -20.017403504972414 -14.45884438729924 -36.41801820998013 -2.002681320204765 -39.116853541183936 26.0236855807578 -16.072951867059164 26.231288298542708 -1.7483643399005189 4.640605648912285 12.161017751688306 -31.98714686381638 0.6221098782742516",
+            "x": 32,
+            "y": 48,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_nature_rock_piles_2",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/rock_piles/2.png"
+                    },
+                    "y": -17.87410141979456,
+                    "originY": 0.470717165742086
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

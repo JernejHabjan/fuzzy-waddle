@@ -18,9 +18,13 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
     this.add(skaduwee_magician_female_idle_down);
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    this.skaduwee_magician_female_idle_down = skaduwee_magician_female_idle_down;
     this.on("pointerdown", () => {
       skaduwee_magician_female_idle_down.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        skaduwee_magician_female_idle_down.clearTint();
+      }, 1000);
 
       // and play anim skaduwee_worker_male_slash_down
       skaduwee_magician_female_idle_down.play("skaduwee_magician_female_cast_down", true);
@@ -36,16 +40,20 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
   }
 
   /* START-USER-CODE */
+  private skaduwee_magician_female_idle_down: Phaser.GameObjects.Sprite;
 
   private playTestAttackAnim() {
     // create a sprite
-    const animAttack = this.scene.add.sprite(this.x, this.y, "effects_1", "impact/1/1/0.png");
+    const animAttack = this.scene.add.sprite(
+      this.x,
+      this.y - this.skaduwee_magician_female_idle_down.height / 4,
+      "effects_1",
+      "impact/1/1/0.png"
+    );
     animAttack.depth = this.depth + 1;
     // get 0-23 random number
     const randomFrame = Math.floor(Math.random() * 24);
     animAttack.play("impact_" + randomFrame);
-    //light blue tint
-    animAttack.setTint(0x00bdfc);
 
     // remove sprite after anim complete
     animAttack.once("animationcomplete", () => {

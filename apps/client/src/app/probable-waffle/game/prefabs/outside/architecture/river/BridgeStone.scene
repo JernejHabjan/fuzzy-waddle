@@ -1,0 +1,59 @@
+{
+    "id": "ec58b20e-e04f-4bd4-840e-856ffe433f36",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 320,
+        "borderHeight": 192
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "container_1",
+            "z": 0,
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "27.479304206049022 -65.1928965620433 60.915991860768884 -65.1928965620433 117.9550472717616 -40.27928615264419 -70.86389477842118 61.34201946464171 -131.18105682222958 33.150302422426904 -83.32069998312075 -12.0875691104294",
+            "x": 160,
+            "y": 112,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_architecture_river_bridge_stone",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "architecture/river/bridge_stone.png"
+                    },
+                    "y": -17,
+                    "originY": 0.4947916666666667
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

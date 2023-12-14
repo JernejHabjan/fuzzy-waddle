@@ -1,0 +1,61 @@
+{
+    "id": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "scaleX",
+                "scaleY"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-18.31485147180034 -47.83907241987676 -1.011626666093413 -99.74874683699754 17.44514645999398 -62.450684478029274 18.253533644300454 -26.750038772528 4.340605951182383 3.360511643997924 -3.6638844429283175 3.2422175573640146 -12.892271005972013 -22.90487770459312",
+            "x": 64,
+            "y": 221.5581291013792,
+            "scaleX": 2,
+            "scaleY": 2,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_foliage_trees_resources_tree4",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "foliage/trees/resources/tree4.png"
+                    },
+                    "y": -47.62606221472109,
+                    "originY": 0.4867656180230016
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

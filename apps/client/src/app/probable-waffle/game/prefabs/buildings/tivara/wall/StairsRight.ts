@@ -21,15 +21,23 @@ export default class StairsRight extends ActorContainer {
     // buildings_tivara_wall_stairs_right
     const buildings_tivara_wall_stairs_right = scene.add.image(
       0,
-      -16,
+      -31.962293194621118,
       "factions",
       "buildings/tivara/wall/stairs_right.png"
     );
+    buildings_tivara_wall_stairs_right.setOrigin(0.5, 0.24952659683163414);
     this.add(buildings_tivara_wall_stairs_right);
+
+    // this (prefab fields)
+    this.z = 0;
 
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       buildings_tivara_wall_stairs_right.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        buildings_tivara_wall_stairs_right.clearTint();
+      }, 1000);
     });
     /* END-USER-CTR-CODE */
   }

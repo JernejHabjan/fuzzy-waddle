@@ -1,0 +1,58 @@
+{
+    "id": "ec58b20e-e04f-4bd4-140e-856ffe432f32",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-25.770563861536058 -11.05850388335869 -16.91512251843518 -14.574635004884037 -5.976047918134093 -32.2855176910858 -6.6271833110091585 -36.45278420548621 -0.506510617983551 -42.05254858421176 13.818468025267869 -33.3273343196859 27.492311275644226 -4.156468718883005 5.744389153617071 12.121916102993609 -5.194685446684016 6.522151724268056 -12.878083082609777 9.908055767218386 -27.463515883011226 0.7921602669674854",
+            "x": 32,
+            "y": 48,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_nature_rock_piles_3",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/rock_piles/3.png"
+                    },
+                    "y": -17.87410141979456,
+                    "originY": 0.470717165742086
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

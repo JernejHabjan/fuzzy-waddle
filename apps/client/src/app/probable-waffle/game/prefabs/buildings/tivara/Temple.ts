@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from '../../../entity/actor/ActorContainer';
+import ActorContainer from "../../../entity/actor/ActorContainer";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -13,7 +13,7 @@ export default class Temple extends ActorContainer {
     this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon(
-        '-87.4233523303501 -76.75060092556245 -16.50738820893966 -110.3423734041253 -8.36392821413655 -103.21684590867258 0.11884261378335736 -107.28857590607413 10.298167607287255 -101.52029174308859 19.459560101440744 -108.98513007165812 87.32172672479999 -74.71473592686168 87.66103755791679 10.791594018571004 0.45815344690015536 53.544758991287324 -89.11990649593407 9.095039852987014'
+        "-87.4233523303501 -76.75060092556245 -16.50738820893966 -110.3423734041253 -8.36392821413655 -103.21684590867258 0.11884261378335736 -107.28857590607413 10.298167607287255 -101.52029174308859 19.459560101440744 -108.98513007165812 87.32172672479999 -74.71473592686168 87.66103755791679 10.791594018571004 0.45815344690015536 53.544758991287324 -89.11990649593407 9.095039852987014"
       ),
       Phaser.Geom.Polygon.Contains
     );
@@ -22,8 +22,8 @@ export default class Temple extends ActorContainer {
     const buildings_tivara_temple = scene.add.image(
       -0.30766778687379315,
       -36.666560409786456,
-      'factions',
-      'buildings/tivara/temple/temple.png'
+      "factions",
+      "buildings/tivara/temple/temple.png"
     );
     this.add(buildings_tivara_temple);
 
@@ -31,10 +31,13 @@ export default class Temple extends ActorContainer {
     const buildings_tivara_temple_temple_olival = scene.add.image(
       -2,
       -13,
-      'factions',
-      'buildings/tivara/temple/temple-olival.png'
+      "factions",
+      "buildings/tivara/temple/temple-olival.png"
     );
     this.add(buildings_tivara_temple_temple_olival);
+
+    // this (prefab fields)
+    this.z = 0;
 
     /* START-USER-CTR-CODE */
 
@@ -42,8 +45,12 @@ export default class Temple extends ActorContainer {
     setTimeout(() => {
       this.addGlow(scene, buildings_tivara_temple_temple_olival);
     }, 1000);
-    this.on('pointerdown', () => {
+    this.on("pointerdown", () => {
       buildings_tivara_temple.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        buildings_tivara_temple.clearTint();
+      }, 1000);
     });
 
     /* END-USER-CTR-CODE */
@@ -63,16 +70,16 @@ export default class Temple extends ActorContainer {
       outerStrength: 1,
       yoyo: true,
       loop: -1,
-      ease: 'sine.inout'
+      ease: "sine.inout"
     });
   };
   private bounce = (image: Phaser.GameObjects.Image) => {
     // bounce the sprite up and down forever with a 2 seconds duration
     this.scene.tweens.add({
       targets: image,
-      y: '-=4', // move up by 4
+      y: "-=4", // move up by 4
       duration: 1000, // takes 1000ms
-      ease: 'Sine.InOut',
+      ease: "Sine.InOut",
       yoyo: true, // reverse the animation after it completes
       loop: -1 // loop indefinitely
     });

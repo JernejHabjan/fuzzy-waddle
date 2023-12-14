@@ -22,9 +22,16 @@ export default class WallEmpty extends ActorContainer {
     const buildings_tivara_wall_empty = scene.add.image(0, -32, "factions", "buildings/tivara/wall/wall_empty.png");
     this.add(buildings_tivara_wall_empty);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       buildings_tivara_wall_empty.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        buildings_tivara_wall_empty.clearTint();
+      }, 1000);
     });
     /* END-USER-CTR-CODE */
   }

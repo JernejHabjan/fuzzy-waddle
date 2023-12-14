@@ -184,15 +184,6 @@
             <key type="filename">../sprites/outside/architecture/blocks/hollow_left.png</key>
             <key type="filename">../sprites/outside/architecture/blocks/hollow_right.png</key>
             <key type="filename">../sprites/outside/architecture/chimneys/chimney_short.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_bottom.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_left.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_right.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/empty_top.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/full_left.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/full_right.png</key>
-            <key type="filename">../sprites/outside/architecture/roof ramp/full_top.png</key>
-            <key type="filename">../sprites/outside/architecture/stairs/top_left.png</key>
-            <key type="filename">../sprites/outside/architecture/stairs/top_right.png</key>
             <key type="filename">../sprites/outside/architecture/well/stone_empty.png</key>
             <key type="filename">../sprites/outside/architecture/well/stone_full.png</key>
             <key type="filename">../sprites/outside/foliage/bushes/bush_downwards_large.png</key>
@@ -252,7 +243,6 @@
             <key type="filename">../sprites/outside/nature/rock_piles/1.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/2.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/3.png</key>
-            <key type="filename">../sprites/outside/nature/rock_piles/4.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/5.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/6.png</key>
             <key type="filename">../sprites/outside/nature/rocks/1.png</key>
@@ -323,6 +313,8 @@
             </struct>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_left.png</key>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_right.png</key>
+            <key type="filename">../sprites/outside/nature/ramp/stone/top_left.png</key>
+            <key type="filename">../sprites/outside/nature/ramp/stone/top_right.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

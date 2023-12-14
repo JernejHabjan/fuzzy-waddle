@@ -21,15 +21,23 @@ export default class WallTopLeftTopRight extends ActorContainer {
     // buildings_tivara_wall_top_left_top_right
     const buildings_tivara_wall_top_left_top_right = scene.add.image(
       0,
-      -32,
+      -47.96466252248314,
       "factions",
       "buildings/tivara/wall/wall_top_left_top_right.png"
     );
+    buildings_tivara_wall_top_left_top_right.setOrigin(0.5, 0.3334822468676007);
     this.add(buildings_tivara_wall_top_left_top_right);
+
+    // this (prefab fields)
+    this.z = 0;
 
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       buildings_tivara_wall_top_left_top_right.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        buildings_tivara_wall_top_left_top_right.clearTint();
+      }, 1000);
     });
     /* END-USER-CTR-CODE */
   }

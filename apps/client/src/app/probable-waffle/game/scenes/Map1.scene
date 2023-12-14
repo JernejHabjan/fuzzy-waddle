@@ -47,17 +47,6 @@
             "y": 880
         },
         {
-            "prefabId": "0cc17b18-78e8-4586-807f-a9af2b3e4de9",
-            "id": "5af6fa76-500d-4cbf-8910-ed85683732f4",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "bridge",
-            "x": 32,
-            "y": 912
-        },
-        {
             "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
             "id": "adc87d90-96a4-4335-bfd0-2472752d30b7",
             "unlock": [
@@ -66,7 +55,7 @@
                 "z"
             ],
             "label": "infantryInn",
-            "z": 32,
+            "z": 0,
             "x": 1360,
             "y": 800
         },
@@ -144,7 +133,7 @@
                 "y"
             ],
             "label": "skaduweeMagicianFemale",
-            "x": 1312,
+            "x": 1360,
             "y": 848
         },
         {
@@ -225,21 +214,6 @@
             "y": 784
         },
         {
-            "type": "Sprite",
-            "id": "aba8a4ae-3f8e-4db4-876e-a025522a6ffc",
-            "label": "blood_splatter_small_1",
-            "texture": {
-                "key": "effects_1",
-                "frame": "blood-splatter-small/1/1_0.png"
-            },
-            "x": 272,
-            "y": 720,
-            "scaleX": 0.5,
-            "scaleY": 0.5,
-            "animationPlayMethod": 1,
-            "animationKey": "blood_splatter_small_1"
-        },
-        {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f32",
             "id": "46c9a649-4852-476e-88d9-a22703be0c76",
             "unlock": [
@@ -273,15 +247,548 @@
             "y": 400
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
-            "id": "13fe1506-4809-4bb4-9834-44f64136c6ea",
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
+            "id": "b184a51c-7e1a-42c0-963d-a1602a698af5",
             "unlock": [
                 "x",
                 "y"
             ],
-            "label": "stairsRight_1",
-            "x": -592,
-            "y": 384
+            "label": "bushDownwardsSmall",
+            "x": -832,
+            "y": 464
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f24",
+            "id": "7c94a578-1a7b-4971-936c-54b850ddd3bb",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDownwardsLarge",
+            "x": -576,
+            "y": 400
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-840e-856ffe433f36",
+            "id": "d892e066-5fc2-4eba-b7f7-c88d10d86d01",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bridgeStone",
+            "x": -64,
+            "y": 896
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+            "id": "2d3db8c9-4a78-4954-9259-5a4aa775ba82",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree5",
+            "x": -448,
+            "y": 288
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "5e083bf6-35cc-495f-97d5-7b5186399570",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone2",
+            "x": 0,
+            "y": 16
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "412552e8-a06b-4ed6-92fc-3c62ccdc25b0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone",
+            "x": -32,
+            "y": 32
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
+            "id": "f31a6c2a-342a-4c37-a77e-25b4e2f0f527",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone1",
+            "x": 32,
+            "y": 32
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
+            "id": "8e58f070-8a35-4d41-9da4-4cc9c90cac1e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone_1",
+            "x": -64,
+            "y": 48
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "d17bf1d6-1dea-4388-b8bb-a7f6b6c82271",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone_2",
+            "x": 0,
+            "y": 48
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "835dc4ea-f3e8-444a-9bfb-9e59e4e6ce3f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone_3",
+            "x": -32,
+            "y": 64
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f28",
+            "id": "ab60a1ee-2c9d-4e13-966c-793797a38d28",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStoneTopRight",
+            "x": -96,
+            "y": 64
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f29",
+            "id": "589f1eba-f367-480e-844e-a7bf9c8cd695",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStoneTopRightBottomRight",
+            "x": -64,
+            "y": 80
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
+            "id": "1fb78b2a-4217-4956-9d6d-789f9d37b793",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone_4",
+            "x": -32,
+            "y": 96
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
+            "id": "f20c047c-6860-44da-befe-909076f2a682",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "treeTrunk",
+            "x": -405,
+            "y": 277
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f32",
+            "id": "1a70fe96-90c6-4191-927b-7cb8002b6ec3",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rampStoneTopRight",
+            "x": -64,
+            "y": 112
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f36",
+            "id": "c877d5fc-dfd9-4221-a9f4-c6de054e1a47",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rampStoneTopLeft",
+            "x": 0,
+            "y": 112
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "4496926a-18c9-4b41-982d-d3d3673a16b3",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "blockStone_5",
+            "z": 32,
+            "x": 0,
+            "y": -16
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "fd3cc495-9e02-42c6-b875-32e9ba150734",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "blockStone_6",
+            "z": 32,
+            "x": 32,
+            "y": 0
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f32",
+            "id": "4084fdef-9302-4759-b9ef-a5c0c853e8d2",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "rampStoneTopRight_1",
+            "z": 32,
+            "x": 0,
+            "y": 16
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f34",
+            "id": "3db34927-369c-4e99-97e3-57d6a4fbe30c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rockPiles5",
+            "x": -48,
+            "y": 160
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "bdce993c-6128-4ef1-a9bf-948561e34477",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStone_7",
+            "x": 0,
+            "y": 176
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f35",
+            "id": "0a4ea41f-3818-4e91-811d-9c163c8c15b8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rockPiles6",
+            "x": 48,
+            "y": 160
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "63ff52a4-e862-4165-84e1-2f52440cff4c",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "blockStone_8",
+            "z": 32,
+            "x": 0,
+            "y": 144
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "ca0ed6b4-c937-4b3e-a5c2-73f98681f8ad",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "blockStone_9",
+            "z": 64,
+            "x": 0,
+            "y": 112
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "f5861595-9860-4deb-856c-ea93fbb919ec",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "blockStone_10",
+            "z": 92,
+            "x": 0,
+            "y": 80
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+            "id": "63541d97-3c3f-4d57-baf8-915e16fb40ba",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "blockStone_11",
+            "z": 128,
+            "x": 0,
+            "y": 48
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f31",
+            "id": "b6dc0fd9-385b-44bd-9554-bff9b4ea1d86",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rockPiles2",
+            "x": 32,
+            "y": 192
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f32",
+            "id": "b808283a-2130-42d5-b8a9-c54d3879d67d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rockPiles3",
+            "x": -32,
+            "y": 192
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f31",
+            "id": "dc7b8e97-04f5-4797-b135-e58dcdf72fff",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rockPiles",
+            "x": 0,
+            "y": 208
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+            "id": "f55fa1c6-5b67-4360-ae14-66f6091822b7",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "tree4",
+            "z": 160,
+            "x": 0,
+            "y": 16
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "99f81468-c191-4b24-88c1-c6b7facd34a5",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree7",
+            "x": -720,
+            "y": 400
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+            "id": "4a9bfc7d-8fbe-4fed-b2f7-f757ebd2ab25",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree6",
+            "x": -656,
+            "y": 400
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "30c72255-d46d-444f-99ff-7b4d967e7711",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_1",
+            "x": -624,
+            "y": 448
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+            "id": "7a6c6048-0db5-40d2-bc69-b31cc0de5b2b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_2",
+            "x": -1024,
+            "y": 816
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f36",
+            "id": "f42b495c-72e9-4628-aff7-d29a7e8a9152",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree1",
+            "x": -1200,
+            "y": 864
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+            "id": "3e256258-a052-4d3a-add9-ef14f6f82604",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_3",
+            "x": -752,
+            "y": 1072
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
+            "id": "1c263af2-6bf7-4bb2-a367-d22defd46634",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "treeTrunk_1",
+            "x": -934,
+            "y": 903
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+            "id": "eb66e442-9ca1-492e-8fc3-bf99e497a3cc",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_4",
+            "x": 308,
+            "y": 1322
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+            "id": "38d1d1d7-62dd-4b45-bc11-04c5f7959d4b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_5",
+            "x": 29,
+            "y": 1424
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+            "id": "a65952a6-2ca0-454a-9350-cb66cfdf9a88",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDry",
+            "x": 761,
+            "y": 1046
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+            "id": "908bde06-ba93-4326-8550-8cd626a0bd47",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDry_1",
+            "x": -628,
+            "y": 991
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+            "id": "b34bb127-eb3e-4ba1-b449-033146980bba",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDry_2",
+            "x": 416,
+            "y": 784
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+            "id": "fed91a64-6c7a-46c3-8c40-3e31ca0170ae",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDry_3",
+            "x": -60,
+            "y": 301
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f28",
+            "id": "1756060d-11fa-444e-8b5d-4439554b2b8e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushUpwardsSmall",
+            "x": -128,
+            "y": 80
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
+            "id": "b60481be-8504-4782-a26b-3025f1681cb8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDownwardsSmall_1",
+            "x": 224,
+            "y": 1312
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f28",
+            "id": "0c138aa4-6d05-4eb9-a5e7-138cede0c21e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushUpwardsSmall_1",
+            "x": 52,
+            "y": 1440
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+            "id": "82982b56-f4ab-4cc5-9c62-b54f8985012e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDry_4",
+            "x": -976,
+            "y": 784
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+            "id": "abeaf4cf-0832-4cce-b39e-a321e175d91b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree",
+            "x": -704,
+            "y": 512
         }
     ],
     "plainObjects": [

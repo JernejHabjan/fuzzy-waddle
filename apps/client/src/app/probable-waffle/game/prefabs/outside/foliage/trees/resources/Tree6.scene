@@ -1,0 +1,60 @@
+{
+    "id": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 384
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "scaleX",
+                "scaleY"
+            ],
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-27.808172867632734 -79.78225154635899 -1.053496160903876 -136.82894483574324 22.57143521003693 -107.40139874211522 28.061089611147928 -35.591790582944526 4.674648072005091 -21.00515225255461 4.985488463771958 3.2403983052611807 -6.20476563983533 3.3958185011446176 -5.1168242686512855 -22.55935421138895 -25.166029537614346 -32.817087139695616",
+            "x": 64,
+            "y": 352.80224260710486,
+            "scaleX": 2,
+            "scaleY": 2,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_foliage_trees_resources_tree6",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "foliage/trees/resources/tree6.png"
+                    },
+                    "y": -82.74812175008033,
+                    "originY": 0.4867656180230016
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

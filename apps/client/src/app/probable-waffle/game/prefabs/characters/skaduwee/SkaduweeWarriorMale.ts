@@ -21,6 +21,10 @@ export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
     // Write your code here.
     this.on("pointerdown", () => {
       skaduwee_warrior_male_idle_down.setTint(0xff0000); // Tint to red
+      // tint back to transparent after 1 second
+      setTimeout(() => {
+        skaduwee_warrior_male_idle_down.clearTint();
+      }, 1000);
 
       // and play anim skaduwee_worker_male_slash_down
       skaduwee_warrior_male_idle_down.play("skaduwee_warrior_male_smash_down", true);
