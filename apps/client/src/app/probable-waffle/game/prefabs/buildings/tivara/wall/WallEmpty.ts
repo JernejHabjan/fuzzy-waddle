@@ -12,13 +12,14 @@ export default class WallEmpty extends ActorContainer {
 
     this.removeInteractive();
     this.setInteractive(
-      new Phaser.Geom.Po'-32.20957019625129 -40.55233836247181 0.5100121695889683 -56.98295115224441 32.09644882578975 -40.835624789881685 32.130438937766385 0.9547527774659983 -0.16421378695907762 16.110576643894177 -32.033936870569725 0.8131095637610599'31095637610599"
+      new Phaser.Geom.Polygon(
+        "-32.20957019625129 -40.55233836247181 0.5100121695889683 -56.98295115224441 32.09644882578975 -40.835624789881685 32.130438937766385 0.9547527774659983 -0.16421378695907762 16.110576643894177 -32.033936870569725 0.8131095637610599"
       ),
       Phaser.Geom.Polygon.Contains
     );
 
     // buildings_tivara_wall_empty
-    const buildings_tivara_wall_empty = scene.add.image(0, -32, 'factions', 'buildings/tivara/wall/wall_empty.png');
+    const buildings_tivara_wall_empty = scene.add.image(0, -32, "factions", "buildings/tivara/wall/wall_empty.png");
     this.add(buildings_tivara_wall_empty);
 
     // this (prefab fields)

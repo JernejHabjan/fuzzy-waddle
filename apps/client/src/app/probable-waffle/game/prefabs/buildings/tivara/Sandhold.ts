@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from '../../../entity/actor/ActorContainer';
+import ActorContainer from "../../../entity/actor/ActorContainer";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -12,16 +12,16 @@ export default class Sandhold extends ActorContainer {
 
     this.removeInteractive();
     this.setInteractive(
-      new Phaser.Geom.Po'-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22'20 22"),
+      new Phaser.Geom.Polygon("-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22"),
       Phaser.Geom.Polygon.Contains
     );
 
     // sandhold_building
-    const sandhold_building = scene.add.image(0, -80, 'factions', 'buildings/tivara/sandhold/sandhold.png');
+    const sandhold_building = scene.add.image(0, -80, "factions", "buildings/tivara/sandhold/sandhold.png");
     this.add(sandhold_building);
 
     // hover_crystal
-    const hover_crystal = scene.add.image(0, -192, 'factions', 'buildings/tivara/sandhold/sandhold-crystal.png');
+    const hover_crystal = scene.add.image(0, -192, "factions", "buildings/tivara/sandhold/sandhold-crystal.png");
     this.add(hover_crystal);
 
     // this (prefab fields)

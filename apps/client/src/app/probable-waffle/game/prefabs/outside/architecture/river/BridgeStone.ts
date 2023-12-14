@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from '../../../../entity/actor/ActorContainer';
+import ActorContainer from "../../../../entity/actor/ActorContainer";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -12,7 +12,8 @@ export default class BridgeStone extends ActorContainer {
 
     this.removeInteractive();
     this.setInteractive(
-      new Phaser.Geom.Po'27.479304206049022 -65.1928965620433 60.915991860768884 -65.1928965620433 117.9550472717616 -40.27928615264419 -70.86389477842118 61.34201946464171 -131.18105682222958 33.150302422426904 -83.32069998312075 -12.0875691104294'.0875691104294"
+      new Phaser.Geom.Polygon(
+        "27.479304206049022 -65.1928965620433 60.915991860768884 -65.1928965620433 117.9550472717616 -40.27928615264419 -70.86389477842118 61.34201946464171 -131.18105682222958 33.150302422426904 -83.32069998312075 -12.0875691104294"
       ),
       Phaser.Geom.Polygon.Contains
     );
