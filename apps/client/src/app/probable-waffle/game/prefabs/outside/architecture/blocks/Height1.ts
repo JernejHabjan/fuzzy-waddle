@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import ActorContainer from '../../../../entity/actor/ActorContainer';
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -12,8 +12,7 @@ export default class Height1 extends ActorContainer {
 
     this.removeInteractive();
     this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-31.970945813448747 -8.425157501202627 0.2079425134422337 -24.255094500721576 31.867816512480132 -8.425157501202627 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516"
+      new Phaser.Geom.Po'-31.970945813448747 -8.425157501202627 0.2079425134422337 -24.255094500721576 31.867816512480132 -8.425157501202627 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516'21098782742516"
       ),
       Phaser.Geom.Polygon.Contains
     );
@@ -27,6 +26,9 @@ export default class Height1 extends ActorContainer {
     );
     outside_architecture_blocks_height_1.setOrigin(0.5, 0.485988090694952);
     this.add(outside_architecture_blocks_height_1);
+
+    // this (prefab fields)
+    this.z = 0;
 
     /* START-USER-CTR-CODE */
     // Write your code here.

@@ -23,6 +23,9 @@ export default class LeavesSmall extends ActorContainer {
     outside_foliage_bushes_leaves_small.setOrigin(0.5, 0.4867656180230016);
     this.add(outside_foliage_bushes_leaves_small);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */

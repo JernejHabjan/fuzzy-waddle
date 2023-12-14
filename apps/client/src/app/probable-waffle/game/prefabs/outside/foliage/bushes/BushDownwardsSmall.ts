@@ -23,6 +23,9 @@ export default class BushDownwardsSmall extends ActorContainer {
     outside_foliage_bushes_bush_downwards_small.setOrigin(0.5, 0.4867656180230016);
     this.add(outside_foliage_bushes_bush_downwards_small);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
       // shake the bush fast (distort the image)

@@ -25,9 +25,11 @@
                 "hitArea.height",
                 "hitArea.radius",
                 "hitArea.points",
-                "hitArea.alphaTolerance"
+                "hitArea.alphaTolerance",
+                "z"
             ],
             "label": "container_1",
+            "z": 0,
             "hitArea.shape": "ELLIPSE",
             "hitArea.x": -1,
             "hitArea.y": -11,

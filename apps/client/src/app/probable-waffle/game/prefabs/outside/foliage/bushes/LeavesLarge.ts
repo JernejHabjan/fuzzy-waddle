@@ -23,6 +23,9 @@ export default class LeavesLarge extends ActorContainer {
     outside_foliage_bushes_leaves_large.setOrigin(0.5, 0.4867656180230016);
     this.add(outside_foliage_bushes_leaves_large);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */

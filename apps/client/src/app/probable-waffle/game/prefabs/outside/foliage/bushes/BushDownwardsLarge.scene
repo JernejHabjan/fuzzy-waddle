@@ -25,9 +25,11 @@
                 "hitArea.height",
                 "hitArea.radius",
                 "hitArea.points",
-                "hitArea.alphaTolerance"
+                "hitArea.alphaTolerance",
+                "z"
             ],
             "label": "container_1",
+            "z": 0,
             "hitArea.shape": "CIRCLE",
             "hitArea.x": 0,
             "hitArea.y": -14,

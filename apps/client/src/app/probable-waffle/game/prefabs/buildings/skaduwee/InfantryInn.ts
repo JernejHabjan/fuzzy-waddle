@@ -40,6 +40,9 @@ export default class InfantryInn extends ActorContainer {
     skaduwee_buildings_infantry_inn_entrance.play("skaduwee-buildings-infantry-inn-entrance");
     this.add(skaduwee_buildings_infantry_inn_entrance);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     this.cloud1 = cloud_1;
     this.cloud2 = cloud_2;

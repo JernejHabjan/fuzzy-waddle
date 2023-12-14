@@ -243,7 +243,6 @@
             <key type="filename">../sprites/outside/nature/rock_piles/1.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/2.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/3.png</key>
-            <key type="filename">../sprites/outside/nature/rock_piles/4.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/5.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/6.png</key>
             <key type="filename">../sprites/outside/nature/rocks/1.png</key>
@@ -314,6 +313,8 @@
             </struct>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_left.png</key>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_right.png</key>
+            <key type="filename">../sprites/outside/nature/ramp/stone/top_left.png</key>
+            <key type="filename">../sprites/outside/nature/ramp/stone/top_right.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

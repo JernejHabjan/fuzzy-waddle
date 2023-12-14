@@ -25,9 +25,11 @@
                 "hitArea.height",
                 "hitArea.radius",
                 "hitArea.points",
-                "hitArea.alphaTolerance"
+                "hitArea.alphaTolerance",
+                "z"
             ],
             "label": "container_1",
+            "z": 0,
             "hitArea.shape": "POLYGON",
             "hitArea.points": "27.479304206049022 -65.1928965620433 60.915991860768884 -65.1928965620433 117.9550472717616 -40.27928615264419 -70.86389477842118 61.34201946464171 -131.18105682222958 33.150302422426904 -83.32069998312075 -12.0875691104294",
             "x": 160,

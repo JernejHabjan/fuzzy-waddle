@@ -29,6 +29,23 @@ export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
         this.clearTint();
         this.play("tivara_worker_male_idle_down", true);
       });
+
+      // spawn blood
+      // get random blood splatter 1-5
+      const randomBloodSplatter = Math.floor(Math.random() * 5) + 1;
+      const blood_splatter_small_1 = this.scene.add.sprite(
+        this.x,
+        this.y - this.height / 4,
+        "effects_1",
+        "blood-splatter-small/" + randomBloodSplatter + "/1_0.png"
+      );
+      blood_splatter_small_1.depth = this.depth + 1;
+      blood_splatter_small_1.scaleX = 0.5;
+      blood_splatter_small_1.scaleY = 0.5;
+      blood_splatter_small_1.play("blood_splatter_small_" + randomBloodSplatter);
+      blood_splatter_small_1.once("animationcomplete", () => {
+        blood_splatter_small_1.destroy();
+      });
     });
     /* END-USER-CTR-CODE */
   }

@@ -26,9 +26,11 @@
                 "hitArea.height",
                 "hitArea.radius",
                 "hitArea.points",
-                "hitArea.alphaTolerance"
+                "hitArea.alphaTolerance",
+                "z"
             ],
             "label": "container_1",
+            "z": 0,
             "hitArea.shape": "POLYGON",
             "hitArea.points": "-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22",
             "x": 160,

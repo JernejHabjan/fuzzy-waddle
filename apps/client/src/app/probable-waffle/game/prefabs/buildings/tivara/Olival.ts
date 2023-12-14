@@ -2,9 +2,9 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../entity/actor/ActorContainer";
+import ActorContainer from '../../../entity/actor/ActorContainer';
 /* START-USER-IMPORTS */
-import { Vector2Simple } from "../../../library/math/intersection";
+import { Vector2Simple } from '../../../library/math/intersection';
 /* END-USER-IMPORTS */
 
 export default class Olival extends ActorContainer {
@@ -13,8 +13,7 @@ export default class Olival extends ActorContainer {
 
     this.removeInteractive();
     this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-12.788011962835393 -30.360902541923828 0.5188883965774025 -42.99403579453091 13.657346979288771 -31.70843675553525 15.004881192900193 -10.484772891155345 13.994230532691624 5.854079448883155 -14.809313283252527 5.685637672181727 -15.819963943461094 -10.484772891155345"
+      new Phaser.Geom.Po'-12.788011962835393 -30.360902541923828 0.5188883965774025 -42.99403579453091 13.657346979288771 -31.70843675553525 15.004881192900193 -10.484772891155345 13.994230532691624 5.854079448883155 -14.809313283252527 5.685637672181727 -15.819963943461094 -10.484772891155345'84772891155345"
       ),
       Phaser.Geom.Polygon.Contains
     );
@@ -29,8 +28,11 @@ export default class Olival extends ActorContainer {
     this.add(buildings_tivara_olival_floor);
 
     // buildings_tivara_olival
-    const buildings_tivara_olival = scene.add.image(0, -22, "factions", "buildings/tivara/olival/olival.png");
+    const buildings_tivara_olival = scene.add.image(0, -22, 'factions', 'buildings/tivara/olival/olival.png');
     this.add(buildings_tivara_olival);
+
+    // this (prefab fields)
+    this.z = 0;
 
     /* START-USER-CTR-CODE */
     this.bounce(buildings_tivara_olival);

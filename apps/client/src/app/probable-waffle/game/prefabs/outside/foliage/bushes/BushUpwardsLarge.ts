@@ -23,6 +23,9 @@ export default class BushUpwardsLarge extends ActorContainer {
     outside_foliage_bushes_bush_upwards_large.setOrigin(0.5, 0.4867656180230016);
     this.add(outside_foliage_bushes_bush_upwards_large);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */

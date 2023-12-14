@@ -21,6 +21,9 @@ export default class ChimneyLarge extends ActorContainer {
     );
     this.add(outside_architecture_chimneys_chimney_large);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */

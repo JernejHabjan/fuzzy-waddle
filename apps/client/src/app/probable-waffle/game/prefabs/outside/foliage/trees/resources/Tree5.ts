@@ -2,18 +2,17 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../../entity/actor/ActorContainer";
+import ActorContainer from '../../../../../entity/actor/ActorContainer';
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Tree5 extends ActorContainer {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 64, y ?? 160);
+    super(scene, x ?? 64, y ?? 221.42563503512523);
 
     this.removeInteractive();
     this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-18.328564034534246 -41.683108304793414 -0.3179014988837494 -73.02166111682527 16.251908033914702 -53.209932327609735 23.095959797461894 2.98333478361981 5.805723763237417 24.596129826400414 4.00465750967237 35.40252734779071 -4.2802472567268595 35.40252734779071 -6.441526761004919 19.55314431641827 -24.452189296655416 4.784401037184864"
+      new Phaser.Geom.Po'-25.159565619192996 -47.761600453826134 -2.884335461153192 -103.78717933616866 18.378384235157526 -71.72434804808108 23.167120355607608 -27.317839464219105 13.178584756039967 -12.005446686633107 3.605442204035377 -7.31656053871248 2.433220667055224 4.014914318762351 -3.623257274008907 3.6241738064356213 -5.1862193233157825 -10.83322514965296 -14.931623322607877 -19.489330489243315'89330489243315"
       ),
       Phaser.Geom.Polygon.Contains
     );
@@ -23,9 +22,9 @@ export default class Tree5 extends ActorContainer {
     // outside_foliage_trees_resources_tree5
     const outside_foliage_trees_resources_tree5 = scene.add.image(
       0,
-      -16.847000446527897,
-      "outside",
-      "foliage/trees/resources/tree5.png"
+      -47.55981796409051,
+      'outside',
+      'foliage/trees/resources/tree5.png'
     );
     outside_foliage_trees_resources_tree5.setOrigin(0.5, 0.4867656180230016);
     this.add(outside_foliage_trees_resources_tree5);

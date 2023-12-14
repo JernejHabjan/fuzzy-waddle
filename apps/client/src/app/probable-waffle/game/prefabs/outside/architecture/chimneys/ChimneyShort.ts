@@ -21,6 +21,9 @@ export default class ChimneyShort extends ActorContainer {
     );
     this.add(outside_architecture_chimneys_chimney_short);
 
+    // this (prefab fields)
+    this.z = 0;
+
     /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
