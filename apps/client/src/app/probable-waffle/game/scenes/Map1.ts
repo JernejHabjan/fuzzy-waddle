@@ -394,7 +394,45 @@ export default class Map1 extends Phaser.Scene {
     this.handleCameraCenter();
     this.handleZSort();
     this.zoomWithScroll();
+    // this.enableLights();
   }
+
+  enableLights = () => {
+    // add lights2d pipeline to all children
+    this.children.each((child: any) => {
+      if (child.setPipeline) {
+        child.setPipeline("Light2D");
+      }
+      // if instanceOf ActorContainer, then add lights2d pipeline to all children of the container
+      if (child instanceof ActorContainer) {
+        child.each((child: any) => {
+          if (child.setPipeline) {
+            child.setPipeline("Light2D");
+          }
+        });
+      }
+    });
+
+    this.lights.enable();
+    this.lights.setAmbientColor(0x808080);
+
+    const spotlight = this.lights.addLight(400, 300, 280).setIntensity(2);
+
+    this.input.on("pointermove", (pointer: any) => {
+      const cameraX = this.cameras.main.scrollX;
+      const cameraY = this.cameras.main.scrollY;
+      const zoom = this.cameras.main.zoom;
+
+      // Adjust the pointer position based on the inverse of the zoom
+      const adjustedPointerX = (pointer.x + cameraX) / zoom;
+      const adjustedPointerY = (pointer.y + cameraY) / zoom;
+
+      spotlight.x = adjustedPointerX;
+      spotlight.y = adjustedPointerY;
+    });
+
+    spotlight.setColor(0xffffff);
+  };
 
   handleZSort = () => {
     this.children.each((child: any) => {
