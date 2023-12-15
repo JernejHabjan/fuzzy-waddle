@@ -46,6 +46,7 @@ import BushDry from "../prefabs/outside/foliage/bushes/BushDry";
 import BushUpwardsSmall from "../prefabs/outside/foliage/bushes/BushUpwardsSmall";
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
+import { AnimatedTilemap } from "./AnimatedTile";
 /* END-USER-IMPORTS */
 
 export default class Map1 extends Phaser.Scene {
@@ -60,7 +61,7 @@ export default class Map1 extends Phaser.Scene {
   editorCreate(): void {
     // tiles
     const tiles = this.add.tilemap("tiles");
-    tiles.addTilesetImage("tiles", "tiles_1");
+    const tileset = tiles.addTilesetImage("tiles", "tiles_1");
 
     // tilemap_level_1
     tiles.createLayer("TileMap_level_1", ["tiles"], -32, 0);
@@ -364,17 +365,20 @@ export default class Map1 extends Phaser.Scene {
     // tree4 (prefab fields)
     tree4.z = 160;
 
-    this.tiles = tiles;
+    this.tilemap = tiles;
+    this.tileset = tileset!;
 
     this.events.emit("scene-awake");
   }
 
-  private tiles!: Phaser.Tilemaps.Tilemap;
+  private tilemap!: Phaser.Tilemaps.Tilemap;
+  private tileset!: Phaser.Tilemaps.Tileset;
 
   /* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
+  private animatedTilemap!: AnimatedTilemap;
 
   preload(): void {
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -395,6 +399,7 @@ export default class Map1 extends Phaser.Scene {
     this.handleZSort();
     this.zoomWithScroll();
     // this.enableLights();
+    this.animatedTilemap = new AnimatedTilemap(this.tilemap, this.tileset);
   }
 
   enableLights = () => {
@@ -447,10 +452,10 @@ export default class Map1 extends Phaser.Scene {
     // set camera to the center of isometric tilemap
 
     const maxMapLayers = 8;
-    const mapLeft = -this.tiles.widthInPixels / 2;
-    const mapRight = +this.tiles.widthInPixels / 2;
+    const mapLeft = -this.tilemap.widthInPixels / 2;
+    const mapRight = +this.tilemap.widthInPixels / 2;
     const mapTop = -maxMapLayers * 32;
-    const mapBottom = this.tiles.heightInPixels;
+    const mapBottom = this.tilemap.heightInPixels;
 
     this.cameras.main.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, true);
   };
@@ -467,6 +472,7 @@ export default class Map1 extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.controls.update(delta);
+    this.animatedTilemap.update(delta);
   }
 
   /* END-USER-CODE */
