@@ -795,7 +795,7 @@
         {
             "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "type": "Tilemap",
-            "label": "tiles",
+            "label": "tilemap",
             "key": "tiles",
             "tilesets": [
                 {
