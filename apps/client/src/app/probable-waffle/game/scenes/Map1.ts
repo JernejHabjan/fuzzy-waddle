@@ -59,12 +59,12 @@ export default class Map1 extends Phaser.Scene {
   }
 
   editorCreate(): void {
-    // tiles
-    const tiles = this.add.tilemap("tiles");
-    const tileset = tiles.addTilesetImage("tiles", "tiles_1");
+    // tilemap
+    const tilemap = this.add.tilemap("tiles");
+    tilemap.addTilesetImage("tiles", "tiles_1");
 
     // tilemap_level_1
-    tiles.createLayer("TileMap_level_1", ["tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles"], -32, 0);
 
     // sandhold
     const sandhold = new Sandhold(this, 32, 592);
@@ -365,14 +365,12 @@ export default class Map1 extends Phaser.Scene {
     // tree4 (prefab fields)
     tree4.z = 160;
 
-    this.tilemap = tiles;
-    this.tileset = tileset!;
+    this.tilemap = tilemap;
 
     this.events.emit("scene-awake");
   }
 
   private tilemap!: Phaser.Tilemaps.Tilemap;
-  private tileset!: Phaser.Tilemaps.Tileset;
 
   /* START-USER-CODE */
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -399,7 +397,7 @@ export default class Map1 extends Phaser.Scene {
     this.handleZSort();
     this.zoomWithScroll();
     // this.enableLights();
-    this.animatedTilemap = new AnimatedTilemap(this.tilemap, this.tileset);
+    this.animatedTilemap = new AnimatedTilemap(this.tilemap, this.tilemap.tilesets[0]);
   }
 
   enableLights = () => {
