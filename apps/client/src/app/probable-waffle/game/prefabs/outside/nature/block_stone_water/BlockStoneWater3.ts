@@ -12,13 +12,14 @@ export default class BlockStoneWater3 extends ActorContainer {
 
     this.removeInteractive();
     this.setInteractive(
-      new Phaser.Geom.Po'-32 -32 0 -48 32 -32 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516'21098782742516"
+      new Phaser.Geom.Polygon(
+        "-32 -32 0 -48 32 -32 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516"
       ),
       Phaser.Geom.Polygon.Contains
     );
 
     // image_1
-    const image_1 = scene.a'outside'0,'nature/block_stone/1.png'side", "nature/block_stone/1.png");
+    const image_1 = scene.add.image(0, -15.884868160150127, "outside", "nature/block_stone/1.png");
     image_1.setOrigin(0.5, 0.5017989349976543);
     this.add(image_1);
 
@@ -26,8 +27,8 @@ export default class BlockStoneWater3 extends ActorContainer {
     const outside_nature_block_stone_water_3 = scene.add.image(
       0,
       -17.87410141979456,
-      'outside',
-      'nature/block_stone_water/3.png'
+      "outside",
+      "nature/block_stone_water/3.png"
     );
     outside_nature_block_stone_water_3.setOrigin(0.5, 0.470717165742086);
     this.add(outside_nature_block_stone_water_3);

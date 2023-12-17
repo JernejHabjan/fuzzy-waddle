@@ -1,6 +1,5 @@
 export class LavaParticles {
   private particles: Phaser.GameObjects.Particles.ParticleEmitter;
-
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.particles = scene.add.particles(x, y - 32, "outside", {
       frame: ["effects/ember/1.png", "effects/ember/2.png", "effects/ember/3.png"],
