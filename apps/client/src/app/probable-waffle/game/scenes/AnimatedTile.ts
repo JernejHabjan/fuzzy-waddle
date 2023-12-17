@@ -82,22 +82,20 @@ export class AnimatedTilemap {
     for (const tileId in tileData) {
       this.tilemap.layers.forEach((layer) => {
         if (layer.tilemapLayer.type === "StaticTilemapLayer") return;
-        layer.data.forEach((tileRow) => {
+        layer.data.forEach((tileRow) =>
           tileRow.forEach((tile) => {
             // Typically `firstgid` is 1, which means tileId starts from 1.
-            // Tiled's tileId starts from 0.
+            // TileId in Tiled starts from 0.
             if (tile.index - this.tileset.firstgid === parseInt(tileId, 10)) {
               if (!tileData[tileId].animation) return;
               animatedTiles.push(new AnimatedTile(tile, tileData[tileId].animation!, this.tileset.firstgid));
             }
-          });
-        });
+          })
+        );
       });
     }
     return animatedTiles;
   };
 
-  update = (delta: number) => {
-    this.animatedTiles.forEach((tile) => tile.update(delta));
-  };
+  update = (delta: number) => this.animatedTiles.forEach((tile) => tile.update(delta));
 }

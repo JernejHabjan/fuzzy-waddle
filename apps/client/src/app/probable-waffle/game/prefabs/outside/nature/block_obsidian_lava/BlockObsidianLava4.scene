@@ -37,6 +37,16 @@
             "list": [
                 {
                     "type": "Image",
+                    "id": "14dda69e-0e2e-4507-9a16-d51b69a8b47b",
+                    "label": "image_1",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/block_obsidian/1.png"
+                    },
+                    "y": -16
+                },
+                {
+                    "type": "Image",
                     "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
                     "label": "outside_nature_block_obsidian_lava_4",
                     "texture": {

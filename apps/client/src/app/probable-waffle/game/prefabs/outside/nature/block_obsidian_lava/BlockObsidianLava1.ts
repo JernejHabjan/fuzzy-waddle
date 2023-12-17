@@ -3,6 +3,8 @@
 /* START OF COMPILED CODE */
 
 import ActorContainer from "../../../../entity/actor/ActorContainer";
+import { time } from "cron";
+import { LavaParticles } from "../../../../effects/particles/LavaParticles";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -18,6 +20,10 @@ export default class BlockObsidianLava1 extends ActorContainer {
       Phaser.Geom.Polygon.Contains
     );
 
+    // image_1
+    const image_1 = scene.add.image(0, -16, "outside", "nature/block_obsidian/1.png");
+    this.add(image_1);
+
     // outside_nature_block_obsidian_lava_1
     const outside_nature_block_obsidian_lava_1 = scene.add.image(
       0,
@@ -32,13 +38,23 @@ export default class BlockObsidianLava1 extends ActorContainer {
     this.z = 0;
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    this.particles = new LavaParticles(scene, this.x, this.y);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
 
-  // Write your code here.
+  private particles: LavaParticles;
+
+  setDepth(value: number): this {
+    this.particles.setDepth(value);
+    return super.setDepth(value);
+  }
+
+  override destroy(fromScene?: boolean) {
+    this.particles.destroy();
+    super.destroy(fromScene);
+  }
 
   /* END-USER-CODE */
 }

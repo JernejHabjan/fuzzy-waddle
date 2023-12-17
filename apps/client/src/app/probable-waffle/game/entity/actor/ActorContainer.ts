@@ -5,23 +5,25 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { Utils } from "phaser";
-import {ComponentService} from "../../../../../app/probable-waffle/game/core/component.service";
+import { ComponentService } from "../../../../../app/probable-waffle/game/core/component.service";
 /* END-USER-IMPORTS */
 
 export default class ActorContainer extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 0, y ?? 0);
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 0, y ?? 0);
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
     this.name = Utils.String.UUID();
     this.components = new ComponentService(this.name);
+    // subscribe on scene update and destroy
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.scene.events.on(Phaser.Scenes.Events.DESTROY, this.destroy, this);
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	public z: number = 0;
+  public z: number = 0;
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
   components: ComponentService;
   destroyed = false;
   killed = false;
@@ -35,11 +37,7 @@ export default class ActorContainer extends Phaser.GameObjects.Container {
   /**
    * initialize all mandatory actor properties that cannot be set in constructor
    */
-  init() {
-    // subscribe on scene update and destroy
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
-    this.scene.events.on(Phaser.Scenes.Events.DESTROY, this.destroy, this);
-  }
+  init() {}
 
   /**
    * init all components for the actor
@@ -86,8 +84,10 @@ export default class ActorContainer extends Phaser.GameObjects.Container {
     }, this.despawnTime * 1000);
   }
 
-  override destroy(): void {
-    super.destroy();
+  override destroy(fromScene?: boolean): void {
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.destroy, this);
+    super.destroy(fromScene);
     this.destroyed = true;
     this.components.destroy();
   }

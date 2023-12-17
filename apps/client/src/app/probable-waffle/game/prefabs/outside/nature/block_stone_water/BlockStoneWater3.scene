@@ -37,6 +37,17 @@
             "list": [
                 {
                     "type": "Image",
+                    "id": "14dda69e-0e2e-4507-9a16-d51b69a8b47b",
+                    "label": "image_1",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/block_stone/1.png"
+                    },
+                    "y": -15.884868160150127,
+                    "originY": 0.5017989349976543
+                },
+                {
+                    "type": "Image",
                     "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
                     "label": "outside_nature_block_stone_water_3",
                     "texture": {
