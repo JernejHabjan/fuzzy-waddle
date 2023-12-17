@@ -313,6 +313,13 @@
             </struct>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_left.png</key>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_right.png</key>
+            <key type="filename">../sprites/outside/nature/block_obsidian/1.png</key>
+            <key type="filename">../sprites/outside/nature/block_obsidian/2.png</key>
+            <key type="filename">../sprites/outside/nature/block_obsidian_lava/1.png</key>
+            <key type="filename">../sprites/outside/nature/block_obsidian_lava/2.png</key>
+            <key type="filename">../sprites/outside/nature/block_obsidian_lava/3.png</key>
+            <key type="filename">../sprites/outside/nature/block_obsidian_lava/4.png</key>
+            <key type="filename">../sprites/outside/nature/block_obsidian_lava/5.png</key>
             <key type="filename">../sprites/outside/nature/ramp/stone/top_left.png</key>
             <key type="filename">../sprites/outside/nature/ramp/stone/top_right.png</key>
             <struct type="IndividualSpriteSettings">
