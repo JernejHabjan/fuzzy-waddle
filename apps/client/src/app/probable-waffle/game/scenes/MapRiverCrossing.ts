@@ -44,12 +44,6 @@ import Tree1 from "../prefabs/outside/foliage/trees/resources/Tree1";
 import BushDry from "../prefabs/outside/foliage/bushes/BushDry";
 import BushUpwardsSmall from "../prefabs/outside/foliage/bushes/BushUpwardsSmall";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
-import BlockObsidian2 from "../prefabs/outside/nature/block_obsidian/BlockObsidian2";
-import BlockObsidian1 from "../prefabs/outside/nature/block_obsidian/BlockObsidian1";
-import BlockObsidianLava5 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
-import BlockObsidianLava3 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava3";
-import BlockObsidianLava1 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava1";
-import BlockObsidianLava2 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava2";
 import BlockStoneWater1 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater1";
 import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
 import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
@@ -292,19 +286,19 @@ export default class MapRiverCrossing extends Phaser.Scene {
     this.add.existing(tree_1);
 
     // tree_2
-    const tree_2 = new Tree4(this, -304, 1040);
+    const tree_2 = new Tree4(this, -912, 848);
     this.add.existing(tree_2);
 
     // tree1
-    const tree1 = new Tree1(this, -448, 1200);
+    const tree1 = new Tree1(this, -1184, 832);
     this.add.existing(tree1);
 
     // tree_3
-    const tree_3 = new Tree4(this, -256, 1168);
+    const tree_3 = new Tree4(this, -896, 1056);
     this.add.existing(tree_3);
 
     // treeTrunk_1
-    const treeTrunk_1 = new TreeTrunk(this, -384, 1200);
+    const treeTrunk_1 = new TreeTrunk(this, -784, 880);
     this.add.existing(treeTrunk_1);
 
     // tree_4
@@ -320,7 +314,7 @@ export default class MapRiverCrossing extends Phaser.Scene {
     this.add.existing(bushDry);
 
     // bushDry_1
-    const bushDry_1 = new BushDry(this, -368, 1136);
+    const bushDry_1 = new BushDry(this, -1072, 944);
     this.add.existing(bushDry_1);
 
     // bushDry_2
@@ -344,7 +338,7 @@ export default class MapRiverCrossing extends Phaser.Scene {
     this.add.existing(bushUpwardsSmall_1);
 
     // bushDry_4
-    const bushDry_4 = new BushDry(this, -80, 1072);
+    const bushDry_4 = new BushDry(this, -1024, 768);
     this.add.existing(bushDry_4);
 
     // tree
@@ -354,74 +348,6 @@ export default class MapRiverCrossing extends Phaser.Scene {
     // workMill
     const workMill = new WorkMill(this, -592, 512);
     this.add.existing(workMill);
-
-    // blockObsidian2
-    const blockObsidian2 = new BlockObsidian2(this, -1248, 640);
-    this.add.existing(blockObsidian2);
-
-    // blockObsidian1
-    const blockObsidian1 = new BlockObsidian1(this, -1280, 656);
-    this.add.existing(blockObsidian1);
-
-    // blockObsidian
-    const blockObsidian = new BlockObsidian1(this, -1248, 672);
-    this.add.existing(blockObsidian);
-
-    // blockObsidian_1
-    const blockObsidian_1 = new BlockObsidian2(this, -1312, 672);
-    this.add.existing(blockObsidian_1);
-
-    // blockObsidian_3
-    const blockObsidian_3 = new BlockObsidian2(this, -1344, 688);
-    this.add.existing(blockObsidian_3);
-
-    // blockObsidian_2
-    const blockObsidian_2 = new BlockObsidian1(this, -1296, 704);
-    this.add.existing(blockObsidian_2);
-
-    // blockObsidian_5
-    const blockObsidian_5 = new BlockObsidian1(this, -1376, 704);
-    this.add.existing(blockObsidian_5);
-
-    // blockObsidian_4
-    const blockObsidian_4 = new BlockObsidian1(this, -1344, 720);
-    this.add.existing(blockObsidian_4);
-
-    // blockObsidianLava5
-    const blockObsidianLava5 = new BlockObsidianLava5(this, -1376, 736);
-    this.add.existing(blockObsidianLava5);
-
-    // blockObsidianLava3
-    const blockObsidianLava3 = new BlockObsidianLava3(this, -1408, 688);
-    this.add.existing(blockObsidianLava3);
-
-    // blockObsidian_7
-    const blockObsidian_7 = new BlockObsidian1(this, -1440, 736);
-    this.add.existing(blockObsidian_7);
-
-    // blockObsidian_6
-    const blockObsidian_6 = new BlockObsidian1(this, -1440, 704);
-    this.add.existing(blockObsidian_6);
-
-    // blockObsidianLava1
-    const blockObsidianLava1 = new BlockObsidianLava1(this, -1408, 752);
-    this.add.existing(blockObsidianLava1);
-
-    // blockObsidian_8
-    const blockObsidian_8 = new BlockObsidian1(this, -1472, 752);
-    this.add.existing(blockObsidian_8);
-
-    // blockObsidian_9
-    const blockObsidian_9 = new BlockObsidian2(this, -1440, 768);
-    this.add.existing(blockObsidian_9);
-
-    // blockObsidianLava2
-    const blockObsidianLava2 = new BlockObsidianLava2(this, -1408, 784);
-    this.add.existing(blockObsidianLava2);
-
-    // blockObsidian_10
-    const blockObsidian_10 = new BlockObsidian1(this, -1440, 800);
-    this.add.existing(blockObsidian_10);
 
     // blockStone_12
     const blockStone_12 = new BlockStone1(this, 352, 976);
@@ -497,12 +423,6 @@ export default class MapRiverCrossing extends Phaser.Scene {
 
     // tree4 (prefab fields)
     tree4.z = 160;
-
-    // blockObsidianLava3 (prefab fields)
-    blockObsidianLava3.z = 32;
-
-    // blockObsidian_6 (prefab fields)
-    blockObsidian_6.z = 32;
 
     // blockStoneWater1 (prefab fields)
     blockStoneWater1.z = 16;
