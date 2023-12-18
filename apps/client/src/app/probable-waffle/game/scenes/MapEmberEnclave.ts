@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import BlockObsidianLava5 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
 import BlockObsidianLava4 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava4";
@@ -23,9 +22,10 @@ import { InputHandler } from "../world/managers/controllers/input/input.handler"
 import { LightsHandler } from "../world/map/vision/lights.handler";
 import { DepthHelper } from "../world/map/depth.helper";
 import { AnimatedTilemap } from "./AnimatedTile";
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 /* END-USER-IMPORTS */
 
-export default class MapEmberEnclave extends Phaser.Scene {
+export default class MapEmberEnclave extends BaseScene {
   constructor() {
     super("MapEmberEnclave");
 

@@ -5,6 +5,7 @@
         "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
+        "superClassName": "BaseScene",
         "preloadPackFiles": [],
         "createMethodName": "editorCreate",
         "sceneKey": "MapRiverCrossing",

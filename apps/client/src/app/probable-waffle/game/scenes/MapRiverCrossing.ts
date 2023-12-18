@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -53,9 +52,10 @@ import { ScaleHandler } from "../world/map/scale.handler";
 import { InputHandler } from "../world/managers/controllers/input/input.handler";
 import { LightsHandler } from "../world/map/vision/lights.handler";
 import { DepthHelper } from "../world/map/depth.helper";
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 /* END-USER-IMPORTS */
 
-export default class MapRiverCrossing extends Phaser.Scene {
+export default class MapRiverCrossing extends BaseScene {
   constructor() {
     super("MapRiverCrossing");
 
