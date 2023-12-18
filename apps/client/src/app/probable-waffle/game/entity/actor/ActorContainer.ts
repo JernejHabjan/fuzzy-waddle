@@ -2,13 +2,12 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { Utils } from "phaser";
-import { ComponentService } from "../../../../../app/probable-waffle/game/core/component.service";
+import Phaser, { Utils } from "phaser";
+import { ComponentService, IComponent } from "../../../../../app/probable-waffle/game/core/component.service";
 /* END-USER-IMPORTS */
 
-export default class ActorContainer extends Phaser.GameObjects.Container {
+export default class ActorContainer extends Phaser.GameObjects.Container implements IComponent {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
