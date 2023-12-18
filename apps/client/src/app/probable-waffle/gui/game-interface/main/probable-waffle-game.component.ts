@@ -1,10 +1,15 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { SceneCommunicatorService } from "../../../communicators/scene-communicator.service";
 import { probableWaffleGameConfig } from "../../../game/world/const/game-config";
 import { BaseGameData } from "../../../../shared/game/phaser/game/base-game-data";
-import { LittleMuncherGameInstance, LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
-import { LittleMuncherCommunicatorService } from "../../../../little-muncher/game/little-muncher-communicator.service";
+import {
+  ProbableWaffleGameInstance,
+  ProbableWaffleLevelEnum,
+  ProbableWaffleLevels,
+  ProbableWaffleUserInfo
+} from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../../../auth/auth.service";
+import { ProbableWaffleCommunicatorService } from "../../../game/scenes/probable-waffle-communicator.service";
 
 @Component({
   selector: "fuzzy-waddle-game",
@@ -15,10 +20,10 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
   drawerWidth = "150px";
   displayDrawers = true; // todo
-  gameData?: BaseGameData<LittleMuncherCommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>; // todo
+  gameData?: BaseGameData<ProbableWaffleCommunicatorService, ProbableWaffleGameInstance, ProbableWaffleUserInfo>;
 
   constructor(
-    private readonly communicatorService: LittleMuncherCommunicatorService,
+    private readonly communicatorService: ProbableWaffleCommunicatorService,
     private readonly authService: AuthService
   ) {}
 
@@ -28,12 +33,16 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     SceneCommunicatorService.setup();
-    const gameSessionInstance = new LittleMuncherGameInstance(); // todo later use ProbableWaffleGameInstance
+    const gameSessionInstance = new ProbableWaffleGameInstance({
+      gameModeData: {
+        level: ProbableWaffleLevels[ProbableWaffleLevelEnum.EmberEnclave] // todo read this from ID
+      }
+    });
     this.gameData = {
       gameInstance: gameSessionInstance,
       communicator: this.communicatorService,
-      user: new LittleMuncherUserInfo(this.authService.userId) // todo later use ProbableWaffleUserInfo
-    };
+      user: new ProbableWaffleUserInfo(this.authService.userId)
+    } as const;
 
     // todo properly listen with communicatorService
 

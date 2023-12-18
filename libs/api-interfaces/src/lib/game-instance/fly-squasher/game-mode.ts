@@ -1,9 +1,9 @@
 import { BaseData } from "../data";
 import { BaseGameMode } from "../game-mode";
-import { LevelData } from "../../fly-squasher/fly-squasher";
+import { FlySquasherLevelData } from "../../fly-squasher/fly-squasher";
 
 export interface FlySquasherGameModeData extends BaseData {
-  level?: LevelData;
+  level?: FlySquasherLevelData;
 }
 
 export class FlySquasherGameMode extends BaseGameMode<FlySquasherGameModeData> {

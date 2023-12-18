@@ -23,9 +23,32 @@ import { LightsHandler } from "../world/map/vision/lights.handler";
 import { DepthHelper } from "../world/map/depth.helper";
 import { AnimatedTilemap } from "./AnimatedTile";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { ProbableWaffleGameData } from "./probable-waffle-game-data";
+import {
+  ProbableWaffleGameMode,
+  ProbableWaffleGameModeData,
+  ProbableWaffleGameState,
+  ProbableWaffleGameStateData,
+  ProbableWafflePlayer,
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayerStateData,
+  ProbableWaffleSpectator,
+  ProbableWaffleSpectatorData
+} from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
-export default class MapEmberEnclave extends BaseScene {
+export default class MapEmberEnclave extends BaseScene<
+  ProbableWaffleGameData,
+  ProbableWaffleGameStateData,
+  ProbableWaffleGameState,
+  ProbableWaffleGameModeData,
+  ProbableWaffleGameMode,
+  ProbableWafflePlayerStateData,
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayer,
+  ProbableWaffleSpectatorData,
+  ProbableWaffleSpectator
+> {
   constructor() {
     super("MapEmberEnclave");
 
@@ -125,6 +148,8 @@ export default class MapEmberEnclave extends BaseScene {
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
+
+    console.log("playing level", this.baseGameData.gameInstance.data.gameModeData!.level!.id);
   }
 
   /* END-USER-CODE */

@@ -5,7 +5,7 @@
         "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
-        "superClassName": "BaseScene",
+        "superClassName": "BaseScene<ProbableWaffleGameData, ProbableWaffleGameStateData, ProbableWaffleGameState, ProbableWaffleGameModeData, ProbableWaffleGameMode, ProbableWafflePlayerStateData, ProbableWafflePlayerControllerData, ProbableWafflePlayer, ProbableWaffleSpectatorData, ProbableWaffleSpectator>",
         "preloadPackFiles": [],
         "createMethodName": "editorCreate",
         "sceneKey": "MapEmberEnclave",

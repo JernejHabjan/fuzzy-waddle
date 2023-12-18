@@ -9,5 +9,5 @@ export interface FlySquasherCommunicatorScoreEvent {
 }
 
 export enum FlySquasherGatewayEvent {
-  FlySquasherAction = "little-muncher-action"
+  FlySquasherAction = "fly-squasher-action"
 }

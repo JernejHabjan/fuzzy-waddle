@@ -5,9 +5,36 @@
 import Phaser from "phaser";
 import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
+
+import {
+  ProbableWaffleGameMode,
+  ProbableWaffleGameModeData,
+  ProbableWaffleGameState,
+  ProbableWaffleGameStateData,
+  ProbableWaffleLevelEnum,
+  ProbableWaffleLevels,
+  ProbableWafflePlayer,
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayerStateData,
+  ProbableWaffleSpectator,
+  ProbableWaffleSpectatorData
+} from "@fuzzy-waddle/api-interfaces";
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { ProbableWaffleGameData } from "./probable-waffle-game-data";
 /* END-USER-IMPORTS */
 
-export default class PreloadProbableWaffle extends Phaser.Scene {
+export default class PreloadProbableWaffle extends BaseScene<
+  ProbableWaffleGameData,
+  ProbableWaffleGameStateData,
+  ProbableWaffleGameState,
+  ProbableWaffleGameModeData,
+  ProbableWaffleGameMode,
+  ProbableWafflePlayerStateData,
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayer,
+  ProbableWaffleSpectatorData,
+  ProbableWaffleSpectator
+> {
   constructor() {
     super("PreloadProbableWaffle");
 
@@ -54,7 +81,7 @@ export default class PreloadProbableWaffle extends Phaser.Scene {
 
     this.load.pack("asset-pack", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json");
     const map = this.getMap();
-    this.load.pack("asset-pack-map", map.assetPath);
+    this.load.pack("asset-pack-map", "assets/probable-waffle/asset-packers/maps/" + map.assetPath);
   }
 
   create() {
@@ -62,33 +89,14 @@ export default class PreloadProbableWaffle extends Phaser.Scene {
     this.scene.start(map.sceneKey);
   }
 
-  getMap(): MapType {
-    // eslint-disable-next-line prefer-const
-    let mapId = 2; // todo get from somewhere else
-    switch (mapId) {
-      case 1:
-        return {
-          sceneKey: "MapRiverCrossing",
-          assetPath: "assets/probable-waffle/asset-packers/maps/asset-pack-probable-waffle-river-crossing.json"
-        };
-      case 2:
-        return {
-          sceneKey: "MapEmberEnclave",
-          assetPath: "assets/probable-waffle/asset-packers/maps/asset-pack-probable-waffle-ember-enclave.json"
-        };
-      default:
-        throw new Error(`Map id ${mapId} not found`);
-    }
+  private getMap() {
+    const levelId = this.baseGameData.gameInstance.data.gameModeData!.level!.id;
+    const level = ProbableWaffleLevels[levelId];
+    return level;
   }
 
   /* END-USER-CODE */
 }
-
-type MapType = {
-  sceneKey: string;
-  assetPath: string;
-};
-
 /* END OF COMPILED CODE */
 
 // You can write more code here

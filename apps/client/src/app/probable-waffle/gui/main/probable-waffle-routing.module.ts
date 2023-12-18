@@ -1,55 +1,50 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { SkirmishComponent } from '../skirmish/skirmish.component';
-import { HomeComponent } from '../home/home.component';
-import { ProbableWaffleComponent } from './probable-waffle.component';
-import { ProgressComponent } from '../progress/progress.component';
-import { OptionsComponent } from '../options/options.component';
-import { OnlineComponent } from '../online/online.component';
-import { CampaignComponent } from '../campaign/campaign.component';
-import { EditorComponent } from '../editor/editor.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { SkirmishComponent } from "../skirmish/skirmish.component";
+import { HomeComponent } from "../home/home.component";
+import { ProbableWaffleComponent } from "./probable-waffle.component";
+import { ProgressComponent } from "../progress/progress.component";
+import { OptionsComponent } from "../options/options.component";
+import { OnlineComponent } from "../online/online.component";
+import { CampaignComponent } from "../campaign/campaign.component";
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: ProbableWaffleComponent,
     children: [
       {
-        path: '',
+        path: "",
         component: HomeComponent
       },
       {
-        path: 'campaign',
+        path: "campaign",
         component: CampaignComponent
       },
       {
-        path: 'online',
+        path: "online",
         component: OnlineComponent
       },
       {
-        path: 'skirmish',
+        path: "skirmish",
         component: SkirmishComponent
       },
       {
-        path: 'editor',
-        component: EditorComponent
-      },
-      {
-        path: 'progress',
+        path: "progress",
         component: ProgressComponent
       },
       {
-        path: 'options',
+        path: "options",
         component: OptionsComponent
       },
       {
-        path: 'game',
+        path: "game",
         loadChildren: () =>
-          import('../game-interface/main/probable-waffle-game.module').then((m) => m.ProbableWaffleGameModule)
+          import("../game-interface/main/probable-waffle-game.module").then((m) => m.ProbableWaffleGameModule)
       }
     ]
   },
-  { path: '**', redirectTo: 'home' }
+  { path: "**", redirectTo: "home" }
 ];
 
 @NgModule({
