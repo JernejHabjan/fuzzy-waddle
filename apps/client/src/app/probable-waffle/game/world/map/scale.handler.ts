@@ -1,15 +1,25 @@
-import { MapDefinitions, MapSizeInfo } from '../const/map-size.info';
-import { Cameras, Scale, Structs } from 'phaser';
+import { MapSizeInfo } from "../const/map-size.info";
+import { Cameras, Scale, Structs } from "phaser";
 
 export class ScaleHandler {
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private scaleManager: Scale.ScaleManager;
   private cameras: Cameras.Scene2D.CameraManager;
 
-  constructor(cameras: Cameras.Scene2D.CameraManager, scaleManager: Scale.ScaleManager) {
-    this.cameras = cameras;
-    this.mainCamera = cameras.main;
-    this.scaleManager = scaleManager;
+  constructor(
+    scene: Phaser.Scene,
+    private readonly tilemap: Phaser.Tilemaps.Tilemap,
+    private readonly config: {
+      margins: {
+        bottom: number;
+        left: number;
+      };
+      maxLayers: number;
+    }
+  ) {
+    this.cameras = scene.cameras;
+    this.mainCamera = this.cameras.main;
+    this.scaleManager = scene.scale;
     this.setupBounds(true); // todo now center for dev
     this.setupResizeListener();
   }
@@ -19,18 +29,18 @@ export class ScaleHandler {
   }
 
   setupBounds(centerOn: boolean = false) {
-    const xOffset = MapSizeInfo.info.tileWidthHalf;
-    const yOffset = MapSizeInfo.info.tileHeight;
+    const maxMapLayers = this.config.maxLayers;
+    // noinspection UnnecessaryLocalVariableJS
+    const topMarginDueToMapLayers = maxMapLayers * MapSizeInfo.info.tileHeight;
+    const topMargin = topMarginDueToMapLayers;
+    const leftMargin = this.config.margins.left;
+    const bottomMargin = this.config.margins.bottom;
+    const mapLeft = -this.tilemap.widthInPixels / 2 - leftMargin;
+    const mapRight = +this.tilemap.widthInPixels / 2;
+    const mapTop = -topMargin;
+    const mapBottom = this.tilemap.heightInPixels + bottomMargin;
 
-    const layersOffsetY = MapSizeInfo.info.tileHeight * (MapDefinitions.nrLayers + 1);
-
-    this.mainCamera.setBounds(
-      -MapSizeInfo.info.widthInPixels / 2 + xOffset,
-      yOffset - layersOffsetY,
-      MapSizeInfo.info.widthInPixels,
-      MapSizeInfo.info.heightInPixels + layersOffsetY,
-      centerOn
-    );
+    this.mainCamera.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, centerOn);
   }
 
   destroy() {

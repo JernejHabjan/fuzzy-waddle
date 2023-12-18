@@ -5,8 +5,8 @@ import {
   SceneCommunicatorService
 } from "../../../communicators/scene-communicator.service";
 import { CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
-import { InputHandler } from "../managers/controllers/input/input.handler";
-import { ScaleHandler } from "../map/scale.handler";
+import { DEPRECATED_inputHandler } from "../managers/controllers/input/DEPRECATED_input.handler";
+import { DEPRECATED_scaleHandler } from "../map/DEPRECATED_scale.handler";
 import { MapDefinitions, TileDefinitions } from "../const/map-size.info";
 import { CursorHandler } from "../managers/controllers/input/cursor.handler";
 import { TilemapInputHandler, TilePlacementData } from "../managers/controllers/input/tilemap/tilemap-input.handler";
@@ -58,8 +58,8 @@ export interface TilemapToAtlasMap {
 }
 
 export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig {
-  private inputHandler!: InputHandler;
-  private scaleHandler!: ScaleHandler;
+  private inputHandler!: DEPRECATED_inputHandler;
+  private scaleHandler!: DEPRECATED_scaleHandler;
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
   private manualTileInputHandler!: ManualTileInputHandler;
@@ -177,8 +177,8 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     this.dynamicObjectHelper.createDynamicObjectLayer();
 
     // input handling
-    this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
-    this.inputHandler = new InputHandler(this.input, this.cameras.main);
+    this.scaleHandler = new DEPRECATED_scaleHandler(this.cameras, this.scale);
+    this.inputHandler = new DEPRECATED_inputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this.input);
     this.tilemapInputHandler = new TilemapInputHandler(this.mapHelper.tilemapLayer);
     this.manualTileInputHandler = new ManualTileInputHandler(this, this.mapHelper.manualLayers);

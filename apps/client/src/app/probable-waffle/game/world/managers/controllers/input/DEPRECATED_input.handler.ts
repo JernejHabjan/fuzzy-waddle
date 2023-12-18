@@ -1,37 +1,25 @@
 import { Cameras, Geom, Input, Types } from "phaser";
 
-export class InputHandler {
+export class DEPRECATED_inputHandler {
   private readonly enabledMouseCornerMovement = false;
-  private readonly lockToScreen = false; // todo could be enabled later
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private cursorOverGameInstance = false;
   private keyboardMovementControls: Cameras.Controls.FixedKeyControl | null = null;
+  private readonly cameraEdgeMovementSpeed = 5;
   private readonly cameraEdgeMargin = 30;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
   private readonly recommendedZoom = 1;
   private readonly cameraZoomFactor = 0.1;
 
-  constructor(
-    private readonly scene: Phaser.Scene,
-    private readonly config: {
-      cameraEdgeMovementSpeed: number;
-      cameraKeyboardMovementSpeed: number;
-    } = {
-      cameraEdgeMovementSpeed: 5,
-      cameraKeyboardMovementSpeed: 2
-    }
-  ) {
-    this.mainCamera = scene.cameras.main;
-    this.input = scene.input;
+  constructor(input: Input.InputPlugin, mainCamera: Cameras.Scene2D.Camera) {
+    this.input = input;
+    this.mainCamera = mainCamera;
     this.createKeyboardControls();
     this.zoomListener();
     this.zoomToDefault();
     this.screenEdgeListener();
-    this.lockCursorToScreen();
-    this.scene.events.on("update", this.update, this);
-    this.scene.events.on("shutdown", this.destroy, this);
   }
 
   /**
@@ -55,9 +43,9 @@ export class InputHandler {
   }
 
   destroy() {
+    this.input.off(Input.Events.POINTER_WHEEL);
     this.input.off(Input.Events.GAME_OUT);
     this.input.off(Input.Events.GAME_OVER);
-    this.input.off(Input.Events.POINTER_WHEEL, this.zoomWithScrollHandler);
     this.keyboardMovementControls?.destroy();
   }
 
@@ -79,7 +67,7 @@ export class InputHandler {
       right: cursors.right,
       up: cursors.up,
       down: cursors.down,
-      speed: this.config.cameraKeyboardMovementSpeed
+      speed: 1
     };
 
     this.keyboardMovementControls = new Cameras.Controls.FixedKeyControl(controlConfig);
@@ -91,41 +79,36 @@ export class InputHandler {
 
     const pointer = this.input.activePointer;
     if (pointer.x < this.cameraEdgeMargin) {
-      this.mainCamera.scrollX -= this.config.cameraEdgeMovementSpeed;
+      this.mainCamera.scrollX -= this.cameraEdgeMovementSpeed;
     }
     if (pointer.x > this.mainCamera.width - this.cameraEdgeMargin) {
-      this.mainCamera.scrollX += this.config.cameraEdgeMovementSpeed;
+      this.mainCamera.scrollX += this.cameraEdgeMovementSpeed;
     }
     if (pointer.y < this.cameraEdgeMargin) {
-      this.mainCamera.scrollY -= this.config.cameraEdgeMovementSpeed;
+      this.mainCamera.scrollY -= this.cameraEdgeMovementSpeed;
     }
     if (pointer.y > this.mainCamera.height - this.cameraEdgeMargin) {
-      this.mainCamera.scrollY += this.config.cameraEdgeMovementSpeed;
+      this.mainCamera.scrollY += this.cameraEdgeMovementSpeed;
     }
   }
 
   private zoomListener() {
-    this.input.on(Input.Events.POINTER_WHEEL, this.zoomWithScrollHandler, this);
-  }
+    this.input.on(
+      Input.Events.POINTER_WHEEL,
+      (pointer: Input.Pointer, gameObjects: unknown, deltaX: number, deltaY: number, deltaZ: number) => {
+        if (deltaY > 0) {
+          this.zoomOutByFactor();
+        }
 
-  private zoomWithScrollHandler(
-    pointer: Input.Pointer,
-    gameObjects: unknown,
-    deltaX: number,
-    deltaY: number,
-    deltaZ: number
-  ) {
-    if (deltaY > 0) {
-      this.zoomOutByFactor();
-    }
-
-    if (deltaY < 0) {
-      // zoom in
-      const newZoom = this.mainCamera.zoom + this.cameraZoomFactor;
-      if (newZoom < this.cameraMinZoom) {
-        this.mainCamera.zoom = newZoom;
+        if (deltaY < 0) {
+          // zoom in
+          const newZoom = this.mainCamera.zoom + this.cameraZoomFactor;
+          if (newZoom < this.cameraMinZoom) {
+            this.mainCamera.zoom = newZoom;
+          }
+        }
       }
-    }
+    );
   }
 
   /**
@@ -194,33 +177,6 @@ export class InputHandler {
     this.mainCamera.setZoom(this.cameraMinZoom);
     while (this.mainCamera.zoom > this.recommendedZoom && this.zoomOutByFactor()) {
       // zoom out until camera is out of bounds or we reached recommended zoom
-    }
-  }
-
-  /**
-   * https://phaser.io/examples/v3/view/input/mouse/pointer-lock
-   * https://web.dev/articles/pointerlock-intro
-   */
-  private lockCursorToScreen() {
-    if (!this.lockToScreen) return;
-    if (this.input.keyboard && this.input.mouse) {
-      this.input.on("pointerdown", () => {
-        if (this.input.mouse && !this.input.mouse.locked) {
-          this.input.mouse?.requestPointerLock();
-        }
-      });
-      this.input.manager.events.on("pointerlockchange", (event: any) => {
-        const pointerIsLocked = this.input.mouse?.locked;
-        console.log("pointerIsLocked", pointerIsLocked);
-      });
-
-      // on esc, release pointer lock
-      this.input.keyboard.on("keydown_ESC", () => {
-        // todo maybe change this event
-        if (this.input.mouse?.locked) {
-          this.input.mouse.releasePointerLock();
-        }
-      });
     }
   }
 }

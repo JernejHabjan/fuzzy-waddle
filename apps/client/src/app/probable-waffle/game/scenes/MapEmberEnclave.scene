@@ -7,7 +7,7 @@
         "autoImport": true,
         "preloadPackFiles": [],
         "createMethodName": "editorCreate",
-        "sceneKey": "EmberEnclave",
+        "sceneKey": "MapEmberEnclave",
         "compilerOutputLanguage": "TYPE_SCRIPT",
         "borderWidth": 1280,
         "borderHeight": 720
@@ -54,8 +54,8 @@
                 "y"
             ],
             "label": "blockObsidianLava4",
-            "x": 192,
-            "y": 560
+            "x": 208,
+            "y": 544
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",

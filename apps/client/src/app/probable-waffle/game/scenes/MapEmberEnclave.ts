@@ -18,11 +18,16 @@ import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale"
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 /* START-USER-IMPORTS */
+import { ScaleHandler } from "../world/map/scale.handler";
+import { InputHandler } from "../world/managers/controllers/input/input.handler";
+import { LightsHandler } from "../world/map/vision/lights.handler";
+import { DepthHelper } from "../world/map/depth.helper";
+import { AnimatedTilemap } from "./AnimatedTile";
 /* END-USER-IMPORTS */
 
-export default class EmberEnclave extends Phaser.Scene {
+export default class MapEmberEnclave extends Phaser.Scene {
   constructor() {
-    super("EmberEnclave");
+    super("MapEmberEnclave");
 
     /* START-USER-CTR-CODE */
     // Write your code here.
@@ -46,7 +51,7 @@ export default class EmberEnclave extends Phaser.Scene {
     this.add.existing(bushDownwardsLarge);
 
     // blockObsidianLava4
-    const blockObsidianLava4 = new BlockObsidianLava4(this, 192, 560);
+    const blockObsidianLava4 = new BlockObsidianLava4(this, 208, 544);
     this.add.existing(blockObsidianLava4);
 
     // tree6
@@ -114,6 +119,12 @@ export default class EmberEnclave extends Phaser.Scene {
 
   create() {
     this.editorCreate();
+
+    new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
+    new InputHandler(this);
+    new LightsHandler(this, { enableLights: false });
+    new DepthHelper(this);
+    new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
   }
 
   /* END-USER-CODE */

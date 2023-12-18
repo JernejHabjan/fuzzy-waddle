@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser, { Input } from "phaser";
+import Phaser from "phaser";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -48,9 +48,11 @@ import BlockStoneWater1 from "../prefabs/outside/nature/block_stone_water/BlockS
 import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
 import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
 /* START-USER-IMPORTS */
-import ActorContainer from "../entity/actor/ActorContainer";
 import { AnimatedTilemap } from "./AnimatedTile";
+import { ScaleHandler } from "../world/map/scale.handler";
 import { InputHandler } from "../world/managers/controllers/input/input.handler";
+import { LightsHandler } from "../world/map/vision/lights.handler";
+import { DepthHelper } from "../world/map/depth.helper";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends Phaser.Scene {
@@ -439,136 +441,14 @@ export default class MapRiverCrossing extends Phaser.Scene {
   private tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
-  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-  private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
-  private controls!: Phaser.Cameras.Controls.FixedKeyControl;
-
-  preload(): void {
-    this.preloadCursors();
-  }
-
   create() {
     this.editorCreate();
-    this.handleCursors();
-    this.handleCameraCenter();
-    this.handleZSort();
-    this.zoomWithScroll();
-    // this.enableLights();
+
+    new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
+    new InputHandler(this);
+    new LightsHandler(this, { enableLights: false });
+    new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-    new InputHandler(this.input, this.cameras.main);
-
-    this.events.once("shutdown", this.destroy, this);
-  }
-
-  private preloadCursors() {
-    this.cursors = this.input.keyboard!.createCursorKeys();
-  }
-
-  private handleCursors() {
-    this.controlConfig = {
-      camera: this.cameras.main,
-      left: this.cursors.left,
-      right: this.cursors.right,
-      up: this.cursors.up,
-      down: this.cursors.down,
-      speed: 2
-    };
-    this.controls = new Phaser.Cameras.Controls.FixedKeyControl(this.controlConfig);
-  }
-
-  enableLights = () => {
-    // add lights2d pipeline to all children
-    this.children.each((child: any) => {
-      if (child.setPipeline) {
-        child.setPipeline("Light2D");
-      }
-      // if instanceOf ActorContainer, then add lights2d pipeline to all children of the container
-      if (child instanceof ActorContainer) {
-        child.each((child: any) => {
-          if (child.setPipeline) {
-            child.setPipeline("Light2D");
-          }
-        });
-      }
-    });
-
-    this.lights.enable();
-    this.lights.setAmbientColor(0x808080);
-
-    const spotlight = this.lights.addLight(400, 300, 280).setIntensity(2);
-
-    this.input.on("pointermove", (pointer: any) => {
-      const cameraX = this.cameras.main.scrollX;
-      const cameraY = this.cameras.main.scrollY;
-      const zoom = this.cameras.main.zoom;
-
-      // Adjust the pointer position based on the inverse of the zoom
-      const adjustedPointerX = (pointer.x + cameraX) / zoom;
-      const adjustedPointerY = (pointer.y + cameraY) / zoom;
-
-      spotlight.x = adjustedPointerX;
-      spotlight.y = adjustedPointerY;
-    });
-
-    spotlight.setColor(0xffffff);
-  };
-
-  handleZSort = () => {
-    this.children.each((child: any) => {
-      if (!child.setDepth) return;
-      child.setDepth(child.y);
-      if (child instanceof ActorContainer) {
-        const z = child.z;
-        child.setDepth(child.y + z * 2);
-      }
-    });
-  };
-  handleCameraCenter = () => {
-    // set camera to the center of isometric tilemap
-
-    const maxMapLayers = 8;
-    // noinspection UnnecessaryLocalVariableJS
-    const topMarginDueToMapLayers = maxMapLayers * 32;
-    const topMargin = topMarginDueToMapLayers;
-    // noinspection UnnecessaryLocalVariableJS
-    const leftMarginDueToHud = 150;
-    const leftMargin = leftMarginDueToHud;
-    // noinspection UnnecessaryLocalVariableJS
-    const bottomMarginDueToHud = 100;
-    const bottomMargin = bottomMarginDueToHud;
-    const mapLeft = -this.tilemap.widthInPixels / 2 - leftMargin;
-    const mapRight = +this.tilemap.widthInPixels / 2;
-    const mapTop = -topMargin;
-    const mapBottom = this.tilemap.heightInPixels + bottomMargin;
-
-    this.cameras.main.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, true);
-  };
-
-  zoomWithScroll = () => {
-    this.input.on(Input.Events.POINTER_WHEEL, this.zoomWithScrollHandler);
-  };
-
-  zoomWithScrollHandler = (pointer: any, gameObjects: any, deltaX: any, deltaY: any, deltaZ: any) => {
-    if (deltaY > 0) {
-      this.cameras.main.zoom -= 0.1;
-    } else {
-      this.cameras.main.zoom += 0.1;
-    }
-    // calculate min-zoom by map size
-    const minZoom = Math.min(
-      this.cameras.main.width / this.tilemap.widthInPixels,
-      this.cameras.main.height / this.tilemap.heightInPixels
-    );
-    if (this.cameras.main.zoom < minZoom) this.cameras.main.zoom = minZoom;
-    if (this.cameras.main.zoom > 10) this.cameras.main.zoom = 10;
-  };
-
-  update(time: number, delta: number): void {
-    this.controls.update(delta);
-  }
-
-  private destroy() {
-    this.input.off("wheel", this.zoomWithScrollHandler);
   }
 
   /* END-USER-CODE */

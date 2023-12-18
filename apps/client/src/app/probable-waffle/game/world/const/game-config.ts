@@ -4,11 +4,12 @@ import { baseGameConfig } from "../../../../shared/game/base-game.config";
 import MapRiverCrossing from "../../scenes/MapRiverCrossing";
 import PreloadProbableWaffle from "../../scenes/PreloadProbableWaffle";
 import { Boot } from "../../scenes/Boot";
+import MapEmberEnclave from "../../scenes/MapEmberEnclave";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
   // scene: [GrasslandScene, PlaygroundScene],
-  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing],
+  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing, MapEmberEnclave],
   physics: {
     default: "arcade",
     arcade: {

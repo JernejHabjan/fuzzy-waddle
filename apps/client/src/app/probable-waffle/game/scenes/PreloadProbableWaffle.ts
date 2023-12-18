@@ -64,7 +64,7 @@ export default class PreloadProbableWaffle extends Phaser.Scene {
 
   getMap(): MapType {
     // eslint-disable-next-line prefer-const
-    let mapId = 1; // todo get from somewhere else
+    let mapId = 2; // todo get from somewhere else
     switch (mapId) {
       case 1:
         return {
