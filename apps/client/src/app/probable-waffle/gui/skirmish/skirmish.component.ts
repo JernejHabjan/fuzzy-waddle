@@ -1,13 +1,17 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { MapInfo } from '../../game/world/scenes/scenes';
-import { FactionDefinitions, FactionType } from '../../game/player/faction-definitions';
-import { MapDefinitionComponent } from './map-definition/map-definition.component';
-import { Difficulty, PlayerType } from './player-definition/player-definition.component';
-import { GameModeLobby } from './game-mode-definition/game-mode-lobby';
+import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
+import { FactionDefinitions, FactionType } from "../../game/player/faction-definitions";
+import { MapDefinitionComponent } from "./map-definition/map-definition.component";
+import { Difficulty, PlayerType } from "./player-definition/player-definition.component";
+import { GameModeLobby } from "./game-mode-definition/game-mode-lobby";
+import { ProbableWaffleLevelData } from "@fuzzy-waddle/api-interfaces";
 
 export class PlayerLobbyDefinition {
-  constructor(public playerNumber: number, public playerPosition: number | null, public joined: boolean) {}
+  constructor(
+    public playerNumber: number,
+    public playerPosition: number | null,
+    public joined: boolean
+  ) {}
 }
 
 export class PositionPlayerDefinition {
@@ -26,12 +30,12 @@ export class MapPlayerDefinition {
   allPossibleTeams: (number | null)[] = [];
   initialNrAiPlayers = 1;
 
-  constructor(public map: MapInfo) {
+  constructor(public map: ProbableWaffleLevelData) {
     this.allPossibleTeams.push(null);
     const factions = FactionDefinitions.factionTypes;
-    for (let i = 0; i < map.startPositions.length; i++) {
+    for (let i = 0; i < map.mapInfo.startPositionsOnTile.length; i++) {
       const randomFaction = factions[Math.floor(Math.random() * factions.length)];
-      const playerColor = `hsl(${(i * 360) / map.startPositions.length}, 100%, 50%)`;
+      const playerColor = `hsl(${(i * 360) / map.mapInfo.startPositionsOnTile.length}, 100%, 50%)`;
       // use initialNrAiPlayers to set the first x players to AI
       const shouldAutoJoin = i < this.initialNrAiPlayers + 1; // 1 for human player
       const isAi = i > 0 && shouldAutoJoin;
@@ -55,16 +59,19 @@ export class MapPlayerDefinition {
 }
 
 @Component({
-  selector: 'fuzzy-waddle-skirmish',
-  templateUrl: './skirmish.component.html',
-  styleUrls: ['./skirmish.component.scss']
+  selector: "fuzzy-waddle-skirmish",
+  templateUrl: "./skirmish.component.html",
+  styleUrls: ["./skirmish.component.scss"]
 })
 export class SkirmishComponent {
-  @ViewChild('mapDefinition') mapDefinition!: MapDefinitionComponent;
+  @ViewChild("mapDefinition") mapDefinition!: MapDefinitionComponent;
   selectedMap?: MapPlayerDefinition;
   gameModeLobby!: GameModeLobby;
 
-  constructor(private router: Router, private cd: ChangeDetectorRef) {}
+  constructor(
+    private router: Router,
+    private cd: ChangeDetectorRef
+  ) {}
 
   playerCountChanged() {
     this.mapDefinition.initializePlayerPositions();

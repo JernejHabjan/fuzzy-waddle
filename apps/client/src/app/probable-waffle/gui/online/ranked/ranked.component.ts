@@ -1,21 +1,21 @@
-import { Component } from '@angular/core';
-import { FactionDefinitions } from '../../../game/player/faction-definitions';
-import { Maps } from '../../../game/world/scenes/scenes';
+import { Component } from "@angular/core";
+import { FactionDefinitions } from "../../../game/player/faction-definitions";
+import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
-  selector: 'fuzzy-waddle-ranked',
-  templateUrl: './ranked.component.html',
-  styleUrls: ['./ranked.component.scss']
+  selector: "fuzzy-waddle-ranked",
+  templateUrl: "./ranked.component.html",
+  styleUrls: ["./ranked.component.scss"]
 })
 export class RankedComponent {
-  FactionDefinitions = FactionDefinitions;
-  Maps = Maps;
-  searching = false;
-  rankedOptions = {
+  protected readonly FactionDefinitions = FactionDefinitions;
+  protected readonly ProbableWaffleLevels = ProbableWaffleLevels;
+  protected searching = false;
+  protected rankedOptions = {
     factionType: undefined
   };
 
-  start() {
+  protected start() {
     this.searching = true;
     // todo
   }

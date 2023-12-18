@@ -1,4 +1,3 @@
-import { Scenes } from "./scenes";
 import {
   AtlasEmitValue,
   GameObjectSelection,
@@ -21,10 +20,8 @@ import {
 } from "../managers/controllers/input/manual-tiles/manual-tile-input.handler";
 import { ManualTile, ManualTilesHelper } from "../map/tile/manual-tiles/manual-tiles.helper";
 import { TileIndexProperties, TilePossibleProperties } from "../map/tile/types/tile-types";
-import { Vector2Simple } from "../../library/math/intersection";
 import { MapPropertiesHelper } from "../map/tile/map-properties-helper";
 import { MapHelper } from "../map/tile/map-helper";
-import { LayerLines } from "../map/tile/layer-lines";
 import { StaticObjectHelper } from "../../entity/placable-objects/static-object";
 import { DynamicObjectHelper } from "../../entity/placable-objects/dynamic-object";
 import { MapNavHelper } from "../map/map-nav-helper";
@@ -49,6 +46,7 @@ import { GathererComponent } from "../../entity/actor/components/gatherer-compon
 import { HealthComponent } from "../../entity/combat/components/health-component";
 import { DamageTypes } from "../../entity/combat/damage-types";
 import { BuilderComponent } from "../../entity/actor/components/builder-component";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -87,7 +85,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private mapPropertiesHelper!: MapPropertiesHelper;
   private mapHelper!: MapHelper;
   private gameObjectsHelper!: GameObjectsHelper;
-  private layerLines!: LayerLines;
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
   private warriorGroup: RepresentableActor[] = [];
@@ -96,7 +93,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private playerController!: PlayerController; // todo temp
 
   constructor() {
-    super({ key: Scenes.GrasslandScene });
+    super({ key: "GrasslandScene" });
   }
 
   init(data: unknown) {
@@ -164,7 +161,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     this.manualTilesHelper = new ManualTilesHelper(this.mapHelper, this, this.tilemapHelper);
     this.staticObjectHelper = new StaticObjectHelper(this.gameObjectsHelper, this);
     this.dynamicObjectHelper = new DynamicObjectHelper(this.gameObjectsHelper, this);
-    this.layerLines = new LayerLines(this);
     this.pathfinder = new Pathfinder(this);
 
     this.bindSceneCommunicator();
@@ -179,7 +175,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     // input handling
     this.scaleHandler = new DEPRECATED_scaleHandler(this.cameras, this.scale);
     this.inputHandler = new DEPRECATED_inputHandler(this.input, this.cameras.main);
-    this.cursorHandler = new CursorHandler(this.input);
+    this.cursorHandler = new CursorHandler(this);
     this.tilemapInputHandler = new TilemapInputHandler(this.mapHelper.tilemapLayer);
     this.manualTileInputHandler = new ManualTileInputHandler(this, this.mapHelper.manualLayers);
     this.mapNavHelper = new MapNavHelper(
@@ -200,9 +196,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     // this.minimapTextureHelper.createRenderTexture(); // todo temp
 
     // placing objects on map
-    this.placeAdditionalItemsOnManualLayers();
-    this.placeRawSpriteStaticObjectsOnMap();
-    this.placeRawSpriteDynamicObjectsOnMap();
+    this.placeActors();
   }
 
   override update(time: number, delta: number) {
@@ -310,34 +304,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     if (this.tileToBeReplaced) {
       SceneCommunicatorService.tileEmitterSubject.next(null);
     }
-  }
-
-  private placeAdditionalItemsOnManualLayers(): void {
-    const buildingCubeIndex = 137;
-    const buildingStairsSouthWestIndex = 191;
-    const buildingStairsSouthEastIndex = 192;
-    const waterIndex = 63;
-    this.manualTilesHelper.placeTilesOnLayer(this.mapHelper.mappedTilesetsToAtlasesWithProperties, [
-      { tilePlacementData: { tileXY: { x: 3, y: 7 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      { tilePlacementData: { tileXY: { x: 6, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      {
-        tilePlacementData: { tileXY: { x: 7, y: 4 }, z: 0 },
-        tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
-      },
-      {
-        tilePlacementData: { tileXY: { x: 4, y: 6 }, z: 0 },
-        tileIndexProperties: { tileIndex: buildingStairsSouthWestIndex }
-      },
-      { tilePlacementData: { tileXY: { x: 0, y: 2 }, z: 0 }, tileIndexProperties: { tileIndex: waterIndex } },
-
-      // layer 1
-      { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      {
-        tilePlacementData: { tileXY: { x: 6, y: 4 }, z: 1 },
-        tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
-      }
-    ]);
   }
 
   private destroyListener() {
@@ -466,52 +432,19 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
         this.tileToBeReplaced = tileNr;
         this.atlasToBePlaced = null; // stop placing atlas
         this.selected = [];
-        this.conditionallyDrawLayerLines();
       }),
       SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
         this.editorLayerNr = layerNr;
-        this.conditionallyDrawLayerLines();
       }),
       SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
         this.atlasToBePlaced = atlas;
         this.tileToBeReplaced = null; // stop placing tile
         this.selected = [];
-        this.conditionallyDrawLayerLines();
       })
     );
   }
 
-  private conditionallyDrawLayerLines() {
-    if (this.tileToBeReplaced === null && this.atlasToBePlaced === null) return;
-    this.layerLines.drawLayerLines(this.editorLayerNr);
-  }
-
-  private placeRawSpriteStaticObjectsOnMap(): void {
-    this.staticObjectHelper.placeRawSpriteObjectsOnMap([
-      // {
-      //   tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 },
-      //   placeableObjectProperties: {
-      //     placeableAtlasProperties: {
-      //       texture: 'house1',
-      //       frame: 'house1_1'
-      //     }
-      //   }
-      // }
-    ]);
-  }
-
-  private placeRawSpriteDynamicObjectsOnMap() {
-    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
-      // {
-      //   tilePlacementData: { tileXY: { x: 1, y: 1 }, z: 0 },
-      //   placeableObjectProperties: {
-      //     placeableAtlasProperties: {
-      //       texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
-      //       frame: Warrior.textureName
-      //     }
-      //   }
-      // }
-    ]);
+  private placeActors() {
     this.playerController = new PlayerController(); // todo temp
     this.playerController.components.findComponent(PlayerResourcesComponent).addResources(
       new Map<ResourceType, number>([
@@ -547,21 +480,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     const builderComponent = worker.components.findComponent(BuilderComponent);
     // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer
     builderComponent.beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 });
-
-    // todo this.demoPlaceWarriors();
-  }
-
-  private demoPlaceWarriors() {
-    let i = 0;
-    this.mapHelper.tilemapLayer.forEachTile((tile) => {
-      if (tile.index === -1) return;
-      if (i < 50) {
-        this.placeWarrior({ tileXY: { x: tile.x, y: tile.y }, z: 0 });
-      }
-
-      i++;
-    });
-    console.log("placed " + i + " warriors");
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {

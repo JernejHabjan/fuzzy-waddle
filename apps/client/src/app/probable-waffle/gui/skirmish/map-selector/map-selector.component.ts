@@ -1,21 +1,21 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MapIds, Maps } from '../../../game/world/scenes/scenes';
-import { MapPlayerDefinition } from '../skirmish.component';
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { MapPlayerDefinition } from "../skirmish.component";
+import { ProbableWaffleLevelEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
-  selector: 'fuzzy-waddle-map-selector',
-  templateUrl: './map-selector.component.html',
-  styleUrls: ['./map-selector.component.scss']
+  selector: "fuzzy-waddle-map-selector",
+  templateUrl: "./map-selector.component.html",
+  styleUrls: ["./map-selector.component.scss"]
 })
 export class MapSelectorComponent implements OnInit {
   dropdownVisible = false;
   mapPlayerDefinitions: MapPlayerDefinition[];
   selectedMap?: MapPlayerDefinition;
   @Output() selectedMapChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
-  private readonly defaultMap = MapIds.GrasslandLarge;
+  private readonly defaultMap: ProbableWaffleLevelEnum = ProbableWaffleLevelEnum.RiverCrossing;
 
   constructor() {
-    this.mapPlayerDefinitions = Maps.maps.map((map) => new MapPlayerDefinition(map));
+    this.mapPlayerDefinitions = Object.values(ProbableWaffleLevels).map((map) => new MapPlayerDefinition(map));
   }
 
   selectMap(mapPlayerDefinition: MapPlayerDefinition) {

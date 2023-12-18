@@ -7,9 +7,9 @@ import {
   Input,
   Output,
   ViewChild
-} from '@angular/core';
-import { MapPlayerDefinition, PlayerLobbyDefinition, PositionPlayerDefinition } from '../skirmish.component';
-import { Difficulty } from '../player-definition/player-definition.component';
+} from "@angular/core";
+import { MapPlayerDefinition, PlayerLobbyDefinition, PositionPlayerDefinition } from "../skirmish.component";
+import { Difficulty } from "../player-definition/player-definition.component";
 
 /**
  * canvas element containing info about current player and position.
@@ -32,9 +32,9 @@ interface DisplayRect {
 }
 
 @Component({
-  selector: 'fuzzy-waddle-map-definition',
-  templateUrl: './map-definition.component.html',
-  styleUrls: ['./map-definition.component.scss']
+  selector: "fuzzy-waddle-map-definition",
+  templateUrl: "./map-definition.component.html",
+  styleUrls: ["./map-definition.component.scss"]
 })
 export class MapDefinitionComponent {
   private readonly preferredCanvasWidth = 400;
@@ -62,7 +62,7 @@ export class MapDefinitionComponent {
 
   constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
 
-  @ViewChild('canvas')
+  @ViewChild("canvas")
   get canvas(): ElementRef | undefined {
     return this._canvas;
   }
@@ -100,12 +100,12 @@ export class MapDefinitionComponent {
 
     const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
     const map = mapPlayerDefinition.map;
-    const mapWidth = map.mapWidth;
-    const mapHeight = map.mapHeight;
+    const mapWidth = map.mapInfo.widthTiles;
+    const mapHeight = map.mapInfo.heightTiles;
     const isoCoordinates: { x: number; y: number }[] = [];
-    map.startPositions.forEach((startPosition) => {
-      const startPositionX = startPosition.tileXY.x;
-      const startPositionY = startPosition.tileXY.y;
+    map.mapInfo.startPositionsOnTile.forEach((startPosition) => {
+      const startPositionX = startPosition.x;
+      const startPositionY = startPosition.y;
       const startPositionZ = startPosition.z;
 
       // convert to isometric coordinates
@@ -128,7 +128,7 @@ export class MapDefinitionComponent {
     return isoCoordinates;
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener("window:resize", ["$event"])
   onResize() {
     this.setCanvasSize();
     this.recalculateOffset();
@@ -233,7 +233,7 @@ export class MapDefinitionComponent {
     }
     this.initialized = true;
     const canvas = this.canvas.nativeElement as HTMLCanvasElement;
-    this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     // get canvas related references
     this.recalculateOffset();
@@ -277,7 +277,9 @@ export class MapDefinitionComponent {
     return new Promise((resolve) => {
       const img = new Image();
       this.img = img;
-      img.src = 'assets/probable-waffle/tilemaps/' + (this.mapPlayerDefinition as MapPlayerDefinition).map.image;
+      img.src =
+        "assets/probable-waffle/tilemaps/thumbnails/" +
+        (this.mapPlayerDefinition as MapPlayerDefinition).map.presentation.imagePath;
       img.onload = () => resolve();
     });
   }
@@ -314,13 +316,13 @@ export class MapDefinitionComponent {
    * percent in is 0.0 - 1.0
    */
   private lightenColor(color: string, percent: number) {
-    const hsl = color.substring(4, color.length - 1).split(',');
+    const hsl = color.substring(4, color.length - 1).split(",");
 
     const h = hsl[0];
     const s = hsl[1];
     const l = hsl[2];
     const lPercent = parseFloat(l) + percent * 100;
-    return 'hsl(' + h + ',' + s + ',' + lPercent + '%)';
+    return "hsl(" + h + "," + s + "," + lPercent + "%)";
   }
 
   /**
@@ -754,6 +756,6 @@ export class MapDefinitionComponent {
    * blank start position
    */
   private drawStartPositionSquare(x: number, y: number) {
-    this.rect(x, y, this.rectangleWidth, this.rectangleHeight, 'white');
+    this.rect(x, y, this.rectangleWidth, this.rectangleHeight, "white");
   }
 }

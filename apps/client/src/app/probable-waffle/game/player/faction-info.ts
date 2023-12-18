@@ -1,7 +1,7 @@
-import {TechTreeComponent} from './tech-tree';
-import {Vector2Simple} from '../library/math/intersection';
-import {FactionType} from './faction-definitions';
-import {ActorType} from '../entity/assets/types/actor-type';
+import { TechTreeComponent } from "./tech-tree";
+import { FactionType } from "./faction-definitions";
+import { ActorType } from "../entity/assets/types/actor-type";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class FactionInfo {
   constructor(
@@ -26,8 +26,7 @@ export class FactionInfo {
      */
     public readonly buildOrder: ActorType[] = [], // todo query then ActorTypeLookup constant
     public readonly includeInitialActorsInBuildOrder = true
-  ) {
-  }
+  ) {}
 
   getBuildOrder(): ActorType[] {
     const classes: any[] = [];

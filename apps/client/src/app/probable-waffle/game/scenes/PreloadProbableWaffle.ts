@@ -2,16 +2,13 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
-
 import {
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
   ProbableWaffleGameState,
   ProbableWaffleGameStateData,
-  ProbableWaffleLevelEnum,
   ProbableWaffleLevels,
   ProbableWafflePlayer,
   ProbableWafflePlayerControllerData,
@@ -81,12 +78,12 @@ export default class PreloadProbableWaffle extends BaseScene<
 
     this.load.pack("asset-pack", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json");
     const map = this.getMap();
-    this.load.pack("asset-pack-map", "assets/probable-waffle/asset-packers/maps/" + map.assetPath);
+    this.load.pack("asset-pack-map", "assets/probable-waffle/asset-packers/maps/" + map.loader.mapLoaderAssetPackPath);
   }
 
   create() {
     const map = this.getMap();
-    this.scene.start(map.sceneKey);
+    this.scene.start(map.loader.mapSceneKey);
   }
 
   private getMap() {

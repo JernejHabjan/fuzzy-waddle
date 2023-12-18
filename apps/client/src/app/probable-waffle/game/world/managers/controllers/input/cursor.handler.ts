@@ -1,19 +1,16 @@
-import { Input } from 'phaser';
-
 export class CursorHandler {
-  public static readonly penCursor = 'url(assets/probable-waffle/input/cursors/pen.cur), pointer';
-  private input: Input.InputPlugin;
+  public static readonly penCursor = "url(assets/probable-waffle/input/cursors/pen.cur), pointer";
 
-  constructor(input: Input.InputPlugin) {
-    this.input = input;
+  constructor(private readonly scene: Phaser.Scene) {
     this.setupCursor();
+    scene.events.once("destroy", this.destroy, this);
   }
 
   destroy() {
-    this.input.setDefaultCursor('default');
+    this.scene.input.setDefaultCursor("default");
   }
 
   private setupCursor() {
-    this.input.setDefaultCursor('url(assets/probable-waffle/input/cursors/sc2/SC2-cursor.cur), pointer');
+    this.scene.input.setDefaultCursor("url(assets/probable-waffle/input/cursors/sc2/SC2-cursor.cur), pointer");
   }
 }

@@ -22,8 +22,8 @@
     <div>
       Map Pool
       <div>
-        <div *ngFor="let map of Maps.maps">
-          <input checked="checked" name="map" type="checkbox" value="{{ map.name }}" />{{ map.name }}
+        <div *ngFor='let level of ProbableWaffleLevels | keyvalue'>
+          <input checked='checked' name='map' type='checkbox' value='{{ level.value.name }}' />{{ level.value.name }}
         </div>
       </div>
     </div>

@@ -35,6 +35,9 @@ import {
   ProbableWaffleSpectator,
   ProbableWaffleSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
+import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
+import { MapSizeInfo } from "../world/const/map-size.info";
+import { GameObjects, Input } from "phaser";
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends BaseScene<
@@ -145,11 +148,59 @@ export default class MapEmberEnclave extends BaseScene<
 
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     new InputHandler(this);
+    new CursorHandler(this);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
 
     console.log("playing level", this.baseGameData.gameInstance.data.gameModeData!.level!.id);
+
+    this.input.on(
+      Phaser.Input.Events.POINTER_DOWN,
+      (pointer: Input.Pointer, gameObjectsUnderCursor: GameObjects.GameObject[], event: TouchEvent | MouseEvent) => {
+        // Check if an interactive object was clicked
+        if (gameObjectsUnderCursor.length > 0) {
+          // An interactive object was clicked
+          console.log("clicked on interactive objects", gameObjectsUnderCursor.length);
+          // Handle the click on the interactive object
+          // ...
+        } else {
+          // No interactive object was clicked, handle tilemap click
+
+          const tilemap = this.tilemap;
+          // offset pointer by camera position
+          const pointerX = pointer.x + this.cameras.main.scrollX;
+          const pointerY = pointer.y + this.cameras.main.scrollY + MapSizeInfo.info.tileHeight;
+
+          const clickedTileXY = new Phaser.Math.Vector2();
+          Phaser.Tilemaps.Components.IsometricWorldToTileXY(
+            pointerX,
+            pointerY,
+            true,
+            clickedTileXY,
+            this.cameras.main,
+            tilemap.layer
+          );
+
+          const maxTileX = tilemap.width;
+          const maxTileY = tilemap.height;
+          const minTileX = 0;
+          const minTileY = 0;
+          if (
+            clickedTileXY.x < minTileX ||
+            clickedTileXY.x > maxTileX ||
+            clickedTileXY.y < minTileY ||
+            clickedTileXY.y > maxTileY
+          ) {
+            return;
+          }
+          console.log("clicked on tile", clickedTileXY.x, clickedTileXY.y);
+
+          // ...
+        }
+      },
+      this
+    );
   }
 
   /* END-USER-CODE */

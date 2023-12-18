@@ -1,8 +1,9 @@
-import { MapSizeInfo } from '../../../../const/map-size.info';
-import { Intersection, Vector2Simple } from '../../../../../library/math/intersection';
-import { ManualTile, ManualTileLayer } from '../../../../map/tile/manual-tiles/manual-tiles.helper';
-import { IsoHelper } from '../../../../map/tile/iso-helper';
-import { Scene } from 'phaser';
+import { MapSizeInfo } from "../../../../const/map-size.info";
+import { Intersection } from "../../../../../library/math/intersection";
+import { ManualTile, ManualTileLayer } from "../../../../map/tile/manual-tiles/manual-tiles.helper";
+import { IsoHelper } from "../../../../map/tile/iso-helper";
+import { Scene } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface PossibleClickCoords {
   z: number;
@@ -10,7 +11,10 @@ export interface PossibleClickCoords {
 }
 
 export class ManualTileInputHandler {
-  constructor(private readonly scene: Scene, private readonly manualLayers: ManualTileLayer[]) {}
+  constructor(
+    private readonly scene: Scene,
+    private readonly manualLayers: ManualTileLayer[]
+  ) {}
 
   /**
    * returns true if the tile was found and selected
@@ -32,7 +36,7 @@ export class ManualTileInputHandler {
     const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
     const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
-    const pointerToTileXY = IsoHelper.isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
+    const pointerToTileXY = IsoHelper.DEPRECATED_isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
     const possibleCoords: PossibleClickCoords[] = [];
     for (const manualLayer of this.manualLayers) {
@@ -59,7 +63,7 @@ export class ManualTileInputHandler {
   }
 
   private geExistingManualTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
-    const pointerToTileXY = IsoHelper.isometricWorldToTileXY(worldX, worldY, true);
+    const pointerToTileXY = IsoHelper.DEPRECATED_isometricWorldToTileXY(worldX, worldY, true);
     const clickPointToTileWorldXY = {
       x: worldX + MapSizeInfo.info.tileWidthHalf,
       y: worldY + MapSizeInfo.info.tileWidthHalf

@@ -4,7 +4,7 @@
 
 import ActorContainer from "../../../entity/actor/ActorContainer";
 /* START-USER-IMPORTS */
-import { Vector2Simple } from "../../../library/math/intersection";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class Olival extends ActorContainer {

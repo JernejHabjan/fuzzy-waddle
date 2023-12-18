@@ -6,15 +6,15 @@
     <div>
       <div>
         Filter:
-        <div *ngFor="let map of Maps.maps">
+        <div *ngFor='let level of ProbableWaffleLevels  | keyvalue'>
           <input
             (change)="filter($event)"
-            id="{{ map.id }}"
-            name="{{ map.name }}"
+            id='{{ level.value.id }}'
+            name='{{ level.value.name }}'
             type="checkbox"
-            value="{{ map.id }}"
+            value='{{ level.value.id }}'
           />
-          <label for="{{ map.id }}">{{ map.name }}</label>
+          <label for='{{ level.value.id }}'>{{ level.value.name }}</label>
         </div>
       </div>
       <table class="table table-striped">

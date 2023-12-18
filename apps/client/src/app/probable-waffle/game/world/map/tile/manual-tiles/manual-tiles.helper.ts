@@ -1,12 +1,12 @@
-import { MapDefinitions, MapSizeInfo, TileDefinitions } from '../../../const/map-size.info';
-import { SlopeDirection, TileIndexProperties, TileLayerProperties } from '../types/tile-types';
-import { TilemapHelper } from '../tilemap.helper';
-import { Vector2Simple } from '../../../../library/math/intersection';
-import { TilemapToAtlasMap } from '../../../scenes/grassland.scene';
-import { TilePlacementData, TileWorldData } from '../../../managers/controllers/input/tilemap/tilemap-input.handler';
-import { PossibleClickCoords } from '../../../managers/controllers/input/manual-tiles/manual-tile-input.handler';
-import { MapHelper } from '../map-helper';
-import { GameObjects, Geom, Scene } from 'phaser';
+import { MapDefinitions, MapSizeInfo, TileDefinitions } from "../../../const/map-size.info";
+import { SlopeDirection, TileIndexProperties, TileLayerProperties } from "../types/tile-types";
+import { TilemapHelper } from "../tilemap.helper";
+import { TilemapToAtlasMap } from "../../../scenes/grassland.scene";
+import { TilePlacementData, TileWorldData } from "../../../managers/controllers/input/tilemap/tilemap-input.handler";
+import { PossibleClickCoords } from "../../../managers/controllers/input/manual-tiles/manual-tile-input.handler";
+import { MapHelper } from "../map-helper";
+import { GameObjects, Geom, Scene } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface ManualTile extends TilePlacementWorldWithProperties {
   gameObjectImage: GameObjects.Image;
@@ -48,15 +48,6 @@ export class ManualTilesHelper {
       });
     }
     this.mapHelper.manualLayers = layers;
-  }
-
-  placeTilesOnLayer(
-    tilemapToAtlasMap: TilemapToAtlasMap[],
-    data: { tilePlacementData: TilePlacementData; tileIndexProperties: TileIndexProperties }[]
-  ): void {
-    data.forEach((d) => {
-      this.placeTileOnManualLayer(tilemapToAtlasMap, d.tilePlacementData, d.tileIndexProperties);
-    });
   }
 
   placeTileOnManualLayer(
@@ -189,7 +180,7 @@ export class ManualTilesHelper {
         break;
       case SlopeDirection.NorthWest:
       case SlopeDirection.NorthEast:
-        throw new Error('Not implemented');
+        throw new Error("Not implemented");
     }
     if (manualRectangleInputInterceptor !== null) {
       this.applyPositionModifierToRectangleInputInterceptor(worldXY, manualRectangleInputInterceptor);

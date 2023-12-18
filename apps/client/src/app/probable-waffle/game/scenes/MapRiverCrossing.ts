@@ -65,6 +65,7 @@ import {
   ProbableWaffleSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleGameData } from "./probable-waffle-game-data";
+import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends BaseScene<
@@ -469,6 +470,7 @@ export default class MapRiverCrossing extends BaseScene<
 
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     new InputHandler(this);
+    new CursorHandler(this);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);

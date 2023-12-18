@@ -1,67 +1,67 @@
-import { Component, OnInit } from '@angular/core';
-import { MapIds, Maps } from '../../../game/world/scenes/scenes';
+import { Component, OnInit } from "@angular/core";
+import { ProbableWaffleLevelEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 
 type Lobby = {
   host: string;
   players: {
     name: string;
   }[];
-  map: MapIds;
+  map: ProbableWaffleLevelEnum;
 };
 
 @Component({
-  selector: 'fuzzy-waddle-lobbies',
-  templateUrl: './lobbies.component.html',
-  styleUrls: ['./lobbies.component.scss']
+  selector: "fuzzy-waddle-lobbies",
+  templateUrl: "./lobbies.component.html",
+  styleUrls: ["./lobbies.component.scss"]
 })
 export class LobbiesComponent implements OnInit {
-  Maps = Maps;
-  lobbies: Lobby[] = [];
-  selectedLobby?: Lobby;
+  protected readonly ProbableWaffleLevels = ProbableWaffleLevels;
+  protected lobbies: Lobby[] = [];
+  protected selectedLobby?: Lobby;
 
   ngOnInit(): void {
     this.pull();
   }
 
-  pull = () => {
+  private pull = () => {
     // todo - pull lobbies from server
     this.lobbies = [
       {
-        host: 'host1',
+        host: "host1",
         players: [
           {
-            name: 'player1'
+            name: "player1"
           },
           {
-            name: 'player2'
+            name: "player2"
           }
         ],
-        map: MapIds.GrasslandSmall
+        map: ProbableWaffleLevelEnum.EmberEnclave
       },
       {
-        host: 'host2',
+        host: "host2",
         players: [
           {
-            name: 'player3'
+            name: "player3"
           },
           {
-            name: 'player4'
+            name: "player4"
           }
         ],
-        map: MapIds.GrasslandLarge
+        map: ProbableWaffleLevelEnum.RiverCrossing
       }
     ];
   };
 
-  join() {
+  protected join() {
     // todo - do something with this.selectedLobby
   }
 
-  select(lobby: Lobby) {
+  protected select(lobby: Lobby) {
     this.selectedLobby = lobby;
   }
 
-  filter($event: Event) {
+  protected filter($event: Event) {
     // todo - filter lobbies
 
     const mapId = ($event.target as HTMLInputElement).value;
