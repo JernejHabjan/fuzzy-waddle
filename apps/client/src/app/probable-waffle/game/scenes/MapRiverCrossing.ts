@@ -58,9 +58,9 @@ import ActorContainer from "../entity/actor/ActorContainer";
 import { AnimatedTilemap } from "./AnimatedTile";
 /* END-USER-IMPORTS */
 
-export default class Map1 extends Phaser.Scene {
+export default class MapRiverCrossing extends Phaser.Scene {
   constructor() {
-    super("Map1");
+    super("MapRiverCrossing");
 
     /* START-USER-CTR-CODE */
     // Write your code here.

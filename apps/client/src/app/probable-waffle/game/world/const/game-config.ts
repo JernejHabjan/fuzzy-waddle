@@ -1,16 +1,16 @@
-import { environment } from '../../../../../environments/environment';
-import { Types } from 'phaser';
-import { baseGameConfig } from '../../../../shared/game/base-game.config';
-import Map1 from "../../scenes/Map1";
+import { environment } from "../../../../../environments/environment";
+import { Types } from "phaser";
+import { baseGameConfig } from "../../../../shared/game/base-game.config";
+import MapRiverCrossing from "../../scenes/MapRiverCrossing";
 import PreloadProbableWaffle from "../../scenes/PreloadProbableWaffle";
-import {Boot} from "../../scenes/Boot";
+import { Boot } from "../../scenes/Boot";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
   // scene: [GrasslandScene, PlaygroundScene],
-  scene: [Boot, PreloadProbableWaffle, Map1],
+  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing],
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       fps: 60,
       gravity: { y: 0 },
@@ -18,5 +18,5 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
     }
   },
   pixelArt: true,
-  backgroundColor: '#222'
+  backgroundColor: "#222"
 };

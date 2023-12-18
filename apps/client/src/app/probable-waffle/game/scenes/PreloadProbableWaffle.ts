@@ -2,15 +2,15 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
-import PreloadBarUpdaterScript from '../../../other/Template/script-nodes/PreloadBarUpdaterScript';
+import Phaser from "phaser";
+import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
-import assetPackUrl from '../../../../assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json';
+import assetPackUrl from "../../../../assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json";
 /* END-USER-IMPORTS */
 
 export default class PreloadProbableWaffle extends Phaser.Scene {
   constructor() {
-    super('PreloadProbableWaffle');
+    super("PreloadProbableWaffle");
 
     /* START-USER-CTR-CODE */
     // Write your code here.
@@ -19,7 +19,7 @@ export default class PreloadProbableWaffle extends Phaser.Scene {
 
   editorCreate(): void {
     // guapen
-    const guapen = this.add.image(505.0120544433594, 360, 'guapen');
+    const guapen = this.add.image(505.0120544433594, 360, "guapen");
     guapen.scaleX = 0.32715486817515643;
     guapen.scaleY = 0.32715486817515643;
 
@@ -39,11 +39,11 @@ export default class PreloadProbableWaffle extends Phaser.Scene {
     progressBarBg.isStroked = true;
 
     // loadingText
-    const loadingText = this.add.text(552.0120849609375, 329, '', {});
-    loadingText.text = 'Loading...';
-    loadingText.setStyle({ color: '#e0e0e0', fontFamily: 'arial', fontSize: '20px' });
+    const loadingText = this.add.text(552.0120849609375, 329, "", {});
+    loadingText.text = "Loading...";
+    loadingText.setStyle({ color: "#e0e0e0", fontFamily: "arial", fontSize: "20px" });
 
-    this.events.emit('scene-awake');
+    this.events.emit("scene-awake");
   }
 
   /* START-USER-CODE */
@@ -53,11 +53,11 @@ export default class PreloadProbableWaffle extends Phaser.Scene {
   preload() {
     this.editorCreate();
 
-    this.load.pack('asset-pack', assetPackUrl as any);
+    this.load.pack("asset-pack", assetPackUrl as any);
   }
 
   create() {
-    this.scene.start('Map1');
+    this.scene.start("MapRiverCrossing");
   }
 
   /* END-USER-CODE */

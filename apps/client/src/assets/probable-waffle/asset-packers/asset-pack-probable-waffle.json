@@ -313,8 +313,8 @@
                 "key": "slingshot_female_walk"
             },
             {
-                "url": "assets/probable-waffle/tilemaps/tiles.json",
-                "path": "assets/probable-waffle/tilemaps/tiles.json",
+              "url": "assets/probable-waffle/tilemaps/river_crossing.json",
+              "path": "assets/probable-waffle/tilemaps/river_crossing.json",
                 "type": "tilemapTiledJSON",
                 "key": "tiles"
             },

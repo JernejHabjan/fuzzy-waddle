@@ -7,7 +7,7 @@
         "autoImport": true,
         "preloadPackFiles": [],
         "createMethodName": "editorCreate",
-        "sceneKey": "Map1",
+        "sceneKey": "MapRiverCrossing",
         "compilerOutputLanguage": "TYPE_SCRIPT",
         "borderWidth": 1280,
         "borderHeight": 720
