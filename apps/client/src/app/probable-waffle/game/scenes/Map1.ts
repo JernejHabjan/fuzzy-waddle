@@ -3,12 +3,12 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
+import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
 import Temple from "../prefabs/buildings/tivara/Temple";
-import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
 import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/SkaduweeWorkerFemale";
 import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/SkaduweeRangedFemale";
@@ -39,11 +39,20 @@ import RockPiles6 from "../prefabs/outside/nature/rock_piles/RockPiles6";
 import RockPiles2 from "../prefabs/outside/nature/rock_piles/RockPiles2";
 import RockPiles3 from "../prefabs/outside/nature/rock_piles/RockPiles3";
 import Tree4 from "../prefabs/outside/foliage/trees/resources/Tree4";
-import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Tree6 from "../prefabs/outside/foliage/trees/resources/Tree6";
 import Tree1 from "../prefabs/outside/foliage/trees/resources/Tree1";
 import BushDry from "../prefabs/outside/foliage/bushes/BushDry";
 import BushUpwardsSmall from "../prefabs/outside/foliage/bushes/BushUpwardsSmall";
+import WorkMill from "../prefabs/buildings/tivara/WorkMill";
+import BlockObsidian2 from "../prefabs/outside/nature/block_obsidian/BlockObsidian2";
+import BlockObsidian1 from "../prefabs/outside/nature/block_obsidian/BlockObsidian1";
+import BlockObsidianLava5 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
+import BlockObsidianLava3 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava3";
+import BlockObsidianLava1 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava1";
+import BlockObsidianLava2 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava2";
+import BlockStoneWater1 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater1";
+import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
+import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
 import { AnimatedTilemap } from "./AnimatedTile";
@@ -66,6 +75,14 @@ export default class Map1 extends Phaser.Scene {
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles"], -32, 0);
 
+    // tree_12
+    const tree_12 = new Tree7(this, -16, 1376);
+    this.add.existing(tree_12);
+
+    // tree_11
+    const tree_11 = new Tree7(this, 160, 1328);
+    this.add.existing(tree_11);
+
     // sandhold
     const sandhold = new Sandhold(this, 32, 592);
     this.add.existing(sandhold);
@@ -85,10 +102,6 @@ export default class Map1 extends Phaser.Scene {
     // temple
     const temple = new Temple(this, -176, 464);
     this.add.existing(temple);
-
-    // workMill
-    const workMill = new WorkMill(this, -608, 866);
-    this.add.existing(workMill);
 
     // skaduweeWorkerMale
     const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
@@ -279,23 +292,23 @@ export default class Map1 extends Phaser.Scene {
     this.add.existing(tree_1);
 
     // tree_2
-    const tree_2 = new Tree4(this, -1024, 816);
+    const tree_2 = new Tree4(this, -304, 1040);
     this.add.existing(tree_2);
 
     // tree1
-    const tree1 = new Tree1(this, -1200, 864);
+    const tree1 = new Tree1(this, -448, 1200);
     this.add.existing(tree1);
 
     // tree_3
-    const tree_3 = new Tree4(this, -752, 1072);
+    const tree_3 = new Tree4(this, -256, 1168);
     this.add.existing(tree_3);
 
     // treeTrunk_1
-    const treeTrunk_1 = new TreeTrunk(this, -934, 903);
+    const treeTrunk_1 = new TreeTrunk(this, -384, 1200);
     this.add.existing(treeTrunk_1);
 
     // tree_4
-    const tree_4 = new Tree5(this, 308, 1322);
+    const tree_4 = new Tree5(this, 432, 1312);
     this.add.existing(tree_4);
 
     // tree_5
@@ -307,7 +320,7 @@ export default class Map1 extends Phaser.Scene {
     this.add.existing(bushDry);
 
     // bushDry_1
-    const bushDry_1 = new BushDry(this, -628, 991);
+    const bushDry_1 = new BushDry(this, -368, 1136);
     this.add.existing(bushDry_1);
 
     // bushDry_2
@@ -331,12 +344,132 @@ export default class Map1 extends Phaser.Scene {
     this.add.existing(bushUpwardsSmall_1);
 
     // bushDry_4
-    const bushDry_4 = new BushDry(this, -976, 784);
+    const bushDry_4 = new BushDry(this, -80, 1072);
     this.add.existing(bushDry_4);
 
     // tree
     const tree = new Tree5(this, -704, 512);
     this.add.existing(tree);
+
+    // workMill
+    const workMill = new WorkMill(this, -592, 512);
+    this.add.existing(workMill);
+
+    // blockObsidian2
+    const blockObsidian2 = new BlockObsidian2(this, -1248, 640);
+    this.add.existing(blockObsidian2);
+
+    // blockObsidian1
+    const blockObsidian1 = new BlockObsidian1(this, -1280, 656);
+    this.add.existing(blockObsidian1);
+
+    // blockObsidian
+    const blockObsidian = new BlockObsidian1(this, -1248, 672);
+    this.add.existing(blockObsidian);
+
+    // blockObsidian_1
+    const blockObsidian_1 = new BlockObsidian2(this, -1312, 672);
+    this.add.existing(blockObsidian_1);
+
+    // blockObsidian_3
+    const blockObsidian_3 = new BlockObsidian2(this, -1344, 688);
+    this.add.existing(blockObsidian_3);
+
+    // blockObsidian_2
+    const blockObsidian_2 = new BlockObsidian1(this, -1296, 704);
+    this.add.existing(blockObsidian_2);
+
+    // blockObsidian_5
+    const blockObsidian_5 = new BlockObsidian1(this, -1376, 704);
+    this.add.existing(blockObsidian_5);
+
+    // blockObsidian_4
+    const blockObsidian_4 = new BlockObsidian1(this, -1344, 720);
+    this.add.existing(blockObsidian_4);
+
+    // blockObsidianLava5
+    const blockObsidianLava5 = new BlockObsidianLava5(this, -1376, 736);
+    this.add.existing(blockObsidianLava5);
+
+    // blockObsidianLava3
+    const blockObsidianLava3 = new BlockObsidianLava3(this, -1408, 688);
+    this.add.existing(blockObsidianLava3);
+
+    // blockObsidian_7
+    const blockObsidian_7 = new BlockObsidian1(this, -1440, 736);
+    this.add.existing(blockObsidian_7);
+
+    // blockObsidian_6
+    const blockObsidian_6 = new BlockObsidian1(this, -1440, 704);
+    this.add.existing(blockObsidian_6);
+
+    // blockObsidianLava1
+    const blockObsidianLava1 = new BlockObsidianLava1(this, -1408, 752);
+    this.add.existing(blockObsidianLava1);
+
+    // blockObsidian_8
+    const blockObsidian_8 = new BlockObsidian1(this, -1472, 752);
+    this.add.existing(blockObsidian_8);
+
+    // blockObsidian_9
+    const blockObsidian_9 = new BlockObsidian2(this, -1440, 768);
+    this.add.existing(blockObsidian_9);
+
+    // blockObsidianLava2
+    const blockObsidianLava2 = new BlockObsidianLava2(this, -1408, 784);
+    this.add.existing(blockObsidianLava2);
+
+    // blockObsidian_10
+    const blockObsidian_10 = new BlockObsidian1(this, -1440, 800);
+    this.add.existing(blockObsidian_10);
+
+    // blockStone_12
+    const blockStone_12 = new BlockStone1(this, 352, 976);
+    this.add.existing(blockStone_12);
+
+    // blockStoneWater1
+    const blockStoneWater1 = new BlockStoneWater1(this, 384, 944);
+    this.add.existing(blockStoneWater1);
+
+    // blockStoneWater4
+    const blockStoneWater4 = new BlockStoneWater4(this, 352, 944);
+    this.add.existing(blockStoneWater4);
+
+    // blockStoneWater3
+    const blockStoneWater3 = new BlockStoneWater3(this, 416, 976);
+    this.add.existing(blockStoneWater3);
+
+    // blockStoneWater
+    const blockStoneWater = new BlockStoneWater4(this, 384, 992);
+    this.add.existing(blockStoneWater);
+
+    // rockPiles_1
+    const rockPiles_1 = new RockPiles5(this, 320, 992);
+    this.add.existing(rockPiles_1);
+
+    // tree_6
+    const tree_6 = new Tree7(this, 368, 1328);
+    this.add.existing(tree_6);
+
+    // tree_7
+    const tree_7 = new Tree6(this, 304, 1376);
+    this.add.existing(tree_7);
+
+    // tree_8
+    const tree_8 = new Tree7(this, 512, 1312);
+    this.add.existing(tree_8);
+
+    // tree_9
+    const tree_9 = new Tree5(this, 416, 1376);
+    this.add.existing(tree_9);
+
+    // tree_10
+    const tree_10 = new Tree7(this, 192, 1440);
+    this.add.existing(tree_10);
+
+    // tree_13
+    const tree_13 = new Tree7(this, 112, 1520);
+    this.add.existing(tree_13);
 
     // infantryInn (prefab fields)
     infantryInn.z = 0;
@@ -364,6 +497,18 @@ export default class Map1 extends Phaser.Scene {
 
     // tree4 (prefab fields)
     tree4.z = 160;
+
+    // blockObsidianLava3 (prefab fields)
+    blockObsidianLava3.z = 32;
+
+    // blockObsidian_6 (prefab fields)
+    blockObsidian_6.z = 32;
+
+    // blockStoneWater1 (prefab fields)
+    blockStoneWater1.z = 16;
+
+    // blockStoneWater4 (prefab fields)
+    blockStoneWater4.z = 32;
 
     this.tilemap = tilemap;
 
@@ -398,6 +543,7 @@ export default class Map1 extends Phaser.Scene {
     this.zoomWithScroll();
     // this.enableLights();
     this.animatedTilemap = new AnimatedTilemap(this.tilemap, this.tilemap.tilesets[0]);
+    this.events.once("shutdown", this.destroy, this);
   }
 
   enableLights = () => {
@@ -439,10 +585,11 @@ export default class Map1 extends Phaser.Scene {
 
   handleZSort = () => {
     this.children.each((child: any) => {
-      child.depth = child.y;
+      if (!child.setDepth) return;
+      child.setDepth(child.y);
       if (child instanceof ActorContainer) {
         const z = child.z;
-        child.depth = child.y + z * 2;
+        child.setDepth(child.y + z * 2);
       }
     });
   };
@@ -450,27 +597,49 @@ export default class Map1 extends Phaser.Scene {
     // set camera to the center of isometric tilemap
 
     const maxMapLayers = 8;
-    const mapLeft = -this.tilemap.widthInPixels / 2;
+    // noinspection UnnecessaryLocalVariableJS
+    const topMarginDueToMapLayers = maxMapLayers * 32;
+    const topMargin = topMarginDueToMapLayers;
+    // noinspection UnnecessaryLocalVariableJS
+    const leftMarginDueToHud = 150;
+    const leftMargin = leftMarginDueToHud;
+    // noinspection UnnecessaryLocalVariableJS
+    const bottomMarginDueToHud = 100;
+    const bottomMargin = bottomMarginDueToHud;
+    const mapLeft = -this.tilemap.widthInPixels / 2 - leftMargin;
     const mapRight = +this.tilemap.widthInPixels / 2;
-    const mapTop = -maxMapLayers * 32;
-    const mapBottom = this.tilemap.heightInPixels;
+    const mapTop = -topMargin;
+    const mapBottom = this.tilemap.heightInPixels + bottomMargin;
 
     this.cameras.main.setBounds(mapLeft, mapTop, mapRight - mapLeft, mapBottom - mapTop, true);
   };
 
   zoomWithScroll = () => {
-    this.input.on("wheel", (pointer: any, gameObjects: any, deltaX: any, deltaY: any, deltaZ: any) => {
-      if (deltaY > 0) {
-        this.cameras.main.zoom -= 0.1;
-      } else {
-        this.cameras.main.zoom += 0.1;
-      }
-    });
+    this.input.on("wheel", this.zoomWithScrollHandler);
+  };
+
+  zoomWithScrollHandler = (pointer: any, gameObjects: any, deltaX: any, deltaY: any, deltaZ: any) => {
+    if (deltaY > 0) {
+      this.cameras.main.zoom -= 0.1;
+    } else {
+      this.cameras.main.zoom += 0.1;
+    }
+    // calculate min-zoom by map size
+    const minZoom = Math.min(
+      this.cameras.main.width / this.tilemap.widthInPixels,
+      this.cameras.main.height / this.tilemap.heightInPixels
+    );
+    if (this.cameras.main.zoom < minZoom) this.cameras.main.zoom = minZoom;
+    if (this.cameras.main.zoom > 10) this.cameras.main.zoom = 10;
   };
 
   update(time: number, delta: number): void {
     this.controls.update(delta);
     this.animatedTilemap.update(delta);
+  }
+
+  private destroy() {
+    this.input.off("wheel", this.zoomWithScrollHandler);
   }
 
   /* END-USER-CODE */
