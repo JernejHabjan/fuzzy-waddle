@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
+import Phaser, { Input } from "phaser";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -50,6 +50,7 @@ import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockS
 /* START-USER-IMPORTS */
 import ActorContainer from "../entity/actor/ActorContainer";
 import { AnimatedTilemap } from "./AnimatedTile";
+import { InputHandler } from "../world/managers/controllers/input/input.handler";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends Phaser.Scene {
@@ -63,7 +64,7 @@ export default class MapRiverCrossing extends Phaser.Scene {
 
   editorCreate(): void {
     // tilemap
-    const tilemap = this.add.tilemap("tiles");
+    const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
 
     // tilemap_level_1
@@ -294,7 +295,7 @@ export default class MapRiverCrossing extends Phaser.Scene {
     this.add.existing(tree1);
 
     // tree_3
-    const tree_3 = new Tree4(this, -896, 1056);
+    const tree_3 = new Tree4(this, -896, 1040);
     this.add.existing(tree_3);
 
     // treeTrunk_1
@@ -441,14 +442,29 @@ export default class MapRiverCrossing extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private controlConfig!: Phaser.Types.Cameras.Controls.FixedKeyControlConfig;
   private controls!: Phaser.Cameras.Controls.FixedKeyControl;
-  private animatedTilemap!: AnimatedTilemap;
 
   preload(): void {
-    this.cursors = this.input.keyboard!.createCursorKeys();
+    this.preloadCursors();
   }
 
   create() {
     this.editorCreate();
+    this.handleCursors();
+    this.handleCameraCenter();
+    this.handleZSort();
+    this.zoomWithScroll();
+    // this.enableLights();
+    new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
+    new InputHandler(this.input, this.cameras.main);
+
+    this.events.once("shutdown", this.destroy, this);
+  }
+
+  private preloadCursors() {
+    this.cursors = this.input.keyboard!.createCursorKeys();
+  }
+
+  private handleCursors() {
     this.controlConfig = {
       camera: this.cameras.main,
       left: this.cursors.left,
@@ -458,12 +474,6 @@ export default class MapRiverCrossing extends Phaser.Scene {
       speed: 2
     };
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(this.controlConfig);
-    this.handleCameraCenter();
-    this.handleZSort();
-    this.zoomWithScroll();
-    // this.enableLights();
-    this.animatedTilemap = new AnimatedTilemap(this.tilemap, this.tilemap.tilesets[0]);
-    this.events.once("shutdown", this.destroy, this);
   }
 
   enableLights = () => {
@@ -535,7 +545,7 @@ export default class MapRiverCrossing extends Phaser.Scene {
   };
 
   zoomWithScroll = () => {
-    this.input.on("wheel", this.zoomWithScrollHandler);
+    this.input.on(Input.Events.POINTER_WHEEL, this.zoomWithScrollHandler);
   };
 
   zoomWithScrollHandler = (pointer: any, gameObjects: any, deltaX: any, deltaY: any, deltaZ: any) => {
@@ -555,7 +565,6 @@ export default class MapRiverCrossing extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.controls.update(delta);
-    this.animatedTilemap.update(delta);
   }
 
   private destroy() {

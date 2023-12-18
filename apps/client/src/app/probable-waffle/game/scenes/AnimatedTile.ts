@@ -70,15 +70,19 @@ export class AnimatedTilemap {
   private readonly animatedTiles: AnimatedTile[];
 
   constructor(
+    private readonly scene: Phaser.Scene,
     private readonly tilemap: Phaser.Tilemaps.Tilemap,
-    private readonly tileset: Phaser.Tilemaps.Tileset
+    private readonly tilesets: Phaser.Tilemaps.Tileset[]
   ) {
     this.animatedTiles = this.initAnimatedTiles();
+    this.scene.events.on("update", this.update);
+    this.scene.events.on("shutdown", this.destroy);
   }
 
-  initAnimatedTiles = () => {
+  private initAnimatedTiles = () => {
     const animatedTiles: AnimatedTile[] = [];
-    const tileData = this.tileset.tileData as TilesetTileData;
+    const tileset = this.relevantTileset;
+    const tileData = tileset.tileData as TilesetTileData;
     for (const tileId in tileData) {
       this.tilemap.layers.forEach((layer) => {
         if (layer.tilemapLayer.type === "StaticTilemapLayer") return;
@@ -86,9 +90,9 @@ export class AnimatedTilemap {
           tileRow.forEach((tile) => {
             // Typically `firstgid` is 1, which means tileId starts from 1.
             // TileId in Tiled starts from 0.
-            if (tile.index - this.tileset.firstgid === parseInt(tileId, 10)) {
+            if (tile.index - tileset.firstgid === parseInt(tileId, 10)) {
               if (!tileData[tileId].animation) return;
-              animatedTiles.push(new AnimatedTile(tile, tileData[tileId].animation!, this.tileset.firstgid));
+              animatedTiles.push(new AnimatedTile(tile, tileData[tileId].animation!, tileset.firstgid));
             }
           })
         );
@@ -97,5 +101,10 @@ export class AnimatedTilemap {
     return animatedTiles;
   };
 
-  update = (delta: number) => this.animatedTiles.forEach((tile) => tile.update(delta));
+  private get relevantTileset() {
+    return this.tilesets[0];
+  }
+
+  private update = (delta: number) => this.animatedTiles.forEach((tile) => tile.update(delta));
+  private destroy = () => this.scene.events.off("update", this.update);
 }

@@ -313,26 +313,6 @@
                 "key": "slingshot_female_walk"
             },
             {
-              "url": "assets/probable-waffle/tilemaps/river_crossing.json",
-              "path": "assets/probable-waffle/tilemaps/river_crossing.json",
-                "type": "tilemapTiledJSON",
-                "key": "tiles"
-            },
-            {
-                "url": "assets/probable-waffle/tilesets/tiles.png",
-                "path": "assets/probable-waffle/tilesets/tiles.png",
-                "frameConfig": {
-                    "frameWidth": 64,
-                    "frameHeight": 32,
-                    "startFrame": 0,
-                    "endFrame": -1,
-                    "spacing": 0,
-                    "margin": 0
-                },
-                "type": "spritesheet",
-                "key": "tiles_1"
-            },
-            {
                 "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",
                 "path": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",
                 "type": "animation",

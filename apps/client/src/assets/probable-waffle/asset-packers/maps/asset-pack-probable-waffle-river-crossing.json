@@ -1,0 +1,33 @@
+{
+  "section1": {
+    "files": [
+      {
+        "url": "assets/probable-waffle/tilemaps/river_crossing.json",
+        "path": "assets/probable-waffle/tilemaps/river_crossing.json",
+        "type": "tilemapTiledJSON",
+        "key": "tiles_river_crossing"
+      },
+      {
+        "url": "assets/probable-waffle/tilesets/tiles.png",
+        "path": "assets/probable-waffle/tilesets/tiles.png",
+        "frameConfig": {
+          "frameWidth": 64,
+          "frameHeight": 32,
+          "startFrame": 0,
+          "endFrame": -1,
+          "spacing": 0,
+          "margin": 0
+        },
+        "type": "spritesheet",
+        "key": "tiles_1"
+      }
+    ]
+  },
+  "meta": {
+    "app": "Phaser Editor 2D - Asset Pack Editor",
+    "contentType": "phasereditor2d.pack.core.AssetContentType",
+    "url": "https://phasereditor2d.com",
+    "version": 2,
+    "showAllFilesInBlocks": false
+  }
+}

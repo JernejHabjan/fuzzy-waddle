@@ -1,0 +1,224 @@
+{
+    "id": "83b754e4-4d45-480d-923c-5b7fccee4e93",
+    "sceneType": "SCENE",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "EmberEnclave",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "TilemapLayer",
+            "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
+            "label": "tilemap_level_1",
+            "x": -32,
+            "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
+            "layerName": "TileMap_level_1",
+            "tilesets": [
+                "tiles"
+            ]
+        },
+        {
+            "prefabId": "ec58b20e-e03e-4bd4-140e-156ffe433f29",
+            "id": "5f2a21e3-1bc1-4f9b-9aa8-f4f1c035ff36",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockObsidianLava5",
+            "x": -48,
+            "y": 432
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f24",
+            "id": "d79386cf-ba61-42d8-8c8d-715db1cd97d7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDownwardsLarge",
+            "x": 32,
+            "y": 688
+        },
+        {
+            "prefabId": "ec58b20e-e03e-4bd4-140e-156ffe433f28",
+            "id": "10ef234e-96c6-4bd3-baf1-e49ab7c41f7e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockObsidianLava4",
+            "x": 192,
+            "y": 560
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+            "id": "a0dfb8e4-473a-46b0-85b6-d919fe2458f1",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree6",
+            "x": 0,
+            "y": 736
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f27",
+            "id": "6c476ea2-631f-498b-8af5-d31c99b66da0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushUpwardsLarge",
+            "x": -48,
+            "y": 768
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
+            "id": "d8349901-94f9-4008-8d8c-f8dc5d1f766b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bushDownwardsSmall",
+            "x": 48,
+            "y": 768
+        },
+        {
+            "prefabId": "ec58b20e-e03e-4bd4-140e-856ffe433f55",
+            "id": "16d280f1-366a-4065-8f04-61ef49129355",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "blockStoneWater4",
+            "x": 0,
+            "y": 816
+        },
+        {
+            "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
+            "id": "c65a1b78-d6b8-47e8-b765-9cc671e38a24",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "ankGuard",
+            "x": 688,
+            "y": 752
+        },
+        {
+            "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
+            "id": "30204112-523e-4d1c-8953-5094f5d57fb8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sandhold",
+            "x": 496,
+            "y": 880
+        },
+        {
+            "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
+            "id": "d62f8d92-119e-4967-9b17-818a760244be",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sandhold_1",
+            "x": -816,
+            "y": 720
+        },
+        {
+            "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
+            "id": "0ff3f098-08a2-4666-8763-c1afe79db6b5",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "temple",
+            "x": -607,
+            "y": 882
+        },
+        {
+            "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
+            "id": "64572dc8-4d91-4fc7-8377-8faf3badd56c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraSlingshotFemale",
+            "x": 457,
+            "y": 1095
+        },
+        {
+            "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
+            "id": "dc62e88e-34d7-4855-913d-3646dbc09c94",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerFemale",
+            "x": -880,
+            "y": 880
+        },
+        {
+            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
+            "id": "a111638e-956b-4d8a-aa9a-23473ad399d6",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerMale",
+            "x": -592,
+            "y": 688
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "f691c685-3bd9-4749-a260-d260f400e25f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill",
+            "x": -160,
+            "y": 736
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "a870b52f-ae30-481a-a246-8f132deca998",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill_1",
+            "x": 192,
+            "y": 704
+        }
+    ],
+    "plainObjects": [
+        {
+            "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
+            "type": "Tilemap",
+            "label": "tilemap",
+            "key": "tiles_ember_enclave",
+            "tilesets": [
+                {
+                    "name": "tiles",
+                    "imageKey": "tiles_1"
+                }
+            ]
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

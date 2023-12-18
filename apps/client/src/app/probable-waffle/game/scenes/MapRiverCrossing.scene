@@ -667,7 +667,7 @@
             ],
             "label": "tree_3",
             "x": -896,
-            "y": 1056
+            "y": 1040
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
@@ -954,7 +954,7 @@
             "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "type": "Tilemap",
             "label": "tilemap",
-            "key": "tiles",
+            "key": "tiles_river_crossing",
             "tilesets": [
                 {
                     "name": "tiles",

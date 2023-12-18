@@ -5,7 +5,6 @@
 import Phaser from "phaser";
 import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
-import assetPackUrl from "../../../../assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json";
 /* END-USER-IMPORTS */
 
 export default class PreloadProbableWaffle extends Phaser.Scene {
@@ -53,15 +52,42 @@ export default class PreloadProbableWaffle extends Phaser.Scene {
   preload() {
     this.editorCreate();
 
-    this.load.pack("asset-pack", assetPackUrl as any);
+    this.load.pack("asset-pack", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json");
+    const map = this.getMap();
+    this.load.pack("asset-pack-map", map.assetPath);
   }
 
   create() {
-    this.scene.start("MapRiverCrossing");
+    const map = this.getMap();
+    this.scene.start(map.sceneKey);
+  }
+
+  getMap(): MapType {
+    // eslint-disable-next-line prefer-const
+    let mapId = 1; // todo get from somewhere else
+    switch (mapId) {
+      case 1:
+        return {
+          sceneKey: "MapRiverCrossing",
+          assetPath: "assets/probable-waffle/asset-packers/maps/asset-pack-probable-waffle-river-crossing.json"
+        };
+      case 2:
+        return {
+          sceneKey: "MapEmberEnclave",
+          assetPath: "assets/probable-waffle/asset-packers/maps/asset-pack-probable-waffle-ember-enclave.json"
+        };
+      default:
+        throw new Error(`Map id ${mapId} not found`);
+    }
   }
 
   /* END-USER-CODE */
 }
+
+type MapType = {
+  sceneKey: string;
+  assetPath: string;
+};
 
 /* END OF COMPILED CODE */
 
