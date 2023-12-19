@@ -16,10 +16,10 @@
         {
             "type": "Image",
             "id": "e413cbbf-ce25-4dad-a117-b7cf0791f655",
-            "label": "guapen",
+            "label": "probable-waffle-loader",
             "components": [],
             "texture": {
-                "key": "guapen"
+                "key": "probable-waffle-loader"
             },
             "x": 505.0120544433594,
             "y": 360,

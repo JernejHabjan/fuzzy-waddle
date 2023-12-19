@@ -2,9 +2,9 @@
     "section1": {
         "files": [
             {
-                "url": "assets/other/Template/guapen.png",
+              "url": "assets/icons/loaders/probable-waffle-loader.png",
                 "type": "image",
-                "key": "guapen"
+              "key": "probable-waffle-loader"
             }
         ]
     },

@@ -2,15 +2,14 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
-import PreloadBarUpdaterScript from '../script-nodes/PreloadBarUpdaterScript';
+import Phaser from "phaser";
+import PreloadBarUpdaterScript from "../script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
-import assetPackUrl from '../../../../assets/other/asset-packers/asset-pack.json';
 /* END-USER-IMPORTS */
 
 export default class Preload extends Phaser.Scene {
   constructor() {
-    super('Preload');
+    super("Preload");
 
     /* START-USER-CTR-CODE */
     // Write your code here.
@@ -18,10 +17,10 @@ export default class Preload extends Phaser.Scene {
   }
 
   editorCreate(): void {
-    // guapen
-    const guapen = this.add.image(505.0120544433594, 360, 'guapen');
-    guapen.scaleX = 0.32715486817515643;
-    guapen.scaleY = 0.32715486817515643;
+    // probableWaffleLoader
+    const probableWaffleLoader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
+    probableWaffleLoader.scaleX = 0.32715486817515643;
+    probableWaffleLoader.scaleY = 0.32715486817515643;
 
     // progressBar
     const progressBar = this.add.rectangle(553.0120849609375, 361, 256, 20);
@@ -39,11 +38,11 @@ export default class Preload extends Phaser.Scene {
     progressBarBg.isStroked = true;
 
     // loadingText
-    const loadingText = this.add.text(552.0120849609375, 329, '', {});
-    loadingText.text = 'Loading...';
-    loadingText.setStyle({ color: '#e0e0e0', fontFamily: 'arial', fontSize: '20px' });
+    const loadingText = this.add.text(552.0120849609375, 329, "", {});
+    loadingText.text = "Loading...";
+    loadingText.setStyle({ color: "#e0e0e0", fontFamily: "arial", fontSize: "20px" });
 
-    this.events.emit('scene-awake');
+    this.events.emit("scene-awake");
   }
 
   /* START-USER-CODE */
@@ -53,11 +52,11 @@ export default class Preload extends Phaser.Scene {
   preload() {
     this.editorCreate();
 
-    this.load.pack('asset-pack', assetPackUrl as any);
+    this.load.pack("asset-pack", "assets/other/asset-packers/asset-pack.json");
   }
 
   create() {
-    this.scene.start('Level');
+    this.scene.start("Level");
   }
 
   /* END-USER-CODE */
