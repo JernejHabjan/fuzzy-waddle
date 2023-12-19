@@ -1,19 +1,19 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { CurrentUser } from '../../auth/current-user';
-import { AuthUser } from '@supabase/supabase-js';
-import { UseGuards } from '@nestjs/common';
-import { SupabaseAuthGuard } from '../../auth/guards/supabase-auth.guard';
-import { ChatService } from '../chat/chat.service';
-import { Server } from 'net';
-import { ChatMessage, GatewayChatEvent } from '@fuzzy-waddle/api-interfaces';
-import { MyConnectedSocket } from '../little-muncher/game-instance/game-state.gateway';
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { CurrentUser } from "../../auth/current-user";
+import { AuthUser } from "@supabase/supabase-js";
+import { UseGuards } from "@nestjs/common";
+import { SupabaseAuthGuard } from "../../auth/guards/supabase-auth.guard";
+import { ChatService } from "../chat/chat.service";
+import { Server } from "net";
+import { ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
+import { MyConnectedSocket } from "../little-muncher/game-instance/game-state.gateway";
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN?.split(',')
+    origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class EventsGateway {
+export class ChatGateway {
   @WebSocketServer()
   private server: Server;
 
