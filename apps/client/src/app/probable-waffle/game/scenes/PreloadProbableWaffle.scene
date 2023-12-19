@@ -18,6 +18,7 @@
             "type": "Image",
             "id": "e413cbbf-ce25-4dad-a117-b7cf0791f655",
             "label": "probable-waffle-loader",
+            "scope": "CLASS",
             "texture": {
                 "key": "probable-waffle-loader"
             },
@@ -30,6 +31,7 @@
             "type": "Rectangle",
             "id": "845d4ca6-7417-44fc-97e3-a3bb2fbbdd03",
             "label": "progressBar",
+            "scope": "CLASS",
             "x": 553.0120849609375,
             "y": 361,
             "originX": 0,
@@ -50,6 +52,7 @@
             "type": "Rectangle",
             "id": "10e175a4-81b6-449e-9561-6d8ba54d3812",
             "label": "progressBarBg",
+            "scope": "CLASS",
             "x": 553.0120849609375,
             "y": 361,
             "originX": 0,
@@ -63,12 +66,26 @@
             "type": "Text",
             "id": "c4092661-6339-47cf-9fea-8abff3a46e0c",
             "label": "loadingText",
+            "scope": "CLASS",
             "x": 552.0120849609375,
             "y": 329,
             "text": "Loading...",
             "fontFamily": "arial",
             "fontSize": "20px",
             "color": "#e0e0e0"
+        },
+        {
+            "type": "Image",
+            "id": "dcdf4273-7526-450f-ab08-ba20c427f8d3",
+            "label": "probable-waffle-loader_1",
+            "scope": "CLASS",
+            "texture": {
+                "key": "probable-waffle-loader"
+            },
+            "x": 847,
+            "y": 364,
+            "scaleX": 2,
+            "scaleY": 2
         }
     ],
     "plainObjects": [],

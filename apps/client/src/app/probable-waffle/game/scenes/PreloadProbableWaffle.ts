@@ -66,8 +66,25 @@ export default class PreloadProbableWaffle extends BaseScene<
     loadingText.text = "Loading...";
     loadingText.setStyle({ color: "#e0e0e0", fontFamily: "arial", fontSize: "20px" });
 
+    // probable-waffle-loader_1
+    const probable_waffle_loader_1 = this.add.image(847, 364, "probable-waffle-loader");
+    probable_waffle_loader_1.scaleX = 2;
+    probable_waffle_loader_1.scaleY = 2;
+
+    this.probable_waffle_loader = probable_waffle_loader;
+    this.progressBar = progressBar;
+    this.progressBarBg = progressBarBg;
+    this.loadingText = loadingText;
+    this.probable_waffle_loader_1 = probable_waffle_loader_1;
+
     this.events.emit("scene-awake");
   }
+
+  private probable_waffle_loader!: Phaser.GameObjects.Image;
+  private progressBar!: Phaser.GameObjects.Rectangle;
+  private progressBarBg!: Phaser.GameObjects.Rectangle;
+  private loadingText!: Phaser.GameObjects.Text;
+  private probable_waffle_loader_1!: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
 
@@ -75,10 +92,27 @@ export default class PreloadProbableWaffle extends BaseScene<
 
   preload() {
     this.editorCreate();
-
+    this.center();
     this.load.pack("asset-pack", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json");
     const map = this.getMap();
     this.load.pack("asset-pack-map", "assets/probable-waffle/asset-packers/maps/" + map.loader.mapLoaderAssetPackPath);
+  }
+
+  center() {
+    this.progressBar.x = this.cameras.main.centerX - this.progressBar.width / 2;
+    this.progressBar.y = this.cameras.main.centerY - this.progressBar.height / 2;
+    this.progressBarBg.x = this.cameras.main.centerX - this.progressBarBg.width / 2;
+    this.progressBarBg.y = this.cameras.main.centerY - this.progressBarBg.height / 2;
+    // set loading text above progress bar on y
+    this.loadingText.x = this.cameras.main.centerX - this.loadingText.width / 2;
+    this.loadingText.y = this.progressBar.y - this.loadingText.height - 10;
+    // set probable_waffle_loader left of progress bar on x
+    this.probable_waffle_loader.x = this.progressBar.x - this.probable_waffle_loader.width - 10;
+    this.probable_waffle_loader.y = this.cameras.main.centerY;
+    // set probable_waffle_loader_1 right of progress bar on x
+    this.probable_waffle_loader_1.x =
+      this.progressBar.x + this.progressBar.width + 10 + this.probable_waffle_loader_1.width;
+    this.probable_waffle_loader_1.y = this.cameras.main.centerY;
   }
 
   create() {
