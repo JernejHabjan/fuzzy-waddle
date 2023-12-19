@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ModalConfig } from "../../../shared/components/modal/modal-config";
 import { ModalComponent } from "../../../shared/components/modal/modal.component";
-import { GameInstanceClientService } from "../game-instance-client.service";
-import { LittleMuncherCommunicatorService } from "../../game/little-muncher-communicator.service";
 import { Subscription } from "rxjs";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../auth/auth.service";
 import { LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/api-interfaces";
 import { PreventNavigateBack } from "../../../shared/handlers/prevent-navigate-back";
 import { Router } from "@angular/router";
+import { GameInstanceClientService } from "../communicators/game-instance-client.service";
+import { LittleMuncherCommunicatorService } from "../communicators/little-muncher-communicator.service";
 
 @Component({
   selector: "fuzzy-waddle-game-interface",

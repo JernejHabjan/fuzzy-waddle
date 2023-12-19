@@ -9,5 +9,6 @@ export interface ProbableWaffleCommunicatorScoreEvent {
 }
 
 export enum ProbableWaffleGatewayEvent {
+  ProbableWaffleRoom = "probable-waffle-spectate-room",
   ProbableWaffleAction = "probable-waffle-action"
 }

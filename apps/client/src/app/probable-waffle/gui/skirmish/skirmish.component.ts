@@ -3,8 +3,7 @@ import { Router } from "@angular/router";
 import { FactionDefinitions, FactionType } from "../../game/player/faction-definitions";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import { Difficulty, PlayerType } from "./player-definition/player-definition.component";
-import { GameModeLobby } from "./game-mode-definition/game-mode-lobby";
-import { ProbableWaffleLevelData } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameModeLobby, ProbableWaffleLevelData } from "@fuzzy-waddle/api-interfaces";
 
 export class PlayerLobbyDefinition {
   constructor(
@@ -30,7 +29,7 @@ export class MapPlayerDefinition {
   allPossibleTeams: (number | null)[] = [];
   initialNrAiPlayers = 1;
 
-  constructor(public map: ProbableWaffleLevelData) {
+  constructor(public readonly map: ProbableWaffleLevelData) {
     this.allPossibleTeams.push(null);
     const factions = FactionDefinitions.factionTypes;
     for (let i = 0; i < map.mapInfo.startPositionsOnTile.length; i++) {
@@ -64,27 +63,32 @@ export class MapPlayerDefinition {
   styleUrls: ["./skirmish.component.scss"]
 })
 export class SkirmishComponent {
-  @ViewChild("mapDefinition") mapDefinition!: MapDefinitionComponent;
-  selectedMap?: MapPlayerDefinition;
-  gameModeLobby!: GameModeLobby;
+  @ViewChild("mapDefinition") private mapDefinition!: MapDefinitionComponent;
+  protected selectedMap?: MapPlayerDefinition;
+  private gameModeLobby?: ProbableWaffleGameModeLobby;
 
   constructor(
     private router: Router,
     private cd: ChangeDetectorRef
   ) {}
 
-  playerCountChanged() {
+  protected playerCountChanged() {
     this.mapDefinition.initializePlayerPositions();
     this.mapDefinition.draw();
   }
 
-  playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
+  protected playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
     this.mapDefinition.removePlayer(positionPlayerDefinition.player.playerNumber);
     this.playerCountChanged();
   }
 
-  mapChanged($event: MapPlayerDefinition) {
+  protected mapChanged($event: MapPlayerDefinition) {
     this.selectedMap = $event;
     this.cd.detectChanges();
+  }
+
+  protected gameModeLobbyChanged($event: ProbableWaffleGameModeLobby) {
+    this.gameModeLobby = $event;
+    console.log("gameModeLobbyChanged", this.gameModeLobby);
   }
 }

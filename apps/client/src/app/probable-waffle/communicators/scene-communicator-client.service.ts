@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { LittleMuncherCommunicatorService } from "../game/little-muncher-communicator.service";
 import { HttpClient } from "@angular/common/http";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
+import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 
 @Injectable({
   providedIn: "root"
@@ -10,7 +10,7 @@ import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-cl
 export class SceneCommunicatorClientService implements SceneCommunicatorClientServiceInterface {
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly communicator: LittleMuncherCommunicatorService,
+    private readonly communicator: ProbableWaffleCommunicatorService,
     private readonly authenticatedSocketService: AuthenticatedSocketService
   ) {}
 

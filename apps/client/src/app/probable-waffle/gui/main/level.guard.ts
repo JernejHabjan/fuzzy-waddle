@@ -1,14 +1,18 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class LevelGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly gameInstanceClientService: GameInstanceClientService
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const level = true; // todo read this from service instead from route
+    const level = this.gameInstanceClientService.gameInstance?.gameMode?.data.level;
     if (level) {
       // Level exists, allow navigation
       return true;

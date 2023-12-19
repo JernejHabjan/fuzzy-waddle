@@ -1,5 +1,4 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
 import { Socket } from "ngx-socket-io";
 import {
   LittleMuncherCommunicatorClimbingEvent,
@@ -9,6 +8,7 @@ import {
   LittleMuncherGatewayEvent,
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
+import { TwoWayCommunicator } from "../../../shared/game/communicators/two-way-communicator";
 
 @Injectable({
   providedIn: "root"

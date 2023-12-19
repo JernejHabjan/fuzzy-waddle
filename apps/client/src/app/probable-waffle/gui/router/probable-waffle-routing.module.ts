@@ -39,8 +39,7 @@ const routes: Routes = [
       },
       {
         path: "game",
-        loadChildren: () =>
-          import("../game-interface/main/probable-waffle-game.module").then((m) => m.ProbableWaffleGameModule)
+        loadChildren: () => import("../main/probable-waffle-game.module").then((m) => m.ProbableWaffleGameModule)
       }
     ]
   },

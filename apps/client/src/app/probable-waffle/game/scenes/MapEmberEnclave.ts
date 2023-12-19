@@ -21,7 +21,6 @@ import { ScaleHandler } from "../world/map/scale.handler";
 import { InputHandler } from "../world/managers/controllers/input/input.handler";
 import { LightsHandler } from "../world/map/vision/lights.handler";
 import { DepthHelper } from "../world/map/depth.helper";
-import { AnimatedTilemap } from "./AnimatedTile";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 import { ProbableWaffleGameData } from "./probable-waffle-game-data";
 import {
@@ -29,6 +28,7 @@ import {
   ProbableWaffleGameModeData,
   ProbableWaffleGameState,
   ProbableWaffleGameStateData,
+  ProbableWaffleLevels,
   ProbableWafflePlayer,
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerStateData,
@@ -38,6 +38,7 @@ import {
 import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
 import { MapSizeInfo } from "../world/const/map-size.info";
 import { GameObjects, Input } from "phaser";
+import { AnimatedTilemap } from "../world/map/animated-tile.helper";
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends BaseScene<
@@ -153,7 +154,7 @@ export default class MapEmberEnclave extends BaseScene<
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
 
-    console.log("playing level", this.baseGameData.gameInstance.data.gameModeData!.level!.id);
+    console.log("playing level", ProbableWaffleLevels[this.baseGameData.gameInstance.data.gameModeData!.level!].name);
 
     this.input.on(
       Phaser.Input.Events.POINTER_DOWN,

@@ -9,6 +9,7 @@ import { LittleMuncherModule } from "./little-muncher/little-muncher.module";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { FlySquasherModule } from "./fly-squasher/fly-squasher.module";
+import { ProbableWaffleModule } from "./probable-waffle/probable-waffle.module";
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { FlySquasherModule } from "./fly-squasher/fly-squasher.module";
     ChatModule,
     GameSessionModule,
     LittleMuncherModule,
-    FlySquasherModule
+    FlySquasherModule,
+    ProbableWaffleModule
   ],
   controllers: [AppController],
   providers: [

@@ -10,16 +10,10 @@ import { OnlineModule } from "../online/online.module";
 import { CampaignComponent } from "../campaign/campaign.component";
 import { OptionsComponent } from "../options/options.component";
 import { ComponentsModule } from "../../../shared/components/components.module";
-import { ProbableWaffleComingSoonComponent } from "../probable-waffle-coming-soon/probable-waffle-coming-soon.component";
+import { ComingSoonComponent } from "../coming-soon/coming-soon.component";
 
 @NgModule({
-  declarations: [
-    ProbableWaffleComponent,
-    ProgressComponent,
-    CampaignComponent,
-    OptionsComponent,
-    ProbableWaffleComingSoonComponent
-  ],
+  declarations: [ProbableWaffleComponent, ProgressComponent, CampaignComponent, OptionsComponent, ComingSoonComponent],
   imports: [
     CommonModule,
     ProbableWaffleRoutingModule,

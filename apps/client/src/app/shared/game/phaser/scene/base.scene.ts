@@ -13,8 +13,8 @@ import {
   BaseSpectator,
   BaseSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
-import { LittleMuncherCommunicatorService } from "../../../../little-muncher/game/little-muncher-communicator.service";
 import { Loader } from "../../../../little-muncher/game/loader";
+import { LittleMuncherCommunicatorService } from "../../../../little-muncher/main/communicators/little-muncher-communicator.service";
 
 export class BaseScene<
     TGameData extends BaseGameData = BaseGameData,

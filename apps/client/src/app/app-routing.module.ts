@@ -1,34 +1,35 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HomePageComponent } from './home/page/home-page.component';
-import { ProfileComponent } from './home/profile/profile.component';
-import { AuthGuard } from './auth/auth.guard';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { HomePageComponent } from "./home/page/home-page.component";
+import { ProfileComponent } from "./home/profile/profile.component";
+import { AuthGuard } from "./auth/auth.guard";
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: HomePageComponent
   },
   {
-    path: 'profile',
+    path: "profile",
     component: ProfileComponent,
     canActivate: [AuthGuard]
   },
   {
-    path: 'little-muncher',
-    loadChildren: () => import('./little-muncher/little-muncher.module').then((m) => m.LittleMuncherModule)
+    path: "little-muncher",
+    loadChildren: () => import("./little-muncher/little-muncher.module").then((m) => m.LittleMuncherModule)
   },
   {
-    path: 'probable-waffle',
-    loadChildren: () => import('./probable-waffle/gui/main/probable-waffle.module').then((m) => m.ProbableWaffleModule)
+    path: "probable-waffle",
+    loadChildren: () =>
+      import("./probable-waffle/gui/router/probable-waffle.module").then((m) => m.ProbableWaffleModule)
   },
   {
-    path: 'fly-squasher',
-    loadChildren: () => import('./fly-squasher/fly-squasher.module').then((m) => m.FlySquasherModule)
+    path: "fly-squasher",
+    loadChildren: () => import("./fly-squasher/fly-squasher.module").then((m) => m.FlySquasherModule)
   },
   {
-    path: '**',
-    redirectTo: ''
+    path: "**",
+    redirectTo: ""
   }
 ];
 

@@ -1,7 +1,10 @@
-import { Resources, ResourceType } from '../../../game/entity/economy/resource/resource-type';
+import { Resources, ResourceType } from "./resource-type";
 
 export class WinConditions {
-  constructor(public timeLimit: number | null = null, public scoreLimit: number | null = null) {}
+  constructor(
+    public timeLimit: number | null = null,
+    public scoreLimit: number | null = null
+  ) {}
 }
 
 export class MapTuning {
@@ -25,7 +28,7 @@ export class DifficultyModifiers {
   ) {}
 }
 
-export class GameModeLobby {
+export class ProbableWaffleGameModeLobby {
   constructor(
     public winConditions: WinConditions = new WinConditions(),
     public mapTuning: MapTuning = new MapTuning(),

@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { ProbableWaffleCommunicatorScoreEvent, ProbableWaffleGatewayEvent } from "@fuzzy-waddle/api-interfaces";
-import { TwoWayCommunicator } from "../../../shared/game/communicators/two-way-communicator";
+import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
+import { Socket } from "ngx-socket-io";
 
 export const probableWaffleCommunicatorServiceStub = {
   startCommunication: () => {},
@@ -13,10 +14,12 @@ export const probableWaffleCommunicatorServiceStub = {
 export class ProbableWaffleCommunicatorService implements OnDestroy {
   score?: TwoWayCommunicator<ProbableWaffleCommunicatorScoreEvent>;
 
-  startCommunication() {
+  startCommunication(gameInstanceId: string, socket?: Socket) {
     this.score = new TwoWayCommunicator<ProbableWaffleCommunicatorScoreEvent>(
       ProbableWaffleGatewayEvent.ProbableWaffleAction,
-      "score"
+      "score",
+      gameInstanceId,
+      socket
     );
   }
 

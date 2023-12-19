@@ -1,9 +1,9 @@
 import { BaseData } from "../data";
 import { BaseGameMode } from "../game-mode";
-import { ProbableWaffleLevelData } from "../../probable-waffle/probable-waffle";
+import { ProbableWaffleLevelEnum } from "../../probable-waffle/probable-waffle";
 
 export interface ProbableWaffleGameModeData extends BaseData {
-  level?: ProbableWaffleLevelData;
+  level?: ProbableWaffleLevelEnum;
 }
 
 export class ProbableWaffleGameMode extends BaseGameMode<ProbableWaffleGameModeData> {

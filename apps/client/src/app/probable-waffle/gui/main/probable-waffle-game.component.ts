@@ -1,15 +1,15 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { SceneCommunicatorService } from "../../../communicators/scene-communicator.service";
-import { probableWaffleGameConfig } from "../../../game/world/const/game-config";
-import { BaseGameData } from "../../../../shared/game/phaser/game/base-game-data";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import {
   ProbableWaffleGameInstance,
   ProbableWaffleLevelEnum,
-  ProbableWaffleLevels,
   ProbableWaffleUserInfo
 } from "@fuzzy-waddle/api-interfaces";
-import { AuthService } from "../../../../auth/auth.service";
-import { ProbableWaffleCommunicatorService } from "../../../game/scenes/probable-waffle-communicator.service";
+import { BaseGameData } from "../../../shared/game/phaser/game/base-game-data";
+import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
+import { AuthService } from "../../../auth/auth.service";
+import { SceneCommunicatorService } from "../../communicators/scene-communicator.service";
+import { probableWaffleGameConfig } from "../../game/world/const/game-config";
+import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 
 @Component({
   selector: "fuzzy-waddle-game",
@@ -23,6 +23,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   gameData?: BaseGameData<ProbableWaffleCommunicatorService, ProbableWaffleGameInstance, ProbableWaffleUserInfo>;
 
   constructor(
+    private readonly gameInstanceClientService: GameInstanceClientService,
     private readonly communicatorService: ProbableWaffleCommunicatorService,
     private readonly authService: AuthService
   ) {}
@@ -33,9 +34,11 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     SceneCommunicatorService.setup();
+    const level = this.gameInstanceClientService.gameInstance?.gameMode?.data.level;
+    if (!level) throw new Error("No level");
     const gameSessionInstance = new ProbableWaffleGameInstance({
       gameModeData: {
-        level: ProbableWaffleLevels[ProbableWaffleLevelEnum.EmberEnclave] // todo read this from ID
+        level: level
       }
     });
     this.gameData = {

@@ -1,16 +1,20 @@
-import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
-import { MapPlayerDefinition } from '../skirmish.component';
+import { Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
+import { MapPlayerDefinition } from "../skirmish.component";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
-  selector: 'fuzzy-waddle-trigger',
-  templateUrl: './trigger.component.html',
-  styleUrls: ['./trigger.component.scss']
+  selector: "fuzzy-waddle-trigger",
+  templateUrl: "./trigger.component.html",
+  styleUrls: ["./trigger.component.scss"]
 })
 export class TriggerComponent {
   @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private readonly gameInstanceClientService: GameInstanceClientService
+  ) {}
 
   /**
    * at least two players selected and at least two different teams
@@ -32,14 +36,18 @@ export class TriggerComponent {
     return selectedPlayers.length >= 2 && selectedEmptyTeams.length + selectedTeamsSet.size >= 2;
   }
 
-  start() {
+  async start() {
     // todo use this to set the real game mode!
-    console.log('selected map definitions');
 
-    this.router.navigate(['probable-waffle/game']);
+    await this.gameInstanceClientService.startGame(); // todo temp?
+    this.gameInstanceClientService.openLevel(this.selectedMap!.map.id); // todo temp?
+
+    console.log("selected map definitions");
+
+    this.router.navigate(["probable-waffle/game"]);
   }
 
   leaveClick() {
-    this.router.navigate(['probable-waffle']);
+    this.router.navigate(["probable-waffle"]);
   }
 }

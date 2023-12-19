@@ -84,8 +84,8 @@ export default class ActorContainer extends Phaser.GameObjects.Container impleme
   }
 
   override destroy(fromScene?: boolean): void {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
-    this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.destroy, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.scene?.events.off(Phaser.Scenes.Events.DESTROY, this.destroy, this);
     super.destroy(fromScene);
     this.destroyed = true;
     this.components.destroy();

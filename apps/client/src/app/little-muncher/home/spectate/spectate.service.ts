@@ -11,10 +11,10 @@ import {
 import { firstValueFrom, Observable, Subject, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
-import { GameInstanceClientService } from "../../main/game-instance-client.service";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 import { SpectateServiceInterface } from "./spectate.service.interface";
+import { GameInstanceClientService } from "../../main/communicators/game-instance-client.service";
 
 @Injectable({
   providedIn: "root"

@@ -3,11 +3,6 @@ export class CursorHandler {
 
   constructor(private readonly scene: Phaser.Scene) {
     this.setupCursor();
-    scene.events.once("destroy", this.destroy, this);
-  }
-
-  destroy() {
-    this.scene.input.setDefaultCursor("default");
   }
 
   private setupCursor() {

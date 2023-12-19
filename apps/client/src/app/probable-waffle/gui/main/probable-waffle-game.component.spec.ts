@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ProbableWaffleGameComponent } from './probable-waffle-game.component';
-import { GameContainerTestingComponent } from '../../../../shared/game/game-container/game-container.component.spec';
-import { EditorDrawerTestingComponent } from '../editor-drawer/editor-drawer.component.spec';
-import { SelectionGroupTestingComponent } from '../selection/selection-group/selection-group.component.spec';
+import { ProbableWaffleGameComponent } from "./probable-waffle-game.component";
+import { EditorDrawerTestingComponent } from "../game-interface/editor-drawer/editor-drawer.component.spec";
+import { GameContainerTestingComponent } from "../../../shared/game/game-container/game-container.component.spec";
+import { SelectionGroupTestingComponent } from "../game-interface/selection/selection-group/selection-group.component.spec";
 
-jest.mock('../../../game/world/const/game-config', () => ({
+jest.mock(".'../../../game/world/const/game-config'() => ({
   probableWaffleGameConfig: {}
 }));
 

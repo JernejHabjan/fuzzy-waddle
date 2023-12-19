@@ -87,7 +87,7 @@ export default class PreloadProbableWaffle extends BaseScene<
   }
 
   private getMap() {
-    const levelId = this.baseGameData.gameInstance.data.gameModeData!.level!.id;
+    const levelId = this.baseGameData.gameInstance.data.gameModeData!.level!;
     const level = ProbableWaffleLevels[levelId];
     return level;
   }

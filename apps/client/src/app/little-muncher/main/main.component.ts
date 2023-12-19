@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { littleMuncherGameConfig } from "../game/const/game-config";
 import { LittleMuncherGameData } from "../game/little-muncher-game-data";
-import { LittleMuncherCommunicatorService } from "../game/little-muncher-communicator.service";
-import { GameInstanceClientService } from "./game-instance-client.service";
 import { AuthService } from "../../auth/auth.service";
 import { LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherCommunicatorService } from "./communicators/little-muncher-communicator.service";
+import { GameInstanceClientService } from "./communicators/game-instance-client.service";
 
 @Component({
   selector: "little-muncher-main",

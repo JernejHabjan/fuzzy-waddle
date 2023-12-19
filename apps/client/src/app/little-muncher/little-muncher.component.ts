@@ -1,13 +1,13 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { GameSessionState, LittleMuncherGameCreate } from '@fuzzy-waddle/api-interfaces';
-import { GameInstanceClientService } from './main/game-instance-client.service';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { SpectateService } from './home/spectate/spectate.service';
-import { Subscription } from 'rxjs';
+import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
+import { GameSessionState, LittleMuncherGameCreate } from "@fuzzy-waddle/api-interfaces";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { SpectateService } from "./home/spectate/spectate.service";
+import { Subscription } from "rxjs";
+import { GameInstanceClientService } from "./main/communicators/game-instance-client.service";
 
 @Component({
-  templateUrl: './little-muncher.component.html',
-  styleUrls: ['./little-muncher.component.scss']
+  templateUrl: "./little-muncher.component.html",
+  styleUrls: ["./little-muncher.component.scss"]
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;
@@ -15,8 +15,8 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
   private spectatorDisconnectedSubscription?: Subscription;
   protected toastData = {
     show: false,
-    title: '',
-    text: ''
+    title: "",
+    text: ""
   };
 
   constructor(
@@ -24,7 +24,7 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
     private readonly spectateService: SpectateService
   ) {}
 
-  @HostListener('window:beforeunload')
+  @HostListener("window:beforeunload")
   async onBeforeUnload() {
     await this.gameInstanceClientService.stopGame();
   }
@@ -50,8 +50,8 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
     this.spectatorDisconnectedSubscription = this.spectateService.spectatorDisconnected.subscribe(() => {
       this.toastData = {
         show: true,
-        title: 'Game Disconnected',
-        text: 'You have been disconnected from the game'
+        title: "Game Disconnected",
+        text: "You have been disconnected from the game"
       };
     });
   }
