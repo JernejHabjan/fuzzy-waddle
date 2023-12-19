@@ -41,10 +41,10 @@ export default class PreloadProbableWaffle extends BaseScene<
   }
 
   editorCreate(): void {
-    // probableWaffleLoader
-    const probableWaffleLoader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
-    probableWaffleLoader.scaleX = 0.32715486817515643;
-    probableWaffleLoader.scaleY = 0.32715486817515643;
+    // probable-waffle-loader
+    const probable_waffle_loader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
+    probable_waffle_loader.scaleX = 2;
+    probable_waffle_loader.scaleY = 2;
 
     // progressBar
     const progressBar = this.add.rectangle(553.0120849609375, 361, 256, 20);
@@ -94,6 +94,7 @@ export default class PreloadProbableWaffle extends BaseScene<
 
   /* END-USER-CODE */
 }
+
 /* END OF COMPILED CODE */
 
 // You can write more code here

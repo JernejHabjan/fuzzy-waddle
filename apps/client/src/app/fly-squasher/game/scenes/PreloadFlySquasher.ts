@@ -18,9 +18,9 @@ export default class PreloadFlySquasher extends Phaser.Scene {
 
   editorCreate(): void {
     // probable-waffle-loader
-    const probableWaffleLoader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
-    probableWaffleLoader.scaleX = 0.32715486817515643;
-    probableWaffleLoader.scaleY = 0.32715486817515643;
+    const probable_waffle_loader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
+    probable_waffle_loader.scaleX = 2;
+    probable_waffle_loader.scaleY = 2;
 
     // progressBar
     const progressBar = this.add.rectangle(553.0120849609375, 361, 256, 20);
