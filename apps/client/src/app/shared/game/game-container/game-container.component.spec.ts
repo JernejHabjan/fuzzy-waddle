@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GameContainerComponent } from "./game-container.component";
 import { Component, Input } from "@angular/core";
 import { BaseGameData } from "../phaser/game/base-game-data";
-import { LittleMuncherCommunicatorService } from "../../../little-muncher/game/little-muncher-communicator.service";
 import { LittleMuncherGameInstance, LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherCommunicatorService } from "../../../little-muncher/main/communicators/little-muncher-communicator.service";
 
 jest.mock("phaser", () => {
   return {

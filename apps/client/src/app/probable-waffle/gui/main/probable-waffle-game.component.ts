@@ -35,7 +35,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     SceneCommunicatorService.setup();
     const level = this.gameInstanceClientService.gameInstance?.gameMode?.data.level;
-    if (!level) throw new Error("No level");
+    if (!level) return;
     const gameSessionInstance = new ProbableWaffleGameInstance({
       gameModeData: {
         level: level

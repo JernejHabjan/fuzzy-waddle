@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { LittleMuncherComponent } from './little-muncher.component';
-import { GameInstanceClientService } from './main/game-instance-client.service';
-import { gameInstanceClientServiceStub } from './main/game-instance-client.service.spec';
-import { SpectateService } from './home/spectate/spectate.service';
-import { spectateServiceStub } from './home/spectate/spectate.service.spec';
-import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
+import { LittleMuncherComponent } from "./little-muncher.component";
+import { SpectateService } from "./home/spectate/spectate.service";
+import { spectateServiceStub } from "./home/spectate/spectate.service.spec";
+import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import { GameInstanceClientService } from "./main/communicators/game-instance-client.service";
+import { gameInstanceClientServiceStub } from "./main/communicators/game-instance-client.service.spec";
 
-describe('LittleMuncherComponent', () => {
+describe("LittleMuncherComponent", () => {
   let component: LittleMuncherComponent;
   let fixture: ComponentFixture<LittleMuncherComponent>;
 
@@ -26,7 +26,7 @@ describe('LittleMuncherComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

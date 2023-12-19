@@ -1,19 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { GameInterfaceComponent } from './game-interface.component';
-import { GameInstanceClientService } from '../game-instance-client.service';
-import { gameInstanceClientServiceStub } from '../game-instance-client.service.spec';
-import { LittleMuncherGameInstance } from '@fuzzy-waddle/api-interfaces';
-import { ModalTestComponent } from '../../../shared/components/modal/modal.component.spec';
-import { Component } from '@angular/core';
-import { WrapPipe } from './wrap.pipe';
-import { AuthService } from '../../../auth/auth.service';
-import { authServiceStub } from '../../../auth/auth.service.spec';
+import { GameInterfaceComponent } from "./game-interface.component";
+import { LittleMuncherGameInstance } from "@fuzzy-waddle/api-interfaces";
+import { ModalTestComponent } from "../../../shared/components/modal/modal.component.spec";
+import { Component } from "@angular/core";
+import { WrapPipe } from "./wrap.pipe";
+import { AuthService } from "../../../auth/auth.service";
+import { authServiceStub } from "../../../auth/auth.service.spec";
+import { GameInstanceClientService } from "../communicators/game-instance-client.service";
+import { gameInstanceClientServiceStub } from "../communicators/game-instance-client.service.spec";
 
-@Component({ selector: 'fuzzy-waddle-game-interface', template: '' })
+@Component({ selector: "fuzzy-waddle-game-interface", template: "" })
 export class GameInterfaceTestingComponent {}
 
-describe('GameInterfaceComponent', () => {
+describe("GameInterfaceComponent", () => {
   let component: GameInterfaceComponent;
   let fixture: ComponentFixture<GameInterfaceComponent>;
 
@@ -37,7 +37,7 @@ describe('GameInterfaceComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

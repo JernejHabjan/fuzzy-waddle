@@ -1,21 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { TriggerComponent } from './trigger.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Component, Input } from '@angular/core';
-import { MapPlayerDefinition } from '../skirmish.component';
+import { TriggerComponent } from "./trigger.component";
+import { RouterTestingModule } from "@angular/router/testing";
+import { Component, Input } from "@angular/core";
+import { MapPlayerDefinition } from "../skirmish.component";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 
-@Component({ selector: 'fuzzy-waddle-trigger', template: '' })
+@Component({ selector: "fuzzy-waddle-trigger", template: "" })
 export class TriggerTestingComponent {
   @Input({ required: true }) selectedMap?: MapPlayerDefinition;
 }
 
-describe('TriggerComponent', () => {
+describe("TriggerComponent", () => {
   let component: TriggerComponent;
   let fixture: ComponentFixture<TriggerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
       declarations: [TriggerComponent],
       imports: [RouterTestingModule]
     }).compileComponents();
@@ -25,7 +28,7 @@ describe('TriggerComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
