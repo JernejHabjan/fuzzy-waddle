@@ -43,7 +43,9 @@ apps/client/src/manifest.webmanifest
 apps/client/src/polyfills.ts
 apps/client/src/test-setup.ts
 apps/client/ngsw-config.json
-apps/client/src/assets/icons
+apps/client/src/assets/icons/pwa
+apps/client/src/assets/icons/fuzzy-waddle.svg
+apps/client/src/assets/icons/social-preview.png
 apps/client/src/**/*.html
 apps/client/src/**/*.scss
 apps/client/src/**/*.spec.ts
