@@ -29,8 +29,7 @@
             *ngFor='let room of roomsService.rooms'
             class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
-            <td>{{ room.map }}</td>
-            <td>{{ room.host }}</td>
+            <td>{{ room.gameMode.data.level }}</td>
             <td>{{ room.players.length }}</td>
           </tr>
         </tbody>

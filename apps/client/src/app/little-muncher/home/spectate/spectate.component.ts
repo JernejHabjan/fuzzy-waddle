@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { SpectateService } from './spectate.service';
-import { Room } from '@fuzzy-waddle/api-interfaces';
-import { ServerHealthService } from '../../../shared/services/server-health.service';
+import { Component, OnInit } from "@angular/core";
+import { SpectateService } from "./spectate.service";
+import { LittleMuncherRoom } from "@fuzzy-waddle/api-interfaces";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
 
 @Component({
-  selector: 'little-muncher-spectate',
-  templateUrl: './spectate.component.html',
-  styleUrls: ['./spectate.component.scss']
+  selector: "little-muncher-spectate",
+  templateUrl: "./spectate.component.html",
+  styleUrls: ["./spectate.component.scss"]
 })
 export class SpectateComponent implements OnInit {
   constructor(
@@ -18,7 +18,7 @@ export class SpectateComponent implements OnInit {
     await this.spectateService.initiallyPullRooms();
   }
 
-  async spectate(room: Room) {
-    await this.spectateService.joinRoom(room.gameInstanceId);
+  async spectate(room: LittleMuncherRoom) {
+    await this.spectateService.joinRoom(room.gameInstanceMetadataData.gameInstanceId!);
   }
 }

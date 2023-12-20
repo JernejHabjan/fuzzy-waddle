@@ -1,17 +1,17 @@
-import { Room, RoomEvent } from '@fuzzy-waddle/api-interfaces';
-import { Observable, Subject } from 'rxjs';
+import { LittleMuncherRoom, LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { Observable, Subject } from "rxjs";
 
 export interface SpectateServiceInterface {
-  rooms: Room[];
+  rooms: LittleMuncherRoom[];
   spectatorDisconnected: Subject<void>;
 
   listenToRoomEvents(): void;
 
-  getRooms(): Promise<Room[]>;
+  getRooms(): Promise<LittleMuncherRoom[]>;
 
   initiallyPullRooms(): Promise<void>;
 
-  get roomEvent(): Observable<RoomEvent> | undefined;
+  get roomEvent(): Observable<LittleMuncherRoomEvent> | undefined;
 
   joinRoom(gameInstanceId: string): void;
 

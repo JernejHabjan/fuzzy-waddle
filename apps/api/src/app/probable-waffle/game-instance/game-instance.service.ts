@@ -6,11 +6,11 @@ import {
   ProbableWaffleGameCreateDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
-  Room,
+  ProbableWaffleRoom,
   RoomAction,
-  RoomEvent,
+  ProbableWaffleRoomEvent,
   SpectatorAction,
-  SpectatorEvent
+  ProbableWaffleSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceGateway } from "./game-instance.gateway";
@@ -86,7 +86,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "removed"));
   }
 
-  async getSpectatorRooms(user: User): Promise<Room[]> {
+  async getSpectatorRooms(user: User): Promise<ProbableWaffleRoom[]> {
     return this.openGameInstances
       .filter(
         (gi) =>
@@ -96,21 +96,23 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
   }
 
-  getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): Room {
+  getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom {
     return {
-      gameInstanceId: gameInstance.gameInstanceMetadata.data.gameInstanceId
+      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
+      gameMode: gameInstance.gameMode,
+      players: gameInstance.players.map((player) => ({ userId: player.userId })),
+      spectators: gameInstance.spectators.map((spectator) => ({ userId: spectator.data.userId }))
     };
   }
 
-  getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): RoomEvent {
+  getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): ProbableWaffleRoomEvent {
     return {
       room: this.getGameInstanceToRoom(gameInstance),
-      action,
-      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data
+      action
     };
   }
 
-  getSpectatorEvent(user: User, room: Room, action: SpectatorAction): SpectatorEvent {
+  getSpectatorEvent(user: User, room: ProbableWaffleRoom, action: SpectatorAction): ProbableWaffleSpectatorEvent {
     return {
       user_id: user.id,
       room,

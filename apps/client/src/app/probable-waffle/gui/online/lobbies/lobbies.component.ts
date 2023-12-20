@@ -1,16 +1,7 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { ProbableWaffleLevelEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleLevelEnum, ProbableWaffleLevels, ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
-
-type Lobby = {
-  host: string;
-  players: {
-    name: string;
-  }[];
-  map: ProbableWaffleLevelEnum;
-};
-
 @Component({
   selector: "fuzzy-waddle-lobbies",
   templateUrl: "./lobbies.component.html",
@@ -19,7 +10,7 @@ type Lobby = {
 export class LobbiesComponent implements OnInit {
   protected readonly ProbableWaffleLevels = ProbableWaffleLevels;
   protected isFilterPopupOpen: boolean = false;
-  protected selectedRoom?: Lobby;
+  protected selectedRoom?: ProbableWaffleRoom;
   protected readonly roomsService = inject(RoomsService);
   protected readonly serverHealthService = inject(ServerHealthService);
 
@@ -39,7 +30,7 @@ export class LobbiesComponent implements OnInit {
     // todo - do something with this.selectedRoom
   }
 
-  protected select(room: Lobby) {
+  protected select(room: ProbableWaffleRoom) {
     this.selectedRoom = room;
   }
 

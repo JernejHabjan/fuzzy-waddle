@@ -1,16 +1,16 @@
-import { Room, RoomEvent } from "@fuzzy-waddle/api-interfaces";
 import { Observable } from "rxjs";
+import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
 
 export interface RoomsServiceInterface {
-  rooms: Room[];
+  rooms: ProbableWaffleRoom[];
 
   listenToRoomEvents(): void;
 
-  getRooms(): Promise<Room[]>;
+  getRooms(): Promise<ProbableWaffleRoom[]>;
 
   initiallyPullRooms(): Promise<void>;
 
-  get roomEvent(): Observable<RoomEvent> | undefined;
+  get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined;
 
   joinRoom(gameInstanceId: string): void;
 

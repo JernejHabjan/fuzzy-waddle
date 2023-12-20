@@ -3,10 +3,10 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
   GameInstanceDataDto,
-  LittleMuncherGatewayEvent,
   ProbableWaffleGameInstanceData,
-  Room,
-  RoomEvent
+  ProbableWaffleGatewayEvent,
+  ProbableWaffleRoom,
+  ProbableWaffleRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { firstValueFrom, Observable, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
@@ -21,7 +21,7 @@ import { GameInstanceClientService } from "../game-instance-client.service";
 })
 export class RoomsService implements RoomsServiceInterface {
   private roomsSubscription?: Subscription;
-  rooms: Room[] = [];
+  rooms: ProbableWaffleRoom[] = [];
 
   constructor(
     private readonly authService: AuthService,
@@ -38,10 +38,13 @@ export class RoomsService implements RoomsServiceInterface {
     this.roomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
       if (roomEvent.action === "added") {
-        if (roomEvent.gameInstanceMetadataData.createdBy === this.authService.userId) return;
+        if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
         this.rooms.push(room);
       } else if (roomEvent.action === "removed") {
-        this.rooms = this.rooms.filter((room) => room.gameInstanceId !== room.gameInstanceId);
+        this.rooms = this.rooms.filter(
+          (room) =>
+            room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
+        );
       }
     });
   }
@@ -49,18 +52,18 @@ export class RoomsService implements RoomsServiceInterface {
   async getRooms() {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return [];
     const url = environment.api + "api/probable-waffle/get-rooms";
-    return await firstValueFrom(this.httpClient.get<Room[]>(url));
+    return await firstValueFrom(this.httpClient.get<ProbableWaffleRoom[]>(url));
   }
 
   async initiallyPullRooms(): Promise<void> {
     this.rooms = await this.getRooms();
   }
 
-  get roomEvent(): Observable<RoomEvent> | undefined {
+  get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined {
     const socket = this.authenticatedSocketService.socket;
     return socket
-      ?.fromEvent<RoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
-      .pipe(map((data: RoomEvent) => data));
+      ?.fromEvent<ProbableWaffleRoomEvent>(ProbableWaffleGatewayEvent.ProbableWaffleRoom)
+      .pipe(map((data: ProbableWaffleRoomEvent) => data));
   }
 
   async joinRoom(gameInstanceId: string) {

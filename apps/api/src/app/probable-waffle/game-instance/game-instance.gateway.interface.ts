@@ -1,7 +1,7 @@
-import { RoomEvent, SpectatorEvent } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleRoomEvent, ProbableWaffleSpectatorEvent } from "@fuzzy-waddle/api-interfaces";
 
 export interface GameInstanceGatewayInterface {
-  emitRoom(roomEvent: RoomEvent);
+  emitRoom(roomEvent: ProbableWaffleRoomEvent);
 
-  emitSpectator(spectatorEvent: SpectatorEvent);
+  emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent);
 }

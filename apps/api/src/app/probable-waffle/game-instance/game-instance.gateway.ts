@@ -3,16 +3,16 @@ import { Server } from "net";
 import {
   GatewaySpectatorEvent,
   ProbableWaffleGatewayEvent,
-  RoomEvent,
-  SpectatorEvent
+  ProbableWaffleRoomEvent,
+  ProbableWaffleSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 
 export const GameInstanceGatewayStub = {
-  emitRoom(roomEvent: RoomEvent) {
+  emitRoom(roomEvent: ProbableWaffleRoomEvent) {
     //
   },
-  emitSpectator(spectatorEvent: SpectatorEvent) {
+  emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent) {
     //
   }
 } satisfies GameInstanceGatewayInterface;
@@ -26,11 +26,11 @@ export class GameInstanceGateway implements GameInstanceGatewayInterface {
   @WebSocketServer()
   private server: Server;
 
-  emitRoom(roomEvent: RoomEvent) {
+  emitRoom(roomEvent: ProbableWaffleRoomEvent) {
     this.server.emit(ProbableWaffleGatewayEvent.ProbableWaffleRoom, roomEvent);
   }
 
-  emitSpectator(spectatorEvent: SpectatorEvent) {
+  emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent) {
     this.server.emit(GatewaySpectatorEvent.Spectator, spectatorEvent);
   }
 }

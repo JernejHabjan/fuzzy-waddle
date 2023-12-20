@@ -7,7 +7,7 @@ import {
   GameInstanceDataDto,
   ProbableWaffleGameCreateDto,
   ProbableWaffleGameInstanceData,
-  Room
+  ProbableWaffleRoom
 } from "@fuzzy-waddle/api-interfaces";
 
 @Controller("probable-waffle")
@@ -55,7 +55,7 @@ export class GameInstanceController {
 
   @Get("get-rooms")
   @UseGuards(SupabaseAuthGuard)
-  async getRooms(@CurrentUser() user: AuthUser): Promise<Room[]> {
+  async getRooms(@CurrentUser() user: AuthUser): Promise<ProbableWaffleRoom[]> {
     return await this.gameInstanceService.getSpectatorRooms(user);
   }
 }

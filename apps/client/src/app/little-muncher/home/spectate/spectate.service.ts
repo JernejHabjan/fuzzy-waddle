@@ -5,8 +5,8 @@ import {
   GameInstanceDataDto,
   LittleMuncherGameInstanceData,
   LittleMuncherGatewayEvent,
-  Room,
-  RoomEvent
+  LittleMuncherRoom,
+  LittleMuncherRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { firstValueFrom, Observable, Subject, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
@@ -21,7 +21,7 @@ import { GameInstanceClientService } from "../../main/communicators/game-instanc
 })
 export class SpectateService implements SpectateServiceInterface {
   private spectateRoomsSubscription?: Subscription;
-  rooms: Room[] = [];
+  rooms: LittleMuncherRoom[] = [];
   spectatorDisconnected: Subject<void> = new Subject<void>();
 
   constructor(
@@ -39,16 +39,19 @@ export class SpectateService implements SpectateServiceInterface {
     this.spectateRoomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
       if (roomEvent.action === "added") {
-        if (roomEvent.gameInstanceMetadataData.createdBy === this.authService.userId) return;
+        if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
         this.rooms.push(room);
       } else if (roomEvent.action === "removed") {
-        this.rooms = this.rooms.filter((room) => room.gameInstanceId !== room.gameInstanceId);
+        this.rooms = this.rooms.filter(
+          (room) =>
+            room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
+        );
         await this.handleRemovalOfSpectatedRoom(room);
       }
     });
   }
 
-  private async handleRemovalOfSpectatedRoom(room: Room) {
+  private async handleRemovalOfSpectatedRoom(room: LittleMuncherRoom) {
     const currentGameInstanceId =
       this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data.gameInstanceId;
     if (!currentGameInstanceId) return;
@@ -58,7 +61,7 @@ export class SpectateService implements SpectateServiceInterface {
     if (!currentlySpectating) return;
 
     // check if spectated room is the same as the room that was removed
-    if (room.gameInstanceId !== currentGameInstanceId) return;
+    if (room.gameInstanceMetadataData.gameInstanceId !== currentGameInstanceId) return;
 
     await this.gameInstanceClientService.stopLevel("local");
 
@@ -68,18 +71,18 @@ export class SpectateService implements SpectateServiceInterface {
   async getRooms() {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return [];
     const url = environment.api + "api/little-muncher/get-rooms";
-    return await firstValueFrom(this.httpClient.get<Room[]>(url));
+    return await firstValueFrom(this.httpClient.get<LittleMuncherRoom[]>(url));
   }
 
   async initiallyPullRooms(): Promise<void> {
     this.rooms = await this.getRooms();
   }
 
-  get roomEvent(): Observable<RoomEvent> | undefined {
+  get roomEvent(): Observable<LittleMuncherRoomEvent> | undefined {
     const socket = this.authenticatedSocketService.socket;
     return socket
-      ?.fromEvent<RoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
-      .pipe(map((data: RoomEvent) => data));
+      ?.fromEvent<LittleMuncherRoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
+      .pipe(map((data: LittleMuncherRoomEvent) => data));
   }
 
   async joinRoom(gameInstanceId: string) {
