@@ -12,8 +12,16 @@ export interface GameInstanceClientServiceInterface {
 
   stopGame(): void;
 
+  /**
+   * updates level on server and calls openLevel
+   * @param gameCreate
+   */
   startLevel(gameCreate: ProbableWaffleGameCreate): void;
 
+  /**
+   * @private
+   * Initializes game and opens level communicators
+   */
   openLevel(ProbableWaffleLevel: ProbableWaffleLevelEnum): void;
 
   openLevelSpectator(gameInstanceData: ProbableWaffleGameInstanceData): void;

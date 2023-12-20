@@ -1,0 +1,13 @@
+<div class='filter-popup'>
+  <div *ngFor='let level of checkedLevels'>
+    <input
+      type='checkbox'
+      [id]='level.id'
+      [name]='level.name'
+      [checked]='level.checked'
+      [value]='level.id'
+      (change)='onLevelChange($event, level.id)'
+    />
+    <label [for]='level.id'>{{ level.name }}</label>
+  </div>
+</div>
