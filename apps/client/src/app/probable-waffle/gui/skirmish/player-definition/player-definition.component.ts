@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MapPlayerDefinition, PositionPlayerDefinition } from '../skirmish.component';
-import { FactionDefinitions } from '../../../game/player/faction-definitions';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { MapPlayerDefinition, PositionPlayerDefinition } from "../skirmish.component";
+import { FactionDefinitions } from "../../../game/player/faction-definitions";
 
 export enum PlayerType {
   Human = 0,
@@ -9,12 +9,12 @@ export enum PlayerType {
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
-    { value: PlayerType.Human, name: 'Human' },
-    { value: PlayerType.AI, name: 'AI' }
+    { value: PlayerType.Human, name: "Human" },
+    { value: PlayerType.AI, name: "AI" }
   ];
   static playerTypeLookup = {
-    [PlayerType.Human]: 'Human',
-    [PlayerType.AI]: 'A.I.'
+    [PlayerType.Human]: "Human",
+    [PlayerType.AI]: "A.I."
   };
 }
 
@@ -26,16 +26,16 @@ export enum Difficulty {
 
 export class DifficultyDefinitions {
   static difficulties = [
-    { name: 'Easy', value: Difficulty.Easy },
-    { name: 'Normal', value: Difficulty.Medium },
-    { name: 'Hard', value: Difficulty.Hard }
+    { name: "Easy", value: Difficulty.Easy },
+    { name: "Normal", value: Difficulty.Medium },
+    { name: "Hard", value: Difficulty.Hard }
   ];
 }
 
 @Component({
-  selector: 'fuzzy-waddle-player-definition',
-  templateUrl: './player-definition.component.html',
-  styleUrls: ['./player-definition.component.scss']
+  selector: "fuzzy-waddle-player-definition",
+  templateUrl: "./player-definition.component.html",
+  styleUrls: ["./player-definition.component.scss"]
 })
 export class PlayerDefinitionComponent {
   PlayerTypeDefinitions = PlayerTypeDefinitions;
@@ -76,6 +76,7 @@ export class PlayerDefinitionComponent {
     startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
     startPositionPerPlayerElement.player.joined = true;
     startPositionPerPlayerElement.difficulty = Difficulty.Medium;
+    startPositionPerPlayerElement.playerType = PlayerType.AI;
     this.playerJoined.emit();
   }
 

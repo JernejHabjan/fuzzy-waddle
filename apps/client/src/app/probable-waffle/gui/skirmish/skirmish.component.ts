@@ -8,6 +8,7 @@ import { ProbableWaffleGameModeLobby, ProbableWaffleLevelData } from "@fuzzy-wad
 export class PlayerLobbyDefinition {
   constructor(
     public playerNumber: number,
+    public playerName: string | null,
     public playerPosition: number | null,
     public joined: boolean
   ) {}
@@ -16,8 +17,8 @@ export class PlayerLobbyDefinition {
 export class PositionPlayerDefinition {
   constructor(
     public player: PlayerLobbyDefinition,
-    public team: number | null,
-    public factionType: FactionType,
+    public team: number | null = null,
+    public factionType: FactionType | null = null,
     public playerType: PlayerType,
     public playerColor: string,
     public difficulty: Difficulty | null
@@ -31,18 +32,17 @@ export class MapPlayerDefinition {
 
   constructor(public readonly map: ProbableWaffleLevelData) {
     this.allPossibleTeams.push(null);
-    const factions = FactionDefinitions.factionTypes;
     for (let i = 0; i < map.mapInfo.startPositionsOnTile.length; i++) {
-      const randomFaction = factions[Math.floor(Math.random() * factions.length)];
       const playerColor = `hsl(${(i * 360) / map.mapInfo.startPositionsOnTile.length}, 100%, 50%)`;
       // use initialNrAiPlayers to set the first x players to AI
-      const shouldAutoJoin = i < this.initialNrAiPlayers + 1; // 1 for human player
+      const shouldAutoJoin = i < this.initialNrAiPlayers + 1; // 1 for self player
       const isAi = i > 0 && shouldAutoJoin;
+      const playerName = isAi ? `AI ${i}` : i === 0 ? "You" : `Player ${i}`;
       this.startPositionPerPlayer.push(
         new PositionPlayerDefinition(
-          new PlayerLobbyDefinition(i, shouldAutoJoin ? i : null, shouldAutoJoin),
+          new PlayerLobbyDefinition(i, playerName, shouldAutoJoin ? i : null, shouldAutoJoin),
           null,
-          randomFaction.value,
+          null,
           !isAi ? PlayerType.Human : PlayerType.AI,
           playerColor,
           isAi ? Difficulty.Medium : null

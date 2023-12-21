@@ -7,17 +7,16 @@
         <div [style.background-color]="position.playerColor" class="color-box"></div>
         <div class="p-2">
           <label class="form-label" for="playerName">Player:</label>
-          <div id="playerName">{{ position.player.playerNumber + 1 }}</div>
+          <div
+            id='playerName'>{{ position.player.playerNumber + 1 + (position.player.playerName ? ' - ' + position.player.playerName : '') }}
+          </div>
         </div>
-        <!-- <div class="p-2">
-          <div>Position on map:</div>
-          <div>{{ position.player.playerPosition + 1 }}</div>
-        </div> -->
         <div class="p-2">
           <label class="form-label" for="factionTypes">Faction:</label>
           <select [(ngModel)]="position.factionType" class="form-select" id="factionTypes">
-            <option *ngFor="let factionTypeType of FactionDefinitions.factionTypes" [ngValue]="factionTypeType.value">
-              {{ factionTypeType.name }}
+            <option [ngValue]='null'>Random</option>
+            <option *ngFor='let factionTypeType of FactionDefinitions.factions' [ngValue]='factionTypeType.value'>
+              {{ factionTypeType.value.name }}
             </option>
           </select>
         </div>
@@ -48,7 +47,7 @@
           <div class="form-label">&nbsp;</div>
           <button
             (click)="removePlayer(position.player.playerNumber)"
-            *ngIf="position.playerType === PlayerType.AI"
+            *ngIf='position.player.playerNumber !== 0'
             aria-label="Close"
             class="btn-close"
             type="button"

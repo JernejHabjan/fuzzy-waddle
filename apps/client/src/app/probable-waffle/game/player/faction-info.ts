@@ -1,11 +1,12 @@
 import { TechTreeComponent } from "./tech-tree";
 import { FactionType } from "./faction-definitions";
 import { ActorType } from "../entity/assets/types/actor-type";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class FactionInfo {
   constructor(
     public factionType: FactionType,
+    public name: string,
     public techTreeComponent: TechTreeComponent,
     /**
      * Actors to spawn for each player in the game
@@ -15,7 +16,7 @@ export class FactionInfo {
     /**
      * Relative locations of the actors to spawn for each player in the game, relative to their respective start spot
      */
-    public readonly initialActorLocations: Vector2Simple[] = [],
+    public readonly initialActorLocations: Vector3Simple[] = [],
     /**
      * Optional types of actors that are required for a player to be alive. As soon as no actor of the specified type is alive, the player is defeated
      */
