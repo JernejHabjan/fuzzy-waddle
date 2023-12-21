@@ -10,22 +10,22 @@ export const gameInstanceClientServiceStub = {
   get gameInstanceId(): string | null {
     return null;
   },
-  startGame(): Promise<void> {
+  createGameInstance(joinable: boolean): Promise<void> {
     return Promise.resolve();
   },
-  stopGame() {
+  stopGameInstance() {
     //
   },
-  startLevel() {
+  startGame() {
     //
   },
-  openLevelSpectator() {
+  joinToLobbyAsSpectator() {
     //
   },
-  openLevel() {
+  joinToLobbyAsPlayer() {
     //
   },
-  stopLevel(): Promise<void> {
+  stopGame(): Promise<void> {
     return Promise.resolve();
   }
 } satisfies GameInstanceClientServiceInterface;

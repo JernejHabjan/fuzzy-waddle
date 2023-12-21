@@ -1,13 +1,13 @@
 <div class='filter-popup'>
-  <div *ngFor='let level of checkedLevels'>
+  <div *ngFor='let map of checkedMaps'>
     <input
       type='checkbox'
-      [id]='level.id'
-      [name]='level.name'
-      [checked]='level.checked'
-      [value]='level.id'
-      (change)='onLevelChange($event, level.id)'
+      [id]='map.id'
+      [name]='map.name'
+      [checked]='map.checked'
+      [value]='map.id'
+      (change)='onLevelChange($event, map.id)'
     />
-    <label [for]='level.id'>{{ level.name }}</label>
+    <label [for]='map.id'>{{ map.name }}</label>
   </div>
 </div>

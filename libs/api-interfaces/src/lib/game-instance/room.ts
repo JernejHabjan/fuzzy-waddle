@@ -1,9 +1,9 @@
-import { GameInstanceMetadataData } from "./game-instance-metadata";
-import { BaseGameMode } from "./game-mode";
 import { LittleMuncherGameMode } from "./little-muncher/game-mode";
 import { LittleMuncherGameInstanceMetadataData } from "./little-muncher/game-instance-medatada";
 import { ProbableWaffleGameMode } from "./probable-waffle/game-mode";
 import { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/game-instance-medatada";
+import { GameSessionState } from "./session";
+import { ProbableWafflePlayer } from "./probable-waffle/player";
 
 interface Room<TGameInstanceMetadataData, TGameMode> {
   gameInstanceMetadataData: TGameInstanceMetadataData;
@@ -23,16 +23,24 @@ interface RoomEvent<TGameInstanceMetadataData, TGameMode> {
 
 export type RoomAction = "added" | "existing" | "removed";
 
-interface SpectatorEvent<TGameInstanceMetadataData, TGameMode> {
-  room: Room<TGameInstanceMetadataData, TGameMode>;
+interface SpectatorEvent {
   user_id: string;
   action: SpectatorAction;
 }
 
-export type SpectatorAction = "joined" | "left";
+interface PlayerEvent {
+  gameInstanceId: string;
+  user_id: string;
+  action: PlayerAction;
+}
 
-export enum GatewaySpectatorEvent {
-  Spectator = "room-spectator"
+export type SpectatorAction = "joined" | "left";
+export type PlayerAction = "joined" | "left";
+
+export enum ProbableWaffleGameInstanceEvent {
+  Player = "player",
+  Spectator = "spectator",
+  LevelStateChange = "level-state-change"
 }
 
 export interface LittleMuncherRoom extends Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
@@ -40,13 +48,24 @@ export interface LittleMuncherRoom extends Room<LittleMuncherGameInstanceMetadat
 export interface LittleMuncherRoomEvent
   extends RoomEvent<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
 
-export interface LittleMuncherSpectatorEvent
-  extends SpectatorEvent<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
+export interface LittleMuncherSpectatorEvent extends SpectatorEvent {
+  room: Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode>;
+}
 
 export interface ProbableWaffleRoom extends Room<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameMode> {}
 
 export interface ProbableWaffleRoomEvent
   extends RoomEvent<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameMode> {}
 
-export interface ProbableWaffleSpectatorEvent
-  extends SpectatorEvent<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameMode> {}
+export interface ProbableWafflePlayerEvent extends PlayerEvent {
+  player: ProbableWafflePlayer;
+}
+
+export interface ProbableWaffleSpectatorEvent extends SpectatorEvent {
+  gameInstanceId: string;
+}
+
+export interface ProbableWaffleLevelStateChangeEvent {
+  sessionState: GameSessionState;
+  gameInstanceId: string;
+}

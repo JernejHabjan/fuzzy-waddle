@@ -34,3 +34,40 @@ export class ProbableWafflePlayerController extends BasePlayerController<Probabl
 }
 
 export interface ProbableWafflePlayerControllerData {}
+
+export enum ProbableWafflePlayerType {
+  Human = 0,
+  AI = 1,
+  NetworkOpen = 2
+}
+
+export enum ProbableWaffleAiDifficulty {
+  Easy = 0,
+  Medium = 1,
+  Hard = 2
+}
+
+export class PlayerLobbyDefinition {
+  constructor(
+    public playerNumber: number,
+    public playerName: string | null,
+    public playerPosition: number | null,
+    public joined: boolean
+  ) {}
+}
+
+export enum FactionType {
+  Tivara,
+  Skaduwee
+}
+
+export class PositionPlayerDefinition {
+  constructor(
+    public player: PlayerLobbyDefinition,
+    public team: number | null = null,
+    public factionType: FactionType | null = null,
+    public playerType: ProbableWafflePlayerType,
+    public playerColor: string,
+    public difficulty: ProbableWaffleAiDifficulty | null
+  ) {}
+}

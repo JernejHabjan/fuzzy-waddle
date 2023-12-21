@@ -15,14 +15,21 @@
           <label class="form-label" for="factionTypes">Faction:</label>
           <select [(ngModel)]="position.factionType" class="form-select" id="factionTypes">
             <option [ngValue]='null'>Random</option>
-            <option *ngFor='let factionTypeType of FactionDefinitions.factions' [ngValue]='factionTypeType.value'>
+            <option *ngFor='let factionTypeType of FactionDefinitions.factions'
+                    [ngValue]='factionTypeType.value.factionType'>
               {{ factionTypeType.value.name }}
             </option>
           </select>
         </div>
         <div class="p-2">
           <label class="form-label" for="playerType">Type:</label>
-          <div id="playerType">{{ PlayerTypeDefinitions.playerTypeLookup[position.playerType] }}</div>
+          <div id='playerType'>
+            {{ PlayerTypeDefinitions.playerTypeLookup[position.playerType] }}
+            @if (position.playerType === PlayerType.NetworkOpen) {
+              <fa-icon [icon]='faSpinner' animation='spin' />
+            }
+
+          </div>
         </div>
 
         <div class="p-2" style="margin-left: 10px">
@@ -57,7 +64,7 @@
     </div>
   </div>
   <button
-    (click)="openSlot(selectedMap.playerPositions.length)"
+    (click)='openMpSlot(selectedMap.playerPositions.length)'
     *ngIf="selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length"
     class="btn btn-primary mt-4 me-4"
     type="button"

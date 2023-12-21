@@ -1,9 +1,13 @@
 import { BaseData } from "../data";
 import { BaseGameMode } from "../game-mode";
-import { ProbableWaffleLevelEnum } from "../../probable-waffle/probable-waffle";
+import { ProbableWaffleMapEnum } from "../../probable-waffle/probable-waffle";
+import { DifficultyModifiers, MapTuning, WinConditions } from "../../probable-waffle/probable-waffle-game-mode-lobby";
 
 export interface ProbableWaffleGameModeData extends BaseData {
-  level?: ProbableWaffleLevelEnum;
+  map?: ProbableWaffleMapEnum;
+  winConditions: WinConditions;
+  mapTuning: MapTuning;
+  difficultyModifiers: DifficultyModifiers;
 }
 
 export class ProbableWaffleGameMode extends BaseGameMode<ProbableWaffleGameModeData> {

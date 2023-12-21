@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ProbableWaffleLevelEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleMapEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   selector: "probable-waffle-map-filter",
@@ -10,21 +10,21 @@ import { ProbableWaffleLevelEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api
   styleUrls: ["./map-filter.component.scss"]
 })
 export class MapFilterComponent implements OnInit {
-  @Output() filter = new EventEmitter<ProbableWaffleLevelEnum[]>();
-  protected checkedLevels: { id: number; name: string; checked: boolean }[] = [];
+  @Output() filter = new EventEmitter<ProbableWaffleMapEnum[]>();
+  protected checkedMaps: { id: number; name: string; checked: boolean }[] = [];
 
   ngOnInit(): void {
-    this.checkedLevels = Object.values(ProbableWaffleLevels).map((m) => ({
+    this.checkedMaps = Object.values(ProbableWaffleLevels).map((m) => ({
       id: m.id,
       name: m.name,
       checked: true
     }));
   }
 
-  protected onLevelChange($event: Event, level: ProbableWaffleLevelEnum) {
+  protected onLevelChange($event: Event, level: ProbableWaffleMapEnum) {
     const isChecked = ($event.target as HTMLInputElement).checked;
-    const checkedLevelObject = this.checkedLevels.find((m) => m.id === level);
+    const checkedLevelObject = this.checkedMaps.find((m) => m.id === level);
     checkedLevelObject!.checked = isChecked;
-    this.filter.emit(this.checkedLevels.filter((m) => m.checked).map((m) => m.id));
+    this.filter.emit(this.checkedMaps.filter((m) => m.checked).map((m) => m.id));
   }
 }

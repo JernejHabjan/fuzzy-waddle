@@ -1,7 +1,6 @@
 import { TechTreeComponent } from "./tech-tree";
-import { FactionType } from "./faction-definitions";
 import { ActorType } from "../entity/assets/types/actor-type";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class FactionInfo {
   constructor(

@@ -7,6 +7,7 @@ export interface GameInstanceMetadataData {
   createdBy: string | null;
   updatedOn?: Date;
   sessionState?: GameSessionState;
+  joinable?: boolean;
 }
 
 export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataData = GameInstanceMetadataData> {

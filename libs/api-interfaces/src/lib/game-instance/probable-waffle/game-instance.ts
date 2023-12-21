@@ -1,4 +1,4 @@
-import { GameInstance, GameInstanceData } from "../game-instance";
+import { GameInstance, GameInstanceData, GameInstanceDataDto } from "../game-instance";
 import { ProbableWaffleGameInstanceMetadata, ProbableWaffleGameInstanceMetadataData } from "./game-instance-medatada";
 import { ProbableWaffleGameMode, ProbableWaffleGameModeData } from "./game-mode";
 import { ProbableWaffleGameState, ProbableWaffleGameStateData } from "./game-state";
@@ -49,4 +49,17 @@ export class ProbableWaffleGameInstance extends GameInstance<
       gameInstanceData
     );
   }
+}
+
+export interface ProbableWaffleGameInstanceDataDto extends GameInstanceDataDto {
+  joinable: boolean;
+}
+
+export interface ProbableWaffleJoinDto {
+  gameInstanceId: string;
+  type: "player" | "spectator";
+}
+
+export interface ProbableWaffleLeaveDto {
+  gameInstanceId: string;
 }

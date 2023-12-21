@@ -1,36 +1,22 @@
-import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
-import { FactionDefinitions, FactionType } from "../../game/player/faction-definitions";
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
-import { Difficulty, PlayerType } from "./player-definition/player-definition.component";
-import { ProbableWaffleGameModeLobby, ProbableWaffleLevelData } from "@fuzzy-waddle/api-interfaces";
-
-export class PlayerLobbyDefinition {
-  constructor(
-    public playerNumber: number,
-    public playerName: string | null,
-    public playerPosition: number | null,
-    public joined: boolean
-  ) {}
-}
-
-export class PositionPlayerDefinition {
-  constructor(
-    public player: PlayerLobbyDefinition,
-    public team: number | null = null,
-    public factionType: FactionType | null = null,
-    public playerType: PlayerType,
-    public playerColor: string,
-    public difficulty: Difficulty | null
-  ) {}
-}
+import {
+  ProbableWaffleAiDifficulty,
+  ProbableWafflePlayerType,
+  ProbableWaffleGameModeLobby,
+  ProbableWaffleMapData,
+  PositionPlayerDefinition,
+  PlayerLobbyDefinition
+} from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import { Router } from "@angular/router";
 
 export class MapPlayerDefinition {
   startPositionPerPlayer: PositionPlayerDefinition[] = [];
   allPossibleTeams: (number | null)[] = [];
   initialNrAiPlayers = 1;
 
-  constructor(public readonly map: ProbableWaffleLevelData) {
+  constructor(public readonly map: ProbableWaffleMapData) {
     this.allPossibleTeams.push(null);
     for (let i = 0; i < map.mapInfo.startPositionsOnTile.length; i++) {
       const playerColor = `hsl(${(i * 360) / map.mapInfo.startPositionsOnTile.length}, 100%, 50%)`;
@@ -43,9 +29,9 @@ export class MapPlayerDefinition {
           new PlayerLobbyDefinition(i, playerName, shouldAutoJoin ? i : null, shouldAutoJoin),
           null,
           null,
-          !isAi ? PlayerType.Human : PlayerType.AI,
+          !isAi ? ProbableWafflePlayerType.Human : ProbableWafflePlayerType.AI,
           playerColor,
-          isAi ? Difficulty.Medium : null
+          isAi ? ProbableWaffleAiDifficulty.Medium : null
         )
       );
       this.allPossibleTeams.push(i);
@@ -62,33 +48,66 @@ export class MapPlayerDefinition {
   templateUrl: "./skirmish.component.html",
   styleUrls: ["./skirmish.component.scss"]
 })
-export class SkirmishComponent {
+export class SkirmishComponent implements OnInit {
   @ViewChild("mapDefinition") private mapDefinition!: MapDefinitionComponent;
   protected selectedMap?: MapPlayerDefinition;
   private gameModeLobby?: ProbableWaffleGameModeLobby;
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly router = inject(Router);
 
-  constructor(
-    private router: Router,
-    private cd: ChangeDetectorRef
-  ) {}
+  async ngOnInit(): Promise<void> {
+    await this.gameInstanceClientService.createGameInstance(false);
+  }
 
   protected playerCountChanged() {
     this.mapDefinition.initializePlayerPositions();
     this.mapDefinition.draw();
   }
 
-  protected playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
-    this.mapDefinition.removePlayer(positionPlayerDefinition.player.playerNumber);
-    this.playerCountChanged();
-  }
-
-  protected mapChanged($event: MapPlayerDefinition) {
+  protected async mapChanged($event: MapPlayerDefinition) {
     this.selectedMap = $event;
-    this.cd.detectChanges();
+    this.cdr.detectChanges();
+    await this.gameModeOrMapChanged();
+    this.selectedMap.playerPositions.forEach(this.playerAdded);
   }
 
-  protected gameModeLobbyChanged($event: ProbableWaffleGameModeLobby) {
+  protected async gameModeLobbyChanged($event: ProbableWaffleGameModeLobby) {
     this.gameModeLobby = $event;
     console.log("gameModeLobbyChanged", this.gameModeLobby);
+    await this.gameModeOrMapChanged();
+  }
+
+  private async gameModeOrMapChanged() {
+    const lobby = this.gameModeLobby;
+    const map = this.selectedMap;
+    if (!lobby || !map) return;
+    await this.gameInstanceClientService.gameModeChanged({
+      map: map.map.id,
+      mapTuning: lobby.mapTuning,
+      winConditions: lobby.winConditions,
+      difficultyModifiers: lobby.difficultyModifiers
+    });
+  }
+
+  protected playerAdded = async (positionPlayerDefinition: PositionPlayerDefinition) => {
+    this.playerCountChanged();
+    await this.gameInstanceClientService.addPlayer(positionPlayerDefinition);
+  };
+
+  protected async playerSlotOpened() {
+    this.playerCountChanged();
+    await this.gameInstanceClientService.playerSlotOpened();
+  }
+
+  protected async playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
+    this.mapDefinition.removePlayer(positionPlayerDefinition.player.playerNumber);
+    this.playerCountChanged();
+    await this.gameInstanceClientService.playerLeft(positionPlayerDefinition.player.playerNumber);
+  }
+
+  protected async startGame() {
+    await this.gameInstanceClientService.startGame();
+    await this.router.navigate(["probable-waffle/game"]);
   }
 }

@@ -67,38 +67,16 @@ export class RoomsService implements RoomsServiceInterface {
   }
 
   async joinRoom(gameInstanceId: string) {
-    // create post with LittleMuncherGameInstance dto
-    const url = environment.api + "api/probable-waffle/spectator-join";
-    const gameInstance = await firstValueFrom(
-      this.httpClient.post<ProbableWaffleGameInstanceData>(url, {
-        gameInstanceId
-      } satisfies GameInstanceDataDto)
-    );
-    this.gameInstanceClientService.openLevelSpectator(gameInstance);
+    await this.gameInstanceClientService.joinToLobbyAsSpectator(gameInstanceId);
   }
 
   async joinRoomSpectator(gameInstanceId: string) {
-    // create post with LittleMuncherGameInstance dto
-    const url = environment.api + "api/probable-waffle/spectator-join";
-    const gameInstance = await firstValueFrom(
-      this.httpClient.post<ProbableWaffleGameInstanceData>(url, {
-        gameInstanceId
-      } satisfies GameInstanceDataDto)
-    );
-    this.gameInstanceClientService.openLevelSpectator(gameInstance);
+    await this.gameInstanceClientService.joinToLobbyAsSpectator(gameInstanceId);
   }
 
   // todo use
   async leaveRoom(gameInstanceId: string) {
-    // create post with LittleMuncherGameInstance dto
-    const url = environment.api + "api/probable-waffle/spectator-leave";
-    await firstValueFrom(
-      this.httpClient.delete(url, {
-        body: {
-          gameInstanceId
-        } satisfies GameInstanceDataDto
-      })
-    );
+    // todo
   }
 
   destroy(): void {

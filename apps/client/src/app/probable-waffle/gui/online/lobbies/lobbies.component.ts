@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { ProbableWaffleLevelEnum, ProbableWaffleLevels, ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleMapEnum, ProbableWaffleLevels, ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
 @Component({
@@ -38,7 +38,7 @@ export class LobbiesComponent implements OnInit {
     this.isFilterPopupOpen = !this.isFilterPopupOpen;
   }
 
-  filter(levels: ProbableWaffleLevelEnum[]): void {
+  filter(levels: ProbableWaffleMapEnum[]): void {
     // Handle the filter logic here
     console.log("levels: ", levels.join(", ")); // todo here refresh lobbies
   }

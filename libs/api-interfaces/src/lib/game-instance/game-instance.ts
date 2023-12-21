@@ -120,21 +120,22 @@ export abstract class GameInstance<
     };
   }
 
-  initGame(gameModeData: TGameModeData) {
-    if (!this.gameMode || !this.gameInstanceMetadata)
-      throw new Error("Game mode or game instance metadata is not initialized");
-    this.gameMode.data = gameModeData;
-    this.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
-  }
-
-  initPlayer(userId: string | null, playerStateData: TPlayerStateData, playerControllerData: TPlayerControllerData) {
+  initPlayer(
+    userId: string | null,
+    playerStateData: TPlayerStateData,
+    playerControllerData: TPlayerControllerData
+  ): TPlayer {
     const playerState = new this.constructors.playerState(playerStateData);
     const playerController = new this.constructors.playerController(playerControllerData);
-    this.players.push(new this.constructors.player(userId, playerState, playerController));
+    const player = new this.constructors.player(userId, playerState, playerController);
+    this.players.push(player);
+    return player;
   }
 
-  initSpectator(spectatorData: TSpectatorData) {
-    this.spectators.push(new this.constructors.spectator(spectatorData));
+  initSpectator(spectatorData: TSpectatorData): TSpectator {
+    const spectator = new this.constructors.spectator(spectatorData);
+    this.spectators.push();
+    return spectator;
   }
 
   removeSpectator(userId: string) {

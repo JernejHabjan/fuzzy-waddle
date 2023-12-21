@@ -18,7 +18,6 @@ describe("TriggerComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
       declarations: [TriggerComponent],
       imports: [RouterTestingModule]
     }).compileComponents();

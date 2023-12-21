@@ -1,7 +1,7 @@
 import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "net";
 import {
-  GatewaySpectatorEvent,
+  ProbableWaffleGameInstanceEvent,
   LittleMuncherGatewayEvent,
   LittleMuncherRoomEvent,
   LittleMuncherSpectatorEvent
@@ -31,6 +31,6 @@ export class GameInstanceGateway implements GameInstanceGatewayInterface {
   }
 
   emitSpectator(spectatorEvent: LittleMuncherSpectatorEvent) {
-    this.server.emit(GatewaySpectatorEvent.Spectator, spectatorEvent);
+    this.server.emit(ProbableWaffleGameInstanceEvent.Spectator, spectatorEvent);
   }
 }

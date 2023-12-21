@@ -3,14 +3,21 @@ import { User } from "@supabase/supabase-js";
 import {
   GameInstanceDataDto,
   GameSessionState,
-  ProbableWaffleGameCreateDto,
+  PlayerAction,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceDataDto,
+  ProbableWaffleJoinDto,
+  ProbableWafflePlayer,
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayerEvent,
+  ProbableWafflePlayerStateData,
   ProbableWaffleRoom,
-  RoomAction,
   ProbableWaffleRoomEvent,
-  SpectatorAction,
-  ProbableWaffleSpectatorEvent
+  ProbableWaffleSpectatorEvent,
+  ProbableWaffleStartLevelDto,
+  RoomAction,
+  SpectatorAction
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceGateway } from "./game-instance.gateway";
@@ -22,13 +29,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
 
   openGameInstances: ProbableWaffleGameInstance[] = [];
 
-  async startGame(body: GameInstanceDataDto, user: User) {
+  async startGame(body: ProbableWaffleGameInstanceDataDto, user: User) {
     const newGameInstance = new ProbableWaffleGameInstance({
-      gameInstanceMetadataData: { gameInstanceId: body.gameInstanceId, createdBy: user.id },
+      gameInstanceMetadataData: { gameInstanceId: body.gameInstanceId, createdBy: user.id, joinable: body.joinable },
       players: [{ userId: user.id }]
     });
     this.openGameInstances.push(newGameInstance);
-    console.log("game instance created on server", this.openGameInstances.length);
+    this.gameInstanceGateway.emitRoom(this.getRoomEvent(newGameInstance, "added"));
+    console.log("Probable Waffle - game instance created on server", this.openGameInstances.length);
   }
 
   async stopGame(body: GameInstanceDataDto, user: User) {
@@ -38,42 +46,54 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.openGameInstances = this.openGameInstances.filter(
       (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId !== body.gameInstanceId
     );
-    console.log("game instance deleted on server", this.openGameInstances.length);
+    console.log("Probable Waffle - game instance deleted on server", this.openGameInstances.length);
   }
 
-  async startLevel(body: ProbableWaffleGameCreateDto, user: User) {
+  async startLevel(body: ProbableWaffleStartLevelDto, user: User) {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
-    gameInstance.initGame({
-      level: body.level
-    });
     gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
-    console.log("game mode set on server", body.level);
-    this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "added"));
+    console.log("Probable waffle - game instance started on server" + body.gameInstanceId);
+    this.gameInstanceGateway.emitLevelStateChange({
+      sessionState: gameInstance.gameInstanceMetadata.data.sessionState,
+      gameInstanceId: body.gameInstanceId
+    });
   }
 
-  async spectatorJoined(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData> {
+  async joinRoom(body: ProbableWaffleJoinDto, user: User): Promise<ProbableWaffleGameInstanceData> {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    gameInstance.initSpectator({
-      userId: user.id
-    });
-    console.log("spectator joined", user.id);
-    this.gameInstanceGateway.emitSpectator(
-      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), "joined")
-    );
+    switch (body.type) {
+      case "player":
+        const player = gameInstance.initPlayer(
+          user.id,
+          {
+            score: 0
+          } satisfies ProbableWafflePlayerStateData,
+          {} satisfies ProbableWafflePlayerControllerData
+        );
+        this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "joined"));
+        break;
+      case "spectator":
+        gameInstance.initSpectator({
+          userId: user.id
+        });
+        this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, body.gameInstanceId, "joined"));
+        break;
+      default:
+        throw new Error("Unknown join type");
+    }
+
     return gameInstance.data;
   }
 
-  async spectatorLeft(body: GameInstanceDataDto, user: User) {
+  async leaveRoom(body: GameInstanceDataDto, user: User) {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     gameInstance.removeSpectator(user.id);
     console.log("spectator left", user.id);
-    this.gameInstanceGateway.emitSpectator(
-      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), "left")
-    );
+    this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, body.gameInstanceId, "left"));
   }
 
   async stopLevel(body: GameInstanceDataDto, user: User) {
@@ -91,7 +111,8 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       .filter(
         (gi) =>
           gi.gameInstanceMetadata.data.sessionState === GameSessionState.NotStarted &&
-          gi.gameInstanceMetadata.data.createdBy !== user.id
+          gi.gameInstanceMetadata.data.createdBy !== user.id &&
+          gi.gameInstanceMetadata.data.joinable
       )
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
   }
@@ -112,10 +133,24 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     };
   }
 
-  getSpectatorEvent(user: User, room: ProbableWaffleRoom, action: SpectatorAction): ProbableWaffleSpectatorEvent {
+  getSpectatorEvent(user: User, gameInstanceId: string, action: SpectatorAction): ProbableWaffleSpectatorEvent {
     return {
       user_id: user.id,
-      room,
+      gameInstanceId,
+      action
+    };
+  }
+
+  getPlayerEvent(
+    user: User,
+    player: ProbableWafflePlayer,
+    gameInstanceId: string,
+    action: PlayerAction
+  ): ProbableWafflePlayerEvent {
+    return {
+      user_id: user.id,
+      player,
+      gameInstanceId,
       action
     };
   }

@@ -5,9 +5,11 @@ import { AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
 import {
   GameInstanceDataDto,
-  ProbableWaffleGameCreateDto,
+  ProbableWaffleStartLevelDto,
   ProbableWaffleGameInstanceData,
-  ProbableWaffleRoom
+  ProbableWaffleRoom,
+  ProbableWaffleGameInstanceDataDto,
+  ProbableWaffleJoinDto
 } from "@fuzzy-waddle/api-interfaces";
 
 @Controller("probable-waffle")
@@ -16,7 +18,7 @@ export class GameInstanceController {
 
   @Post("start-game")
   @UseGuards(SupabaseAuthGuard)
-  async startGame(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
+  async startGame(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleGameInstanceDataDto): Promise<void> {
     await this.gameInstanceService.startGame(body, user);
   }
 
@@ -28,29 +30,29 @@ export class GameInstanceController {
 
   @Post("start-level")
   @UseGuards(SupabaseAuthGuard)
-  async createGameMode(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleGameCreateDto): Promise<void> {
+  async startLevel(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleStartLevelDto): Promise<void> {
     await this.gameInstanceService.startLevel(body, user);
   }
 
   @Delete("stop-level")
   @UseGuards(SupabaseAuthGuard)
-  async deleteGameMode(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
+  async stopLevel(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
     await this.gameInstanceService.stopLevel(body, user);
   }
 
-  @Post("spectator-join")
+  @Post("join-room")
   @UseGuards(SupabaseAuthGuard)
-  async spectatorJoin(
+  async joinRoom(
     @CurrentUser() user: AuthUser,
-    @Body() body: GameInstanceDataDto
+    @Body() body: ProbableWaffleJoinDto
   ): Promise<ProbableWaffleGameInstanceData> {
-    return await this.gameInstanceService.spectatorJoined(body, user);
+    return await this.gameInstanceService.joinRoom(body, user);
   }
 
-  @Delete("spectator-leave")
+  @Delete("leave-room")
   @UseGuards(SupabaseAuthGuard)
-  async spectatorLeave(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
-    await this.gameInstanceService.spectatorLeft(body, user);
+  async leaveRoom(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
+    await this.gameInstanceService.leaveRoom(body, user);
   }
 
   @Get("get-rooms")

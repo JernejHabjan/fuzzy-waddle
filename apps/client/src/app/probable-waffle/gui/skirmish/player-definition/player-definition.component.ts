@@ -1,34 +1,31 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { MapPlayerDefinition, PositionPlayerDefinition } from "../skirmish.component";
+import { MapPlayerDefinition } from "../skirmish.component";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
-
-export enum PlayerType {
-  Human = 0,
-  AI = 1
-}
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import {
+  PositionPlayerDefinition,
+  ProbableWaffleAiDifficulty,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/api-interfaces";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
-    { value: PlayerType.Human, name: "Human" },
-    { value: PlayerType.AI, name: "AI" }
+    { value: ProbableWafflePlayerType.Human, name: "Human" },
+    { value: ProbableWafflePlayerType.AI, name: "AI" },
+    { value: ProbableWafflePlayerType.NetworkOpen, name: "Network Open" }
   ];
   static playerTypeLookup = {
-    [PlayerType.Human]: "Human",
-    [PlayerType.AI]: "A.I."
+    [ProbableWafflePlayerType.Human]: "Human",
+    [ProbableWafflePlayerType.AI]: "A.I.",
+    [ProbableWafflePlayerType.NetworkOpen]: "Network Open"
   };
-}
-
-export enum Difficulty {
-  Easy = 0,
-  Medium = 1,
-  Hard = 2
 }
 
 export class DifficultyDefinitions {
   static difficulties = [
-    { name: "Easy", value: Difficulty.Easy },
-    { name: "Normal", value: Difficulty.Medium },
-    { name: "Hard", value: Difficulty.Hard }
+    { name: "Easy", value: ProbableWaffleAiDifficulty.Easy },
+    { name: "Normal", value: ProbableWaffleAiDifficulty.Medium },
+    { name: "Hard", value: ProbableWaffleAiDifficulty.Hard }
   ];
 }
 
@@ -38,12 +35,14 @@ export class DifficultyDefinitions {
   styleUrls: ["./player-definition.component.scss"]
 })
 export class PlayerDefinitionComponent {
-  PlayerTypeDefinitions = PlayerTypeDefinitions;
-  PlayerType = PlayerType;
-  FactionDefinitions = FactionDefinitions;
-  DifficultyDefinitions = DifficultyDefinitions;
+  protected readonly faSpinner = faSpinner;
+  protected PlayerTypeDefinitions = PlayerTypeDefinitions;
+  protected PlayerType = ProbableWafflePlayerType;
+  protected FactionDefinitions = FactionDefinitions;
+  protected DifficultyDefinitions = DifficultyDefinitions;
   @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
-  @Output() playerJoined: EventEmitter<void> = new EventEmitter<void>();
+  @Output() playerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
+  @Output() playerSlotOpened: EventEmitter<void> = new EventEmitter<void>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 
   /**
@@ -70,22 +69,27 @@ export class PlayerDefinitionComponent {
     return freePosition;
   }
 
-  addPlayer(playerIndex: number) {
+  protected addPlayer(playerIndex: number) {
     const map = this.selectedMap as MapPlayerDefinition;
     const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
     startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
     startPositionPerPlayerElement.player.joined = true;
-    startPositionPerPlayerElement.difficulty = Difficulty.Medium;
-    startPositionPerPlayerElement.playerType = PlayerType.AI;
-    this.playerJoined.emit();
+    startPositionPerPlayerElement.difficulty = ProbableWaffleAiDifficulty.Medium;
+    startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.AI;
+    this.playerAdded.emit(startPositionPerPlayerElement);
   }
 
-  openSlot(playerIndex: number) {
-    // todo implement this for multiplayer
-    this.addPlayer(playerIndex);
+  protected openMpSlot(playerIndex: number) {
+    const map = this.selectedMap as MapPlayerDefinition;
+    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
+    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
+    startPositionPerPlayerElement.player.joined = false;
+    startPositionPerPlayerElement.difficulty = null;
+    startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.NetworkOpen;
+    this.playerSlotOpened.emit();
   }
 
-  removePlayer(playerNumber: number) {
+  protected removePlayer(playerNumber: number) {
     const map = this.selectedMap as MapPlayerDefinition;
     const startPositionPerPlayerElement = map.startPositionPerPlayer[playerNumber];
     startPositionPerPlayerElement.player.playerPosition = null;

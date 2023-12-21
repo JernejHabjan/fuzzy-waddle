@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { GameInstanceService } from "./game-instance.service";
 import {
   GameInstanceDataDto,
-  ProbableWaffleGameCreateDto,
+  ProbableWaffleStartLevelDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleRoom,
@@ -37,13 +37,13 @@ export const GameInstanceServiceStub = {
   getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]> {
     return undefined;
   },
-  spectatorJoined(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData> {
+  joinRoom(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData> {
     return undefined;
   },
-  spectatorLeft(body: GameInstanceDataDto, user: User) {
+  leaveRoom(body: GameInstanceDataDto, user: User) {
     //
   },
-  startLevel(body: ProbableWaffleGameCreateDto, user: User) {
+  startLevel(body: ProbableWaffleStartLevelDto, user: User) {
     //
   },
   stopLevel(body: GameInstanceDataDto, user: User) {

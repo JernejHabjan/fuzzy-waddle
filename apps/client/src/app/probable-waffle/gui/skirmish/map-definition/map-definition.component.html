@@ -11,4 +11,4 @@
     </div>
   </div>
 </div>
-<fuzzy-waddle-trigger [selectedMap]="selectedMap"></fuzzy-waddle-trigger>
+<fuzzy-waddle-trigger [selectedMap]='selectedMap' (started)='started.emit($event)'></fuzzy-waddle-trigger>

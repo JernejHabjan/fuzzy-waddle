@@ -1,32 +1,19 @@
-import {
-  ProbableWaffleGameCreate,
-  ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleLevelEnum
-} from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
 
 export interface GameInstanceClientServiceInterface {
   gameInstance?: ProbableWaffleGameInstance;
 
+  createGameInstance(joinable: boolean): Promise<void>;
+
+  stopGameInstance(): Promise<void>;
+
   startGame(): Promise<void>;
 
-  stopGame(): void;
+  joinToLobbyAsPlayer(gameInstanceId: string): Promise<void>;
 
-  /**
-   * updates level on server and calls openLevel
-   * @param gameCreate
-   */
-  startLevel(gameCreate: ProbableWaffleGameCreate): void;
+  joinToLobbyAsSpectator(gameInstanceId: string): Promise<void>;
 
-  /**
-   * @private
-   * Initializes game and opens level communicators
-   */
-  openLevel(ProbableWaffleLevel: ProbableWaffleLevelEnum): void;
+  stopGame(removeFrom: "local" | "localAndRemote"): Promise<void>;
 
-  openLevelSpectator(gameInstanceData: ProbableWaffleGameInstanceData): void;
-
-  stopLevel(removeFrom: "local" | "localAndRemote"): Promise<void>;
-
-  get gameInstanceId(): string | null;
+  get gameLocalInstanceId(): string | null;
 }

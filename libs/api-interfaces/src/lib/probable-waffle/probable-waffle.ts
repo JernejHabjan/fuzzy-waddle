@@ -1,16 +1,16 @@
 import { Vector3Simple } from "../game/vector";
 
-export enum ProbableWaffleLevelEnum {
+export enum ProbableWaffleMapEnum {
   RiverCrossing = 1,
   EmberEnclave = 2
 }
 
-export type ProbableWaffleLevelType = {
-  [key in ProbableWaffleLevelEnum]: ProbableWaffleLevelData;
+export type ProbableWaffleMapType = {
+  [key in ProbableWaffleMapEnum]: ProbableWaffleMapData;
 };
 
-export type ProbableWaffleLevelData = {
-  id: ProbableWaffleLevelEnum;
+export type ProbableWaffleMapData = {
+  id: ProbableWaffleMapEnum;
   name: string;
   loader: {
     mapSceneKey: string;
@@ -27,9 +27,9 @@ export type ProbableWaffleLevelData = {
   };
 };
 
-export const ProbableWaffleLevels: ProbableWaffleLevelType = {
-  [ProbableWaffleLevelEnum.RiverCrossing]: {
-    id: ProbableWaffleLevelEnum.RiverCrossing,
+export const ProbableWaffleLevels: ProbableWaffleMapType = {
+  [ProbableWaffleMapEnum.RiverCrossing]: {
+    id: ProbableWaffleMapEnum.RiverCrossing,
     name: "River Crossing",
     loader: {
       mapSceneKey: "MapRiverCrossing",
@@ -48,8 +48,8 @@ export const ProbableWaffleLevels: ProbableWaffleLevelType = {
       heightTiles: 50
     }
   },
-  [ProbableWaffleLevelEnum.EmberEnclave]: {
-    id: ProbableWaffleLevelEnum.EmberEnclave,
+  [ProbableWaffleMapEnum.EmberEnclave]: {
+    id: ProbableWaffleMapEnum.EmberEnclave,
     name: "Ember Enclave",
     loader: {
       mapSceneKey: "MapEmberEnclave",

@@ -1,11 +1,7 @@
 import { TechTreeComponent } from "./tech-tree";
 import { FactionInfo } from "./faction-info";
 import { ActorType } from "../entity/assets/types/actor-type";
-
-export enum FactionType {
-  Tivara,
-  Skaduwee
-}
+import { FactionType } from "@fuzzy-waddle/api-interfaces";
 
 export class FactionDefinitions {
   static tivara: FactionInfo = new FactionInfo(
