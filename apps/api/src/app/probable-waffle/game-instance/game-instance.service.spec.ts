@@ -34,7 +34,7 @@ export const GameInstanceServiceStub = {
   getSpectatorEvent(user: User, room: ProbableWaffleRoom, action: SpectatorAction): ProbableWaffleSpectatorEvent {
     return undefined;
   },
-  getSpectatorRooms(user: User): Promise<ProbableWaffleRoom[]> {
+  getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]> {
     return undefined;
   },
   spectatorJoined(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData> {

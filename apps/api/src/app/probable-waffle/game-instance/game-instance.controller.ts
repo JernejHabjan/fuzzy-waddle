@@ -56,6 +56,6 @@ export class GameInstanceController {
   @Get("get-rooms")
   @UseGuards(SupabaseAuthGuard)
   async getRooms(@CurrentUser() user: AuthUser): Promise<ProbableWaffleRoom[]> {
-    return await this.gameInstanceService.getSpectatorRooms(user);
+    return await this.gameInstanceService.getJoinableRooms(user);
   }
 }

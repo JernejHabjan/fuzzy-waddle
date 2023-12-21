@@ -48,7 +48,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     gameInstance.initGame({
       level: body.level
     });
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.Playing;
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
     console.log("game mode set on server", body.level);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "added"));
   }
@@ -86,11 +86,11 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "removed"));
   }
 
-  async getSpectatorRooms(user: User): Promise<ProbableWaffleRoom[]> {
+  async getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]> {
     return this.openGameInstances
       .filter(
         (gi) =>
-          gi.gameInstanceMetadata.data.sessionState === GameSessionState.Playing &&
+          gi.gameInstanceMetadata.data.sessionState === GameSessionState.NotStarted &&
           gi.gameInstanceMetadata.data.createdBy !== user.id
       )
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));

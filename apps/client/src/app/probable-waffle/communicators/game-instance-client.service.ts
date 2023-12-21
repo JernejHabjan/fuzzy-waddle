@@ -34,7 +34,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       players: [{ userId: this.authService.userId }]
     });
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/little-muncher/start-game";
+      const url = environment.api + "api/probable-waffle/start-game";
       const body: GameInstanceDataDto = { gameInstanceId: this.gameInstanceId! };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
@@ -43,7 +43,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async stopGame() {
     if (!this.gameInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/little-muncher/stop-game";
+      const url = environment.api + "api/probable-waffle/stop-game";
       const body: GameInstanceDataDto = { gameInstanceId: this.gameInstanceId };
       await firstValueFrom(this.httpClient.delete<void>(url, { body }));
     }
@@ -53,7 +53,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async startLevel(gameCreate: ProbableWaffleGameCreate) {
     if (!this.gameInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/little-muncher/start-level";
+      const url = environment.api + "api/probable-waffle/start-level";
       const body: ProbableWaffleGameCreateDto = {
         gameInstanceId: this.gameInstanceId,
         ...gameCreate
@@ -91,7 +91,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       this.serverHealthService.serverAvailable &&
       removeFrom === "localAndRemote"
     ) {
-      const url = environment.api + "api/little-muncher/stop-level";
+      const url = environment.api + "api/probable-waffle/stop-level";
       const body: GameInstanceDataDto = {
         gameInstanceId: this.gameInstanceId
       };

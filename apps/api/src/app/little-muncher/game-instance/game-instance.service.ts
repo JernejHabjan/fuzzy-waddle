@@ -48,7 +48,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     gameInstance.initGame({
       hill: body.level.hill
     });
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.Playing;
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
     console.log("game mode set on server", body.level.hill);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "added"));
   }
@@ -90,7 +90,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return this.openGameInstances
       .filter(
         (gi) =>
-          gi.gameInstanceMetadata.data.sessionState === GameSessionState.Playing &&
+          gi.gameInstanceMetadata.data.sessionState === GameSessionState.InProgress &&
           gi.gameInstanceMetadata.data.createdBy !== user.id
       )
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
