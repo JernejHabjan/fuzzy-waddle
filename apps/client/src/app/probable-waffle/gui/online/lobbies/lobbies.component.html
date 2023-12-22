@@ -13,7 +13,7 @@
       <div>
         Filter:
         <button (click)='toggleFilterPopup()'>Open Filter</button>
-        <probable-waffle-map-filter *ngIf='isFilterPopupOpen' (filter)='filter($event)'></probable-waffle-map-filter>
+        <probable-waffle-map-filter *ngIf='isFilterPopupOpen' (filter)='filter($event)' />
       </div>
       <table class="table table-striped">
         <thead>

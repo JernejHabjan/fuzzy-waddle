@@ -2,13 +2,13 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
-  GameInstanceDataDto,
-  ProbableWaffleGameInstanceData,
   ProbableWaffleGatewayEvent,
+  ProbableWaffleGetRoomsDto,
+  ProbableWaffleMapEnum,
   ProbableWaffleRoom,
   ProbableWaffleRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { firstValueFrom, Observable, Subscription } from "rxjs";
+import { filter, firstValueFrom, Observable, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
 import { AuthService } from "../../../auth/auth.service";
@@ -37,22 +37,37 @@ export class RoomsService implements RoomsServiceInterface {
   listenToRoomEvents() {
     this.roomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
-      if (roomEvent.action === "added") {
-        if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
-        this.rooms.push(room);
-      } else if (roomEvent.action === "removed") {
-        this.rooms = this.rooms.filter(
-          (room) =>
-            room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
-        );
+      switch (roomEvent.action) {
+        case "added":
+          if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
+          this.rooms.push(room);
+          break;
+        case "removed":
+          this.rooms = this.rooms.filter(
+            (room) =>
+              room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
+          );
+          break;
+        case "changed":
+          const index = this.rooms.findIndex(
+            (room) =>
+              room.gameInstanceMetadataData.gameInstanceId === roomEvent.room.gameInstanceMetadataData.gameInstanceId
+          );
+          if (index !== -1) {
+            this.rooms[index] = room;
+          }
+          break;
       }
     });
   }
 
-  async getRooms() {
+  async getRooms(maps: ProbableWaffleMapEnum[] | null = null): Promise<ProbableWaffleRoom[]> {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return [];
     const url = environment.api + "api/probable-waffle/get-rooms";
-    return await firstValueFrom(this.httpClient.get<ProbableWaffleRoom[]>(url));
+    const body: ProbableWaffleGetRoomsDto = {
+      maps: maps
+    };
+    return await firstValueFrom(this.httpClient.post<ProbableWaffleRoom[]>(url, body));
   }
 
   async initiallyPullRooms(): Promise<void> {
@@ -63,7 +78,7 @@ export class RoomsService implements RoomsServiceInterface {
     const socket = this.authenticatedSocketService.socket;
     return socket
       ?.fromEvent<ProbableWaffleRoomEvent>(ProbableWaffleGatewayEvent.ProbableWaffleRoom)
-      .pipe(map((data: ProbableWaffleRoomEvent) => data));
+      .pipe(map((roomEvent: ProbableWaffleRoomEvent) => roomEvent));
   }
 
   async joinRoom(gameInstanceId: string) {

@@ -33,7 +33,9 @@ export class ProbableWafflePlayerController extends BasePlayerController<Probabl
   }
 }
 
-export interface ProbableWafflePlayerControllerData {}
+export interface ProbableWafflePlayerControllerData {
+  playerDefinition: PositionPlayerDefinition;
+}
 
 export enum ProbableWafflePlayerType {
   Human = 0,

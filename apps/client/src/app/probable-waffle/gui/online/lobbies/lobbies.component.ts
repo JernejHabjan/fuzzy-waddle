@@ -38,8 +38,8 @@ export class LobbiesComponent implements OnInit {
     this.isFilterPopupOpen = !this.isFilterPopupOpen;
   }
 
-  filter(levels: ProbableWaffleMapEnum[]): void {
+  async filter(maps: ProbableWaffleMapEnum[]): Promise<void> {
     // Handle the filter logic here
-    console.log("levels: ", levels.join(", ")); // todo here refresh lobbies
+    await this.roomsService.getRooms(maps);
   }
 }

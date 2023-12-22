@@ -7,23 +7,23 @@ import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 
 export const gameInstanceClientServiceStub = {
-  get gameInstanceId(): string | null {
+  get gameLocalInstanceId(): string | null {
     return null;
   },
   createGameInstance(joinable: boolean): Promise<void> {
     return Promise.resolve();
   },
-  stopGameInstance() {
-    //
+  stopGameInstance(): Promise<void> {
+    return Promise.resolve();
   },
-  startGame() {
-    //
+  startGame(): Promise<void> {
+    return Promise.resolve();
   },
-  joinToLobbyAsSpectator() {
-    //
+  joinToLobbyAsSpectator(): Promise<void> {
+    return Promise.resolve();
   },
-  joinToLobbyAsPlayer() {
-    //
+  joinToLobbyAsPlayer(): Promise<void> {
+    return Promise.resolve();
   },
   stopGame(): Promise<void> {
     return Promise.resolve();

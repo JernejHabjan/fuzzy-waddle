@@ -1,13 +1,13 @@
 <fuzzy-waddle-home-nav/>
 
 <ul class="nav-tabs">
-  <li (click)="selectTab('ranked')"><a [class.active]="selectedTab === 'ranked'" routerLink="/ranked">Ranked</a></li>
   <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'" routerLink="/join">Join</a></li>
   <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'" routerLink="/host">Host</a></li>
+  <li (click)="selectTab('ranked')"><a [class.active]="selectedTab === 'ranked'" routerLink='/ranked'>Ranked</a></li>
 </ul>
 
 <div [ngSwitch]="selectedTab">
-  <fuzzy-waddle-ranked *ngSwitchCase="'ranked'"></fuzzy-waddle-ranked>
   <fuzzy-waddle-lobbies *ngSwitchCase="'join'"></fuzzy-waddle-lobbies>
   <fuzzy-waddle-host *ngSwitchCase="'host'"></fuzzy-waddle-host>
+  <fuzzy-waddle-ranked *ngSwitchCase="'ranked'"></fuzzy-waddle-ranked>
 </div>

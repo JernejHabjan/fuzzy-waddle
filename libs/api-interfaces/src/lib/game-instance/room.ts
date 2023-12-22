@@ -21,7 +21,7 @@ interface RoomEvent<TGameInstanceMetadataData, TGameMode> {
   action: RoomAction;
 }
 
-export type RoomAction = "added" | "existing" | "removed";
+export type RoomAction = "added" | "removed" | "changed";
 
 interface SpectatorEvent {
   user_id: string;

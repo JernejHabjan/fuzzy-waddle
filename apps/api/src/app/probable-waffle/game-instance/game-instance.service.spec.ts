@@ -19,10 +19,10 @@ export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
     return undefined;
   },
-  startGame(body: GameInstanceDataDto, user: User) {
+  createGameInstance(body: GameInstanceDataDto, user: User) {
     //
   },
-  stopGame(body: GameInstanceDataDto, user: User) {
+  stopGameInstance(body: GameInstanceDataDto, user: User) {
     //
   },
   getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom {
@@ -31,7 +31,7 @@ export const GameInstanceServiceStub = {
   getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): ProbableWaffleRoomEvent {
     return undefined;
   },
-  getSpectatorEvent(user: User, room: ProbableWaffleRoom, action: SpectatorAction): ProbableWaffleSpectatorEvent {
+  getSpectatorEvent(user: User, gameInstanceId: string, action: SpectatorAction): ProbableWaffleSpectatorEvent {
     return undefined;
   },
   getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]> {
@@ -48,6 +48,9 @@ export const GameInstanceServiceStub = {
   },
   stopLevel(body: GameInstanceDataDto, user: User) {
     //
+  },
+  getPlayerEvent(user: User, player: any, gameInstanceId: string, action: any): ProbableWaffleSpectatorEvent {
+    return undefined;
   }
 } satisfies GameInstanceServiceInterface;
 

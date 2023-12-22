@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { AuthUser } from "@supabase/supabase-js";
@@ -9,7 +9,11 @@ import {
   ProbableWaffleGameInstanceData,
   ProbableWaffleRoom,
   ProbableWaffleGameInstanceDataDto,
-  ProbableWaffleJoinDto
+  ProbableWaffleJoinDto,
+  ProbableWaffleGetRoomsDto,
+  ProbableWaffleChangeGameModeDto,
+  ProbableWaffleAddPlayerDto,
+  ProbableWafflePlayerLeftDto
 } from "@fuzzy-waddle/api-interfaces";
 
 @Controller("probable-waffle")
@@ -19,13 +23,13 @@ export class GameInstanceController {
   @Post("start-game")
   @UseGuards(SupabaseAuthGuard)
   async startGame(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleGameInstanceDataDto): Promise<void> {
-    await this.gameInstanceService.startGame(body, user);
+    await this.gameInstanceService.createGameInstance(body, user);
   }
 
   @Delete("stop-game")
   @UseGuards(SupabaseAuthGuard)
   async stopGame(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
-    await this.gameInstanceService.stopGame(body, user);
+    await this.gameInstanceService.stopGameInstance(body, user);
   }
 
   @Post("start-level")
@@ -55,9 +59,42 @@ export class GameInstanceController {
     await this.gameInstanceService.leaveRoom(body, user);
   }
 
-  @Get("get-rooms")
+  @Post("get-rooms")
   @UseGuards(SupabaseAuthGuard)
-  async getRooms(@CurrentUser() user: AuthUser): Promise<ProbableWaffleRoom[]> {
-    return await this.gameInstanceService.getJoinableRooms(user);
+  async getRooms(
+    @CurrentUser() user: AuthUser,
+    @Body() body: ProbableWaffleGetRoomsDto
+  ): Promise<ProbableWaffleRoom[]> {
+    return await this.gameInstanceService.getJoinableRooms(user, body);
+  }
+
+  @Put("change-game-mode")
+  @UseGuards(SupabaseAuthGuard)
+  async changeGameMode(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleChangeGameModeDto): Promise<void> {
+    await this.gameInstanceService.changeGameMode(user, body);
+  }
+
+  @Post("open-player-slot")
+  @UseGuards(SupabaseAuthGuard)
+  async openPlayerSlot(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
+    await this.gameInstanceService.openPlayerSlot(body, user);
+  }
+
+  @Post("player-left")
+  @UseGuards(SupabaseAuthGuard)
+  async playerLeft(@CurrentUser() user: AuthUser, @Body() body: ProbableWafflePlayerLeftDto): Promise<void> {
+    await this.gameInstanceService.playerLeft(body, user);
+  }
+
+  @Post("add-player")
+  @UseGuards(SupabaseAuthGuard)
+  async addPlayer(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleAddPlayerDto): Promise<void> {
+    await this.gameInstanceService.addPlayer(body, user);
+  }
+
+  @Post("add-spectator")
+  @UseGuards(SupabaseAuthGuard)
+  async addSpectator(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
+    await this.gameInstanceService.addSpectator(body, user);
   }
 }

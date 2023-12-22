@@ -12,9 +12,9 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { Router } from "@angular/router";
 
 export class MapPlayerDefinition {
-  startPositionPerPlayer: PositionPlayerDefinition[] = [];
-  allPossibleTeams: (number | null)[] = [];
-  initialNrAiPlayers = 1;
+  protected startPositionPerPlayer: PositionPlayerDefinition[] = [];
+  protected allPossibleTeams: (number | null)[] = [];
+  private initialNrAiPlayers = 0;
 
   constructor(public readonly map: ProbableWaffleMapData) {
     this.allPossibleTeams.push(null);
@@ -40,6 +40,14 @@ export class MapPlayerDefinition {
 
   get playerPositions(): PositionPlayerDefinition[] {
     return this.startPositionPerPlayer.filter((positionPlayer) => positionPlayer.player.playerPosition !== null);
+  }
+
+  get allPlayerPositions(): PositionPlayerDefinition[] {
+    return this.startPositionPerPlayer;
+  }
+
+  get allTeams(): (number | null)[] {
+    return this.allPossibleTeams;
   }
 }
 

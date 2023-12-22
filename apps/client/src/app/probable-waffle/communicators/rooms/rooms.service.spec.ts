@@ -6,7 +6,7 @@ import { RoomsServiceInterface } from "./rooms.service.interface";
 import { Observable } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
-import { ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
 
 export const spectateServiceStub = {
   rooms: [],
@@ -19,7 +19,7 @@ export const spectateServiceStub = {
   get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined {
     return undefined;
   },
-  getRooms() {
+  getRooms(): Promise<ProbableWaffleRoom[]> {
     return Promise.resolve([]);
   },
   initiallyPullRooms(): Promise<void> {

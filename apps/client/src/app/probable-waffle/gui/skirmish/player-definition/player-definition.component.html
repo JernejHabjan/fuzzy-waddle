@@ -2,7 +2,7 @@
   <div class="general-title">Players</div>
 
   <div class="player-rows">
-    <div *ngFor="let position of selectedMap.startPositionPerPlayer" class="start-position-row">
+    <div *ngFor='let position of selectedMap.allPlayerPositions' class='start-position-row'>
       <ng-container *ngIf="position.player.playerPosition !== null">
         <div [style.background-color]="position.playerColor" class="color-box"></div>
         <div class="p-2">
@@ -35,7 +35,7 @@
         <div class="p-2" style="margin-left: 10px">
           <label class="form-label" for="team">Team:</label>
           <select [(ngModel)]="position.team" class="form-select" id="team">
-            <option *ngFor="let team of selectedMap.allPossibleTeams" [ngValue]="team">
+            <option *ngFor='let team of selectedMap.allTeams' [ngValue]='team'>
               {{ team === null ? 'No team' : team + 1 }}
             </option>
           </select>
@@ -65,7 +65,7 @@
   </div>
   <button
     (click)='openMpSlot(selectedMap.playerPositions.length)'
-    *ngIf="selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length"
+    *ngIf='selectedMap.playerPositions.length !== selectedMap.allPlayerPositions.length'
     class="btn btn-primary mt-4 me-4"
     type="button"
   >
@@ -73,7 +73,7 @@
   </button>
   <button
     (click)="addPlayer(selectedMap.playerPositions.length)"
-    *ngIf="selectedMap.playerPositions.length !== selectedMap.startPositionPerPlayer.length"
+    *ngIf='selectedMap.playerPositions.length !== selectedMap.allPlayerPositions.length'
     class="btn btn-primary mt-4"
     type="button"
   >

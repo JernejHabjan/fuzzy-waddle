@@ -52,14 +52,12 @@ export class PlayerDefinitionComponent {
     const map = this.selectedMap as MapPlayerDefinition;
 
     // extract all positions that are already taken
-    const takenPositions = map.startPositionPerPlayer
-      .filter((startPosition) => startPosition.player.playerPosition !== null)
-      .map((startPosition) => startPosition.player.playerPosition) as number[];
+    const takenPositions = map.playerPositions.map((startPosition) => startPosition.player.playerPosition) as number[];
     // sort them
     takenPositions.sort();
     // get first free position
     let freePosition = 0;
-    for (let i = 0; i < map.startPositionPerPlayer.length; i++) {
+    for (let i = 0; i < map.playerPositions.length; i++) {
       if (takenPositions.includes(i)) {
         continue;
       }
@@ -71,7 +69,7 @@ export class PlayerDefinitionComponent {
 
   protected addPlayer(playerIndex: number) {
     const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
+    const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
     startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
     startPositionPerPlayerElement.player.joined = true;
     startPositionPerPlayerElement.difficulty = ProbableWaffleAiDifficulty.Medium;
@@ -81,7 +79,7 @@ export class PlayerDefinitionComponent {
 
   protected openMpSlot(playerIndex: number) {
     const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerIndex];
+    const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
     startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
     startPositionPerPlayerElement.player.joined = false;
     startPositionPerPlayerElement.difficulty = null;
@@ -91,7 +89,7 @@ export class PlayerDefinitionComponent {
 
   protected removePlayer(playerNumber: number) {
     const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.startPositionPerPlayer[playerNumber];
+    const startPositionPerPlayerElement = map.allPlayerPositions[playerNumber];
     startPositionPerPlayerElement.player.playerPosition = null;
     startPositionPerPlayerElement.player.joined = false;
     this.playerRemoved.emit(startPositionPerPlayerElement);

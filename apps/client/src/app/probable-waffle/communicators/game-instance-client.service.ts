@@ -17,6 +17,7 @@ import {
   ProbableWafflePlayer,
   ProbableWafflePlayerController,
   ProbableWafflePlayerEvent,
+  ProbableWafflePlayerLeftDto,
   ProbableWafflePlayerState,
   ProbableWaffleSpectator,
   ProbableWaffleSpectatorEvent,
@@ -195,18 +196,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async gameModeChanged(gameModeData: ProbableWaffleGameModeData) {
     if (!this.gameLocalInstanceId) return;
-    try {
-      // TODO TRY CATCH JUST FOR TESTING - REMOVE LATER
-      if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-        const url = environment.api + "api/probable-waffle/change-game-mode"; // todo create this endpoint
-        const body: ProbableWaffleChangeGameModeDto = {
-          gameInstanceId: this.gameLocalInstanceId,
-          gameModeData
-        };
-        await firstValueFrom(this.httpClient.post<void>(url, body));
-      }
-    } catch (e) {
-      console.error(e); // todo remove later
+    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
+      const url = environment.api + "api/probable-waffle/change-game-mode";
+      const body: ProbableWaffleChangeGameModeDto = {
+        gameInstanceId: this.gameLocalInstanceId,
+        gameModeData
+      };
+      await firstValueFrom(this.httpClient.put<void>(url, body));
     }
     this.gameInstance!.gameMode = new ProbableWaffleGameMode(gameModeData);
   }
@@ -244,7 +240,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async playerSlotOpened() {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/open-player-slot"; // todo create this endpoint
+      const url = environment.api + "api/probable-waffle/open-player-slot";
       const body: GameInstanceDataDto = {
         gameInstanceId: this.gameLocalInstanceId
       };
@@ -255,9 +251,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async playerLeft(playerNumber: number) {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/player-left"; // todo create this endpoint
-      const body: GameInstanceDataDto = {
-        gameInstanceId: this.gameLocalInstanceId
+      const url = environment.api + "api/probable-waffle/player-left";
+      const body: ProbableWafflePlayerLeftDto = {
+        gameInstanceId: this.gameLocalInstanceId,
+        playerNumber
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
@@ -272,7 +269,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async addPlayer(playerDefinition: PositionPlayerDefinition) {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/add-player"; // todo create this endpoint
+      const url = environment.api + "api/probable-waffle/add-player";
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
         playerDefinition
@@ -281,9 +278,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     }
 
     const playerNumber = playerDefinition.player.playerNumber;
+    const player = this.gameInstance!.players.find(
+      (p) => p.playerController.data.playerDefinition.player.playerNumber === playerNumber
+    );
+    if (!player) throw new Error("Player not found");
     this.playerAvailabilityChange({
-      player: this.gameInstance!.players[playerNumber], // todo this doesn't work when server is turned off
-      user_id: this.gameInstance!.players[playerNumber].userId!,
+      player: player,
+      user_id: player.userId!,
       gameInstanceId: this.gameLocalInstanceId,
       action: "joined"
     });
@@ -292,7 +293,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async addSpectator(): Promise<void> {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/add-spectator"; // todo create this endpoint
+      const url = environment.api + "api/probable-waffle/add-spectator";
       const body: GameInstanceDataDto = {
         gameInstanceId: this.gameLocalInstanceId
       };

@@ -1,12 +1,12 @@
 import { Observable } from "rxjs";
-import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleMapEnum, ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
 
 export interface RoomsServiceInterface {
   rooms: ProbableWaffleRoom[];
 
   listenToRoomEvents(): void;
 
-  getRooms(): Promise<ProbableWaffleRoom[]>;
+  getRooms(maps: ProbableWaffleMapEnum[] | null): Promise<ProbableWaffleRoom[]>;
 
   initiallyPullRooms(): Promise<void>;
 

@@ -20,13 +20,11 @@ export class TriggerComponent {
     if (!this.selectedMap) {
       return false;
     }
-    const selectedPlayers = this.selectedMap.startPositionPerPlayer.filter(
-      (startPosition) => startPosition.player.joined
-    );
-    const selectedEmptyTeams = this.selectedMap.startPositionPerPlayer.filter(
+    const selectedPlayers = this.selectedMap.playerPositions.filter((startPosition) => startPosition.player.joined);
+    const selectedEmptyTeams = this.selectedMap.playerPositions.filter(
       (startPosition) => startPosition.team === null && startPosition.player.joined
     );
-    const selectedTeams = this.selectedMap.startPositionPerPlayer.filter(
+    const selectedTeams = this.selectedMap.playerPositions.filter(
       (startPosition) => startPosition.team !== null && startPosition.player.joined
     );
     const selectedTeamsSet = new Set(selectedTeams.map((startPosition) => startPosition.team));

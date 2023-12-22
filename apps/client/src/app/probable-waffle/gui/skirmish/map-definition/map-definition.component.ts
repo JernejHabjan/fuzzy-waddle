@@ -159,7 +159,7 @@ export class MapDefinitionComponent {
     const isoCoordinates = this.isoCoordinates;
 
     let i = -1;
-    for (const positionForPlayer of this.mapPlayerDefinition.startPositionPerPlayer) {
+    for (const positionForPlayer of this.mapPlayerDefinition.allPlayerPositions) {
       i++;
       if (!positionForPlayer.player.joined) {
         continue;
@@ -515,10 +515,10 @@ export class MapDefinitionComponent {
     hoveringRectangle.positionNumber = draggingPositionNumber;
 
     const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
-    const draggingPlayer = mapPlayerDefinition.startPositionPerPlayer.find(
+    const draggingPlayer = mapPlayerDefinition.allPlayerPositions.find(
       (p) => p.player.playerPosition === draggingPositionNumber
     ) as PositionPlayerDefinition;
-    const hoveringPlayer = mapPlayerDefinition.startPositionPerPlayer.find(
+    const hoveringPlayer = mapPlayerDefinition.allPlayerPositions.find(
       (p) => p.player.playerPosition === hoveringPositionNumber
     ) as PositionPlayerDefinition;
 
@@ -598,7 +598,7 @@ export class MapDefinitionComponent {
 
     // update map player definition
     const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
-    const playerDefinition = mapPlayerDefinition.startPositionPerPlayer.find(
+    const playerDefinition = mapPlayerDefinition.allPlayerPositions.find(
       (startPositionPerPlayer) => startPositionPerPlayer?.player.playerPosition === previousPosition
     ) as PositionPlayerDefinition;
     playerDefinition.player.playerPosition = newPosition;
@@ -651,7 +651,7 @@ export class MapDefinitionComponent {
     // add new player
 
     // find first player in map.startPositionPerPlayer that is not joined
-    const player = map.startPositionPerPlayer.find((p) => !p.player.joined) as PositionPlayerDefinition;
+    const player = map.allPlayerPositions.find((p) => !p.player.joined) as PositionPlayerDefinition;
     player.player.playerPosition = index;
     player.difficulty = ProbableWaffleAiDifficulty.Medium;
     player.player.joined = true;
