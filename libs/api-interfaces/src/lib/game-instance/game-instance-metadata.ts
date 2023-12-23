@@ -1,5 +1,5 @@
-import { Guid } from '../uuid';
-import { GameSessionState } from './session';
+import { Guid } from "../uuid";
+import { GameSessionState } from "./session";
 
 export interface GameInstanceMetadataData {
   gameInstanceId?: string;
@@ -7,6 +7,7 @@ export interface GameInstanceMetadataData {
   createdBy: string | null;
   updatedOn?: Date;
   sessionState?: GameSessionState;
+  joinable?: boolean;
 }
 
 export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataData = GameInstanceMetadataData> {
@@ -16,10 +17,10 @@ export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataDat
     this.data = data ?? ({} as TData);
     this.data.gameInstanceId ??= new Guid().value;
     this.data.createdOn ??= new Date();
-    this.data.sessionState ??= GameSessionState.NotPlaying;
+    this.data.sessionState ??= GameSessionState.NotStarted;
   }
 
   resetData() {
-    this.data.sessionState = GameSessionState.NotPlaying;
+    this.data.sessionState = GameSessionState.NotStarted;
   }
 }

@@ -1,5 +1,12 @@
+@import "../../../../../styles/_variables";
+
 .lobbies {
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.selected-row td {
+  background-color: $primary;
+  color: white;
 }

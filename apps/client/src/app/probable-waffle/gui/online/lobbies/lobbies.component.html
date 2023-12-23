@@ -1,3 +1,9 @@
+@if (serverHealthService.serverChecking) {
+  <div class='lobbies'>
+    <p>Checking server health...</p>
+  </div>
+}
+@if (serverHealthService.serverAvailable) {
 <div class="lobbies">
   <div>Open Lobbies</div>
   <p>Browse currently open game lobbies to join</p>
@@ -6,16 +12,8 @@
     <div>
       <div>
         Filter:
-        <div *ngFor='let level of ProbableWaffleLevels  | keyvalue'>
-          <input
-            (change)="filter($event)"
-            id='{{ level.value.id }}'
-            name='{{ level.value.name }}'
-            type="checkbox"
-            value='{{ level.value.id }}'
-          />
-          <label for='{{ level.value.id }}'>{{ level.value.name }}</label>
-        </div>
+        <button (click)='toggleFilterPopup()'>Open Filter</button>
+        <probable-waffle-map-filter *ngIf='isFilterPopupOpen' (filter)='filter($event)'></probable-waffle-map-filter>
       </div>
       <table class="table table-striped">
         <thead>
@@ -27,17 +25,17 @@
         </thead>
         <tbody>
           <tr
-            (click)="select(lobby)"
-            *ngFor="let lobby of lobbies"
-            class="cursor-pointer {{ lobby === selectedLobby ? 'bg-primary' : '' }}"
+            (click)='select(room)'
+            *ngFor='let room of roomsService.rooms'
+            class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
-            <td>{{ lobby.map }}</td>
-            <td>{{ lobby.host }}</td>
-            <td>{{ lobby.players.length }}</td>
+            <td>{{ room.gameMode.data.map }}</td>
+            <td>{{ room.players.length }}</td>
           </tr>
         </tbody>
       </table>
     </div>
+    @if (selectedRoom) {
     <div>
       <div>
         <div>Map Preview</div>
@@ -49,10 +47,22 @@
         <div>Player 1</div>
         <div>Player 2</div>
       </div>
+      <div>
+        <div>Joined spectators</div>
+        <div>John Doe</div>
+        <div>Jane Doe</div>
+      </div>
     </div>
+    }
   </div>
 
   <div>
-    <button (click)="join()" [disabled]="!selectedLobby" class="btn btn-primary" type="button">Join</button>
+    <button (click)='join()' [disabled]='!selectedRoom' class='btn btn-primary' type='button'>Join</button>
+    <button (click)='spectate()' [disabled]='!selectedRoom' class='ms-2 btn btn-primary' type='button'>Spectate</button>
   </div>
 </div>
+} @else {
+  <div class='lobbies'>
+    <p>Server is not available</p>
+  </div>
+}

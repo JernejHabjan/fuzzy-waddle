@@ -1,13 +1,15 @@
 import {
   GameInstanceDataDto,
-  ProbableWaffleGameCreateDto,
+  ProbableWaffleStartLevelDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
-  Room,
+  ProbableWaffleRoom,
   RoomAction,
-  RoomEvent,
+  ProbableWaffleRoomEvent,
   SpectatorAction,
-  SpectatorEvent
+  ProbableWaffleSpectatorEvent,
+  PlayerAction,
+  ProbableWafflePlayer
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
 
@@ -16,21 +18,28 @@ export interface GameInstanceServiceInterface {
 
   stopGame(body: GameInstanceDataDto, user: User);
 
-  startLevel(body: ProbableWaffleGameCreateDto, user: User);
+  startLevel(body: ProbableWaffleStartLevelDto, user: User);
 
-  spectatorJoined(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData>;
+  joinRoom(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData>;
 
-  spectatorLeft(body: GameInstanceDataDto, user: User);
+  leaveRoom(body: GameInstanceDataDto, user: User);
 
   stopLevel(body: GameInstanceDataDto, user: User);
 
-  getSpectatorRooms(user: User): Promise<Room[]>;
+  getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]>;
 
-  getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): Room;
+  getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom;
 
-  getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): RoomEvent;
+  getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): ProbableWaffleRoomEvent;
 
-  getSpectatorEvent(user: User, room: Room, action: SpectatorAction): SpectatorEvent;
+  getPlayerEvent(
+    user: User,
+    player: ProbableWafflePlayer,
+    gameInstanceId: string,
+    action: PlayerAction
+  ): ProbableWaffleSpectatorEvent;
+
+  getSpectatorEvent(user: User, gameInstanceId: string, action: SpectatorAction): ProbableWaffleSpectatorEvent;
 
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined;
 }

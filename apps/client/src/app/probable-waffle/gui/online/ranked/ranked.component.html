@@ -13,8 +13,8 @@
       <div>Faction</div>
       <div>
         <select [(ngModel)]="rankedOptions.factionType" class="form-select">
-          <option *ngFor="let factionType of FactionDefinitions.factionTypes" [ngValue]="factionType.value">
-            {{ factionType.name }}
+          <option *ngFor='let factionType of FactionDefinitions.factions' [ngValue]='factionType.value'>
+            {{ factionType.value.name }}
           </option>
         </select>
       </div>

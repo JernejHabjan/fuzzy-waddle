@@ -5,11 +5,11 @@ import {
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
   LittleMuncherGameInstanceData,
-  Room,
+  LittleMuncherRoom,
   RoomAction,
-  RoomEvent,
+  LittleMuncherRoomEvent,
   SpectatorAction,
-  SpectatorEvent
+  LittleMuncherSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { User } from "../../../users/users.service";
@@ -25,16 +25,16 @@ export const GameInstanceServiceStub = {
   stopGame(body: GameInstanceDataDto, user: User) {
     //
   },
-  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): Room {
+  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
     return undefined;
   },
-  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): RoomEvent {
+  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): LittleMuncherRoomEvent {
     return undefined;
   },
-  getSpectatorEvent(user: User, room: Room, action: SpectatorAction): SpectatorEvent {
+  getSpectatorEvent(user: User, room: LittleMuncherRoom, action: SpectatorAction): LittleMuncherSpectatorEvent {
     return undefined;
   },
-  getSpectatorRooms(user: User): Promise<Room[]> {
+  getSpectatorRooms(user: User): Promise<LittleMuncherRoom[]> {
     return undefined;
   },
   spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData> {

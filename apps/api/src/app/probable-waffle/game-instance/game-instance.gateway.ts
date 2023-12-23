@@ -1,18 +1,26 @@
 import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "net";
 import {
-  GatewaySpectatorEvent,
+  ProbableWaffleGameInstanceEvent,
+  ProbableWaffleLevelStateChangeEvent,
   ProbableWaffleGatewayEvent,
-  RoomEvent,
-  SpectatorEvent
+  ProbableWafflePlayerEvent,
+  ProbableWaffleRoomEvent,
+  ProbableWaffleSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 
 export const GameInstanceGatewayStub = {
-  emitRoom(roomEvent: RoomEvent) {
+  emitRoom(roomEvent: ProbableWaffleRoomEvent) {
     //
   },
-  emitSpectator(spectatorEvent: SpectatorEvent) {
+  emitLevelStateChange(levelStateChange: ProbableWaffleLevelStateChangeEvent) {
+    //
+  },
+  emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent) {
+    //
+  },
+  emitPlayer(playerEvent: ProbableWafflePlayerEvent) {
     //
   }
 } satisfies GameInstanceGatewayInterface;
@@ -26,11 +34,19 @@ export class GameInstanceGateway implements GameInstanceGatewayInterface {
   @WebSocketServer()
   private server: Server;
 
-  emitRoom(roomEvent: RoomEvent) {
+  emitRoom(roomEvent: ProbableWaffleRoomEvent) {
     this.server.emit(ProbableWaffleGatewayEvent.ProbableWaffleRoom, roomEvent);
   }
 
-  emitSpectator(spectatorEvent: SpectatorEvent) {
-    this.server.emit(GatewaySpectatorEvent.Spectator, spectatorEvent);
+  emitLevelStateChange(levelStateChange: ProbableWaffleLevelStateChangeEvent) {
+    this.server.emit(ProbableWaffleGameInstanceEvent.LevelStateChange, levelStateChange);
+  }
+
+  emitPlayer(playerEvent: ProbableWafflePlayerEvent) {
+    this.server.emit(ProbableWaffleGameInstanceEvent.Player, playerEvent);
+  }
+
+  emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent) {
+    this.server.emit(ProbableWaffleGameInstanceEvent.Spectator, spectatorEvent);
   }
 }

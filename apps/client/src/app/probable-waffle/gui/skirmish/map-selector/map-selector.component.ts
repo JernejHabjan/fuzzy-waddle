@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { MapPlayerDefinition } from "../skirmish.component";
-import { ProbableWaffleLevelEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleMapEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   selector: "fuzzy-waddle-map-selector",
@@ -12,7 +12,7 @@ export class MapSelectorComponent implements OnInit {
   mapPlayerDefinitions: MapPlayerDefinition[];
   selectedMap?: MapPlayerDefinition;
   @Output() selectedMapChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
-  private readonly defaultMap: ProbableWaffleLevelEnum = ProbableWaffleLevelEnum.RiverCrossing;
+  private readonly defaultMap: ProbableWaffleMapEnum = ProbableWaffleMapEnum.RiverCrossing;
 
   constructor() {
     this.mapPlayerDefinitions = Object.values(ProbableWaffleLevels).map((map) => new MapPlayerDefinition(map));

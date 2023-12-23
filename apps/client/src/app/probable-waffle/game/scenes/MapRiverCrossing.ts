@@ -476,7 +476,7 @@ export default class MapRiverCrossing extends BaseScene<
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
 
-    console.log("playing level", ProbableWaffleLevels[this.baseGameData.gameInstance.data.gameModeData!.level!].name);
+    console.log("playing level", ProbableWaffleLevels[this.baseGameData.gameInstance.data.gameModeData!.map!].name);
   }
 
   /* END-USER-CODE */

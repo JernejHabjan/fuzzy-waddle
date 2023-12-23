@@ -58,6 +58,6 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
 
   get notPlaying() {
     const currentState = this.gameInstanceClientService.gameInstance!.gameInstanceMetadata!.data.sessionState!;
-    return currentState === GameSessionState.NotPlaying;
+    return currentState === GameSessionState.NotStarted;
   }
 }

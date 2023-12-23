@@ -6,10 +6,15 @@ import {
   HostListener,
   Input,
   Output,
-  ViewChild
+  ViewChild,
+  inject
 } from "@angular/core";
-import { MapPlayerDefinition, PlayerLobbyDefinition, PositionPlayerDefinition } from "../skirmish.component";
-import { Difficulty } from "../player-definition/player-definition.component";
+import { MapPlayerDefinition } from "../skirmish.component";
+import {
+  PlayerLobbyDefinition,
+  PositionPlayerDefinition,
+  ProbableWaffleAiDifficulty
+} from "@fuzzy-waddle/api-interfaces";
 
 /**
  * canvas element containing info about current player and position.
@@ -60,7 +65,9 @@ export class MapDefinitionComponent {
   private rectangleWidth = 30;
   private rectangleHeight = 30;
 
-  constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
+  @Output() started: EventEmitter<void> = new EventEmitter<void>();
+
+  private readonly cdr = inject(ChangeDetectorRef);
 
   @ViewChild("canvas")
   get canvas(): ElementRef | undefined {
@@ -207,7 +214,7 @@ export class MapDefinitionComponent {
     }
     canvas.width = this.canvasWidth;
     canvas.height = this.canvasHeight;
-    this.changeDetectorRef.detectChanges();
+    this.cdr.detectChanges();
     this.initialize();
   }
 
@@ -646,7 +653,7 @@ export class MapDefinitionComponent {
     // find first player in map.startPositionPerPlayer that is not joined
     const player = map.startPositionPerPlayer.find((p) => !p.player.joined) as PositionPlayerDefinition;
     player.player.playerPosition = index;
-    player.difficulty = Difficulty.Medium;
+    player.difficulty = ProbableWaffleAiDifficulty.Medium;
     player.player.joined = true;
 
     this.initializePlayerPositions();

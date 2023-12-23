@@ -18,7 +18,7 @@ export class MainComponent implements OnInit, OnDestroy {
   @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly flySquasherGameConfig = flySquasherGameConfig;
   protected gameData!: FlySquasherGameData;
-  @Input() level!: string;
+  @Input({ required: true }) level!: string;
   private preventNavigateBack = new PreventNavigateBack(this.router);
   protected leaveModalConfirm: ModalConfig = {
     modalTitle: "Leave the game?",

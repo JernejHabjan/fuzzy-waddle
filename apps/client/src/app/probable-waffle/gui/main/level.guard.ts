@@ -12,12 +12,12 @@ export class LevelGuard implements CanActivate {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const level = this.gameInstanceClientService.gameInstance?.gameMode?.data.level;
-    if (level) {
-      // Level exists, allow navigation
+    const map = this.gameInstanceClientService.gameInstance?.gameMode?.data.map;
+    if (map) {
+      // Map exists, allow navigation
       return true;
     } else {
-      // Level doesn't exist, redirect to a fallback route or show an error page
+      console.error("Map doesn't exist in LevelGuard");
       this.router.navigate(["/probable-waffle"]);
       return false;
     }

@@ -14,11 +14,11 @@ export type HillData = {
 
 export const LittleMuncherHills: LittleMuncherHillType = {
   [LittleMuncherHillEnum.Stefka]: {
-    name: 'Stefka',
+    name: "Stefka",
     height: 748
   },
   [LittleMuncherHillEnum.Jakob]: {
-    name: 'Jakob',
+    name: "Jakob",
     height: 806
   }
 };

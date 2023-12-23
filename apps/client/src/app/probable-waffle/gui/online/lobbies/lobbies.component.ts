@@ -1,14 +1,7 @@
-import { Component, OnInit } from "@angular/core";
-import { ProbableWaffleLevelEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
-
-type Lobby = {
-  host: string;
-  players: {
-    name: string;
-  }[];
-  map: ProbableWaffleLevelEnum;
-};
-
+import { Component, inject, OnInit } from "@angular/core";
+import { ProbableWaffleMapEnum, ProbableWaffleLevels, ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import { RoomsService } from "../../../communicators/rooms/rooms.service";
+import { ServerHealthService } from "../../../../shared/services/server-health.service";
 @Component({
   selector: "fuzzy-waddle-lobbies",
   templateUrl: "./lobbies.component.html",
@@ -16,55 +9,37 @@ type Lobby = {
 })
 export class LobbiesComponent implements OnInit {
   protected readonly ProbableWaffleLevels = ProbableWaffleLevels;
-  protected lobbies: Lobby[] = [];
-  protected selectedLobby?: Lobby;
+  protected isFilterPopupOpen: boolean = false;
+  protected selectedRoom?: ProbableWaffleRoom;
+  protected readonly roomsService = inject(RoomsService);
+  protected readonly serverHealthService = inject(ServerHealthService);
 
-  ngOnInit(): void {
-    this.pull();
+  async ngOnInit(): Promise<void> {
+    await this.pull();
   }
 
-  private pull = () => {
-    // todo - pull lobbies from server
-    this.lobbies = [
-      {
-        host: "host1",
-        players: [
-          {
-            name: "player1"
-          },
-          {
-            name: "player2"
-          }
-        ],
-        map: ProbableWaffleLevelEnum.EmberEnclave
-      },
-      {
-        host: "host2",
-        players: [
-          {
-            name: "player3"
-          },
-          {
-            name: "player4"
-          }
-        ],
-        map: ProbableWaffleLevelEnum.RiverCrossing
-      }
-    ];
-  };
+  private async pull() {
+    await this.roomsService.initiallyPullRooms();
+  }
 
   protected join() {
-    // todo - do something with this.selectedLobby
+    // todo - do something with this.selectedRoom
   }
 
-  protected select(lobby: Lobby) {
-    this.selectedLobby = lobby;
+  protected spectate() {
+    // todo - do something with this.selectedRoom
   }
 
-  protected filter($event: Event) {
-    // todo - filter lobbies
+  protected select(room: ProbableWaffleRoom) {
+    this.selectedRoom = room;
+  }
 
-    const mapId = ($event.target as HTMLInputElement).value;
-    console.log(mapId);
+  toggleFilterPopup(): void {
+    this.isFilterPopupOpen = !this.isFilterPopupOpen;
+  }
+
+  filter(levels: ProbableWaffleMapEnum[]): void {
+    // Handle the filter logic here
+    console.log("levels: ", levels.join(", ")); // todo here refresh lobbies
   }
 }

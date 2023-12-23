@@ -1,17 +1,15 @@
-<!-- dropdown to select a map -->
-  <fuzzy-waddle-map-definition
-    class="card-container"
-    #mapDefinition
-    (mapPlayerDefinitionChange)="mapChanged($event)"
-    [mapPlayerDefinition]="selectedMap"
-  ></fuzzy-waddle-map-definition>
-  <fuzzy-waddle-player-definition
-    class="card-container"
-    (playerJoined)="playerCountChanged()"
-    (playerRemoved)="playerRemoved($event)"
-    [selectedMap]="selectedMap"
-  ></fuzzy-waddle-player-definition>
-  <fuzzy-waddle-game-mode-definition
-    class="card-container"
-    (gameModeLobbyChange)='gameModeLobbyChanged($event)'
-  ></fuzzy-waddle-game-mode-definition>
+<fuzzy-waddle-map-definition
+  class='card-container'
+  #mapDefinition
+  (mapPlayerDefinitionChange)='mapChanged($event)'
+  [mapPlayerDefinition]='selectedMap'
+  (started)='startGame()'
+/>
+<fuzzy-waddle-player-definition
+  class='card-container'
+  (playerAdded)='playerAdded($event)'
+  (playerSlotOpened)='playerSlotOpened()'
+  (playerRemoved)='playerRemoved($event)'
+  [selectedMap]='selectedMap'
+/>
+<fuzzy-waddle-game-mode-definition class='card-container' (gameModeLobbyChange)='gameModeLobbyChanged($event)' />

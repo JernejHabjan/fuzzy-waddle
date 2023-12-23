@@ -1,19 +1,11 @@
 import { Resources, ResourceType } from "./resource-type";
 
 export class WinConditions {
-  constructor(
-    public timeLimit: number | null = null,
-    public scoreLimit: number | null = null
-  ) {}
+  constructor(public timeLimit: number | null = null) {}
 }
 
 export class MapTuning {
-  constructor(
-    public techLevel: number = 1,
-    public gameSpeed: number = 1,
-    public revealMap: boolean = false,
-    public unitCap: number = 20
-  ) {}
+  constructor(public unitCap: number = 20) {}
 }
 
 export class DifficultyModifiers {
@@ -22,9 +14,7 @@ export class DifficultyModifiers {
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
-    public reducedVisibility: boolean = false,
-    public reducedIncome: number = 0.5,
-    public unitsDieOfAge: boolean = false
+    public reducedIncome: number = 0.5
   ) {}
 }
 

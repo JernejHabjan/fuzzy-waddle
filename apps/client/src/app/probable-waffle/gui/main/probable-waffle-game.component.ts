@@ -1,9 +1,5 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import {
-  ProbableWaffleGameInstance,
-  ProbableWaffleLevelEnum,
-  ProbableWaffleUserInfo
-} from "@fuzzy-waddle/api-interfaces";
+import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
+import { ProbableWaffleGameInstance, ProbableWaffleUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { BaseGameData } from "../../../shared/game/phaser/game/base-game-data";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { AuthService } from "../../../auth/auth.service";
@@ -18,15 +14,17 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
-  drawerWidth = "150px";
-  displayDrawers = true; // todo
-  gameData?: BaseGameData<ProbableWaffleCommunicatorService, ProbableWaffleGameInstance, ProbableWaffleUserInfo>;
+  protected readonly drawerWidth = "150px";
+  protected displayDrawers = true; // todo
+  protected gameData?: BaseGameData<
+    ProbableWaffleCommunicatorService,
+    ProbableWaffleGameInstance,
+    ProbableWaffleUserInfo
+  >;
 
-  constructor(
-    private readonly gameInstanceClientService: GameInstanceClientService,
-    private readonly communicatorService: ProbableWaffleCommunicatorService,
-    private readonly authService: AuthService
-  ) {}
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly communicatorService = inject(ProbableWaffleCommunicatorService);
+  private readonly authService = inject(AuthService);
 
   ngOnDestroy(): void {
     SceneCommunicatorService.unsubscribe();
@@ -34,23 +32,26 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     SceneCommunicatorService.setup();
-    const level = this.gameInstanceClientService.gameInstance?.gameMode?.data.level;
-    if (!level) return;
-    const gameSessionInstance = new ProbableWaffleGameInstance({
-      gameModeData: {
-        level: level
-      }
-    });
+    const gameInstance = this.gameInstanceClientService.gameInstance;
+    if (!gameInstance) return;
     this.gameData = {
-      gameInstance: gameSessionInstance,
+      gameInstance,
       communicator: this.communicatorService,
       user: new ProbableWaffleUserInfo(this.authService.userId)
     } as const;
 
     // todo properly listen with communicatorService
 
-    if (window.innerWidth < 800) {
-      this.displayDrawers = false; // todo for now
+    this.onResize({ target: window });
+  }
+
+  // register window resize event
+  @HostListener("window:resize", ["$event"])
+  onResize(event: { target: { innerWidth: number } }) {
+    if (event.target.innerWidth < 800) {
+      this.displayDrawers = false;
+    } else {
+      this.displayDrawers = true;
     }
   }
 }
