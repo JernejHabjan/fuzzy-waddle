@@ -32,19 +32,32 @@
             "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "layerName": "TileMap_level_1",
             "tilesets": [
-                "tiles"
+                "tiles",
+                "tiles_2"
             ]
         },
         {
             "type": "Image",
-            "id": "b0ca54c2-dcb2-49f9-a08e-8bea2c24c2d4",
-            "label": "foliage_trees_resources_special_tree_christmas_png_1",
+            "id": "72371380-06d8-4654-a5fa-edb6ea1308a1",
+            "label": "nature_grass_grass_0_png",
             "texture": {
                 "key": "outside",
-                "frame": "foliage/trees/resources/special/tree_christmas.png"
+                "frame": "nature/grass/grass_0.png"
             },
-            "x": -110,
-            "y": 1166
+            "x": -92,
+            "y": 1266,
+            "originY": 0.75
+        },
+        {
+            "type": "Image",
+            "id": "3429ce0c-7fcf-402a-a36b-6fb2ddc2539d",
+            "label": "architecture_obstruction_fence_left_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/left.png"
+            },
+            "x": -297,
+            "y": 1233
         },
         {
             "type": "Image",
@@ -59,14 +72,48 @@
         },
         {
             "type": "Image",
-            "id": "3429ce0c-7fcf-402a-a36b-6fb2ddc2539d",
-            "label": "architecture_obstruction_fence_left_png",
+            "id": "e9ed2d21-ca39-488f-a035-472850960757",
+            "label": "architecture_obstruction_fence_top_left_png_1",
             "texture": {
                 "key": "outside",
-                "frame": "architecture/obstruction/fence/left.png"
+                "frame": "architecture/obstruction/fence/top_left.png"
             },
-            "x": -297,
-            "y": 1233
+            "x": -261,
+            "y": 1219
+        },
+        {
+            "type": "Image",
+            "id": "cc89c32e-7f83-4a80-9e65-f5f8ad0e2787",
+            "label": "foliage_tall_grass_tall_grass_7_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tall_grass/tall_grass_7.png"
+            },
+            "x": -261,
+            "y": 1256,
+            "originY": 0.75
+        },
+        {
+            "type": "Image",
+            "id": "1cde381d-0ba3-4100-af7e-2415358365fa",
+            "label": "sheep_sheep_right_png",
+            "texture": {
+                "key": "animals",
+                "frame": "sheep/sheep_right.png"
+            },
+            "x": -172,
+            "y": 1268
+        },
+        {
+            "type": "Image",
+            "id": "b0ca54c2-dcb2-49f9-a08e-8bea2c24c2d4",
+            "label": "foliage_trees_resources_special_tree_christmas_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/special/tree_christmas.png"
+            },
+            "x": -110,
+            "y": 1166
         },
         {
             "type": "Image",
@@ -267,6 +314,18 @@
             "label": "skaduweeWorkerMale",
             "x": 1472,
             "y": 800
+        },
+        {
+            "type": "Image",
+            "id": "5fc1a945-a4e3-44f4-af67-cd9e929d3935",
+            "label": "foliage_tall_grass_tall_grass_8_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tall_grass/tall_grass_8.png"
+            },
+            "x": -162,
+            "y": 1305,
+            "originY": 0.75
         },
         {
             "prefabId": "415773de-cdc9-4a20-afd1-61fd57044e8a",
@@ -1126,17 +1185,6 @@
         },
         {
             "type": "Image",
-            "id": "e9ed2d21-ca39-488f-a035-472850960757",
-            "label": "architecture_obstruction_fence_top_left_png_1",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top_left.png"
-            },
-            "x": -261,
-            "y": 1219
-        },
-        {
-            "type": "Image",
             "id": "dd8e83ff-29da-4732-a733-48a6318f2871",
             "label": "sheep_sheep_down_png",
             "texture": {
@@ -1156,17 +1204,6 @@
             },
             "x": -195,
             "y": 1208
-        },
-        {
-            "type": "Image",
-            "id": "1cde381d-0ba3-4100-af7e-2415358365fa",
-            "label": "sheep_sheep_right_png",
-            "texture": {
-                "key": "animals",
-                "frame": "sheep/sheep_right.png"
-            },
-            "x": -172,
-            "y": 1268
         },
         {
             "type": "Image",
@@ -1190,6 +1227,10 @@
                 {
                     "name": "tiles",
                     "imageKey": "tiles_1"
+                },
+                {
+                    "name": "tiles_2",
+                    "imageKey": "tiles_2"
                 }
             ]
         }

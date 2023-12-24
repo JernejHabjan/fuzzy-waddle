@@ -84,21 +84,36 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// tilemap
 		const tilemap = this.add.tilemap("tiles_river_crossing");
 		tilemap.addTilesetImage("tiles", "tiles_1");
+		tilemap.addTilesetImage("tiles_2", "tiles_2");
 
 		// architecture_obstruction_fence_top_left_png_3
 		this.add.image(-195, 1187, "outside", "architecture/obstruction/fence/top_left.png");
 
 		// tilemap_level_1
-		tilemap.createLayer("TileMap_level_1", ["tiles"], -32, 0);
+		tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
-		// foliage_trees_resources_special_tree_christmas_png_1
-		this.add.image(-110, 1166, "outside", "foliage/trees/resources/special/tree_christmas.png");
+		// nature_grass_grass_0_png
+		const nature_grass_grass_0_png = this.add.image(-92, 1266, "outside", "nature/grass/grass_0.png");
+		nature_grass_grass_0_png.setOrigin(0.5, 0.75);
+
+		// architecture_obstruction_fence_left_png
+		this.add.image(-297, 1233, "outside", "architecture/obstruction/fence/left.png");
 
 		// foliage_trees_resources_special_tree_christmas_png
 		this.add.image(-284, 1174, "outside", "foliage/trees/resources/special/tree_christmas.png");
 
-		// architecture_obstruction_fence_left_png
-		this.add.image(-297, 1233, "outside", "architecture/obstruction/fence/left.png");
+		// architecture_obstruction_fence_top_left_png_1
+		this.add.image(-261, 1219, "outside", "architecture/obstruction/fence/top_left.png");
+
+		// foliage_tall_grass_tall_grass_7_png
+		const foliage_tall_grass_tall_grass_7_png = this.add.image(-261, 1256, "outside", "foliage/tall_grass/tall_grass_7.png");
+		foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
+
+		// sheep_sheep_right_png
+		this.add.image(-172, 1268, "animals", "sheep/sheep_right.png");
+
+		// foliage_trees_resources_special_tree_christmas_png_1
+		this.add.image(-110, 1166, "outside", "foliage/trees/resources/special/tree_christmas.png");
 
 		// architecture_obstruction_fence_top_right_png_2
 		this.add.image(-95, 1234, "outside", "architecture/obstruction/fence/top_right.png");
@@ -161,6 +176,10 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// skaduweeWorkerMale
 		const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
 		this.add.existing(skaduweeWorkerMale);
+
+		// foliage_tall_grass_tall_grass_8_png
+		const foliage_tall_grass_tall_grass_8_png = this.add.image(-162, 1305, "outside", "foliage/tall_grass/tall_grass_8.png");
+		foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
 		// skaduweeWorkerFemale
 		const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1136, 960);
@@ -464,17 +483,11 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// architecture_obstruction_fence_top_left_png
 		this.add.image(-229, 1203, "outside", "architecture/obstruction/fence/top_left.png");
 
-		// architecture_obstruction_fence_top_left_png_1
-		this.add.image(-261, 1219, "outside", "architecture/obstruction/fence/top_left.png");
-
 		// sheep_sheep_down_png
 		this.add.image(-223, 1236, "animals", "sheep/sheep_down.png");
 
 		// sheep_sheep_left_png
 		this.add.image(-195, 1208, "animals", "sheep/sheep_left.png");
-
-		// sheep_sheep_right_png
-		this.add.image(-172, 1268, "animals", "sheep/sheep_right.png");
 
 		// sheep_sheep_up_png
 		this.add.image(-113, 1250, "animals", "sheep/sheep_up.png");
