@@ -25,7 +25,6 @@ import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import BushDownwardsSmall from "../prefabs/outside/foliage/bushes/BushDownwardsSmall";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
 import BridgeStone from "../prefabs/outside/architecture/river/BridgeStone";
-import Tree5 from "../prefabs/outside/foliage/trees/resources/Tree5";
 import BlockStone2 from "../prefabs/outside/nature/block_stone/BlockStone2";
 import BlockStone1 from "../prefabs/outside/nature/block_stone/BlockStone1";
 import BlockStoneTopRight from "../prefabs/outside/nature/block_stone_grass/BlockStoneTopRight";
@@ -40,6 +39,7 @@ import RockPiles3 from "../prefabs/outside/nature/rock_piles/RockPiles3";
 import Tree4 from "../prefabs/outside/foliage/trees/resources/Tree4";
 import Tree6 from "../prefabs/outside/foliage/trees/resources/Tree6";
 import Tree1 from "../prefabs/outside/foliage/trees/resources/Tree1";
+import Tree5 from "../prefabs/outside/foliage/trees/resources/Tree5";
 import BushDry from "../prefabs/outside/foliage/bushes/BushDry";
 import BushUpwardsSmall from "../prefabs/outside/foliage/bushes/BushUpwardsSmall";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
@@ -222,15 +222,15 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		this.add.existing(olival);
 
 		// wallTopLeftTopRight
-		const wallTopLeftTopRight = new WallTopLeftTopRight(this, -560, 368);
+		const wallTopLeftTopRight = new WallTopLeftTopRight(this, -480, 256);
 		this.add.existing(wallTopLeftTopRight);
 
 		// wallTopRight
-		const wallTopRight = new WallTopRight(this, -528, 384);
+		const wallTopRight = new WallTopRight(this, -448, 272);
 		this.add.existing(wallTopRight);
 
 		// watchTower
-		const watchTower = new WatchTower(this, -480, 400);
+		const watchTower = new WatchTower(this, -400, 288);
 		this.add.existing(watchTower);
 
 		// bushDownwardsSmall
@@ -242,12 +242,8 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		this.add.existing(bushDownwardsLarge);
 
 		// bridgeStone
-		const bridgeStone = new BridgeStone(this, -64, 896);
+		const bridgeStone = new BridgeStone(this, -99, 882);
 		this.add.existing(bridgeStone);
-
-		// tree5
-		const tree5 = new Tree5(this, -448, 288);
-		this.add.existing(tree5);
 
 		// blockStone2
 		const blockStone2 = new BlockStone2(this, 0, 16);
@@ -286,7 +282,7 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		this.add.existing(blockStone_4);
 
 		// treeTrunk
-		const treeTrunk = new TreeTrunk(this, -405, 277);
+		const treeTrunk = new TreeTrunk(this, -681, 537);
 		this.add.existing(treeTrunk);
 
 		// rampStoneTopRight
@@ -422,11 +418,11 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		this.add.existing(bushDry_4);
 
 		// tree
-		const tree = new Tree5(this, -704, 512);
+		const tree = new Tree5(this, -706, 468);
 		this.add.existing(tree);
 
 		// workMill
-		const workMill = new WorkMill(this, -592, 512);
+		const workMill = new WorkMill(this, -566, 516);
 		this.add.existing(workMill);
 
 		// blockStone_12
@@ -491,6 +487,10 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 
 		// sheep_sheep_up_png
 		this.add.image(-113, 1250, "animals", "sheep/sheep_up.png");
+
+		// tree5
+		const tree5 = new Tree5(this, -788, 484);
+		this.add.existing(tree5);
 
 		// infantryInn (prefab fields)
 		infantryInn.z = 0;

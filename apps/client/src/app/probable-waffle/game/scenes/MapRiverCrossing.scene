@@ -2,6 +2,7 @@
     "id": "dba459ed-b5e7-4548-9d60-a8837740d253",
     "sceneType": "SCENE",
     "settings": {
+        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "BaseScene<ProbableWaffleGameData, ProbableWaffleGameStateData, ProbableWaffleGameState, ProbableWaffleGameModeData, ProbableWaffleGameMode, ProbableWafflePlayerStateData, ProbableWafflePlayerControllerData, ProbableWafflePlayer, ProbableWaffleSpectatorData, ProbableWaffleSpectator>",
@@ -445,8 +446,8 @@
                 "y"
             ],
             "label": "wallTopLeftTopRight",
-            "x": -560,
-            "y": 368
+            "x": -480,
+            "y": 256
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f36",
@@ -456,8 +457,8 @@
                 "y"
             ],
             "label": "wallTopRight",
-            "x": -528,
-            "y": 384
+            "x": -448,
+            "y": 272
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f37",
@@ -467,8 +468,8 @@
                 "y"
             ],
             "label": "watchTower",
-            "x": -480,
-            "y": 400
+            "x": -400,
+            "y": 288
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
@@ -500,19 +501,8 @@
                 "y"
             ],
             "label": "bridgeStone",
-            "x": -64,
-            "y": 896
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
-            "id": "2d3db8c9-4a78-4954-9259-5a4aa775ba82",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree5",
-            "x": -448,
-            "y": 288
+            "x": -99,
+            "y": 882
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
@@ -621,8 +611,8 @@
                 "y"
             ],
             "label": "treeTrunk",
-            "x": -405,
-            "y": 277
+            "x": -681,
+            "y": 537
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f32",
@@ -1011,8 +1001,8 @@
                 "y"
             ],
             "label": "tree",
-            "x": -704,
-            "y": 512
+            "x": -706,
+            "y": 468
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
@@ -1022,8 +1012,8 @@
                 "y"
             ],
             "label": "workMill",
-            "x": -592,
-            "y": 512
+            "x": -566,
+            "y": 516
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
@@ -1215,6 +1205,17 @@
             },
             "x": -113,
             "y": 1250
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+            "id": "2d3db8c9-4a78-4954-9259-5a4aa775ba82",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree5",
+            "x": -788,
+            "y": 484
         }
     ],
     "plainObjects": [

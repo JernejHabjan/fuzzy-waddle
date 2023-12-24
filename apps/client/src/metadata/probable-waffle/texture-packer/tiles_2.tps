@@ -187,6 +187,8 @@
             <key type="filename">../sprites/tiles_2/0036_obsidian_5.png</key>
             <key type="filename">../sprites/tiles_2/0037_grass_dark_1.png</key>
             <key type="filename">../sprites/tiles_2/0038_grass_dark_2.png</key>
+            <key type="filename">../sprites/tiles_2/0039_forest_1.png</key>
+            <key type="filename">../sprites/tiles_2/0040_gravel_1.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
