@@ -1,0 +1,59 @@
+{
+    "id": "56d62d59-15b0-4017-b986-1f24c1040cb6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 384
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "id": "c586f07d-1ddf-4bc1-8a74-83b89a5f7985",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "container_1",
+            "z": 0,
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-128.16910280030726 -223.85148005244537 -0.16910280030725744 -319.85148005244537 127.83089719969274 -223.85148005244537 127.83089719969274 64.14851994755463 -128.16910280030726 64.14851994755463",
+            "x": 128,
+            "y": 320.1111944720763,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "57ae8924-5c22-4302-84e7-6ca1bfe3bf16",
+                    "label": "frost_forge",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/frost_forge/frost_forge.png"
+                    },
+                    "x": -0.16910280030724323,
+                    "y": -127.85149163505658
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

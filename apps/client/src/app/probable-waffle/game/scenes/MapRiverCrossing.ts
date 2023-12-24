@@ -46,6 +46,7 @@ import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 import BlockStoneWater1 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater1";
 import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
 import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
+import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 /* START-USER-IMPORTS */
 import { ScaleHandler } from "../world/map/scale.handler";
 import { InputHandler } from "../world/managers/controllers/input/input.handler";
@@ -158,7 +159,7 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		this.add.existing(sandhold);
 
 		// owlery
-		const owlery = new Owlery(this, 1184, 880);
+		const owlery = new Owlery(this, 1056, 896);
 		this.add.existing(owlery);
 
 		// infantryInn
@@ -182,11 +183,11 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
 		// skaduweeWorkerFemale
-		const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1136, 960);
+		const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1088, 1024);
 		this.add.existing(skaduweeWorkerFemale);
 
 		// skaduweeRangedFemale
-		const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1264, 720);
+		const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1280, 720);
 		this.add.existing(skaduweeRangedFemale);
 
 		// skaduweeMagicianFemale
@@ -194,7 +195,7 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		this.add.existing(skaduweeMagicianFemale);
 
 		// skaduweeWarriorMale
-		const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1216, 784);
+		const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1424, 864);
 		this.add.existing(skaduweeWarriorMale);
 
 		// generalWarrior
@@ -491,6 +492,10 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// tree5
 		const tree5 = new Tree5(this, -788, 484);
 		this.add.existing(tree5);
+
+		// frostForge
+		const frostForge = new FrostForge(this, 1184, 848);
+		this.add.existing(frostForge);
 
 		// infantryInn (prefab fields)
 		infantryInn.z = 0;

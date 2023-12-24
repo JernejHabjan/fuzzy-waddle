@@ -267,8 +267,8 @@
                 "y"
             ],
             "label": "owlery",
-            "x": 1184,
-            "y": 880
+            "x": 1056,
+            "y": 896
         },
         {
             "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
@@ -336,8 +336,8 @@
                 "y"
             ],
             "label": "skaduweeWorkerFemale",
-            "x": 1136,
-            "y": 960
+            "x": 1088,
+            "y": 1024
         },
         {
             "prefabId": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
@@ -347,7 +347,7 @@
                 "y"
             ],
             "label": "skaduweeRangedFemale",
-            "x": 1264,
+            "x": 1280,
             "y": 720
         },
         {
@@ -369,8 +369,8 @@
                 "y"
             ],
             "label": "skaduweeWarriorMale",
-            "x": 1216,
-            "y": 784
+            "x": 1424,
+            "y": 864
         },
         {
             "prefabId": "1457b917-a97a-463b-9989-e0ec3446c7a8",
@@ -1216,6 +1216,17 @@
             "label": "tree5",
             "x": -788,
             "y": 484
+        },
+        {
+            "prefabId": "56d62d59-15b0-4017-b986-1f24c1040cb6",
+            "id": "91881092-74df-4d32-be1d-608a71ca46db",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "frostForge",
+            "x": 1184,
+            "y": 848
         }
     ],
     "plainObjects": [
