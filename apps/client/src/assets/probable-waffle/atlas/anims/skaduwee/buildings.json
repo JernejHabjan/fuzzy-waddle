@@ -73,6 +73,33 @@
             ],
             "frameRate": 3,
             "skipMissedFrames": true
+        },
+        {
+            "key": "frost_forge_flame",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
         }
     ],
     "globalTimeScale": 1,

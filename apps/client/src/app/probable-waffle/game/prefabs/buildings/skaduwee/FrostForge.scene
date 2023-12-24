@@ -13,38 +13,37 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "id": "c586f07d-1ddf-4bc1-8a74-83b89a5f7985",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
+            "type": "Container",
+            "id": "51a74127-fc61-4363-9137-f1c924917688",
             "label": "container_1",
-            "z": 0,
-            "hitArea.shape": "POLYGON",
-            "hitArea.points": "-128.16910280030726 -223.85148005244537 -0.16910280030725744 -319.85148005244537 127.83089719969274 -223.85148005244537 127.83089719969274 64.14851994755463 -128.16910280030726 64.14851994755463",
-            "x": 128,
-            "y": 320.1111944720763,
+            "x": 129,
+            "y": 323.7847134131514,
             "list": [
                 {
                     "type": "Image",
-                    "id": "57ae8924-5c22-4302-84e7-6ca1bfe3bf16",
-                    "label": "frost_forge",
+                    "id": "4931a4ee-4853-470b-a5e8-23f12bc49758",
+                    "label": "buildings_skaduwee_frost_forge_frost_forge_png",
                     "texture": {
                         "key": "factions",
                         "frame": "buildings/skaduwee/frost_forge/frost_forge.png"
                     },
-                    "x": -0.16910280030724323,
-                    "y": -127.85149163505658
+                    "x": -1,
+                    "y": -18.21845166634691,
+                    "originY": 0.7957454759361422
+                },
+                {
+                    "type": "Sprite",
+                    "id": "84271ac3-461a-40c4-8f9e-7074a0bde613",
+                    "label": "frost_forge_flame",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png"
+                    },
+                    "x": -1,
+                    "y": -191,
+                    "originY": 0.9006772652278124,
+                    "animationPlayMethod": 1,
+                    "animationKey": "frost_forge_flame"
                 }
             ]
         }

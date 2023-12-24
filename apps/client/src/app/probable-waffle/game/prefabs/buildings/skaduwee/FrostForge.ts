@@ -2,32 +2,33 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class FrostForge extends ActorContainer {
+export default class FrostForge extends Phaser.GameObjects.Container {
 
 	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 128, y ?? 320.1111944720763);
+		super(scene, x ?? 129, y ?? 323.7847134131514);
 
-		this.removeInteractive();
-		this.setInteractive(new Phaser.Geom.Polygon("-128.16910280030726 -223.85148005244537 -0.16910280030725744 -319.85148005244537 127.83089719969274 -223.85148005244537 127.83089719969274 64.14851994755463 -128.16910280030726 64.14851994755463"), Phaser.Geom.Polygon.Contains);
+		// buildings_skaduwee_frost_forge_frost_forge_png
+		const buildings_skaduwee_frost_forge_frost_forge_png = scene.add.image(-1, -18.21845166634691, "factions", "buildings/skaduwee/frost_forge/frost_forge.png");
+		buildings_skaduwee_frost_forge_frost_forge_png.setOrigin(0.5, 0.7957454759361422);
+		this.add(buildings_skaduwee_frost_forge_frost_forge_png);
 
-		// frost_forge
-		const frost_forge = scene.add.image(-0.16910280030724323, -127.85149163505658, "factions", "buildings/skaduwee/frost_forge/frost_forge.png");
-		this.add(frost_forge);
-
-		// this (prefab fields)
-		this.z = 0;
+		// frost_forge_flame
+		const frost_forge_flame = scene.add.sprite(-1, -191, "factions", "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png");
+		frost_forge_flame.setOrigin(0.5, 0.9006772652278124);
+		frost_forge_flame.play("frost_forge_flame");
+		this.add(frost_forge_flame);
 
 		/* START-USER-CTR-CODE */
 
     this.on("pointerdown", () => {
-      frost_forge.setTint(0xff0000); // Tint to red
+      buildings_skaduwee_frost_forge_frost_forge_png.setTint(0xff0000); // Tint to red
       // tint back to transparent after 1 second
       setTimeout(() => {
-        frost_forge.clearTint();
+        buildings_skaduwee_frost_forge_frost_forge_png.clearTint();
       }, 1000);
     });
     /* END-USER-CTR-CODE */
