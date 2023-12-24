@@ -1115,47 +1115,47 @@
         },
         {
             "type": "Image",
-            "id": "3f1a05e6-d6a5-4d82-840e-5cf59635dbbd",
-            "label": "animals_sheep_down_png",
+            "id": "dd8e83ff-29da-4732-a733-48a6318f2871",
+            "label": "sheep_sheep_down_png",
             "texture": {
-                "key": "outside",
-                "frame": "animals/sheep_down.png"
+                "key": "animals",
+                "frame": "sheep/sheep_down.png"
             },
-            "x": -240,
+            "x": -223,
             "y": 1236
         },
         {
             "type": "Image",
-            "id": "64f6e68d-27ad-4fc4-a7a2-42b7feeb6294",
-            "label": "animals_sheep_left_png",
+            "id": "5f6f6306-3069-486e-9d82-7510f5b9c5ac",
+            "label": "sheep_sheep_left_png",
             "texture": {
-                "key": "outside",
-                "frame": "animals/sheep_left.png"
+                "key": "animals",
+                "frame": "sheep/sheep_left.png"
             },
-            "x": -184,
-            "y": 1262
+            "x": -195,
+            "y": 1208
         },
         {
             "type": "Image",
-            "id": "3651d390-021f-481a-a67a-46841e84e129",
-            "label": "animals_sheep_right_png",
+            "id": "1cde381d-0ba3-4100-af7e-2415358365fa",
+            "label": "sheep_sheep_right_png",
             "texture": {
-                "key": "outside",
-                "frame": "animals/sheep_right.png"
+                "key": "animals",
+                "frame": "sheep/sheep_right.png"
             },
-            "x": -137,
-            "y": 1219
+            "x": -172,
+            "y": 1268
         },
         {
             "type": "Image",
-            "id": "3b7caf0e-5595-4b00-bfc4-711a46d1e918",
-            "label": "animals_sheep_up_png",
+            "id": "d47bb77e-f2f9-4a21-af01-adfd70f17d2e",
+            "label": "sheep_sheep_up_png",
             "texture": {
-                "key": "outside",
-                "frame": "animals/sheep_up.png"
+                "key": "animals",
+                "frame": "sheep/sheep_up.png"
             },
-            "x": -196,
-            "y": 1207
+            "x": -113,
+            "y": 1250
         }
     ],
     "plainObjects": [

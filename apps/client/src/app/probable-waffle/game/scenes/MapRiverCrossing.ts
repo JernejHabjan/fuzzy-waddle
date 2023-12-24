@@ -461,17 +461,17 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// architecture_obstruction_fence_top_left_png_1
 		this.add.image(-261, 1219, "outside", "architecture/obstruction/fence/top_left.png");
 
-		// animals_sheep_down_png
-		this.add.image(-240, 1236, "outside", "animals/sheep_down.png");
+		// sheep_sheep_down_png
+		this.add.image(-223, 1236, "animals", "sheep/sheep_down.png");
 
-		// animals_sheep_left_png
-		this.add.image(-184, 1262, "outside", "animals/sheep_left.png");
+		// sheep_sheep_left_png
+		this.add.image(-195, 1208, "animals", "sheep/sheep_left.png");
 
-		// animals_sheep_right_png
-		this.add.image(-137, 1219, "outside", "animals/sheep_right.png");
+		// sheep_sheep_right_png
+		this.add.image(-172, 1268, "animals", "sheep/sheep_right.png");
 
-		// animals_sheep_up_png
-		this.add.image(-196, 1207, "outside", "animals/sheep_up.png");
+		// sheep_sheep_up_png
+		this.add.image(-113, 1250, "animals", "sheep/sheep_up.png");
 
 		// infantryInn (prefab fields)
 		infantryInn.z = 0;

@@ -2,6 +2,12 @@
     "section1": {
         "files": [
             {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/animals.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "animals"
+            },
+            {
                 "url": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "path": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "type": "animation",
@@ -14,17 +20,17 @@
                 "key": "buildings_1"
             },
             {
-              "url": "assets/probable-waffle/atlas/anims/effects.json",
-              "type": "animation",
-              "key": "effects"
+                "url": "assets/probable-waffle/atlas/anims/effects.json",
+                "type": "animation",
+                "key": "effects"
             },
-          {
-            "type": "multiatlas",
-            "url": "assets/probable-waffle/atlas/effects.json",
-            "path": "assets/probable-waffle/atlas",
-            "key": "effects_1"
-          },
-          {
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/effects.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "effects_1"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/factions.json",
                 "path": "assets/probable-waffle/atlas",

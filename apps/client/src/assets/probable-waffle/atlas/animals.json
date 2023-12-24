@@ -1,0 +1,104 @@
+{
+	"textures": [
+		{
+			"image": "animals.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 94,
+				"h": 80
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "sheep/sheep_up.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 37,
+						"h": 42
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 37,
+						"h": 42
+					}
+				},
+				{
+					"filename": "sheep/sheep_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 1,
+						"y": 45,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/sheep_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 40,
+						"y": 1,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/sheep_down.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 56,
+						"y": 37,
+						"w": 37,
+						"h": 38
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:9d6732dd76d1dc9df5d42febdc2111e2:14ddc368e5e455641792a20b0b529e43:b00d48b51f56eb7c81e25100fcce2828$"
+	}
+}
