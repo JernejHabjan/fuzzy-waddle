@@ -17,8 +17,8 @@ export default class FrostForge extends Phaser.GameObjects.Container {
 		this.add(buildings_skaduwee_frost_forge_frost_forge_png);
 
 		// frost_forge_flame
-		const frost_forge_flame = scene.add.sprite(-1, -191, "factions", "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png");
-		frost_forge_flame.setOrigin(0.5, 0.9006772652278124);
+		const frost_forge_flame = scene.add.sprite(-1, -209.5049784310576, "factions", "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png");
+		frost_forge_flame.setOrigin(0.5, 0.5151570341464229);
 		frost_forge_flame.play("frost_forge_flame");
 		this.add(frost_forge_flame);
 
