@@ -1112,6 +1112,50 @@
             },
             "x": -261,
             "y": 1219
+        },
+        {
+            "type": "Image",
+            "id": "3f1a05e6-d6a5-4d82-840e-5cf59635dbbd",
+            "label": "animals_sheep_down_png",
+            "texture": {
+                "key": "outside",
+                "frame": "animals/sheep_down.png"
+            },
+            "x": -240,
+            "y": 1236
+        },
+        {
+            "type": "Image",
+            "id": "64f6e68d-27ad-4fc4-a7a2-42b7feeb6294",
+            "label": "animals_sheep_left_png",
+            "texture": {
+                "key": "outside",
+                "frame": "animals/sheep_left.png"
+            },
+            "x": -184,
+            "y": 1262
+        },
+        {
+            "type": "Image",
+            "id": "3651d390-021f-481a-a67a-46841e84e129",
+            "label": "animals_sheep_right_png",
+            "texture": {
+                "key": "outside",
+                "frame": "animals/sheep_right.png"
+            },
+            "x": -137,
+            "y": 1219
+        },
+        {
+            "type": "Image",
+            "id": "3b7caf0e-5595-4b00-bfc4-711a46d1e918",
+            "label": "animals_sheep_up_png",
+            "texture": {
+                "key": "outside",
+                "frame": "animals/sheep_up.png"
+            },
+            "x": -196,
+            "y": 1207
         }
     ],
     "plainObjects": [
