@@ -91,6 +91,12 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// tilemap_level_1
 		tilemap.createLayer("TileMap_level_1", ["tiles"], -32, 0);
 
+		// foliage_trees_resources_special_tree_christmas_png_1
+		this.add.image(-110, 1166, "outside", "foliage/trees/resources/special/tree_christmas.png");
+
+		// foliage_trees_resources_special_tree_christmas_png
+		this.add.image(-284, 1174, "outside", "foliage/trees/resources/special/tree_christmas.png");
+
 		// architecture_obstruction_fence_left_png
 		this.add.image(-297, 1233, "outside", "architecture/obstruction/fence/left.png");
 

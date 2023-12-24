@@ -37,6 +37,28 @@
         },
         {
             "type": "Image",
+            "id": "b0ca54c2-dcb2-49f9-a08e-8bea2c24c2d4",
+            "label": "foliage_trees_resources_special_tree_christmas_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/special/tree_christmas.png"
+            },
+            "x": -110,
+            "y": 1166
+        },
+        {
+            "type": "Image",
+            "id": "d513086d-6eac-4b19-8b73-75a850bc1c2e",
+            "label": "foliage_trees_resources_special_tree_christmas_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/special/tree_christmas.png"
+            },
+            "x": -284,
+            "y": 1174
+        },
+        {
+            "type": "Image",
             "id": "3429ce0c-7fcf-402a-a36b-6fb2ddc2539d",
             "label": "architecture_obstruction_fence_left_png",
             "texture": {
