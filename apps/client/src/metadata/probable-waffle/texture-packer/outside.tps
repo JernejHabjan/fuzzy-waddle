@@ -279,6 +279,28 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/bottom.png</key>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/bottom_left.png</key>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/bottom_right.png</key>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/left.png</key>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/right.png</key>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/top.png</key>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/top_left.png</key>
+            <key type="filename">../sprites/outside/architecture/obstruction/fence/top_right.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,20,32,40</rect>
+                <key>scale9Paddings</key>
+                <rect>16,20,32,40</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/outside/architecture/river/bridge_stone.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>

@@ -94,8 +94,44 @@ export default class MapRiverCrossing extends BaseScene<
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
 
+    // architecture_obstruction_fence_top_left_png_3
+    this.add.image(-195, 1187, "outside", "architecture/obstruction/fence/top_left.png");
+
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles"], -32, 0);
+
+    // architecture_obstruction_fence_left_png
+    this.add.image(-297, 1233, "outside", "architecture/obstruction/fence/left.png");
+
+    // architecture_obstruction_fence_top_right_png_2
+    this.add.image(-95, 1234, "outside", "architecture/obstruction/fence/top_right.png");
+
+    // architecture_obstruction_fence_right_png
+    this.add.image(-61, 1249, "outside", "architecture/obstruction/fence/right.png");
+
+    // architecture_obstruction_fence_bottom_left_png_2
+    this.add.image(-263, 1250, "outside", "architecture/obstruction/fence/bottom_left.png");
+
+    // architecture_obstruction_fence_bottom_left_png_1
+    this.add.image(-229, 1266, "outside", "architecture/obstruction/fence/bottom_left.png");
+
+    // architecture_obstruction_fence_bottom_left_png
+    this.add.image(-196, 1281, "outside", "architecture/obstruction/fence/bottom_left.png");
+
+    // architecture_obstruction_fence_bottom_right_png_1
+    this.add.image(-95, 1266, "outside", "architecture/obstruction/fence/bottom_right.png");
+
+    // architecture_obstruction_fence_bottom_right_png
+    this.add.image(-128, 1281, "outside", "architecture/obstruction/fence/bottom_right.png");
+
+    // architecture_obstruction_fence_top_png
+    this.add.image(-195, 1187, "outside", "architecture/obstruction/fence/top.png");
+
+    // architecture_obstruction_fence_top_right_png_4
+    this.add.image(-163, 1202, "outside", "architecture/obstruction/fence/top_right.png");
+
+    // architecture_obstruction_fence_top_right_png_3
+    this.add.image(-131, 1217, "outside", "architecture/obstruction/fence/top_right.png");
 
     // tree_12
     const tree_12 = new Tree7(this, -16, 1376);
@@ -424,6 +460,15 @@ export default class MapRiverCrossing extends BaseScene<
     // tree_13
     const tree_13 = new Tree7(this, 112, 1520);
     this.add.existing(tree_13);
+
+    // architecture_obstruction_fence_bottom_png
+    this.add.image(-162, 1297, "outside", "architecture/obstruction/fence/bottom.png");
+
+    // architecture_obstruction_fence_top_left_png
+    this.add.image(-229, 1203, "outside", "architecture/obstruction/fence/top_left.png");
+
+    // architecture_obstruction_fence_top_left_png_1
+    this.add.image(-261, 1219, "outside", "architecture/obstruction/fence/top_left.png");
 
     // infantryInn (prefab fields)
     infantryInn.z = 0;
