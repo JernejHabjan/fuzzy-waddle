@@ -62,6 +62,50 @@
                     "originY": 0.5151570341464229,
                     "animationPlayMethod": 1,
                     "animationKey": "frost_forge_flame"
+                },
+                {
+                    "type": "Image",
+                    "id": "b6b700a5-583c-4afa-8802-2f71e737d073",
+                    "label": "cloud_3",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": -25,
+                    "y": -215,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "angle": 180
+                },
+                {
+                    "type": "Image",
+                    "id": "b35727b7-1b04-4197-8824-734e4f9a8fd0",
+                    "label": "cloud_2",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": 26,
+                    "y": -232,
+                    "scaleX": 2,
+                    "scaleY": 2
+                },
+                {
+                    "type": "Image",
+                    "id": "6f2f9d75-27ce-4b6c-a769-bb3366be1538",
+                    "label": "cloud_1",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": 2,
+                    "y": -250,
+                    "scaleX": 2.2,
+                    "scaleY": 2.2,
+                    "angle": 180
                 }
             ]
         }
