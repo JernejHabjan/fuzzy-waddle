@@ -173,6 +173,32 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../sprites/animals/hedgehog/0.png</key>
+            <key type="filename">../sprites/animals/hedgehog/1.png</key>
+            <key type="filename">../sprites/animals/hedgehog/10.png</key>
+            <key type="filename">../sprites/animals/hedgehog/11.png</key>
+            <key type="filename">../sprites/animals/hedgehog/2.png</key>
+            <key type="filename">../sprites/animals/hedgehog/3.png</key>
+            <key type="filename">../sprites/animals/hedgehog/4.png</key>
+            <key type="filename">../sprites/animals/hedgehog/5.png</key>
+            <key type="filename">../sprites/animals/hedgehog/6.png</key>
+            <key type="filename">../sprites/animals/hedgehog/7.png</key>
+            <key type="filename">../sprites/animals/hedgehog/8.png</key>
+            <key type="filename">../sprites/animals/hedgehog/9.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9Paddings</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/animals/sheep/sheep_down.png</key>
             <key type="filename">../sprites/animals/sheep/sheep_left.png</key>
             <key type="filename">../sprites/animals/sheep/sheep_right.png</key>
