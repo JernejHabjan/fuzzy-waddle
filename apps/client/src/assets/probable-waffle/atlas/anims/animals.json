@@ -22,7 +22,7 @@
             "repeat": -1
         },
         {
-            "key": "hedgehog_idle_bottom",
+            "key": "hedgehog_idle_down",
             "type": "frame",
             "frames": [
                 {
@@ -80,7 +80,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 1,
+            "frameRate": 4,
             "skipMissedFrames": true,
             "repeat": -1
         },
@@ -101,7 +101,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 1,
+            "frameRate": 4,
             "skipMissedFrames": true,
             "repeat": -1
         },
@@ -137,12 +137,6 @@
             "frames": [
                 {
                     "key": "animals",
-                    "frame": "hedgehog/8.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals",
                     "frame": "hedgehog/9.png",
                     "duration": 0,
                     "keyframe": false
@@ -150,6 +144,12 @@
                 {
                     "key": "animals",
                     "frame": "hedgehog/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/8.png",
                     "duration": 0,
                     "keyframe": false
                 }
@@ -215,7 +215,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 1,
+            "frameRate": 4,
             "skipMissedFrames": true,
             "repeat": -1
         },
@@ -244,6 +244,27 @@
             ],
             "frameRate": 2,
             "skipMissedFrames": true
+        },
+        {
+            "key": "hedgehog_walk_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1
         }
     ],
     "globalTimeScale": 1,

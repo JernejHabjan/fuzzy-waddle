@@ -8,6 +8,11 @@
                 "key": "animals"
             },
             {
+                "url": "assets/probable-waffle/atlas/anims/animals.json",
+                "type": "animation",
+                "key": "animals_1"
+            },
+            {
                 "url": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "path": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "type": "animation",

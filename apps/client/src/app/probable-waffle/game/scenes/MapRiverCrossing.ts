@@ -2,6 +2,7 @@
 
 /* START OF COMPILED CODE */
 
+import Hedgehog from "../prefabs/animals/Hedgehog";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -92,6 +93,10 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 
 		// tilemap_level_1
 		tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
+
+		// hedgehog
+		const hedgehog = new Hedgehog(this, -576, 992);
+		this.add.existing(hedgehog);
 
 		// nature_grass_grass_0_png
 		const nature_grass_grass_0_png = this.add.image(-92, 1266, "outside", "nature/grass/grass_0.png");

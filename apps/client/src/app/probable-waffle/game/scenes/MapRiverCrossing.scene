@@ -38,6 +38,17 @@
             ]
         },
         {
+            "prefabId": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
+            "id": "be48f7ce-f66c-403f-8dc9-64875869a8a8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "hedgehog",
+            "x": -576,
+            "y": 992
+        },
+        {
             "type": "Image",
             "id": "72371380-06d8-4654-a5fa-edb6ea1308a1",
             "label": "nature_grass_grass_0_png",
