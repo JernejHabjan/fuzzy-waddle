@@ -95,7 +95,7 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
 		// hedgehog
-		const hedgehog = new Hedgehog(this, -576, 992);
+		const hedgehog = new Hedgehog(this, 96, 1360);
 		this.add.existing(hedgehog);
 
 		// nature_grass_grass_0_png
