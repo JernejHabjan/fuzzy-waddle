@@ -177,6 +177,12 @@
             <key type="filename">../sprites/animals/hedgehog/1.png</key>
             <key type="filename">../sprites/animals/hedgehog/10.png</key>
             <key type="filename">../sprites/animals/hedgehog/11.png</key>
+            <key type="filename">../sprites/animals/hedgehog/12.png</key>
+            <key type="filename">../sprites/animals/hedgehog/13.png</key>
+            <key type="filename">../sprites/animals/hedgehog/14.png</key>
+            <key type="filename">../sprites/animals/hedgehog/15.png</key>
+            <key type="filename">../sprites/animals/hedgehog/16.png</key>
+            <key type="filename">../sprites/animals/hedgehog/17.png</key>
             <key type="filename">../sprites/animals/hedgehog/2.png</key>
             <key type="filename">../sprites/animals/hedgehog/3.png</key>
             <key type="filename">../sprites/animals/hedgehog/4.png</key>

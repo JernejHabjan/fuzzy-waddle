@@ -137,12 +137,6 @@
             "frames": [
                 {
                     "key": "animals",
-                    "frame": "hedgehog/11.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals",
                     "frame": "hedgehog/8.png",
                     "duration": 0,
                     "keyframe": false
@@ -152,24 +146,98 @@
                     "frame": "hedgehog/9.png",
                     "duration": 0,
                     "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/11.png",
+                    "duration": 0,
+                    "keyframe": false
                 }
             ],
             "frameRate": 2,
             "skipMissedFrames": true
         },
         {
-            "key": "hedgehog_ball_tophedgehog",
+            "key": "hedgehog_ball_top",
             "type": "frame",
             "frames": [
                 {
                     "key": "animals",
-                    "frame": "hedgehog/5.png",
+                    "frame": "hedgehog/6.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals",
-                    "frame": "hedgehog/6.png",
+                    "frame": "hedgehog/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "hedgehog_idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_ball_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/17.png",
                     "duration": 0,
                     "keyframe": false
                 }
@@ -184,8 +252,9 @@
         "contentType": "Phaser v3 Animations"
     },
     "settings": {
-        "sourceLang": "JAVA_SCRIPT",
-        "esModule": false,
-        "generateCode": false
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true,
+        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/prefabs/animals/anims"
     }
 }
