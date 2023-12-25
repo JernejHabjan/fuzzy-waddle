@@ -55,8 +55,10 @@
                         "key": "factions",
                         "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png"
                     },
-                    "x": -1,
-                    "y": -209.5049784310576,
+                    "x": 2,
+                    "y": -235,
+                    "scaleX": 1.5,
+                    "scaleY": 2,
                     "originY": 0.5151570341464229,
                     "animationPlayMethod": 1,
                     "animationKey": "frost_forge_flame"
