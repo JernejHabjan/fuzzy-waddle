@@ -57,7 +57,7 @@ export class PlayerDefinitionComponent {
     takenPositions.sort();
     // get first free position
     let freePosition = 0;
-    for (let i = 0; i < map.playerPositions.length; i++) {
+    for (let i = 0; i < map.startPositionPerPlayer.length; i++) {
       if (takenPositions.includes(i)) {
         continue;
       }

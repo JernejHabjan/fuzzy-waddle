@@ -12,7 +12,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { Router } from "@angular/router";
 
 export class MapPlayerDefinition {
-  protected startPositionPerPlayer: PositionPlayerDefinition[] = [];
+  public startPositionPerPlayer: PositionPlayerDefinition[] = [];
   protected allPossibleTeams: (number | null)[] = [];
   private initialNrAiPlayers = 0;
 
