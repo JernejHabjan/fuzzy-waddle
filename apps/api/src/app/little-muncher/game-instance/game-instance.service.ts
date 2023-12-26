@@ -61,7 +61,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     });
     console.log("spectator joined", user.id);
     this.gameInstanceGateway.emitSpectator(
-      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), "joined")
+      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), body.gameInstanceId, "joined")
     );
     return gameInstance.data;
   }
@@ -72,7 +72,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     gameInstance.removeSpectator(user.id);
     console.log("spectator left", user.id);
     this.gameInstanceGateway.emitSpectator(
-      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), "left")
+      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), body.gameInstanceId, "left")
     );
   }
 
@@ -112,11 +112,17 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     };
   }
 
-  getSpectatorEvent(user: User, room: LittleMuncherRoom, action: SpectatorAction): LittleMuncherSpectatorEvent {
+  getSpectatorEvent(
+    user: User,
+    room: LittleMuncherRoom,
+    gameInstanceId: string,
+    action: SpectatorAction
+  ): LittleMuncherSpectatorEvent {
     return {
       user_id: user.id,
       room,
-      action
+      action,
+      gameInstanceId
     };
   }
 

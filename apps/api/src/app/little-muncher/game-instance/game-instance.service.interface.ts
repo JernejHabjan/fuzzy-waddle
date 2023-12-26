@@ -25,6 +25,11 @@ export interface GameInstanceServiceInterface {
 
   getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): LittleMuncherRoomEvent;
 
-  getSpectatorEvent(user: User, room: LittleMuncherRoom, action: SpectatorAction): LittleMuncherSpectatorEvent;
+  getSpectatorEvent(
+    user: User,
+    room: LittleMuncherRoom,
+    gameInstanceId: string,
+    action: SpectatorAction
+  ): LittleMuncherSpectatorEvent;
   findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined;
 }

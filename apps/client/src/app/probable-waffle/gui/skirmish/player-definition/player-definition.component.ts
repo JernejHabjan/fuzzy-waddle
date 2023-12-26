@@ -41,7 +41,7 @@ export class PlayerDefinitionComponent {
   protected FactionDefinitions = FactionDefinitions;
   protected DifficultyDefinitions = DifficultyDefinitions;
   @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
-  @Output() playerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
+  @Output() selfOrAiPlayerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
   @Output() playerSlotOpened: EventEmitter<void> = new EventEmitter<void>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 
@@ -67,14 +67,14 @@ export class PlayerDefinitionComponent {
     return freePosition;
   }
 
-  protected addPlayer(playerIndex: number) {
+  protected addAiPlayer(playerIndex: number) {
     const map = this.selectedMap as MapPlayerDefinition;
     const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
     startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
     startPositionPerPlayerElement.player.joined = true;
     startPositionPerPlayerElement.difficulty = ProbableWaffleAiDifficulty.Medium;
     startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.AI;
-    this.playerAdded.emit(startPositionPerPlayerElement);
+    this.selfOrAiPlayerAdded.emit(startPositionPerPlayerElement);
   }
 
   protected openMpSlot(playerIndex: number) {

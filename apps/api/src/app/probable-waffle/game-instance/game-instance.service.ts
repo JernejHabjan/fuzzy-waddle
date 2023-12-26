@@ -7,6 +7,7 @@ import {
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleAddPlayerDto,
+  ProbableWaffleAddSpectatorDto,
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
@@ -21,6 +22,7 @@ import {
   ProbableWafflePlayerType,
   ProbableWaffleRoom,
   ProbableWaffleRoomEvent,
+  ProbableWaffleSpectator,
   ProbableWaffleSpectatorEvent,
   ProbableWaffleStartLevelDto,
   RoomAction,
@@ -93,10 +95,10 @@ export class GameInstanceService implements GameInstanceServiceInterface {
         this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "joined"));
         break;
       case "spectator":
-        gameInstance.initSpectator({
+        const spectator = gameInstance.initSpectator({
           userId: user.id
         });
-        this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, body.gameInstanceId, "joined"));
+        this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, spectator, body.gameInstanceId, "joined"));
         break;
       default:
         throw new Error("Probable Waffle - Join Room - Unknown join type");
@@ -108,9 +110,24 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   async leaveRoom(body: GameInstanceDataDto, user: User) {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    gameInstance.removeSpectator(user.id);
-    console.log("Probable Waffle - Spectator left", user.id);
-    this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, body.gameInstanceId, "left"));
+
+    // find if current user is player or spectator
+    const player = gameInstance.getPlayer(user.id);
+    if (player) {
+      gameInstance.removePlayer(user.id);
+      console.log("Probable Waffle - Player left", user.id);
+      this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "left"));
+      return;
+    }
+    const spectator = gameInstance.getSpectator(user.id);
+    if (spectator) {
+      gameInstance.removeSpectator(user.id);
+      console.log("Probable Waffle - Spectator left", user.id);
+      this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, spectator, body.gameInstanceId, "left"));
+      return;
+    }
+
+    console.log("Probable Waffle - User left but was not a player or spectator", user.id);
   }
 
   async stopLevel(body: GameInstanceDataDto, user: User) {
@@ -152,11 +169,17 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     };
   }
 
-  getSpectatorEvent(user: User, gameInstanceId: string, action: SpectatorAction): ProbableWaffleSpectatorEvent {
+  getSpectatorEvent(
+    user: User,
+    spectator: ProbableWaffleSpectator,
+    gameInstanceId: string,
+    action: SpectatorAction
+  ): ProbableWaffleSpectatorEvent {
     return {
       user_id: user.id,
       gameInstanceId,
-      action
+      action,
+      spectator
     };
   }
 
@@ -218,7 +241,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
-    // todo gameInstance.players.push({ userId: null });
+
     console.log("Probable Waffle - player slot opened on server");
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "changed")); // todo
   }
@@ -243,26 +266,18 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
-    const playerDefinition = body.playerDefinition;
-
-    const player = gameInstance.initPlayer(
-      user.id,
-      {
-        score: 0
-      } satisfies ProbableWafflePlayerStateData,
-      {
-        playerDefinition
-      } satisfies ProbableWafflePlayerControllerData
-    );
+    const player = body.player;
+    gameInstance.addPlayer(player);
     console.log("Probable Waffle - player added on server");
     this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "joined"));
   }
 
-  async addSpectator(body: GameInstanceDataDto, user: User) {
+  async addSpectator(body: ProbableWaffleAddSpectatorDto, user: User) {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    gameInstance.initSpectator({
-      userId: user.id
-    });
+    const spectator = body.spectator;
+    gameInstance.addSpectator(spectator);
+    console.log("Probable Waffle - spectator added on server");
+    this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, spectator, body.gameInstanceId, "joined"));
   }
 }

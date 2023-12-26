@@ -4,6 +4,7 @@ import { ProbableWaffleGameMode } from "./probable-waffle/game-mode";
 import { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/game-instance-medatada";
 import { GameSessionState } from "./session";
 import { ProbableWafflePlayer } from "./probable-waffle/player";
+import { ProbableWaffleSpectator } from "./probable-waffle/spectator";
 
 interface Room<TGameInstanceMetadataData, TGameMode> {
   gameInstanceMetadataData: TGameInstanceMetadataData;
@@ -24,13 +25,14 @@ interface RoomEvent<TGameInstanceMetadataData, TGameMode> {
 export type RoomAction = "added" | "removed" | "changed";
 
 interface SpectatorEvent {
+  gameInstanceId: string;
   user_id: string;
   action: SpectatorAction;
 }
 
 interface PlayerEvent {
   gameInstanceId: string;
-  user_id: string;
+  user_id: string | null;
   action: PlayerAction;
 }
 
@@ -62,7 +64,7 @@ export interface ProbableWafflePlayerEvent extends PlayerEvent {
 }
 
 export interface ProbableWaffleSpectatorEvent extends SpectatorEvent {
-  gameInstanceId: string;
+  spectator: ProbableWaffleSpectator;
 }
 
 export interface ProbableWaffleLevelStateChangeEvent {

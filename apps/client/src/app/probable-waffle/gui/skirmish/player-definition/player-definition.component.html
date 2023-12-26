@@ -72,7 +72,7 @@
     Open slot for MP
   </button>
   <button
-    (click)="addPlayer(selectedMap.playerPositions.length)"
+    (click)='addAiPlayer(selectedMap.playerPositions.length)'
     *ngIf='selectedMap.playerPositions.length !== selectedMap.allPlayerPositions.length'
     class="btn btn-primary mt-4"
     type="button"

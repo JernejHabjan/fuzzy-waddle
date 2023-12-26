@@ -6,6 +6,7 @@ import {
   GameInstanceDataDto,
   PositionPlayerDefinition,
   ProbableWaffleAddPlayerDto,
+  ProbableWaffleAddSpectatorDto,
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
@@ -14,12 +15,9 @@ import {
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
   ProbableWaffleLevelStateChangeEvent,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerController,
   ProbableWafflePlayerEvent,
   ProbableWafflePlayerLeftDto,
-  ProbableWafflePlayerState,
-  ProbableWaffleSpectator,
+  ProbableWafflePlayerType,
   ProbableWaffleSpectatorEvent,
   ProbableWaffleStartLevelDto
 } from "@fuzzy-waddle/api-interfaces";
@@ -117,7 +115,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       this.httpClient.get<ProbableWaffleGameInstanceData>(url, { params: { gameInstanceId } })
     );
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
-    await this.addSpectator();
+    await this.addSelfAsSpectator();
     this.openLevelCommunication(gameInstanceId);
   }
 
@@ -135,13 +133,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       this.serverHealthService.serverAvailable &&
       removeFrom === "localAndRemote"
     ) {
-      const url = environment.api + "api/probable-waffle/stop-level";
+      const url = environment.api + "api/probable-waffle/stop-game";
       const body: GameInstanceDataDto = {
         gameInstanceId: this.gameLocalInstanceId
       };
       await firstValueFrom(this.httpClient.delete<void>(url, { body }));
     }
-    this.gameInstance!.stopLevel();
+    this.gameInstance = undefined;
     this.sceneCommunicatorClientService.stopListeningToEvents();
   }
 
@@ -158,13 +156,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameInstance) return;
     switch (playerEvent.action) {
       case "joined":
-        this.gameInstance.players.push(
-          new ProbableWafflePlayer(
-            playerEvent.user_id,
-            new ProbableWafflePlayerState(playerEvent.player.playerState.data),
-            new ProbableWafflePlayerController(playerEvent.player.playerController.data)
-          )
-        );
+        this.gameInstance.addPlayer(playerEvent.player);
         break;
       case "left":
         this.gameInstance.players = this.gameInstance.players.filter((p) => p.userId !== playerEvent.user_id);
@@ -178,11 +170,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameInstance) return;
     switch (spectatorEvent.action) {
       case "joined":
-        this.gameInstance!.spectators.push(
-          new ProbableWaffleSpectator({
-            userId: spectatorEvent.user_id
-          })
-        );
+        this.gameInstance!.addSpectator(spectatorEvent.spectator);
         break;
       case "left":
         this.gameInstance!.spectators = this.gameInstance!.spectators.filter(
@@ -266,43 +254,60 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     });
   }
 
-  async addPlayer(playerDefinition: PositionPlayerDefinition) {
+  async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition) {
     if (!this.gameLocalInstanceId) return;
+
+    const playerNumber = playerDefinition.player.playerNumber;
+    let player = this.gameInstance!.players.find(
+      (p) => p.playerController.data.playerDefinition?.player.playerNumber === playerNumber
+    );
+    if (player) throw new Error("Player already exists");
+    const user_id = playerDefinition.playerType === ProbableWafflePlayerType.Human ? this.authService.userId : null;
+    player = this.gameInstance!.initPlayer(user_id, { score: 0 }, { playerDefinition });
+
+    this.playerAvailabilityChange({
+      player,
+      user_id,
+      gameInstanceId: this.gameLocalInstanceId,
+      action: "joined"
+    });
+
+    // server
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/add-player";
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
-        playerDefinition
+        player
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
-
-    const playerNumber = playerDefinition.player.playerNumber;
-    const player = this.gameInstance!.players.find(
-      (p) => p.playerController.data.playerDefinition.player.playerNumber === playerNumber
-    );
-    if (!player) throw new Error("Player not found");
-    this.playerAvailabilityChange({
-      player: player,
-      user_id: player.userId!,
-      gameInstanceId: this.gameLocalInstanceId,
-      action: "joined"
-    });
   }
 
-  async addSpectator(): Promise<void> {
+  async addSelfAsSpectator(): Promise<void> {
     if (!this.gameLocalInstanceId) return;
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/add-spectator";
-      const body: GameInstanceDataDto = {
-        gameInstanceId: this.gameLocalInstanceId
-      };
-      await firstValueFrom(this.httpClient.post<void>(url, body));
-    }
+
+    let spectator = this.gameInstance!.spectators.find((s) => s.data.userId === this.authService.userId);
+    if (spectator) throw new Error("Spectator already exists");
+    const user_id = this.authService.userId;
+    spectator = this.gameInstance!.initSpectator({
+      userId: user_id!
+    });
+
     this.spectatorAvailabilityChange({
       user_id: this.authService.userId!,
       gameInstanceId: this.gameLocalInstanceId,
-      action: "joined"
+      action: "joined",
+      spectator
     });
+
+    // server
+    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
+      const url = environment.api + "api/probable-waffle/add-spectator";
+      const body: ProbableWaffleAddSpectatorDto = {
+        gameInstanceId: this.gameLocalInstanceId,
+        spectator
+      };
+      await firstValueFrom(this.httpClient.post<void>(url, body));
+    }
   }
 }

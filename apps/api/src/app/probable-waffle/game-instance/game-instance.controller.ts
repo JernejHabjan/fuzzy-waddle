@@ -13,7 +13,8 @@ import {
   ProbableWaffleGetRoomsDto,
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleAddPlayerDto,
-  ProbableWafflePlayerLeftDto
+  ProbableWafflePlayerLeftDto,
+  ProbableWaffleAddSpectatorDto
 } from "@fuzzy-waddle/api-interfaces";
 
 @Controller("probable-waffle")
@@ -94,7 +95,7 @@ export class GameInstanceController {
 
   @Post("add-spectator")
   @UseGuards(SupabaseAuthGuard)
-  async addSpectator(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
+  async addSpectator(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleAddSpectatorDto): Promise<void> {
     await this.gameInstanceService.addSpectator(body, user);
   }
 }

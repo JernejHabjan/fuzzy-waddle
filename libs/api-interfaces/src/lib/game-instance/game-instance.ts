@@ -1,5 +1,4 @@
 import { GameInstanceMetadata, GameInstanceMetadataData } from "./game-instance-metadata";
-import { GameSessionState } from "./session";
 import { BaseData } from "./data";
 import { BaseSpectator, BaseSpectatorData } from "./spectator";
 import { BaseGameState } from "./game-state";
@@ -127,19 +126,27 @@ export abstract class GameInstance<
   ): TPlayer {
     const playerState = new this.constructors.playerState(playerStateData);
     const playerController = new this.constructors.playerController(playerControllerData);
-    const player = new this.constructors.player(userId, playerState, playerController);
-    this.players.push(player);
-    return player;
+    return new this.constructors.player(userId, playerState, playerController);
   }
 
   initSpectator(spectatorData: TSpectatorData): TSpectator {
-    const spectator = new this.constructors.spectator(spectatorData);
-    this.spectators.push();
-    return spectator;
+    return new this.constructors.spectator(spectatorData);
   }
 
   removeSpectator(userId: string) {
     this.spectators = this.spectators.filter((s) => s.data.userId !== userId);
+  }
+
+  removePlayer(userId: string) {
+    this.players = this.players.filter((p) => p.userId !== userId);
+  }
+
+  addPlayer(player: TPlayer) {
+    this.players.push(player);
+  }
+
+  addSpectator(spectator: TSpectator) {
+    this.spectators.push(spectator);
   }
 
   stopLevel() {

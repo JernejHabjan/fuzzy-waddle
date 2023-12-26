@@ -1,6 +1,7 @@
 import { ProbableWaffleGameModeData } from "../game-instance/probable-waffle/game-mode";
-import { PositionPlayerDefinition } from "../game-instance/probable-waffle/player";
+import { PositionPlayerDefinition, ProbableWafflePlayer } from "../game-instance/probable-waffle/player";
 import { ProbableWaffleMapEnum } from "./probable-waffle";
+import { ProbableWaffleSpectator } from "../game-instance/probable-waffle/spectator";
 
 export interface ProbableWaffleStartLevelDto {
   gameInstanceId: string;
@@ -13,7 +14,12 @@ export interface ProbableWaffleChangeGameModeDto {
 
 export interface ProbableWaffleAddPlayerDto {
   gameInstanceId: string;
-  playerDefinition: PositionPlayerDefinition;
+  player: ProbableWafflePlayer;
+}
+
+export interface ProbableWaffleAddSpectatorDto {
+  gameInstanceId: string;
+  spectator: ProbableWaffleSpectator;
 }
 
 export interface ProbableWaffleGetRoomsDto {

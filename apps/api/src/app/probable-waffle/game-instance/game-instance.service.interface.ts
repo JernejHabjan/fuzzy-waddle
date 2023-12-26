@@ -10,7 +10,9 @@ import {
   ProbableWaffleSpectatorEvent,
   PlayerAction,
   ProbableWafflePlayer,
-  ProbableWaffleGetRoomsDto
+  ProbableWaffleGetRoomsDto,
+  ProbableWafflePlayerEvent,
+  ProbableWaffleSpectator
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
 
@@ -38,9 +40,14 @@ export interface GameInstanceServiceInterface {
     player: ProbableWafflePlayer,
     gameInstanceId: string,
     action: PlayerAction
-  ): ProbableWaffleSpectatorEvent;
+  ): ProbableWafflePlayerEvent;
 
-  getSpectatorEvent(user: User, gameInstanceId: string, action: SpectatorAction): ProbableWaffleSpectatorEvent;
+  getSpectatorEvent(
+    user: User,
+    spectator: ProbableWaffleSpectator,
+    gameInstanceId: string,
+    action: SpectatorAction
+  ): ProbableWaffleSpectatorEvent;
 
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined;
 }

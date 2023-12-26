@@ -73,11 +73,27 @@ export class SkirmishComponent implements OnInit {
     this.mapDefinition.draw();
   }
 
-  protected async mapChanged($event: MapPlayerDefinition) {
-    this.selectedMap = $event;
+  protected async mapChanged(newMap: MapPlayerDefinition) {
+    const previousMap = this.selectedMap;
+
+    if (previousMap) {
+      // remove players that are not in the new map
+      const previousMapPlayerPositions = previousMap?.playerPositions;
+      const newMapPlayerPositions = newMap.playerPositions;
+
+      const playerPositionsToRemove = previousMapPlayerPositions.filter(
+        (previousMapPlayerPosition) => !newMapPlayerPositions.includes(previousMapPlayerPosition)
+      );
+
+      for (const playerPositionToRemove of playerPositionsToRemove) {
+        await this.playerRemoved(playerPositionToRemove);
+      }
+    }
+
+    this.selectedMap = newMap;
     this.cdr.detectChanges();
     await this.gameModeOrMapChanged();
-    this.selectedMap.playerPositions.forEach(this.playerAdded);
+    this.selectedMap.playerPositions.forEach(this.selfOrAiPlayerAdded);
   }
 
   protected async gameModeLobbyChanged($event: ProbableWaffleGameModeLobby) {
@@ -98,9 +114,9 @@ export class SkirmishComponent implements OnInit {
     });
   }
 
-  protected playerAdded = async (positionPlayerDefinition: PositionPlayerDefinition) => {
+  protected selfOrAiPlayerAdded = async (positionPlayerDefinition: PositionPlayerDefinition) => {
     this.playerCountChanged();
-    await this.gameInstanceClientService.addPlayer(positionPlayerDefinition);
+    await this.gameInstanceClientService.addSelfOrAiPlayer(positionPlayerDefinition);
   };
 
   protected async playerSlotOpened() {
