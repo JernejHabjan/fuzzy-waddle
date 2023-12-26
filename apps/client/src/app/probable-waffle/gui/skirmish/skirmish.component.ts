@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, Input, OnInit, ViewChild } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import {
   ProbableWaffleAiDifficulty,
@@ -57,6 +57,7 @@ export class MapPlayerDefinition {
   styleUrls: ["./skirmish.component.scss"]
 })
 export class SkirmishComponent implements OnInit {
+  @Input({ required: false }) joinable: boolean = false;
   @ViewChild("mapDefinition") private mapDefinition!: MapDefinitionComponent;
   protected selectedMap?: MapPlayerDefinition;
   private gameModeLobby?: ProbableWaffleGameModeLobby;
@@ -65,7 +66,7 @@ export class SkirmishComponent implements OnInit {
   private readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
-    await this.gameInstanceClientService.createGameInstance(false);
+    await this.gameInstanceClientService.createGameInstance(this.joinable);
   }
 
   protected playerCountChanged() {
@@ -119,15 +120,15 @@ export class SkirmishComponent implements OnInit {
     await this.gameInstanceClientService.addSelfOrAiPlayer(positionPlayerDefinition);
   };
 
-  protected async playerSlotOpened() {
+  protected async playerSlotOpened(playerDefinition: PositionPlayerDefinition) {
     this.playerCountChanged();
-    await this.gameInstanceClientService.playerSlotOpened();
+    await this.gameInstanceClientService.playerSlotOpened(playerDefinition);
   }
 
   protected async playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
     this.mapDefinition.removePlayer(positionPlayerDefinition.player.playerNumber);
     this.playerCountChanged();
-    await this.gameInstanceClientService.playerLeft(positionPlayerDefinition.player.playerNumber);
+    await this.gameInstanceClientService.playerLeftOrSlotClosed(positionPlayerDefinition.player.playerNumber);
   }
 
   protected async startGame() {

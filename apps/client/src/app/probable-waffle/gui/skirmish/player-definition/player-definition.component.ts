@@ -42,7 +42,7 @@ export class PlayerDefinitionComponent {
   protected DifficultyDefinitions = DifficultyDefinitions;
   @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
   @Output() selfOrAiPlayerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
-  @Output() playerSlotOpened: EventEmitter<void> = new EventEmitter<void>();
+  @Output() playerSlotOpened: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 
   /**
@@ -84,7 +84,7 @@ export class PlayerDefinitionComponent {
     startPositionPerPlayerElement.player.joined = false;
     startPositionPerPlayerElement.difficulty = null;
     startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.NetworkOpen;
-    this.playerSlotOpened.emit();
+    this.playerSlotOpened.emit(startPositionPerPlayerElement);
   }
 
   protected removePlayer(playerNumber: number) {

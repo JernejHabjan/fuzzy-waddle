@@ -225,18 +225,28 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  async playerSlotOpened() {
+  async playerSlotOpened(playerDefinition: PositionPlayerDefinition) {
     if (!this.gameLocalInstanceId) return;
+    const openPlayerSlot = this.gameInstance!.initPlayer(null, { score: 0 }, { playerDefinition });
+
+    this.playerAvailabilityChange({
+      player: openPlayerSlot,
+      user_id: null,
+      gameInstanceId: this.gameLocalInstanceId,
+      action: "joined"
+    });
+
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/open-player-slot";
-      const body: GameInstanceDataDto = {
-        gameInstanceId: this.gameLocalInstanceId
+      const body: ProbableWaffleAddPlayerDto = {
+        gameInstanceId: this.gameLocalInstanceId,
+        player: openPlayerSlot
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
   }
 
-  async playerLeft(playerNumber: number) {
+  async playerLeftOrSlotClosed(playerNumber: number) {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/player-left";
@@ -248,7 +258,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     }
     this.playerAvailabilityChange({
       player: this.gameInstance!.players[playerNumber],
-      user_id: this.gameInstance!.players[playerNumber].userId!,
+      user_id: this.gameInstance!.players[playerNumber].userId,
       gameInstanceId: this.gameLocalInstanceId,
       action: "left"
     });

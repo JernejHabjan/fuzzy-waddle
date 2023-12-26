@@ -77,7 +77,7 @@ export class GameInstanceController {
 
   @Post("open-player-slot")
   @UseGuards(SupabaseAuthGuard)
-  async openPlayerSlot(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
+  async openPlayerSlot(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleAddPlayerDto): Promise<void> {
     await this.gameInstanceService.openPlayerSlot(body, user);
   }
 

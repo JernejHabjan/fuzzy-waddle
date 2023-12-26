@@ -8,8 +8,9 @@
 <fuzzy-waddle-player-definition
   class='card-container'
   (selfOrAiPlayerAdded)='selfOrAiPlayerAdded($event)'
-  (playerSlotOpened)='playerSlotOpened()'
+  (playerSlotOpened)='playerSlotOpened($event)'
   (playerRemoved)='playerRemoved($event)'
   [selectedMap]='selectedMap'
 />
+<fuzzy-waddle-spectators-grid />
 <fuzzy-waddle-game-mode-definition class='card-container' (gameModeLobbyChange)='gameModeLobbyChanged($event)' />

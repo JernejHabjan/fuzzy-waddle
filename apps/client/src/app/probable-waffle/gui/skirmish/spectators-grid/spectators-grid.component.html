@@ -1,0 +1,10 @@
+@if (gameInstanceClientService.gameInstance?.spectators?.length) {
+  <div class='general-title'>Spectators</div>
+  <div class='spectators'>
+    @for (spectator of gameInstanceClientService.gameInstance!.spectators;track spectator) {
+      <div class='spectator'>
+        <div class='spectator-name'>SPECTATOR HERE</div>
+      </div>
+    }
+  </div>
+}
