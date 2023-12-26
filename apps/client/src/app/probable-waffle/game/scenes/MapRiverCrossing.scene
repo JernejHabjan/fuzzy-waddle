@@ -15,6 +15,17 @@
     },
     "displayList": [
         {
+            "type": "Image",
+            "id": "0cc1306a-c2b8-4f06-b28e-8b16a5ff75db",
+            "label": "architecture_obstruction_fence_top_left_png_3",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top_left.png"
+            },
+            "x": -195,
+            "y": 1187
+        },
+        {
             "type": "TilemapLayer",
             "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
             "label": "tilemap_level_1",
@@ -22,8 +33,209 @@
             "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "layerName": "TileMap_level_1",
             "tilesets": [
-                "tiles"
+                "tiles",
+                "tiles_2"
             ]
+        },
+        {
+            "prefabId": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
+            "id": "be48f7ce-f66c-403f-8dc9-64875869a8a8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "hedgehog",
+            "x": 96,
+            "y": 1360
+        },
+        {
+            "type": "Image",
+            "id": "72371380-06d8-4654-a5fa-edb6ea1308a1",
+            "label": "nature_grass_grass_0_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/grass/grass_0.png"
+            },
+            "x": -92,
+            "y": 1266,
+            "originY": 0.75
+        },
+        {
+            "type": "Image",
+            "id": "3429ce0c-7fcf-402a-a36b-6fb2ddc2539d",
+            "label": "architecture_obstruction_fence_left_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/left.png"
+            },
+            "x": -297,
+            "y": 1233
+        },
+        {
+            "type": "Image",
+            "id": "d513086d-6eac-4b19-8b73-75a850bc1c2e",
+            "label": "foliage_trees_resources_special_tree_christmas_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/special/tree_christmas.png"
+            },
+            "x": -284,
+            "y": 1174
+        },
+        {
+            "type": "Image",
+            "id": "e9ed2d21-ca39-488f-a035-472850960757",
+            "label": "architecture_obstruction_fence_top_left_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top_left.png"
+            },
+            "x": -261,
+            "y": 1219
+        },
+        {
+            "type": "Image",
+            "id": "cc89c32e-7f83-4a80-9e65-f5f8ad0e2787",
+            "label": "foliage_tall_grass_tall_grass_7_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tall_grass/tall_grass_7.png"
+            },
+            "x": -261,
+            "y": 1256,
+            "originY": 0.75
+        },
+        {
+            "type": "Image",
+            "id": "1cde381d-0ba3-4100-af7e-2415358365fa",
+            "label": "sheep_sheep_right_png",
+            "texture": {
+                "key": "animals",
+                "frame": "sheep/sheep_right.png"
+            },
+            "x": -172,
+            "y": 1268
+        },
+        {
+            "type": "Image",
+            "id": "b0ca54c2-dcb2-49f9-a08e-8bea2c24c2d4",
+            "label": "foliage_trees_resources_special_tree_christmas_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/special/tree_christmas.png"
+            },
+            "x": -110,
+            "y": 1166
+        },
+        {
+            "type": "Image",
+            "id": "80521525-c678-4c87-bae8-c2c1247d161e",
+            "label": "architecture_obstruction_fence_top_right_png_2",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top_right.png"
+            },
+            "x": -95,
+            "y": 1234
+        },
+        {
+            "type": "Image",
+            "id": "bf279a50-0ed7-485b-91c6-21ba7a6eb635",
+            "label": "architecture_obstruction_fence_right_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/right.png"
+            },
+            "x": -61,
+            "y": 1249
+        },
+        {
+            "type": "Image",
+            "id": "e855255d-18de-4fc4-ba11-9a0bf0e1f60d",
+            "label": "architecture_obstruction_fence_bottom_left_png_2",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/bottom_left.png"
+            },
+            "x": -263,
+            "y": 1250
+        },
+        {
+            "type": "Image",
+            "id": "24aa2023-2f8b-4e8a-b165-d5e99d66e40f",
+            "label": "architecture_obstruction_fence_bottom_left_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/bottom_left.png"
+            },
+            "x": -229,
+            "y": 1266
+        },
+        {
+            "type": "Image",
+            "id": "6a55c840-26b3-4c04-aa78-132519c72c69",
+            "label": "architecture_obstruction_fence_bottom_left_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/bottom_left.png"
+            },
+            "x": -196,
+            "y": 1281
+        },
+        {
+            "type": "Image",
+            "id": "aa077662-01c0-49d9-af91-a65beefe6b47",
+            "label": "architecture_obstruction_fence_bottom_right_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/bottom_right.png"
+            },
+            "x": -95,
+            "y": 1266
+        },
+        {
+            "type": "Image",
+            "id": "36c12f69-502e-4dc3-84a1-ba76f0185b3a",
+            "label": "architecture_obstruction_fence_bottom_right_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/bottom_right.png"
+            },
+            "x": -128,
+            "y": 1281
+        },
+        {
+            "type": "Image",
+            "id": "4da6b673-2264-4a5e-aa16-53293d0fbb76",
+            "label": "architecture_obstruction_fence_top_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top.png"
+            },
+            "x": -195,
+            "y": 1187
+        },
+        {
+            "type": "Image",
+            "id": "81db0c37-14bc-4779-a6e7-346037187c6a",
+            "label": "architecture_obstruction_fence_top_right_png_4",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top_right.png"
+            },
+            "x": -163,
+            "y": 1202
+        },
+        {
+            "type": "Image",
+            "id": "9aafdd85-56ed-44e8-a4ae-f907cad603b6",
+            "label": "architecture_obstruction_fence_top_right_png_3",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top_right.png"
+            },
+            "x": -131,
+            "y": 1217
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -66,8 +278,8 @@
                 "y"
             ],
             "label": "owlery",
-            "x": 1184,
-            "y": 880
+            "x": 1056,
+            "y": 896
         },
         {
             "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
@@ -116,6 +328,18 @@
             "y": 800
         },
         {
+            "type": "Image",
+            "id": "5fc1a945-a4e3-44f4-af67-cd9e929d3935",
+            "label": "foliage_tall_grass_tall_grass_8_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tall_grass/tall_grass_8.png"
+            },
+            "x": -162,
+            "y": 1305,
+            "originY": 0.75
+        },
+        {
             "prefabId": "415773de-cdc9-4a20-afd1-61fd57044e8a",
             "id": "760d4176-106c-41b8-8c22-351f6f8456a0",
             "unlock": [
@@ -123,8 +347,8 @@
                 "y"
             ],
             "label": "skaduweeWorkerFemale",
-            "x": 1136,
-            "y": 960
+            "x": 1088,
+            "y": 1024
         },
         {
             "prefabId": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
@@ -134,7 +358,7 @@
                 "y"
             ],
             "label": "skaduweeRangedFemale",
-            "x": 1264,
+            "x": 1280,
             "y": 720
         },
         {
@@ -156,8 +380,8 @@
                 "y"
             ],
             "label": "skaduweeWarriorMale",
-            "x": 1216,
-            "y": 784
+            "x": 1424,
+            "y": 864
         },
         {
             "prefabId": "1457b917-a97a-463b-9989-e0ec3446c7a8",
@@ -233,8 +457,8 @@
                 "y"
             ],
             "label": "wallTopLeftTopRight",
-            "x": -560,
-            "y": 368
+            "x": -480,
+            "y": 256
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f36",
@@ -244,8 +468,8 @@
                 "y"
             ],
             "label": "wallTopRight",
-            "x": -528,
-            "y": 384
+            "x": -448,
+            "y": 272
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f37",
@@ -255,8 +479,8 @@
                 "y"
             ],
             "label": "watchTower",
-            "x": -480,
-            "y": 400
+            "x": -400,
+            "y": 288
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
@@ -288,19 +512,8 @@
                 "y"
             ],
             "label": "bridgeStone",
-            "x": -64,
-            "y": 896
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
-            "id": "2d3db8c9-4a78-4954-9259-5a4aa775ba82",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree5",
-            "x": -448,
-            "y": 288
+            "x": -99,
+            "y": 882
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
@@ -409,8 +622,8 @@
                 "y"
             ],
             "label": "treeTrunk",
-            "x": -405,
-            "y": 277
+            "x": -681,
+            "y": 537
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f32",
@@ -799,8 +1012,8 @@
                 "y"
             ],
             "label": "tree",
-            "x": -704,
-            "y": 512
+            "x": -706,
+            "y": 468
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
@@ -810,8 +1023,8 @@
                 "y"
             ],
             "label": "workMill",
-            "x": -592,
-            "y": 512
+            "x": -566,
+            "y": 516
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
@@ -948,6 +1161,83 @@
             "label": "tree_13",
             "x": 112,
             "y": 1520
+        },
+        {
+            "type": "Image",
+            "id": "40f23690-190e-4c1c-a984-5b7b0ef10758",
+            "label": "architecture_obstruction_fence_bottom_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/bottom.png"
+            },
+            "x": -162,
+            "y": 1297
+        },
+        {
+            "type": "Image",
+            "id": "cd687eaa-f95b-476b-aef5-ff50b03231c5",
+            "label": "architecture_obstruction_fence_top_left_png",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top_left.png"
+            },
+            "x": -229,
+            "y": 1203
+        },
+        {
+            "type": "Image",
+            "id": "dd8e83ff-29da-4732-a733-48a6318f2871",
+            "label": "sheep_sheep_down_png",
+            "texture": {
+                "key": "animals",
+                "frame": "sheep/sheep_down.png"
+            },
+            "x": -223,
+            "y": 1236
+        },
+        {
+            "type": "Image",
+            "id": "5f6f6306-3069-486e-9d82-7510f5b9c5ac",
+            "label": "sheep_sheep_left_png",
+            "texture": {
+                "key": "animals",
+                "frame": "sheep/sheep_left.png"
+            },
+            "x": -195,
+            "y": 1208
+        },
+        {
+            "type": "Image",
+            "id": "d47bb77e-f2f9-4a21-af01-adfd70f17d2e",
+            "label": "sheep_sheep_up_png",
+            "texture": {
+                "key": "animals",
+                "frame": "sheep/sheep_up.png"
+            },
+            "x": -113,
+            "y": 1250
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+            "id": "2d3db8c9-4a78-4954-9259-5a4aa775ba82",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree5",
+            "x": -788,
+            "y": 484
+        },
+        {
+            "prefabId": "56d62d59-15b0-4017-b986-1f24c1040cb6",
+            "id": "91881092-74df-4d32-be1d-608a71ca46db",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "frostForge",
+            "x": 1184,
+            "y": 848
         }
     ],
     "plainObjects": [
@@ -960,6 +1250,10 @@
                 {
                     "name": "tiles",
                     "imageKey": "tiles_1"
+                },
+                {
+                    "name": "tiles_2",
+                    "imageKey": "tiles_2"
                 }
             ]
         }

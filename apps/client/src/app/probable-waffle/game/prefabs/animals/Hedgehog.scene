@@ -1,0 +1,61 @@
+{
+    "id": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 32,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "id": "d73e59e7-3656-4bc2-884d-c66b7674baf9",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "hedgehog_idle_bottom",
+            "z": 0,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 0,
+            "hitArea.y": -5.81134191845878,
+            "hitArea.radius": 16,
+            "x": 16,
+            "y": 21.81134207891933,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "eab19788-7d28-4ba0-9229-78de0b9e37e1",
+                    "label": "hedgehog",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "animals",
+                        "frame": "hedgehog/10.png"
+                    },
+                    "y": -5.811342078919331
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

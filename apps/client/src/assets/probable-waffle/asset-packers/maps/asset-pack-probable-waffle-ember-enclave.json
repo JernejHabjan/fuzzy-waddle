@@ -20,6 +20,20 @@
         },
         "type": "spritesheet",
         "key": "tiles_1"
+      },
+      {
+        "url": "assets/probable-waffle/tilesets/tiles_2.png",
+        "path": "assets/probable-waffle/tilesets/tiles_2.png",
+        "frameConfig": {
+          "frameWidth": 64,
+          "frameHeight": 32,
+          "startFrame": 0,
+          "endFrame": -1,
+          "spacing": 0,
+          "margin": 0
+        },
+        "type": "spritesheet",
+        "key": "tiles_2"
       }
     ]
   },
