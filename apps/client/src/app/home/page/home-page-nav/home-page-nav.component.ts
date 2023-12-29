@@ -4,7 +4,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 @Component({
-  selector: "fuzzy-waddle-home-page-nav",
+  selector: "probable-waffle-home-page-nav",
   templateUrl: "./home-page-nav.component.html",
   styleUrls: ["./home-page-nav.component.scss"]
 })

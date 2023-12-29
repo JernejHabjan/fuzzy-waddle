@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { AtlasFrame } from "../atlas-loader.service";
 
 @Component({
-  selector: "fuzzy-waddle-atlas-display",
+  selector: "probable-waffle-atlas-display",
   templateUrl: "./atlas-display.component.html",
   styleUrls: ["./atlas-display.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush

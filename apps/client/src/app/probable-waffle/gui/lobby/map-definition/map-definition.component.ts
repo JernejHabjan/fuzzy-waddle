@@ -37,7 +37,7 @@ interface DisplayRect {
 }
 
 @Component({
-  selector: "fuzzy-waddle-map-definition",
+  selector: "probable-waffle-map-definition",
   templateUrl: "./map-definition.component.html",
   styleUrls: ["./map-definition.component.scss"]
 })

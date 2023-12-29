@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
-  selector: "fuzzy-waddle-spectators-grid",
+  selector: "probable-waffle-spectators-grid",
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./spectators-grid.component.html",

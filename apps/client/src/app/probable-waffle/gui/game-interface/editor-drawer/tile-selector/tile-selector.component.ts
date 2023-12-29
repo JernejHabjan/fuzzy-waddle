@@ -3,7 +3,7 @@ import { TileFrame } from "../atlas-loader.service";
 import { SceneCommunicatorService } from "../../../../communicators/scene-communicator.service";
 
 @Component({
-  selector: "fuzzy-waddle-tile-selector",
+  selector: "probable-waffle-tile-selector",
   templateUrl: "./tile-selector.component.html",
   styleUrls: ["./tile-selector.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush

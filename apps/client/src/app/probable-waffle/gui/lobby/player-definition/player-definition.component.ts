@@ -30,7 +30,7 @@ export class DifficultyDefinitions {
 }
 
 @Component({
-  selector: "fuzzy-waddle-player-definition",
+  selector: "probable-waffle-player-definition",
   templateUrl: "./player-definition.component.html",
   styleUrls: ["./player-definition.component.scss"]
 })

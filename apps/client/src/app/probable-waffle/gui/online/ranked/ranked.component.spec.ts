@@ -4,7 +4,7 @@ import { RankedComponent } from "./ranked.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 
-@Component({ selector: "fuzzy-waddle-ranked", template: "" })
+@Component({ selector: "probable-waffle-ranked", template: "" })
 export class RankedTestingComponent {}
 
 describe("RankedComponent", () => {

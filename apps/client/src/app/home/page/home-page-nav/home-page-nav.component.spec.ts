@@ -5,7 +5,7 @@ import { provideRouter } from "@angular/router";
 import { Component } from "@angular/core";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
 
-@Component({ selector: "fuzzy-waddle-home-page-nav", template: "" })
+@Component({ selector: "probable-waffle-home-page-nav", template: "" })
 export class HomePageNavTestingComponent {}
 
 describe("HomePageNavComponent", () => {

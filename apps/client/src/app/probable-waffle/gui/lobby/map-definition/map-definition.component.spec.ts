@@ -7,7 +7,7 @@ import { MapSelectorTestingComponent } from "../map-selector/map-selector.compon
 import { MapPlayerDefinition } from "../lobby.component";
 import { TriggerTestingComponent } from "../trigger/trigger.component.spec";
 
-@Component({ selector: "fuzzy-waddle-map-definition", template: "" })
+@Component({ selector: "probable-waffle-map-definition", template: "" })
 export class MapDefinitionTestingComponent {
   @Input({ required: true }) mapPlayerDefinition!: MapPlayerDefinition;
 }

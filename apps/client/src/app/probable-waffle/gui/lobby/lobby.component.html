@@ -1,11 +1,11 @@
-<fuzzy-waddle-map-definition
+<probable-waffle-map-definition
   class="card-container"
   #mapDefinition
   (mapPlayerDefinitionChange)="mapChanged($event)"
   [mapPlayerDefinition]="selectedMap"
   (started)="startGame()"
 />
-<fuzzy-waddle-player-definition
+<probable-waffle-player-definition
   class="card-container"
   [allowOpenSlotForMp]="joinable"
   (selfOrAiPlayerAdded)="selfOrAiPlayerAdded($event)"
@@ -13,5 +13,5 @@
   (playerRemoved)="playerRemoved($event)"
   [selectedMap]="selectedMap"
 />
-<fuzzy-waddle-spectators-grid />
-<fuzzy-waddle-game-mode-definition class="card-container" (gameModeLobbyChange)="gameModeLobbyChanged($event)" />
+<probable-waffle-spectators-grid />
+<probable-waffle-game-mode-definition class="card-container" (gameModeLobbyChange)="gameModeLobbyChanged($event)" />

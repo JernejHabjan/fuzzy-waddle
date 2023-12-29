@@ -10,7 +10,7 @@ import { authServiceStub } from "../../../auth/auth.service.spec";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../communicators/game-instance-client.service.spec";
 
-@Component({ selector: "fuzzy-waddle-game-interface", template: "" })
+@Component({ selector: "little-muncher-game-interface", template: "" })
 export class GameInterfaceTestingComponent {}
 
 describe("GameInterfaceComponent", () => {

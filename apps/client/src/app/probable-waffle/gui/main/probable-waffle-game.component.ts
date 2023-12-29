@@ -8,7 +8,6 @@ import { probableWaffleGameConfig } from "../../game/world/const/game-config";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 
 @Component({
-  selector: "fuzzy-waddle-game",
   templateUrl: "./probable-waffle-game.component.html",
   styleUrls: ["./probable-waffle-game.component.scss"]
 })

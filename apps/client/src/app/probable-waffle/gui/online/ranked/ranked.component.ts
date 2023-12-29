@@ -10,7 +10,7 @@ type RankedOptions = {
   levels: RankedLevel[];
 };
 @Component({
-  selector: "fuzzy-waddle-ranked",
+  selector: "probable-waffle-ranked",
   templateUrl: "./ranked.component.html",
   styleUrls: ["./ranked.component.scss"]
 })

@@ -5,7 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Component, Input } from "@angular/core";
 import { MapPlayerDefinition } from "../lobby.component";
 
-@Component({ selector: "fuzzy-waddle-trigger", template: "" })
+@Component({ selector: "probable-waffle-trigger", template: "" })
 export class TriggerTestingComponent {
   @Input({ required: true }) selectedMap?: MapPlayerDefinition;
 }

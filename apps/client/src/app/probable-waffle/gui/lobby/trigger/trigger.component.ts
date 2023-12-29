@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { MapPlayerDefinition } from "../lobby.component";
 
 @Component({
-  selector: "fuzzy-waddle-trigger",
+  selector: "probable-waffle-trigger",
   templateUrl: "./trigger.component.html",
   styleUrls: ["./trigger.component.scss"]
 })

@@ -1,9 +1,10 @@
-import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
 import { GameSessionState, LittleMuncherGameCreate } from "@fuzzy-waddle/api-interfaces";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { SpectateService } from "./home/spectate/spectate.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "./main/communicators/game-instance-client.service";
+import { UserInstanceService } from "../home/profile/user-instance.service";
 
 @Component({
   templateUrl: "./little-muncher.component.html",
@@ -18,11 +19,9 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
     title: "",
     text: ""
   };
-
-  constructor(
-    protected readonly gameInstanceClientService: GameInstanceClientService,
-    private readonly spectateService: SpectateService
-  ) {}
+  protected readonly userInstanceService = inject(UserInstanceService);
+  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly spectateService = inject(SpectateService);
 
   @HostListener("window:beforeunload")
   async onBeforeUnload() {
@@ -45,6 +44,7 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
+    this.userInstanceService.setVisitedGame("little-muncher");
     await this.gameInstanceClientService.startGame();
     await this.spectateService.listenToRoomEvents();
     this.spectatorDisconnectedSubscription = this.spectateService.spectatorDisconnected.subscribe(() => {

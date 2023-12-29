@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { AuthService } from "../../auth/auth.service";
 import { UserInstanceService } from "./user-instance.service";
 
@@ -8,8 +8,15 @@ import { UserInstanceService } from "./user-instance.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent {
-  constructor(
-    protected authService: AuthService,
-    protected userInstanceService: UserInstanceService
-  ) {}
+  protected readonly authService = inject(AuthService);
+  protected readonly userInstanceService = inject(UserInstanceService);
+
+  protected get identityData(): {
+    avatar_url: string | null;
+    full_name: string | null;
+  } | null {
+    return (
+      (this.authService.session?.user?.identities?.find((i) => i.provider === "google")?.identity_data as any) ?? null
+    );
+  }
 }

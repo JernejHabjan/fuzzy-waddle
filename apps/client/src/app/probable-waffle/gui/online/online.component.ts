@@ -2,7 +2,6 @@ import { Component, inject } from "@angular/core";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 
 @Component({
-  selector: "fuzzy-waddle-online",
   templateUrl: "./online.component.html",
   styleUrls: ["./online.component.scss"]
 })

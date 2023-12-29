@@ -12,7 +12,7 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
-  selector: "fuzzy-waddle-lobbies",
+  selector: "probable-waffle-lobbies",
   templateUrl: "./lobbies.component.html",
   styleUrls: ["./lobbies.component.scss"]
 })

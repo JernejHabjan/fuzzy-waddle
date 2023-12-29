@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { TileAtlasFrame, TileFrame } from "../atlas-loader.service";
 
 @Component({
-  selector: "fuzzy-waddle-tile-selector-group",
+  selector: "probable-waffle-tile-selector-group",
   templateUrl: "./tile-selector-group.component.html",
   styleUrls: ["./tile-selector-group.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -5,7 +5,6 @@ import { FormsModule } from "@angular/forms";
 import { VolumeSettings } from "../shared/volumeSettings";
 
 @Component({
-  selector: "fuzzy-waddle-options",
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: "./options.component.html",

@@ -11,7 +11,7 @@ import { GameInstanceClientService } from "../communicators/game-instance-client
 import { LittleMuncherCommunicatorService } from "../communicators/little-muncher-communicator.service";
 
 @Component({
-  selector: "fuzzy-waddle-game-interface",
+  selector: "little-muncher-game-interface",
   templateUrl: "./game-interface.component.html",
   styleUrls: ["./game-interface.component.scss"]
 })

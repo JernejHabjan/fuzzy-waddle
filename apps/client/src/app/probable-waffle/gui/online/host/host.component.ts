@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "fuzzy-waddle-host",
+  selector: "probable-waffle-host",
   templateUrl: "./host.component.html",
   styleUrls: ["./host.component.scss"]
 })

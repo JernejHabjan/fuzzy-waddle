@@ -3,18 +3,22 @@
   <div class="mx-auto" style="max-width: 500px">
     <h2 class="text-center">Profile Info</h2>
 
-    <div class="my-3">
-      <h3 class="user-item-header">Email:</h3>
-      <p>{{ authService.session?.user?.email }}</p>
+    @if(identityData){
+    <div class="my-3 text-center">
+      <img class="rounded-circle" src="{{ identityData.avatar_url }}" alt="avatar" width="100" height="100" />
+      <p>{{ identityData.full_name }}</p>
     </div>
+    }
     <div class="my-3">
       <h3 class="user-item-header">Joined:</h3>
       <p>{{ authService.session?.user?.created_at | date: "medium" }}</p>
     </div>
 
+    @if(userInstanceService.getPreferredGame()){
     <div class="my-3">
       <h3 class="user-item-header">Preferred Game:</h3>
-      <p>{{ userInstanceService.getPreferredGames() }}</p>
+      <p>{{ userInstanceService.getPreferredGame() }}</p>
     </div>
+    }
   </div>
 </div>

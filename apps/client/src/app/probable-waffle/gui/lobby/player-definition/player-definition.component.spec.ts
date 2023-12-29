@@ -6,7 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { Component, Input } from "@angular/core";
 import { MapPlayerDefinition } from "../lobby.component";
 
-@Component({ selector: "fuzzy-waddle-player-definition", template: "" })
+@Component({ selector: "probable-waffle-player-definition", template: "" })
 export class PlayerDefinitionTestingComponent {
   @Input({ required: true }) selectedMap?: MapPlayerDefinition;
 }

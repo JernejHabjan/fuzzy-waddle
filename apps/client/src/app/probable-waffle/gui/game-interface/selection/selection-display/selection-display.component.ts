@@ -3,7 +3,7 @@ import { GameObjectSelection, SceneCommunicatorService } from "../../../../commu
 import { Subscription } from "rxjs";
 
 @Component({
-  selector: "fuzzy-waddle-selection-display",
+  selector: "probable-waffle-selection-display",
   templateUrl: "./selection-display.component.html",
   styleUrls: ["./selection-display.component.scss"]
 })

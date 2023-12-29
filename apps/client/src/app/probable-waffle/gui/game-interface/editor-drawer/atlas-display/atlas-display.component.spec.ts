@@ -5,7 +5,7 @@ import { MapDefinitions } from "../../../../game/world/const/map-size.info";
 import { Component, Input } from "@angular/core";
 import { AtlasFrame } from "../atlas-loader.service";
 
-@Component({ selector: "fuzzy-waddle-atlas-display", template: "" })
+@Component({ selector: "probable-waffle-atlas-display", template: "" })
 export class AtlasDisplayTestingComponent {
   @Input({ required: true }) atlasFrame!: AtlasFrame;
   @Input({ required: true }) textureName!: string;

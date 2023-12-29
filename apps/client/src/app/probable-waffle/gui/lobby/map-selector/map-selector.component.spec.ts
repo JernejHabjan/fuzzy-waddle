@@ -4,7 +4,7 @@ import { MapSelectorComponent } from "./map-selector.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 
-@Component({ selector: "fuzzy-waddle-map-selector", template: "" })
+@Component({ selector: "probable-waffle-map-selector", template: "" })
 export class MapSelectorTestingComponent {}
 
 describe("MapSelectorComponent", () => {

@@ -1,4 +1,4 @@
-<fuzzy-waddle-map-selector (selectedMapChange)="mapChanged($event)" />
+<probable-waffle-map-selector (selectedMapChange)="mapChanged($event)" />
 
 <div *ngIf="mapPlayerDefinition" class="mt-4">
   <div class="map-name">{{ mapPlayerDefinition.map.name }}</div>
@@ -11,4 +11,4 @@
     </div>
   </div>
 </div>
-<fuzzy-waddle-trigger [selectedMap]="selectedMap" (started)="started.emit($event)" />
+<probable-waffle-trigger [selectedMap]="selectedMap" (started)="started.emit($event)" />

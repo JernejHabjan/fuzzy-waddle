@@ -4,7 +4,7 @@ import { ConstellationParticle } from "./constellation-particle";
 type MousePosition = { x?: number; y?: number };
 
 @Component({
-  selector: "fuzzy-waddle-constellation-effect",
+  selector: "probable-waffle-constellation-effect",
   templateUrl: "./constellation-effect.component.html",
   styleUrls: ["./constellation-effect.component.scss"]
 })

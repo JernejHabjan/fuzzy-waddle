@@ -3,7 +3,7 @@ import { MapPlayerDefinition } from "../lobby.component";
 import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
-  selector: "fuzzy-waddle-map-selector",
+  selector: "probable-waffle-map-selector",
   templateUrl: "./map-selector.component.html",
   styleUrls: ["./map-selector.component.scss"]
 })
