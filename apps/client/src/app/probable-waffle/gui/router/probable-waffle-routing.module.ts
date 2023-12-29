@@ -7,6 +7,9 @@ import { OptionsComponent } from "../options/options.component";
 import { OnlineComponent } from "../online/online.component";
 import { CampaignComponent } from "../campaign/campaign.component";
 import { LobbyComponent } from "../lobby/lobby.component";
+import { LobbyPageComponent } from "../lobby-page/lobby-page.component";
+import { GameInstanceGuard } from "../lobby-page/game-instance.guard";
+import { SkirmishComponent } from "../skirmish/skirmish.component";
 
 const routes: Routes = [
   {
@@ -27,7 +30,7 @@ const routes: Routes = [
       },
       {
         path: "skirmish",
-        component: LobbyComponent // todo rename later
+        component: SkirmishComponent
       },
       {
         path: "progress",
@@ -36,6 +39,11 @@ const routes: Routes = [
       {
         path: "options",
         component: OptionsComponent
+      },
+      {
+        path: "lobby",
+        component: LobbyPageComponent,
+        canActivate: [GameInstanceGuard]
       },
       {
         path: "game",

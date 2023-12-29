@@ -14,12 +14,17 @@ import {
   ProbableWaffleJoinDto,
   ProbableWafflePlayerLeftDto,
   ProbableWaffleRoom,
-  ProbableWaffleStartLevelDto
+  ProbableWaffleStartLevelDto,
+  RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
+import { MatchmakingService } from "./matchmaking/matchmaking.service";
 
 @Controller("probable-waffle")
 export class GameInstanceController {
-  constructor(private readonly gameInstanceService: GameInstanceService) {}
+  constructor(
+    private readonly gameInstanceService: GameInstanceService,
+    private readonly matchmakingService: MatchmakingService
+  ) {}
 
   @Post("start-game")
   @UseGuards(SupabaseAuthGuard)
@@ -106,5 +111,14 @@ export class GameInstanceController {
   @UseGuards(SupabaseAuthGuard)
   async addSpectator(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleAddSpectatorDto): Promise<void> {
     await this.gameInstanceService.addSpectator(body, user);
+  }
+
+  @Post("request-game-search-for-matchmaking")
+  @UseGuards(SupabaseAuthGuard)
+  async requestGameSearchForMatchmaking(
+    @CurrentUser() user: AuthUser,
+    @Body() body: RequestGameSearchForMatchMakingDto
+  ): Promise<void> {
+    await this.matchmakingService.requestGameSearchForMatchMaking(body, user);
   }
 }

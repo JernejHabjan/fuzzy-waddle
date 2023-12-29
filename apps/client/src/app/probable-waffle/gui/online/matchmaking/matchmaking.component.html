@@ -1,11 +1,12 @@
-<div class="ranked">
-  <div class="ranked-tooltip">Please select your preferences then press the Search button to find a Ranked Match</div>
+<div class="matchmaking">
+  <div class="matchmaking-tooltip">Please select your preferences then press the Search button to find a Match</div>
   <div class="general-title">Number of players</div>
   <div class="text-center">
     @for (nr of nrOfPlayersOptions;track nr) {
     <input
+      (change)="nrOfPlayersChanged(nr)"
       [disabled]="searching"
-      [checked]="nr === rankedOptions.nrOfPlayers"
+      [checked]="nr === matchmakingOptions.nrOfPlayers"
       name="nrOfPlayers"
       type="radio"
       value="{{ nr }}"
@@ -16,7 +17,7 @@
     <div class="general-title">Faction</div>
     <div class="text-center">
       <select
-        [(ngModel)]="rankedOptions.factionType"
+        [(ngModel)]="matchmakingOptions.factionType"
         class="form-select"
         [disabled]="searching"
         (change)="factionChanged()"
@@ -31,8 +32,15 @@
   <div>
     <div class="general-title">Map Pool</div>
     <div class="text-center grid-container" style="max-height: 300px; overflow-y: auto">
-      <ng-container *ngFor="let level of rankedOptions.levels">
-        <input [disabled]="searching" [checked]="level.checked" name="map" type="checkbox" value="{{ level.name }}" />
+      <ng-container *ngFor="let level of matchmakingOptions.levels">
+        <input
+          (change)="checkedChanged(level)"
+          [disabled]="searching || !level.enabled"
+          [checked]="level.checked"
+          name="map"
+          type="checkbox"
+          value="{{ level.name }}"
+        />
         <img [src]="level.imagePath" class="m-auto" style="max-height: 50px; width: 50px" />
         <span>{{ level.name }}</span>
       </ng-container>
@@ -40,6 +48,12 @@
   </div>
 
   <div class="w-100 mt-4" style="text-align: right">
+    @if(gameFound) {
+    <div class="navigating-text">
+      {{ navigatingText }}
+    </div>
+    }@else{
+
     <button
       *ngIf="searching"
       (click)="cancelSearching()"
@@ -51,18 +65,18 @@
     </button>
     <button
       (click)="startSearching()"
-      [disabled]="searching || rankedOptions.levels?.length === 0"
+      [disabled]="searching || !selectedLevels.length"
       class="btn btn-primary"
       type="button"
       style="min-width: 150px"
     >
-      <ng-container *ngIf="searching">Searching...</ng-container>
-      <ng-container *ngIf="!searching">Search</ng-container>
+      @if(searching){ Searching... } @else { Search }
     </button>
+    }
   </div>
 
-  <div class="ranked-tooltip mt-4">
-    There are currently {{ roomsService.playersSearchingForGame }} players waiting for a Ranked Match and
-    {{ roomsService.gamesInProgress }} ranked games in progress
+  <div class="matchmaking-tooltip mt-4">
+    There are currently {{ roomsService.playersSearchingForMatchmakingGame }} players waiting for a Match and
+    {{ roomsService.matchmakingGamesInProgress }} Matchmaking Games in progress
   </div>
 </div>

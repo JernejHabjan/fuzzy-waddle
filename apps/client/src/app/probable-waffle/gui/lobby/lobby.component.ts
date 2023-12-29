@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Component, inject, Input, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, ViewChild } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import {
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
-  ProbableWaffleGameInstanceType,
   ProbableWaffleGameModeLobby,
   ProbableWaffleMapData,
   ProbableWafflePlayerType
@@ -57,18 +56,13 @@ export class MapPlayerDefinition {
   templateUrl: "./lobby.component.html",
   styleUrls: ["./lobby.component.scss"]
 })
-export class LobbyComponent implements OnInit {
-  @Input({ required: false }) joinable: boolean = false;
+export class LobbyComponent {
   @ViewChild("mapDefinition") private mapDefinition!: MapDefinitionComponent;
   protected selectedMap?: MapPlayerDefinition;
   private gameModeLobby?: ProbableWaffleGameModeLobby;
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
-
-  async ngOnInit(): Promise<void> {
-    await this.gameInstanceClientService.createGameInstance(this.joinable, ProbableWaffleGameInstanceType.SelfHosted);
-  }
 
   protected playerCountChanged() {
     this.mapDefinition.initializePlayerPositions();
@@ -136,5 +130,9 @@ export class LobbyComponent implements OnInit {
   protected async startGame() {
     await this.gameInstanceClientService.startGame();
     await this.router.navigate(["probable-waffle/game"]);
+  }
+
+  protected get joinable(): boolean {
+    return this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.joinable!;
   }
 }

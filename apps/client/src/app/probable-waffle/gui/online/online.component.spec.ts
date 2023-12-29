@@ -4,7 +4,7 @@ import { OnlineComponent } from "./online.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { provideRouter } from "@angular/router";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
-import { RankedTestingComponent } from "./ranked/ranked.component.spec";
+import { MatchmakingTestingComponent } from "./matchmaking/matchmaking.component.spec";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
 import { LobbiesTestingComponent } from "./lobbies/lobbies.component.spec";
@@ -19,7 +19,7 @@ describe("OnlineComponent", () => {
       declarations: [
         OnlineComponent,
         HomeNavTestingComponent,
-        RankedTestingComponent,
+        MatchmakingTestingComponent,
         LobbiesTestingComponent,
         HostTestingComponent
       ],

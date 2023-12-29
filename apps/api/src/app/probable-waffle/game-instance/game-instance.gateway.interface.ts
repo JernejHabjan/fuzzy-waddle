@@ -1,4 +1,5 @@
 import {
+  ProbableWaffleGameFoundEvent,
   ProbableWaffleLevelStateChangeEvent,
   ProbableWafflePlayerEvent,
   ProbableWaffleRoomEvent,
@@ -7,9 +8,8 @@ import {
 
 export interface GameInstanceGatewayInterface {
   emitRoom(roomEvent: ProbableWaffleRoomEvent);
-
   emitLevelStateChange(levelStateChange: ProbableWaffleLevelStateChangeEvent);
   emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent);
-
   emitPlayer(playerEvent: ProbableWafflePlayerEvent);
+  emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent);
 }

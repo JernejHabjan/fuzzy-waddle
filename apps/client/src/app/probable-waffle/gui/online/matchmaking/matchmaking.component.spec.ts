@@ -1,26 +1,26 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { RankedComponent } from "./ranked.component";
+import { MatchmakingComponent } from "./matchmaking.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { roomsServiceStub } from "../../../communicators/rooms/rooms.service.spec";
 
-@Component({ selector: "probable-waffle-ranked", template: "" })
-export class RankedTestingComponent {}
+@Component({ selector: "probable-waffle-matchmaking", template: "" })
+export class MatchmakingTestingComponent {}
 
-describe("RankedComponent", () => {
-  let component: RankedComponent;
-  let fixture: ComponentFixture<RankedComponent>;
+describe("MatchmakingComponent", () => {
+  let component: MatchmakingComponent;
+  let fixture: ComponentFixture<MatchmakingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{ provide: RoomsService, useValue: roomsServiceStub }],
-      declarations: [RankedComponent],
+      declarations: [MatchmakingComponent],
       imports: [FormsModule]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RankedComponent);
+    fixture = TestBed.createComponent(MatchmakingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

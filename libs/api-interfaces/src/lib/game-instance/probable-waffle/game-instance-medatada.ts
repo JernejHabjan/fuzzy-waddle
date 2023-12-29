@@ -1,7 +1,7 @@
 import { GameInstanceMetadata, GameInstanceMetadataData } from "../game-instance-metadata";
 
 export enum ProbableWaffleGameInstanceType {
-  Ranked,
+  Matchmaking,
   SelfHosted
 }
 

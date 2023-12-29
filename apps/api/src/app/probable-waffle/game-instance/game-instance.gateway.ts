@@ -1,6 +1,8 @@
 import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "net";
 import {
+  ProbableWaffleGameFoundEvent,
+  ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleLevelStateChangeEvent,
@@ -21,6 +23,9 @@ export const GameInstanceGatewayStub = {
     //
   },
   emitPlayer(playerEvent: ProbableWafflePlayerEvent) {
+    //
+  },
+  emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
     //
   }
 } satisfies GameInstanceGatewayInterface;
@@ -48,5 +53,9 @@ export class GameInstanceGateway implements GameInstanceGatewayInterface {
 
   emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent) {
     this.server.emit(ProbableWaffleGameInstanceEvent.Spectator, spectatorEvent);
+  }
+
+  emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
+    this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
   }
 }

@@ -38,7 +38,7 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
     modalTitle: "Leave the game?",
     dismissButtonLabel: "Continue",
     closeButtonLabel: "Leave",
-    onClose: async () => await this.router.navigate(["probable-waffle/skirmish"]) // todo
+    onClose: async () => await this.router.navigate(["probable-waffle"]) // todo
   };
   private emitterSubjectSubscription?: Subscription;
   private atlasEmitterSubscription?: Subscription;

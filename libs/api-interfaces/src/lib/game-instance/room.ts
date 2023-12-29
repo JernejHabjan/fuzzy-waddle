@@ -34,7 +34,8 @@ export type PlayerAction = "joined" | "left";
 export enum ProbableWaffleGameInstanceEvent {
   Player = "player",
   Spectator = "spectator",
-  LevelStateChange = "level-state-change"
+  LevelStateChange = "level-state-change",
+  GameFound = "game-found"
 }
 
 export interface LittleMuncherRoom extends Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
@@ -66,6 +67,11 @@ export interface ProbableWaffleSpectatorEvent extends SpectatorEvent {
   spectator: {
     data: ProbableWaffleSpectatorData;
   };
+}
+
+export interface ProbableWaffleGameFoundEvent {
+  userIds: string[];
+  gameInstanceId: string;
 }
 
 export interface ProbableWaffleLevelStateChangeEvent {

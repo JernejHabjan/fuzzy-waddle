@@ -11,6 +11,8 @@ import { OptionsComponent } from "../options/options.component";
 import { ComponentsModule } from "../../../shared/components/components.module";
 import { ComingSoonComponent } from "../coming-soon/coming-soon.component";
 import { LobbyModule } from "../lobby/lobby.module";
+import { LobbyPageComponent } from "../lobby-page/lobby-page.component";
+import { SkirmishComponent } from "../skirmish/skirmish.component";
 
 @NgModule({
   declarations: [ProbableWaffleComponent, ProgressComponent, CampaignComponent, OptionsComponent, ComingSoonComponent],
@@ -22,6 +24,8 @@ import { LobbyModule } from "../lobby/lobby.module";
     FormsModule,
     OnlineModule,
     ComponentsModule,
+    LobbyPageComponent,
+    SkirmishComponent,
     NgOptimizedImage
   ]
 })

@@ -24,7 +24,15 @@ export interface GameInstanceServiceInterface {
 
   startLevel(body: ProbableWaffleStartLevelDto, user: User);
 
-  joinRoom(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData>;
+  joinRoom(
+    body: GameInstanceDataDto,
+    user: User,
+    options: {
+      playerNumber: number;
+      playerName: string;
+      playerPosition: number;
+    }
+  ): Promise<ProbableWaffleGameInstanceData>;
 
   leaveRoom(body: GameInstanceDataDto, user: User);
 

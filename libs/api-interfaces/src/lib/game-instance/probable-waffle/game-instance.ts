@@ -59,3 +59,8 @@ export interface ProbableWaffleJoinDto extends GameInstanceDataDto {
 export interface ProbableWaffleLeaveDto extends GameInstanceDataDto {
   gameInstanceId: string;
 }
+
+export interface PendingMatchmakingGameInstance {
+  gameInstance: ProbableWaffleGameInstance;
+  commonMapPoolIds: number[];
+}

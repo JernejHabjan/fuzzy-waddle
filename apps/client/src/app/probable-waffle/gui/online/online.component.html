@@ -8,13 +8,13 @@
 <ul class="nav-tabs">
   <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'" routerLink="/join">Join</a></li>
   <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'" routerLink="/host">Host</a></li>
-  <li (click)="selectTab('ranked')"><a [class.active]="selectedTab === 'ranked'" routerLink="/ranked">Ranked</a></li>
+  <li (click)="selectTab('matchmaking')"><a [class.active]="selectedTab === 'matchmaking'" routerLink="/matchmaking">Matchmaking</a></li>
 </ul>
 
 <div [ngSwitch]="selectedTab">
   <probable-waffle-lobbies *ngSwitchCase="'join'" />
   <probable-waffle-host *ngSwitchCase="'host'" />
-  <probable-waffle-ranked *ngSwitchCase="'ranked'" />
+  <probable-waffle-matchmaking *ngSwitchCase="'matchmaking'" />
 </div>
 
 } @else {

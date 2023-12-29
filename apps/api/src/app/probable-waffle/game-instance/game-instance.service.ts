@@ -37,9 +37,15 @@ import { GameInstanceServiceInterface } from "./game-instance.service.interface"
 export class GameInstanceService implements GameInstanceServiceInterface {
   constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
 
-  openGameInstances: ProbableWaffleGameInstance[] = [];
+  private openGameInstances: ProbableWaffleGameInstance[] = [];
+
+  addGameInstance(gameInstance: ProbableWaffleGameInstance) {
+    this.openGameInstances.push(gameInstance);
+  }
 
   async createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
+    if (gameInstanceMetadataData.createdBy !== user.id)
+      throw new Error("Probable Waffle - createGameInstance - createdBy must be the same as user id");
     const newGameInstance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData
     });
@@ -62,7 +68,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.EnteringMap;
     console.log("Probable waffle - game instance started" + body.gameInstanceId);
     this.gameInstanceGateway.emitLevelStateChange({
       sessionState: gameInstance.gameInstanceMetadata.data.sessionState,
@@ -70,17 +76,32 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     });
   }
 
+  getPlayerLobbyDefinitionForNewPlayer(gameInstance: ProbableWaffleGameInstance): PlayerLobbyDefinition {
+    return new PlayerLobbyDefinition(
+      gameInstance.players.length + 1,
+      "Player " + (gameInstance.players.length + 1),
+      gameInstance.players.length,
+      true
+    );
+  }
+
+  getPlayerColorForNewPlayer(gameInstance: ProbableWaffleGameInstance): string {
+    const i = gameInstance.players.length;
+    const maxPlayers = gameInstance.gameMode.data.maxPlayers;
+    return `hsl(${(i * 360) / maxPlayers}, 100%, 50%)`;
+  }
+
   async joinRoom(body: ProbableWaffleJoinDto, user: User): Promise<ProbableWaffleGameInstanceData> {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     switch (body.type) {
       case "player":
-        const playerDefinition = new PositionPlayerDefinition( // todo
-          new PlayerLobbyDefinition(1, null, null, false),
+        const playerDefinition = new PositionPlayerDefinition(
+          this.getPlayerLobbyDefinitionForNewPlayer(gameInstance),
           null,
           null,
           ProbableWafflePlayerType.Human,
-          "ff00ff",
+          this.getPlayerColorForNewPlayer(gameInstance),
           null
         );
         const player = gameInstance.initPlayer(
@@ -93,12 +114,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
           } satisfies ProbableWafflePlayerControllerData
         );
         this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(player, body.gameInstanceId, "joined"));
+        console.log("Probable Waffle - Player joined", user.id);
         break;
       case "spectator":
         const spectator = gameInstance.initSpectator({
           userId: user.id
         });
         this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(spectator, body.gameInstanceId, "joined"));
+        console.log("Probable Waffle - Spectator joined", user.id);
         break;
       default:
         throw new Error("Probable Waffle - Join Room - Unknown join type");

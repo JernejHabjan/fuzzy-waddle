@@ -33,21 +33,22 @@ export class RoomsService implements RoomsServiceInterface {
     private readonly gameInstanceClientService: GameInstanceClientService
   ) {}
 
-  get playersSearchingForGame(): number {
+  get playersSearchingForMatchmakingGame(): number {
     return this.rooms.filter(
       (room) =>
-        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Ranked &&
+        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
         room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
         room.players.length < room.gameMode.data.maxPlayers
     ).length;
   }
 
-  get gamesInProgress(): number {
+  get matchmakingGamesInProgress(): number {
     return this.rooms.filter(
       (room) =>
-        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Ranked &&
+        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
         room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
-        room.gameInstanceMetadataData.sessionState === GameSessionState.InProgress
+        room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
+        room.gameInstanceMetadataData.sessionState !== GameSessionState.Finished
     ).length;
   }
 

@@ -1,5 +1,6 @@
 import { ProbableWaffleGameModeData } from "../game-instance/probable-waffle/game-mode";
 import {
+  FactionType,
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerStateData
 } from "../game-instance/probable-waffle/player";
@@ -39,4 +40,9 @@ export interface ProbableWaffleGetRoomsDto {
 export interface ProbableWafflePlayerLeftDto extends GameInstanceDataDto {
   gameInstanceId: string;
   playerNumber: number;
+}
+
+export interface RequestGameSearchForMatchMakingDto {
+  mapPoolIds: number[];
+  factionType: FactionType | null;
 }

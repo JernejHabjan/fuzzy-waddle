@@ -8,6 +8,7 @@ import {
   ProbableWaffleAddPlayerDto,
   ProbableWaffleAddSpectatorDto,
   ProbableWaffleChangeGameModeDto,
+  ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceEvent,
@@ -20,7 +21,8 @@ import {
   ProbableWafflePlayerLeftDto,
   ProbableWafflePlayerType,
   ProbableWaffleSpectatorEvent,
-  ProbableWaffleStartLevelDto
+  ProbableWaffleStartLevelDto,
+  RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
@@ -28,6 +30,7 @@ import { AuthService } from "../../auth/auth.service";
 import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
+import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 
 @Injectable({
   providedIn: "root"
@@ -351,5 +354,25 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
+  }
+
+  listenToGameFound(): Observable<ProbableWaffleGameFoundEvent> {
+    return this.authenticatedSocketService
+      .socket!.fromEvent<ProbableWaffleGameFoundEvent>(ProbableWaffleGameInstanceEvent.GameFound)
+      .pipe(
+        filter((data) => data.userIds.includes(this.authService.userId!)),
+        map((data) => data)
+      );
+  }
+
+  async requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void> {
+    if (this.gameLocalInstanceId) throw new Error("Game instance already exists");
+    if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return;
+    const url = environment.api + "api/probable-waffle/request-game-search-for-matchmaking";
+    const body: RequestGameSearchForMatchMakingDto = {
+      mapPoolIds: matchmakingOptions.levels.filter((l) => l.checked).map((l) => l.id),
+      factionType: matchmakingOptions.factionType
+    };
+    await firstValueFrom(this.httpClient.post<void>(url, body));
   }
 }
