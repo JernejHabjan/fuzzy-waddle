@@ -1,49 +1,45 @@
-import { ChangeDetectorRef, Component, inject, ViewChild } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import { PositionPlayerDefinition, ProbableWaffleGameModeLobby } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { Router } from "@angular/router";
 import { MapPlayerDefinition } from "./map-player-definition";
+import { MapPlayerDefinitionsService } from "./map-player-definitions.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "probable-waffle-lobby",
   templateUrl: "./lobby.component.html",
   styleUrls: ["./lobby.component.scss"]
 })
-export class LobbyComponent {
+export class LobbyComponent implements OnInit, OnDestroy {
   @ViewChild("mapDefinition") private mapDefinition!: MapDefinitionComponent;
-  protected selectedMap?: MapPlayerDefinition;
   private gameModeLobby?: ProbableWaffleGameModeLobby;
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
+  private readonly mapPlayerDefinitionsService = inject(MapPlayerDefinitionsService);
+  private playerRemovedSubscription: Subscription | undefined;
+  private gameModeOrMapChangedSubscription: Subscription | undefined;
 
-  protected playerCountChanged() {
-    this.mapDefinition.initializePlayerPositions();
-    this.mapDefinition.draw();
+  ngOnInit(): void {
+    this.playerRemovedSubscription = this.mapPlayerDefinitionsService.playerRemoved.subscribe(this.playerRemoved);
+    this.gameModeOrMapChangedSubscription = this.mapPlayerDefinitionsService.gameModeOrMapChanged.subscribe(
+      this.gameModeOrMapChanged
+    );
+    this.mapPlayerDefinitionsService.init();
   }
 
-  protected async mapChanged(newMap: MapPlayerDefinition) {
-    const previousMap = this.selectedMap;
+  ngOnDestroy() {
+    this.playerRemovedSubscription?.unsubscribe();
+    this.gameModeOrMapChangedSubscription?.unsubscribe();
+  }
 
-    if (previousMap) {
-      // remove players that are not in the new map
-      const previousMapPlayerPositions = previousMap?.playerPositions;
-      const newMapPlayerPositions = newMap.playerPositions;
+  get selectedMap(): MapPlayerDefinition {
+    return this.mapPlayerDefinitionsService.selectedMap!;
+  }
 
-      const playerPositionsToRemove = previousMapPlayerPositions.filter(
-        (previousMapPlayerPosition) => !newMapPlayerPositions.includes(previousMapPlayerPosition)
-      );
-
-      for (const playerPositionToRemove of playerPositionsToRemove) {
-        await this.playerRemoved(playerPositionToRemove);
-      }
-    }
-
-    this.selectedMap = newMap;
-    this.cdr.detectChanges();
-    await this.gameModeOrMapChanged();
-    this.selectedMap.playerPositions.forEach(this.aiPlayerAdded);
+  private refreshMap() {
+    this.mapDefinition.refresh();
   }
 
   protected async gameModeLobbyChanged($event: ProbableWaffleGameModeLobby) {
@@ -52,7 +48,7 @@ export class LobbyComponent {
     await this.gameModeOrMapChanged();
   }
 
-  private async gameModeOrMapChanged() {
+  private gameModeOrMapChanged = async () => {
     const lobby = this.gameModeLobby;
     const map = this.selectedMap;
     if (!lobby || !map) return;
@@ -63,23 +59,22 @@ export class LobbyComponent {
       difficultyModifiers: lobby.difficultyModifiers,
       maxPlayers: map.allPlayerPositions.length
     });
-  }
+  };
 
   protected aiPlayerAdded = async (positionPlayerDefinition: PositionPlayerDefinition) => {
-    this.playerCountChanged();
     await this.gameInstanceClientService.addSelfOrAiPlayer(positionPlayerDefinition);
+    this.refreshMap();
   };
 
   protected async playerSlotOpened(playerDefinition: PositionPlayerDefinition) {
-    this.playerCountChanged();
     await this.gameInstanceClientService.playerSlotOpened(playerDefinition);
+    this.refreshMap();
   }
 
-  protected async playerRemoved(positionPlayerDefinition: PositionPlayerDefinition) {
-    this.mapDefinition.removePlayer(positionPlayerDefinition.player.playerNumber);
-    this.playerCountChanged();
+  protected playerRemoved = async (positionPlayerDefinition: PositionPlayerDefinition) => {
     await this.gameInstanceClientService.playerLeftOrSlotClosed(positionPlayerDefinition.player.playerNumber);
-  }
+    this.refreshMap();
+  };
 
   protected async startGame() {
     await this.gameInstanceClientService.startGame();

@@ -25,7 +25,11 @@ export class HostComponent {
   protected async createLobby() {
     console.warn("todo use game mode lobby here"); // todo use game mode lobby here
 
-    await this.gameInstanceClientService.createGameInstance(true, ProbableWaffleGameInstanceType.SelfHosted);
+    await this.gameInstanceClientService.createGameInstance(
+      this.gameModeLobby.visibility === "public", // todo?
+      ProbableWaffleGameInstanceType.SelfHosted
+    );
+    await this.gameInstanceClientService.addSelfAsPlayer();
     await this.router.navigate(["probable-waffle/lobby"]);
   }
 }

@@ -164,7 +164,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     );
     const player = gameInstance.initPlayer(
       {
-        score: 0
+        scoreProbableWaffle: 0
       } satisfies ProbableWafflePlayerStateData,
       {
         userId,

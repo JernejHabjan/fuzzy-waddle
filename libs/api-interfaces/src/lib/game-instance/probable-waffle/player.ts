@@ -11,7 +11,7 @@ export class ProbableWafflePlayer extends BasePlayer<
 > {}
 
 export interface ProbableWafflePlayerStateData extends BaseData {
-  score: number;
+  scoreProbableWaffle: number;
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
@@ -22,7 +22,7 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
   override resetData() {
     super.resetData();
     this.data = {
-      score: 0
+      scoreProbableWaffle: 0
     };
   }
 }

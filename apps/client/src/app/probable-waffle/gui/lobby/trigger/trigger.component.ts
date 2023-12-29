@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { MapPlayerDefinition } from "../map-player-definition";
+import { MapPlayerDefinitionsService } from "../map-player-definitions.service";
 
 @Component({
   selector: "probable-waffle-trigger",
@@ -8,8 +8,8 @@ import { MapPlayerDefinition } from "../map-player-definition";
   styleUrls: ["./trigger.component.scss"]
 })
 export class TriggerComponent {
-  @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
   @Output() started: EventEmitter<void> = new EventEmitter<void>();
+  private readonly mapPlayerDefinitionsService = inject(MapPlayerDefinitionsService);
 
   private readonly router = inject(Router);
 
@@ -17,14 +17,16 @@ export class TriggerComponent {
    * at least two players selected and at least two different teams
    */
   protected get atLeastTwoPlayersAndDifferentTeamsSelected(): boolean {
-    if (!this.selectedMap) {
+    const selectedMap = this.mapPlayerDefinitionsService.selectedMap;
+    if (!selectedMap) {
       return false;
     }
-    const selectedPlayers = this.selectedMap.playerPositions.filter((startPosition) => startPosition.player.joined);
-    const selectedEmptyTeams = this.selectedMap.playerPositions.filter(
+    const playerPositions = selectedMap.playerPositions;
+    const selectedPlayers = playerPositions.filter((startPosition) => startPosition.player.joined);
+    const selectedEmptyTeams = playerPositions.filter(
       (startPosition) => startPosition.team === null && startPosition.player.joined
     );
-    const selectedTeams = this.selectedMap.playerPositions.filter(
+    const selectedTeams = playerPositions.filter(
       (startPosition) => startPosition.team !== null && startPosition.player.joined
     );
     const selectedTeamsSet = new Set(selectedTeams.map((startPosition) => startPosition.team));

@@ -2,7 +2,6 @@ import {
   GameSetupHelpers,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
-  ProbableWaffleAiDifficulty,
   ProbableWaffleMapData,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
@@ -10,24 +9,20 @@ import {
 export class MapPlayerDefinition {
   private startPositionPerPlayer: PositionPlayerDefinition[] = [];
   private allPossibleTeams: (number | null)[] = [];
-  private initialNrAiPlayers = 0;
 
   constructor(public readonly map: ProbableWaffleMapData) {
     this.allPossibleTeams.push(null);
     for (let i = 0; i < map.mapInfo.startPositionsOnTile.length; i++) {
       const playerColor = GameSetupHelpers.getColorForPlayer(i, map.mapInfo.startPositionsOnTile.length);
-      // use initialNrAiPlayers to set the first x players to AI
-      const shouldAutoJoin = i < this.initialNrAiPlayers + 1; // 1 for self player
-      const isAi = i > 0 && shouldAutoJoin;
-      const playerName = isAi ? `AI ${i}` : i === 0 ? "You" : `Player ${i}`;
+      const playerName = `Player ${i + 1}`;
       this.startPositionPerPlayer.push(
         new PositionPlayerDefinition(
-          new PlayerLobbyDefinition(i, playerName, shouldAutoJoin ? i : null, shouldAutoJoin),
+          new PlayerLobbyDefinition(i, playerName, null, false),
           null,
           null,
-          !isAi ? ProbableWafflePlayerType.Human : ProbableWafflePlayerType.AI,
+          ProbableWafflePlayerType.Human,
           playerColor,
-          isAi ? ProbableWaffleAiDifficulty.Medium : null
+          null
         )
       );
       this.allPossibleTeams.push(i);
@@ -40,6 +35,10 @@ export class MapPlayerDefinition {
 
   get allPlayerPositions(): PositionPlayerDefinition[] {
     return this.startPositionPerPlayer;
+  }
+
+  set allPlayerPositions(value: PositionPlayerDefinition[]) {
+    this.startPositionPerPlayer = value;
   }
 
   get allTeams(): (number | null)[] {

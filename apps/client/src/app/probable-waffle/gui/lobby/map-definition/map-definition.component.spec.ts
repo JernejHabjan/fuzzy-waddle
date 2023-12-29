@@ -2,15 +2,12 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { MapDefinitionComponent } from "./map-definition.component";
 import { FormsModule } from "@angular/forms";
-import { Component, Input } from "@angular/core";
+import { Component } from "@angular/core";
 import { MapSelectorTestingComponent } from "../map-selector/map-selector.component.spec";
-import { MapPlayerDefinition } from "../lobby.component";
 import { TriggerTestingComponent } from "../trigger/trigger.component.spec";
 
 @Component({ selector: "probable-waffle-map-definition", template: "" })
-export class MapDefinitionTestingComponent {
-  @Input({ required: true }) mapPlayerDefinition!: MapPlayerDefinition;
-}
+export class MapDefinitionTestingComponent {}
 
 describe("MapDefinitionComponent", () => {
   let component: MapDefinitionComponent;

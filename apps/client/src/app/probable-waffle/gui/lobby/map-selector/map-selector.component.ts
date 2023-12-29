@@ -1,33 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
-import { MapPlayerDefinition } from "../map-player-definition";
+import { Component, inject } from "@angular/core";
+import { MapPlayerDefinitionsService } from "../map-player-definitions.service";
 
 @Component({
   selector: "probable-waffle-map-selector",
   templateUrl: "./map-selector.component.html",
   styleUrls: ["./map-selector.component.scss"]
 })
-export class MapSelectorComponent implements OnInit {
-  dropdownVisible = false;
-  mapPlayerDefinitions: MapPlayerDefinition[];
-  selectedMap?: MapPlayerDefinition;
-  @Output() selectedMapChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
-  private readonly defaultMap: ProbableWaffleMapEnum = ProbableWaffleMapEnum.RiverCrossing;
-
-  constructor() {
-    this.mapPlayerDefinitions = Object.values(ProbableWaffleLevels).map((map) => new MapPlayerDefinition(map));
-  }
-
-  selectMap(mapPlayerDefinition: MapPlayerDefinition) {
-    this.selectedMap = mapPlayerDefinition;
-    this.selectedMapChange.emit(this.selectedMap);
-    this.dropdownVisible = false;
-  }
-
-  ngOnInit(): void {
-    const defaultMap = this.mapPlayerDefinitions.find(
-      (mapPlayerDefinition) => mapPlayerDefinition.map.id === this.defaultMap
-    ) as MapPlayerDefinition;
-    this.selectMap(defaultMap);
-  }
+export class MapSelectorComponent {
+  protected readonly mapPlayerDefinitionsService = inject(MapPlayerDefinitionsService);
 }

@@ -44,12 +44,18 @@ export interface GameInstanceServiceInterface {
 
   getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): ProbableWaffleRoomEvent;
 
-  getPlayerEvent(player: ProbableWafflePlayer, gameInstanceId: string, action: PlayerAction): ProbableWafflePlayerEvent;
+  getPlayerEvent(
+    player: ProbableWafflePlayer,
+    gameInstanceId: string,
+    action: PlayerAction,
+    user: User
+  ): ProbableWafflePlayerEvent;
 
   getSpectatorEvent(
     spectator: ProbableWaffleSpectator,
     gameInstanceId: string,
-    action: SpectatorAction
+    action: SpectatorAction,
+    user: User
   ): ProbableWaffleSpectatorEvent;
 
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined;

@@ -2,7 +2,8 @@ import { GameInstanceMetadata, GameInstanceMetadataData } from "../game-instance
 
 export enum ProbableWaffleGameInstanceType {
   Matchmaking,
-  SelfHosted
+  SelfHosted,
+  Skirmish
 }
 
 export interface ProbableWaffleGameInstanceMetadataData extends GameInstanceMetadataData {

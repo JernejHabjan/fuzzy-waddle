@@ -4,10 +4,12 @@ import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
   GameInstanceDataDto,
+  GameSetupHelpers,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleAddPlayerDto,
   ProbableWaffleAddSpectatorDto,
+  ProbableWaffleAiDifficulty,
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
@@ -18,6 +20,7 @@ import {
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
   ProbableWaffleLevelStateChangeEvent,
+  ProbableWafflePlayer,
   ProbableWafflePlayerEvent,
   ProbableWafflePlayerLeftDto,
   ProbableWafflePlayerType,
@@ -109,18 +112,44 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
 
+    await this.addSelfAsPlayer();
+  }
+
+  async addSelfAsPlayer() {
+    const gameInstance = this.gameInstance;
+    if (!gameInstance) throw new Error("Game instance not found");
     const playerDefinition = new PositionPlayerDefinition( // todo move this to single place
       new PlayerLobbyDefinition(
-        this.gameInstance.players.length + 1,
-        "Player " + (this.gameInstance.players.length + 1),
-        this.gameInstance.players.length,
+        gameInstance.players.length,
+        "Player " + (gameInstance.players.length + 1),
+        gameInstance.players.length,
         true
       ),
       null,
       null,
       ProbableWafflePlayerType.Human,
-      "ff00ff", // todo player color
+      GameSetupHelpers.getColorForPlayer(gameInstance.players.length),
       null
+    );
+
+    await this.addSelfOrAiPlayer(playerDefinition);
+  }
+
+  async addAiPlayer() {
+    const gameInstance = this.gameInstance;
+    if (!gameInstance) throw new Error("Game instance not found");
+    const playerDefinition = new PositionPlayerDefinition( // todo move this to single place
+      new PlayerLobbyDefinition(
+        gameInstance.players.length,
+        "Player " + (gameInstance.players.length + 1),
+        gameInstance.players.length,
+        true
+      ),
+      null,
+      null,
+      ProbableWafflePlayerType.AI,
+      GameSetupHelpers.getColorForPlayer(gameInstance.players.length),
+      ProbableWaffleAiDifficulty.Medium
     );
 
     await this.addSelfOrAiPlayer(playerDefinition);
@@ -181,24 +210,27 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.gameInstance.gameInstanceMetadata!.data.sessionState = levelStateChangeEvent.sessionState;
   };
 
-  private playerAvailabilityChange = (playerEvent: ProbableWafflePlayerEvent) => {
-    if (!this.gameInstance) return;
+  private playerAvailabilityChange = (playerEvent: ProbableWafflePlayerEvent): ProbableWafflePlayer | null => {
+    if (!this.gameInstance) return null;
     switch (playerEvent.action) {
       case "joined":
         const player = this.gameInstance.initPlayer(playerEvent.player.stateData, playerEvent.player.controllerData);
         this.gameInstance.addPlayer(player);
-        break;
+        return player;
       case "left":
-        this.gameInstance.players = this.gameInstance.players.filter(
-          (p) =>
-            p.playerController.data.playerDefinition!.player.playerNumber !==
-            playerEvent.player.controllerData.playerDefinition!.player.playerNumber
-        );
+        this.removePlayer(playerEvent.player.controllerData.playerDefinition!.player.playerNumber);
         break;
       default:
         throw new Error("Unknown player action");
     }
+    return null;
   };
+
+  removePlayer(playerNumber: number) {
+    this.gameInstance!.players = this.gameInstance!.players.filter(
+      (p) => p.playerController.data.playerDefinition!.player.playerNumber !== playerNumber
+    );
+  }
 
   private spectatorAvailabilityChange = (spectatorEvent: ProbableWaffleSpectatorEvent) => {
     if (!this.gameInstance) return;
@@ -237,7 +269,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     return socket
       ?.fromEvent<ProbableWaffleLevelStateChangeEvent>(ProbableWaffleGameInstanceEvent.LevelStateChange)
       .pipe(
-        filter((data: ProbableWaffleLevelStateChangeEvent) => data.gameInstanceId === this.gameLocalInstanceId),
+        filter(
+          (data: ProbableWaffleLevelStateChangeEvent) =>
+            data.gameInstanceId === this.gameLocalInstanceId && data.emittingUserId !== this.authService.userId
+        ),
         map((data: ProbableWaffleLevelStateChangeEvent) => data)
       );
   }
@@ -246,7 +281,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameLocalInstanceId) return;
     const socket = this.authenticatedSocketService.socket;
     return socket?.fromEvent<ProbableWafflePlayerEvent>(ProbableWaffleGameInstanceEvent.Player).pipe(
-      filter((data: ProbableWafflePlayerEvent) => data.gameInstanceId === this.gameLocalInstanceId),
+      filter(
+        (data: ProbableWafflePlayerEvent) =>
+          data.gameInstanceId === this.gameLocalInstanceId && data.emittingUserId !== this.authService.userId
+      ),
       map((data: ProbableWafflePlayerEvent) => data)
     );
   }
@@ -255,14 +293,20 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameLocalInstanceId) return;
     const socket = this.authenticatedSocketService.socket;
     return socket?.fromEvent<ProbableWaffleSpectatorEvent>(ProbableWaffleGameInstanceEvent.Spectator).pipe(
-      filter((data: ProbableWaffleSpectatorEvent) => data.gameInstanceId === this.gameLocalInstanceId),
+      filter(
+        (data: ProbableWaffleSpectatorEvent) =>
+          data.gameInstanceId === this.gameLocalInstanceId && data.emittingUserId !== this.authService.userId
+      ),
       map((data: ProbableWaffleSpectatorEvent) => data)
     );
   }
 
   async playerSlotOpened(playerDefinition: PositionPlayerDefinition) {
     if (!this.gameLocalInstanceId) return;
-    const openPlayerSlot = this.gameInstance!.initPlayer({ score: 0 }, { userId: null, playerDefinition });
+    const openPlayerSlot = this.gameInstance!.initPlayer(
+      { scoreProbableWaffle: 0 },
+      { userId: null, playerDefinition }
+    );
 
     this.playerAvailabilityChange({
       player: {
@@ -270,7 +314,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         stateData: openPlayerSlot.playerState.data
       },
       gameInstanceId: this.gameLocalInstanceId,
-      action: "joined"
+      action: "joined",
+      emittingUserId: null
     });
 
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
@@ -278,7 +323,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
         player: {
-          userId: openPlayerSlot.playerController.data.userId,
           stateData: openPlayerSlot.playerState.data,
           controllerData: openPlayerSlot.playerController.data
         }
@@ -297,14 +341,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
-    this.playerAvailabilityChange({
-      player: {
-        controllerData: this.gameInstance!.players[playerNumber].playerController.data,
-        stateData: this.gameInstance!.players[playerNumber].playerState.data
-      },
-      gameInstanceId: this.gameLocalInstanceId,
-      action: "left"
-    });
+    this.removePlayer(playerNumber);
   }
 
   async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition) {
@@ -316,16 +353,16 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
     if (player) throw new Error("Player already exists");
     const userId = playerDefinition.playerType === ProbableWafflePlayerType.Human ? this.authService.userId : null;
-    player = this.gameInstance!.initPlayer({ score: 0 }, { userId, playerDefinition });
 
-    this.playerAvailabilityChange({
+    player = this.playerAvailabilityChange({
       player: {
-        controllerData: player.playerController.data,
-        stateData: player.playerState.data
+        controllerData: { userId, playerDefinition },
+        stateData: { scoreProbableWaffle: 0 }
       },
       gameInstanceId: this.gameLocalInstanceId,
-      action: "joined"
-    });
+      action: "joined",
+      emittingUserId: null
+    })!;
 
     // server
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
@@ -333,7 +370,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
         player: {
-          userId: player.playerController.data.userId,
           stateData: player.playerState.data,
           controllerData: player.playerController.data
         }
@@ -357,7 +393,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       action: "joined",
       spectator: {
         data: spectator.data
-      }
+      },
+      emittingUserId: null
     });
 
     // server

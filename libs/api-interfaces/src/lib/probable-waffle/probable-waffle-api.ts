@@ -20,7 +20,6 @@ export interface ProbableWaffleChangeGameModeDto extends GameInstanceDataDto {
 export interface ProbableWaffleAddPlayerDto extends GameInstanceDataDto {
   gameInstanceId: string;
   player: {
-    userId: string | null;
     stateData: ProbableWafflePlayerStateData;
     controllerData: ProbableWafflePlayerControllerData;
   };

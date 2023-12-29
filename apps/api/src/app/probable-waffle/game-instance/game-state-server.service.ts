@@ -32,7 +32,7 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        player.playerState.data.score = (body.data as ProbableWaffleCommunicatorScoreEvent).score;
+        player.playerState.data.scoreProbableWaffle = (body.data as ProbableWaffleCommunicatorScoreEvent).score;
         console.log("updating score", body.data);
         break;
       default:

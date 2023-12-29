@@ -14,7 +14,10 @@ export class SkirmishComponent implements OnInit {
   private readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
-    await this.gameInstanceClientService.createGameInstance(false, ProbableWaffleGameInstanceType.SelfHosted);
+    await this.gameInstanceClientService.createGameInstance(false, ProbableWaffleGameInstanceType.Skirmish);
+    await this.gameInstanceClientService.addSelfAsPlayer();
+    await this.gameInstanceClientService.addAiPlayer();
+
     await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
   }
 }

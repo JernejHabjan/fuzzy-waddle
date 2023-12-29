@@ -67,12 +67,14 @@ export interface ProbableWafflePlayerEvent extends PlayerEvent {
     controllerData: ProbableWafflePlayerControllerData;
     stateData: ProbableWafflePlayerStateData;
   };
+  emittingUserId: string | null;
 }
 
 export interface ProbableWaffleSpectatorEvent extends SpectatorEvent {
   spectator: {
     data: ProbableWaffleSpectatorData;
   };
+  emittingUserId: string | null;
 }
 
 export interface ProbableWaffleGameFoundEvent {
@@ -83,6 +85,7 @@ export interface ProbableWaffleGameFoundEvent {
 export interface ProbableWaffleLevelStateChangeEvent {
   sessionState: GameSessionState;
   gameInstanceId: string;
+  emittingUserId: string | null;
 }
 
 export class ProbableWaffleRoomHelper {

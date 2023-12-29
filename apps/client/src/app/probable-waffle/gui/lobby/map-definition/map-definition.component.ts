@@ -46,8 +46,6 @@ export class MapDefinitionComponent {
   private readonly preferredCanvasHeight = 200;
   protected canvasWidth = this.preferredCanvasWidth;
   protected canvasHeight = this.preferredCanvasHeight;
-  protected selectedMap?: MapPlayerDefinition;
-  @Output() mapPlayerDefinitionChange: EventEmitter<MapPlayerDefinition> = new EventEmitter<MapPlayerDefinition>();
   private img!: HTMLImageElement;
   // get canvas related references
   private ctx!: CanvasRenderingContext2D;
@@ -137,10 +135,7 @@ export class MapDefinitionComponent {
 
   @HostListener("window:resize", ["$event"])
   onResize() {
-    this.setCanvasSize();
-    this.recalculateOffset();
-    this.reInitializePlayerPositions();
-    this.draw();
+    this.refresh();
   }
 
   private reInitializePlayerPositions() {
@@ -148,10 +143,17 @@ export class MapDefinitionComponent {
     this.initializePlayerPositions();
   }
 
+  refresh() {
+    this.setCanvasSize();
+    this.recalculateOffset();
+    this.reInitializePlayerPositions();
+    this.draw();
+  }
+
   /**
    * create draggable rectangles for each player currently joined on the map
    */
-  initializePlayerPositions() {
+  private initializePlayerPositions() {
     // an array of objects that define different rectangles
     if (!this.mapPlayerDefinition) {
       return;
@@ -176,27 +178,12 @@ export class MapDefinitionComponent {
   }
 
   /**
-   * Removes player rectangle from canvas
-   */
-  removePlayer(playerNumber: number) {
-    const index = this.rects.findIndex((rect) => rect.playerNumber === playerNumber);
-    if (index >= 0) {
-      this.rects.splice(index, 1);
-    }
-  }
-
-  /**
    * redraw the scene
    */
-  draw() {
+  private draw() {
     this.clear();
     this.drawMapWithStartPositions();
     this.drawPlayerRectangles();
-  }
-
-  protected mapChanged(selectedMap: MapPlayerDefinition) {
-    this.selectedMap = selectedMap;
-    this.mapPlayerDefinitionChange.next(selectedMap);
   }
 
   private setCanvasSize() {
@@ -522,6 +509,10 @@ export class MapDefinitionComponent {
 
     draggingPlayer.player.playerPosition = hoveringPositionNumber;
     hoveringPlayer.player.playerPosition = draggingPositionNumber;
+
+    console.log(
+      "player positions changed" + draggingPositionNumber + " " + hoveringPositionNumber + " todo emit event"
+    ); // todo emit event
   }
 
   /**
@@ -602,6 +593,8 @@ export class MapDefinitionComponent {
     playerDefinition.player.playerPosition = newPosition;
 
     draggingRectangle.positionNumber = newPosition;
+
+    console.log("player positions changed" + previousPosition + " " + newPosition + " todo emit event"); // todo emit event
   }
 
   /**
@@ -653,6 +646,8 @@ export class MapDefinitionComponent {
     player.player.playerPosition = index;
     player.difficulty = ProbableWaffleAiDifficulty.Medium;
     player.player.joined = true;
+
+    console.log("player ADDED" + index + " todo emit event"); // todo emit event
 
     this.initializePlayerPositions();
     this.draw();

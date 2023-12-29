@@ -28,7 +28,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       players: [{ playerControllerData: { userId: user.id } }]
     });
     this.openGameInstances.push(newGameInstance);
-    console.log("game instance created on server", this.openGameInstances.length);
+    console.log("Little Muncher - Game instance created on server. Open instances: " + this.openGameInstances.length);
   }
 
   async stopGame(body: GameInstanceDataDto, user: User) {
@@ -38,7 +38,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.openGameInstances = this.openGameInstances.filter(
       (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId !== body.gameInstanceId
     );
-    console.log("game instance deleted on server", this.openGameInstances.length);
+    console.log("Little Muncher - Game instance deleted on server. Remaining: " + this.openGameInstances.length);
   }
 
   async startLevel(body: LittleMuncherGameCreateDto, user: User) {
@@ -49,7 +49,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       hill: body.level.hill
     });
     gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
-    console.log("game mode set on server", body.level.hill);
+    console.log("Little Muncher - Game mode set on server", body.level.hill);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "added"));
   }
 
@@ -59,7 +59,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     gameInstance.initSpectator({
       userId: user.id
     });
-    console.log("spectator joined", user.id);
+    console.log("Little Muncher - Spectator joined", user.id);
     this.gameInstanceGateway.emitSpectator(
       this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), body.gameInstanceId, "joined")
     );
@@ -70,7 +70,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     gameInstance.removeSpectator(user.id);
-    console.log("spectator left", user.id);
+    console.log("Little Muncher - spectator left", user.id);
     this.gameInstanceGateway.emitSpectator(
       this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), body.gameInstanceId, "left")
     );
@@ -81,7 +81,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
     gameInstance.stopLevel();
-    console.log("game mode deleted on server");
+    console.log("Little Muncher - Game mode deleted on server");
 
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "removed"));
   }

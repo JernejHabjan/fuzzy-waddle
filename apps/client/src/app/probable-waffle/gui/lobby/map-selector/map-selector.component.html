@@ -4,8 +4,8 @@
   </button>
   <ul class="dropdown-menu menu-border">
     <li
-      (click)="selectMap(mapPlayerDefinition)"
-      *ngFor="let mapPlayerDefinition of mapPlayerDefinitions"
+      (click)="mapPlayerDefinitionsService.set(mapPlayerDefinition)"
+      *ngFor="let mapPlayerDefinition of mapPlayerDefinitionsService.mapPlayerDefinitions"
       class="cursor-pointer p-2"
     >
       <img
