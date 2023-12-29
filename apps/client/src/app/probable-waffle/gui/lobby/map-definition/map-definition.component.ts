@@ -9,7 +9,7 @@ import {
   Output,
   ViewChild
 } from "@angular/core";
-import { MapPlayerDefinition } from "../skirmish.component";
+import { MapPlayerDefinition } from "../lobby.component";
 import {
   PlayerLobbyDefinition,
   PositionPlayerDefinition,

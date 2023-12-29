@@ -53,11 +53,11 @@ export class MapPlayerDefinition {
 }
 
 @Component({
-  selector: "fuzzy-waddle-skirmish",
-  templateUrl: "./skirmish.component.html",
-  styleUrls: ["./skirmish.component.scss"]
+  selector: "probable-waffle-lobby",
+  templateUrl: "./lobby.component.html",
+  styleUrls: ["./lobby.component.scss"]
 })
-export class SkirmishComponent implements OnInit {
+export class LobbyComponent implements OnInit {
   @Input({ required: false }) joinable: boolean = false;
   @ViewChild("mapDefinition") private mapDefinition!: MapDefinitionComponent;
   protected selectedMap?: MapPlayerDefinition;

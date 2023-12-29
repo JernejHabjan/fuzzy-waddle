@@ -4,7 +4,7 @@ import { PlayerDefinitionComponent } from "./player-definition.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { FormsModule } from "@angular/forms";
 import { Component, Input } from "@angular/core";
-import { MapPlayerDefinition } from "../skirmish.component";
+import { MapPlayerDefinition } from "../lobby.component";
 
 @Component({ selector: "fuzzy-waddle-player-definition", template: "" })
 export class PlayerDefinitionTestingComponent {

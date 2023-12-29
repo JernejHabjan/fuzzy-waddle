@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { SkirmishComponent } from "./skirmish.component";
+import { LobbyComponent } from "./lobby.component";
 import { FormsModule } from "@angular/forms";
 import { PlayerDefinitionComponent } from "./player-definition/player-definition.component";
 import { MapSelectorComponent } from "./map-selector/map-selector.component";
@@ -14,14 +14,14 @@ import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.compo
 
 @NgModule({
   declarations: [
-    SkirmishComponent,
+    LobbyComponent,
     PlayerDefinitionComponent,
     MapSelectorComponent,
     MapDefinitionComponent,
     GameModeDefinitionComponent,
     TriggerComponent
   ],
-  exports: [SkirmishComponent, MapSelectorComponent],
+  exports: [LobbyComponent, MapSelectorComponent],
   imports: [CommonModule, FormsModule, FontAwesomeModule, ComponentsModule, RouterLink, SpectatorsGridComponent]
 })
-export class SkirmishModule {}
+export class LobbyModule {}

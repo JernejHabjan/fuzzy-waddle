@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TriggerComponent } from "./trigger.component";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Component, Input } from "@angular/core";
-import { MapPlayerDefinition } from "../skirmish.component";
+import { MapPlayerDefinition } from "../lobby.component";
 
 @Component({ selector: "fuzzy-waddle-trigger", template: "" })
 export class TriggerTestingComponent {

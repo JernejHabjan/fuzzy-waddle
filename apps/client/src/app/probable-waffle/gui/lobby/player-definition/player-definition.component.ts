@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { MapPlayerDefinition } from "../skirmish.component";
+import { MapPlayerDefinition } from "../lobby.component";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import {
