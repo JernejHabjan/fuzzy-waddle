@@ -37,7 +37,7 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
     },
     presentation: {
       description: "Navigate tactical challenges on this battlefield with vital water crossings",
-      imagePath: "river_crossing.png"
+      imagePath: "assets/probable-waffle/tilemaps/thumbnails/river_crossing.png"
     },
     mapInfo: {
       startPositionsOnTile: [
@@ -58,7 +58,7 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
     presentation: {
       description:
         "Unravel the mysteries of this captivating strategic battlefield in the heart of the mystical enclave",
-      imagePath: "ember_enclave.png"
+      imagePath: "assets/probable-waffle/tilemaps/thumbnails/ember_enclave.png"
     },
     mapInfo: {
       startPositionsOnTile: [

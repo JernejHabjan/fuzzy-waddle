@@ -284,9 +284,7 @@ export class MapDefinitionComponent {
     return new Promise((resolve) => {
       const img = new Image();
       this.img = img;
-      img.src =
-        "assets/probable-waffle/tilemaps/thumbnails/" +
-        (this.mapPlayerDefinition as MapPlayerDefinition).map.presentation.imagePath;
+      img.src = (this.mapPlayerDefinition as MapPlayerDefinition).map.presentation.imagePath;
       img.onload = () => resolve();
     });
   }
