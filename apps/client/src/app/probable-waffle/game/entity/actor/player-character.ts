@@ -1,9 +1,9 @@
-import { Character } from './character';
-import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { OwnerComponent } from './components/owner-component';
-import { CostData, ProductionCostComponent } from '../building/production/production-cost-component';
-import { Scene } from 'phaser';
-import { PlayerController } from '../../world/managers/controllers/player-controller';
+import { Character } from "./character";
+import { TilePlacementData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { OwnerComponent } from "./components/owner-component";
+import { CostData, ProductionCostComponent } from "../building/production/production-cost-component";
+import { Scene } from "phaser";
+import { PlayerController } from "../../world/managers/controllers/player-controller";
 
 export abstract class PlayerCharacter extends Character {
   cost!: CostData;

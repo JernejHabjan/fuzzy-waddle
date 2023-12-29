@@ -1,5 +1,5 @@
-import { Subject } from 'rxjs';
-import { Cameras, GameObjects, Geom, Input, Scene } from 'phaser';
+import { Subject } from "rxjs";
+import { Cameras, GameObjects, Geom, Input, Scene } from "phaser";
 
 export class MultiSelectionHandler {
   onSelect: Subject<Geom.Rectangle> = new Subject();

@@ -1,5 +1,5 @@
-import { DecoratorData, IDecorator } from './decorator.interface';
-import { ResourceSourceComponent } from '../../../../economy/resource/resource-source-component';
+import { DecoratorData, IDecorator } from "./decorator.interface";
+import { ResourceSourceComponent } from "../../../../economy/resource/resource-source-component";
 
 export class ResourceIsReadyDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {

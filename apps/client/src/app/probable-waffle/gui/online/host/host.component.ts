@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'fuzzy-waddle-host',
-  templateUrl: './host.component.html',
-  styleUrls: ['./host.component.scss']
+  selector: "fuzzy-waddle-host",
+  templateUrl: "./host.component.html",
+  styleUrls: ["./host.component.scss"]
 })
 export class HostComponent {}

@@ -1,11 +1,14 @@
-import { MapDefinitions } from '../../const/map-size.info';
-import { TilePossibleProperties } from './types/tile-types';
-import { TilemapToAtlasMap } from '../../scenes/grassland.scene';
-import { MapHelper } from './map-helper';
-import { Textures } from 'phaser';
+import { MapDefinitions } from "../../const/map-size.info";
+import { TilePossibleProperties } from "./types/tile-types";
+import { TilemapToAtlasMap } from "../../scenes/grassland.scene";
+import { MapHelper } from "./map-helper";
+import { Textures } from "phaser";
 
 export class MapPropertiesHelper {
-  constructor(private readonly mapHelper: MapHelper, private readonly textures: Textures.TextureManager) {}
+  constructor(
+    private readonly mapHelper: MapHelper,
+    private readonly textures: Textures.TextureManager
+  ) {}
 
   mapLayerTilesetsToAtlasesAndExtractProperties() {
     const tilesetAtlasNameMapper: TilemapToAtlasMap[] = [];
@@ -20,7 +23,7 @@ export class MapPropertiesHelper {
       // push to array
       frames.forEach((frameName: string, i: number) => {
         // split frameName by "." and get 2 variables
-        const [imageName, imageSuffix] = frameName.split('.');
+        const [imageName, imageSuffix] = frameName.split(".");
         const tileProperties = (tileset.tileProperties as TilePossibleProperties[])[i];
         tilesetAtlasNameMapper.push({ imageName, imageSuffix, atlasName: tileset.name, tileProperties });
       });

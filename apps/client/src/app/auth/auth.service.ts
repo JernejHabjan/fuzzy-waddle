@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Session } from '@supabase/supabase-js';
-import { DataAccessService } from '../data-access/data-access.service';
-import { AuthServiceInterface } from './auth.service.interface';
+import { Injectable } from "@angular/core";
+import { Session } from "@supabase/supabase-js";
+import { DataAccessService } from "../data-access/data-access.service";
+import { AuthServiceInterface } from "./auth.service.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AuthService implements AuthServiceInterface {
   processing: Promise<unknown> | null = null;
@@ -19,8 +19,8 @@ export class AuthService implements AuthServiceInterface {
 
   get fullName(): string | null {
     return (
-      this.session?.user?.identities?.find((identity) => identity.provider === 'google')?.identity_data?.[
-        'full_name'
+      this.session?.user?.identities?.find((identity) => identity.provider === "google")?.identity_data?.[
+        "full_name"
       ] ?? null
     );
   }
@@ -39,13 +39,13 @@ export class AuthService implements AuthServiceInterface {
 
   async signInWithGoogle() {
     const signInPromise = (this.processing = this.dataAccessService.supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: { redirectTo: window.location.href }
     }));
 
     const { error } = await signInPromise;
     if (error) {
-      console.error('error', error);
+      console.error("error", error);
     }
     this.processing = null;
   }
@@ -54,7 +54,7 @@ export class AuthService implements AuthServiceInterface {
     const signOutPromise = (this.processing = this.dataAccessService.supabase.auth.signOut());
     const { error } = await signOutPromise;
     if (error) {
-      console.error('error', error);
+      console.error("error", error);
     } else {
       this._session = null;
     }
@@ -66,7 +66,7 @@ export class AuthService implements AuthServiceInterface {
     const { data, error } = await signInPromise;
 
     if (error) {
-      console.error('error', error);
+      console.error("error", error);
     }
     this._session = data.session;
     this.processing = null;

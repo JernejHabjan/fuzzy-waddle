@@ -1,6 +1,6 @@
-import { IComponent } from '../../core/component.service';
-import { Actor } from '../actor/actor';
-import { SpriteRepresentationComponent } from '../actor/components/sprite-representable-component';
+import { IComponent } from "../../core/component.service";
+import { Actor } from "../actor/actor";
+import { SpriteRepresentationComponent } from "../actor/components/sprite-representable-component";
 
 // apply to resource source that needs actors to enter to gather
 export class ContainerComponent implements IComponent {

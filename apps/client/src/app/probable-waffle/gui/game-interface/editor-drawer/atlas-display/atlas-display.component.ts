@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AtlasFrame } from '../atlas-loader.service';
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { AtlasFrame } from "../atlas-loader.service";
 
 @Component({
-  selector: 'fuzzy-waddle-atlas-display',
-  templateUrl: './atlas-display.component.html',
-  styleUrls: ['./atlas-display.component.scss'],
+  selector: "fuzzy-waddle-atlas-display",
+  templateUrl: "./atlas-display.component.html",
+  styleUrls: ["./atlas-display.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AtlasDisplayComponent {
@@ -22,12 +22,12 @@ export class AtlasDisplayComponent {
 
   get fileName(): string {
     let fileName = this.atlasFrame.filename;
-    if (fileName.includes('.')) {
+    if (fileName.includes(".")) {
       // remove extension
-      fileName = this.atlasFrame.filename.split('.').slice(0, -1).join('.');
+      fileName = this.atlasFrame.filename.split(".").slice(0, -1).join(".");
     }
 
-    fileName = fileName.replace(/[_-]/g, ' ');
+    fileName = fileName.replace(/[_-]/g, " ");
 
     return fileName;
   }

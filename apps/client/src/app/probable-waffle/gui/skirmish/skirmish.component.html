@@ -1,17 +1,17 @@
 <fuzzy-waddle-map-definition
-  class='card-container'
+  class="card-container"
   #mapDefinition
-  (mapPlayerDefinitionChange)='mapChanged($event)'
-  [mapPlayerDefinition]='selectedMap'
-  (started)='startGame()'
+  (mapPlayerDefinitionChange)="mapChanged($event)"
+  [mapPlayerDefinition]="selectedMap"
+  (started)="startGame()"
 />
 <fuzzy-waddle-player-definition
-  class='card-container'
-  [allowOpenSlotForMp]='joinable'
-  (selfOrAiPlayerAdded)='selfOrAiPlayerAdded($event)'
-  (playerSlotOpened)='playerSlotOpened($event)'
-  (playerRemoved)='playerRemoved($event)'
-  [selectedMap]='selectedMap'
+  class="card-container"
+  [allowOpenSlotForMp]="joinable"
+  (selfOrAiPlayerAdded)="selfOrAiPlayerAdded($event)"
+  (playerSlotOpened)="playerSlotOpened($event)"
+  (playerRemoved)="playerRemoved($event)"
+  [selectedMap]="selectedMap"
 />
 <fuzzy-waddle-spectators-grid />
-<fuzzy-waddle-game-mode-definition class='card-container' (gameModeLobbyChange)='gameModeLobbyChanged($event)' />
+<fuzzy-waddle-game-mode-definition class="card-container" (gameModeLobbyChange)="gameModeLobbyChanged($event)" />

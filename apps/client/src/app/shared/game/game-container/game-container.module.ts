@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { GameContainerComponent } from './game-container.component';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { GameContainerComponent } from "./game-container.component";
 
 @NgModule({
   declarations: [GameContainerComponent],

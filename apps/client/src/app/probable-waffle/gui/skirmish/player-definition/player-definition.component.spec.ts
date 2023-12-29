@@ -1,17 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { PlayerDefinitionComponent } from './player-definition.component';
-import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
-import { FormsModule } from '@angular/forms';
-import { Component, Input } from '@angular/core';
-import { MapPlayerDefinition } from '../skirmish.component';
+import { PlayerDefinitionComponent } from "./player-definition.component";
+import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import { FormsModule } from "@angular/forms";
+import { Component, Input } from "@angular/core";
+import { MapPlayerDefinition } from "../skirmish.component";
 
-@Component({ selector: 'fuzzy-waddle-player-definition', template: '' })
+@Component({ selector: "fuzzy-waddle-player-definition", template: "" })
 export class PlayerDefinitionTestingComponent {
   @Input({ required: true }) selectedMap?: MapPlayerDefinition;
 }
 
-describe('PlayerDefinitionComponent', () => {
+describe("PlayerDefinitionComponent", () => {
   let component: PlayerDefinitionComponent;
   let fixture: ComponentFixture<PlayerDefinitionComponent>;
 
@@ -26,7 +26,7 @@ describe('PlayerDefinitionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

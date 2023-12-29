@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ChatService } from './chat.service';
-import { chatServiceStub } from './chat.service.spec';
-import { ChatController } from './chat.controller';
-import { MessageDto } from './message.dto';
-import { authUserStub } from '../../auth/auth.service.spec';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ChatService } from "./chat.service";
+import { chatServiceStub } from "./chat.service.spec";
+import { ChatController } from "./chat.controller";
+import { MessageDto } from "./message.dto";
+import { authUserStub } from "../../auth/auth.service.spec";
 
-describe('ChatController', () => {
+describe("ChatController", () => {
   let app: TestingModule;
 
   beforeAll(async () => {
@@ -15,11 +15,11 @@ describe('ChatController', () => {
     }).compile();
   });
 
-  describe('postMessage', () => {
-    it('should return void', async () => {
+  describe("postMessage", () => {
+    it("should return void", async () => {
       const chatController = app.get<ChatController>(ChatController);
       const user = authUserStub;
-      const messageDto: MessageDto = { message: 'test' };
+      const messageDto: MessageDto = { message: "test" };
       const result = await chatController.postMessage(user, messageDto);
       expect(result).toBeUndefined();
     });

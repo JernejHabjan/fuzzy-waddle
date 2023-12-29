@@ -1,19 +1,19 @@
-import { PawnInfoDefinition } from '../../actor/character';
-import { GathererComponent } from '../../actor/components/gatherer-component';
-import { PlayerCharacter } from '../../actor/player-character';
-import { BuilderComponent } from '../../actor/components/builder-component';
-import { Barracks } from '../buildings/barracks';
-import { Mine } from '../buildings/mine';
+import { PawnInfoDefinition } from "../../actor/character";
+import { GathererComponent } from "../../actor/components/gatherer-component";
+import { PlayerCharacter } from "../../actor/player-character";
+import { BuilderComponent } from "../../actor/components/builder-component";
+import { Barracks } from "../buildings/barracks";
+import { Mine } from "../buildings/mine";
 
 export const WorkerDefinition: PawnInfoDefinition = {
   healthDefinition: {
     maxHealth: 100
   },
   textureMapDefinition: {
-    textureName: 'warrior',
+    textureName: "warrior",
     spriteSheet: {
-      name: 'worker',
-      path: 'general/worker/',
+      name: "worker",
+      path: "general/worker/",
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64
@@ -21,7 +21,7 @@ export const WorkerDefinition: PawnInfoDefinition = {
     }
   },
   soundDefinition: {
-    move: 'move'
+    move: "move"
   }
 };
 

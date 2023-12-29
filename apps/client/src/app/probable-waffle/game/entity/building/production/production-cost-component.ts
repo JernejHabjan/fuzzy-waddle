@@ -1,6 +1,6 @@
-import { IComponent } from '../../../core/component.service';
-import { PaymentType } from '../payment-type';
-import { ResourceType } from '../../economy/resource/resource-type';
+import { IComponent } from "../../../core/component.service";
+import { PaymentType } from "../payment-type";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export class CostData {
   static NoCost: CostData = {

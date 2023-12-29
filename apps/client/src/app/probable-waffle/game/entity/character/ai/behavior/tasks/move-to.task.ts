@@ -1,6 +1,6 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { TransformComponent } from '../../../../actor/components/transformable-component';
-import { PawnAiControllerComponent } from '../../../../../world/managers/controllers/pawn-ai-controller-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { TransformComponent } from "../../../../actor/components/transformable-component";
+import { PawnAiControllerComponent } from "../../../../../world/managers/controllers/pawn-ai-controller-component";
 
 export class MoveToTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {

@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OnlineComponent } from './online.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { provideRouter } from '@angular/router';
-import { HomeNavTestingComponent } from '../../../shared/components/home-nav/home-nav.component.spec';
-import { RankedTestingComponent } from './ranked/ranked.component.spec';
+import { OnlineComponent } from "./online.component";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { provideRouter } from "@angular/router";
+import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
+import { RankedTestingComponent } from "./ranked/ranked.component.spec";
 
-describe('OnlineComponent', () => {
+describe("OnlineComponent", () => {
   let component: OnlineComponent;
   let fixture: ComponentFixture<OnlineComponent>;
 
@@ -22,7 +22,7 @@ describe('OnlineComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,5 +1,5 @@
-import { IComponent } from '../../../core/component.service';
-import { ResourceType } from '../../../entity/economy/resource/resource-type';
+import { IComponent } from "../../../core/component.service";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export class PlayerResourcesComponent implements IComponent {
   resources: Map<ResourceType, number> = new Map<ResourceType, number>();
@@ -33,7 +33,7 @@ export class PlayerResourcesComponent implements IComponent {
   payResources(resourceType: ResourceType, amount: number): void {
     const resourceAmount = this.resources.get(resourceType) || 0;
     if (resourceAmount - amount < 0) {
-      throw new Error('Not enough resources');
+      throw new Error("Not enough resources");
     }
     this.resources.set(resourceType, resourceAmount - amount);
   }

@@ -1,4 +1,4 @@
-import { Actor } from '../actor';
+import { Actor } from "../actor";
 
 export class RequirementsComponent {
   // todo should use techTreeComponent maybe?

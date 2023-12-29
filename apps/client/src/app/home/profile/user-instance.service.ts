@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class UserInstanceService {
-  getPageTheme = () => 'light';
-  getPreferredGames = () => ['probable-waffle'];
+  getPageTheme = () => "light";
+  getPreferredGames = () => ["probable-waffle"];
 }

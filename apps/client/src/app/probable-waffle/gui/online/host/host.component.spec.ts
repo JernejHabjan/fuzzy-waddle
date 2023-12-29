@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { HostComponent } from './host.component';
-import { SkirmishTestingComponent } from '../../skirmish/skirmish.component.spec';
+import { HostComponent } from "./host.component";
+import { SkirmishTestingComponent } from "../../skirmish/skirmish.component.spec";
 
-describe('HostComponent', () => {
+describe("HostComponent", () => {
   let component: HostComponent;
   let fixture: ComponentFixture<HostComponent>;
 
@@ -17,7 +17,7 @@ describe('HostComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

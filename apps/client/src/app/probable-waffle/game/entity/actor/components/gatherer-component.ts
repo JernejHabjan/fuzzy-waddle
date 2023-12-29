@@ -1,16 +1,16 @@
-import { IComponent } from '../../../core/component.service';
-import { GatherData } from '../../economy/gather-data';
-import { Actor } from '../actor';
-import { ResourceType } from '../../economy/resource/resource-type';
-import { ResourceSourceComponent } from '../../economy/resource/resource-source-component';
-import { Mine } from '../../assets/buildings/mine';
-import { GameplayLibrary } from '../../../library/gameplay-library';
-import { Subject } from 'rxjs';
-import { PlayerController } from '../../../world/managers/controllers/player-controller';
-import { PlayerResourcesComponent } from '../../../world/managers/controllers/player-resources-component';
-import { ContainerComponent } from '../../building/container-component';
-import { ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
-import { OwnerComponent } from './owner-component';
+import { IComponent } from "../../../core/component.service";
+import { GatherData } from "../../economy/gather-data";
+import { Actor } from "../actor";
+import { ResourceSourceComponent } from "../../economy/resource/resource-source-component";
+import { Mine } from "../../assets/buildings/mine";
+import { GameplayLibrary } from "../../../library/gameplay-library";
+import { Subject } from "rxjs";
+import { PlayerController } from "../../../world/managers/controllers/player-controller";
+import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
+import { ContainerComponent } from "../../building/container-component";
+import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
+import { OwnerComponent } from "./owner-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export type GathererClasses = typeof Mine;
 
@@ -96,7 +96,7 @@ export class GathererComponent implements IComponent {
 
   findClosestResourceDrain(): Actor | null {
     if (this.carriedResourceType === null) {
-      throw new Error('Gatherer is not carrying any resources');
+      throw new Error("Gatherer is not carrying any resources");
     }
 
     // find nearby actors
@@ -193,7 +193,7 @@ export class GathererComponent implements IComponent {
       return 0;
     }
     if (!this.carriedResourceType) {
-      throw new Error('Gatherer is not carrying any resources');
+      throw new Error("Gatherer is not carrying any resources");
     }
 
     // check resource type
@@ -256,7 +256,7 @@ export class GathererComponent implements IComponent {
 
   returnResources(resourceDrain: Actor): number {
     if (!this.carriedResourceType) {
-      throw new Error('Gatherer is not carrying any resources');
+      throw new Error("Gatherer is not carrying any resources");
     }
     // return resources
     const resourceDrainComponent = resourceDrain.components.findComponent(ResourceDrainComponent);

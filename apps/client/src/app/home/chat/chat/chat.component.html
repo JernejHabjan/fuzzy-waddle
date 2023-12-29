@@ -3,12 +3,7 @@
     <div *ngFor="let message of messages" class="chat-message">
       <div class="chat-message-content">
         <div class="chat-message-sender">
-          <img
-            alt="avatar"
-            class="avatar"
-            height="20"
-            src="{{ avatarProviderService.getAvatar(message.userId) }}"
-          />
+          <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
           <div class="chat-message-sender-name">{{ message.fullName }}</div>
         </div>
         <div class="chat-message-text">{{ message.text }}</div>

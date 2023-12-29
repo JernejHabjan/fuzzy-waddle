@@ -1,8 +1,8 @@
-import { Scene } from 'phaser';
-import { CreateSceneFromObjectConfig } from '../../shared/game/phaser/scene/scene-config.interface';
-import { Scenes } from './const/scenes';
-import { UiCommunicatorData } from './ui-communicator';
-import { Subscription } from 'rxjs';
+import { Scene } from "phaser";
+import { CreateSceneFromObjectConfig } from "../../shared/game/phaser/scene/scene-config.interface";
+import { Scenes } from "./const/scenes";
+import { UiCommunicatorData } from "./ui-communicator";
+import { Subscription } from "rxjs";
 
 export class LittleMuncherUiScene extends Scene implements CreateSceneFromObjectConfig {
   private healthSubscription!: Subscription;
@@ -30,7 +30,7 @@ export class LittleMuncherUiScene extends Scene implements CreateSceneFromObject
 
   private drawCharacterHealth() {
     for (let i = 0; i < this.maxCharacterHealth; i++) {
-      const healthDisplay = this.add.image(40 + i * 30, 100, 'lm-atlas', 'health');
+      const healthDisplay = this.add.image(40 + i * 30, 100, "lm-atlas", "health");
       this.healthDisplays.push(healthDisplay);
     }
   }

@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OptionsComponent } from './options.component';
+import { OptionsComponent } from "./options.component";
 
-describe('OptionsComponent', () => {
+describe("OptionsComponent", () => {
   let component: OptionsComponent;
   let fixture: ComponentFixture<OptionsComponent>;
 
@@ -16,7 +16,7 @@ describe('OptionsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

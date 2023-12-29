@@ -1,14 +1,14 @@
-import { RepresentableActor, RepresentableActorDefinition } from '../../actor/representable-actor';
-import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { OwnerComponent } from '../../actor/components/owner-component';
-import { PlayerController } from '../../../world/managers/controllers/player-controller';
-import { CostData, ProductionCostComponent } from '../../building/production/production-cost-component';
-import { PawnInfoDefinition } from '../../actor/character';
+import { RepresentableActor, RepresentableActorDefinition } from "../../actor/representable-actor";
+import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { OwnerComponent } from "../../actor/components/owner-component";
+import { PlayerController } from "../../../world/managers/controllers/player-controller";
+import { CostData, ProductionCostComponent } from "../../building/production/production-cost-component";
+import { PawnInfoDefinition } from "../../actor/character";
 import {
   ConstructionSiteComponent,
   ConstructionSiteDefinition
-} from '../../building/construction/construction-site-component';
-import { Scene } from 'phaser';
+} from "../../building/construction/construction-site-component";
+import { Scene } from "phaser";
 
 export type BuildingInfoDefinition = PawnInfoDefinition & {
   constructionSiteDefinition: ConstructionSiteDefinition;

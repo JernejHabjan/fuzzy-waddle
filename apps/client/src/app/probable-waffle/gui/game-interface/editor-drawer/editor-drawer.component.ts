@@ -1,19 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AtlasFrame, AtlasJsonWrapper, AtlasLoaderService, TileAtlasFrame, TileFrame } from './atlas-loader.service';
-import { MapDefinitions } from '../../../game/world/const/map-size.info';
-import { TileTypes } from '../../../game/world/map/tile/manual-tiles/tile-types';
-import { Subscription } from 'rxjs';
-import { ModalConfig } from '../../../../shared/components/modal/modal-config';
-import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { SceneCommunicatorService } from "../../../communicators/scene-communicator.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AtlasFrame, AtlasJsonWrapper, AtlasLoaderService, TileAtlasFrame, TileFrame } from "./atlas-loader.service";
+import { MapDefinitions } from "../../../game/world/const/map-size.info";
+import { TileTypes } from "../../../game/world/map/tile/manual-tiles/tile-types";
+import { Subscription } from "rxjs";
+import { ModalConfig } from "../../../../shared/components/modal/modal-config";
+import { ModalComponent } from "../../../../shared/components/modal/modal.component";
 
-type TileType = 'flat' | 'water' | 'slopes' | 'blocks' | 'other';
+type TileType = "flat" | "water" | "slopes" | "blocks" | "other";
 
 @Component({
-  selector: 'probable-waffle-editor-drawer',
-  templateUrl: './editor-drawer.component.html',
-  styleUrls: ['./editor-drawer.component.scss']
+  selector: "probable-waffle-editor-drawer",
+  templateUrl: "./editor-drawer.component.html",
+  styleUrls: ["./editor-drawer.component.scss"]
 })
 export class EditorDrawerComponent implements OnInit, OnDestroy {
   editorVisible = false;
@@ -25,26 +25,30 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   spriteAtlases: AtlasJsonWrapper[] | null = null;
 
   tileTypes: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean }[] = [
-    { tileType: 'flat', fn: TileTypes.getWalkableHeight0 },
-    { tileType: 'water', fn: TileTypes.getWalkableWater },
-    { tileType: 'slopes', fn: TileTypes.getWalkableSlopes },
-    { tileType: 'blocks', fn: TileTypes.getWalkableHeightBlock },
-    { tileType: 'other', fn: TileTypes.getOtherTiles }
+    { tileType: "flat", fn: TileTypes.getWalkableHeight0 },
+    { tileType: "water", fn: TileTypes.getWalkableWater },
+    { tileType: "slopes", fn: TileTypes.getWalkableSlopes },
+    { tileType: "blocks", fn: TileTypes.getWalkableHeightBlock },
+    { tileType: "other", fn: TileTypes.getOtherTiles }
   ];
   selectedType: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean };
   selectedAtlas: AtlasFrame | null = null;
   selectedTile: number | null = null;
   leaveModalConfirm: ModalConfig = {
-    modalTitle: 'Leave the game?',
-    dismissButtonLabel: 'Continue',
-    closeButtonLabel: 'Leave',
-    onClose: async () => await this.router.navigate(['probable-waffle/skirmish']) // todo
+    modalTitle: "Leave the game?",
+    dismissButtonLabel: "Continue",
+    closeButtonLabel: "Leave",
+    onClose: async () => await this.router.navigate(["probable-waffle/skirmish"]) // todo
   };
   private emitterSubjectSubscription?: Subscription;
   private atlasEmitterSubscription?: Subscription;
-  @ViewChild('modal') private modalComponent!: ModalComponent;
+  @ViewChild("modal") private modalComponent!: ModalComponent;
 
-  constructor(private route: ActivatedRoute, private router: Router, private atlasLoaderService: AtlasLoaderService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private atlasLoaderService: AtlasLoaderService
+  ) {
     this.selectedType = this.tileTypes[0];
   }
 
@@ -99,7 +103,7 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
 
   formatAtlasFileName(filename: string) {
     // replace "_" with " "
-    return filename.replace(/_/g, ' ');
+    return filename.replace(/_/g, " ");
   }
 
   ngOnDestroy(): void {

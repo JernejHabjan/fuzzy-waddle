@@ -1,14 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ModalComponent } from './modal.component';
-import { Component, Input } from '@angular/core';
+import { ModalComponent } from "./modal.component";
+import { Component, Input } from "@angular/core";
 
-@Component({ selector: 'fuzzy-waddle-modal', template: '' })
+@Component({ selector: "fuzzy-waddle-modal", template: "" })
 export class ModalTestComponent {
   @Input({ required: true }) modalConfig: unknown;
 }
 
-describe('ModalComponent', () => {
+describe("ModalComponent", () => {
   let component: ModalComponent;
   let fixture: ComponentFixture<ModalComponent>;
 
@@ -22,7 +22,7 @@ describe('ModalComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

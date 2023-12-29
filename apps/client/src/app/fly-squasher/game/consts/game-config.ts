@@ -1,12 +1,12 @@
-import { Types } from 'phaser';
-import { FlySquasherScene } from '../fly-squasher-scene';
-import { baseGameConfig } from '../../../shared/game/base-game.config';
+import { Types } from "phaser";
+import { FlySquasherScene } from "../fly-squasher-scene";
+import { baseGameConfig } from "../../../shared/game/base-game.config";
 
 export const flySquasherGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
   scene: [FlySquasherScene],
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       fps: 60,
       gravity: { y: 0 }
@@ -14,5 +14,5 @@ export const flySquasherGameConfig: Types.Core.GameConfig = {
     }
   },
   pixelArt: true,
-  backgroundColor: '#D1C4E9'
+  backgroundColor: "#D1C4E9"
 };

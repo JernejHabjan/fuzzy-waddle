@@ -1,18 +1,18 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MapDefinitionComponent } from './map-definition.component';
-import { FormsModule } from '@angular/forms';
-import { Component, Input } from '@angular/core';
-import { MapSelectorTestingComponent } from '../map-selector/map-selector.component.spec';
-import { MapPlayerDefinition } from '../skirmish.component';
-import { TriggerTestingComponent } from '../trigger/trigger.component.spec';
+import { MapDefinitionComponent } from "./map-definition.component";
+import { FormsModule } from "@angular/forms";
+import { Component, Input } from "@angular/core";
+import { MapSelectorTestingComponent } from "../map-selector/map-selector.component.spec";
+import { MapPlayerDefinition } from "../skirmish.component";
+import { TriggerTestingComponent } from "../trigger/trigger.component.spec";
 
-@Component({ selector: 'fuzzy-waddle-map-definition', template: '' })
+@Component({ selector: "fuzzy-waddle-map-definition", template: "" })
 export class MapDefinitionTestingComponent {
   @Input({ required: true }) mapPlayerDefinition!: MapPlayerDefinition;
 }
 
-describe('MapDefinitionComponent', () => {
+describe("MapDefinitionComponent", () => {
   let component: MapDefinitionComponent;
   let fixture: ComponentFixture<MapDefinitionComponent>;
 
@@ -27,7 +27,7 @@ describe('MapDefinitionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

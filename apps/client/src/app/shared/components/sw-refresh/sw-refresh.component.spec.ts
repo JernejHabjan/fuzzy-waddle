@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SwRefreshComponent } from './sw-refresh.component';
-import { Component } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
+import { SwRefreshComponent } from "./sw-refresh.component";
+import { Component } from "@angular/core";
+import { SwUpdate } from "@angular/service-worker";
 
-@Component({ selector: 'fuzzy-waddle-sw-refresh', template: '' })
+@Component({ selector: "fuzzy-waddle-sw-refresh", template: "" })
 export class SwRefreshTestingComponent {}
 
-describe('SwRefreshComponent', () => {
+describe("SwRefreshComponent", () => {
   let component: SwRefreshComponent;
   let fixture: ComponentFixture<SwRefreshComponent>;
 
@@ -26,7 +26,7 @@ describe('SwRefreshComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

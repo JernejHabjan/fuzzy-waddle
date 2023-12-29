@@ -1,20 +1,20 @@
 import {
   ManualTilesHelper,
   TilePlacementWorldWithProperties
-} from '../../../world/map/tile/manual-tiles/manual-tiles.helper';
-import { TilemapHelper } from '../../../world/map/tile/tilemap.helper';
-import { MapSizeInfo } from '../../../world/const/map-size.info';
-import { Vector2Simple } from '../../../library/math/intersection';
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../actor';
-import { Events, GameObjects, Tweens } from 'phaser';
-import { SpriteRepresentationComponent } from './sprite-representable-component';
-import { TransformComponent } from './transformable-component';
+} from "../../../world/map/tile/manual-tiles/manual-tiles.helper";
+import { TilemapHelper } from "../../../world/map/tile/tilemap.helper";
+import { MapSizeInfo } from "../../../world/const/map-size.info";
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../actor";
+import { Events, GameObjects, Tweens } from "phaser";
+import { SpriteRepresentationComponent } from "./sprite-representable-component";
+import { TransformComponent } from "./transformable-component";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export enum MoveEventTypeEnum {
-  MOVE_START = 'move-start',
-  MOVE_END = 'move-end',
-  MOVE_PROGRESS = 'move-progress'
+  MOVE_START = "move-start",
+  MOVE_END = "move-end",
+  MOVE_PROGRESS = "move-progress"
 }
 
 export class CharacterMovementComponent implements IComponent {

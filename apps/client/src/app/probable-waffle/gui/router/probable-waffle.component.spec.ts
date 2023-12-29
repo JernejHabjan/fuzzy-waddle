@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ProbableWaffleComponent } from './probable-waffle.component';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ProbableWaffleComponent } from "./probable-waffle.component";
+import { RouterTestingModule } from "@angular/router/testing";
 
-describe('ProbableWaffleComponent', () => {
+describe("ProbableWaffleComponent", () => {
   let component: ProbableWaffleComponent;
   let fixture: ComponentFixture<ProbableWaffleComponent>;
 
@@ -18,7 +18,7 @@ describe('ProbableWaffleComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

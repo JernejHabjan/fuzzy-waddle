@@ -1,6 +1,6 @@
-import { PlayerController } from '../../../world/managers/controllers/player-controller';
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../actor';
+import { PlayerController } from "../../../world/managers/controllers/player-controller";
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../actor";
 
 export class OwnerComponent implements IComponent {
   public playerController?: PlayerController;

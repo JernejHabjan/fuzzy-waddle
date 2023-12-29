@@ -1,5 +1,5 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { AttackComponent } from '../../../../combat/components/attack-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { AttackComponent } from "../../../../combat/components/attack-component";
 
 export class AttackTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {

@@ -1,6 +1,6 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { GathererComponent } from '../../../../actor/components/gatherer-component';
-import { PawnAiControllerComponent } from '../../../../../world/managers/controllers/pawn-ai-controller-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { GathererComponent } from "../../../../actor/components/gatherer-component";
+import { PawnAiControllerComponent } from "../../../../../world/managers/controllers/pawn-ai-controller-component";
 
 export class IssueReturnResourcesTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {

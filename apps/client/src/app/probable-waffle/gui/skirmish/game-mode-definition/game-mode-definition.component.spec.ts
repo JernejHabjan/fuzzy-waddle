@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { GameModeDefinitionComponent } from './game-mode-definition.component';
-import { FormsModule } from '@angular/forms';
-import { Component } from '@angular/core';
+import { GameModeDefinitionComponent } from "./game-mode-definition.component";
+import { FormsModule } from "@angular/forms";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'fuzzy-waddle-game-mode-definition', template: '' })
+@Component({ selector: "fuzzy-waddle-game-mode-definition", template: "" })
 export class GameModeDefinitionTestingComponent {}
 
-describe('GameModeDefinitionComponent', () => {
+describe("GameModeDefinitionComponent", () => {
   let component: GameModeDefinitionComponent;
   let fixture: ComponentFixture<GameModeDefinitionComponent>;
 
@@ -22,7 +22,7 @@ describe('GameModeDefinitionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

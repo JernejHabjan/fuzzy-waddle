@@ -15,7 +15,7 @@
   </fuzzy-waddle-modal>
 
   <button (click)="editorVisible = !editorVisible" class="btn btn-primary m-1" type="button">
-    {{ editorVisible ? 'Hide editor' : 'Show editor' }}
+    {{ editorVisible ? "Hide editor" : "Show editor" }}
   </button>
   <ng-container *ngIf="editorVisible">
     <button (click)="saveMap()" class="btn btn-primary m-1" type="button">Save map</button>
@@ -51,7 +51,7 @@
     ></fuzzy-waddle-tile-selector-group>
   </ng-container>
   <button (click)="showObjectPlacement = !showObjectPlacement" class="btn btn-primary m-1" type="button">
-    {{ showObjectPlacement ? 'Hide objects' : 'Show objects' }}
+    {{ showObjectPlacement ? "Hide objects" : "Show objects" }}
   </button>
   <ng-container *ngIf="showObjectPlacement">
     <div class="extra-margin">Sprites</div>
@@ -65,10 +65,7 @@
           style="word-break: break-word; display: flex; align-items: center; flex-direction: column"
           type="button"
         >
-          <fuzzy-waddle-atlas-display
-            [atlasFrame]="atlasFrame"
-            [textureName]="spriteAtlas.tilesetName"
-          ></fuzzy-waddle-atlas-display>
+          <fuzzy-waddle-atlas-display [atlasFrame]="atlasFrame" [textureName]="spriteAtlas.tilesetName" />
         </button>
       </div>
     </div>

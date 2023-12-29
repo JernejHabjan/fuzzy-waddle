@@ -1,6 +1,6 @@
-import { Actor } from '../actor';
-import { ContainerComponent } from '../../building/container-component';
-import { IComponent } from '../../../core/component.service';
+import { Actor } from "../actor";
+import { ContainerComponent } from "../../building/container-component";
+import { IComponent } from "../../../core/component.service";
 
 /**
  * Apply on actor that can be loaded into a container - for example enter a mine to gather resources or enter a tower to repair or shoot

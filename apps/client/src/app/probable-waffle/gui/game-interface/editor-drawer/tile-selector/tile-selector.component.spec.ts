@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { TileSelectorComponent } from './tile-selector.component';
-import { MapDefinitions } from '../../../../game/world/const/map-size.info';
-import { AtlasDisplayTestingComponent } from '../atlas-display/atlas-display.component.spec';
+import { TileSelectorComponent } from "./tile-selector.component";
+import { MapDefinitions } from "../../../../game/world/const/map-size.info";
+import { AtlasDisplayTestingComponent } from "../atlas-display/atlas-display.component.spec";
 
-describe('TileSelectorComponent', () => {
+describe("TileSelectorComponent", () => {
   let component: TileSelectorComponent;
   let fixture: ComponentFixture<TileSelectorComponent>;
 
@@ -16,7 +16,7 @@ describe('TileSelectorComponent', () => {
     fixture = TestBed.createComponent(TileSelectorComponent);
     component = fixture.componentInstance;
     component.frameWithMeta = {
-      filename: 'cube-1.png',
+      filename: "cube-1.png",
       tileProperties: {
         stepHeight: 32
       },
@@ -32,7 +32,7 @@ describe('TileSelectorComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

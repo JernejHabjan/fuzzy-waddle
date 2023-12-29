@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TileFrame } from '../atlas-loader.service';
-import { SceneCommunicatorService } from '../../../../communicators/scene-communicator.service';
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { TileFrame } from "../atlas-loader.service";
+import { SceneCommunicatorService } from "../../../../communicators/scene-communicator.service";
 
 @Component({
-  selector: 'fuzzy-waddle-tile-selector',
-  templateUrl: './tile-selector.component.html',
-  styleUrls: ['./tile-selector.component.scss'],
+  selector: "fuzzy-waddle-tile-selector",
+  templateUrl: "./tile-selector.component.html",
+  styleUrls: ["./tile-selector.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TileSelectorComponent {

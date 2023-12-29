@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { TileSelectorGroupComponent } from './tile-selector-group.component';
-import { Component } from '@angular/core';
+import { TileSelectorGroupComponent } from "./tile-selector-group.component";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'fuzzy-waddle-tile-selector-group', template: '' })
+@Component({ selector: "fuzzy-waddle-tile-selector-group", template: "" })
 export class TileSelectorGroupTestingComponent {}
 
-describe('TileSelectorGroupComponent', () => {
+describe("TileSelectorGroupComponent", () => {
   let component: TileSelectorGroupComponent;
   let fixture: ComponentFixture<TileSelectorGroupComponent>;
 
@@ -23,7 +23,7 @@ describe('TileSelectorGroupComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

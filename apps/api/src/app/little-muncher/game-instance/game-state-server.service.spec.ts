@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GameStateServerService } from './game-state-server.service';
-import { GameInstanceService } from './game-instance.service';
-import { GameInstanceServiceStub } from './game-instance.service.spec';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GameStateServerService } from "./game-state-server.service";
+import { GameInstanceService } from "./game-instance.service";
+import { GameInstanceServiceStub } from "./game-instance.service.spec";
 
-describe('GameStateServerService', () => {
+describe("GameStateServerService", () => {
   let service: GameStateServerService;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('GameStateServerService', () => {
     service = module.get<GameStateServerService>(GameStateServerService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

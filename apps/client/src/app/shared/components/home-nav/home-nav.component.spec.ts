@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { HomeNavComponent } from './home-nav.component';
-import { Component } from '@angular/core';
+import { HomeNavComponent } from "./home-nav.component";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'fuzzy-waddle-home-nav', template: '' })
+@Component({ selector: "fuzzy-waddle-home-nav", template: "" })
 export class HomeNavTestingComponent {}
 
-describe('HomeNavComponent', () => {
+describe("HomeNavComponent", () => {
   let component: HomeNavComponent;
   let fixture: ComponentFixture<HomeNavComponent>;
 
@@ -20,7 +20,7 @@ describe('HomeNavComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

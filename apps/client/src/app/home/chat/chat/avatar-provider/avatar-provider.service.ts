@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { createAvatar } from '@dicebear/core';
-import * as pixelArt from '@dicebear/pixel-art';
-import { IAvatarProviderService } from './avatar-provider.service.interface';
+import { Injectable } from "@angular/core";
+import { createAvatar } from "@dicebear/core";
+import * as pixelArt from "@dicebear/pixel-art";
+import { IAvatarProviderService } from "./avatar-provider.service.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AvatarProviderService implements IAvatarProviderService {
   getAvatar(seed: string) {

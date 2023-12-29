@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LittleMuncherComponent } from './little-muncher.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { LittleMuncherComponent } from "./little-muncher.component";
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: LittleMuncherComponent
   },
-  { path: '**', redirectTo: '' }
+  { path: "**", redirectTo: "" }
 ];
 
 @NgModule({

@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  templateUrl: './fly-squasher.component.html',
-  styleUrls: ['./fly-squasher.component.scss']
+  templateUrl: "./fly-squasher.component.html",
+  styleUrls: ["./fly-squasher.component.scss"]
 })
 export class FlySquasherComponent {}

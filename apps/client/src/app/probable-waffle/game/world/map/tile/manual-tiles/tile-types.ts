@@ -1,5 +1,5 @@
-import { TileFrame } from '../../../../../gui/game-interface/editor-drawer/atlas-loader.service';
-import { TileDefinitions } from '../../../const/map-size.info';
+import { TileFrame } from "../../../../../gui/game-interface/editor-drawer/atlas-loader.service";
+import { TileDefinitions } from "../../../const/map-size.info";
 
 export class TileTypes {
   static getWalkableHeight0(frameWithMeta: TileFrame): boolean {

@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MapSelectorComponent } from './map-selector.component';
-import { FormsModule } from '@angular/forms';
-import { Component } from '@angular/core';
+import { MapSelectorComponent } from "./map-selector.component";
+import { FormsModule } from "@angular/forms";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'fuzzy-waddle-map-selector', template: '' })
+@Component({ selector: "fuzzy-waddle-map-selector", template: "" })
 export class MapSelectorTestingComponent {}
 
-describe('MapSelectorComponent', () => {
+describe("MapSelectorComponent", () => {
   let component: MapSelectorComponent;
   let fixture: ComponentFixture<MapSelectorComponent>;
 
@@ -22,7 +22,7 @@ describe('MapSelectorComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

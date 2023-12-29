@@ -1,4 +1,4 @@
-import { Scenes } from './const/scenes';
+import { Scenes } from "./const/scenes";
 import {
   LittleMuncherGameMode,
   LittleMuncherGameModeData,
@@ -10,32 +10,32 @@ import {
   LittleMuncherPlayerStateData,
   LittleMuncherSpectator,
   LittleMuncherSpectatorData
-} from '@fuzzy-waddle/api-interfaces';
-import { BaseScene } from '../../shared/game/phaser/scene/base.scene';
-import { LittleMuncherGameData } from './little-muncher-game-data';
-import { Pause } from './pause';
-import { PlayerInputController } from './player-input-controller';
-import { UiCommunicator, UiCommunicatorData } from './ui-communicator';
-import { Fireworks } from '../../shared/game/phaser/components/fireworks';
+} from "@fuzzy-waddle/api-interfaces";
+import { BaseScene } from "../../shared/game/phaser/scene/base.scene";
+import { LittleMuncherGameData } from "./little-muncher-game-data";
+import { Pause } from "./pause";
+import { PlayerInputController } from "./player-input-controller";
+import { UiCommunicator, UiCommunicatorData } from "./ui-communicator";
+import { Fireworks } from "../../shared/game/phaser/components/fireworks";
 
 export enum ObjectName {
-  'obstacle' = 'obstacle',
-  'powerUp' = 'powerUp'
+  "obstacle" = "obstacle",
+  "powerUp" = "powerUp"
 }
 
 export enum ObjectProperty {
-  'type' = 'type',
-  'bounced' = 'bounced'
+  "type" = "type",
+  "bounced" = "bounced"
 }
 
 export enum ObjectType {
-  'bird' = 'bird',
-  'tree' = 'tree',
-  'rock' = 'rock',
-  'cake1' = 'cake1',
-  'cake2' = 'cake2',
-  'cake3' = 'cake3',
-  'cake4' = 'cake4'
+  "bird" = "bird",
+  "tree" = "tree",
+  "rock" = "rock",
+  "cake1" = "cake1",
+  "cake2" = "cake2",
+  "cake3" = "cake3",
+  "cake4" = "cake4"
 }
 
 export class LittleMuncherScene extends BaseScene<
@@ -99,13 +99,13 @@ export class LittleMuncherScene extends BaseScene<
   override preload() {
     super.preload();
     this.load.multiatlas(
-      'lm-atlas',
-      'assets/little-muncher/spritesheets/little-muncher-spritesheet.json',
-      'assets/little-muncher/spritesheets'
+      "lm-atlas",
+      "assets/little-muncher/spritesheets/little-muncher-spritesheet.json",
+      "assets/little-muncher/spritesheets"
     );
-    this.load.audio('hit', 'assets/probable-waffle/sfx/character/death/death1.mp3');
-    this.load.audio('bird', 'assets/little-muncher/sfx/bird.mp3');
-    this.load.audio('ost-little-muncher', 'assets/little-muncher/ost/little-muncher.m4a');
+    this.load.audio("hit", "assets/probable-waffle/sfx/character/death/death1.mp3");
+    this.load.audio("bird", "assets/little-muncher/sfx/bird.mp3");
+    this.load.audio("ost-little-muncher", "assets/little-muncher/ost/little-muncher.m4a");
   }
 
   override init() {
@@ -135,9 +135,9 @@ export class LittleMuncherScene extends BaseScene<
     this.createCharacter();
     this.playerInputController.init(this.character);
 
-    console.log('hill to climb on:', this.gameMode.data.hill);
-    console.log('time climbing:', this.gameState.data.climbedHeight);
-    console.log('should be paused:', this.gameState.data.pause);
+    console.log("hill to climb on:", this.gameMode.data.hill);
+    console.log("time climbing:", this.gameState.data.climbedHeight);
+    console.log("should be paused:", this.gameState.data.pause);
     // todo console.log('game started at:', this.baseGameData.gameInstance.data.gameInstanceMetadataData!.createdOn);
 
     this.setupTimers();
@@ -152,7 +152,7 @@ export class LittleMuncherScene extends BaseScene<
     );
     this.subscribe(this.communicator.reset?.on.subscribe(() => this.resetGame(false)));
 
-    this.sound.play('ost-little-muncher', {
+    this.sound.play("ost-little-muncher", {
       loop: true
     });
   }
@@ -192,49 +192,49 @@ export class LittleMuncherScene extends BaseScene<
   }
 
   private createCharacterAnim(end: number, prefix: string) {
-    return this.anims.generateFrameNames('lm-atlas', { start: 1, end, prefix });
+    return this.anims.generateFrameNames("lm-atlas", { start: 1, end, prefix });
   }
 
   private createAnims = () => {
-    const characterDeath = this.createCharacterAnim(6, 'character/death/');
-    const characterVictoryFront = this.createCharacterAnim(6, 'character/victory/front/');
-    const characterVictoryBack = this.createCharacterAnim(6, 'character/victory/back/');
-    const characterWalkBack = this.createCharacterAnim(9, 'character/walk/back/');
-    const characterWalkFront = this.createCharacterAnim(9, 'character/walk/front/');
-    const characterWalkLeft = this.createCharacterAnim(9, 'character/walk/left/');
-    const characterWalkRight = this.createCharacterAnim(9, 'character/walk/right/');
-    const characterIdleBack = this.createCharacterAnim(1, 'character/idle/');
-    const characterIdleFront = this.createCharacterAnim(2, 'character/idle/');
-    const characterIdleLeft = this.createCharacterAnim(3, 'character/idle/');
-    const characterIdleRight = this.createCharacterAnim(4, 'character/idle/');
+    const characterDeath = this.createCharacterAnim(6, "character/death/");
+    const characterVictoryFront = this.createCharacterAnim(6, "character/victory/front/");
+    const characterVictoryBack = this.createCharacterAnim(6, "character/victory/back/");
+    const characterWalkBack = this.createCharacterAnim(9, "character/walk/back/");
+    const characterWalkFront = this.createCharacterAnim(9, "character/walk/front/");
+    const characterWalkLeft = this.createCharacterAnim(9, "character/walk/left/");
+    const characterWalkRight = this.createCharacterAnim(9, "character/walk/right/");
+    const characterIdleBack = this.createCharacterAnim(1, "character/idle/");
+    const characterIdleFront = this.createCharacterAnim(2, "character/idle/");
+    const characterIdleLeft = this.createCharacterAnim(3, "character/idle/");
+    const characterIdleRight = this.createCharacterAnim(4, "character/idle/");
 
-    const birdIdle = this.anims.generateFrameNames('lm-atlas', { prefix: 'bird/', frames: [1, 0, 2, 0] });
-    const birdIdleFlap = this.anims.generateFrameNames('lm-atlas', { prefix: 'bird/', frames: [1, 3, 4, 3] });
-    const birdFlyOff = this.anims.generateFrameNames('lm-atlas', { prefix: 'bird/', frames: [1, 3, 4, 5, 6, 7] });
-    const birdFly = this.anims.generateFrameNames('lm-atlas', { prefix: 'bird/', frames: [8, 9] });
+    const birdIdle = this.anims.generateFrameNames("lm-atlas", { prefix: "bird/", frames: [1, 0, 2, 0] });
+    const birdIdleFlap = this.anims.generateFrameNames("lm-atlas", { prefix: "bird/", frames: [1, 3, 4, 3] });
+    const birdFlyOff = this.anims.generateFrameNames("lm-atlas", { prefix: "bird/", frames: [1, 3, 4, 5, 6, 7] });
+    const birdFly = this.anims.generateFrameNames("lm-atlas", { prefix: "bird/", frames: [8, 9] });
 
     // create anims for the character
-    this.anims.create({ key: 'character-death', frames: characterDeath, frameRate: 10, repeat: 0 });
-    this.anims.create({ key: 'character-victory-front', frames: characterVictoryFront, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-victory-back', frames: characterVictoryBack, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-walk-back', frames: characterWalkBack, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-walk-front', frames: characterWalkFront, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-walk-left', frames: characterWalkLeft, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-walk-right', frames: characterWalkRight, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-idle-back', frames: characterIdleBack, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-idle-front', frames: characterIdleFront, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-idle-left', frames: characterIdleLeft, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'character-idle-right', frames: characterIdleRight, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-death", frames: characterDeath, frameRate: 10, repeat: 0 });
+    this.anims.create({ key: "character-victory-front", frames: characterVictoryFront, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-victory-back", frames: characterVictoryBack, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-walk-back", frames: characterWalkBack, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-walk-front", frames: characterWalkFront, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-walk-left", frames: characterWalkLeft, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-walk-right", frames: characterWalkRight, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-idle-back", frames: characterIdleBack, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-idle-front", frames: characterIdleFront, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-idle-left", frames: characterIdleLeft, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "character-idle-right", frames: characterIdleRight, frameRate: 10, repeat: -1 });
 
     // create anims for the bird
-    this.anims.create({ key: 'bird-idle', frames: birdIdle, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'bird-idle-flap', frames: birdIdleFlap, frameRate: 10, repeat: -1 });
-    this.anims.create({ key: 'bird-fly-off', frames: birdFlyOff, frameRate: 10, repeat: 0 });
-    this.anims.create({ key: 'bird-fly', frames: birdFly, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "bird-idle", frames: birdIdle, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "bird-idle-flap", frames: birdIdleFlap, frameRate: 10, repeat: -1 });
+    this.anims.create({ key: "bird-fly-off", frames: birdFlyOff, frameRate: 10, repeat: 0 });
+    this.anims.create({ key: "bird-fly", frames: birdFly, frameRate: 10, repeat: -1 });
   };
 
   private drawBackground = () => {
-    this.background = this.add.tileSprite(0, 0, 0, 0, 'lm-atlas', 'background');
+    this.background = this.add.tileSprite(0, 0, 0, 0, "lm-atlas", "background");
     this.background.setScrollFactor(0); // make the background stationary
     this.background.setOrigin(0, 0); // set the origin of the sprite to the top-left corner
     this.background.setSize(this.worldWidth, this.cameras.main.height);
@@ -246,9 +246,9 @@ export class LittleMuncherScene extends BaseScene<
 
   private createCharacter = () => {
     // create the character sprite
-    this.character = this.physics.add.sprite(0, 0, 'lm-atlas', 'character/idle/1');
+    this.character = this.physics.add.sprite(0, 0, "lm-atlas", "character/idle/1");
     this.handleResizeCharacter();
-    this.character.anims.play('character-walk-back', true);
+    this.character.anims.play("character-walk-back", true);
 
     // change hitbox size
     this.character.setSize(24, 36);
@@ -276,7 +276,7 @@ export class LittleMuncherScene extends BaseScene<
 
     // move world objects down
     this.objectGroup.forEach((sprite) => {
-      const bounced = sprite.getData('bounced'); // todo static type
+      const bounced = sprite.getData("bounced"); // todo static type
       if (!bounced) {
         sprite.y += worldSpeedThisFrame;
       }
@@ -382,7 +382,7 @@ export class LittleMuncherScene extends BaseScene<
       x = column * columnWidth + columnWidth / 2;
     }
 
-    const object = this.physics.add.sprite(x, y, 'lm-atlas', key);
+    const object = this.physics.add.sprite(x, y, "lm-atlas", key);
     object.setScale(this.objectScale);
     const objectBounds = object.getBounds();
 
@@ -414,9 +414,9 @@ export class LittleMuncherScene extends BaseScene<
     const rnd = this.seededRandomByTime();
     if (rnd > 0.3) return; // 30% chance of spawning a bird
 
-    const bird = this.physics.add.sprite(object.x, object.y - 40 * object.scale, 'lm-atlas', 'bird/0');
+    const bird = this.physics.add.sprite(object.x, object.y - 40 * object.scale, "lm-atlas", "bird/0");
     bird.setDepth(1);
-    bird.anims.play('bird-idle', true);
+    bird.anims.play("bird-idle", true);
     object.setScale(this.objectScale);
     bird.setOrigin(0.5, 0.5);
     object.setData(ObjectType.bird, bird);
@@ -476,21 +476,21 @@ export class LittleMuncherScene extends BaseScene<
     bird.setVelocityX(birdXVelocity * 4);
     bird.setVelocityY(birdYVelocity * 4);
     // play sound effect
-    this.sound.play('bird');
+    this.sound.play("bird");
 
     // set bird animation
 
-    const flyOffAnim = bird.play('bird-fly-off', true);
+    const flyOffAnim = bird.play("bird-fly-off", true);
     // when the animation ends, play different animation
     flyOffAnim.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-      bird?.play('bird-fly', true);
+      bird?.play("bird-fly", true);
     });
   };
 
   private readonly crashCharacter = (character: Phaser.Physics.Arcade.Sprite, object: Phaser.Physics.Arcade.Sprite) => {
     object.destroy();
     // todo play explosion animation
-    this.sound.play('hit');
+    this.sound.play("hit");
     // shake screen
     this.cameras.main.shake(100, 0.003);
 
@@ -533,34 +533,34 @@ export class LittleMuncherScene extends BaseScene<
 
     if (success) {
       // play victory animation
-      const victoryAnimations = ['character-victory-front', 'character-victory-back'];
+      const victoryAnimations = ["character-victory-front", "character-victory-back"];
       this.character.anims.play(victoryAnimations[Math.floor(this.seededRandomByTime() * victoryAnimations.length)]);
     } else {
-      this.character.anims.play('character-death');
+      this.character.anims.play("character-death");
     }
 
     const keyboardAvailable = this.input.keyboard?.isActive() && this.game.device.os.desktop;
     let text: string;
     if (success) {
-      text = 'Victory!';
+      text = "Victory!";
     } else {
-      text = 'Game Over';
+      text = "Game Over";
     }
     if (keyboardAvailable) {
       text += ' - press "Space" to restart';
     } else {
-      text += ' - tap to restart';
+      text += " - tap to restart";
     }
     // show a game over message
-    this.gameOverText = this.add.text(0, 0, text, { font: '32px Arial', color: '#000000' });
+    this.gameOverText = this.add.text(0, 0, text, { font: "32px Arial", color: "#000000" });
     this.handlePositionGameOverText();
     this.gameOverText.setOrigin(0.5);
 
     // allow the player to restart the game by pressing a key
     if (keyboardAvailable) {
-      this.input.keyboard!.once('keydown', () => this.resetGame(), this);
+      this.input.keyboard!.once("keydown", () => this.resetGame(), this);
     } else {
-      this.input.once('pointerdown', () => this.resetGame(), this);
+      this.input.once("pointerdown", () => this.resetGame(), this);
     }
   };
 
@@ -586,7 +586,7 @@ export class LittleMuncherScene extends BaseScene<
     this.gameOverFlag = false;
 
     this.characterHealth = this.maxCharacterHealth;
-    this.character.anims.play('character-walk-back', true);
+    this.character.anims.play("character-walk-back", true);
     this.character.clearTint();
 
     this.uiCommunicator.setHealth.next(this.characterHealth);

@@ -1,8 +1,8 @@
-import { Actor } from '../entity/actor/actor';
-import { OwnerComponent } from '../entity/actor/components/owner-component';
-import { ActorAbleToBeBuiltClass } from '../entity/actor/components/builder-component';
-import { TransformComponent } from '../entity/actor/components/transformable-component';
-import { ConstructionSiteComponent } from '../entity/building/construction/construction-site-component';
+import { Actor } from "../entity/actor/actor";
+import { OwnerComponent } from "../entity/actor/components/owner-component";
+import { ActorAbleToBeBuiltClass } from "../entity/actor/components/builder-component";
+import { TransformComponent } from "../entity/actor/components/transformable-component";
+import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
 
 export class GameplayLibrary {
   static getMissingRequirementsFor(ownedActor: Actor, desiredProduct: ActorAbleToBeBuiltClass): Actor | false {

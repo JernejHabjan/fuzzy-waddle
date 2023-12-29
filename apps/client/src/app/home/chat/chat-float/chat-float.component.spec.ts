@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ChatFloatComponent } from './chat-float.component';
-import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
+import { ChatFloatComponent } from "./chat-float.component";
+import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 
-describe('ChatFloatComponent', () => {
+describe("ChatFloatComponent", () => {
   let component: ChatFloatComponent;
   let fixture: ComponentFixture<ChatFloatComponent>;
 
@@ -18,7 +18,7 @@ describe('ChatFloatComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

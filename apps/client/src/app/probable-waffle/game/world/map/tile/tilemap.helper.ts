@@ -1,14 +1,17 @@
-import { MapDefinitions, MapSizeInfo } from '../../const/map-size.info';
-import { TileCenterOptions, TileIndexProperties, TilePossibleProperties } from './types/tile-types';
-import { Vector2Simple } from '../../../library/math/intersection';
-import { IsoHelper } from './iso-helper';
-import { TilePlacementData } from '../../managers/controllers/input/tilemap/tilemap-input.handler';
-import { SceneCommunicatorService } from '../../../../communicators/scene-communicator.service';
-import { MapHelper } from './map-helper';
-import { Scene, Tilemaps } from 'phaser';
+import { MapDefinitions, MapSizeInfo } from "../../const/map-size.info";
+import { TileCenterOptions, TileIndexProperties, TilePossibleProperties } from "./types/tile-types";
+import { IsoHelper } from "./iso-helper";
+import { TilePlacementData } from "../../managers/controllers/input/tilemap/tilemap-input.handler";
+import { SceneCommunicatorService } from "../../../../communicators/scene-communicator.service";
+import { MapHelper } from "./map-helper";
+import { Scene, Tilemaps } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class TilemapHelper {
-  constructor(private readonly mapHelper: MapHelper, private readonly scene: Scene) {}
+  constructor(
+    private readonly mapHelper: MapHelper,
+    private readonly scene: Scene
+  ) {}
 
   static get tileCenterOffset(): number {
     // todo move to IsoHelper
@@ -75,7 +78,7 @@ export class TilemapHelper {
 
     let tilemapLayer: Tilemaps.TilemapLayer;
     if (createBlankLayer) {
-      tilemapLayer = tilemap.createBlankLayer('layer-blank-layer-0', tileSetImages) as Tilemaps.TilemapLayer;
+      tilemapLayer = tilemap.createBlankLayer("layer-blank-layer-0", tileSetImages) as Tilemaps.TilemapLayer;
       tilemapLayer.fill(1);
       // todo here mappedTilesetsToAtlasesWithProperties aren't set correctly - because different this.mapHelper.tilemapLayer is set and tilesets from it retrieved wrong
     } else {

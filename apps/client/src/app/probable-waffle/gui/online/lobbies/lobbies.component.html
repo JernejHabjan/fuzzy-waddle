@@ -5,7 +5,7 @@
     <div>
       <div>
         <button (click)="toggleFilterPopup()" class="btn btn-secondary" type="button">
-          <fa-icon [icon]="faFilter"/>
+          <fa-icon [icon]="faFilter" />
         </button>
         <probable-waffle-map-filter *ngIf="isFilterPopupOpen" (filter)="filter($event)" />
       </div>

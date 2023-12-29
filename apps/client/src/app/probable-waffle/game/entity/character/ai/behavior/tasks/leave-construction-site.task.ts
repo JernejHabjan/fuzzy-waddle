@@ -1,5 +1,5 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { BuilderComponent } from '../../../../actor/components/builder-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { BuilderComponent } from "../../../../actor/components/builder-component";
 
 export class LeaveConstructionSiteTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {

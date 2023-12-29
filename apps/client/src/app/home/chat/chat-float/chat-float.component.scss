@@ -1,4 +1,4 @@
-@import '../../../../styles/_variables';
+@import "../../../../styles/_variables";
 
 .chat-container {
   position: fixed;
@@ -44,7 +44,9 @@
         background-color: white;
         cursor: pointer;
         color: $dark;
-        transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+        transition:
+          background-color 0.1s ease-in-out,
+          color 0.1s ease-in-out;
 
         &:hover {
           background-color: $primary;

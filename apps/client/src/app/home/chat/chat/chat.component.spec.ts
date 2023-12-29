@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ChatComponent } from './chat.component';
-import { ChatService } from '../../../data-access/chat/chat.service';
-import { FormsModule } from '@angular/forms';
-import { AvatarProviderService } from './avatar-provider/avatar-provider.service';
-import { avatarProviderServiceStub } from './avatar-provider/avatar-provider.service.spec';
-import { chatServiceStub } from '../../../data-access/chat/chat.service.spec';
+import { ChatComponent } from "./chat.component";
+import { ChatService } from "../../../data-access/chat/chat.service";
+import { FormsModule } from "@angular/forms";
+import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
+import { avatarProviderServiceStub } from "./avatar-provider/avatar-provider.service.spec";
+import { chatServiceStub } from "../../../data-access/chat/chat.service.spec";
 
-describe('ChatComponent', () => {
+describe("ChatComponent", () => {
   let component: ChatComponent;
   let fixture: ComponentFixture<ChatComponent>;
 
@@ -29,7 +29,7 @@ describe('ChatComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

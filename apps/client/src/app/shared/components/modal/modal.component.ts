@@ -1,16 +1,16 @@
-import { Component, Injectable, Input, TemplateRef, ViewChild } from '@angular/core';
-import { ModalConfig } from './modal-config';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Injectable, Input, TemplateRef, ViewChild } from "@angular/core";
+import { ModalConfig } from "./modal-config";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: 'fuzzy-waddle-modal',
-  templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  selector: "fuzzy-waddle-modal",
+  templateUrl: "./modal.component.html",
+  styleUrls: ["./modal.component.scss"]
 })
 @Injectable()
 export class ModalComponent {
   @Input({ required: true }) public modalConfig!: ModalConfig;
-  @ViewChild('modal') private modalContent!: TemplateRef<ModalComponent>;
+  @ViewChild("modal") private modalContent!: TemplateRef<ModalComponent>;
   private modalRef!: NgbModalRef;
 
   constructor(private modalService: NgbModal) {}

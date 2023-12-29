@@ -2,7 +2,7 @@
   <div><strong>Update Available</strong></div>
   <div>
     <button class="btn btn-sm btn-outline-primary me-2" [disabled]="true" *ngIf="!showVersionReady; else versionReady">
-      <fa-icon [icon]="faSpinner" animation="spin"/>
+      <fa-icon [icon]="faSpinner" animation="spin" />
       Downloading...
     </button>
     <ng-template #versionReady>

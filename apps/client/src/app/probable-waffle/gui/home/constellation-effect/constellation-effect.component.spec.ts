@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ConstellationEffectComponent } from './constellation-effect.component';
-import { Component } from '@angular/core';
+import { ConstellationEffectComponent } from "./constellation-effect.component";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'fuzzy-waddle-constellation-effect', template: '' })
+@Component({ selector: "fuzzy-waddle-constellation-effect", template: "" })
 export class ConstellationEffectTestComponent {}
 
-describe('ConstellationEffectComponent', () => {
+describe("ConstellationEffectComponent", () => {
   let component: ConstellationEffectComponent;
   let fixture: ComponentFixture<ConstellationEffectComponent>;
 
@@ -20,7 +20,7 @@ describe('ConstellationEffectComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

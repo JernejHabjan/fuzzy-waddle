@@ -1,4 +1,4 @@
-@import '../../../../styles/_variables';
+@import "../../../../styles/_variables";
 
 :host {
   display: flex;
@@ -80,7 +80,9 @@
       border-radius: 10px;
       background-color: white;
       cursor: pointer;
-      transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+      transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out;
 
       &:not([disabled]) {
         &:hover {

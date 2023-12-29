@@ -1,18 +1,18 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EditorDrawerComponent } from './editor-drawer.component';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
-import { SceneCommunicatorService } from '../../../communicators/scene-communicator.service';
-import { TileSelectorGroupTestingComponent } from './tile-selector-group/tile-selector-group.component.spec';
-import { AtlasLoaderService } from './atlas-loader.service';
-import { ModalTestComponent } from '../../../../shared/components/modal/modal.component.spec';
-import { atlasLoaderServiceStub } from './atlas-loader.service.spec';
-import { Component } from '@angular/core';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { EditorDrawerComponent } from "./editor-drawer.component";
+import { ActivatedRoute, provideRouter } from "@angular/router";
+import { of } from "rxjs";
+import { SceneCommunicatorService } from "../../../communicators/scene-communicator.service";
+import { TileSelectorGroupTestingComponent } from "./tile-selector-group/tile-selector-group.component.spec";
+import { AtlasLoaderService } from "./atlas-loader.service";
+import { ModalTestComponent } from "../../../../shared/components/modal/modal.component.spec";
+import { atlasLoaderServiceStub } from "./atlas-loader.service.spec";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'probable-waffle-editor-drawer', template: '' })
+@Component({ selector: "probable-waffle-editor-drawer", template: "" })
 export class EditorDrawerTestingComponent {}
 
-describe('EditorDrawerComponent', () => {
+describe("EditorDrawerComponent", () => {
   let component: EditorDrawerComponent;
   let fixture: ComponentFixture<EditorDrawerComponent>;
 
@@ -44,7 +44,7 @@ describe('EditorDrawerComponent', () => {
     SceneCommunicatorService.unsubscribe();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

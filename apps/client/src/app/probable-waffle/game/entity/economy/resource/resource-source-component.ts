@@ -1,8 +1,8 @@
-import { IComponent } from '../../../core/component.service';
-import { ResourceType } from './resource-type';
-import { Actor } from '../../actor/actor';
-import { ContainerComponent } from '../../building/container-component';
-import { Subject } from 'rxjs';
+import { IComponent } from "../../../core/component.service";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { Actor } from "../../actor/actor";
+import { ContainerComponent } from "../../building/container-component";
+import { Subject } from "rxjs";
 
 export class ResourceSourceComponent implements IComponent {
   onResourcesChanged: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
@@ -40,16 +40,16 @@ export class ResourceSourceComponent implements IComponent {
     const newResources = this.currentResources;
 
     console.log(
-      'gatherer',
+      "gatherer",
       gatherer,
-      'extracted',
+      "extracted",
       gatheredAmount,
       this.resourceType,
-      'from',
+      "from",
       this.actor,
-      'oldResources',
+      "oldResources",
       oldResources,
-      'newResources',
+      "newResources",
       newResources
     );
 

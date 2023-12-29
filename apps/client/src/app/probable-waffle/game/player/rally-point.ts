@@ -1,5 +1,5 @@
-import { TilePlacementData } from '../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { RepresentableActor } from '../entity/actor/representable-actor';
+import { TilePlacementData } from "../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { RepresentableActor } from "../entity/actor/representable-actor";
 
 export class RallyPoint {
   constructor(

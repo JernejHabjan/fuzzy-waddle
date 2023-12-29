@@ -1,6 +1,6 @@
-import { BehaviorTree } from './behavior-tree';
-import { DecoratorData } from './behavior/decorators/decorator.interface';
-import { TaskData } from './behavior/tasks/task.interface';
+import { BehaviorTree } from "./behavior-tree";
+import { DecoratorData } from "./behavior/decorators/decorator.interface";
+import { TaskData } from "./behavior/tasks/task.interface";
 
 export class DefaultPawnBehaviorTree extends BehaviorTree {
   name: string;
@@ -9,7 +9,7 @@ export class DefaultPawnBehaviorTree extends BehaviorTree {
 
   constructor() {
     super();
-    this.name = 'DefaultPawnBehaviorTree';
+    this.name = "DefaultPawnBehaviorTree";
 
     this.decoratorData = new DecoratorData(this.owner, this.blackboard);
     this.taskData = new TaskData(this.owner, this.blackboard);

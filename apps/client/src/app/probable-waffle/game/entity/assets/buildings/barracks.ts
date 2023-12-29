@@ -1,18 +1,18 @@
-import { Building, BuildingInfoDefinition } from './building';
-import { ProductionComponent } from '../../building/production/production-component';
-import { Warrior, WarriorDefinition } from '../characters/warrior';
-import { Worker } from '../characters/worker';
-import { CostData } from '../../building/production/production-cost-component';
-import { PaymentType } from '../../building/payment-type';
-import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { ContainerComponent } from '../../building/container-component';
+import { Building, BuildingInfoDefinition } from "./building";
+import { ProductionComponent } from "../../building/production/production-component";
+import { Warrior, WarriorDefinition } from "../characters/warrior";
+import { Worker } from "../characters/worker";
+import { CostData } from "../../building/production/production-cost-component";
+import { PaymentType } from "../../building/payment-type";
+import { ContainerComponent } from "../../building/container-component";
+import { Resources, ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
-    textureName: 'warrior',
+    textureName: "warrior",
     spriteSheet: {
-      name: 'barracks',
-      path: 'general/barracks/',
+      name: "barracks",
+      path: "general/barracks/",
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64
@@ -48,7 +48,7 @@ export const BarracksDefinition: BuildingInfoDefinition = {
     refundFactor: 0.5,
     startImmediately: false,
     gridWidthAndHeight: { width: 2, height: 2 },
-    finishedSound: 'building-finished' // todo
+    finishedSound: "building-finished" // todo
   }
 };
 
@@ -68,7 +68,7 @@ export class Barracks extends Building {
 
     setTimeout(() => {
       this.productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });
-      console.log('started production of 1 warrior');
+      console.log("started production of 1 warrior");
     }, 1000);
   }
 }

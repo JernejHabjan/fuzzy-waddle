@@ -1,7 +1,7 @@
-import { GameObjects } from 'phaser';
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../../actor/actor';
-import { HealthComponent } from './health-component';
+import { GameObjects } from "phaser";
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../../actor/actor";
+import { HealthComponent } from "./health-component";
 
 export type HealthBarOptions = {
   spriteDepth: number;
@@ -34,7 +34,7 @@ export class HealthUiComponent implements IComponent {
 
   private get barXY() {
     if (!this.bar) {
-      throw new Error('Bar not initialized');
+      throw new Error("Bar not initialized");
     }
 
     // set this health-bar to be above the player center horizontally

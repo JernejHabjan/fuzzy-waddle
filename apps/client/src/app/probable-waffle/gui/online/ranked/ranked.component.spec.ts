@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { RankedComponent } from './ranked.component';
-import { FormsModule } from '@angular/forms';
-import { Component } from '@angular/core';
+import { RankedComponent } from "./ranked.component";
+import { FormsModule } from "@angular/forms";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'fuzzy-waddle-ranked', template: '' })
+@Component({ selector: "fuzzy-waddle-ranked", template: "" })
 export class RankedTestingComponent {}
 
-describe('RankedComponent', () => {
+describe("RankedComponent", () => {
   let component: RankedComponent;
   let fixture: ComponentFixture<RankedComponent>;
 
@@ -22,7 +22,7 @@ describe('RankedComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,10 +1,10 @@
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../../actor/actor';
-import { ResourceType } from './resource-type';
-import { ContainerComponent } from '../../building/container-component';
-import { OwnerComponent } from '../../actor/components/owner-component';
-import { PlayerResourcesComponent } from '../../../world/managers/controllers/player-resources-component';
-import { Subject } from 'rxjs';
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../../actor/actor";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ContainerComponent } from "../../building/container-component";
+import { OwnerComponent } from "../../actor/components/owner-component";
+import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
+import { Subject } from "rxjs";
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent implements IComponent {
@@ -13,7 +13,10 @@ export class ResourceDrainComponent implements IComponent {
   private gathererMustEnter = false;
   private gathererCapacity = 0;
 
-  constructor(private readonly actor: Actor, private readonly resourceTypes: ResourceType[]) {}
+  constructor(
+    private readonly actor: Actor,
+    private readonly resourceTypes: ResourceType[]
+  ) {}
 
   init(): void {
     this.containerComponent = this.actor.components.findComponentOrNull(ContainerComponent);
@@ -26,7 +29,7 @@ export class ResourceDrainComponent implements IComponent {
    */
   returnResources(gatherer: Actor, resourceType: ResourceType, amount: number): number {
     const ownerComponent = this.actor.components.findComponent(OwnerComponent);
-    if (!ownerComponent.playerController) throw new Error('ownerComponent.playerController is null');
+    if (!ownerComponent.playerController) throw new Error("ownerComponent.playerController is null");
     const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
 
     const returnedResources = playerResourcesComponent.addResource(resourceType, amount);

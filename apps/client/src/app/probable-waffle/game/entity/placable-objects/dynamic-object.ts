@@ -1,11 +1,14 @@
-import { Scene } from 'phaser';
-import { PlayerPlaceableGameObject } from './static-object';
-import { SpriteHelper } from '../actor/sprite-helper';
-import { IsoHelper } from '../../world/map/tile/iso-helper';
-import { GameObjectsHelper } from '../../world/map/game-objects-helper';
+import { Scene } from "phaser";
+import { PlayerPlaceableGameObject } from "./static-object";
+import { SpriteHelper } from "../actor/sprite-helper";
+import { IsoHelper } from "../../world/map/tile/iso-helper";
+import { GameObjectsHelper } from "../../world/map/game-objects-helper";
 
 export class DynamicObjectHelper {
-  constructor(private readonly gameObjectsHelper: GameObjectsHelper, private readonly scene: Scene) {}
+  constructor(
+    private readonly gameObjectsHelper: GameObjectsHelper,
+    private readonly scene: Scene
+  ) {}
 
   createDynamicObjectLayer() {
     this.gameObjectsHelper.dynamicObjects = [];

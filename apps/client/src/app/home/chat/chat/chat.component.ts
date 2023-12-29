@@ -1,21 +1,24 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ChatService } from '../../../data-access/chat/chat.service';
-import { ChatMessage } from '@fuzzy-waddle/api-interfaces';
-import { AvatarProviderService } from './avatar-provider/avatar-provider.service';
-import { Subscription } from 'rxjs';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ChatService } from "../../../data-access/chat/chat.service";
+import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
+import { Subscription } from "rxjs";
 
 @Component({
-  selector: 'fuzzy-waddle-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  selector: "fuzzy-waddle-chat",
+  templateUrl: "./chat.component.html",
+  styleUrls: ["./chat.component.scss"]
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  @ViewChild('chatBody') chatBody!: ElementRef;
-  message = '';
+  @ViewChild("chatBody") chatBody!: ElementRef;
+  message = "";
   messages: ChatMessage[] = [];
   private messageSubscription?: Subscription;
 
-  constructor(private chatService: ChatService, protected avatarProviderService: AvatarProviderService) {}
+  constructor(
+    private chatService: ChatService,
+    protected avatarProviderService: AvatarProviderService
+  ) {}
 
   ngOnInit(): void {
     this.messageSubscription = this.chatService.getMessage()?.subscribe((msg: ChatMessage) => {
@@ -26,7 +29,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       }, 0);
     });
 
-    this.chatService.sendMessage(this.chatService.createMessage('Joined the chat'));
+    this.chatService.sendMessage(this.chatService.createMessage("Joined the chat"));
   }
 
   sendMessage() {
@@ -34,11 +37,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       return;
     }
     this.chatService.sendMessage(this.chatService.createMessage(this.message));
-    this.message = '';
+    this.message = "";
   }
 
   ngOnDestroy(): void {
-    this.chatService.sendMessage(this.chatService.createMessage('Left the chat'));
+    this.chatService.sendMessage(this.chatService.createMessage("Left the chat"));
     this.messageSubscription?.unsubscribe();
   }
 }

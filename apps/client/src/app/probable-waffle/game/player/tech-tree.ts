@@ -39,7 +39,11 @@ export enum TechTreeEffectType {
 }
 
 export class TechTree {
-  constructor(public techTreeId: string, public name: string, public techTreeNodes: TechTreeNode[]) {}
+  constructor(
+    public techTreeId: string,
+    public name: string,
+    public techTreeNodes: TechTreeNode[]
+  ) {}
 }
 
 export class TechTreeNode {
@@ -61,45 +65,45 @@ export class TechTreeComponent {
   //    2. requires previous tech tree node
   //    3. increases unit production speed by 10%
   // 2. Militia unit
-  techTreeBarracks = new TechTree('12313', 'Barracks', [
+  techTreeBarracks = new TechTree("12313", "Barracks", [
     new TechTreeNode(
-      '134343',
-      'Unit Production Speed',
-      'Unit Production Speed',
+      "134343",
+      "Unit Production Speed",
+      "Unit Production Speed",
       TechTreeNodeType.TechTreeNodeType_Research,
       [
         new TechTreeDependency(
-          '434343',
+          "434343",
           null,
-          'Requires 10 units of resource X',
+          "Requires 10 units of resource X",
           TechTreeDependencyType.TechTreeDependencyType_Resource,
           10
         ),
         new TechTreeDependency(
-          '434',
-          '434343',
-          'requires previous tech tree node',
+          "434",
+          "434343",
+          "requires previous tech tree node",
           TechTreeDependencyType.TechTreeDependencyType_TechTreeNode,
           null
         )
       ],
       [
         new TechTreeEffect(
-          '4344343',
-          'Increases unit production speed by 10%',
+          "4344343",
+          "Increases unit production speed by 10%",
           TechTreeEffectType.TechTreeEffectType_TechTreeNode,
           10
         )
       ]
     ),
-    new TechTreeNode('4343', 'Militia', 'Militia', TechTreeNodeType.TechTreeNodeType_Unit, [], [])
+    new TechTreeNode("4343", "Militia", "Militia", TechTreeNodeType.TechTreeNodeType_Unit, [], [])
   ]);
 
   // below techTree specifies what alien structures are available
   // it attaches to playerController and is used to determine what structures are available to build
   // 1. Alien Barracks structure
-  techTreeAlien = new TechTree('12313', 'Alien', [
-    new TechTreeNode('432', 'Alien Barracks', 'Alien Barracks', TechTreeNodeType.TechTreeNodeType_Structure, [], [])
+  techTreeAlien = new TechTree("12313", "Alien", [
+    new TechTreeNode("432", "Alien Barracks", "Alien Barracks", TechTreeNodeType.TechTreeNodeType_Structure, [], [])
   ]);
 
   checkHasAllTechTreeDependencies = (techTreeDependencies: TechTreeDependency[], techTree: TechTree) => {

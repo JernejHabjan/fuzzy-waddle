@@ -1,12 +1,12 @@
-import { GameObjects, Scene } from 'phaser';
-import { IsoHelper } from '../../world/map/tile/iso-helper';
-import { MapSizeInfo } from '../../world/const/map-size.info';
-import { ManualTilesHelper } from '../../world/map/tile/manual-tiles/manual-tiles.helper';
-import { TilemapHelper } from '../../world/map/tile/tilemap.helper';
-import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { PlaceableAtlasProperties } from '../placable-objects/static-object';
-import { WarriorDefinition } from '../assets/characters/warrior';
-import { Vector2Simple } from '../../library/math/intersection';
+import { GameObjects, Scene } from "phaser";
+import { IsoHelper } from "../../world/map/tile/iso-helper";
+import { MapSizeInfo } from "../../world/const/map-size.info";
+import { ManualTilesHelper } from "../../world/map/tile/manual-tiles/manual-tiles.helper";
+import { TilemapHelper } from "../../world/map/tile/tilemap.helper";
+import { TilePlacementData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { PlaceableAtlasProperties } from "../placable-objects/static-object";
+import { WarriorDefinition } from "../assets/characters/warrior";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export type SpritePlacementData = {
   textureName: string;
@@ -50,11 +50,11 @@ export class SpriteHelper {
     sprite.setInteractive();
     sprite.depth = spriteWorldPlacementInfo.depth;
 
-    const [imageName] = frame.split('.');
+    const [imageName] = frame.split(".");
     if (imageName === WarriorDefinition.textureMapDefinition.textureName) {
       // todo
       this.placeSpriteAsIs(sprite);
-    } else if (imageName === 'barracks') {
+    } else if (imageName === "barracks") {
       // todo just for test
       this.rescaleSpriteToFitTwoTiles(sprite);
     } else {

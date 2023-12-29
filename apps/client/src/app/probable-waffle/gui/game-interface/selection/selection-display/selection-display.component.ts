@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { GameObjectSelection, SceneCommunicatorService } from '../../../../communicators/scene-communicator.service';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { GameObjectSelection, SceneCommunicatorService } from "../../../../communicators/scene-communicator.service";
+import { Subscription } from "rxjs";
 
 @Component({
-  selector: 'fuzzy-waddle-selection-display',
-  templateUrl: './selection-display.component.html',
-  styleUrls: ['./selection-display.component.scss']
+  selector: "fuzzy-waddle-selection-display",
+  templateUrl: "./selection-display.component.html",
+  styleUrls: ["./selection-display.component.scss"]
 })
 export class SelectionDisplayComponent implements OnInit, OnDestroy {
   selection: GameObjectSelection[] = [];
@@ -23,7 +23,7 @@ export class SelectionDisplayComponent implements OnInit, OnDestroy {
 
   formatAtlasFileName(filename: string) {
     // replace "_" with " "
-    return filename.replace(/_/g, ' ');
+    return filename.replace(/_/g, " ");
   }
 
   select(s: GameObjectSelection) {

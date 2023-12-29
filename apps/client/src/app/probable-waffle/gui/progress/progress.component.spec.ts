@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ProgressComponent } from './progress.component';
+import { ProgressComponent } from "./progress.component";
 
-describe('ProfileComponent', () => {
+describe("ProfileComponent", () => {
   let component: ProgressComponent;
   let fixture: ComponentFixture<ProgressComponent>;
 
@@ -16,7 +16,7 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

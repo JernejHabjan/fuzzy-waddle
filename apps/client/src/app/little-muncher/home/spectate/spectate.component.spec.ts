@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SpectateComponent } from './spectate.component';
-import { SpectateService } from './spectate.service';
-import { spectateServiceStub } from './spectate.service.spec';
-import { ServerHealthService } from '../../../shared/services/server-health.service';
-import { serverHealthServiceStub } from '../../../shared/services/server-health.service.spec';
-import { Component } from '@angular/core';
+import { SpectateComponent } from "./spectate.component";
+import { SpectateService } from "./spectate.service";
+import { spectateServiceStub } from "./spectate.service.spec";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
+import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
+import { Component } from "@angular/core";
 
-@Component({ selector: 'little-muncher-spectate', template: '' })
+@Component({ selector: "little-muncher-spectate", template: "" })
 export class SpectateTestComponent {}
 
-describe('SpectateComponent', () => {
+describe("SpectateComponent", () => {
   let component: SpectateComponent;
   let fixture: ComponentFixture<SpectateComponent>;
 
@@ -28,7 +28,7 @@ describe('SpectateComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

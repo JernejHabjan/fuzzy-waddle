@@ -1,4 +1,4 @@
-import { LittleMuncherScene } from './little-muncher-scene';
+import { LittleMuncherScene } from "./little-muncher-scene";
 
 export class Pause {
   constructor(private readonly littleMuncherScene: LittleMuncherScene) {
