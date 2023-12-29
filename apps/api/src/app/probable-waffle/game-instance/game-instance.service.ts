@@ -257,14 +257,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const openSlot = player.playerController.data.playerDefinition.playerType === ProbableWafflePlayerType.NetworkOpen;
     if (openSlot) {
       console.log(
-        'Probable Waffle - Closed open slot ' +
+        "Probable Waffle - Closed open slot " +
           player.playerController.data.playerDefinition.player.playerPosition +
-      ' added on map 'ap " +
+        ' added on map ' " +
           this.getMapName(gameInstance)
       );
     } else {
       console.log(
-  'Probable Waffle - Player 'ayer " + gameInstance.players.len' left from map ' map " + this.getMapName(gameInstance)
+        'Probable Waffle - Player ' + gameInstance.players.length + ' left from map ' + this.getMapName(gameInstance)
       );
     }
     this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "left"));
@@ -284,7 +284,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       console.log(
         'Probable Waffle - New open slot ' +
           player.playerController.data.playerDefinition.player.playerPosition +
-          ' added on map ' +
+        ' added on map ' +
           this.getMapName(gameInstance)
       );
     } else {
