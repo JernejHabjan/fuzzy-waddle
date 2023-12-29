@@ -9,9 +9,10 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { ComponentsModule } from "../../../shared/components/components.module";
 import { MapFilterComponent } from "./lobbies/map-filter/map-filter.component";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [OnlineComponent, LobbiesComponent, HostComponent, RankedComponent],
-  imports: [CommonModule, SkirmishModule, NgbModule, FormsModule, ComponentsModule, MapFilterComponent]
+  imports: [CommonModule, SkirmishModule, NgbModule, FormsModule, ComponentsModule, MapFilterComponent, FaIconComponent]
 })
 export class OnlineModule {}

@@ -51,15 +51,11 @@ export class ProbableWaffleGameInstance extends GameInstance<
   }
 }
 
-export interface ProbableWaffleGameInstanceDataDto extends GameInstanceDataDto {
-  joinable: boolean;
-}
-
-export interface ProbableWaffleJoinDto {
+export interface ProbableWaffleJoinDto extends GameInstanceDataDto {
   gameInstanceId: string;
   type: "player" | "spectator";
 }
 
-export interface ProbableWaffleLeaveDto {
+export interface ProbableWaffleLeaveDto extends GameInstanceDataDto {
   gameInstanceId: string;
 }

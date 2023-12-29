@@ -9,7 +9,12 @@ import {
   RoomAction,
   ProbableWaffleRoomEvent,
   SpectatorAction,
-  ProbableWaffleSpectatorEvent
+  ProbableWaffleSpectatorEvent,
+  ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleSpectator,
+  ProbableWafflePlayer,
+  PlayerAction,
+  ProbableWafflePlayerEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { User } from "../../../users/users.service";
@@ -19,7 +24,7 @@ export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
     return undefined;
   },
-  createGameInstance(body: GameInstanceDataDto, user: User) {
+  createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
     //
   },
   stopGameInstance(body: GameInstanceDataDto, user: User) {
@@ -31,7 +36,11 @@ export const GameInstanceServiceStub = {
   getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): ProbableWaffleRoomEvent {
     return undefined;
   },
-  getSpectatorEvent(user: User, gameInstanceId: string, action: SpectatorAction): ProbableWaffleSpectatorEvent {
+  getSpectatorEvent(
+    spectator: ProbableWaffleSpectator,
+    gameInstanceId: string,
+    action: SpectatorAction
+  ): ProbableWaffleSpectatorEvent {
     return undefined;
   },
   getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]> {
@@ -49,7 +58,11 @@ export const GameInstanceServiceStub = {
   stopLevel(body: GameInstanceDataDto, user: User) {
     //
   },
-  getPlayerEvent(user: User, player: any, gameInstanceId: string, action: any): ProbableWaffleSpectatorEvent {
+  getPlayerEvent(
+    player: ProbableWafflePlayer,
+    gameInstanceId: string,
+    action: PlayerAction
+  ): ProbableWafflePlayerEvent {
     return undefined;
   }
 } satisfies GameInstanceServiceInterface;

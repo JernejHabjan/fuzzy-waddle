@@ -10,6 +10,7 @@ import {
   BaseGameMode,
   BaseGameState,
   BasePlayer,
+  BasePlayerControllerData,
   BaseSpectator,
   BaseSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
@@ -23,7 +24,7 @@ export class BaseScene<
     TGameModeData extends BaseData = BaseData,
     TGameMode extends BaseGameMode<TGameModeData> = BaseGameMode<TGameModeData>,
     TPlayerStateData extends BaseData = BaseData,
-    TPlayerControllerData extends BaseData = BaseData,
+    TPlayerControllerData extends BasePlayerControllerData = BasePlayerControllerData,
     TPlayer extends BasePlayer<TPlayerStateData, TPlayerControllerData> = BasePlayer<
       TPlayerStateData,
       TPlayerControllerData
@@ -113,7 +114,7 @@ export class BaseScene<
 
   get playerOrNull(): TPlayer | null {
     const player = this.baseGameData.gameInstance.players.find(
-      (player) => player.userId === this.baseGameData.user.userId
+      (player) => player.playerController.data.userId === this.baseGameData.user.userId
     );
     if (!player) return null;
     return player as TPlayer;

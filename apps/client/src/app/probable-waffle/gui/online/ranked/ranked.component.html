@@ -1,44 +1,67 @@
 <div class="ranked">
   <div class="ranked-tooltip">Please select your preferences then press the Search button to find a Ranked Match</div>
+  <div class="general-title">Number of players</div>
+  <div class="text-center">
+    @for (nr of nrOfPlayersOptions;track nr) {
+    <input
+      [disabled]="searching"
+      [checked]="nr === rankedOptions.nrOfPlayers"
+      name="nrOfPlayers"
+      type="radio"
+      value="{{ nr }}"
+    />&nbsp;{{ nr }}
+    }
+  </div>
   <div>
-    <div class="general-title">Number of players</div>
+    <div class="general-title">Faction</div>
     <div class="text-center">
-      @for (nr of nrOfPlayersOptions;track nr) {
-      <input [disabled]='searching' [checked]="nr === rankedOptions.nrOfPlayers" name="nrOfPlayers" type="radio" value="{{ nr }}" />&nbsp;{{
-        nr
-      }}
-      }
+      <select
+        [(ngModel)]="rankedOptions.factionType"
+        class="form-select"
+        [disabled]="searching"
+        (change)="factionChanged()"
+      >
+        <option [ngValue]="null">Random</option>
+        <option *ngFor="let factionType of FactionDefinitions.factions" [ngValue]="factionType.value.factionType">
+          {{ factionType.value.name }}
+        </option>
+      </select>
     </div>
-    <div>
-      <div class="general-title">Faction</div>
-      <div class="text-center">
-        <select [(ngModel)]="rankedOptions.factionType" class="form-select" [disabled]='searching' (change)="factionChanged()">
-          <option [ngValue]="null">Random</option>
-          <option *ngFor="let factionType of FactionDefinitions.factions" [ngValue]="factionType.value.factionType">
-            {{ factionType.value.name }}
-          </option>
-        </select>
-      </div>
+  </div>
+  <div>
+    <div class="general-title">Map Pool</div>
+    <div class="text-center grid-container" style="max-height: 300px; overflow-y: auto">
+      <ng-container *ngFor="let level of rankedOptions.levels">
+        <input [disabled]="searching" [checked]="level.checked" name="map" type="checkbox" value="{{ level.name }}" />
+        <img [src]="level.imagePath" class="m-auto" style="max-height: 50px; width: 50px" />
+        <span>{{ level.name }}</span>
+      </ng-container>
     </div>
-    <div>
-      <div class="general-title">Map Pool</div>
-      <div class="text-center grid-container" style="max-height: 300px; overflow-y: auto">
-        <ng-container *ngFor="let level of rankedOptions.levels">
-          <input [disabled]='searching' [checked]="level.checked" name="map" type="checkbox" value="{{ level.name }}" />
-          <img [src]="level.imagePath" class='m-auto' style="max-height: 50px; width: 50px" />
-          <span>{{ level.name }}</span>
-        </ng-container>
-      </div>
-    </div>
+  </div>
 
-    <div class="w-100 mt-4" style="text-align: right">
-      <button *ngIf="searching" (click)="cancelSearching()" class="btn btn-danger me-2" type="button" style="min-width: 100px">
-        Cancel
-      </button>
-      <button (click)="startSearching()" [disabled]="searching || rankedOptions.levels.length === 0" class="btn btn-primary" type="button" style="min-width: 150px">
-        <ng-container *ngIf="searching">Searching...</ng-container>
-        <ng-container *ngIf="!searching">Search</ng-container>
-      </button>
-    </div>
+  <div class="w-100 mt-4" style="text-align: right">
+    <button
+      *ngIf="searching"
+      (click)="cancelSearching()"
+      class="btn btn-danger me-2"
+      type="button"
+      style="min-width: 100px"
+    >
+      Cancel
+    </button>
+    <button
+      (click)="startSearching()"
+      [disabled]="searching || rankedOptions.levels.length === 0"
+      class="btn btn-primary"
+      type="button"
+      style="min-width: 150px"
+    >
+      <ng-container *ngIf="searching">Searching...</ng-container>
+      <ng-container *ngIf="!searching">Search</ng-container>
+    </button>
+  </div>
+
+  <div class="ranked-tooltip mt-4">
+    There are currently {{ roomsService.playersSearchingForGame }} players waiting for a Ranked Match and {{ roomsService.gamesInProgress }} ranked games in progress
   </div>
 </div>

@@ -1,12 +1,13 @@
 import { ChangeDetectorRef, Component, inject, Input, OnInit, ViewChild } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import {
+  PlayerLobbyDefinition,
+  PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
-  ProbableWafflePlayerType,
+  ProbableWaffleGameInstanceType,
   ProbableWaffleGameModeLobby,
   ProbableWaffleMapData,
-  PositionPlayerDefinition,
-  PlayerLobbyDefinition
+  ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { Router } from "@angular/router";
@@ -66,7 +67,7 @@ export class SkirmishComponent implements OnInit {
   private readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
-    await this.gameInstanceClientService.createGameInstance(this.joinable);
+    await this.gameInstanceClientService.createGameInstance(this.joinable, ProbableWaffleGameInstanceType.SelfHosted);
   }
 
   protected playerCountChanged() {
@@ -111,7 +112,8 @@ export class SkirmishComponent implements OnInit {
       map: map.map.id,
       mapTuning: lobby.mapTuning,
       winConditions: lobby.winConditions,
-      difficultyModifiers: lobby.difficultyModifiers
+      difficultyModifiers: lobby.difficultyModifiers,
+      maxPlayers: map.allPlayerPositions.length
     });
   }
 

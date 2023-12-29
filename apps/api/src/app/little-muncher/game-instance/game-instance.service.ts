@@ -25,7 +25,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   async startGame(body: GameInstanceDataDto, user: User) {
     const newGameInstance = new LittleMuncherGameInstance({
       gameInstanceMetadataData: { gameInstanceId: body.gameInstanceId, createdBy: user.id },
-      players: [{ userId: user.id }]
+      players: [{ playerControllerData: { userId: user.id } }]
     });
     this.openGameInstances.push(newGameInstance);
     console.log("game instance created on server", this.openGameInstances.length);

@@ -1,4 +1,5 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
 
 @Component({
   selector: "fuzzy-waddle-online",
@@ -7,6 +8,7 @@ import { Component } from "@angular/core";
 })
 export class OnlineComponent {
   protected selectedTab: string = "join";
+  protected readonly serverHealthService = inject(ServerHealthService);
 
   protected selectTab(tab: string) {
     this.selectedTab = tab;

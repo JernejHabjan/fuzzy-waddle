@@ -1,11 +1,17 @@
-import { BaseData } from '../data';
+import { BaseData } from "../data";
 
-export abstract class BasePlayerController<TData extends BaseData = BaseData> {
+export interface BasePlayerControllerData extends BaseData {
+  userId: string | null;
+}
+
+export abstract class BasePlayerController<TData extends BasePlayerControllerData = BasePlayerControllerData> {
   protected constructor(public data: TData) {
     if (!data) this.resetData();
   }
 
   resetData() {
-    this.data = {} as TData;
+    this.data = {
+      userId: null
+    } as TData;
   }
 }

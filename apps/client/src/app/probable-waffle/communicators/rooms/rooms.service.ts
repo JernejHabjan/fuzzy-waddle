@@ -2,13 +2,15 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
+  GameSessionState,
+  ProbableWaffleGameInstanceType,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGetRoomsDto,
   ProbableWaffleMapEnum,
   ProbableWaffleRoom,
   ProbableWaffleRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { filter, firstValueFrom, Observable, Subscription } from "rxjs";
+import { firstValueFrom, Observable, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
 import { AuthService } from "../../../auth/auth.service";
@@ -30,6 +32,24 @@ export class RoomsService implements RoomsServiceInterface {
     private readonly authenticatedSocketService: AuthenticatedSocketService,
     private readonly gameInstanceClientService: GameInstanceClientService
   ) {}
+
+  get playersSearchingForGame(): number {
+    return this.rooms.filter(
+      (room) =>
+        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Ranked &&
+        room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
+        room.players.length < room.gameMode.data.maxPlayers
+    ).length;
+  }
+
+  get gamesInProgress(): number {
+    return this.rooms.filter(
+      (room) =>
+        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Ranked &&
+        room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
+        room.gameInstanceMetadataData.sessionState === GameSessionState.InProgress
+    ).length;
+  }
 
   /**
    * we need to listen to room events, so we know if we're spectating a room that is removed
@@ -68,6 +88,11 @@ export class RoomsService implements RoomsServiceInterface {
       maps: maps
     };
     return await firstValueFrom(this.httpClient.post<ProbableWaffleRoom[]>(url, body));
+  }
+
+  async init(): Promise<void> {
+    await this.initiallyPullRooms();
+    this.listenToRoomEvents();
   }
 
   async initiallyPullRooms(): Promise<void> {

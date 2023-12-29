@@ -9,7 +9,7 @@ import {
   ProbableWaffleAddSpectatorDto,
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceDataDto,
+  ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGetRoomsDto,
   ProbableWaffleJoinDto,
   ProbableWafflePlayerLeftDto,
@@ -23,7 +23,7 @@ export class GameInstanceController {
 
   @Post("start-game")
   @UseGuards(SupabaseAuthGuard)
-  async startGame(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleGameInstanceDataDto): Promise<void> {
+  async startGame(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleGameInstanceMetadataData): Promise<void> {
     await this.gameInstanceService.createGameInstance(body, user);
   }
 

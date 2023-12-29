@@ -1,4 +1,4 @@
-@import '../../../../styles/_variables.scss';
+@import "../../../../styles/_variables.scss";
 
 /* Start with resetting the list style */
 .nav-tabs {
@@ -24,4 +24,11 @@
 /* Coloring for the active state */
 .nav-tabs li a.active {
   color: $primary;
+}
+
+.server-health {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }

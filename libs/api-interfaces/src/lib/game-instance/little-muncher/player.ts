@@ -1,8 +1,8 @@
-import { LittleMuncherBoost, LittleMuncherPosition } from './data';
-import { BasePlayer } from '../player/player';
-import { BaseData } from '../data';
-import { BasePlayerController } from '../player/player-controller';
-import { BasePlayerState } from '../player/player-state';
+import { LittleMuncherBoost, LittleMuncherPosition } from "./data";
+import { BasePlayer } from "../player/player";
+import { BaseData } from "../data";
+import { BasePlayerController, BasePlayerControllerData } from "../player/player-controller";
+import { BasePlayerState } from "../player/player-state";
 
 export class LittleMuncherPlayer extends BasePlayer<
   LittleMuncherPlayerStateData,
@@ -38,4 +38,4 @@ export class LittleMuncherPlayerController extends BasePlayerController<LittleMu
   }
 }
 
-export interface LittleMuncherPlayerControllerData {}
+export interface LittleMuncherPlayerControllerData extends BasePlayerControllerData {}

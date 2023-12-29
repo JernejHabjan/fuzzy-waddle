@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { FactionType, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { RoomsService } from "../../../communicators/rooms/rooms.service";
 
 type RankedLevel = { id: number; name: string; checked: boolean; imagePath: string };
 type RankedOptions = {
@@ -13,10 +14,11 @@ type RankedOptions = {
   templateUrl: "./ranked.component.html",
   styleUrls: ["./ranked.component.scss"]
 })
-export class RankedComponent {
+export class RankedComponent implements OnInit, OnDestroy {
   protected readonly FactionDefinitions = FactionDefinitions;
   protected searching = false;
   protected readonly rankedOptions: RankedOptions;
+  protected readonly roomsService = inject(RoomsService);
 
   constructor() {
     this.rankedOptions = {
@@ -24,6 +26,14 @@ export class RankedComponent {
       nrOfPlayers: this.nrOfPlayersOptions[0],
       levels: this.levels
     };
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.roomsService.init();
+  }
+
+  ngOnDestroy(): void {
+    this.roomsService.destroy();
   }
 
   private get lastPlayedFactionType(): FactionType | null {

@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import {
   ProbableWaffleLevels,
+  ProbableWaffleMapData,
   ProbableWaffleMapEnum,
   ProbableWafflePlayerType,
   ProbableWaffleRoom
@@ -8,14 +9,15 @@ import {
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "fuzzy-waddle-lobbies",
   templateUrl: "./lobbies.component.html",
   styleUrls: ["./lobbies.component.scss"]
 })
-export class LobbiesComponent implements OnInit {
-  protected readonly ProbableWaffleLevels = ProbableWaffleLevels;
+export class LobbiesComponent implements OnInit, OnDestroy {
+  protected readonly faFilter = faFilter;
   protected isFilterPopupOpen: boolean = false;
   protected selectedRoom?: ProbableWaffleRoom;
   protected readonly roomsService = inject(RoomsService);
@@ -23,13 +25,12 @@ export class LobbiesComponent implements OnInit {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
 
   async ngOnInit(): Promise<void> {
-    await this.pull();
+    await this.roomsService.init();
   }
 
-  private async pull() {
-    await this.roomsService.initiallyPullRooms();
+  ngOnDestroy(): void {
+    this.roomsService.destroy();
   }
-
   protected canAddSelfAsPlayer(): boolean {
     // check if the selected room is joinable by checking if player type is NetworkOpen
     if (!this.selectedRoom) return false;
@@ -58,12 +59,22 @@ export class LobbiesComponent implements OnInit {
     this.selectedRoom = room;
   }
 
-  toggleFilterPopup(): void {
+  protected toggleFilterPopup(): void {
     this.isFilterPopupOpen = !this.isFilterPopupOpen;
   }
 
-  async filter(maps: ProbableWaffleMapEnum[]): Promise<void> {
+  protected async filter(maps: ProbableWaffleMapEnum[]): Promise<void> {
     // Handle the filter logic here
     await this.roomsService.getRooms(maps);
+  }
+
+  protected get mapInfo(): null | ProbableWaffleMapData {
+    if (!this.selectedRoom) return null;
+    return this.mapInfoOfMap(this.selectedRoom.gameMode.data.map);
+  }
+
+  protected mapInfoOfMap(map?: ProbableWaffleMapEnum): null | ProbableWaffleMapData {
+    if (!map) return null;
+    return ProbableWaffleLevels[map];
   }
 }

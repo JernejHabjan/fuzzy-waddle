@@ -1,6 +1,6 @@
 import { BasePlayer } from "../player/player";
 import { BaseData } from "../data";
-import { BasePlayerController } from "../player/player-controller";
+import { BasePlayerController, BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
 
 export class ProbableWafflePlayer extends BasePlayer<
@@ -33,7 +33,7 @@ export class ProbableWafflePlayerController extends BasePlayerController<Probabl
   }
 }
 
-export interface ProbableWafflePlayerControllerData {
+export interface ProbableWafflePlayerControllerData extends BasePlayerControllerData {
   playerDefinition?: PositionPlayerDefinition;
 }
 

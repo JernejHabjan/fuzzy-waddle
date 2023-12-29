@@ -11,7 +11,7 @@ import {
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceDataDto,
+  ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGetRoomsDto,
   ProbableWaffleJoinDto,
   ProbableWaffleLevels,
@@ -39,9 +39,9 @@ export class GameInstanceService implements GameInstanceServiceInterface {
 
   openGameInstances: ProbableWaffleGameInstance[] = [];
 
-  async createGameInstance(body: ProbableWaffleGameInstanceDataDto, user: User) {
+  async createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
     const newGameInstance = new ProbableWaffleGameInstance({
-      gameInstanceMetadataData: { gameInstanceId: body.gameInstanceId, createdBy: user.id, joinable: body.joinable }
+      gameInstanceMetadataData
     });
     this.openGameInstances.push(newGameInstance);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(newGameInstance, "added"));
@@ -84,21 +84,21 @@ export class GameInstanceService implements GameInstanceServiceInterface {
           null
         );
         const player = gameInstance.initPlayer(
-          user.id,
           {
             score: 0
           } satisfies ProbableWafflePlayerStateData,
           {
+            userId: user.id,
             playerDefinition
           } satisfies ProbableWafflePlayerControllerData
         );
-        this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "joined"));
+        this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(player, body.gameInstanceId, "joined"));
         break;
       case "spectator":
         const spectator = gameInstance.initSpectator({
           userId: user.id
         });
-        this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, spectator, body.gameInstanceId, "joined"));
+        this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(spectator, body.gameInstanceId, "joined"));
         break;
       default:
         throw new Error("Probable Waffle - Join Room - Unknown join type");
@@ -116,14 +116,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     if (player) {
       gameInstance.removePlayer(user.id);
       console.log("Probable Waffle - Player left", user.id);
-      this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "left"));
+      this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(player, body.gameInstanceId, "left"));
       return;
     }
     const spectator = gameInstance.getSpectator(user.id);
     if (spectator) {
       gameInstance.removeSpectator(user.id);
       console.log("Probable Waffle - Spectator left", user.id);
-      this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, spectator, body.gameInstanceId, "left"));
+      this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(spectator, body.gameInstanceId, "left"));
       return;
     }
 
@@ -156,10 +156,9 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
       gameMode: gameInstance.gameMode,
       players: gameInstance.players.map((player) => ({
-        userId: player.userId,
         controllerData: player.playerController.data
       })),
-      spectators: gameInstance.spectators.map((spectator) => ({ userId: spectator.data.userId }))
+      spectators: gameInstance.spectators.map((spectator) => spectator.data)
     };
   }
 
@@ -171,13 +170,11 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   }
 
   getSpectatorEvent(
-    user: User,
     spectator: ProbableWaffleSpectator,
     gameInstanceId: string,
     action: SpectatorAction
   ): ProbableWaffleSpectatorEvent {
     return {
-      user_id: user.id,
       gameInstanceId,
       action,
       spectator
@@ -185,14 +182,15 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   }
 
   getPlayerEvent(
-    user: User,
     player: ProbableWafflePlayer,
     gameInstanceId: string,
     action: PlayerAction
   ): ProbableWafflePlayerEvent {
     return {
-      user_id: user.id,
-      player,
+      player: {
+        controllerData: player.playerController.data,
+        stateData: player.playerState.data
+      },
       gameInstanceId,
       action
     };
@@ -269,19 +267,18 @@ export class GameInstanceService implements GameInstanceServiceInterface {
         "Probable Waffle - Player " + gameInstance.players.length + " left from map " + this.getMapName(gameInstance)
       );
     }
-    this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "left"));
+    this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(player, body.gameInstanceId, "left"));
   }
 
   async addPlayer(body: ProbableWaffleAddPlayerDto, user: User) {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
-    const player = body.player;
+    const player = gameInstance.initPlayer(body.player.stateData, body.player.controllerData);
     gameInstance.addPlayer(player);
 
     // check if player is empty mp slot
-    const openSlot =
-      body.player.playerController.data.playerDefinition.playerType === ProbableWafflePlayerType.NetworkOpen;
+    const openSlot = player.playerController.data.playerDefinition.playerType === ProbableWafflePlayerType.NetworkOpen;
     if (openSlot) {
       console.log(
         "Probable Waffle - New open slot " +
@@ -295,18 +292,18 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       );
     }
 
-    this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "joined"));
+    this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(player, body.gameInstanceId, "joined"));
   }
 
   async addSpectator(body: ProbableWaffleAddSpectatorDto, user: User) {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
-    const spectator = body.spectator;
+    const spectator = gameInstance.initSpectator(body.spectator.data);
     gameInstance.addSpectator(spectator);
     console.log(
       "Probable Waffle - Spectator " + gameInstance.spectators.length + " added on map " + this.getMapName(gameInstance)
     );
-    this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, spectator, body.gameInstanceId, "joined"));
+    this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(spectator, body.gameInstanceId, "joined"));
   }
 
   private getMapName(gameInstance: ProbableWaffleGameInstance): string {

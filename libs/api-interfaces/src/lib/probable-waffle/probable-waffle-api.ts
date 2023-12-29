@@ -1,32 +1,43 @@
 import { ProbableWaffleGameModeData } from "../game-instance/probable-waffle/game-mode";
-import { PositionPlayerDefinition, ProbableWafflePlayer } from "../game-instance/probable-waffle/player";
+import {
+  ProbableWafflePlayer,
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayerStateData
+} from "../game-instance/probable-waffle/player";
 import { ProbableWaffleMapEnum } from "./probable-waffle";
-import { ProbableWaffleSpectator } from "../game-instance/probable-waffle/spectator";
+import { ProbableWaffleSpectator, ProbableWaffleSpectatorData } from "../game-instance/probable-waffle/spectator";
+import { GameInstanceDataDto } from "../game-instance/game-instance";
 
-export interface ProbableWaffleStartLevelDto {
+export interface ProbableWaffleStartLevelDto extends GameInstanceDataDto {
   gameInstanceId: string;
 }
 
-export interface ProbableWaffleChangeGameModeDto {
+export interface ProbableWaffleChangeGameModeDto extends GameInstanceDataDto {
   gameInstanceId: string;
   gameModeData: ProbableWaffleGameModeData;
 }
 
-export interface ProbableWaffleAddPlayerDto {
+export interface ProbableWaffleAddPlayerDto extends GameInstanceDataDto {
   gameInstanceId: string;
-  player: ProbableWafflePlayer;
+  player: {
+    userId: string | null;
+    stateData: ProbableWafflePlayerStateData;
+    controllerData: ProbableWafflePlayerControllerData;
+  };
 }
 
-export interface ProbableWaffleAddSpectatorDto {
+export interface ProbableWaffleAddSpectatorDto extends GameInstanceDataDto {
   gameInstanceId: string;
-  spectator: ProbableWaffleSpectator;
+  spectator: {
+    data: ProbableWaffleSpectatorData;
+  };
 }
 
 export interface ProbableWaffleGetRoomsDto {
   maps: ProbableWaffleMapEnum[] | null;
 }
 
-export interface ProbableWafflePlayerLeftDto {
+export interface ProbableWafflePlayerLeftDto extends GameInstanceDataDto {
   gameInstanceId: string;
   playerNumber: number;
 }

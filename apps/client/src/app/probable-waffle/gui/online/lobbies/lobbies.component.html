@@ -1,68 +1,66 @@
-@if (serverHealthService.serverChecking) {
-  <div class='lobbies'>
-    <p>Checking server health...</p>
-  </div>
-}
-@if (serverHealthService.serverAvailable) {
 <div class="lobbies">
-  <div>Open Lobbies</div>
-  <p>Browse currently open game lobbies to join</p>
+  <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate</div>
 
   <div class="d-flex">
     <div>
       <div>
-        Filter:
-        <button (click)='toggleFilterPopup()'>Open Filter</button>
-        <probable-waffle-map-filter *ngIf='isFilterPopupOpen' (filter)='filter($event)' />
+        <button (click)="toggleFilterPopup()" class="btn btn-secondary" type="button">
+          <fa-icon [icon]="faFilter"/>
+        </button>
+        <probable-waffle-map-filter *ngIf="isFilterPopupOpen" (filter)="filter($event)" />
       </div>
-      <table class="table table-striped">
+      <table class="table table-striped" style="min-width: 300px">
         <thead>
           <tr>
             <th scope="col">Map</th>
-            <th scope="col">Host</th>
             <th scope="col">Players</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            (click)='select(room)'
-            *ngFor='let room of roomsService.rooms'
+            (click)="select(room)"
+            *ngFor="let room of roomsService.rooms"
             class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
-            <td>{{ room.gameMode.data.map }}</td>
-            <td>{{ room.players.length }}</td>
+            <td>{{ mapInfoOfMap(room.gameMode.data.map)?.name }}</td>
+            <td>{{ room.players.length + "/" + room.gameMode.data.maxPlayers }}</td>
           </tr>
         </tbody>
       </table>
     </div>
     @if (selectedRoom) {
-    <div>
+    <div class="card-container">
       <div>
-        <div>Map Preview</div>
-        <img alt="map preview" src="https://via.placeholder.com/300x300" />
-        <div>Map Description</div>
+        <img alt="map preview" [src]="mapInfo!.presentation.imagePath" />
+        <div style="font-size: 0.8em">{{ mapInfo!.presentation.description }}</div>
       </div>
       <div>
-        <div>Joined players</div>
-        <div>Player 1</div>
-        <div>Player 2</div>
+        <div class="text-primary">Joined players</div>
+        @for (player of selectedRoom.players;track player) {
+        <div>{{ player.controllerData.playerDefinition!.player.playerName }}</div>
+        }
       </div>
+      @if(selectedRoom.spectators.length){
       <div>
-        <div>Joined spectators</div>
-        <div>John Doe</div>
-        <div>Jane Doe</div>
+        <div class="text-primary">Joined spectators</div>
+        <div>{{ selectedRoom.spectators.length }}</div>
       </div>
+      }
     </div>
     }
   </div>
 
   <div>
-    <button (click)='addSelfAsPlayer()' [disabled]='!canAddSelfAsPlayer()' class='btn btn-primary' type='button'>Join</button>
-    <button (click)='addSelfAsSpectator()' [disabled]='!canAddSelfAsSpectator()' class='ms-2 btn btn-primary' type='button'>Spectate</button>
+    <button (click)="addSelfAsPlayer()" [disabled]="!canAddSelfAsPlayer()" class="btn btn-primary" type="button">
+      Join
+    </button>
+    <button
+      (click)="addSelfAsSpectator()"
+      [disabled]="!canAddSelfAsSpectator()"
+      class="ms-2 btn btn-primary"
+      type="button"
+    >
+      Spectate
+    </button>
   </div>
 </div>
-} @else {
-  <div class='lobbies'>
-    <p>Server is not available</p>
-  </div>
-}

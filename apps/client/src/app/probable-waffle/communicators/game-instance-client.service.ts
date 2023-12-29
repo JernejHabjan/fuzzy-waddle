@@ -10,8 +10,9 @@ import {
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceDataDto,
   ProbableWaffleGameInstanceEvent,
+  ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleGameInstanceType,
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
   ProbableWaffleLevelStateChangeEvent,
@@ -41,13 +42,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
 
-  async createGameInstance(joinable: boolean): Promise<void> {
+  async createGameInstance(joinable: boolean, type: ProbableWaffleGameInstanceType): Promise<void> {
     this.gameInstance = new ProbableWaffleGameInstance({
-      gameInstanceMetadataData: { createdBy: this.authService.userId }
+      gameInstanceMetadataData: {
+        createdBy: this.authService.userId,
+        type,
+        joinable
+      }
     });
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/start-game";
-      const body: ProbableWaffleGameInstanceDataDto = { gameInstanceId: this.gameLocalInstanceId!, joinable };
+      const body: ProbableWaffleGameInstanceMetadataData = this.gameInstance.gameInstanceMetadata!.data;
       await firstValueFrom(this.httpClient.post<void>(url, body));
 
       this.listeners.set(
@@ -162,10 +167,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameInstance) return;
     switch (playerEvent.action) {
       case "joined":
-        this.gameInstance.addPlayer(playerEvent.player);
+        const player = this.gameInstance.initPlayer(playerEvent.player.stateData, playerEvent.player.controllerData);
+        this.gameInstance.addPlayer(player);
         break;
       case "left":
-        this.gameInstance.players = this.gameInstance.players.filter((p) => p.userId !== playerEvent.user_id);
+        this.gameInstance.players = this.gameInstance.players.filter(
+          (p) =>
+            p.playerController.data.playerDefinition!.player.playerNumber !==
+            playerEvent.player.controllerData.playerDefinition!.player.playerNumber
+        );
         break;
       default:
         throw new Error("Unknown player action");
@@ -176,11 +186,12 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameInstance) return;
     switch (spectatorEvent.action) {
       case "joined":
-        this.gameInstance!.addSpectator(spectatorEvent.spectator);
+        const spectator = this.gameInstance.initSpectator(spectatorEvent.spectator.data);
+        this.gameInstance!.addSpectator(spectator);
         break;
       case "left":
         this.gameInstance!.spectators = this.gameInstance!.spectators.filter(
-          (s) => s.data.userId !== spectatorEvent.user_id
+          (s) => s.data.userId !== spectatorEvent.spectator.data.userId
         );
         break;
       default:
@@ -233,11 +244,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async playerSlotOpened(playerDefinition: PositionPlayerDefinition) {
     if (!this.gameLocalInstanceId) return;
-    const openPlayerSlot = this.gameInstance!.initPlayer(null, { score: 0 }, { playerDefinition });
+    const openPlayerSlot = this.gameInstance!.initPlayer({ score: 0 }, { userId: null, playerDefinition });
 
     this.playerAvailabilityChange({
-      player: openPlayerSlot,
-      user_id: null,
+      player: {
+        controllerData: openPlayerSlot.playerController.data,
+        stateData: openPlayerSlot.playerState.data
+      },
       gameInstanceId: this.gameLocalInstanceId,
       action: "joined"
     });
@@ -246,7 +259,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       const url = environment.api + "api/probable-waffle/open-player-slot";
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
-        player: openPlayerSlot
+        player: {
+          userId: openPlayerSlot.playerController.data.userId,
+          stateData: openPlayerSlot.playerState.data,
+          controllerData: openPlayerSlot.playerController.data
+        }
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
@@ -263,8 +280,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
     this.playerAvailabilityChange({
-      player: this.gameInstance!.players[playerNumber],
-      user_id: this.gameInstance!.players[playerNumber].userId,
+      player: {
+        controllerData: this.gameInstance!.players[playerNumber].playerController.data,
+        stateData: this.gameInstance!.players[playerNumber].playerState.data
+      },
       gameInstanceId: this.gameLocalInstanceId,
       action: "left"
     });
@@ -278,12 +297,14 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       (p) => p.playerController.data.playerDefinition?.player.playerNumber === playerNumber
     );
     if (player) throw new Error("Player already exists");
-    const user_id = playerDefinition.playerType === ProbableWafflePlayerType.Human ? this.authService.userId : null;
-    player = this.gameInstance!.initPlayer(user_id, { score: 0 }, { playerDefinition });
+    const userId = playerDefinition.playerType === ProbableWafflePlayerType.Human ? this.authService.userId : null;
+    player = this.gameInstance!.initPlayer({ score: 0 }, { userId, playerDefinition });
 
     this.playerAvailabilityChange({
-      player,
-      user_id,
+      player: {
+        controllerData: player.playerController.data,
+        stateData: player.playerState.data
+      },
       gameInstanceId: this.gameLocalInstanceId,
       action: "joined"
     });
@@ -293,7 +314,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       const url = environment.api + "api/probable-waffle/add-player";
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
-        player
+        player: {
+          userId: player.playerController.data.userId,
+          stateData: player.playerState.data,
+          controllerData: player.playerController.data
+        }
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
@@ -304,16 +329,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
     let spectator = this.gameInstance!.spectators.find((s) => s.data.userId === this.authService.userId);
     if (spectator) throw new Error("Spectator already exists");
-    const user_id = this.authService.userId;
+    const userId = this.authService.userId;
     spectator = this.gameInstance!.initSpectator({
-      userId: user_id!
+      userId: userId!
     });
 
     this.spectatorAvailabilityChange({
-      user_id: this.authService.userId!,
       gameInstanceId: this.gameLocalInstanceId,
       action: "joined",
-      spectator
+      spectator: {
+        data: spectator.data
+      }
     });
 
     // server

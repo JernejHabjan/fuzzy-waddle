@@ -4,7 +4,7 @@ import { BaseSpectator, BaseSpectatorData } from "./spectator";
 import { BaseGameState } from "./game-state";
 import { BaseGameMode } from "./game-mode";
 import { BasePlayerState } from "./player/player-state";
-import { BasePlayerController } from "./player/player-controller";
+import { BasePlayerController, BasePlayerControllerData } from "./player/player-controller";
 import { BasePlayer } from "./player/player";
 
 export interface GameInstanceDataDto {
@@ -23,7 +23,6 @@ export type GameInstanceData<
   gameStateData?: TGameStateData;
   gameModeData?: TGameModeData;
   players?: {
-    userId: string | null;
     playerControllerData?: TPlayerControllerData;
     playerStateData?: TPlayerStateData;
   }[];
@@ -42,7 +41,7 @@ export abstract class GameInstance<
   TGameModeData extends BaseData = BaseData,
   TGameMode extends BaseGameMode<TGameModeData> = BaseGameMode<TGameModeData>,
   TPlayerStateData extends BaseData = BaseData,
-  TPlayerControllerData extends BaseData = BaseData,
+  TPlayerControllerData extends BasePlayerControllerData = BasePlayerControllerData,
   TPlayerState extends BasePlayerState<TPlayerStateData> = BasePlayerState<TPlayerStateData>,
   TPlayerController extends BasePlayerController<TPlayerControllerData> = BasePlayerController<TPlayerControllerData>,
   TPlayer extends BasePlayer<TPlayerStateData, TPlayerControllerData, TPlayerState, TPlayerController> = BasePlayer<
@@ -67,11 +66,7 @@ export abstract class GameInstance<
       gameState: new (...args: any /*TGameStateData */) => TGameState;
       playerState: new (...args: any /*TPlayerStateData */) => TPlayerState;
       playerController: new (...args: any /*TPlayerControllerData */) => TPlayerController;
-      player: new (
-        userId: string | null,
-        playerState: any /*TPlayerState*/,
-        playerController: any /*TPlayerController*/
-      ) => TPlayer;
+      player: new (playerState: any /*TPlayerState*/, playerController: any /*TPlayerController*/) => TPlayer;
       spectator: new (...args: any /*TSpectatorData*/) => TSpectator;
     },
     gameInstanceData?: GameInstanceData<
@@ -90,7 +85,6 @@ export abstract class GameInstance<
       gameInstanceData?.players?.map(
         (playerData) =>
           new constructors.player(
-            playerData.userId,
             new constructors.playerState(playerData.playerStateData),
             new constructors.playerController(playerData.playerControllerData)
           )
@@ -111,7 +105,6 @@ export abstract class GameInstance<
       gameStateData: this.gameState?.data,
       gameModeData: this.gameMode?.data,
       players: this.players.map((player) => ({
-        userId: player.userId,
         playerStateData: player.playerState.data,
         playerControllerData: player.playerController.data
       })),
@@ -119,14 +112,10 @@ export abstract class GameInstance<
     };
   }
 
-  initPlayer(
-    userId: string | null,
-    playerStateData: TPlayerStateData,
-    playerControllerData: TPlayerControllerData
-  ): TPlayer {
+  initPlayer(playerStateData: TPlayerStateData, playerControllerData: TPlayerControllerData): TPlayer {
     const playerState = new this.constructors.playerState(playerStateData);
     const playerController = new this.constructors.playerController(playerControllerData);
-    return new this.constructors.player(userId, playerState, playerController);
+    return new this.constructors.player(playerState, playerController);
   }
 
   initSpectator(spectatorData: TSpectatorData): TSpectator {
@@ -138,7 +127,7 @@ export abstract class GameInstance<
   }
 
   removePlayer(userId: string) {
-    this.players = this.players.filter((p) => p.userId !== userId);
+    this.players = this.players.filter((p) => p.playerController.data.userId !== userId);
   }
 
   addPlayer(player: TPlayer) {
@@ -161,7 +150,7 @@ export abstract class GameInstance<
   }
 
   getPlayer(userId: string | null): TPlayer | null {
-    return this.players.find((p) => p.userId === userId) ?? null;
+    return this.players.find((p) => p.playerController.data.userId === userId) ?? null;
   }
 
   getSpectator(userId: string | null): TSpectator | null {
@@ -173,7 +162,7 @@ export abstract class GameInstance<
   }
 
   isPlayer(userId: string | null): boolean {
-    return this.players.some((p) => p.userId === userId);
+    return this.players.some((p) => p.playerController.data.userId === userId);
   }
 
   isSpectator(userId: string | null): boolean {

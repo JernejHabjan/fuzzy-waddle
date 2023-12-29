@@ -31,7 +31,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async startGame(): Promise<void> {
     this.gameInstance = new LittleMuncherGameInstance({
       gameInstanceMetadataData: { createdBy: this.authService.userId },
-      players: [{ userId: this.authService.userId }]
+      players: [{ playerControllerData: { userId: this.authService.userId } }]
     });
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/little-muncher/start-game";
