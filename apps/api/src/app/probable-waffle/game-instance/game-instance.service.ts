@@ -3,6 +3,7 @@ import { User } from "@supabase/supabase-js";
 import {
   GameInstanceDataDto,
   GameSessionState,
+  GameSetupHelpers,
   PlayerAction,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
@@ -86,9 +87,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   }
 
   getPlayerColorForNewPlayer(gameInstance: ProbableWaffleGameInstance): string {
-    const i = gameInstance.players.length;
-    const maxPlayers = gameInstance.gameMode.data.maxPlayers;
-    return `hsl(${(i * 360) / maxPlayers}, 100%, 50%)`;
+    return GameSetupHelpers.getColorForPlayer(gameInstance.players.length, gameInstance.gameMode.data.maxPlayers);
   }
 
   async joinRoom(body: ProbableWaffleJoinDto, user: User): Promise<ProbableWaffleGameInstanceData> {

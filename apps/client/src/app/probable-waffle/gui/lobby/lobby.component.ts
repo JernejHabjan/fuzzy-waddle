@@ -1,55 +1,9 @@
 import { ChangeDetectorRef, Component, inject, ViewChild } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
-import {
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition,
-  ProbableWaffleAiDifficulty,
-  ProbableWaffleGameModeLobby,
-  ProbableWaffleMapData,
-  ProbableWafflePlayerType
-} from "@fuzzy-waddle/api-interfaces";
+import { PositionPlayerDefinition, ProbableWaffleGameModeLobby } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { Router } from "@angular/router";
-
-export class MapPlayerDefinition {
-  public startPositionPerPlayer: PositionPlayerDefinition[] = [];
-  protected allPossibleTeams: (number | null)[] = [];
-  private initialNrAiPlayers = 0;
-
-  constructor(public readonly map: ProbableWaffleMapData) {
-    this.allPossibleTeams.push(null);
-    for (let i = 0; i < map.mapInfo.startPositionsOnTile.length; i++) {
-      const playerColor = `hsl(${(i * 360) / map.mapInfo.startPositionsOnTile.length}, 100%, 50%)`;
-      // use initialNrAiPlayers to set the first x players to AI
-      const shouldAutoJoin = i < this.initialNrAiPlayers + 1; // 1 for self player
-      const isAi = i > 0 && shouldAutoJoin;
-      const playerName = isAi ? `AI ${i}` : i === 0 ? "You" : `Player ${i}`;
-      this.startPositionPerPlayer.push(
-        new PositionPlayerDefinition(
-          new PlayerLobbyDefinition(i, playerName, shouldAutoJoin ? i : null, shouldAutoJoin),
-          null,
-          null,
-          !isAi ? ProbableWafflePlayerType.Human : ProbableWafflePlayerType.AI,
-          playerColor,
-          isAi ? ProbableWaffleAiDifficulty.Medium : null
-        )
-      );
-      this.allPossibleTeams.push(i);
-    }
-  }
-
-  get playerPositions(): PositionPlayerDefinition[] {
-    return this.startPositionPerPlayer.filter((positionPlayer) => positionPlayer.player.playerPosition !== null);
-  }
-
-  get allPlayerPositions(): PositionPlayerDefinition[] {
-    return this.startPositionPerPlayer;
-  }
-
-  get allTeams(): (number | null)[] {
-    return this.allPossibleTeams;
-  }
-}
+import { MapPlayerDefinition } from "./map-player-definition";
 
 @Component({
   selector: "probable-waffle-lobby",

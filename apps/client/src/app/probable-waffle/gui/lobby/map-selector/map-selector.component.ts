@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { MapPlayerDefinition } from "../lobby.component";
 import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { MapPlayerDefinition } from "../map-player-definition";
 
 @Component({
   selector: "probable-waffle-map-selector",

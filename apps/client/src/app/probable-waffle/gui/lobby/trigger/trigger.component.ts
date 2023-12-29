@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { MapPlayerDefinition } from "../lobby.component";
+import { MapPlayerDefinition } from "../map-player-definition";
 
 @Component({
   selector: "probable-waffle-trigger",

@@ -9,12 +9,12 @@ import {
   Output,
   ViewChild
 } from "@angular/core";
-import { MapPlayerDefinition } from "../lobby.component";
 import {
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleAiDifficulty
 } from "@fuzzy-waddle/api-interfaces";
+import { MapPlayerDefinition } from "../map-player-definition";
 
 /**
  * canvas element containing info about current player and position.

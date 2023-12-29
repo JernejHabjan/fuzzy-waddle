@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { MapPlayerDefinition } from "../lobby.component";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -7,6 +6,7 @@ import {
   ProbableWaffleAiDifficulty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
+import { MapPlayerDefinition } from "../map-player-definition";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
@@ -58,7 +58,7 @@ export class PlayerDefinitionComponent {
     takenPositions.sort();
     // get first free position
     let freePosition = 0;
-    for (let i = 0; i < map.startPositionPerPlayer.length; i++) {
+    for (let i = 0; i < map.allPlayerPositions.length; i++) {
       if (takenPositions.includes(i)) {
         continue;
       }
