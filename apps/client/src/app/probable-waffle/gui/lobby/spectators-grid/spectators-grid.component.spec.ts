@@ -1,5 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SpectatorsGridComponent } from "./spectators-grid.component";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { Component } from "@angular/core";
+
+@Component({ selector: "probable-waffle-spectators-grid", template: "" })
+export class SpectatorsGridTestingComponent {}
 
 describe("SpectatorsGridComponent", () => {
   let component: SpectatorsGridComponent;
@@ -7,6 +13,7 @@ describe("SpectatorsGridComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
       imports: [SpectatorsGridComponent]
     }).compileComponents();
 

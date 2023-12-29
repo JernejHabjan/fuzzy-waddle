@@ -9,6 +9,7 @@ import { MapPlayerDefinition } from "../lobby.component";
 @Component({ selector: "probable-waffle-player-definition", template: "" })
 export class PlayerDefinitionTestingComponent {
   @Input({ required: true }) selectedMap?: MapPlayerDefinition;
+  @Input({ required: true }) allowOpenSlotForMp?: boolean;
 }
 
 describe("PlayerDefinitionComponent", () => {

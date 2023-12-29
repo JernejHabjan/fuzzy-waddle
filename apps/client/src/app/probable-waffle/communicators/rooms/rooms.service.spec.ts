@@ -8,8 +8,11 @@ import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
 import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
 
-export const spectateServiceStub = {
+export const roomsServiceStub = {
   rooms: [],
+  init(): Promise<void> {
+    return Promise.resolve();
+  },
   listenToRoomEvents() {
     //
   },

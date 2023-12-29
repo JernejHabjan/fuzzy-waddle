@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RankedComponent } from "./ranked.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
+import { RoomsService } from "../../../communicators/rooms/rooms.service";
+import { roomsServiceStub } from "../../../communicators/rooms/rooms.service.spec";
 
 @Component({ selector: "probable-waffle-ranked", template: "" })
 export class RankedTestingComponent {}
@@ -13,6 +15,7 @@ describe("RankedComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: RoomsService, useValue: roomsServiceStub }],
       declarations: [RankedComponent],
       imports: [FormsModule]
     }).compileComponents();

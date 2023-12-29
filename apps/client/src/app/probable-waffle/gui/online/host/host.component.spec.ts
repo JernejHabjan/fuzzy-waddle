@@ -1,7 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HostComponent } from "./host.component";
-import { SkirmishTestingComponent } from "../../skirmish/skirmish.component.spec";
+import { LobbyTestingComponent } from "../../lobby/lobby.component.spec";
+import { Component } from "@angular/core";
+
+@Component({ selector: "probable-waffle-host", template: "" })
+export class HostTestingComponent {}
 
 describe("HostComponent", () => {
   let component: HostComponent;
@@ -9,7 +13,7 @@ describe("HostComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HostComponent, SkirmishTestingComponent]
+      declarations: [HostComponent, LobbyTestingComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);

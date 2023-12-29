@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { OptionsComponent } from "./options.component";
 import { ActivatedRoute } from "@angular/router";
+import { FormsModule } from "@angular/forms";
 
 describe("OptionsComponent", () => {
   let component: OptionsComponent;
@@ -24,7 +25,8 @@ describe("OptionsComponent", () => {
           }
         }
       ],
-      declarations: [OptionsComponent]
+      declarations: [OptionsComponent],
+      imports: [FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(OptionsComponent);

@@ -4,6 +4,7 @@ import { ProbableWaffleMapEnum, ProbableWaffleRoom, ProbableWaffleRoomEvent } fr
 export interface RoomsServiceInterface {
   rooms: ProbableWaffleRoom[];
 
+  init(): Promise<void>;
   listenToRoomEvents(): void;
 
   getRooms(maps: ProbableWaffleMapEnum[] | null): Promise<ProbableWaffleRoom[]>;
