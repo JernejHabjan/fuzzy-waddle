@@ -1,4 +1,4 @@
-import { BaseSpectator, BaseSpectatorData } from '../spectator';
+import { BaseSpectator, BaseSpectatorData } from "../spectator";
 
 export class LittleMuncherSpectator extends BaseSpectator<LittleMuncherSpectatorData> {
   constructor(data?: LittleMuncherSpectatorData) {

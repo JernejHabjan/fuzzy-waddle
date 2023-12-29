@@ -3,7 +3,6 @@ import { HighScoreService } from "./high-score.service";
 import { FlySquasherLevelEnum, FlySquasherLevels, ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { faExclamationTriangle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { ServerHealthService } from "../../shared/services/server-health.service";
-import { AuthService } from "../../auth/auth.service";
 
 @Component({
   selector: "fly-squasher-high-score",

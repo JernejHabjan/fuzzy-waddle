@@ -6,10 +6,10 @@ import {
   LittleMuncherGameInstance,
   LittleMuncherGameInstanceData,
   LittleMuncherRoom,
-  RoomAction,
   LittleMuncherRoomEvent,
-  SpectatorAction,
-  LittleMuncherSpectatorEvent
+  LittleMuncherSpectatorEvent,
+  RoomAction,
+  SpectatorAction
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { User } from "../../../users/users.service";

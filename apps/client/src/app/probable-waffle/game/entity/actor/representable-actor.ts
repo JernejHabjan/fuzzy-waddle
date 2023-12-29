@@ -2,7 +2,7 @@ import { Actor } from "./actor";
 import { SpriteRepresentationComponent } from "./components/sprite-representable-component";
 import { TransformComponent } from "./components/transformable-component";
 import { TilePlacementData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
-import { Scene, Scenes } from "phaser";
+import { Scene } from "phaser";
 
 export type RepresentableActorDefinition = {
   textureMapDefinition: TextureMapDefinition;

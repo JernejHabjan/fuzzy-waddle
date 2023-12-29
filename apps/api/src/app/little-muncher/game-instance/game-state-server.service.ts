@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import {
-  LittleMuncherCommunicatorClimbingEvent,
   CommunicatorEvent,
+  LittleMuncherCommunicatorClimbingEvent,
   LittleMuncherCommunicatorPauseEvent,
   LittleMuncherCommunicatorScoreEvent,
   LittleMuncherCommunicatorType,

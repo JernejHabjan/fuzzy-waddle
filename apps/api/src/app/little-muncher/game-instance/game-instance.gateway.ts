@@ -1,10 +1,10 @@
 import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "net";
 import {
-  ProbableWaffleGameInstanceEvent,
   LittleMuncherGatewayEvent,
   LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent
+  LittleMuncherSpectatorEvent,
+  ProbableWaffleGameInstanceEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 

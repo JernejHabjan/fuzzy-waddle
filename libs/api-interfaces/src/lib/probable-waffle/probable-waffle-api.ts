@@ -1,11 +1,10 @@
 import { ProbableWaffleGameModeData } from "../game-instance/probable-waffle/game-mode";
 import {
-  ProbableWafflePlayer,
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerStateData
 } from "../game-instance/probable-waffle/player";
 import { ProbableWaffleMapEnum } from "./probable-waffle";
-import { ProbableWaffleSpectator, ProbableWaffleSpectatorData } from "../game-instance/probable-waffle/spectator";
+import { ProbableWaffleSpectatorData } from "../game-instance/probable-waffle/spectator";
 import { GameInstanceDataDto } from "../game-instance/game-instance";
 
 export interface ProbableWaffleStartLevelDto extends GameInstanceDataDto {

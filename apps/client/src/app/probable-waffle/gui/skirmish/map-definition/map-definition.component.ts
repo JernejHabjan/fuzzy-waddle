@@ -4,10 +4,10 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  inject,
   Input,
   Output,
-  ViewChild,
-  inject
+  ViewChild
 } from "@angular/core";
 import { MapPlayerDefinition } from "../skirmish.component";
 import {

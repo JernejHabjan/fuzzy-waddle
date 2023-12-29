@@ -1,6 +1,5 @@
-import { Component, inject, Input } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MapPlayerDefinition } from "../skirmish.component";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({

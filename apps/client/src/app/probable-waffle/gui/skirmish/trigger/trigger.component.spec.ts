@@ -4,8 +4,6 @@ import { TriggerComponent } from "./trigger.component";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Component, Input } from "@angular/core";
 import { MapPlayerDefinition } from "../skirmish.component";
-import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 
 @Component({ selector: "fuzzy-waddle-trigger", template: "" })
 export class TriggerTestingComponent {

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { MapPlayerDefinition } from "../skirmish.component";
-import { ProbableWaffleMapEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   selector: "fuzzy-waddle-map-selector",

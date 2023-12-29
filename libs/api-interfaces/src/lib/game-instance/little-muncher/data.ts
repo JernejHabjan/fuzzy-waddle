@@ -3,5 +3,8 @@ export class LittleMuncherPosition {
 }
 
 export class LittleMuncherBoost {
-  constructor(public boostMultiplier: number = 1, public durationInSec: number = 0) {}
+  constructor(
+    public boostMultiplier: number = 1,
+    public durationInSec: number = 0
+  ) {}
 }

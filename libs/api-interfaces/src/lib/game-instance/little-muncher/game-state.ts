@@ -1,5 +1,5 @@
-import { BaseGameState } from '../game-state';
-import { BaseData } from '../data';
+import { BaseGameState } from "../game-state";
+import { BaseData } from "../data";
 
 export class LittleMuncherGameState extends BaseGameState<LittleMuncherGameStateData> {
   constructor(data?: LittleMuncherGameStateData) {

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ProbableWaffleMapEnum, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   selector: "probable-waffle-map-filter",

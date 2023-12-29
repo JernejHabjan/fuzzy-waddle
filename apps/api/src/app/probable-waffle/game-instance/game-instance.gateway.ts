@@ -2,8 +2,8 @@ import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "net";
 import {
   ProbableWaffleGameInstanceEvent,
-  ProbableWaffleLevelStateChangeEvent,
   ProbableWaffleGatewayEvent,
+  ProbableWaffleLevelStateChangeEvent,
   ProbableWafflePlayerEvent,
   ProbableWaffleRoomEvent,
   ProbableWaffleSpectatorEvent

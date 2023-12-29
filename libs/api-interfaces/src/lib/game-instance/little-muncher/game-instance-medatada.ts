@@ -1,4 +1,4 @@
-import { GameInstanceMetadata, GameInstanceMetadataData } from '../game-instance-metadata';
+import { GameInstanceMetadata, GameInstanceMetadataData } from "../game-instance-metadata";
 
 export interface LittleMuncherGameInstanceMetadataData extends GameInstanceMetadataData {}
 

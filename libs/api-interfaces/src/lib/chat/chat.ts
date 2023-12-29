@@ -6,5 +6,5 @@ export interface ChatMessage {
 }
 
 export enum GatewayChatEvent {
-  CHAT_MESSAGE = 'chat-message'
+  CHAT_MESSAGE = "chat-message"
 }
