@@ -89,7 +89,7 @@ export class LobbyComponent {
     this.selectedMap = newMap;
     this.cdr.detectChanges();
     await this.gameModeOrMapChanged();
-    this.selectedMap.playerPositions.forEach(this.selfOrAiPlayerAdded);
+    this.selectedMap.playerPositions.forEach(this.aiPlayerAdded);
   }
 
   protected async gameModeLobbyChanged($event: ProbableWaffleGameModeLobby) {
@@ -111,7 +111,7 @@ export class LobbyComponent {
     });
   }
 
-  protected selfOrAiPlayerAdded = async (positionPlayerDefinition: PositionPlayerDefinition) => {
+  protected aiPlayerAdded = async (positionPlayerDefinition: PositionPlayerDefinition) => {
     this.playerCountChanged();
     await this.gameInstanceClientService.addSelfOrAiPlayer(positionPlayerDefinition);
   };
@@ -133,6 +133,6 @@ export class LobbyComponent {
   }
 
   protected get joinable(): boolean {
-    return this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.joinable!;
+    return this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.joinable ?? false;
   }
 }

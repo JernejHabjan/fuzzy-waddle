@@ -12,13 +12,19 @@ export class HostComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
 
-  protected gameModeLobby = {
+  protected gameModeLobby: {
+    lobbyName: string;
+    visibility: "public" | "private";
+    setPassword: string;
+  } = {
     lobbyName: "",
     visibility: "public",
     setPassword: ""
   };
 
   protected async createLobby() {
+    console.warn("todo use game mode lobby here"); // todo use game mode lobby here
+
     await this.gameInstanceClientService.createGameInstance(true, ProbableWaffleGameInstanceType.SelfHosted);
     await this.router.navigate(["probable-waffle/lobby"]);
   }

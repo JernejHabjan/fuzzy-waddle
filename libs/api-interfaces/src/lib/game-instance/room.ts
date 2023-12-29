@@ -51,10 +51,12 @@ export interface LittleMuncherSpectatorEvent extends SpectatorEvent {
   room: Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode>;
 }
 
+export interface ProbableWaffleRoomPlayer {
+  controllerData: ProbableWafflePlayerControllerData;
+}
+
 export interface ProbableWaffleRoom extends Room<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameMode> {
-  players: {
-    controllerData: ProbableWafflePlayerControllerData;
-  }[];
+  players: ProbableWaffleRoomPlayer[];
   spectators: ProbableWaffleSpectatorData[];
 }
 
@@ -84,9 +86,9 @@ export interface ProbableWaffleLevelStateChangeEvent {
 }
 
 export class ProbableWaffleRoomHelper {
-  public static getActivatedPlayersInRoom(room: ProbableWaffleRoom): number {
+  public static getActivatedPlayersInRoom(room: ProbableWaffleRoom): ProbableWaffleRoomPlayer[] {
     return room.players.filter(
       (p) => p.controllerData.playerDefinition?.playerType !== ProbableWafflePlayerType.NetworkOpen
-    ).length;
+    );
   }
 }

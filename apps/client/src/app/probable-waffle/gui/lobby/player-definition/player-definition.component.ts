@@ -42,7 +42,7 @@ export class PlayerDefinitionComponent {
   protected DifficultyDefinitions = DifficultyDefinitions;
   @Input({ required: true }) allowOpenSlotForMp!: boolean;
   @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
-  @Output() selfOrAiPlayerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
+  @Output() aiPlayerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
   @Output() playerSlotOpened: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
   @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 
@@ -75,7 +75,7 @@ export class PlayerDefinitionComponent {
     startPositionPerPlayerElement.player.joined = true;
     startPositionPerPlayerElement.difficulty = ProbableWaffleAiDifficulty.Medium;
     startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.AI;
-    this.selfOrAiPlayerAdded.emit(startPositionPerPlayerElement);
+    this.aiPlayerAdded.emit(startPositionPerPlayerElement);
   }
 
   protected openMpSlot(playerIndex: number) {

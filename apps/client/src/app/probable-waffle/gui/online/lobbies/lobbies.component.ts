@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from "@angular/core";
 import {
   ProbableWaffleLevels,
   ProbableWaffleMapData,
@@ -27,6 +27,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected readonly serverHealthService = inject(ServerHealthService);
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly router = inject(Router);
+  @Output() requestNavigateToHostLobby: EventEmitter<void> = new EventEmitter<void>();
 
   async ngOnInit(): Promise<void> {
     await this.roomsService.init();
@@ -82,5 +83,9 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected mapInfoOfMap(map?: ProbableWaffleMapEnum): null | ProbableWaffleMapData {
     if (!map) return null;
     return ProbableWaffleLevels[map];
+  }
+
+  protected navigateToCreateLobby() {
+    this.requestNavigateToHostLobby.emit();
   }
 }
