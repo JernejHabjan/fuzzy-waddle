@@ -4,6 +4,7 @@ import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
   GameInstanceDataDto,
+  PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleAddPlayerDto,
   ProbableWaffleAddSpectatorDto,
@@ -107,8 +108,22 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
-    // todo ? await this.tryJoin();
-    this.openLevelCommunication(gameInstanceId);
+
+    const playerDefinition = new PositionPlayerDefinition( // todo move this to single place
+      new PlayerLobbyDefinition(
+        this.gameInstance.players.length + 1,
+        "Player " + (this.gameInstance.players.length + 1),
+        this.gameInstance.players.length,
+        true
+      ),
+      null,
+      null,
+      ProbableWafflePlayerType.Human,
+      "ff00ff", // todo player color
+      null
+    );
+
+    await this.addSelfOrAiPlayer(playerDefinition);
   }
 
   async joinToLobbyAsSpectator(gameInstanceId: string): Promise<void> {
@@ -120,10 +135,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     await this.addSelfAsSpectator();
-    this.openLevelCommunication(gameInstanceId);
   }
 
   private openLevelCommunication(gameInstanceId: string) {
+    // todo use this when in game?
     this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
   }
 

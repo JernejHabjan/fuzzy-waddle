@@ -3,7 +3,11 @@ import { LittleMuncherGameInstanceMetadataData } from "./little-muncher/game-ins
 import { ProbableWaffleGameMode } from "./probable-waffle/game-mode";
 import { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/game-instance-medatada";
 import { GameSessionState } from "./session";
-import { ProbableWafflePlayerControllerData, ProbableWafflePlayerStateData } from "./probable-waffle/player";
+import {
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayerStateData,
+  ProbableWafflePlayerType
+} from "./probable-waffle/player";
 import { ProbableWaffleSpectatorData } from "./probable-waffle/spectator";
 
 interface Room<TGameInstanceMetadataData, TGameMode> {
@@ -77,4 +81,12 @@ export interface ProbableWaffleGameFoundEvent {
 export interface ProbableWaffleLevelStateChangeEvent {
   sessionState: GameSessionState;
   gameInstanceId: string;
+}
+
+export class ProbableWaffleRoomHelper {
+  public static getActivatedPlayersInRoom(room: ProbableWaffleRoom): number {
+    return room.players.filter(
+      (p) => p.controllerData.playerDefinition?.playerType !== ProbableWafflePlayerType.NetworkOpen
+    ).length;
+  }
 }

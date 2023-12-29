@@ -4,12 +4,14 @@ import {
   ProbableWaffleMapData,
   ProbableWaffleMapEnum,
   ProbableWafflePlayerType,
-  ProbableWaffleRoom
+  ProbableWaffleRoom,
+  ProbableWaffleRoomHelper
 } from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "probable-waffle-lobbies",
@@ -17,12 +19,14 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
   styleUrls: ["./lobbies.component.scss"]
 })
 export class LobbiesComponent implements OnInit, OnDestroy {
+  protected readonly ProbableWaffleRoomHelper = ProbableWaffleRoomHelper;
   protected readonly faFilter = faFilter;
   protected isFilterPopupOpen: boolean = false;
   protected selectedRoom?: ProbableWaffleRoom;
   protected readonly roomsService = inject(RoomsService);
   protected readonly serverHealthService = inject(ServerHealthService);
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
+  protected readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
     await this.roomsService.init();
@@ -46,6 +50,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected async addSelfAsPlayer() {
     if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
     await this.gameInstanceClientService.joinToLobbyAsPlayer(this.selectedRoom.gameInstanceMetadataData.gameInstanceId);
+    await this.router.navigate(["probable-waffle/lobby"]);
   }
 
   protected async addSelfAsSpectator() {
@@ -53,6 +58,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
     await this.gameInstanceClientService.joinToLobbyAsSpectator(
       this.selectedRoom.gameInstanceMetadataData.gameInstanceId
     );
+    await this.router.navigate(["probable-waffle/lobby"]);
   }
 
   protected select(room: ProbableWaffleRoom) {

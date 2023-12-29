@@ -23,7 +23,7 @@
             class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
             <td>{{ mapInfoOfMap(room.gameMode.data.map)?.name }}</td>
-            <td>{{ room.players.length + "/" + room.gameMode.data.maxPlayers }}</td>
+            <td>{{ ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room) + "/" + room.gameMode.data.maxPlayers }}</td>
           </tr>
         </tbody>
       </table>
