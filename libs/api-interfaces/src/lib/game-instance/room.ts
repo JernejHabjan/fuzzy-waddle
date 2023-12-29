@@ -3,22 +3,16 @@ import { LittleMuncherGameInstanceMetadataData } from "./little-muncher/game-ins
 import { ProbableWaffleGameMode } from "./probable-waffle/game-mode";
 import { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/game-instance-medatada";
 import { GameSessionState } from "./session";
-import { ProbableWafflePlayer } from "./probable-waffle/player";
+import { ProbableWafflePlayer, ProbableWafflePlayerControllerData } from "./probable-waffle/player";
 import { ProbableWaffleSpectator } from "./probable-waffle/spectator";
 
 interface Room<TGameInstanceMetadataData, TGameMode> {
   gameInstanceMetadataData: TGameInstanceMetadataData;
   gameMode: TGameMode;
-  players: {
-    userId: string | null;
-  }[];
-  spectators: {
-    userId: string | null;
-  }[];
 }
 
-interface RoomEvent<TGameInstanceMetadataData, TGameMode> {
-  room: Room<TGameInstanceMetadataData, TGameMode>;
+interface RoomEvent<TRoom> {
+  room: TRoom;
   action: RoomAction;
 }
 
@@ -47,17 +41,23 @@ export enum ProbableWaffleGameInstanceEvent {
 
 export interface LittleMuncherRoom extends Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
 
-export interface LittleMuncherRoomEvent
-  extends RoomEvent<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
+export interface LittleMuncherRoomEvent extends RoomEvent<LittleMuncherRoom> {}
 
 export interface LittleMuncherSpectatorEvent extends SpectatorEvent {
   room: Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode>;
 }
 
-export interface ProbableWaffleRoom extends Room<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameMode> {}
+export interface ProbableWaffleRoom extends Room<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameMode> {
+  players: {
+    userId: string | null;
+    controllerData: ProbableWafflePlayerControllerData;
+  }[];
+  spectators: {
+    userId: string | null;
+  }[];
+}
 
-export interface ProbableWaffleRoomEvent
-  extends RoomEvent<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameMode> {}
+export interface ProbableWaffleRoomEvent extends RoomEvent<ProbableWaffleRoom> {}
 
 export interface ProbableWafflePlayerEvent extends PlayerEvent {
   player: ProbableWafflePlayer;

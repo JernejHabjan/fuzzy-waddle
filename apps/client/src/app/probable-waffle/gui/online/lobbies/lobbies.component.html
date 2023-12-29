@@ -57,8 +57,8 @@
   </div>
 
   <div>
-    <button (click)='join()' [disabled]='!selectedRoom' class='btn btn-primary' type='button'>Join</button>
-    <button (click)='spectate()' [disabled]='!selectedRoom' class='ms-2 btn btn-primary' type='button'>Spectate</button>
+    <button (click)='addSelfAsPlayer()' [disabled]='!canAddSelfAsPlayer()' class='btn btn-primary' type='button'>Join</button>
+    <button (click)='addSelfAsSpectator()' [disabled]='!canAddSelfAsSpectator()' class='ms-2 btn btn-primary' type='button'>Spectate</button>
   </div>
 </div>
 } @else {

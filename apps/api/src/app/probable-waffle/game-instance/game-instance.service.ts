@@ -15,7 +15,6 @@ import {
   ProbableWaffleGetRoomsDto,
   ProbableWaffleJoinDto,
   ProbableWaffleLevels,
-  ProbableWaffleMapData,
   ProbableWafflePlayer,
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerEvent,
@@ -156,7 +155,10 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return {
       gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
       gameMode: gameInstance.gameMode,
-      players: gameInstance.players.map((player) => ({ userId: player.userId })),
+      players: gameInstance.players.map((player) => ({
+        userId: player.userId,
+        controllerData: player.playerController.data
+      })),
       spectators: gameInstance.spectators.map((spectator) => ({ userId: spectator.data.userId }))
     };
   }
@@ -309,5 +311,11 @@ export class GameInstanceService implements GameInstanceServiceInterface {
 
   private getMapName(gameInstance: ProbableWaffleGameInstance): string {
     return ProbableWaffleLevels[gameInstance.gameMode.data.map].name;
+  }
+
+  async getGameInstance(gameInstanceId: string, user: User) {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) return;
+    return gameInstance.data;
   }
 }

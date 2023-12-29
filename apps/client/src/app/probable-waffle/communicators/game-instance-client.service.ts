@@ -96,10 +96,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
 
-    const url = environment.api + "api/probable-waffle/get-game-instance";
-    const gameInstanceData = await firstValueFrom(
-      this.httpClient.get<ProbableWaffleGameInstanceData>(url, { params: { gameInstanceId } })
-    );
+    const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
+    if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     // todo ? await this.tryJoin();
     this.openLevelCommunication(gameInstanceId);
@@ -110,10 +108,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
 
-    const url = environment.api + "api/probable-waffle/get-game-instance";
-    const gameInstanceData = await firstValueFrom(
-      this.httpClient.get<ProbableWaffleGameInstanceData>(url, { params: { gameInstanceId } })
-    );
+    const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
+    if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     await this.addSelfAsSpectator();
     this.openLevelCommunication(gameInstanceId);
@@ -121,6 +117,16 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   private openLevelCommunication(gameInstanceId: string) {
     this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
+  }
+
+  async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
+    if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
+      throw new Error("Not authenticated or server not available");
+
+    const url = environment.api + "api/probable-waffle/get-game-instance";
+    return await firstValueFrom(
+      this.httpClient.get<ProbableWaffleGameInstanceData | null>(url, { params: { gameInstanceId } })
+    );
   }
 
   /**

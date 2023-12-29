@@ -1,20 +1,20 @@
-import { Body, Controller, Delete, Get, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
 import {
   GameInstanceDataDto,
-  ProbableWaffleStartLevelDto,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleRoom,
-  ProbableWaffleGameInstanceDataDto,
-  ProbableWaffleJoinDto,
-  ProbableWaffleGetRoomsDto,
-  ProbableWaffleChangeGameModeDto,
   ProbableWaffleAddPlayerDto,
+  ProbableWaffleAddSpectatorDto,
+  ProbableWaffleChangeGameModeDto,
+  ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceDataDto,
+  ProbableWaffleGetRoomsDto,
+  ProbableWaffleJoinDto,
   ProbableWafflePlayerLeftDto,
-  ProbableWaffleAddSpectatorDto
+  ProbableWaffleRoom,
+  ProbableWaffleStartLevelDto
 } from "@fuzzy-waddle/api-interfaces";
 
 @Controller("probable-waffle")
@@ -67,6 +67,15 @@ export class GameInstanceController {
     @Body() body: ProbableWaffleGetRoomsDto
   ): Promise<ProbableWaffleRoom[]> {
     return await this.gameInstanceService.getJoinableRooms(user, body);
+  }
+
+  @Get("get-game-instance")
+  @UseGuards(SupabaseAuthGuard)
+  async getGameInstance(
+    @CurrentUser() user: AuthUser,
+    @Query("gameInstanceId") gameInstanceId: string
+  ): Promise<ProbableWaffleGameInstanceData | null> {
+    return await this.gameInstanceService.getGameInstance(gameInstanceId, user);
   }
 
   @Put("change-game-mode")

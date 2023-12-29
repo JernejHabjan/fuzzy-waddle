@@ -1,7 +1,14 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { ProbableWaffleMapEnum, ProbableWaffleLevels, ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import {
+  ProbableWaffleLevels,
+  ProbableWaffleMapEnum,
+  ProbableWafflePlayerType,
+  ProbableWaffleRoom
+} from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+
 @Component({
   selector: "fuzzy-waddle-lobbies",
   templateUrl: "./lobbies.component.html",
@@ -13,6 +20,7 @@ export class LobbiesComponent implements OnInit {
   protected selectedRoom?: ProbableWaffleRoom;
   protected readonly roomsService = inject(RoomsService);
   protected readonly serverHealthService = inject(ServerHealthService);
+  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
 
   async ngOnInit(): Promise<void> {
     await this.pull();
@@ -22,12 +30,28 @@ export class LobbiesComponent implements OnInit {
     await this.roomsService.initiallyPullRooms();
   }
 
-  protected join() {
-    // todo - do something with this.selectedRoom
+  protected canAddSelfAsPlayer(): boolean {
+    // check if the selected room is joinable by checking if player type is NetworkOpen
+    if (!this.selectedRoom) return false;
+    return this.selectedRoom.players.some(
+      (player) => player.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen
+    );
   }
 
-  protected spectate() {
-    // todo - do something with this.selectedRoom
+  protected canAddSelfAsSpectator(): boolean {
+    return !!this.selectedRoom;
+  }
+
+  protected async addSelfAsPlayer() {
+    if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
+    await this.gameInstanceClientService.joinToLobbyAsPlayer(this.selectedRoom.gameInstanceMetadataData.gameInstanceId);
+  }
+
+  protected async addSelfAsSpectator() {
+    if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
+    await this.gameInstanceClientService.joinToLobbyAsSpectator(
+      this.selectedRoom.gameInstanceMetadataData.gameInstanceId
+    );
   }
 
   protected select(room: ProbableWaffleRoom) {

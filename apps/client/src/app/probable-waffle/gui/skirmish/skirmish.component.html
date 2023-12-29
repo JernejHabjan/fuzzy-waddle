@@ -7,6 +7,7 @@
 />
 <fuzzy-waddle-player-definition
   class='card-container'
+  [allowOpenSlotForMp]='joinable'
   (selfOrAiPlayerAdded)='selfOrAiPlayerAdded($event)'
   (playerSlotOpened)='playerSlotOpened($event)'
   (playerRemoved)='playerRemoved($event)'

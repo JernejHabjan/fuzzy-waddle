@@ -99,9 +99,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
     return {
       gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
-      gameMode: gameInstance.gameMode,
-      players: gameInstance.players.map((player) => ({ userId: player.userId })),
-      spectators: gameInstance.spectators.map((spectator) => ({ userId: spectator.data.userId }))
+      gameMode: gameInstance.gameMode
     };
   }
 

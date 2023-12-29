@@ -40,6 +40,7 @@ export class PlayerDefinitionComponent {
   protected PlayerType = ProbableWafflePlayerType;
   protected FactionDefinitions = FactionDefinitions;
   protected DifficultyDefinitions = DifficultyDefinitions;
+  @Input({ required: true }) allowOpenSlotForMp!: boolean;
   @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
   @Output() selfOrAiPlayerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
   @Output() playerSlotOpened: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
