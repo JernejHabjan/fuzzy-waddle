@@ -259,12 +259,12 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       console.log(
         "Probable Waffle - Closed open slot " +
           player.playerController.data.playerDefinition.player.playerPosition +
-        ' added on map ' " +
+          " added on map " +
           this.getMapName(gameInstance)
       );
     } else {
       console.log(
-        'Probable Waffle - Player ' + gameInstance.players.length + ' left from map ' + this.getMapName(gameInstance)
+        "Probable Waffle - Player " + gameInstance.players.length + " left from map " + this.getMapName(gameInstance)
       );
     }
     this.gameInstanceGateway.emitPlayer(this.getPlayerEvent(user, player, body.gameInstanceId, "left"));
@@ -282,14 +282,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       body.player.playerController.data.playerDefinition.playerType === ProbableWafflePlayerType.NetworkOpen;
     if (openSlot) {
       console.log(
-        'Probable Waffle - New open slot ' +
+        "Probable Waffle - New open slot " +
           player.playerController.data.playerDefinition.player.playerPosition +
-        ' added on map ' +
+          " added on map " +
           this.getMapName(gameInstance)
       );
     } else {
       console.log(
-        'Probable Waffle - Player ' + gameInstance.players.length + ' added on map ' + this.getMapName(gameInstance)
+        "Probable Waffle - Player " + gameInstance.players.length + " added on map " + this.getMapName(gameInstance)
       );
     }
 
@@ -302,7 +302,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const spectator = body.spectator;
     gameInstance.addSpectator(spectator);
     console.log(
-      'Probable Waffle - Spectator ' + gameInstance.spectators.length + ' added on map ' + this.getMapName(gameInstance)
+      "Probable Waffle - Spectator " + gameInstance.spectators.length + " added on map " + this.getMapName(gameInstance)
     );
     this.gameInstanceGateway.emitSpectator(this.getSpectatorEvent(user, spectator, body.gameInstanceId, "joined"));
   }
