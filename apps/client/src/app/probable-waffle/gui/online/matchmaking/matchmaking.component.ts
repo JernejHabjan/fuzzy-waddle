@@ -116,7 +116,7 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
     this.navigatingText = "Joining game in 3 seconds...";
     setTimeout(() => (this.navigatingText = "Joining game in 2 seconds..."), 1000);
     setTimeout(() => (this.navigatingText = "Joining game in 1 second..."), 2000);
-    setTimeout(() => this.router.navigate(["probable-waffle/game"]), 3000);
+    setTimeout(async () => await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame(), 3000);
   };
 
   protected cancelSearching() {

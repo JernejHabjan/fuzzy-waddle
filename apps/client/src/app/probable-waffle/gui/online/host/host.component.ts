@@ -27,6 +27,6 @@ export class HostComponent {
       ProbableWaffleGameInstanceType.SelfHosted
     );
     await this.gameInstanceClientService.addSelfAsPlayer();
-    await this.router.navigate(["probable-waffle/lobby"]);
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 }

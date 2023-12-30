@@ -6,6 +6,7 @@ import { GameStateServerService } from "./game-instance/game-state-server.servic
 import { GameStateGateway } from "./game-instance/game-state.gateway";
 import { MatchmakingService } from "./game-instance/matchmaking/matchmaking.service";
 import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
+import { ProbableWaffleChatService } from "./game-instance/chat/probable-waffle-chat.service";
 
 @Module({
   providers: [
@@ -14,7 +15,8 @@ import { TextSanitizationService } from "../../core/content-filters/text-sanitiz
     GameInstanceService,
     GameStateServerService,
     MatchmakingService,
-    TextSanitizationService
+    TextSanitizationService,
+    ProbableWaffleChatService
   ],
   controllers: [GameInstanceController]
 })

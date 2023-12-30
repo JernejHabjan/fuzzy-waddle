@@ -21,7 +21,6 @@ export class SkirmishComponent implements OnInit {
     );
     await this.gameInstanceClientService.addSelfAsPlayer();
     await this.gameInstanceClientService.addAiPlayer();
-
-    await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 }

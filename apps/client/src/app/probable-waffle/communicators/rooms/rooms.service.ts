@@ -16,7 +16,6 @@ import { map } from "rxjs/operators";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 import { RoomsServiceInterface } from "./rooms.service.interface";
-import { GameInstanceClientService } from "../game-instance-client.service";
 
 @Injectable({
   providedIn: "root"
@@ -29,7 +28,6 @@ export class RoomsService implements RoomsServiceInterface {
   private readonly httpClient = inject(HttpClient);
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
   get playersSearchingForMatchmakingGame(): number {
     return this.rooms.filter(
@@ -103,19 +101,6 @@ export class RoomsService implements RoomsServiceInterface {
     return socket
       ?.fromEvent<ProbableWaffleRoomEvent>(ProbableWaffleGatewayEvent.ProbableWaffleRoom)
       .pipe(map((roomEvent: ProbableWaffleRoomEvent) => roomEvent));
-  }
-
-  async joinRoom(gameInstanceId: string) {
-    await this.gameInstanceClientService.joinToLobbyAsSpectator(gameInstanceId);
-  }
-
-  async joinRoomSpectator(gameInstanceId: string) {
-    await this.gameInstanceClientService.joinToLobbyAsSpectator(gameInstanceId);
-  }
-
-  // todo use
-  async leaveRoom(gameInstanceId: string) {
-    // todo
   }
 
   destroy(): void {

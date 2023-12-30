@@ -27,15 +27,6 @@ export const roomsServiceStub = {
   },
   initiallyPullRooms(): Promise<void> {
     return Promise.resolve();
-  },
-  joinRoom() {
-    //
-  },
-  joinRoomSpectator() {
-    //
-  },
-  leaveRoom() {
-    //
   }
 } satisfies RoomsServiceInterface;
 describe("RoomsService", () => {

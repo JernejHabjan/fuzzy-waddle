@@ -7,8 +7,8 @@ import { TextSanitizationService } from "../../core/content-filters/text-sanitiz
 @Injectable()
 export class ChatService implements IChatService {
   constructor(
-    private supabaseProviderService: SupabaseProviderService,
-    private textSanitizationService: TextSanitizationService
+    private readonly supabaseProviderService: SupabaseProviderService,
+    private readonly textSanitizationService: TextSanitizationService
   ) {}
 
   /**

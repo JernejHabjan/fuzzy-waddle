@@ -36,6 +36,8 @@ import { GameInstanceClientServiceInterface } from "./game-instance-client.servi
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { NavigationExtras, Router } from "@angular/router";
+import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 
 @Injectable({
   providedIn: "root"
@@ -49,6 +51,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
+  private readonly router = inject(Router);
+  private readonly communicatorService = inject(ProbableWaffleCommunicatorService);
 
   async createGameInstance(
     name: string,
@@ -172,11 +176,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.addSelfAsSpectator();
   }
 
-  private openLevelCommunication(gameInstanceId: string) {
-    // todo use this when in game?
-    this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
-  }
-
   async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
@@ -185,6 +184,53 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     return await firstValueFrom(
       this.httpClient.get<ProbableWaffleGameInstanceData | null>(url, { params: { gameInstanceId } })
     );
+  }
+
+  async navigateToLobbyOrDirectlyToGame() {
+    if (!this.gameInstance) throw new Error("Game instance not found");
+    this.sceneCommunicatorClientService.startListeningToEvents(this.gameLocalInstanceId!);
+    switch (this.gameInstance.gameInstanceMetadata!.data.type) {
+      case ProbableWaffleGameInstanceType.SelfHosted:
+        // join lobby
+        await this.router.navigate(["probable-waffle/lobby"]);
+        break;
+      case ProbableWaffleGameInstanceType.Skirmish:
+        // replaceUrl: true - we don't want to go back to skirmish page
+        await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
+        break;
+      case ProbableWaffleGameInstanceType.Matchmaking:
+        // directly to game
+        await this.router.navigate(["probable-waffle/game"]);
+        break;
+      default:
+        throw new Error("Not implemented");
+    }
+
+    this.setupTestMessaging();
+  }
+
+  private setupTestMessaging() {
+    console.warn("TODO THIS IS JUST FOR TEST"); // TODO JUST FOR TEST
+    this.communicatorService.message?.on.subscribe((data) => {
+      console.log("message received", data);
+    });
+
+    const sendMessage = () => {
+      this.communicatorService.message?.send({
+        message: "Hello world!",
+        gameInstanceId: this.gameLocalInstanceId!,
+        date: new Date(),
+        emitterUserId: this.authService.userId!
+      });
+    };
+
+    setTimeout(() => sendMessage(), 1000);
+    setTimeout(() => sendMessage(), 2000);
+    setTimeout(() => sendMessage(), 3000);
+    setTimeout(() => sendMessage(), 4000);
+    setTimeout(() => sendMessage(), 5000);
+    setTimeout(() => sendMessage(), 6000);
+    setTimeout(() => sendMessage(), 7000);
   }
 
   /**
@@ -204,7 +250,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       await firstValueFrom(this.httpClient.delete<void>(url, { body }));
     }
     this.gameInstance = undefined;
-    this.sceneCommunicatorClientService.stopListeningToEvents();
+    this.sceneCommunicatorClientService.stopListeningToEvents(this.gameLocalInstanceId);
   }
 
   get gameLocalInstanceId(): string | null {

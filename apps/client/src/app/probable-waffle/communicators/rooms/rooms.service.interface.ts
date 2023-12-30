@@ -13,11 +13,5 @@ export interface RoomsServiceInterface {
 
   get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined;
 
-  joinRoom(gameInstanceId: string): void;
-
-  joinRoomSpectator(gameInstanceId: string): void;
-
-  leaveRoom(gameInstanceId: string): void;
-
   destroy(): void;
 }

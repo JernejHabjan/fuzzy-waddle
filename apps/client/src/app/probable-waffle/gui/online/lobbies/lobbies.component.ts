@@ -50,7 +50,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected async addSelfAsPlayer() {
     if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
     await this.gameInstanceClientService.joinToLobbyAsPlayer(this.selectedRoom.gameInstanceMetadataData.gameInstanceId);
-    await this.router.navigate(["probable-waffle/lobby"]);
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 
   protected async addSelfAsSpectator() {
@@ -58,7 +58,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
     await this.gameInstanceClientService.joinToLobbyAsSpectator(
       this.selectedRoom.gameInstanceMetadataData.gameInstanceId
     );
-    await this.router.navigate(["probable-waffle/lobby"]);
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 
   protected select(room: ProbableWaffleRoom) {
