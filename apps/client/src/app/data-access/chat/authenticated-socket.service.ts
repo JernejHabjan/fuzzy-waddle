@@ -13,7 +13,7 @@ export class AuthenticatedSocketService implements IAuthenticatedSocketService {
   constructor(private readonly authService: AuthService) {}
 
   get socket(): Socket | undefined {
-    if (!this.authenticatedSocket && this.authService.accessToken) {
+    if (!this.authenticatedSocket && this.authService.isAuthenticated) {
       this.authenticatedSocket = this.createAuthSocket();
     }
 

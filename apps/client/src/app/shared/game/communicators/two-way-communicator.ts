@@ -9,10 +9,10 @@ export class TwoWayCommunicator<T, K> {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private readonly eventName: string,
+    eventName: string,
     private readonly communicator: K,
     gameInstanceId?: string,
-    socket?: Socket
+    private readonly socket?: Socket
   ) {
     this.listenToCommunication(eventName, gameInstanceId, socket);
   }
@@ -26,12 +26,15 @@ export class TwoWayCommunicator<T, K> {
   }
 
   /**
-   * Sends data to UI + Server from Game or Server + Game from UI
+   * Sends data to Server if we're connected to a socket, otherwise manage data locally
    * @param data
    */
   send(data: T): void {
-    this.sendSubject.next(data);
-    this.sendLocallySubject.next(data);
+    if (this.socket) {
+      this.sendSubject.next(data);
+    } else {
+      this.sendLocally(data);
+    }
   }
 
   /**
@@ -70,6 +73,9 @@ export class TwoWayCommunicator<T, K> {
     if (socket && gameInstanceId) {
       this.subscriptions.push(
         socket.fromEvent<CommunicatorEvent<T, unknown>>(eventName).subscribe((event) => {
+          if (event.communicator === undefined) {
+            console.error("Communicator received from socket event is undefined", event);
+          }
           if (event.communicator !== this.communicator) return;
           this.onSubject.next(event.data);
         })

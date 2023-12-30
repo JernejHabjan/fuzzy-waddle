@@ -5,7 +5,6 @@ import { CurrentUser } from "../../../auth/current-user";
 import { AuthUser } from "@supabase/supabase-js";
 import {
   CommunicatorEvent,
-  GatewayChatEvent,
   ProbableWaffleCommunicatorMessageEvent,
   ProbableWaffleCommunicatorType,
   ProbableWaffleGatewayEvent,
@@ -63,11 +62,12 @@ export class GameStateGateway {
     switch (newPayload.communicator) {
       case "message":
         const body = newPayload.data as ProbableWaffleCommunicatorMessageEvent;
-        const sanitizedMessage = this.probableWaffleChatService.cleanMessage(body.message);
-        body.message = sanitizedMessage;
+        const sanitizedMessage = this.probableWaffleChatService.cleanMessage(body.chatMessage.text);
+        body.chatMessage.text = sanitizedMessage;
+
         this.server
           .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`)
-          .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, body);
+          .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, newPayload);
         break;
       default:
         throw new Error("Unknown communicator");
@@ -85,6 +85,7 @@ export class GameStateGateway {
       case "join":
         socket.join(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`);
         console.log(
+          user.id,
           "joined room",
           `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`
         );
@@ -92,6 +93,7 @@ export class GameStateGateway {
       case "leave":
         socket.leave(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`);
         console.log(
+          user.id,
           "left room",
           `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`
         );

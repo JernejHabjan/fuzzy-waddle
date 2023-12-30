@@ -36,8 +36,7 @@ import { GameInstanceClientServiceInterface } from "./game-instance-client.servi
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
-import { NavigationExtras, Router } from "@angular/router";
-import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root"
@@ -52,7 +51,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
   private readonly router = inject(Router);
-  private readonly communicatorService = inject(ProbableWaffleCommunicatorService);
 
   async createGameInstance(
     name: string,
@@ -205,32 +203,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       default:
         throw new Error("Not implemented");
     }
-
-    this.setupTestMessaging();
-  }
-
-  private setupTestMessaging() {
-    console.warn("TODO THIS IS JUST FOR TEST"); // TODO JUST FOR TEST
-    this.communicatorService.message?.on.subscribe((data) => {
-      console.log("message received", data);
-    });
-
-    const sendMessage = () => {
-      this.communicatorService.message?.send({
-        message: "Hello world!",
-        gameInstanceId: this.gameLocalInstanceId!,
-        date: new Date(),
-        emitterUserId: this.authService.userId!
-      });
-    };
-
-    setTimeout(() => sendMessage(), 1000);
-    setTimeout(() => sendMessage(), 2000);
-    setTimeout(() => sendMessage(), 3000);
-    setTimeout(() => sendMessage(), 4000);
-    setTimeout(() => sendMessage(), 5000);
-    setTimeout(() => sendMessage(), 6000);
-    setTimeout(() => sendMessage(), 7000);
   }
 
   /**

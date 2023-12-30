@@ -1,5 +1,6 @@
 // noinspection ES6PreferShortImport
 import { ProbableWaffleMapEnum } from "../../probable-waffle/probable-waffle";
+import { ChatMessage } from "../../chat/chat";
 
 export type ProbableWaffleCommunicatorType = "score" | "message";
 
@@ -14,8 +15,7 @@ export interface ProbableWaffleCommunicatorScoreEvent extends ProbableWaffleComm
 }
 
 export interface ProbableWaffleCommunicatorMessageEvent extends ProbableWaffleCommunicatorEvent {
-  message: string;
-  date: Date;
+  chatMessage: ChatMessage;
 }
 
 export interface ProbableWaffleWebsocketRoomEvent {

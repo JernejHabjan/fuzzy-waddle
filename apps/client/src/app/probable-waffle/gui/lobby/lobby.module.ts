@@ -11,6 +11,8 @@ import { ComponentsModule } from "../../../shared/components/components.module";
 import { RouterLink } from "@angular/router";
 import { TriggerComponent } from "./trigger/trigger.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
+import { ChatComponent } from "../../../shared/components/chat/chat.component";
+import { LobbyChatComponent } from "./lobby-chat/lobby-chat.component";
 
 @NgModule({
   declarations: [
@@ -22,6 +24,15 @@ import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.compo
     TriggerComponent
   ],
   exports: [LobbyComponent, MapSelectorComponent],
-  imports: [CommonModule, FormsModule, FontAwesomeModule, ComponentsModule, RouterLink, SpectatorsGridComponent]
+  imports: [
+    CommonModule,
+    FormsModule,
+    FontAwesomeModule,
+    ComponentsModule,
+    RouterLink,
+    SpectatorsGridComponent,
+    ChatComponent,
+    LobbyChatComponent
+  ]
 })
 export class LobbyModule {}

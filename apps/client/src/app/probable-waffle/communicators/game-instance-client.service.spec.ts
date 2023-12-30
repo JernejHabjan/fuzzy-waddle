@@ -7,10 +7,6 @@ import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
 import { RouterTestingModule } from "@angular/router/testing";
-import {
-  ProbableWaffleCommunicatorService,
-  probableWaffleCommunicatorServiceStub
-} from "./probable-waffle-communicator.service";
 
 export const gameInstanceClientServiceStub = {
   get gameLocalInstanceId(): string | null {
@@ -45,10 +41,7 @@ describe("GameInstanceClientService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        { provide: AuthService, useValue: authServiceStub },
-        { provide: ProbableWaffleCommunicatorService, useValue: probableWaffleCommunicatorServiceStub }
-      ]
+      providers: [{ provide: AuthService, useValue: authServiceStub }]
     });
     service = TestBed.inject(GameInstanceClientService);
   });

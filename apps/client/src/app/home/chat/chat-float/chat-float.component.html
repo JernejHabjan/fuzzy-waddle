@@ -8,6 +8,10 @@
       </div>
     </div>
 
-    <fuzzy-waddle-chat *ngIf="maximized" />
+    <fuzzy-waddle-chat
+      *ngIf="maximized"
+      [listenToMessages]="chatService.listenToMessages"
+      (newMessage)="chatService.sendMessage($event)"
+    />
   </div>
 </div>

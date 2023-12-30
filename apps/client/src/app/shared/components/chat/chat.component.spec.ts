@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ChatComponent } from "./chat.component";
-import { ChatService } from "../../../data-access/chat/chat.service";
 import { FormsModule } from "@angular/forms";
 import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
 import { avatarProviderServiceStub } from "./avatar-provider/avatar-provider.service.spec";
-import { chatServiceStub } from "../../../data-access/chat/chat.service.spec";
+import { AuthService } from "../../../auth/auth.service";
+import { authServiceStub } from "../../../auth/auth.service.spec";
 
 describe("ChatComponent", () => {
   let component: ChatComponent;
@@ -15,10 +15,13 @@ describe("ChatComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [ChatComponent],
       providers: [
-        { provide: ChatService, useValue: chatServiceStub },
         {
           provide: AvatarProviderService,
           useValue: avatarProviderServiceStub
+        },
+        {
+          provide: AuthService,
+          useValue: authServiceStub
         }
       ],
       imports: [FormsModule]
