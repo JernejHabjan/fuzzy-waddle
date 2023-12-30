@@ -3,11 +3,12 @@ import { PositionPlayerDefinition, ProbableWaffleLevels, ProbableWaffleMapEnum }
 import { MapPlayerDefinition } from "./map-player-definition";
 import { Subject } from "rxjs";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import { MapPlayerDefinitionsServiceInterface } from "./map-player-definitions.service.interface";
 
 @Injectable({
   providedIn: "root"
 })
-export class MapPlayerDefinitionsService {
+export class MapPlayerDefinitionsService implements MapPlayerDefinitionsServiceInterface {
   private readonly defaultMap: ProbableWaffleMapEnum = ProbableWaffleMapEnum.RiverCrossing;
   mapPlayerDefinitions: MapPlayerDefinition[] = [];
   selectedMap: MapPlayerDefinition | null = null;

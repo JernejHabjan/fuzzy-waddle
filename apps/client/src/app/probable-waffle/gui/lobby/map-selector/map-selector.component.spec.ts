@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MapSelectorComponent } from "./map-selector.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
+import { MapPlayerDefinitionsService } from "../map-player-definitions.service";
+import { mapPlayerDefinitionsServiceStub } from "../map-player-definitions.service.spec";
 
 @Component({ selector: "probable-waffle-map-selector", template: "" })
 export class MapSelectorTestingComponent {}
@@ -13,6 +15,7 @@ describe("MapSelectorComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: MapPlayerDefinitionsService, useValue: mapPlayerDefinitionsServiceStub }],
       declarations: [MapSelectorComponent],
       imports: [FormsModule]
     }).compileComponents();

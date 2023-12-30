@@ -8,17 +8,22 @@ import { GameModeDefinitionTestingComponent } from "./game-mode-definition/game-
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
 import { SpectatorsGridTestingComponent } from "./spectators-grid/spectators-grid.component.spec";
+import { MapPlayerDefinitionsService } from "./map-player-definitions.service";
+import { mapPlayerDefinitionsServiceStub } from "./map-player-definitions.service.spec";
 
 @Component({ selector: "probable-waffle-lobby", template: "" })
 export class LobbyTestingComponent {}
 
-describe("LobbyComponent", () => {
+describe("ProbableWaffleLobbyLobbyComponent", () => {
   let component: LobbyComponent;
   let fixture: ComponentFixture<LobbyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
+      providers: [
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: MapPlayerDefinitionsService, useValue: mapPlayerDefinitionsServiceStub }
+      ],
       declarations: [
         LobbyComponent,
         PlayerDefinitionTestingComponent,

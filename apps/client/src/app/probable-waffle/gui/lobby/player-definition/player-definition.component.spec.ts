@@ -4,7 +4,7 @@ import { PlayerDefinitionComponent } from "./player-definition.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { FormsModule } from "@angular/forms";
 import { Component, Input } from "@angular/core";
-import { MapPlayerDefinition } from "../lobby.component";
+import { MapPlayerDefinition } from "../map-player-definition";
 
 @Component({ selector: "probable-waffle-player-definition", template: "" })
 export class PlayerDefinitionTestingComponent {
