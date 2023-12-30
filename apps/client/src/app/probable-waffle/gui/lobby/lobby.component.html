@@ -6,7 +6,7 @@
 />
 <probable-waffle-player-definition
   class="card-container"
-  [allowOpenSlotForMp]="joinable"
+  [allowOpenSlotForMp]="isSelfHosted"
   (aiPlayerAdded)="aiPlayerAdded($event)"
   (playerSlotOpened)="playerSlotOpened($event)"
   (playerRemoved)="playerRemoved($event)"

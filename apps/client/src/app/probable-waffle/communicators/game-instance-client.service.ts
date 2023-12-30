@@ -17,6 +17,7 @@ import {
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
   ProbableWaffleLevelStateChangeEvent,
@@ -49,12 +50,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
 
-  async createGameInstance(joinable: boolean, type: ProbableWaffleGameInstanceType): Promise<void> {
+  async createGameInstance(
+    name: string,
+    visibility: ProbableWaffleGameInstanceVisibility,
+    type: ProbableWaffleGameInstanceType
+  ): Promise<void> {
     this.gameInstance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: {
+        name,
         createdBy: this.authService.userId,
         type,
-        joinable
+        visibility
       }
     });
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {

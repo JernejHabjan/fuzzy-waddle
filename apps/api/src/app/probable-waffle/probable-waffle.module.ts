@@ -5,9 +5,17 @@ import { GameInstanceGateway } from "./game-instance/game-instance.gateway";
 import { GameStateServerService } from "./game-instance/game-state-server.service";
 import { GameStateGateway } from "./game-instance/game-state.gateway";
 import { MatchmakingService } from "./game-instance/matchmaking/matchmaking.service";
+import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
 
 @Module({
-  providers: [GameInstanceGateway, GameStateGateway, GameInstanceService, GameStateServerService, MatchmakingService],
+  providers: [
+    GameInstanceGateway,
+    GameStateGateway,
+    GameInstanceService,
+    GameStateServerService,
+    MatchmakingService,
+    TextSanitizationService
+  ],
   controllers: [GameInstanceController]
 })
 export class ProbableWaffleModule {}

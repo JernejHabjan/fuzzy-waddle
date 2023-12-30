@@ -38,7 +38,7 @@ export interface GameInstanceServiceInterface {
 
   stopLevel(body: GameInstanceDataDto, user: User);
 
-  getJoinableRooms(user: User, body: ProbableWaffleGetRoomsDto): Promise<ProbableWaffleRoom[]>;
+  getVisibleRooms(user: User, body: ProbableWaffleGetRoomsDto): Promise<ProbableWaffleRoom[]>;
 
   getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom;
 

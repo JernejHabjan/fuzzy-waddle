@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { Router } from "@angular/router";
-import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   template: "",
@@ -14,7 +14,11 @@ export class SkirmishComponent implements OnInit {
   private readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
-    await this.gameInstanceClientService.createGameInstance(false, ProbableWaffleGameInstanceType.Skirmish);
+    await this.gameInstanceClientService.createGameInstance(
+      "Skirmish",
+      ProbableWaffleGameInstanceVisibility.Private,
+      ProbableWaffleGameInstanceType.Skirmish
+    );
     await this.gameInstanceClientService.addSelfAsPlayer();
     await this.gameInstanceClientService.addAiPlayer();
 

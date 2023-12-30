@@ -1,6 +1,10 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
-import { PositionPlayerDefinition, ProbableWaffleGameModeLobby } from "@fuzzy-waddle/api-interfaces";
+import {
+  PositionPlayerDefinition,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameModeLobby
+} from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { Router } from "@angular/router";
 import { MapPlayerDefinition } from "./map-player-definition";
@@ -81,7 +85,10 @@ export class LobbyComponent implements OnInit, OnDestroy {
     await this.router.navigate(["probable-waffle/game"]);
   }
 
-  protected get joinable(): boolean {
-    return this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.joinable ?? false;
+  protected get isSelfHosted(): boolean {
+    return (
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.type ===
+        ProbableWaffleGameInstanceType.SelfHosted ?? false
+    );
   }
 }

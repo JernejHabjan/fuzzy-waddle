@@ -13,6 +13,7 @@ import {
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGetRoomsDto,
   ProbableWaffleJoinDto,
   ProbableWaffleLevels,
@@ -33,10 +34,14 @@ import {
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceGateway } from "./game-instance.gateway";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
 
 @Injectable()
 export class GameInstanceService implements GameInstanceServiceInterface {
-  constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
+  constructor(
+    private readonly gameInstanceGateway: GameInstanceGateway,
+    private textSanitizationService: TextSanitizationService
+  ) {}
 
   private openGameInstances: ProbableWaffleGameInstance[] = [];
 
@@ -48,7 +53,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     if (gameInstanceMetadataData.createdBy !== user.id)
       throw new Error("Probable Waffle - createGameInstance - createdBy must be the same as user id");
     const newGameInstance = new ProbableWaffleGameInstance({
-      gameInstanceMetadataData
+      gameInstanceMetadataData: this.sanitizeGameInstanceMetadataData(gameInstanceMetadataData)
     });
     this.openGameInstances.push(newGameInstance);
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(newGameInstance, "added"));
@@ -163,12 +168,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "removed"));
   }
 
-  async getJoinableRooms(user: User, body: ProbableWaffleGetRoomsDto): Promise<ProbableWaffleRoom[]> {
+  async getVisibleRooms(user: User, body: ProbableWaffleGetRoomsDto): Promise<ProbableWaffleRoom[]> {
     const notStarted = this.openGameInstances.filter(
       (gi) => gi.gameInstanceMetadata.data.sessionState === GameSessionState.NotStarted
     );
-    const joinable = notStarted.filter((gi) => gi.gameInstanceMetadata.data.joinable);
-    const notCreatedByUser = joinable.filter((gi) => gi.gameInstanceMetadata.data.createdBy !== user.id);
+    const visible = notStarted.filter(
+      (gi) => gi.gameInstanceMetadata.data.visibility === ProbableWaffleGameInstanceVisibility.Public
+    );
+    const notCreatedByUser = visible.filter((gi) => gi.gameInstanceMetadata.data.createdBy !== user.id);
     const filteredByMap = notCreatedByUser.filter((gi) => body.maps?.includes(gi.gameMode.data.map) ?? true);
     const gameInstanceToRoom = filteredByMap.map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
     return gameInstanceToRoom;
@@ -342,5 +349,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) return;
     return gameInstance.data;
+  }
+
+  private sanitizeGameInstanceMetadataData(
+    gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData
+  ): ProbableWaffleGameInstanceMetadataData {
+    return {
+      ...gameInstanceMetadataData,
+      name: this.textSanitizationService.cleanBadWords(gameInstanceMetadataData.name)
+    };
   }
 }

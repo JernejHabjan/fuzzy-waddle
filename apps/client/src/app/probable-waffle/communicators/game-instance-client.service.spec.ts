@@ -5,13 +5,17 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
-import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
 
 export const gameInstanceClientServiceStub = {
   get gameLocalInstanceId(): string | null {
     return null;
   },
-  createGameInstance(joinable: boolean, type: ProbableWaffleGameInstanceType): Promise<void> {
+  createGameInstance(
+    name: string,
+    visibility: ProbableWaffleGameInstanceVisibility,
+    type: ProbableWaffleGameInstanceType
+  ): Promise<void> {
     return Promise.resolve();
   },
   stopGameInstance(): Promise<void> {

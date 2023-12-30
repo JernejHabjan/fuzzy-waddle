@@ -8,6 +8,7 @@ import {
   PositionPlayerDefinition,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
   ProbableWaffleLevels,
@@ -106,9 +107,10 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     // create new one
     const newGameInstance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: {
+        name: "Matchmaking",
         createdBy: user.id,
         type: ProbableWaffleGameInstanceType.Matchmaking,
-        joinable: true
+        visibility: ProbableWaffleGameInstanceVisibility.Public
       }
     });
 

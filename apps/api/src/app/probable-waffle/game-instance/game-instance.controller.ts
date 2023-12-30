@@ -70,7 +70,7 @@ export class GameInstanceController {
     @CurrentUser() user: AuthUser,
     @Body() body: ProbableWaffleGetRoomsDto
   ): Promise<ProbableWaffleRoom[]> {
-    return await this.gameInstanceService.getJoinableRooms(user, body);
+    return await this.gameInstanceService.getVisibleRooms(user, body);
   }
 
   @Get("get-game-instance")

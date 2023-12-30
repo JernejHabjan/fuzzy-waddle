@@ -37,7 +37,6 @@ export class LobbiesComponent implements OnInit, OnDestroy {
     this.roomsService.destroy();
   }
   protected canAddSelfAsPlayer(): boolean {
-    // check if the selected room is joinable by checking if player type is NetworkOpen
     if (!this.selectedRoom) return false;
     return this.selectedRoom.players.some(
       (player) => player.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen

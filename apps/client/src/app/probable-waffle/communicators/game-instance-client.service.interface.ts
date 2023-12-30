@@ -1,9 +1,17 @@
-import { ProbableWaffleGameInstance, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import {
+  ProbableWaffleGameInstance,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility
+} from "@fuzzy-waddle/api-interfaces";
 
 export interface GameInstanceClientServiceInterface {
   gameInstance?: ProbableWaffleGameInstance;
 
-  createGameInstance(joinable: boolean, type: ProbableWaffleGameInstanceType): Promise<void>;
+  createGameInstance(
+    name: string,
+    visibility: ProbableWaffleGameInstanceVisibility,
+    type: ProbableWaffleGameInstanceType
+  ): Promise<void>;
 
   stopGameInstance(): Promise<void>;
 

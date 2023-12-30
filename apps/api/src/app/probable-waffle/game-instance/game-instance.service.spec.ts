@@ -19,6 +19,7 @@ import {
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { User } from "../../../users/users.service";
 import { GameInstanceGateway, GameInstanceGatewayStub } from "./game-instance.gateway";
+import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
@@ -43,7 +44,7 @@ export const GameInstanceServiceStub = {
   ): ProbableWaffleSpectatorEvent {
     return undefined;
   },
-  getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]> {
+  getVisibleRooms(user: User): Promise<ProbableWaffleRoom[]> {
     return undefined;
   },
   joinRoom(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData> {
@@ -77,7 +78,8 @@ describe("GameInstanceService", () => {
         {
           provide: GameInstanceGateway,
           useValue: GameInstanceGatewayStub
-        }
+        },
+        TextSanitizationService
       ]
     }).compile();
 
