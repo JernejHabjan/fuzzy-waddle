@@ -10,7 +10,6 @@ import {
   LittleMuncherGatewayEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameStateServerService } from "./game-state-server.service";
-import { inject } from "@angular/core";
 
 export type MyConnectedSocket = Socket & { broadcast: { emit: (event: string, data: any) => void } };
 
@@ -23,7 +22,7 @@ export class GameStateGateway {
   @WebSocketServer()
   private server: Server;
 
-  private readonly gameStateServerService = inject(GameStateServerService);
+  constructor(private readonly gameStateServerService: GameStateServerService) {}
 
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherAction)

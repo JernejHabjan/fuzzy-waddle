@@ -3,7 +3,6 @@ import { SupabaseProviderService } from "../../../core/supabase-provider/supabas
 import { AuthUser } from "@supabase/supabase-js";
 import { RoomDto } from "./room.dto";
 import { IRoomService } from "./room.service.interface";
-import { inject } from "@angular/core";
 
 export const roomServiceStub = {
   createRoom: (body: RoomDto, user: AuthUser) => Promise.resolve()
@@ -11,7 +10,7 @@ export const roomServiceStub = {
 
 @Injectable()
 export class RoomService implements IRoomService {
-  private readonly supabaseProviderService = inject(SupabaseProviderService);
+  constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
   async createRoom(body: RoomDto, user: AuthUser): Promise<void> {
     const { data, error } = await this.supabaseProviderService.supabaseClient

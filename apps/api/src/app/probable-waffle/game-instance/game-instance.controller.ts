@@ -18,13 +18,13 @@ import {
   RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
 import { MatchmakingService } from "./matchmaking/matchmaking.service";
-import { inject } from "@angular/core";
 
 @Controller("probable-waffle")
 export class GameInstanceController {
-  private readonly gameInstanceService = inject(GameInstanceService);
-  private readonly matchmakingService = inject(MatchmakingService);
-
+  constructor(
+    private readonly gameInstanceService: GameInstanceService,
+    private readonly matchmakingService: MatchmakingService
+  ) {}
   @Post("start-game")
   @UseGuards(SupabaseAuthGuard)
   async startGame(@CurrentUser() user: AuthUser, @Body() body: ProbableWaffleGameInstanceMetadataData): Promise<void> {

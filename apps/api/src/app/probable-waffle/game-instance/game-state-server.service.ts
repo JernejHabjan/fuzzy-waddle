@@ -6,11 +6,10 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
 import { User } from "@supabase/supabase-js";
-import { inject } from "@angular/core";
 
 @Injectable()
 export class GameStateServerService {
-  private readonly gameInstanceService = inject(GameInstanceService);
+  constructor(private readonly gameInstanceService: GameInstanceService) {}
 
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);

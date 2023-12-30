@@ -23,15 +23,15 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceService } from "../game-instance.service";
 import { GameInstanceGateway } from "../game-instance.gateway";
 import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
-import { inject } from "@angular/core";
 
 @Injectable()
 export class MatchmakingService implements MatchmakingServiceInterface {
   private pendingMatchmakingGameInstances: PendingMatchmakingGameInstance[] = [];
 
-  private readonly gameInstanceService = inject(GameInstanceService);
-  private readonly gameInstanceGateway = inject(GameInstanceGateway);
-
+  constructor(
+    private readonly gameInstanceService: GameInstanceService,
+    private readonly gameInstanceGateway: GameInstanceGateway
+  ) {}
   /**
    * remove game instances that have been started more than N time ago
    */
