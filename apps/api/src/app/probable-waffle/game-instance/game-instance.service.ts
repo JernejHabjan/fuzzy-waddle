@@ -33,10 +33,11 @@ import {
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceGateway } from "./game-instance.gateway";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { inject } from "@angular/core";
 
 @Injectable()
 export class GameInstanceService implements GameInstanceServiceInterface {
-  constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
+  private readonly gameInstanceGateway = inject(GameInstanceGateway);
 
   private openGameInstances: ProbableWaffleGameInstance[] = [];
 

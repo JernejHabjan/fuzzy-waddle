@@ -3,13 +3,12 @@ import { IChatService } from "./chat.service.interface";
 import { AuthUser } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
+import { inject } from "@angular/core";
 
 @Injectable()
 export class ChatService implements IChatService {
-  constructor(
-    private supabaseProviderService: SupabaseProviderService,
-    private textSanitizationService: TextSanitizationService
-  ) {}
+  private readonly supabaseProviderService = inject(SupabaseProviderService);
+  private readonly textSanitizationService = inject(TextSanitizationService);
 
   /**
    * @returns {Promise<Awaited<string>>} sanitized message

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Output } from "@angular/core";
 import {
   HillData,
   LittleMuncherGameCreate,
@@ -17,11 +17,8 @@ export class HomeComponent {
   protected readonly LittleMuncherHills = LittleMuncherHills;
   protected readonly LittleMuncherHill = LittleMuncherHillEnum;
   @Output() startLevel: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
-
-  constructor(
-    protected readonly serverHealthService: ServerHealthService,
-    protected readonly authService: AuthService
-  ) {}
+  protected readonly serverHealthService = inject(ServerHealthService);
+  private readonly authService = inject(AuthService);
 
   climbOn(hillKey: unknown) {
     this.startLevel.next({

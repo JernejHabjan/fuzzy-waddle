@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, inject, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { flySquasherGameConfig } from "../game/consts/game-config";
 import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../auth/auth.service";
@@ -15,6 +15,11 @@ import { ModalComponent } from "../../shared/components/modal/modal.component";
   styleUrls: ["./main.component.scss"]
 })
 export class MainComponent implements OnInit, OnDestroy {
+  private readonly authService = inject(AuthService);
+  private readonly communicatorService = inject(FlySquasherCommunicatorService);
+  private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
+  private readonly router = inject(Router);
+
   @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly flySquasherGameConfig = flySquasherGameConfig;
   protected gameData!: FlySquasherGameData;
@@ -26,12 +31,6 @@ export class MainComponent implements OnInit, OnDestroy {
     closeButtonLabel: "Leave",
     onClose: async () => this.preventNavigateBack.navigateBack()
   };
-  constructor(
-    private readonly authService: AuthService,
-    private readonly communicatorService: FlySquasherCommunicatorService,
-    private readonly sceneCommunicatorClientService: SceneCommunicatorClientService,
-    private readonly router: Router
-  ) {}
 
   ngOnInit(): void {
     const levelData = Object.values(FlySquasherLevels).find((level) => level.id === Number.parseInt(this.level))!;

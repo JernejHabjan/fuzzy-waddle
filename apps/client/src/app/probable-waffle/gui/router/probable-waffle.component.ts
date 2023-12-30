@@ -11,7 +11,7 @@ export class ProbableWaffleComponent implements OnInit, OnDestroy {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly userInstanceService = inject(UserInstanceService);
 
-  constructor(private dEPRECATED_gameInstanceService: DEPRECATED_gameInstanceService) {}
+  private readonly dEPRECATED_gameInstanceService = inject(DEPRECATED_gameInstanceService);
 
   ngOnInit(): void {
     this.userInstanceService.setVisitedGame("probable-waffle");

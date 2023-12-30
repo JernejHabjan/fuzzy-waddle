@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { User } from "../../users/users.service";
+import { inject } from "@angular/core";
 
 interface UserMetadata {
   iss: string;
@@ -26,7 +27,7 @@ interface ScoreRecord {
 
 @Injectable()
 export class FlySquasherService {
-  constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
+  private readonly supabaseProviderService = inject(SupabaseProviderService);
 
   async postScore(body: ScoreDto, user: User): Promise<void> {
     const { error } = await this.supabaseProviderService.supabaseClient

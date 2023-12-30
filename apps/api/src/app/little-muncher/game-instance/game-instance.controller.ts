@@ -9,10 +9,11 @@ import {
   LittleMuncherGameInstanceData,
   LittleMuncherRoom
 } from "@fuzzy-waddle/api-interfaces";
+import { inject } from "@angular/core";
 
 @Controller("little-muncher")
 export class GameInstanceController {
-  constructor(private readonly gameInstanceService: GameInstanceService) {}
+  private readonly gameInstanceService = inject(GameInstanceService);
 
   @Post("start-game")
   @UseGuards(SupabaseAuthGuard)

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,7 +12,7 @@ export class SwRefreshComponent implements OnInit {
   protected showNewVersion = false;
   protected showVersionReady = false;
 
-  constructor(private swUpdate: SwUpdate) {}
+  private readonly swUpdate = inject(SwUpdate);
 
   ngOnInit(): void {
     this.swUpdateCheck();

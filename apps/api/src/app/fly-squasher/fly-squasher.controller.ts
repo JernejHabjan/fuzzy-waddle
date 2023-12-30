@@ -4,10 +4,11 @@ import { CurrentUser } from "../../auth/current-user";
 import { AuthUser } from "@supabase/supabase-js";
 import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { FlySquasherService } from "./fly-squasher.service";
+import { inject } from "@angular/core";
 
 @Controller("fly-squasher")
 export class FlySquasherController {
-  constructor(private readonly flySquasherService: FlySquasherService) {}
+  private readonly flySquasherService = inject(FlySquasherService);
 
   @Post("post-score")
   @UseGuards(SupabaseAuthGuard)

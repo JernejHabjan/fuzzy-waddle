@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ModalConfig } from "../../../shared/components/modal/modal-config";
 import { ModalComponent } from "../../../shared/components/modal/modal.component";
 import { Subscription } from "rxjs";
@@ -16,8 +16,14 @@ import { LittleMuncherCommunicatorService } from "../communicators/little-munche
   styleUrls: ["./game-interface.component.scss"]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
-  score = 0;
-  remaining = 0;
+  private readonly authService = inject(AuthService);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly communicatorService = inject(LittleMuncherCommunicatorService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
+
+  protected score = 0;
+  protected remaining = 0;
   @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
@@ -35,14 +41,6 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   };
   private scoreSubscription?: Subscription;
   private pauseSubscription?: Subscription;
-
-  constructor(
-    private readonly authService: AuthService,
-    private readonly gameInstanceClientService: GameInstanceClientService,
-    private readonly communicatorService: LittleMuncherCommunicatorService,
-    private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly router: Router
-  ) {}
 
   protected async leave() {
     await this.openModal();

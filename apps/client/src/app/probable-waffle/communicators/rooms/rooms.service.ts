@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
@@ -25,13 +25,11 @@ export class RoomsService implements RoomsServiceInterface {
   private roomsSubscription?: Subscription;
   rooms: ProbableWaffleRoom[] = [];
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly httpClient: HttpClient,
-    private readonly serverHealthService: ServerHealthService,
-    private readonly authenticatedSocketService: AuthenticatedSocketService,
-    private readonly gameInstanceClientService: GameInstanceClientService
-  ) {}
+  private readonly authService = inject(AuthService);
+  private readonly httpClient = inject(HttpClient);
+  private readonly serverHealthService = inject(ServerHealthService);
+  private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
   get playersSearchingForMatchmakingGame(): number {
     return this.rooms.filter(

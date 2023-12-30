@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { DataAccessService } from "../data-access.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class DbAccessTestService {
-  constructor(private dataAccessService: DataAccessService) {}
+  private readonly dataAccessService = inject(DataAccessService);
 
   get(): void {
     this.dataAccessService.supabase

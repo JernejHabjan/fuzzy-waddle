@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../../../auth/auth.service";
 
@@ -8,10 +8,8 @@ import { AuthService } from "../../../auth/auth.service";
   styleUrls: ["./profile-nav.component.scss"]
 })
 export class ProfileNavComponent {
-  constructor(
-    private router: Router,
-    protected authService: AuthService
-  ) {}
+  protected readonly authService = inject(AuthService);
+  protected readonly router = inject(Router);
 
   async toHome() {
     await this.router.navigate(["/"]);

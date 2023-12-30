@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
+import { Component, inject, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
 import { BaseGame } from "../phaser/game/base-game";
 import { Types } from "phaser";
 import { BaseGameData } from "../phaser/game/base-game-data";
@@ -17,7 +17,7 @@ export class GameContainerComponent implements OnDestroy {
 
   private gameRef?: BaseGame;
 
-  constructor(private readonly ngZone: NgZone) {}
+  private readonly ngZone = inject(NgZone);
 
   private _gameContainerElement!: HTMLDivElement;
 

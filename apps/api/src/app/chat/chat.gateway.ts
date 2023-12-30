@@ -7,6 +7,7 @@ import { ChatService } from "../chat/chat.service";
 import { Server } from "net";
 import { ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
 import { MyConnectedSocket } from "../little-muncher/game-instance/game-state.gateway";
+import { inject } from "@angular/core";
 
 @WebSocketGateway({
   cors: {
@@ -17,8 +18,7 @@ export class ChatGateway {
   @WebSocketServer()
   private server: Server;
 
-  constructor(private readonly chatService: ChatService) {}
-
+  private readonly chatService = inject(ChatService);
   // @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)
   // findAll(@MessageBody() data: ChatMessage): Observable<WsResponse<ChatMessage>> {
   //   return from([data]).pipe(map(item => ({ event: GatewayEvent.CHAT_MESSAGE, data: item })));

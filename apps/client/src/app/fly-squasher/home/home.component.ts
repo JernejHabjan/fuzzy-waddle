@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { AuthService } from "../../auth/auth.service";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { ServerHealthService } from "../../shared/services/server-health.service";
@@ -11,8 +11,6 @@ import { ServerHealthService } from "../../shared/services/server-health.service
 export class HomeComponent {
   protected readonly faExclamationTriangle = faExclamationTriangle;
 
-  constructor(
-    protected readonly authService: AuthService,
-    protected readonly serverHealthService: ServerHealthService
-  ) {}
+  protected readonly authService = inject(AuthService);
+  protected readonly serverHealthService = inject(ServerHealthService);
 }

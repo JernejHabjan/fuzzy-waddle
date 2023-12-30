@@ -9,6 +9,8 @@ import { ServerHealthService } from "../../../shared/services/server-health.serv
 import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
 import { LobbiesTestingComponent } from "./lobbies/lobbies.component.spec";
 import { HostTestingComponent } from "./host/host.component.spec";
+import { AuthService } from "../../../auth/auth.service";
+import { authServiceStub } from "../../../auth/auth.service.spec";
 
 describe("OnlineComponent", () => {
   let component: OnlineComponent;
@@ -29,6 +31,10 @@ describe("OnlineComponent", () => {
         {
           provide: ServerHealthService,
           useValue: serverHealthServiceStub
+        },
+        {
+          provide: AuthService,
+          useValue: authServiceStub
         }
       ]
     }).compileComponents();

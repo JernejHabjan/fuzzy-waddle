@@ -1,6 +1,10 @@
 <fuzzy-waddle-home-nav />
 
-@if (serverHealthService.serverChecking) {
+@if(!authService.isAuthenticated){
+<div class="server-health">
+  <p>Not authenticated. Please Login to continue</p>
+</div>
+} @else{ @if (serverHealthService.serverChecking) {
 <div class="server-health">
   <p>Checking server health...</p>
 </div>
@@ -23,4 +27,4 @@
 <div class="server-health">
   <p>Server is not available</p>
 </div>
-}
+} }

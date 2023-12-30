@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { AuthService } from "../../auth/auth.service";
 import { DbAccessTestService } from "../../data-access/db-access-test/db-access-test.service";
 import { HttpClient } from "@angular/common/http";
@@ -52,12 +52,10 @@ export class HomePageComponent {
     return this.displayGames.find((g) => g.route === this.currentlyFeaturedGame)!;
   }
 
-  constructor(
-    protected readonly authService: AuthService,
-    protected readonly dbAccessTestService: DbAccessTestService,
-    protected readonly serverHealthService: ServerHealthService,
-    private readonly httpClient: HttpClient // todo remove httpClient from view!
-  ) {}
+  protected readonly authService = inject(AuthService);
+  protected readonly dbAccessTestService = inject(DbAccessTestService);
+  protected readonly serverHealthService = inject(ServerHealthService);
+  private readonly httpClient = inject(HttpClient); // todo remove httpClient from view!
 
   async addViaMw(): Promise<void> {
     // todo remove this - this is just for testing

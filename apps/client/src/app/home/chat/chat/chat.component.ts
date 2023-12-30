@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ChatService } from "../../../data-access/chat/chat.service";
 import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
 import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
@@ -11,14 +11,12 @@ import { Subscription } from "rxjs";
 })
 export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild("chatBody") chatBody!: ElementRef;
-  message = "";
-  messages: ChatMessage[] = [];
+  protected message = "";
+  protected readonly messages: ChatMessage[] = [];
   private messageSubscription?: Subscription;
 
-  constructor(
-    private chatService: ChatService,
-    protected avatarProviderService: AvatarProviderService
-  ) {}
+  private chatService = inject(ChatService);
+  protected avatarProviderService = inject(AvatarProviderService);
 
   ngOnInit(): void {
     this.messageSubscription = this.chatService.getMessage()?.subscribe((msg: ChatMessage) => {
@@ -32,7 +30,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.sendMessage(this.chatService.createMessage("Joined the chat"));
   }
 
-  sendMessage() {
+  protected sendMessage() {
     if (!this.message) {
       return;
     }

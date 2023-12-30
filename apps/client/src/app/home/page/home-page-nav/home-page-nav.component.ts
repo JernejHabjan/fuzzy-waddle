@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { AuthService } from "../../../auth/auth.service";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -9,8 +9,8 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
   styleUrls: ["./home-page-nav.component.scss"]
 })
 export class HomePageNavComponent {
-  faUser = faUser;
-  faGoogle = faGoogle;
+  protected readonly faUser = faUser;
+  protected readonly faGoogle = faGoogle;
 
-  constructor(protected authService: AuthService) {}
+  protected readonly authService = inject(AuthService);
 }

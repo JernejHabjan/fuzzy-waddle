@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { SpectateService } from "./spectate.service";
 import { LittleMuncherRoom } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
@@ -9,10 +9,8 @@ import { ServerHealthService } from "../../../shared/services/server-health.serv
   styleUrls: ["./spectate.component.scss"]
 })
 export class SpectateComponent implements OnInit {
-  constructor(
-    protected readonly spectateService: SpectateService,
-    protected readonly serverHealthService: ServerHealthService
-  ) {}
+  protected readonly spectateService = inject(SpectateService);
+  protected readonly serverHealthService = inject(ServerHealthService);
 
   async ngOnInit(): Promise<void> {
     await this.spectateService.initiallyPullRooms();

@@ -4,10 +4,11 @@ import { RoomDto } from "./room.dto";
 import { CurrentUser } from "../../../auth/current-user";
 import { AuthUser } from "@supabase/supabase-js";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { inject } from "@angular/core";
 
 @Controller("room")
 export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+  private readonly roomService = inject(RoomService);
 
   @Post("room")
   @UseGuards(SupabaseAuthGuard)

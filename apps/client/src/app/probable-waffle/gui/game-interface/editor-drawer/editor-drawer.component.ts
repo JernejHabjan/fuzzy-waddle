@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { SceneCommunicatorService } from "../../../communicators/scene-communicator.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AtlasFrame, AtlasJsonWrapper, AtlasLoaderService, TileAtlasFrame, TileFrame } from "./atlas-loader.service";
 import { MapDefinitions } from "../../../game/world/const/map-size.info";
 import { TileTypes } from "../../../game/world/map/tile/manual-tiles/tile-types";
@@ -16,25 +16,25 @@ type TileType = "flat" | "water" | "slopes" | "blocks" | "other";
   styleUrls: ["./editor-drawer.component.scss"]
 })
 export class EditorDrawerComponent implements OnInit, OnDestroy {
-  editorVisible = false;
-  showObjectPlacement = false;
-  MapDefinitions = MapDefinitions;
-  nrReplacedTiles = SceneCommunicatorService.DEFAULT_TILE_REPLACE;
-  layerNr = SceneCommunicatorService.DEFAULT_LAYER;
-  tileAtlasFrames: TileAtlasFrame[] | null = null;
-  spriteAtlases: AtlasJsonWrapper[] | null = null;
+  protected editorVisible = false;
+  protected showObjectPlacement = false;
+  protected readonly MapDefinitions = MapDefinitions;
+  protected nrReplacedTiles = SceneCommunicatorService.DEFAULT_TILE_REPLACE;
+  protected layerNr = SceneCommunicatorService.DEFAULT_LAYER;
+  protected tileAtlasFrames: TileAtlasFrame[] | null = null;
+  protected spriteAtlases: AtlasJsonWrapper[] | null = null;
 
-  tileTypes: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean }[] = [
+  protected tileTypes: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean }[] = [
     { tileType: "flat", fn: TileTypes.getWalkableHeight0 },
     { tileType: "water", fn: TileTypes.getWalkableWater },
     { tileType: "slopes", fn: TileTypes.getWalkableSlopes },
     { tileType: "blocks", fn: TileTypes.getWalkableHeightBlock },
     { tileType: "other", fn: TileTypes.getOtherTiles }
   ];
-  selectedType: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean };
-  selectedAtlas: AtlasFrame | null = null;
-  selectedTile: number | null = null;
-  leaveModalConfirm: ModalConfig = {
+  protected selectedType: { tileType: TileType; fn: (frameWithMeta: TileFrame) => boolean };
+  protected selectedAtlas: AtlasFrame | null = null;
+  protected selectedTile: number | null = null;
+  protected readonly leaveModalConfirm: ModalConfig = {
     modalTitle: "Leave the game?",
     dismissButtonLabel: "Continue",
     closeButtonLabel: "Leave",
@@ -44,15 +44,14 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
   private atlasEmitterSubscription?: Subscription;
   @ViewChild("modal") private modalComponent!: ModalComponent;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private atlasLoaderService: AtlasLoaderService
-  ) {
+  private readonly router = inject(Router);
+  private readonly atlasLoaderService = inject(AtlasLoaderService);
+
+  constructor() {
     this.selectedType = this.tileTypes[0];
   }
 
-  async openModal() {
+  protected async openModal() {
     return await this.modalComponent.open();
   }
 
@@ -61,27 +60,27 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
     this.listenToSelectionEvents();
   }
 
-  removeTile() {
+  protected removeTile() {
     SceneCommunicatorService.tileEmitterSubject.next(-1);
   }
 
-  selectAtlas(tilesetName: string, atlasFrame: AtlasFrame) {
+  protected selectAtlas(tilesetName: string, atlasFrame: AtlasFrame) {
     SceneCommunicatorService.atlasEmitterSubject.next({ tilesetName, atlasFrame });
   }
 
-  nrReplacedTilesChanged() {
+  protected nrReplacedTilesChanged() {
     SceneCommunicatorService.tileEmitterNrSubject.next(this.nrReplacedTiles);
   }
 
-  layerNrChanged() {
+  protected layerNrChanged() {
     SceneCommunicatorService.layerEmitterSubject.next(this.layerNr);
   }
 
-  async loadMapAtlas() {
+  private async loadMapAtlas() {
     this.tileAtlasFrames = await this.atlasLoaderService.loadMap();
   }
 
-  async loadSpriteAtlases() {
+  private async loadSpriteAtlases() {
     this.spriteAtlases = [
       await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasMegaset),
       await this.atlasLoaderService.loadAtlasJson(MapDefinitions.atlasBuildings),
@@ -89,19 +88,19 @@ export class EditorDrawerComponent implements OnInit, OnDestroy {
     ];
   }
 
-  async leave() {
+  protected async leave() {
     await this.openModal();
   }
 
-  saveMap() {
+  protected saveMap() {
     // todo
   }
 
-  loadMap() {
+  protected loadMap() {
     // todo
   }
 
-  formatAtlasFileName(filename: string) {
+  protected formatAtlasFileName(filename: string) {
     // replace "_" with " "
     return filename.replace(/_/g, " ");
   }

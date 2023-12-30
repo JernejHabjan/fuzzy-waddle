@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { HighScoreService } from "./high-score.service";
 import { FlySquasherLevelEnum, FlySquasherLevels, ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { faExclamationTriangle, faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -15,10 +15,8 @@ export class HighScoreComponent implements OnInit {
   protected loading = true;
   protected highScores: ScoreDto[] = [];
 
-  constructor(
-    private readonly highScoreService: HighScoreService,
-    protected readonly serverHealthService: ServerHealthService
-  ) {}
+  private readonly highScoreService = inject(HighScoreService);
+  protected readonly serverHealthService = inject(ServerHealthService);
 
   async ngOnInit(): Promise<void> {
     await this.serverHealthService.checkHealth();
