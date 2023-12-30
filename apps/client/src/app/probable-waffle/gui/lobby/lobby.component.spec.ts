@@ -10,6 +10,7 @@ import { gameInstanceClientServiceStub } from "../../communicators/game-instance
 import { SpectatorsGridTestingComponent } from "./spectators-grid/spectators-grid.component.spec";
 import { MapPlayerDefinitionsService } from "./map-player-definitions.service";
 import { mapPlayerDefinitionsServiceStub } from "./map-player-definitions.service.spec";
+import { LobbyChatTestingComponent } from "./lobby-chat/lobby-chat.component.spec";
 
 @Component({ selector: "probable-waffle-lobby", template: "" })
 export class LobbyTestingComponent {}
@@ -29,7 +30,8 @@ describe("ProbableWaffleLobbyLobbyComponent", () => {
         PlayerDefinitionTestingComponent,
         MapDefinitionTestingComponent,
         GameModeDefinitionTestingComponent,
-        SpectatorsGridTestingComponent
+        SpectatorsGridTestingComponent,
+        LobbyChatTestingComponent
       ]
     }).compileComponents();
 

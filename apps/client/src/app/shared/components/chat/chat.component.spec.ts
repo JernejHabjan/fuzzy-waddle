@@ -13,7 +13,6 @@ describe("ChatComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChatComponent],
       providers: [
         {
           provide: AvatarProviderService,
@@ -24,7 +23,7 @@ describe("ChatComponent", () => {
           useValue: authServiceStub
         }
       ],
-      imports: [FormsModule]
+      imports: [ChatComponent, FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChatComponent);

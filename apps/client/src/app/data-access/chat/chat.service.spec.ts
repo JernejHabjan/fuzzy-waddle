@@ -10,8 +10,8 @@ export const chatServiceStub = {
   sendMessage(msg: ChatMessage) {
     // do nothing
   },
-  listenToMessages() {
-    return new Observable<ChatMessage>();
+  get listenToMessages(): Observable<ChatMessage> | undefined {
+    return undefined;
   }
 } satisfies IChatService;
 

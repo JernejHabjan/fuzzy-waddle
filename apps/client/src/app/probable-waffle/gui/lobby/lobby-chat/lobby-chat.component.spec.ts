@@ -8,6 +8,10 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { AuthService } from "../../../../auth/auth.service";
 import { authServiceStub } from "../../../../auth/auth.service.spec";
+import { Component } from "@angular/core";
+
+@Component({ selector: "probable-waffle-lobby-chat", template: "" })
+export class LobbyChatTestingComponent {}
 
 describe("LobbyChatComponent", () => {
   let component: LobbyChatComponent;

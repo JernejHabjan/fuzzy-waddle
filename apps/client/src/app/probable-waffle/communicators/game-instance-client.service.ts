@@ -43,7 +43,7 @@ import { Router } from "@angular/router";
 })
 export class GameInstanceClientService implements GameInstanceClientServiceInterface {
   gameInstance?: ProbableWaffleGameInstance;
-  listeners = new Map<string, Subscription | undefined>();
+  private listeners = new Map<string, Subscription | undefined>();
 
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
@@ -123,7 +123,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.addSelfAsPlayer();
   }
 
-  async addSelfAsPlayer() {
+  async addSelfAsPlayer(): Promise<void> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found");
     const playerDefinition = new PositionPlayerDefinition( // todo move this to single place
@@ -143,7 +143,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.addSelfOrAiPlayer(playerDefinition);
   }
 
-  async addAiPlayer() {
+  async addAiPlayer(): Promise<void> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found");
     const playerDefinition = new PositionPlayerDefinition( // todo move this to single place
@@ -184,7 +184,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  async navigateToLobbyOrDirectlyToGame() {
+  async navigateToLobbyOrDirectlyToGame(): Promise<void> {
     if (!this.gameInstance) throw new Error("Game instance not found");
     this.sceneCommunicatorClientService.startListeningToEvents(this.gameLocalInstanceId!);
     switch (this.gameInstance.gameInstanceMetadata!.data.type) {
@@ -256,7 +256,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  private spectatorAvailabilityChange = (spectatorEvent: ProbableWaffleSpectatorEvent) => {
+  private spectatorAvailabilityChange = (spectatorEvent: ProbableWaffleSpectatorEvent): void => {
     if (!this.gameInstance) return;
     switch (spectatorEvent.action) {
       case "joined":
@@ -273,7 +273,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     }
   };
 
-  async gameModeChanged(gameModeData: ProbableWaffleGameModeData) {
+  async gameModeChanged(gameModeData: ProbableWaffleGameModeData): Promise<void> {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/change-game-mode";
@@ -325,7 +325,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  async playerSlotOpened(playerDefinition: PositionPlayerDefinition) {
+  async playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void> {
     if (!this.gameLocalInstanceId) return;
     const openPlayerSlot = this.gameInstance!.initPlayer(
       { scoreProbableWaffle: 0 },
@@ -355,7 +355,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     }
   }
 
-  async playerLeftOrSlotClosed(playerNumber: number) {
+  async playerLeftOrSlotClosed(playerNumber: number): Promise<void> {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/player-left";
@@ -368,7 +368,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.removePlayer(playerNumber);
   }
 
-  async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition) {
+  async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition): Promise<void> {
     if (!this.gameLocalInstanceId) return;
 
     const playerNumber = playerDefinition.player.playerNumber;

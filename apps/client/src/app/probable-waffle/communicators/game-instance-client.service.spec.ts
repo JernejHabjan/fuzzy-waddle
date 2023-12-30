@@ -5,8 +5,18 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
-import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
+import {
+  PositionPlayerDefinition,
+  ProbableWaffleGameFoundEvent,
+  ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
+  ProbableWaffleGameModeData,
+  ProbableWaffleLevelStateChangeEvent
+} from "@fuzzy-waddle/api-interfaces";
 import { RouterTestingModule } from "@angular/router/testing";
+import { Observable } from "rxjs";
+import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 
 export const gameInstanceClientServiceStub = {
   get gameLocalInstanceId(): string | null {
@@ -32,6 +42,42 @@ export const gameInstanceClientServiceStub = {
     return Promise.resolve();
   },
   stopGame(): Promise<void> {
+    return Promise.resolve();
+  },
+  async gameModeChanged(gameModeData: ProbableWaffleGameModeData): Promise<void> {
+    return Promise.resolve();
+  },
+  get listenToLevelStateChangeEvents(): Observable<ProbableWaffleLevelStateChangeEvent> | undefined {
+    return undefined;
+  },
+  async playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void> {
+    return Promise.resolve();
+  },
+  async playerLeftOrSlotClosed(playerNumber: number): Promise<void> {
+    return Promise.resolve();
+  },
+  async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition): Promise<void> {
+    return Promise.resolve();
+  },
+  async addSelfAsSpectator(): Promise<void> {
+    return Promise.resolve();
+  },
+  listenToGameFound(): Observable<ProbableWaffleGameFoundEvent> {
+    return new Observable<ProbableWaffleGameFoundEvent>();
+  },
+  async requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void> {
+    return Promise.resolve();
+  },
+  async navigateToLobbyOrDirectlyToGame(): Promise<void> {
+    return Promise.resolve();
+  },
+  async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
+    return Promise.resolve(null);
+  },
+  async addAiPlayer(): Promise<void> {
+    return Promise.resolve();
+  },
+  async addSelfAsPlayer(): Promise<void> {
     return Promise.resolve();
   }
 } satisfies GameInstanceClientServiceInterface;
