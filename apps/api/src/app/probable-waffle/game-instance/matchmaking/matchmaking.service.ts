@@ -48,7 +48,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
-        // todo needed? this.gameInstanceGateway.emitRoom(this.getRoomEvent(gi, "removed"));
+        this.gameInstanceGateway.emitRoom(this.gameInstanceService.getRoomEvent(gi.gameInstance, "removed"));
         console.log("Probable Waffle - Cron - Pending matchmaking instance removed");
       }
       return !isOld;
@@ -66,21 +66,18 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   }
 
   private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance) {
+    const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) =>
         gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !==
         gameInstance.gameInstanceMetadata.data.gameInstanceId
     );
     gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.EnteringMap;
-    this.gameInstanceService.addGameInstance(gameInstance);
     this.gameInstanceGateway.emitGameFound({
       userIds: gameInstance.players.map((p) => p.playerController.data.userId),
-      gameInstanceId: gameInstance.gameInstanceMetadata.data.gameInstanceId
+      gameInstanceId
     });
-    console.log(
-      "Probable Waffle - Matchmaking game fully loaded",
-      gameInstance.gameInstanceMetadata.data.gameInstanceId
-    );
+    console.log("Probable Waffle - Matchmaking game fully loaded", gameInstanceId);
   }
 
   private async joinGameInstanceForMatchmaking(
@@ -96,6 +93,8 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     const mapPoolIds = pendingMatchmakingGameInstance.commonMapPoolIds;
     const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)];
     gameInstance.gameMode = this.getNewGameMode(randomMapId);
+
+    console.log("Probable Waffle - Player joined pending matchmaking instance", user.id);
 
     // emit game found event when all players have joined
     const maxPlayers = gameInstance.gameMode.data.maxPlayers;
@@ -120,6 +119,16 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       gameInstance: newGameInstance,
       commonMapPoolIds: matchMakingDto.mapPoolIds
     });
+    this.gameInstanceService.addGameInstance(newGameInstance);
+
+    this.gameInstanceGateway.emitPlayer(
+      this.gameInstanceService.getPlayerEvent(
+        player,
+        newGameInstance.gameInstanceMetadata.data.gameInstanceId,
+        "joined",
+        user
+      )
+    );
     console.log("Probable Waffle - Game instance created for matchmaking", this.pendingMatchmakingGameInstances.length);
   }
 
@@ -163,6 +172,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       this.gameInstanceService.getPlayerColorForNewPlayer(gameInstance),
       null
     );
+    // noinspection UnnecessaryLocalVariableJS
     const player = gameInstance.initPlayer(
       {
         scoreProbableWaffle: 0
@@ -185,5 +195,34 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       mapTuning: new MapTuning()
     } satisfies ProbableWaffleGameModeData;
     return new ProbableWaffleGameMode(gameModeData);
+  }
+
+  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
+    // remove self as player from pending matchmaking game instances
+    // if game instance has no players left, then remove it
+    const pendingMatchMakingGameInstance = this.pendingMatchmakingGameInstances.find((gi) =>
+      gi.gameInstance.players.some((p) => p.playerController.data.userId === user.id)
+    );
+    if (!pendingMatchMakingGameInstance) return;
+    const gameInstanceId = pendingMatchMakingGameInstance.gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    const player = pendingMatchMakingGameInstance.gameInstance.players.find(
+      (p) => p.playerController.data.userId === user.id
+    );
+    if (!player) return;
+
+    this.gameInstanceGateway.emitPlayer(this.gameInstanceService.getPlayerEvent(player, gameInstanceId, "left", user));
+    pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
+      (p) => p.playerController.data.userId !== user.id
+    );
+    console.log("Probable Waffle - Player left pending matchmaking instance", user.id);
+
+    if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
+      // remove pending game instance
+      this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
+        (gi) => gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !== gameInstanceId
+      );
+
+      await this.gameInstanceService.stopGameInstance({ gameInstanceId }, user);
+    }
   }
 }

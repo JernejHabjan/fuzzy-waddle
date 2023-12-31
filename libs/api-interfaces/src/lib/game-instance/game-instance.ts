@@ -54,7 +54,7 @@ export abstract class GameInstance<
   TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>
 > {
   gameMode: TGameMode | null = null;
-  gameInstanceMetadata: TGameInstanceMetadata | null = null;
+  gameInstanceMetadata: TGameInstanceMetadata;
   gameState: TGameState | null = null;
   players: TPlayer[] = [];
   spectators: TSpectator[] = [];
@@ -79,8 +79,10 @@ export abstract class GameInstance<
     >
   ) {
     this.gameInstanceMetadata = new constructors.gameInstanceMetadata(gameInstanceData?.gameInstanceMetadataData);
-    this.gameMode = new constructors.gameMode(gameInstanceData?.gameModeData);
-    this.gameState = new constructors.gameState(gameInstanceData?.gameStateData);
+    this.gameMode = gameInstanceData?.gameModeData ? new constructors.gameMode(gameInstanceData?.gameModeData) : null;
+    this.gameState = gameInstanceData?.gameStateData
+      ? new constructors.gameState(gameInstanceData?.gameStateData)
+      : null;
     this.players =
       gameInstanceData?.players?.map(
         (playerData) =>

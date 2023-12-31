@@ -119,10 +119,11 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
     setTimeout(async () => await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame(), 3000);
   };
 
-  protected cancelSearching() {
+  protected async cancelSearching() {
     if (!this.searching) return;
     this.searching = false;
     this.gameFoundSubscription?.unsubscribe();
+    await this.gameInstanceClientService.stopRequestGameSearchForMatchmaking();
   }
 
   protected nrOfPlayersChanged(nr: number) {

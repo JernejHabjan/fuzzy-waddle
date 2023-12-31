@@ -1,4 +1,4 @@
-import { inject, Injectable } from "@angular/core";
+import { computed, inject, Injectable, Signal, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
@@ -22,31 +22,35 @@ import { RoomsServiceInterface } from "./rooms.service.interface";
 })
 export class RoomsService implements RoomsServiceInterface {
   private roomsSubscription?: Subscription;
-  rooms: ProbableWaffleRoom[] = [];
+  rooms = signal<ProbableWaffleRoom[]>([]);
 
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
 
-  get playersSearchingForMatchmakingGame(): number {
-    return this.rooms.filter(
+  playersSearchingForMatchmakingGame: Signal<number> = computed(() => {
+    // noinspection UnnecessaryLocalVariableJS
+    const rooms = this.rooms().filter(
       (room) =>
         room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
         room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
-        room.players.length < room.gameMode.data.maxPlayers
+        room.gameInstanceMetadataData.sessionState === GameSessionState.NotStarted
     ).length;
-  }
+    return rooms;
+  });
 
-  get matchmakingGamesInProgress(): number {
-    return this.rooms.filter(
+  matchmakingGamesInProgress: Signal<number> = computed(() => {
+    // noinspection UnnecessaryLocalVariableJS
+    const rooms = this.rooms().filter(
       (room) =>
         room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
         room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
         room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
         room.gameInstanceMetadataData.sessionState !== GameSessionState.Finished
     ).length;
-  }
+    return rooms;
+  });
 
   /**
    * we need to listen to room events, so we know if we're spectating a room that is removed
@@ -57,22 +61,27 @@ export class RoomsService implements RoomsServiceInterface {
       switch (roomEvent.action) {
         case "added":
           if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
-          this.rooms.push(room);
+          this.rooms.update((rooms) => [...rooms, room]);
           break;
         case "removed":
-          this.rooms = this.rooms.filter(
-            (room) =>
-              room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
+          this.rooms.update((rooms) =>
+            rooms.filter(
+              (room) =>
+                room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
+            )
           );
           break;
         case "changed":
-          const index = this.rooms.findIndex(
-            (room) =>
-              room.gameInstanceMetadataData.gameInstanceId === roomEvent.room.gameInstanceMetadataData.gameInstanceId
+          this.rooms.update((rooms) =>
+            rooms.map((r) => {
+              if (
+                r.gameInstanceMetadataData.gameInstanceId === roomEvent.room.gameInstanceMetadataData.gameInstanceId
+              ) {
+                return room;
+              }
+              return r;
+            })
           );
-          if (index !== -1) {
-            this.rooms[index] = room;
-          }
           break;
       }
     });
@@ -93,7 +102,7 @@ export class RoomsService implements RoomsServiceInterface {
   }
 
   async initiallyPullRooms(): Promise<void> {
-    this.rooms = await this.getRooms();
+    this.rooms.set(await this.getRooms());
   }
 
   get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined {
@@ -105,6 +114,6 @@ export class RoomsService implements RoomsServiceInterface {
 
   destroy(): void {
     this.roomsSubscription?.unsubscribe();
-    this.rooms = [];
+    this.rooms.set([]);
   }
 }

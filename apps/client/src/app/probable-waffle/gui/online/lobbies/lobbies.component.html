@@ -1,13 +1,11 @@
 <div class="lobbies">
   <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate</div>
 
-  @if (roomsService.rooms.length === 0) {
+  @if (roomsService.rooms().length === 0) {
   <div class="text-center">No open lobbies</div>
-    <div class="text-center">
-      <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">
-        Create lobby
-      </button>
-      </div>
+  <div class="text-center">
+    <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">Create lobby</button>
+  </div>
   }@else{
 
   <div class="d-flex">
@@ -29,12 +27,18 @@
         <tbody>
           <tr
             (click)="select(room)"
-            *ngFor="let room of roomsService.rooms"
+            *ngFor="let room of roomsService.rooms()"
             class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
             <td>{{ room.gameInstanceMetadataData.name }}</td>
-            <td>{{ mapInfoOfMap(room.gameMode.data.map)?.name }}</td>
-            <td>{{ ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length + "/" + room.gameMode.data.maxPlayers }}</td>
+            <td>{{ mapInfoOfMap(room.gameMode?.data?.map)?.name ?? "N/A" }}</td>
+            <td>
+              {{
+                ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length +
+                  "/" +
+                  (room.gameMode?.data?.maxPlayers ?? "N/A")
+              }}
+            </td>
           </tr>
         </tbody>
       </table>

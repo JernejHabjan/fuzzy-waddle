@@ -3,11 +3,16 @@ import { GameInstanceService } from "./game-instance.service";
 import {
   GameInstanceDataDto,
   PlayerAction,
+  PlayerLobbyDefinition,
+  ProbableWaffleAddPlayerDto,
+  ProbableWaffleAddSpectatorDto,
+  ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
   ProbableWafflePlayer,
   ProbableWafflePlayerEvent,
+  ProbableWafflePlayerLeftDto,
   ProbableWaffleRoom,
   ProbableWaffleRoomEvent,
   ProbableWaffleSpectator,
@@ -22,11 +27,17 @@ import { GameInstanceGateway, GameInstanceGatewayStub } from "./game-instance.ga
 import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
 
 export const GameInstanceServiceStub = {
+  addGameInstance(gameInstance: ProbableWaffleGameInstance): void {
+    //
+  },
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
     return undefined;
   },
   createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
     //
+  },
+  getPlayerColorForNewPlayer(gameInstance: ProbableWaffleGameInstance): string {
+    return "hsl(0, 0%, 0%)";
   },
   stopGameInstance(body: GameInstanceDataDto, user: User) {
     //
@@ -35,6 +46,9 @@ export const GameInstanceServiceStub = {
     return undefined;
   },
   getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): ProbableWaffleRoomEvent {
+    return undefined;
+  },
+  getPlayerLobbyDefinitionForNewPlayer(gameInstance: ProbableWaffleGameInstance): PlayerLobbyDefinition {
     return undefined;
   },
   getSpectatorEvent(
@@ -56,14 +70,29 @@ export const GameInstanceServiceStub = {
   startLevel(body: ProbableWaffleStartLevelDto, user: User) {
     //
   },
-  stopLevel(body: GameInstanceDataDto, user: User) {
-    //
-  },
   getPlayerEvent(
     player: ProbableWafflePlayer,
     gameInstanceId: string,
     action: PlayerAction
   ): ProbableWafflePlayerEvent {
+    return undefined;
+  },
+  async changeGameMode(user: User, body: ProbableWaffleChangeGameModeDto): Promise<void> {
+    return undefined;
+  },
+  async openPlayerSlot(body: ProbableWaffleAddPlayerDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async playerLeft(body: ProbableWafflePlayerLeftDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async addPlayer(body: ProbableWaffleAddPlayerDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async addSpectator(body: ProbableWaffleAddSpectatorDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async getGameInstance(gameInstanceId: string, user: User): Promise<ProbableWaffleGameInstanceData | null> {
     return undefined;
   }
 } satisfies GameInstanceServiceInterface;

@@ -68,6 +68,9 @@ export const gameInstanceClientServiceStub = {
   async requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void> {
     return Promise.resolve();
   },
+  async stopRequestGameSearchForMatchmaking(): Promise<void> {
+    return Promise.resolve();
+  },
   async navigateToLobbyOrDirectlyToGame(): Promise<void> {
     return Promise.resolve();
   },

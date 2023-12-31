@@ -33,6 +33,7 @@ export interface GameInstanceClientServiceInterface {
   addSelfAsSpectator(): Promise<void>;
   listenToGameFound(): Observable<ProbableWaffleGameFoundEvent>;
   requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void>;
+  stopRequestGameSearchForMatchmaking(): Promise<void>;
   navigateToLobbyOrDirectlyToGame(): Promise<void>;
   getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null>;
   addAiPlayer(): Promise<void>;

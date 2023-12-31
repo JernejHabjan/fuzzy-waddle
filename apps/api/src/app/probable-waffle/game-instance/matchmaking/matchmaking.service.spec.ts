@@ -10,6 +10,9 @@ import { GameInstanceGateway, GameInstanceGatewayStub } from "../game-instance.g
 export const matchmakingServiceStub = {
   async requestGameSearchForMatchMaking(body: RequestGameSearchForMatchMakingDto, user: User): Promise<void> {
     return Promise.resolve();
+  },
+  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
+    return Promise.resolve();
   }
 } satisfies MatchmakingServiceInterface;
 describe("MatchmakingService", () => {

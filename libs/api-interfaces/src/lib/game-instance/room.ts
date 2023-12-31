@@ -12,7 +12,7 @@ import { ProbableWaffleSpectatorData } from "./probable-waffle/spectator";
 
 interface Room<TGameInstanceMetadataData, TGameMode> {
   gameInstanceMetadataData: TGameInstanceMetadataData;
-  gameMode: TGameMode;
+  gameMode: TGameMode | null;
 }
 
 interface RoomEvent<TRoom> {

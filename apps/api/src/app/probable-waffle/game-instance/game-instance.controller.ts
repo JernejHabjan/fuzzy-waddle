@@ -43,12 +43,6 @@ export class GameInstanceController {
     await this.gameInstanceService.startLevel(body, user);
   }
 
-  @Delete("stop-level")
-  @UseGuards(SupabaseAuthGuard)
-  async stopLevel(@CurrentUser() user: AuthUser, @Body() body: GameInstanceDataDto): Promise<void> {
-    await this.gameInstanceService.stopLevel(body, user);
-  }
-
   @Post("join-room")
   @UseGuards(SupabaseAuthGuard)
   async joinRoom(
@@ -119,5 +113,11 @@ export class GameInstanceController {
     @Body() body: RequestGameSearchForMatchMakingDto
   ): Promise<void> {
     await this.matchmakingService.requestGameSearchForMatchMaking(body, user);
+  }
+
+  @Delete("stop-request-game-search-for-matchmaking")
+  @UseGuards(SupabaseAuthGuard)
+  async stopRequestGameSearchForMatchmaking(@CurrentUser() user: AuthUser): Promise<void> {
+    await this.matchmakingService.stopRequestGameSearchForMatchmaking(user);
   }
 }

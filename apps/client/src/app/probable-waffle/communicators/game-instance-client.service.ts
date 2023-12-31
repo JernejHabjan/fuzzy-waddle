@@ -451,4 +451,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     };
     await firstValueFrom(this.httpClient.post<void>(url, body));
   }
+
+  async stopRequestGameSearchForMatchmaking(): Promise<void> {
+    if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return;
+    const url = environment.api + "api/probable-waffle/stop-request-game-search-for-matchmaking";
+    await firstValueFrom(this.httpClient.delete<void>(url, {}));
+  }
 }

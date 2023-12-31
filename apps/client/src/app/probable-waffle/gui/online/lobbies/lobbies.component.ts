@@ -36,6 +36,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.roomsService.destroy();
   }
+
   protected canAddSelfAsPlayer(): boolean {
     if (!this.selectedRoom) return false;
     return this.selectedRoom.players.some(
@@ -76,7 +77,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected get mapInfo(): null | ProbableWaffleMapData {
     if (!this.selectedRoom) return null;
-    return this.mapInfoOfMap(this.selectedRoom.gameMode.data.map);
+    return this.mapInfoOfMap(this.selectedRoom.gameMode?.data.map);
   }
 
   protected mapInfoOfMap(map?: ProbableWaffleMapEnum): null | ProbableWaffleMapData {

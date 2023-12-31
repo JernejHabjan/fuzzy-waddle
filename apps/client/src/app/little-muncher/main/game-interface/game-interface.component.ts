@@ -77,25 +77,18 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private manageRemaining() {
-    if (
-      !this.gameInstanceClientService.gameInstance?.gameMode?.data.hill ||
-      !this.gameInstanceClientService.gameInstance?.gameState
-    ) {
+    const hill = this.gameInstanceClientService.gameInstance?.gameMode?.data.hill;
+    const gameState = this.gameInstanceClientService.gameInstance?.gameState;
+    if (!hill || !gameState) {
       return;
     }
     // set initial remaining:
-    this.remaining = this.getRemaining(
-      this.gameInstanceClientService.gameInstance.gameMode.data.hill,
-      this.gameInstanceClientService.gameInstance.gameState.data.climbedHeight
-    );
+    this.remaining = this.getRemaining(hill, gameState.data.climbedHeight);
     this.scoreSubscription = this.communicatorService.timeClimbing?.on.subscribe((event) => {
       if (!this.gameInstanceClientService.gameInstance?.gameMode?.data.hill) {
         return;
       }
-      this.remaining = this.getRemaining(
-        this.gameInstanceClientService.gameInstance.gameMode.data.hill,
-        event.timeClimbing
-      );
+      this.remaining = this.getRemaining(hill, event.timeClimbing);
       this.changeDetectorRef.detectChanges();
     });
   }
