@@ -1238,6 +1238,17 @@
             "label": "frostForge",
             "x": 1184,
             "y": 848
+        },
+        {
+            "prefabId": "c06632b7-0afd-49c5-8129-a5051bf0f87d",
+            "id": "00c01700-2b3a-48e9-becf-a6d7a18b9508",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeOwl",
+            "x": 1056,
+            "y": 912
         }
     ],
     "plainObjects": [

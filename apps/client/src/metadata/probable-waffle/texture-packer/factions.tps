@@ -256,6 +256,7 @@
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-1.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-2.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-3.png</key>
+            <key type="filename">../sprites/factions/character_icons/skaduwee/owl.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

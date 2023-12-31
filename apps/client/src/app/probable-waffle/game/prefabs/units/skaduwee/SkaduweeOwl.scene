@@ -1,0 +1,64 @@
+{
+    "id": "c06632b7-0afd-49c5-8129-a5051bf0f87d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "id": "081b7121-ec3e-46d4-942e-5206fe180c80",
+            "unlock": [
+                "x",
+                "y",
+                "hitArea.shape",
+                "hitArea.x",
+                "hitArea.y",
+                "hitArea.width",
+                "hitArea.height",
+                "hitArea.radius",
+                "hitArea.points",
+                "hitArea.alphaTolerance",
+                "z"
+            ],
+            "label": "units_skaduwee_owl_idle_down_png",
+            "z": 0,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 1,
+            "hitArea.y": 4,
+            "hitArea.radius": 11,
+            "x": 33,
+            "y": 127.37785319200148,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "e43749e6-718f-4d92-9566-32a0fa96944f",
+                    "label": "owl",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "units",
+                        "frame": "skaduwee/owl/idle_down_1.png"
+                    },
+                    "x": 1,
+                    "y": -107.3778401387357,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skaduwee/owl/idle/down"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
