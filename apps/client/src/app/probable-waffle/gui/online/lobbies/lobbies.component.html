@@ -31,13 +31,18 @@
             class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
             <td>{{ room.gameInstanceMetadataData.name }}</td>
-            <td>{{ mapInfoOfMap(room.gameMode?.data?.map)?.name ?? "N/A" }}</td>
             <td>
+              @if(room.gameMode){
+                {{ mapInfoOfMap(room.gameMode.data.map)?.name }}
+              }</td>
+            <td>
+              @if(room.gameMode){
               {{
                 ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length +
                   "/" +
-                  (room.gameMode?.data?.maxPlayers ?? "N/A")
+                  (room.gameMode.data?.maxPlayers)
               }}
+              }
             </td>
           </tr>
         </tbody>
