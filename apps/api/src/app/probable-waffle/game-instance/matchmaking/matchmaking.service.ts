@@ -22,8 +22,8 @@ import {
 import { User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceService } from "../game-instance.service";
-import { GameInstanceGateway } from "../game-instance.gateway";
 import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
+import { RoomGateway } from "../gateways/room.gateway";
 
 @Injectable()
 export class MatchmakingService implements MatchmakingServiceInterface {
@@ -31,7 +31,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
   constructor(
     private readonly gameInstanceService: GameInstanceService,
-    private readonly gameInstanceGateway: GameInstanceGateway
+    private readonly roomGateway: RoomGateway
   ) {}
   /**
    * remove game instances that have been started more than N time ago
@@ -48,7 +48,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
-        this.gameInstanceGateway.emitRoom(this.gameInstanceService.getRoomEvent(gi.gameInstance, "removed"));
+        this.roomGateway.emitRoom(this.gameInstanceService.getRoomEvent(gi.gameInstance, "removed"));
         console.log("Probable Waffle - Cron - Pending matchmaking instance removed");
       }
       return !isOld;
@@ -73,7 +73,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         gameInstance.gameInstanceMetadata.data.gameInstanceId
     );
     gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.EnteringMap;
-    this.gameInstanceGateway.emitGameFound({
+    this.roomGateway.emitGameFound({
       userIds: gameInstance.players.map((p) => p.playerController.data.userId),
       gameInstanceId
     });
@@ -121,7 +121,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     });
     this.gameInstanceService.addGameInstance(newGameInstance);
 
-    this.gameInstanceGateway.emitPlayer(
+    this.roomGateway.emitPlayer(
       this.gameInstanceService.getPlayerEvent(
         player,
         newGameInstance.gameInstanceMetadata.data.gameInstanceId,
@@ -210,19 +210,21 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     );
     if (!player) return;
 
-    this.gameInstanceGateway.emitPlayer(this.gameInstanceService.getPlayerEvent(player, gameInstanceId, "left", user));
+    this.roomGateway.emitPlayer(this.gameInstanceService.getPlayerEvent(player, gameInstanceId, "left", user));
     pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
       (p) => p.playerController.data.userId !== user.id
     );
     console.log("Probable Waffle - Player left pending matchmaking instance", user.id);
 
     if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
-      // remove pending game instance
-      this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
-        (gi) => gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !== gameInstanceId
-      );
-
+      this.removePendingMatchmakingGameInstance(gameInstanceId);
       await this.gameInstanceService.stopGameInstance({ gameInstanceId }, user);
     }
+  }
+
+  private removePendingMatchmakingGameInstance(gameInstanceId: string) {
+    this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
+      (gi) => gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !== gameInstanceId
+    );
   }
 }

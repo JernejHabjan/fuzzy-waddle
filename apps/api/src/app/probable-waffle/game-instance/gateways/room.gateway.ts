@@ -1,8 +1,6 @@
 import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { Server } from "net";
 import {
   ProbableWaffleGameFoundEvent,
-  ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleLevelStateChangeEvent,
@@ -10,32 +8,14 @@ import {
   ProbableWaffleRoomEvent,
   ProbableWaffleSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
-
-export const GameInstanceGatewayStub = {
-  emitRoom(roomEvent: ProbableWaffleRoomEvent) {
-    //
-  },
-  emitLevelStateChange(levelStateChange: ProbableWaffleLevelStateChangeEvent) {
-    //
-  },
-  emitSpectator(spectatorEvent: ProbableWaffleSpectatorEvent) {
-    //
-  },
-  emitPlayer(playerEvent: ProbableWafflePlayerEvent) {
-    //
-  },
-  emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
-    //
-  }
-} satisfies GameInstanceGatewayInterface;
+import { Server } from "socket.io";
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class GameInstanceGateway implements GameInstanceGatewayInterface {
+export class RoomGateway {
   @WebSocketServer() private readonly server: Server;
 
   emitRoom(roomEvent: ProbableWaffleRoomEvent) {
