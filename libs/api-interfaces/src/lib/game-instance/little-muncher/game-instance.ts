@@ -52,9 +52,8 @@ export class LittleMuncherGameInstance extends GameInstance<
   }
 
   initGame(gameModeData: LittleMuncherGameModeData) {
-    if (!this.gameMode || !this.gameInstanceMetadata)
-      throw new Error("Game mode or game instance metadata is not initialized");
-    this.gameMode.data = gameModeData;
+    this.gameMode = new LittleMuncherGameMode(gameModeData);
+    this.gameState = new LittleMuncherGameState();
     this.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
   }
 }
