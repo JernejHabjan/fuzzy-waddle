@@ -21,8 +21,9 @@ export interface GameInstanceClientServiceInterface {
   ): Promise<void>;
   stopGameInstance(): Promise<void>;
   startGame(): Promise<void>;
-  joinToLobbyAsPlayer(gameInstanceId: string): Promise<void>;
-  joinToLobbyAsSpectator(gameInstanceId: string): Promise<void>;
+  joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void>;
+  joinGameInstanceAsPlayer(gameInstanceId: string): Promise<void>;
+  joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void>;
   stopGame(removeFrom: "local" | "localAndRemote"): Promise<void>;
   get gameLocalInstanceId(): string | null;
   gameModeChanged(gameModeData: ProbableWaffleGameModeData): Promise<void>;

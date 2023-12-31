@@ -69,36 +69,54 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       const url = environment.api + "api/probable-waffle/start-game";
       const body: ProbableWaffleGameInstanceMetadataData = this.gameInstance.gameInstanceMetadata!.data;
       await firstValueFrom(this.httpClient.post<void>(url, body));
-
-      this.listeners.set(
-        ProbableWaffleGameInstanceEvent.LevelStateChange,
-        this.listenToLevelStateChangeEvents?.subscribe(this.levelStateChange)
-      );
-      this.listeners.set(
-        ProbableWaffleGameInstanceEvent.Player,
-        this.listenToPlayerAvailability?.subscribe(this.playerAvailabilityChange)
-      );
-      this.listeners.set(
-        ProbableWaffleGameInstanceEvent.Spectator,
-        this.listenToSpectatorAvailability?.subscribe(this.spectatorAvailabilityChange)
-      );
     }
+
+    this.startListeningToGameInstanceEvents();
   }
 
   async stopGameInstance() {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/stop-game";
+      const url = environment.api + "api/probable-waffle/stop-game"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: GameInstanceDataDto = { gameInstanceId: this.gameLocalInstanceId };
       await firstValueFrom(this.httpClient.delete<void>(url, { body }));
     }
     await this.stopGame("local");
   }
 
+  private startListeningToGameInstanceEvents() {
+    if (!this.gameLocalInstanceId || !this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
+      return;
+    // TODO HERE SUBSCRIBE TO GI GATEWAY
+
+    this.sceneCommunicatorClientService.startListeningToEvents(this.gameLocalInstanceId); // todo?
+
+    this.listeners.set(
+      // deprecated
+      ProbableWaffleGameInstanceEvent.LevelStateChange,
+      this.listenToLevelStateChangeEvents?.subscribe(this.levelStateChange)
+    );
+    this.listeners.set(
+      // deprecated
+      ProbableWaffleGameInstanceEvent.Player,
+      this.listenToPlayerAvailability?.subscribe(this.playerAvailabilityChange)
+    );
+    this.listeners.set(
+      // deprecated
+      ProbableWaffleGameInstanceEvent.Spectator,
+      this.listenToSpectatorAvailability?.subscribe(this.spectatorAvailabilityChange)
+    );
+  }
+
+  private stopListeningToGameInstanceEvents() {
+    if (!this.gameLocalInstanceId) return;
+    this.sceneCommunicatorClientService.stopListeningToEvents(this.gameLocalInstanceId); // todo?
+  }
+
   async startGame() {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/start-level";
+      const url = environment.api + "api/probable-waffle/start-level"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: ProbableWaffleStartLevelDto = {
         gameInstanceId: this.gameLocalInstanceId
       };
@@ -109,9 +127,18 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   /**
+   * game instance is fully prepared on server, we're just joining it
+   */
+  async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void> {
+    const gameInstanceData = (await this.getGameInstanceData(gameInstanceId))!;
+    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    this.startListeningToGameInstanceEvents();
+  }
+
+  /**
    * owner only
    */
-  async joinToLobbyAsPlayer(gameInstanceId: string): Promise<void> {
+  async joinGameInstanceAsPlayer(gameInstanceId: string): Promise<void> {
     if (this.gameLocalInstanceId) throw new Error("Game instance already exists");
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
@@ -121,6 +148,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
 
     await this.addSelfAsPlayer();
+
+    this.startListeningToGameInstanceEvents();
   }
 
   async addSelfAsPlayer(): Promise<void> {
@@ -163,7 +192,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.addSelfOrAiPlayer(playerDefinition);
   }
 
-  async joinToLobbyAsSpectator(gameInstanceId: string): Promise<void> {
+  async joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void> {
     if (this.gameLocalInstanceId) throw new Error("Game instance already exists");
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
@@ -172,6 +201,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     await this.addSelfAsSpectator();
+
+    this.startListeningToGameInstanceEvents();
   }
 
   async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
@@ -215,14 +246,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       this.serverHealthService.serverAvailable &&
       removeFrom === "localAndRemote"
     ) {
-      const url = environment.api + "api/probable-waffle/stop-game";
+      const url = environment.api + "api/probable-waffle/stop-game"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: GameInstanceDataDto = {
         gameInstanceId: this.gameLocalInstanceId
       };
       await firstValueFrom(this.httpClient.delete<void>(url, { body }));
     }
     this.gameInstance = undefined;
-    this.sceneCommunicatorClientService.stopListeningToEvents(this.gameLocalInstanceId);
+
+    this.stopListeningToGameInstanceEvents();
   }
 
   get gameLocalInstanceId(): string | null {
@@ -276,7 +308,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async gameModeChanged(gameModeData: ProbableWaffleGameModeData): Promise<void> {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/change-game-mode";
+      const url = environment.api + "api/probable-waffle/change-game-mode"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: ProbableWaffleChangeGameModeDto = {
         gameInstanceId: this.gameLocalInstanceId,
         gameModeData
@@ -289,7 +321,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   get listenToLevelStateChangeEvents(): Observable<ProbableWaffleLevelStateChangeEvent> | undefined {
     if (!this.gameLocalInstanceId) return;
     const socket = this.authenticatedSocketService.socket;
-
     return socket
       ?.fromEvent<ProbableWaffleLevelStateChangeEvent>(ProbableWaffleGameInstanceEvent.LevelStateChange)
       .pipe(
@@ -343,7 +374,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     });
 
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/open-player-slot";
+      const url = environment.api + "api/probable-waffle/open-player-slot"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
         player: {
@@ -358,7 +389,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async playerLeftOrSlotClosed(playerNumber: number): Promise<void> {
     if (!this.gameLocalInstanceId) return;
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/player-left";
+      const url = environment.api + "api/probable-waffle/player-left"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: ProbableWafflePlayerLeftDto = {
         gameInstanceId: this.gameLocalInstanceId,
         playerNumber
@@ -390,7 +421,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
     // server
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/add-player";
+      const url = environment.api + "api/probable-waffle/add-player"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: ProbableWaffleAddPlayerDto = {
         gameInstanceId: this.gameLocalInstanceId,
         player: {
@@ -423,7 +454,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
     // server
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/add-spectator";
+      const url = environment.api + "api/probable-waffle/add-spectator"; // TODO MOVE TO WEBSOCKET FOR GI_GATEWAY
       const body: ProbableWaffleAddSpectatorDto = {
         gameInstanceId: this.gameLocalInstanceId,
         spectator

@@ -22,23 +22,26 @@ export const gameInstanceClientServiceStub = {
   get gameLocalInstanceId(): string | null {
     return null;
   },
-  createGameInstance(
+  async createGameInstance(
     name: string,
     visibility: ProbableWaffleGameInstanceVisibility,
     type: ProbableWaffleGameInstanceType
   ): Promise<void> {
     return Promise.resolve();
   },
-  stopGameInstance(): Promise<void> {
+  async stopGameInstance(): Promise<void> {
     return Promise.resolve();
   },
-  startGame(): Promise<void> {
+  async startGame(): Promise<void> {
     return Promise.resolve();
   },
-  joinToLobbyAsSpectator(): Promise<void> {
+  async joinGameInstanceAsSpectator(): Promise<void> {
     return Promise.resolve();
   },
-  joinToLobbyAsPlayer(): Promise<void> {
+  async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void> {
+    return Promise.resolve();
+  },
+  async joinGameInstanceAsPlayer(): Promise<void> {
     return Promise.resolve();
   },
   stopGame(): Promise<void> {

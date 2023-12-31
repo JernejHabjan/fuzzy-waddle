@@ -110,8 +110,7 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
   private onGameFound = async ($event: ProbableWaffleGameFoundEvent) => {
     this.gameFound = true;
 
-    const gameInstanceData = (await this.gameInstanceClientService.getGameInstanceData($event.gameInstanceId))!;
-    this.gameInstanceClientService.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    await this.gameInstanceClientService.joinGameInstanceAsPlayerForMatchmaking($event.gameInstanceId);
 
     this.navigatingText = "Joining game in 3 seconds...";
     setTimeout(() => (this.navigatingText = "Joining game in 2 seconds..."), 1000);

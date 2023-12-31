@@ -50,13 +50,15 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected async addSelfAsPlayer() {
     if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
-    await this.gameInstanceClientService.joinToLobbyAsPlayer(this.selectedRoom.gameInstanceMetadataData.gameInstanceId);
+    await this.gameInstanceClientService.joinGameInstanceAsPlayer(
+      this.selectedRoom.gameInstanceMetadataData.gameInstanceId
+    );
     await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 
   protected async addSelfAsSpectator() {
     if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
-    await this.gameInstanceClientService.joinToLobbyAsSpectator(
+    await this.gameInstanceClientService.joinGameInstanceAsSpectator(
       this.selectedRoom.gameInstanceMetadataData.gameInstanceId
     );
     await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
