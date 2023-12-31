@@ -21,13 +21,13 @@ import { Server, Socket } from "socket.io";
   }
 })
 export class GameStateGateway {
-  @WebSocketServer()
-  private server: Server;
+  @WebSocketServer() private readonly server: Server;
 
   constructor(
     private readonly gameStateServerService: GameStateServerService,
     private readonly probableWaffleChatService: ProbableWaffleChatService
   ) {}
+
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleAction)
   async broadcastProbableWaffleAction(
@@ -54,7 +54,7 @@ export class GameStateGateway {
     @MessageBody() payload: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log("broadcasting probable waffle message");
+    console.log(`Probable Waffle - game instance message for ${payload.gameInstanceId}`);
 
     // clone the payload
     const newPayload = { ...payload };
@@ -70,7 +70,7 @@ export class GameStateGateway {
           .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, newPayload);
         break;
       default:
-        throw new Error("Unknown communicator");
+        throw new Error("Probable Waffle - Message broadcast - unknown communicator");
     }
   }
 
@@ -99,7 +99,7 @@ export class GameStateGateway {
         );
         break;
       default:
-        throw new Error("Unknown communicator");
+        throw new Error("Probable Waffle - Web socket room broadcast - unknown communicator");
     }
   }
 }

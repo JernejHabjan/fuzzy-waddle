@@ -17,8 +17,7 @@ import { Server, Socket } from "socket.io";
   }
 })
 export class GameStateGateway {
-  @WebSocketServer()
-  private server: Server;
+  @WebSocketServer() private readonly server: Server;
 
   constructor(private readonly gameStateServerService: GameStateServerService) {}
 
@@ -29,7 +28,7 @@ export class GameStateGateway {
     @MessageBody() payload: CommunicatorEvent<any, LittleMuncherCommunicatorType>,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log("broadcasting little muncher action", payload.communicator);
+    console.log("Little Muncher - Action", payload.communicator);
 
     const success = this.gameStateServerService.updateGameState(payload, user);
     if (success) {

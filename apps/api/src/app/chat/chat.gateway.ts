@@ -13,15 +13,9 @@ import { Server, Socket } from "socket.io";
   }
 })
 export class ChatGateway {
-  @WebSocketServer()
-  private server: Server;
+  @WebSocketServer() private readonly server: Server;
 
   constructor(private readonly chatService: ChatService) {}
-  // @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)
-  // findAll(@MessageBody() data: ChatMessage): Observable<WsResponse<ChatMessage>> {
-  //   return from([data]).pipe(map(item => ({ event: GatewayEvent.CHAT_MESSAGE, data: item })));
-  // }
-
   //subscribe to chat message and broadcast to all clients
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(GatewayChatEvent.CHAT_MESSAGE)
@@ -34,6 +28,7 @@ export class ChatGateway {
     const newPayload = { ...payload };
 
     // post to supabase
+    // noinspection UnnecessaryLocalVariableJS
     const sanitizedMessage = await this.chatService.postMessage(newPayload.text, user); // todo for demo
     newPayload.text = sanitizedMessage;
 
