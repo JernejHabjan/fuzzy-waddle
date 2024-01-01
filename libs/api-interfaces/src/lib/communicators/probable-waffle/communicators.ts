@@ -26,7 +26,13 @@ export type RecursiveKeyOf<TObj extends object> = {
     : TObj[TKey] extends object
     ? `${TKey}` | `${TKey}.${RecursiveKeyOf<TObj[TKey]>}`
     : `${TKey}`;
-}[keyof TObj & (string | number)];
+}[keyof TObj &
+  (string | number) &
+  Exclude<keyof TObj, keyof Date> &
+  Exclude<keyof TObj, keyof number> &
+  Exclude<keyof TObj, keyof boolean> &
+  Exclude<keyof TObj, keyof string> &
+  Exclude<keyof TObj, keyof Map<any, any>>];
 
 export type ProbableWaffleAllChanged = "all";
 

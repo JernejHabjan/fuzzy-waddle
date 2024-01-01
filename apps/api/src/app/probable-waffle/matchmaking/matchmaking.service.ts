@@ -98,7 +98,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     // GAME MODE
     const mapPoolIds = pendingMatchmakingGameInstance.commonMapPoolIds;
     const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)];
-    gameInstance.gameMode = this.getNewGameMode(randomMapId);
+    gameInstance.gameMode = this.getNewMatchmakingGameMode(randomMapId);
     this.roomServerService.roomEvent("game_mode", gameInstance, user);
 
     // emit game found event when all players have joined
@@ -159,7 +159,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     return foundGameInstanceWithCommonMap ?? null;
   }
 
-  getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
+  private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
     const allFactions = Object.values(FactionType);
     const randomFactionType = allFactions[Math.floor(Math.random() * allFactions.length)] as FactionType;
 
@@ -185,14 +185,18 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     return player;
   }
 
-  getNewGameMode(mapId: ProbableWaffleMapEnum): ProbableWaffleGameMode {
+  private getNewMatchmakingGameMode(mapId: ProbableWaffleMapEnum): ProbableWaffleGameMode {
     const mapData = ProbableWaffleLevels[mapId];
     const gameModeData = {
       map: mapId,
       maxPlayers: mapData.mapInfo.startPositionsOnTile.length,
-      difficultyModifiers: new DifficultyModifiers(),
-      winConditions: new WinConditions(),
-      mapTuning: new MapTuning()
+      difficultyModifiers: {} satisfies DifficultyModifiers,
+      winConditions: {
+        timeLimit: 60
+      } satisfies WinConditions,
+      mapTuning: {
+        unitCap: 20
+      } satisfies MapTuning
     } satisfies ProbableWaffleGameModeData;
     return new ProbableWaffleGameMode(gameModeData);
   }

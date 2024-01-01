@@ -1,6 +1,13 @@
 import { Component, Output } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
-import { ProbableWaffleGameModeLobby } from "@fuzzy-waddle/api-interfaces";
+import {
+  DifficultyModifiers,
+  MapTuning,
+  ProbableWaffleGameModeLobby,
+  Resources,
+  ResourceType,
+  WinConditions
+} from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",
@@ -12,7 +19,21 @@ export class GameModeDefinitionComponent {
   @Output() gameModeLobbyChange;
 
   constructor() {
-    this.gameModeLobby = new ProbableWaffleGameModeLobby();
+    this.gameModeLobby = {
+      difficultyModifiers: {
+        reducedIncome: 0.5,
+        aiAdvantageResources: new Map<ResourceType, number>([
+          [Resources.wood, 100],
+          [Resources.stone, 100]
+        ])
+      } satisfies DifficultyModifiers,
+      mapTuning: {
+        unitCap: 20
+      } satisfies MapTuning,
+      winConditions: {
+        timeLimit: 60
+      } satisfies WinConditions
+    } satisfies ProbableWaffleGameModeLobby;
     this.gameModeLobbyChange = new BehaviorSubject<ProbableWaffleGameModeLobby>(this.gameModeLobby);
   }
 
