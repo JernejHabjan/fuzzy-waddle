@@ -3,8 +3,10 @@ import {
   DifficultyModifiers,
   FactionType,
   GameSessionState,
+  GameSetupHelpers,
   MapTuning,
   PendingMatchmakingGameInstance,
+  PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
@@ -14,16 +16,16 @@ import {
   ProbableWaffleLevels,
   ProbableWaffleMapEnum,
   ProbableWafflePlayerControllerData,
-  ProbableWafflePlayerStateData,
   ProbableWafflePlayerType,
   RequestGameSearchForMatchMakingDto,
   WinConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { GameInstanceService } from "../game-instance.service";
 import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
-import { RoomGateway } from "../gateways/room.gateway";
+import { GameInstanceService } from "../game-instance/game-instance.service";
+import { RoomServerService } from "../game-room/room-server.service";
+import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
 
 @Injectable()
 export class MatchmakingService implements MatchmakingServiceInterface {
@@ -31,7 +33,8 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
   constructor(
     private readonly gameInstanceService: GameInstanceService,
-    private readonly roomGateway: RoomGateway
+    private readonly roomServerService: RoomServerService,
+    private readonly gameInstanceGateway: GameInstanceGateway
   ) {}
   /**
    * remove game instances that have been started more than N time ago
@@ -48,7 +51,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
-        this.roomGateway.emitRoom(this.gameInstanceService.getRoomEvent(gi.gameInstance, "removed"));
+        this.roomServerService.roomEvent("removed", gi.gameInstance, null);
         console.log("Probable Waffle - Cron - Pending matchmaking instance removed");
       }
       return !isOld;
@@ -65,18 +68,19 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     }
   }
 
-  private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance) {
+  private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance, user: User) {
     const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) =>
         gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !==
         gameInstance.gameInstanceMetadata.data.gameInstanceId
     );
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.EnteringMap;
-    this.roomGateway.emitGameFound({
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.Starting;
+    this.gameInstanceGateway.emitGameFound({
       userIds: gameInstance.players.map((p) => p.playerController.data.userId),
       gameInstanceId
     });
+    this.roomServerService.roomEvent("game_instance_metadata", gameInstance, user);
     console.log("Probable Waffle - Matchmaking game fully loaded", gameInstanceId);
   }
 
@@ -86,20 +90,22 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     user: User
   ) {
     const gameInstance = pendingMatchmakingGameInstance.gameInstance;
-    // join it
+    // PLAYER:
     const player = this.getNewPlayer(gameInstance, user.id, matchMakingDto.factionType);
-    gameInstance.players.push(player);
+    gameInstance.addPlayer(player);
+    this.roomServerService.roomEvent("player.joined", gameInstance, user);
 
+    // GAME MODE
     const mapPoolIds = pendingMatchmakingGameInstance.commonMapPoolIds;
     const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)];
     gameInstance.gameMode = this.getNewGameMode(randomMapId);
-
-    console.log("Probable Waffle - Player joined pending matchmaking instance", user.id);
+    this.roomServerService.roomEvent("game_mode", gameInstance, user);
 
     // emit game found event when all players have joined
     const maxPlayers = gameInstance.gameMode.data.maxPlayers;
     if (gameInstance.players.length === maxPlayers) {
-      this.promoteGameInstanceToLoaded(gameInstance);
+      // GAME METADATA
+      this.promoteGameInstanceToLoaded(gameInstance, user);
     }
   }
   private createGameInstanceForMatchmaking(matchMakingDto: RequestGameSearchForMatchMakingDto, user: User) {
@@ -114,21 +120,14 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     });
 
     const player = this.getNewPlayer(newGameInstance, user.id, matchMakingDto.factionType);
-    newGameInstance.players.push(player);
+    newGameInstance.addPlayer(player);
+
     this.pendingMatchmakingGameInstances.push({
       gameInstance: newGameInstance,
       commonMapPoolIds: matchMakingDto.mapPoolIds
     });
-    this.gameInstanceService.addGameInstance(newGameInstance);
+    this.gameInstanceService.addGameInstance(newGameInstance, user);
 
-    this.roomGateway.emitPlayer(
-      this.gameInstanceService.getPlayerEvent(
-        player,
-        newGameInstance.gameInstanceMetadata.data.gameInstanceId,
-        "joined",
-        user
-      )
-    );
     console.log("Probable Waffle - Game instance created for matchmaking", this.pendingMatchmakingGameInstances.length);
   }
 
@@ -164,24 +163,25 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     const allFactions = Object.values(FactionType);
     const randomFactionType = allFactions[Math.floor(Math.random() * allFactions.length)] as FactionType;
 
-    const playerDefinition = new PositionPlayerDefinition(
-      this.gameInstanceService.getPlayerLobbyDefinitionForNewPlayer(gameInstance),
-      null,
-      factionType ?? randomFactionType,
-      ProbableWafflePlayerType.Human,
-      this.gameInstanceService.getPlayerColorForNewPlayer(gameInstance),
-      null
-    );
+    const playerDefinition = {
+      player: {
+        playerNumber: gameInstance.players.length,
+        playerName: "Player " + (gameInstance.players.length + 1),
+        playerPosition: gameInstance.players.length,
+        joined: true
+      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      factionType: factionType ?? randomFactionType,
+      playerType: ProbableWafflePlayerType.Human,
+      playerColor: GameSetupHelpers.getColorForPlayer(
+        gameInstance.players.length,
+        gameInstance.gameMode?.data.maxPlayers
+      ) // TODO THIS IS DUPLICATED EVERYWHERE
+    } satisfies PositionPlayerDefinition;
     // noinspection UnnecessaryLocalVariableJS
-    const player = gameInstance.initPlayer(
-      {
-        scoreProbableWaffle: 0
-      } satisfies ProbableWafflePlayerStateData,
-      {
-        userId,
-        playerDefinition
-      } satisfies ProbableWafflePlayerControllerData
-    );
+    const player = gameInstance.initPlayer({
+      userId,
+      playerDefinition
+    } satisfies ProbableWafflePlayerControllerData);
     return player;
   }
 
@@ -210,7 +210,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     );
     if (!player) return;
 
-    this.roomGateway.emitPlayer(this.gameInstanceService.getPlayerEvent(player, gameInstanceId, "left", user));
+    this.roomServerService.roomEvent("player.left", pendingMatchMakingGameInstance.gameInstance, user);
     pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
       (p) => p.playerController.data.userId !== user.id
     );
@@ -218,7 +218,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
     if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
       this.removePendingMatchmakingGameInstance(gameInstanceId);
-      await this.gameInstanceService.stopGameInstance({ gameInstanceId }, user);
+      this.gameInstanceService.stopGameInstance(gameInstanceId, user);
     }
   }
 

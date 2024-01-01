@@ -34,16 +34,18 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.climbedHeight = (body.data as LittleMuncherCommunicatorClimbingEvent).timeClimbing;
-        console.log("updating time climbing", body.data);
+        gameInstance.gameState.data.climbedHeight = (
+          body.payload as LittleMuncherCommunicatorClimbingEvent
+        ).timeClimbing;
+        console.log("updating time climbing", body.payload);
         break;
       case "pause":
         if (!authUserPlayer) {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.pause = (body.data as LittleMuncherCommunicatorPauseEvent).pause;
-        console.log("updating pause", body.data);
+        gameInstance.gameState.data.pause = (body.payload as LittleMuncherCommunicatorPauseEvent).pause;
+        console.log("updating pause", body.payload);
         console.log("pausing game");
         break;
       case "reset":
@@ -60,16 +62,16 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        player.playerState.data.score = (body.data as LittleMuncherCommunicatorScoreEvent).score;
-        console.log("updating score", body.data);
+        player.playerState.data.score = (body.payload as LittleMuncherCommunicatorScoreEvent).score;
+        console.log("updating score", body.payload);
         break;
       case "move":
         if (!authUserPlayer) {
           console.log("User is not a player in this game instance");
           return false;
         }
-        player.playerState.data.position = body.data as LittleMuncherPosition;
-        console.log("updating position", body.data);
+        player.playerState.data.position = body.payload as LittleMuncherPosition;
+        console.log("updating position", body.payload);
         break;
       default:
         throw new Error("Unknown communicator");

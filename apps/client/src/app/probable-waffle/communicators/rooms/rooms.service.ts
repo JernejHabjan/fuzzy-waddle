@@ -34,7 +34,6 @@ export class RoomsService implements RoomsServiceInterface {
     const rooms = this.rooms().filter(
       (room) =>
         room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
-        room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
         room.gameInstanceMetadataData.sessionState === GameSessionState.NotStarted
     ).length;
     return rooms;
@@ -47,7 +46,7 @@ export class RoomsService implements RoomsServiceInterface {
         room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
         room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
         room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
-        room.gameInstanceMetadataData.sessionState !== GameSessionState.Finished
+        room.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped
     ).length;
     return rooms;
   });
@@ -58,9 +57,12 @@ export class RoomsService implements RoomsServiceInterface {
   listenToRoomEvents() {
     this.roomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
+      const rooms = this.rooms();
+      const roomLocally = rooms.find(
+        (r) => r.gameInstanceMetadataData.gameInstanceId === roomEvent.room.gameInstanceMetadataData.gameInstanceId
+      );
       switch (roomEvent.action) {
         case "added":
-          if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
           this.rooms.update((rooms) => [...rooms, room]);
           break;
         case "removed":
@@ -71,18 +73,21 @@ export class RoomsService implements RoomsServiceInterface {
             )
           );
           break;
-        case "changed":
-          this.rooms.update((rooms) =>
-            rooms.map((r) => {
-              if (
-                r.gameInstanceMetadataData.gameInstanceId === roomEvent.room.gameInstanceMetadataData.gameInstanceId
-              ) {
-                return room;
-              }
-              return r;
-            })
-          );
+        case "player.joined":
+        case "player.left":
+        case "spectator.joined":
+        case "spectator.left":
+        case "game_instance_metadata":
+        case "game_mode":
+          if (!roomLocally) return;
+          roomLocally.gameInstanceMetadataData = roomEvent.room.gameInstanceMetadataData;
+          roomLocally.gameModeData = roomEvent.room.gameModeData;
+          roomLocally.players = roomEvent.room.players;
+          roomLocally.spectators = roomEvent.room.spectators;
+          this.rooms.update((rooms) => [...rooms]);
           break;
+        default:
+          throw new Error("Unknown room event action: " + roomEvent.action);
       }
     });
   }

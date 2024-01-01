@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { TextSanitizationService } from "../../../../core/content-filters/text-sanitization.service";
+import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
 
 @Injectable()
 export class ProbableWaffleChatService {

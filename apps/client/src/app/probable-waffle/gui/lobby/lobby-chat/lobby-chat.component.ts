@@ -31,7 +31,7 @@ export class LobbyChatComponent implements OnInit, OnDestroy {
   protected sendMessage(chatMessage: ChatMessage) {
     this.communicatorService.message?.send({
       chatMessage,
-      gameInstanceId: this.gameInstanceClientService.gameLocalInstanceId!,
+      gameInstanceId: this.gameInstanceClientService.currentGameInstanceId!,
       emitterUserId: this.authService.userId
     });
   }

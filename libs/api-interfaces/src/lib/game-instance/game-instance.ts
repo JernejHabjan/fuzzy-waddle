@@ -114,7 +114,10 @@ export abstract class GameInstance<
     };
   }
 
-  initPlayer(playerStateData: TPlayerStateData, playerControllerData: TPlayerControllerData): TPlayer {
+  initPlayer(
+    playerControllerData: TPlayerControllerData,
+    playerStateData: TPlayerStateData | undefined = undefined
+  ): TPlayer {
     const playerState = new this.constructors.playerState(playerStateData);
     const playerController = new this.constructors.playerController(playerControllerData);
     return new this.constructors.player(playerState, playerController);
@@ -128,8 +131,12 @@ export abstract class GameInstance<
     this.spectators = this.spectators.filter((s) => s.data.userId !== userId);
   }
 
-  removePlayer(userId: string) {
+  removePlayerByUserId(userId: string) {
     this.players = this.players.filter((p) => p.playerController.data.userId !== userId);
+  }
+
+  removePlayerByPlayer(player: TPlayer) {
+    this.players = this.players.filter((p) => p !== player);
   }
 
   addPlayer(player: TPlayer) {

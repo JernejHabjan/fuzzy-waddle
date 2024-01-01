@@ -3,8 +3,7 @@ import { Server } from "net";
 import {
   LittleMuncherGatewayEvent,
   LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent,
-  ProbableWaffleGameInstanceEvent
+  LittleMuncherSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 
@@ -30,6 +29,6 @@ export class GameInstanceGateway implements GameInstanceGatewayInterface {
   }
 
   emitSpectator(spectatorEvent: LittleMuncherSpectatorEvent) {
-    this.server.emit(ProbableWaffleGameInstanceEvent.Spectator, spectatorEvent);
+    // todo??? this.server.emit(LittleMuncherGatewayEvent.Spectator, spectatorEvent);
   }
 }

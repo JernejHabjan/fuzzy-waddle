@@ -7,19 +7,19 @@ import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import {
   PositionPlayerDefinition,
+  ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGameModeData,
-  ProbableWaffleLevelStateChangeEvent
+  ProbableWaffleGameModeData
 } from "@fuzzy-waddle/api-interfaces";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 
 export const gameInstanceClientServiceStub = {
-  get gameLocalInstanceId(): string | null {
+  get currentGameInstanceId(): string | null {
     return null;
   },
   async createGameInstance(
@@ -44,14 +44,11 @@ export const gameInstanceClientServiceStub = {
   async joinGameInstanceAsPlayer(): Promise<void> {
     return Promise.resolve();
   },
-  stopGame(): Promise<void> {
+  async gameModeChanged(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
+    gameModeData: ProbableWaffleGameModeData
+  ): Promise<void> {
     return Promise.resolve();
-  },
-  async gameModeChanged(gameModeData: ProbableWaffleGameModeData): Promise<void> {
-    return Promise.resolve();
-  },
-  get listenToLevelStateChangeEvents(): Observable<ProbableWaffleLevelStateChangeEvent> | undefined {
-    return undefined;
   },
   async playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void> {
     return Promise.resolve();

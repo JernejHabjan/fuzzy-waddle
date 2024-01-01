@@ -49,6 +49,22 @@ export class ProbableWaffleGameInstance extends GameInstance<
       gameInstanceData
     );
   }
+
+  removePlayerByData(controllerData: ProbableWafflePlayerControllerData) {
+    if (!controllerData.playerDefinition) throw new Error("Player definition is required");
+    const playerNumber = controllerData.playerDefinition.player.playerNumber;
+    this.players = this.players.filter((p) => {
+      if (!p.playerController.data.playerDefinition) throw new Error("Player definition is required");
+      return p.playerController.data.playerDefinition.player.playerNumber !== playerNumber;
+    });
+  }
+
+  getPlayerByNumber(playerNumber: number) {
+    return this.players.find((p) => {
+      if (!p.playerController.data.playerDefinition) throw new Error("Player definition is required");
+      return p.playerController.data.playerDefinition.player.playerNumber === playerNumber;
+    });
+  }
 }
 
 export interface ProbableWaffleJoinDto extends GameInstanceDataDto {

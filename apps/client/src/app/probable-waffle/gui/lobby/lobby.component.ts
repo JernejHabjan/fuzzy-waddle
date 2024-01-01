@@ -56,7 +56,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
     const lobby = this.gameModeLobby;
     const map = this.selectedMap;
     if (!lobby || !map) return;
-    await this.gameInstanceClientService.gameModeChanged({
+    await this.gameInstanceClientService.gameModeChanged("all", {
       map: map.map.id,
       mapTuning: lobby.mapTuning,
       winConditions: lobby.winConditions,

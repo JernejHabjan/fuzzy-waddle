@@ -1,8 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import {
   CommunicatorEvent,
-  ProbableWaffleCommunicatorScoreEvent,
-  ProbableWaffleCommunicatorType
+  GameSessionState,
+  ProbableWaffleCommunicatorType,
+  ProbableWaffleGameInstanceMetadataChangeEvent,
+  ProbableWaffleGameModeDataChangeEvent,
+  ProbableWaffleListeners,
+  ProbableWafflePlayerDataChangeEvent,
+  ProbableWaffleSpectatorDataChangeEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
 import { User } from "@supabase/supabase-js";
@@ -17,23 +22,34 @@ export class GameStateServerService {
       console.log("game instance not found");
       return false;
     }
-    if (!gameInstance.players.length) {
-      console.log("game instance has no players");
-      return false;
-    }
+
     gameInstance.gameInstanceMetadata.data.updatedOn = new Date();
 
-    // get player from gameInstance:
-    const authUserPlayer = gameInstance.isPlayer(user.id);
-    const player = gameInstance.players[0];
     switch (body.communicator) {
-      case "score":
-        if (!authUserPlayer) {
-          console.log("User is not a player in this game instance");
-          return false;
+      case "gameInstanceMetadataDataChange":
+        const giMetadata = body.payload as ProbableWaffleGameInstanceMetadataChangeEvent;
+        ProbableWaffleListeners.gameInstanceMetadataChanged(gameInstance, giMetadata);
+        switch (giMetadata.property) {
+          case "sessionState":
+            switch (giMetadata.data.sessionState) {
+              case GameSessionState.Stopped:
+                this.gameInstanceService.stopGameInstance(body.gameInstanceId, user);
+                break;
+            }
+            break;
         }
-        player.playerState.data.scoreProbableWaffle = (body.data as ProbableWaffleCommunicatorScoreEvent).score;
-        console.log("updating score", body.data);
+        break;
+      case "gameModeDataChange":
+        const gmData = body.payload as ProbableWaffleGameModeDataChangeEvent;
+        ProbableWaffleListeners.gameModeChanged(gameInstance, gmData);
+        break;
+      case "playerDataChange":
+        const playerData = body.payload as ProbableWafflePlayerDataChangeEvent;
+        ProbableWaffleListeners.playerChanged(gameInstance, playerData);
+        break;
+      case "spectatorDataChange":
+        const spectatorData = body.payload as ProbableWaffleSpectatorDataChangeEvent;
+        ProbableWaffleListeners.spectatorChanged(gameInstance, spectatorData);
         break;
       default:
         throw new Error("Unknown communicator");

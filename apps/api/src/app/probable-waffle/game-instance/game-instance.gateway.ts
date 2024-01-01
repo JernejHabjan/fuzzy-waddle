@@ -4,16 +4,18 @@ import {
   CommunicatorEvent,
   ProbableWaffleCommunicatorMessageEvent,
   ProbableWaffleCommunicatorType,
+  ProbableWaffleGameFoundEvent,
+  ProbableWaffleGameInstanceEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
   ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { GameStateServerService } from "../game-state-server.service";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
 import { UseGuards } from "@nestjs/common";
-import { SupabaseAuthGuard } from "../../../../auth/guards/supabase-auth.guard";
-import { CurrentUser } from "../../../../auth/current-user";
 import { AuthUser } from "@supabase/supabase-js";
+import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { CurrentUser } from "../../../auth/current-user";
+import { GameStateServerService } from "./game-state-server.service";
 
 @WebSocketGateway({
   cors: {
@@ -28,20 +30,25 @@ export class GameInstanceGateway {
     private readonly probableWaffleChatService: ProbableWaffleChatService
   ) {}
 
+  emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
+    this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
+  }
+
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleAction)
   async broadcastProbableWaffleAction(
     @CurrentUser() user: AuthUser,
-    @MessageBody() payload: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
+    @MessageBody() body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log("broadcasting probable waffle action", payload.communicator);
+    console.log("Probable Waffle - GI action:", body.communicator, body.payload);
 
-    const success = this.gameStateServerService.updateGameState(payload, user);
+    const success = this.gameStateServerService.updateGameState(body, user);
     if (success) {
-      this.server
-        .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`)
-        .emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, payload);
+      // https://socket.io/docs/v3/emit-cheatsheet/
+      socket
+        .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`)
+        .emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
     } else {
       // 400 error
     }
@@ -51,22 +58,23 @@ export class GameInstanceGateway {
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleMessage)
   async broadcastProbableWaffleMessage(
     @CurrentUser() user: AuthUser,
-    @MessageBody() payload: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
+    @MessageBody() body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log(`Probable Waffle - game instance message for ${payload.gameInstanceId}`);
+    console.log(`Probable Waffle - GI chat message ${body.gameInstanceId}`);
 
     // clone the payload
-    const newPayload = { ...payload };
+    const newPayload = { ...body };
 
     switch (newPayload.communicator) {
       case "message":
-        const body = newPayload.data as ProbableWaffleCommunicatorMessageEvent;
+        const body = newPayload.payload as ProbableWaffleCommunicatorMessageEvent;
         const sanitizedMessage = this.probableWaffleChatService.cleanMessage(body.chatMessage.text);
         body.chatMessage.text = sanitizedMessage;
 
-        this.server
-          .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`)
+        // https://socket.io/docs/v3/emit-cheatsheet/
+        socket
+          .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`)
           .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, newPayload);
         break;
       default:
@@ -78,24 +86,24 @@ export class GameInstanceGateway {
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom)
   async broadcastProbableWaffleWebsocketRoom(
     @CurrentUser() user: AuthUser,
-    @MessageBody() payload: ProbableWaffleWebsocketRoomEvent,
+    @MessageBody() body: ProbableWaffleWebsocketRoomEvent,
     @ConnectedSocket() socket: Socket
   ) {
-    switch (payload.type) {
+    switch (body.type) {
       case "join":
-        socket.join(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`);
+        socket.join(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`);
         console.log(
           user.id,
           "joined room",
-          `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`
+          `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`
         );
         break;
       case "leave":
-        socket.leave(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`);
+        socket.leave(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`);
         console.log(
           user.id,
           "left room",
-          `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${payload.gameInstanceId}`
+          `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`
         );
         break;
       default:

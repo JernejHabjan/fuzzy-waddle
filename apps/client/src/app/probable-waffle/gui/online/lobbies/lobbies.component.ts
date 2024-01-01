@@ -79,7 +79,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected get mapInfo(): null | ProbableWaffleMapData {
     if (!this.selectedRoom) return null;
-    return this.mapInfoOfMap(this.selectedRoom.gameMode?.data.map);
+    return this.mapInfoOfMap(this.selectedRoom.gameModeData?.map);
   }
 
   protected mapInfoOfMap(map?: ProbableWaffleMapEnum): null | ProbableWaffleMapData {

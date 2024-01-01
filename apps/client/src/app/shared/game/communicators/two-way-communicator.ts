@@ -27,14 +27,14 @@ export class TwoWayCommunicator<T, K> {
 
   /**
    * Sends data to Server if we're connected to a socket, otherwise manage data locally
-   * @param data
+   *
+   * Note - this sends data locally (so event is seen immediately) and to the server (so event is seen by other players).
+   * On server, use socket.emit to send data to other players or socket.to(room).emit to send data to other players in the same room.
+   * https://socket.io/docs/v3/emit-cheatsheet/
    */
   send(data: T): void {
-    if (this.socket) {
-      this.sendSubject.next(data);
-    } else {
-      this.sendLocally(data);
-    }
+    this.sendSubject.next(data);
+    this.sendLocallySubject.next(data);
   }
 
   /**
@@ -64,7 +64,7 @@ export class TwoWayCommunicator<T, K> {
         socket?.emit(eventName, {
           gameInstanceId,
           communicator: this.communicator,
-          data: data
+          payload: data
         } satisfies CommunicatorEvent<T, unknown>);
       })
     );
@@ -77,7 +77,7 @@ export class TwoWayCommunicator<T, K> {
             console.error("Communicator received from socket event is undefined", event);
           }
           if (event.communicator !== this.communicator) return;
-          this.onSubject.next(event.data);
+          this.onSubject.next(event.payload);
         })
       );
     }

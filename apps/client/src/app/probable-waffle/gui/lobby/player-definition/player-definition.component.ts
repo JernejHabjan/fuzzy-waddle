@@ -83,7 +83,7 @@ export class PlayerDefinitionComponent {
     const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
     startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
     startPositionPerPlayerElement.player.joined = false;
-    startPositionPerPlayerElement.difficulty = null;
+    startPositionPerPlayerElement.difficulty = undefined;
     startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.NetworkOpen;
     this.playerSlotOpened.emit(startPositionPerPlayerElement);
   }
@@ -91,7 +91,7 @@ export class PlayerDefinitionComponent {
   protected removePlayer(playerNumber: number) {
     const map = this.selectedMap as MapPlayerDefinition;
     const startPositionPerPlayerElement = map.allPlayerPositions[playerNumber];
-    startPositionPerPlayerElement.player.playerPosition = null;
+    startPositionPerPlayerElement.player.playerPosition = undefined;
     startPositionPerPlayerElement.player.joined = false;
     this.playerRemoved.emit(startPositionPerPlayerElement);
   }

@@ -1,15 +1,15 @@
 import {
   PositionPlayerDefinition,
+  ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGameModeData,
-  ProbableWaffleLevelStateChangeEvent
+  ProbableWaffleGameModeData
 } from "@fuzzy-waddle/api-interfaces";
-import { Observable } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { Observable } from "rxjs";
 
 export interface GameInstanceClientServiceInterface {
   gameInstance?: ProbableWaffleGameInstance;
@@ -24,10 +24,11 @@ export interface GameInstanceClientServiceInterface {
   joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void>;
   joinGameInstanceAsPlayer(gameInstanceId: string): Promise<void>;
   joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void>;
-  stopGame(removeFrom: "local" | "localAndRemote"): Promise<void>;
-  get gameLocalInstanceId(): string | null;
-  gameModeChanged(gameModeData: ProbableWaffleGameModeData): Promise<void>;
-  get listenToLevelStateChangeEvents(): Observable<ProbableWaffleLevelStateChangeEvent> | undefined;
+  get currentGameInstanceId(): string | null;
+  gameModeChanged(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
+    gameModeData: ProbableWaffleGameModeData
+  ): Promise<void>;
   playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void>;
   playerLeftOrSlotClosed(playerNumber: number): Promise<void>;
   addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition): Promise<void>;

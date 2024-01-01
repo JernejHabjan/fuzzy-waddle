@@ -15,22 +15,21 @@ export class MapPlayerDefinition {
     for (let i = 0; i < map.mapInfo.startPositionsOnTile.length; i++) {
       const playerColor = GameSetupHelpers.getColorForPlayer(i, map.mapInfo.startPositionsOnTile.length);
       const playerName = `Player ${i + 1}`;
-      this.startPositionPerPlayer.push(
-        new PositionPlayerDefinition(
-          new PlayerLobbyDefinition(i, playerName, null, false),
-          null,
-          null,
-          ProbableWafflePlayerType.Human,
-          playerColor,
-          null
-        )
-      );
+      this.startPositionPerPlayer.push({
+        player: {
+          playerNumber: i,
+          playerName: playerName,
+          joined: false
+        } satisfies PlayerLobbyDefinition,
+        playerType: ProbableWafflePlayerType.Human,
+        playerColor: playerColor
+      } satisfies PositionPlayerDefinition);
       this.allPossibleTeams.push(i);
     }
   }
 
   get playerPositions(): PositionPlayerDefinition[] {
-    return this.startPositionPerPlayer.filter((positionPlayer) => positionPlayer.player.playerPosition !== null);
+    return this.startPositionPerPlayer.filter((positionPlayer) => !!positionPlayer.player.playerPosition);
   }
 
   get allPlayerPositions(): PositionPlayerDefinition[] {
