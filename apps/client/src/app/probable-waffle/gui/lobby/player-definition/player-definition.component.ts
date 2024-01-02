@@ -8,7 +8,6 @@ import {
   ProbableWaffleLevels,
   ProbableWaffleMapData,
   ProbableWafflePlayer,
-  ProbableWafflePlayerDataChangeEventPayload,
   ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
@@ -82,10 +81,10 @@ export class PlayerDefinitionComponent {
     return this.gameInstanceClientService.gameInstance?.gameMode?.data.map;
   }
 
-  get teams(): (null | number)[] {
+  get teams(): (undefined | number)[] {
     if (!this.mapDetails) return [];
-    const teams: (null | number)[] = this.playerPositions;
-    teams.unshift(null);
+    const teams: (undefined | number)[] = this.playerPositions;
+    teams.unshift(undefined);
     return teams;
   }
 
@@ -109,9 +108,55 @@ export class PlayerDefinitionComponent {
 
   protected async onValueChange(
     property: ProbableWafflePlayerDataChangeEventProperty,
-    data: ProbableWafflePlayerDataChangeEventPayload
+    player: ProbableWafflePlayer
   ): Promise<void> {
-    console.log("player state changed", property, data);
-    await this.gameInstanceClientService.playerChanged(property, data);
+    const playerDefinition = this.definition(player);
+    switch (property) {
+      case "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty:
+        const factionType = playerDefinition.factionType;
+        await this.gameInstanceClientService.playerChanged(property, {
+          playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+          playerControllerData: { playerDefinition: { factionType } as PositionPlayerDefinition }
+        });
+        break;
+      case "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty:
+        const team = playerDefinition.team;
+        await this.gameInstanceClientService.playerChanged(property, {
+          playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+          playerControllerData: { playerDefinition: { team } as PositionPlayerDefinition }
+        });
+        break;
+      case "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty:
+        const difficulty = playerDefinition.difficulty;
+        await this.gameInstanceClientService.playerChanged(property, {
+          playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+          playerControllerData: { playerDefinition: { difficulty } as PositionPlayerDefinition }
+        });
+        break;
+      default:
+        throw new Error(`Unhandled property ${property}`);
+    }
+    console.log("player state changed", property);
+  }
+
+  async changeFaction(player: ProbableWafflePlayer) {
+    await this.onValueChange(
+      "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty,
+      player
+    );
+  }
+
+  async changeTeam(player: ProbableWafflePlayer) {
+    await this.onValueChange(
+      "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty,
+      player
+    );
+  }
+
+  async changeDifficulty(player: ProbableWafflePlayer) {
+    await this.onValueChange(
+      "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty,
+      player
+    );
   }
 }

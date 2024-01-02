@@ -96,6 +96,25 @@ export class ProbableWaffleListeners {
           player.playerController.data.playerDefinition!.player.playerPosition =
             payload.data.playerControllerData!.playerDefinition!.player.playerPosition;
           break;
+        case "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerController.data.playerDefinition!.factionType =
+            payload.data.playerControllerData!.playerDefinition!.factionType;
+          break;
+        case "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerController.data.playerDefinition!.team =
+            payload.data.playerControllerData!.playerDefinition!.team;
+          break;
+        case "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerController.data.playerDefinition!.difficulty =
+            payload.data.playerControllerData!.playerDefinition!.difficulty;
+          break;
+
         default:
           throw new Error("Unknown communicator for playerDataChange: " + payload.property);
       }

@@ -9,6 +9,8 @@ import {
   ViewChild
 } from "@angular/core";
 import {
+  PlayerLobbyDefinition,
+  PositionPlayerDefinition,
   ProbableWaffleLevels,
   ProbableWaffleMapData,
   ProbableWafflePlayer,
@@ -669,7 +671,9 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
       "playerController.data.playerDefinition.player.playerPosition" as ProbableWafflePlayerDataChangeEventProperty,
       {
         playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
-        playerControllerData: { playerDefinition: { player: { playerPosition } as any } as any }
+        playerControllerData: {
+          playerDefinition: { player: { playerPosition } as PlayerLobbyDefinition } as PositionPlayerDefinition
+        }
       }
     );
   }

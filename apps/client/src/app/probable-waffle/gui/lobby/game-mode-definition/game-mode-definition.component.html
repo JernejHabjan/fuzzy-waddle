@@ -10,6 +10,7 @@
             winConditions: { timeLimit: gameMode.winConditions.timeLimit }
           })
         "
+        [placeholder]="!gameMode.winConditions.timeLimit ? 'No time limit' : ''"
         [(ngModel)]="gameMode.winConditions.timeLimit"
         class="mr-1 form-control"
         id="timeLimit"
@@ -24,6 +25,7 @@
       <label class="form-label" for="unitCap">Unit cap</label>
       <input
         (ngModelChange)="onValueChange('mapTuning.unitCap', { mapTuning: { unitCap: gameMode.mapTuning.unitCap } })"
+        [placeholder]="!gameMode.mapTuning.unitCap ? 'No unit cap' : ''"
         [(ngModel)]="gameMode.mapTuning.unitCap"
         class="mr-1 form-control"
         id="unitCap"

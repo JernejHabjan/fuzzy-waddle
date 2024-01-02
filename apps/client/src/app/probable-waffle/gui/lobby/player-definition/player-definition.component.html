@@ -16,8 +16,13 @@
       </div>
       <div class="p-2">
         <label class="form-label" for="factionTypes">Faction:</label>
-        <select [(ngModel)]="definition(player).factionType" class="form-select" id="factionTypes">
-          <option [ngValue]="null">Random</option>
+        <select
+          (ngModelChange)="changeFaction(player)"
+          [(ngModel)]="definition(player).factionType"
+          class="form-select"
+          id="factionTypes"
+        >
+          <option [ngValue]="undefined">Random</option>
           <option
             *ngFor="let factionTypeType of FactionDefinitions.factions"
             [ngValue]="factionTypeType.value.factionType"
@@ -39,16 +44,26 @@
       @if(teams.length){
       <div class="p-2" style="margin-left: 10px">
         <label class="form-label" for="team">Team:</label>
-        <select [(ngModel)]="definition(player).team" class="form-select" id="team">
+        <select
+          (ngModelChange)="changeTeam(player)"
+          [(ngModel)]="definition(player).team"
+          class="form-select"
+          id="team"
+        >
           <option *ngFor="let team of teams" [ngValue]="team">
-            {{ team === null ? "No team" : team + 1 }}
+            {{ team === undefined ? "No team" : team + 1 }}
           </option>
         </select>
       </div>
       }
       <div *ngIf="definition(player).playerType === PlayerType.AI" class="p-2">
         <label class="form-label" for="difficulty">Difficulty:</label>
-        <select [(ngModel)]="definition(player).difficulty" class="form-select" id="difficulty">
+        <select
+          (ngModelChange)="changeDifficulty(player)"
+          [(ngModel)]="definition(player).difficulty"
+          class="form-select"
+          id="difficulty"
+        >
           <option *ngFor="let difficulty of DifficultyDefinitions.difficulties" [ngValue]="difficulty.value">
             {{ difficulty.name }}
           </option>
