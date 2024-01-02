@@ -103,7 +103,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     this.roomServerService.roomEvent("game_mode", gameInstance, user);
 
     // emit game found event when all players have joined
-    const maxPlayers = gameInstance.gameMode.data.maxPlayers;
+    const maxPlayers = ProbableWaffleLevels[randomMapId].mapInfo.startPositionsOnTile.length;
     if (gameInstance.players.length === maxPlayers) {
       // GAME METADATA
       this.promoteGameInstanceToLoaded(gameInstance, user);
@@ -178,11 +178,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         joined: true
       } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
       factionType: factionType ?? randomFactionType,
-      playerType: ProbableWafflePlayerType.Human,
-      playerColor: GameSetupHelpers.getColorForPlayer(
-        gameInstance.players.length,
-        gameInstance.gameMode?.data.maxPlayers
-      ) // TODO THIS IS DUPLICATED EVERYWHERE
+      playerType: ProbableWafflePlayerType.Human
     } satisfies PositionPlayerDefinition;
     // noinspection UnnecessaryLocalVariableJS
     const player = gameInstance.initPlayer({
@@ -193,10 +189,8 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   }
 
   private getNewMatchmakingGameMode(mapId: ProbableWaffleMapEnum): ProbableWaffleGameMode {
-    const mapData = ProbableWaffleLevels[mapId];
     const gameModeData = {
       map: mapId,
-      maxPlayers: mapData.mapInfo.startPositionsOnTile.length,
       difficultyModifiers: {} satisfies DifficultyModifiers,
       winConditions: {
         timeLimit: 60

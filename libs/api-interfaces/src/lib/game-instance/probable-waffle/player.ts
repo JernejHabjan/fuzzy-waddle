@@ -66,6 +66,5 @@ export interface PositionPlayerDefinition {
   team?: number;
   factionType?: FactionType;
   playerType: ProbableWafflePlayerType;
-  playerColor: string;
   difficulty?: ProbableWaffleAiDifficulty;
 }

@@ -16,6 +16,7 @@ import { AuthUser } from "@supabase/supabase-js";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService } from "./game-state-server.service";
+import { RoomServerService } from "../game-room/room-server.service";
 
 @WebSocketGateway({
   cors: {
@@ -27,7 +28,8 @@ export class GameInstanceGateway {
 
   constructor(
     private readonly gameStateServerService: GameStateServerService,
-    private readonly probableWaffleChatService: ProbableWaffleChatService
+    private readonly probableWaffleChatService: ProbableWaffleChatService,
+    private readonly roomServerService: RoomServerService
   ) {}
 
   emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
@@ -49,6 +51,8 @@ export class GameInstanceGateway {
       socket
         .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`)
         .emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
+
+      this.roomServerService.emitCertainGameInstanceEventsToAllUsers(body, user);
     } else {
       // 400 error
     }

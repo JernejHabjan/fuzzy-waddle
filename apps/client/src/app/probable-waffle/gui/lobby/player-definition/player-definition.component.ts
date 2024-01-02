@@ -2,6 +2,7 @@ import { Component, inject } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import {
+  GameSetupHelpers,
   PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
   ProbableWaffleGameInstanceType,
@@ -88,6 +89,14 @@ export class PlayerDefinitionComponent {
     return teams;
   }
 
+  getColorForPlayer(player: ProbableWafflePlayer): string {
+    const definition = this.definition(player);
+    return GameSetupHelpers.getColorForPlayer(
+      definition.player.playerNumber,
+      this.mapDetails!.mapInfo!.startPositionsOnTile.length
+    );
+  }
+
   get playerPositions(): number[] {
     // noinspection UnnecessaryLocalVariableJS
     const positions = new Array(this.mapDetails!.mapInfo!.startPositionsOnTile.length)
@@ -106,57 +115,81 @@ export class PlayerDefinitionComponent {
     return this.players.length === this.playerPositions.length;
   }
 
-  protected async onValueChange(
-    property: ProbableWafflePlayerDataChangeEventProperty,
-    player: ProbableWafflePlayer
-  ): Promise<void> {
-    const playerDefinition = this.definition(player);
-    switch (property) {
-      case "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty:
-        const factionType = playerDefinition.factionType;
-        await this.gameInstanceClientService.playerChanged(property, {
-          playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
-          playerControllerData: { playerDefinition: { factionType } as PositionPlayerDefinition }
-        });
-        break;
-      case "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty:
-        const team = playerDefinition.team;
-        await this.gameInstanceClientService.playerChanged(property, {
-          playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
-          playerControllerData: { playerDefinition: { team } as PositionPlayerDefinition }
-        });
-        break;
-      case "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty:
-        const difficulty = playerDefinition.difficulty;
-        await this.gameInstanceClientService.playerChanged(property, {
-          playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
-          playerControllerData: { playerDefinition: { difficulty } as PositionPlayerDefinition }
-        });
-        break;
-      default:
-        throw new Error(`Unhandled property ${property}`);
-    }
-    console.log("player state changed", property);
+  protected onValueChange(property: ProbableWafflePlayerDataChangeEventProperty, player: ProbableWafflePlayer) {
+    // timeout so ngModelChange can finish
+    setTimeout(async () => {
+      const playerDefinition = this.definition(player);
+      switch (property) {
+        case "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty:
+          const factionType = playerDefinition.factionType;
+          await this.gameInstanceClientService.playerChanged(property, {
+            playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+            playerControllerData: { playerDefinition: { factionType } as PositionPlayerDefinition }
+          });
+          break;
+        case "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty:
+          const team = playerDefinition.team;
+          await this.gameInstanceClientService.playerChanged(property, {
+            playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+            playerControllerData: { playerDefinition: { team } as PositionPlayerDefinition }
+          });
+          break;
+        case "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty:
+          const difficulty = playerDefinition.difficulty;
+          await this.gameInstanceClientService.playerChanged(property, {
+            playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+            playerControllerData: { playerDefinition: { difficulty } as PositionPlayerDefinition }
+          });
+          break;
+        default:
+          throw new Error(`Unhandled property ${property}`);
+      }
+      console.log("player state changed", property);
+    }, 50);
   }
 
-  async changeFaction(player: ProbableWafflePlayer) {
-    await this.onValueChange(
+  changeFaction(player: ProbableWafflePlayer) {
+    this.onValueChange(
       "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty,
       player
     );
   }
 
-  async changeTeam(player: ProbableWafflePlayer) {
-    await this.onValueChange(
+  changeTeam(player: ProbableWafflePlayer) {
+    this.onValueChange(
       "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty,
       player
     );
   }
 
-  async changeDifficulty(player: ProbableWafflePlayer) {
-    await this.onValueChange(
+  changeDifficulty(player: ProbableWafflePlayer) {
+    this.onValueChange(
       "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty,
       player
     );
+  }
+
+  getPlayerName(player: ProbableWafflePlayer) {
+    const playerNumber = player.playerController.data.playerDefinition!.player.playerNumber;
+    const isCurrentPlayer = this.getPlayerIsCurrentPlayer(player);
+    // noinspection UnnecessaryLocalVariableJS
+    const name = isCurrentPlayer ? "You" : `Player ${playerNumber + 1}`;
+    return name;
+  }
+
+  getPlayerIsCurrentPlayer(player: ProbableWafflePlayer) {
+    const currentPlayerNumber = this.gameInstanceClientService.currentPlayerNumber;
+    const playerNumber = player.playerController.data.playerDefinition!.player.playerNumber;
+    // noinspection UnnecessaryLocalVariableJS
+    const isCurrentPlayer = currentPlayerNumber === playerNumber;
+    return isCurrentPlayer;
+  }
+
+  getPlayerIsCreator(player: ProbableWafflePlayer) {
+    const creatorUserId = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.createdBy;
+    const userId = player.playerController.data.userId;
+    // noinspection UnnecessaryLocalVariableJS
+    const isCreator = creatorUserId === userId;
+    return isCreator;
   }
 }

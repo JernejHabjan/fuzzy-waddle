@@ -44,6 +44,10 @@ import { AuthenticatedSocketService } from "../../data-access/chat/authenticated
 })
 export class GameInstanceClientService implements GameInstanceClientServiceInterface {
   gameInstance?: ProbableWaffleGameInstance;
+  /**
+   * used to track which player number are we in the game
+   */
+  currentPlayerNumber?: number;
 
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
@@ -121,9 +125,32 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   listenToPlayerEvents(): void {
     if (!this.communicators) return;
     this.communicatorSubscriptions.push(
-      this.communicators.playerObservable.subscribe((payload) =>
-        ProbableWaffleListeners.playerChanged(this.gameInstance, payload)
-      )
+      this.communicators.playerObservable.subscribe((payload) => {
+        ProbableWaffleListeners.playerChanged(this.gameInstance, payload);
+        let currentUserHasJoined = false;
+        switch (payload.property) {
+          case "joined":
+            currentUserHasJoined =
+              !!this.authService.userId && payload.data.playerControllerData!.userId === this.authService.userId;
+            if (currentUserHasJoined) {
+              this.currentPlayerNumber = payload.data.playerControllerData!.playerDefinition!.player.playerNumber;
+            }
+            break;
+          case "joinedFromNetwork":
+            const player = this.gameInstance!.players.find(
+              (p) => p.playerController.data.userId === this.authService.userId
+            );
+            if (player) {
+              this.currentPlayerNumber = player.playerController.data.playerDefinition!.player.playerNumber;
+            }
+            break;
+          case "left":
+            if (payload.data.playerControllerData!.playerDefinition!.player.playerNumber === this.currentPlayerNumber) {
+              this.currentPlayerNumber = undefined;
+            }
+            break;
+        }
+      })
     );
   }
 
@@ -233,25 +260,30 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
-
-    await this.addSelfAsPlayer();
-
     this.startListeningToGameInstanceEvents();
+
+    const userId = this.authService.userId;
+
+    await this.playerChanged("joinedFromNetwork", {
+      playerControllerData: { userId }
+    });
+    console.log("joined game instance as player");
   }
 
   async addSelfAsPlayer(): Promise<void> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found");
+    const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
+    const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
       // todo move this to single place
       player: {
-        playerNumber: gameInstance.players.length,
-        playerName: "Player " + (gameInstance.players.length + 1),
-        playerPosition: gameInstance.players.length,
+        playerNumber: firstFreePlayerNumber,
+        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerPosition: firstFreePosition,
         joined: true
       } satisfies PlayerLobbyDefinition,
-      playerType: ProbableWafflePlayerType.Human,
-      playerColor: GameSetupHelpers.getColorForPlayer(gameInstance.players.length)
+      playerType: ProbableWafflePlayerType.Human
     } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);
@@ -260,16 +292,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async addAiPlayer(position?: number): Promise<void> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found");
+    const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
+    const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
       // todo move this to single place
       player: {
-        playerNumber: gameInstance.players.length,
-        playerName: "Player " + (gameInstance.players.length + 1),
-        playerPosition: position ?? gameInstance.players.length,
+        playerNumber: firstFreePlayerNumber,
+        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerPosition: position ?? firstFreePosition,
         joined: true
       } satisfies PlayerLobbyDefinition,
       playerType: ProbableWafflePlayerType.AI,
-      playerColor: GameSetupHelpers.getColorForPlayer(gameInstance.players.length),
       difficulty: ProbableWaffleAiDifficulty.Medium
     } satisfies PositionPlayerDefinition;
 
@@ -284,9 +317,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
-    await this.addSelfAsSpectator();
-
     this.startListeningToGameInstanceEvents();
+    await this.addSelfAsSpectator();
   }
 
   async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
@@ -324,17 +356,18 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async playerSlotOpened(): Promise<void> {
+    const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(this.gameInstance!.players);
+    const firstFreePosition = GameSetupHelpers.getFirstFreePosition(this.gameInstance!.players);
     await this.playerChanged("joined", {
       playerControllerData: {
         playerDefinition: {
           player: {
-            playerNumber: this.gameInstance!.players.length,
-            playerPosition: this.gameInstance!.players.length,
-            playerName: "Player " + (this.gameInstance!.players.length + 1),
+            playerNumber: firstFreePlayerNumber,
+            playerName: "Player " + (firstFreePlayerNumber + 1),
+            playerPosition: firstFreePosition,
             joined: false
           } satisfies PlayerLobbyDefinition,
-          playerType: ProbableWafflePlayerType.NetworkOpen,
-          playerColor: GameSetupHelpers.getColorForPlayer(this.gameInstance!.players.length)
+          playerType: ProbableWafflePlayerType.NetworkOpen
         } satisfies PositionPlayerDefinition
       }
     });

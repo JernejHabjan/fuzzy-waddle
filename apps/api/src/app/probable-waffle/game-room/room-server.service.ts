@@ -1,12 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { RoomGateway } from "./room.gateway";
 import {
+  CommunicatorEvent,
   GameSessionState,
+  ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGetRoomsDto,
+  ProbableWafflePlayerDataChangeEvent,
   ProbableWaffleRoom,
   ProbableWaffleRoomEvent,
+  ProbableWaffleSpectatorDataChangeEvent,
   RoomAction
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
@@ -53,46 +57,41 @@ export class RoomServerService {
     };
   }
 
-  // findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
-  //   return this.gameInstanceHolderService.findGameInstance(gameInstanceId);
-  // }
-
-  // async joinRoom(body: ProbableWaffleJoinDto, user: User): Promise<ProbableWaffleGameInstanceData> {
-  //   const gameInstance = this.findGameInstance(body.gameInstanceId);
-  //   if (!gameInstance) return;
-  //   switch (body.type) {
-  //     case "player":
-  //       const playerDefinition = {
-  //         player: {
-  //           playerNumber: gameInstance.players.length,
-  //           playerName: "Player " + (gameInstance.players.length + 1),
-  //           playerPosition: gameInstance.players.length,
-  //           joined: true
-  //         } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
-  //         playerType: ProbableWafflePlayerType.Human,
-  //         playerColor: GameSetupHelpers.getColorForPlayer(
-  //           gameInstance.players.length,
-  //           gameInstance.gameMode?.data.maxPlayers
-  //         ) // TODO THIS IS DUPLICATED EVERYWHERE
-  //       } satisfies PositionPlayerDefinition;
-  //       const player = gameInstance.initPlayer({
-  //         userId: user.id,
-  //         playerDefinition
-  //       } satisfies ProbableWafflePlayerControllerData);
-  //       this.roomEvent("player.joined", gameInstance, user);
-  //       console.log("Probable Waffle - Player joined", user.id);
-  //       break;
-  //     case "spectator":
-  //       const spectator = gameInstance.initSpectator({
-  //         userId: user.id
-  //       });
-  //       this.roomEvent("spectator.joined", gameInstance, user);
-  //       console.log("Probable Waffle - Spectator joined", user.id);
-  //       break;
-  //     default:
-  //       throw new Error("Probable Waffle - Join Room - Unknown join type");
-  //   }
-  //
-  //   return gameInstance.data;
-  // }
+  emitCertainGameInstanceEventsToAllUsers(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User) {
+    const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId);
+    if (!gameInstance) {
+      console.log("game instance not found");
+      return false;
+    }
+    switch (body.communicator) {
+      case "gameInstanceMetadataDataChange":
+        this.roomEvent("game_instance_metadata", gameInstance, user);
+        break;
+      case "gameModeDataChange":
+        this.roomEvent("game_mode", gameInstance, user);
+        break;
+      case "playerDataChange":
+        const playerData = body.payload as ProbableWafflePlayerDataChangeEvent;
+        switch (playerData.property) {
+          case "joined":
+            this.roomEvent("player.joined", gameInstance, user);
+            break;
+          case "left":
+            this.roomEvent("player.left", gameInstance, user);
+            break;
+        }
+        break;
+      case "spectatorDataChange":
+        const spectatorData = body.payload as ProbableWaffleSpectatorDataChangeEvent;
+        switch (spectatorData.property) {
+          case "joined":
+            this.roomEvent("spectator.joined", gameInstance, user);
+            break;
+          case "left":
+            this.roomEvent("spectator.left", gameInstance, user);
+            break;
+        }
+        break;
+    }
+  }
 }

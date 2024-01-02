@@ -32,15 +32,15 @@
           >
             <td>{{ room.gameInstanceMetadataData.name }}</td>
             <td>
-              @if(room.gameModeData){
+              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
                 {{ mapInfoOfMap(room.gameModeData.map)?.name }}
               }</td>
             <td>
-              @if(room.gameModeData){
+              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
               {{
                 ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length +
                   "/" +
-                  (room.gameModeData.maxPlayers)
+                  (mapInfoOfMap(room.gameModeData.map)?.mapInfo!.startPositionsOnTile.length)
               }}
               }
             </td>

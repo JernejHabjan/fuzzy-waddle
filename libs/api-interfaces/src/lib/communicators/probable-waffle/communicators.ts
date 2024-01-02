@@ -59,7 +59,8 @@ export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
 export type ProbableWafflePlayerDataChangeEventProperty =
   | ProbableWaffleDataChangeEventProperty<ProbableWafflePlayer>
   | "joined"
-  | "left";
+  | "left"
+  | "joinedFromNetwork";
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {
   property: ProbableWafflePlayerDataChangeEventProperty;
   data: ProbableWafflePlayerDataChangeEventPayload;

@@ -9,6 +9,7 @@ import {
   ViewChild
 } from "@angular/core";
 import {
+  GameSetupHelpers,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleLevels,
@@ -239,15 +240,15 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     for (const positionForPlayer of this.players) {
       const definition = positionForPlayer.playerController.data.playerDefinition;
       i++;
-      if (!definition?.player.joined) {
-        continue;
-      }
 
       const playerRect = this.rects.find((rect) => rect.playerNumber === definition!.player.playerNumber);
       if (!playerRect) {
-        const playerPosition = definition!.player.playerPosition as number;
+        const playerPosition = definition!.player.playerPosition!;
         const isoCoordinate = isoCoordinates[playerPosition];
-        this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, definition!.playerColor);
+        const maxPlayers = this.mapData.mapInfo.startPositionsOnTile.length;
+        const playerNumber = definition!.player.playerNumber;
+        const color = GameSetupHelpers.getColorForPlayer(playerNumber, maxPlayers);
+        this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, color);
       }
     }
   }
@@ -655,15 +656,14 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     );
 
     // update map player definition
-    const player = this.players.find(
+    const players = this.players;
+    const player = players.find(
       (p) => p.playerController.data.playerDefinition!.player.playerPosition === previousPosition
     )!;
-    player.playerController.data.playerDefinition!.player.playerPosition = newPosition;
+    if (!player) throw new Error("Player not found with position " + previousPosition);
 
-    draggingRectangle.positionNumber = newPosition;
     await this.emitPlayerPositionChanged(player, newPosition);
-
-    console.log("player positions changed" + previousPosition + " " + newPosition);
+    console.log("Player positions changed", previousPosition, newPosition);
   }
 
   private async emitPlayerPositionChanged(player: ProbableWafflePlayer, playerPosition: number) {

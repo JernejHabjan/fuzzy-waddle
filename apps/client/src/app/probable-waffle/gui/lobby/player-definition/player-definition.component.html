@@ -3,15 +3,11 @@
 
   <div class="player-rows">
     <div *ngFor="let player of players" class="start-position-row">
-      <div [style.background-color]="definition(player).playerColor" class="color-box"></div>
+      <div [style.background-color]="getColorForPlayer(player)" class="color-box"></div>
       <div class="p-2">
         <label class="form-label" for="playerName">Player:</label>
         <div id="playerName">
-          {{
-            definition(player).player.playerNumber +
-              1 +
-              (definition(player).player.playerName ? " - " + definition(player).player.playerName : "")
-          }}
+          {{ getPlayerName(player) }}
         </div>
       </div>
       <div class="p-2">
@@ -74,7 +70,7 @@
         <div class="form-label">&nbsp;</div>
         <button
           (click)="removePlayer(definition(player).player.playerNumber)"
-          *ngIf="definition(player).player.playerNumber !== 0"
+          *ngIf="!getPlayerIsCreator(player) && !getPlayerIsCurrentPlayer(player)"
           aria-label="Close"
           class="btn-close"
           type="button"

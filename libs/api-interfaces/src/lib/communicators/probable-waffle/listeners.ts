@@ -6,10 +6,15 @@ import {
   ProbableWafflePlayerDataChangeEventProperty,
   ProbableWaffleSpectatorDataChangeEvent
 } from "./communicators";
-import { ProbableWafflePlayer, ProbableWafflePlayerControllerData } from "../../game-instance/probable-waffle/player";
+import {
+  ProbableWafflePlayer,
+  ProbableWafflePlayerControllerData,
+  ProbableWafflePlayerType
+} from "../../game-instance/probable-waffle/player";
 import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
 import { ProbableWaffleGameMode, ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
 import { GameSessionState } from "../../game-instance/session";
+import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
 
 export class ProbableWaffleListeners {
   static gameInstanceMetadataChanged(
@@ -86,6 +91,13 @@ export class ProbableWaffleListeners {
           player = gameInstance.initPlayer(controllerData);
           gameInstance.addPlayer(player);
           break;
+        case "joinedFromNetwork":
+          const firstNetworkOpenPlayer = GameSetupHelpers.getFirstNetworkOpenPlayer(gameInstance.players);
+          if (!firstNetworkOpenPlayer) throw new Error("No network open player found");
+          controllerData = payload.data.playerControllerData as ProbableWafflePlayerControllerData;
+          firstNetworkOpenPlayer.playerController.data.userId = controllerData.userId;
+          firstNetworkOpenPlayer.playerController.data.playerDefinition!.playerType = ProbableWafflePlayerType.Human;
+          break;
         case "left":
           controllerData = payload.data.playerControllerData as ProbableWafflePlayerControllerData;
           gameInstance.removePlayerByData(controllerData);
@@ -101,18 +113,36 @@ export class ProbableWaffleListeners {
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.playerController.data.playerDefinition!.factionType =
             payload.data.playerControllerData!.playerDefinition!.factionType;
+          console.log(
+            "faction type changed",
+            player.playerController.data.playerDefinition!.factionType,
+            "for player",
+            player.playerController.data.playerDefinition!.player.playerNumber
+          );
           break;
         case "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.playerController.data.playerDefinition!.team =
             payload.data.playerControllerData!.playerDefinition!.team;
+          console.log(
+            "team changed",
+            player.playerController.data.playerDefinition!.team,
+            "for player",
+            player.playerController.data.playerDefinition!.player.playerNumber
+          );
           break;
         case "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.playerController.data.playerDefinition!.difficulty =
             payload.data.playerControllerData!.playerDefinition!.difficulty;
+          console.log(
+            "difficulty changed",
+            player.playerController.data.playerDefinition!.difficulty,
+            "for player",
+            player.playerController.data.playerDefinition!.player.playerNumber
+          );
           break;
 
         default:
