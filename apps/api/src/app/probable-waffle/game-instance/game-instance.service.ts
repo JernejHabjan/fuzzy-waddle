@@ -1,18 +1,23 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "@supabase/supabase-js";
 import {
+  DifficultyModifiers,
   GameInstanceDataDto,
   GameSessionState,
+  MapTuning,
   ProbableWaffleAddPlayerDto,
   ProbableWaffleAddSpectatorDto,
   ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleGameModeData,
+  ProbableWaffleGameStateData,
   ProbableWaffleLevels,
   ProbableWafflePlayerLeftDto,
   ProbableWafflePlayerType,
-  ProbableWaffleStartLevelDto
+  ProbableWaffleStartLevelDto,
+  WinConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
@@ -41,7 +46,13 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     if (gameInstanceMetadataData.createdBy !== user.id)
       throw new Error("Probable Waffle - createGameInstance - createdBy must be the same as user id");
     const newGameInstance = new ProbableWaffleGameInstance({
-      gameInstanceMetadataData: this.sanitizeGameInstanceMetadataData(gameInstanceMetadataData)
+      gameInstanceMetadataData: this.sanitizeGameInstanceMetadataData(gameInstanceMetadataData),
+      gameModeData: {
+        winConditions: {} satisfies WinConditions,
+        mapTuning: {} satisfies MapTuning,
+        difficultyModifiers: {} satisfies DifficultyModifiers
+      } satisfies ProbableWaffleGameModeData,
+      gameStateData: {} as ProbableWaffleGameStateData
     });
     this.addGameInstance(newGameInstance, user);
 

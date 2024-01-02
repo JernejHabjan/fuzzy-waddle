@@ -3,9 +3,10 @@ import {
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
   ProbableWafflePlayerDataChangeEvent,
+  ProbableWafflePlayerDataChangeEventProperty,
   ProbableWaffleSpectatorDataChangeEvent
 } from "./communicators";
-import { ProbableWafflePlayerControllerData } from "../../game-instance/probable-waffle/player";
+import { ProbableWafflePlayer, ProbableWafflePlayerControllerData } from "../../game-instance/probable-waffle/player";
 import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
 import { ProbableWaffleGameMode, ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
 import { GameSessionState } from "../../game-instance/session";
@@ -44,6 +45,22 @@ export class ProbableWaffleListeners {
       case "all":
         gameInstance.gameMode = new ProbableWaffleGameMode(payload.data as ProbableWaffleGameModeData);
         break;
+      case "map":
+        gameInstance.gameMode!.data.map = payload.data.map;
+        break;
+      case "winConditions.timeLimit":
+        gameInstance.gameMode!.data.winConditions.timeLimit = payload.data.winConditions!.timeLimit;
+        break;
+      case "mapTuning.unitCap":
+        gameInstance.gameMode!.data.mapTuning.unitCap = payload.data.mapTuning!.unitCap;
+        break;
+      case "difficultyModifiers.aiAdvantageResources":
+        gameInstance.gameMode!.data.difficultyModifiers.aiAdvantageResources =
+          payload.data.difficultyModifiers!.aiAdvantageResources;
+        break;
+      case "difficultyModifiers.reducedIncome":
+        gameInstance.gameMode!.data.difficultyModifiers.reducedIncome = payload.data.difficultyModifiers!.reducedIncome;
+        break;
       default:
         throw new Error("Unknown communicator for gameModeDataChange: " + payload.property);
     }
@@ -56,6 +73,7 @@ export class ProbableWaffleListeners {
     {
       if (!gameInstance) throw new Error("Game instance empty");
       let controllerData: ProbableWafflePlayerControllerData;
+      let player: ProbableWafflePlayer | undefined;
       switch (payload.property) {
         case "joined":
           // check if player with this player number doesn't exist
@@ -65,12 +83,18 @@ export class ProbableWaffleListeners {
             (p) => p.playerController.data.playerDefinition!.player.playerNumber === playerNumber
           );
           if (exists) throw new Error("Player already exists in this game instance with number " + playerNumber);
-          const player = gameInstance.initPlayer(controllerData);
+          player = gameInstance.initPlayer(controllerData);
           gameInstance.addPlayer(player);
           break;
         case "left":
           controllerData = payload.data.playerControllerData as ProbableWafflePlayerControllerData;
           gameInstance.removePlayerByData(controllerData);
+          break;
+        case "playerController.data.playerDefinition.player.playerPosition" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerController.data.playerDefinition!.player.playerPosition =
+            payload.data.playerControllerData!.playerDefinition!.player.playerPosition;
           break;
         default:
           throw new Error("Unknown communicator for playerDataChange: " + payload.property);

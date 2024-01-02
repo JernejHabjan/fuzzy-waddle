@@ -53,10 +53,7 @@ export const gameInstanceClientServiceStub = {
   async playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void> {
     return Promise.resolve();
   },
-  async playerLeftOrSlotClosed(playerNumber: number): Promise<void> {
-    return Promise.resolve();
-  },
-  async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition): Promise<void> {
+  async removePlayer(playerNumber: number): Promise<void> {
     return Promise.resolve();
   },
   async addSelfAsSpectator(): Promise<void> {

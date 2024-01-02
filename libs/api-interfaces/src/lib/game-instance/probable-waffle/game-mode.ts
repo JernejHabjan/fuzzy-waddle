@@ -8,7 +8,7 @@ export interface ProbableWaffleGameModeData extends BaseData {
   winConditions: WinConditions;
   mapTuning: MapTuning;
   difficultyModifiers: DifficultyModifiers;
-  maxPlayers: number;
+  maxPlayers?: number;
 }
 
 export class ProbableWaffleGameMode extends BaseGameMode<ProbableWaffleGameModeData> {

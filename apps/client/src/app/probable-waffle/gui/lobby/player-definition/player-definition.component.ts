@@ -1,12 +1,18 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import {
   PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleLevels,
+  ProbableWaffleMapData,
+  ProbableWafflePlayer,
+  ProbableWafflePlayerDataChangeEventPayload,
+  ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
-import { MapPlayerDefinition } from "../map-player-definition";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
@@ -35,64 +41,77 @@ export class DifficultyDefinitions {
   styleUrls: ["./player-definition.component.scss"]
 })
 export class PlayerDefinitionComponent {
+  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly faSpinner = faSpinner;
   protected PlayerTypeDefinitions = PlayerTypeDefinitions;
   protected PlayerType = ProbableWafflePlayerType;
   protected FactionDefinitions = FactionDefinitions;
   protected DifficultyDefinitions = DifficultyDefinitions;
-  @Input({ required: true }) allowOpenSlotForMp!: boolean;
-  @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
-  @Output() aiPlayerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
-  @Output() playerSlotOpened: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
-  @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 
-  /**
-   * get first free position
-   */
-  private get firstFreePosition(): number {
-    const map = this.selectedMap as MapPlayerDefinition;
-
-    // extract all positions that are already taken
-    const takenPositions = map.playerPositions.map((startPosition) => startPosition.player.playerPosition) as number[];
-    // sort them
-    takenPositions.sort();
-    // get first free position
-    let freePosition = 0;
-    for (let i = 0; i < map.allPlayerPositions.length; i++) {
-      if (takenPositions.includes(i)) {
-        continue;
-      }
-      freePosition = i;
-      break;
-    }
-    return freePosition;
+  protected async addAiPlayer() {
+    await this.gameInstanceClientService.addAiPlayer();
   }
 
-  protected addAiPlayer(playerIndex: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
-    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
-    startPositionPerPlayerElement.player.joined = true;
-    startPositionPerPlayerElement.difficulty = ProbableWaffleAiDifficulty.Medium;
-    startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.AI;
-    this.aiPlayerAdded.emit(startPositionPerPlayerElement);
+  protected async openMpSlot() {
+    await this.gameInstanceClientService.playerSlotOpened();
   }
 
-  protected openMpSlot(playerIndex: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
-    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
-    startPositionPerPlayerElement.player.joined = false;
-    startPositionPerPlayerElement.difficulty = undefined;
-    startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.NetworkOpen;
-    this.playerSlotOpened.emit(startPositionPerPlayerElement);
+  protected async removePlayer(playerNumber: number) {
+    await this.gameInstanceClientService.removePlayer(playerNumber);
   }
 
-  protected removePlayer(playerNumber: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.allPlayerPositions[playerNumber];
-    startPositionPerPlayerElement.player.playerPosition = undefined;
-    startPositionPerPlayerElement.player.joined = false;
-    this.playerRemoved.emit(startPositionPerPlayerElement);
+  get allowOpenSlotForMp(): boolean {
+    return (
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.type ===
+        ProbableWaffleGameInstanceType.SelfHosted ?? false
+    );
+  }
+
+  definition(player: ProbableWafflePlayer): PositionPlayerDefinition {
+    return player.playerController.data.playerDefinition!;
+  }
+
+  get mapDetails(): ProbableWaffleMapData | null {
+    if (!this.map) return null;
+    // noinspection UnnecessaryLocalVariableJS
+    const mapData = ProbableWaffleLevels[this.map];
+    return mapData;
+  }
+
+  get map() {
+    return this.gameInstanceClientService.gameInstance?.gameMode?.data.map;
+  }
+
+  get teams(): (null | number)[] {
+    if (!this.mapDetails) return [];
+    const teams: (null | number)[] = this.playerPositions;
+    teams.unshift(null);
+    return teams;
+  }
+
+  get playerPositions(): number[] {
+    // noinspection UnnecessaryLocalVariableJS
+    const positions = new Array(this.mapDetails!.mapInfo!.startPositionsOnTile.length)
+      .fill(0)
+      .map((n, index) => index + 1);
+    return positions;
+  }
+
+  get players(): ProbableWafflePlayer[] {
+    // noinspection UnnecessaryLocalVariableJS
+    const players = this.gameInstanceClientService.gameInstance?.players ?? [];
+    return players;
+  }
+
+  get allFilled() {
+    return this.players.length === this.playerPositions.length;
+  }
+
+  protected async onValueChange(
+    property: ProbableWafflePlayerDataChangeEventProperty,
+    data: ProbableWafflePlayerDataChangeEventPayload
+  ): Promise<void> {
+    console.log("player state changed", property, data);
+    await this.gameInstanceClientService.playerChanged(property, data);
   }
 }

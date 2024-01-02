@@ -3,6 +3,7 @@ import { ChatMessage } from "../../chat/chat";
 import { ProbableWaffleGameInstanceMetadataData } from "../../game-instance/probable-waffle/game-instance-medatada";
 import { ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
 import {
+  ProbableWafflePlayer,
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerStateData
 } from "../../game-instance/probable-waffle/player";
@@ -49,13 +50,14 @@ export interface ProbableWaffleGameModeDataChangeEvent extends ProbableWaffleCom
 }
 
 export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
+  // provide player number only when updating player
+  playerNumber?: number;
   playerStateData: Partial<ProbableWafflePlayerStateData>;
   playerControllerData: Partial<ProbableWafflePlayerControllerData>;
 }>;
 
 export type ProbableWafflePlayerDataChangeEventProperty =
-  | (ProbableWaffleDataChangeEventProperty<ProbableWafflePlayerStateData> &
-      ProbableWaffleDataChangeEventProperty<ProbableWafflePlayerControllerData>)
+  | ProbableWaffleDataChangeEventProperty<ProbableWafflePlayer>
   | "joined"
   | "left";
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {

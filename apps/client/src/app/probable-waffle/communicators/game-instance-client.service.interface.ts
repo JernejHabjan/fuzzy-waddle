@@ -30,8 +30,7 @@ export interface GameInstanceClientServiceInterface {
     gameModeData: ProbableWaffleGameModeData
   ): Promise<void>;
   playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void>;
-  playerLeftOrSlotClosed(playerNumber: number): Promise<void>;
-  addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition): Promise<void>;
+  removePlayer(playerNumber: number): Promise<void>;
   addSelfAsSpectator(): Promise<void>;
   listenToGameFound(): Observable<ProbableWaffleGameFoundEvent>;
   requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void>;

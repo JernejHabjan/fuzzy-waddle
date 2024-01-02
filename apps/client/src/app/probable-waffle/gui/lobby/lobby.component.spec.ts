@@ -8,8 +8,6 @@ import { GameModeDefinitionTestingComponent } from "./game-mode-definition/game-
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
 import { SpectatorsGridTestingComponent } from "./spectators-grid/spectators-grid.component.spec";
-import { MapPlayerDefinitionsService } from "./map-player-definitions.service";
-import { mapPlayerDefinitionsServiceStub } from "./map-player-definitions.service.spec";
 import { LobbyChatTestingComponent } from "./lobby-chat/lobby-chat.component.spec";
 
 @Component({ selector: "probable-waffle-lobby", template: "" })
@@ -21,10 +19,7 @@ describe("ProbableWaffleLobbyLobbyComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: MapPlayerDefinitionsService, useValue: mapPlayerDefinitionsServiceStub }
-      ],
+      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
       declarations: [
         LobbyComponent,
         PlayerDefinitionTestingComponent,

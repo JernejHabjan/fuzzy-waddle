@@ -9,8 +9,8 @@ import { MapPlayerDefinition } from "../map-player-definition";
 
 @Component({ selector: "probable-waffle-map-definition", template: "" })
 export class MapDefinitionTestingComponent {
-  @Input({ required: true }) mapPlayerDefinition: MapPlayerDefinition | undefined;
-  @Output() started: EventEmitter<void> = new EventEmitter<void>();
+  // @Input({ required: true }) mapPlayerDefinition: MapPlayerDefinition | undefined;
+  // @Output() started: EventEmitter<void> = new EventEmitter<void>();
 }
 
 describe("MapDefinitionComponent", () => {

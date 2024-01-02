@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, Output } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { MapPlayerDefinitionsService } from "../map-player-definitions.service";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
   selector: "probable-waffle-trigger",
@@ -8,20 +8,15 @@ import { MapPlayerDefinitionsService } from "../map-player-definitions.service";
   styleUrls: ["./trigger.component.scss"]
 })
 export class TriggerComponent {
-  @Output() started: EventEmitter<void> = new EventEmitter<void>();
-  private readonly mapPlayerDefinitionsService = inject(MapPlayerDefinitionsService);
-
+  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
 
   /**
    * at least two players selected and at least two different teams
    */
   protected get atLeastTwoPlayersAndDifferentTeamsSelected(): boolean {
-    const selectedMap = this.mapPlayerDefinitionsService.selectedMap;
-    if (!selectedMap) {
-      return false;
-    }
-    const playerPositions = selectedMap.playerPositions;
+    const players = this.gameInstanceClientService.gameInstance!.players;
+    const playerPositions = players.map((player) => player.playerController.data.playerDefinition!);
     const selectedPlayers = playerPositions.filter((startPosition) => startPosition.player.joined);
     const selectedEmptyTeams = playerPositions.filter(
       (startPosition) => !startPosition.team && startPosition.player.joined
@@ -32,7 +27,7 @@ export class TriggerComponent {
   }
 
   protected async start() {
-    this.started.emit();
+    await this.gameInstanceClientService.startGame();
   }
 
   protected async leaveClick() {

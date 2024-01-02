@@ -4,16 +4,16 @@
   </button>
   <ul class="dropdown-menu menu-border">
     <li
-      (click)="mapPlayerDefinitionsService.set(mapPlayerDefinition)"
-      *ngFor="let mapPlayerDefinition of mapPlayerDefinitionsService.mapPlayerDefinitions"
+      (click)="selectMap(level.id)"
+      *ngFor="let level of levels"
       class="cursor-pointer p-2"
     >
       <img
-        [alt]="mapPlayerDefinition.map.name"
-        [src]="mapPlayerDefinition.map.presentation.imagePath"
+        [alt]="level.name"
+        [src]="level.presentation.imagePath"
         class="map-preview"
       />
-      <span style="margin-left: 10px">{{ mapPlayerDefinition.map.name }}</span>
+      <span style="margin-left: 10px">{{ level.name }}</span>
     </li>
   </ul>
 </div>

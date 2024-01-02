@@ -13,6 +13,7 @@ import {
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
+  ProbableWaffleGameStateData,
   ProbableWaffleLevels,
   ProbableWaffleMapEnum,
   ProbableWafflePlayerControllerData,
@@ -116,7 +117,13 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         createdBy: user.id,
         type: ProbableWaffleGameInstanceType.Matchmaking,
         visibility: ProbableWaffleGameInstanceVisibility.Public
-      }
+      },
+      gameModeData: {
+        winConditions: {} satisfies WinConditions,
+        mapTuning: {} satisfies MapTuning,
+        difficultyModifiers: {} satisfies DifficultyModifiers
+      } satisfies ProbableWaffleGameModeData,
+      gameStateData: {} as ProbableWaffleGameStateData
     });
 
     const player = this.getNewPlayer(newGameInstance, user.id, matchMakingDto.factionType);

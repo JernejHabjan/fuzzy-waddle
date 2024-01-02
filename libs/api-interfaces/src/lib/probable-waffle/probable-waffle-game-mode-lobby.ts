@@ -5,16 +5,10 @@ export interface WinConditions {
 }
 
 export interface MapTuning {
-  unitCap: number;
+  unitCap?: number;
 }
 
 export interface DifficultyModifiers {
   aiAdvantageResources?: Map<ResourceType, number>;
   reducedIncome?: number;
-}
-
-export interface ProbableWaffleGameModeLobby {
-  winConditions: WinConditions;
-  mapTuning: MapTuning;
-  difficultyModifiers: DifficultyModifiers;
 }

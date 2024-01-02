@@ -1,13 +1,6 @@
-import { Component, Output } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import {
-  DifficultyModifiers,
-  MapTuning,
-  ProbableWaffleGameModeLobby,
-  Resources,
-  ResourceType,
-  WinConditions
-} from "@fuzzy-waddle/api-interfaces";
+import { Component, inject } from "@angular/core";
+import { ProbableWaffleDataChangeEventProperty, ProbableWaffleGameModeData } from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",
@@ -15,30 +8,17 @@ import {
   styleUrls: ["./game-mode-definition.component.scss"]
 })
 export class GameModeDefinitionComponent {
-  gameModeLobby: ProbableWaffleGameModeLobby;
-  @Output() gameModeLobbyChange;
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
-  constructor() {
-    this.gameModeLobby = {
-      difficultyModifiers: {
-        reducedIncome: 0.5,
-        aiAdvantageResources: new Map<ResourceType, number>([
-          [Resources.wood, 100],
-          [Resources.stone, 100]
-        ])
-      } satisfies DifficultyModifiers,
-      mapTuning: {
-        unitCap: 20
-      } satisfies MapTuning,
-      winConditions: {
-        timeLimit: 60
-      } satisfies WinConditions
-    } satisfies ProbableWaffleGameModeLobby;
-    this.gameModeLobbyChange = new BehaviorSubject<ProbableWaffleGameModeLobby>(this.gameModeLobby);
+  protected async onValueChange(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
+    data: Partial<ProbableWaffleGameModeData>
+  ): Promise<void> {
+    console.log("game mode changed", property, data);
+    await this.gameInstanceClientService.gameModeChanged(property, data);
   }
 
-  onValueChange() {
-    console.log("game setup changed");
-    this.gameModeLobbyChange.next(this.gameModeLobby);
+  protected get gameMode(): ProbableWaffleGameModeData | undefined {
+    return this.gameInstanceClientService.gameInstance?.gameMode?.data;
   }
 }
