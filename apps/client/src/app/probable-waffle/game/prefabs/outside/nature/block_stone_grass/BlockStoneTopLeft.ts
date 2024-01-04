@@ -19,6 +19,8 @@ export default class BlockStoneTopLeft extends Phaser.GameObjects.Image {
     /* END-USER-CTR-CODE */
 	}
 
+	public z: number = 0;
+
 	/* START-USER-CODE */
 
   // Write your code here.
