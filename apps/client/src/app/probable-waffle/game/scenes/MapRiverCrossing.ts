@@ -49,6 +49,9 @@ import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockS
 import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
 import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
+import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
+import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
+import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
 /* START-USER-IMPORTS */
 import { ScaleHandler } from "../world/map/scale.handler";
 import { InputHandler } from "../world/managers/controllers/input/input.handler";
@@ -506,6 +509,22 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// skaduweeOwl
 		const skaduweeOwl = new SkaduweeOwl(this, 1056, 912);
 		this.add.existing(skaduweeOwl);
+
+		// tree11
+		const tree11 = new Tree11(this, -160, 736);
+		this.add.existing(tree11);
+
+		// tree10
+		const tree10 = new Tree10(this, 672, 576);
+		this.add.existing(tree10);
+
+		// tree9
+		const tree9 = new Tree9(this, 320, 544);
+		this.add.existing(tree9);
+
+		// tree_14
+		const tree_14 = new Tree11(this, 272, 560);
+		this.add.existing(tree_14);
 
 		// infantryInn (prefab fields)
 		infantryInn.z = 0;

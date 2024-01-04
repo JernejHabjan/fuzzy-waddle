@@ -436,6 +436,22 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/outside/foliage/trees/resources/tree10.png</key>
+            <key type="filename">../sprites/outside/foliage/trees/resources/tree11.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>23,23,46,46</rect>
+                <key>scale9Paddings</key>
+                <rect>23,23,46,46</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/outside/foliage/trees/resources/tree4.png</key>
             <key type="filename">../sprites/outside/foliage/trees/resources/tree5.png</key>
             <key type="filename">../sprites/outside/foliage/trees/resources/tree8.png</key>
@@ -465,6 +481,21 @@
                 <rect>16,32,32,64</rect>
                 <key>scale9Paddings</key>
                 <rect>16,32,32,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/foliage/trees/resources/tree9.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,48,64,96</rect>
+                <key>scale9Paddings</key>
+                <rect>32,48,64,96</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

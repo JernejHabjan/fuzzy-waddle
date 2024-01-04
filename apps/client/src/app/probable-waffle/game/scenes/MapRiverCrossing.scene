@@ -1249,6 +1249,50 @@
             "label": "skaduweeOwl",
             "x": 1056,
             "y": 912
+        },
+        {
+            "prefabId": "f09568ca-4e05-4ddd-ba4f-3ad6c515d28b",
+            "id": "87c33251-6292-4e79-b7ac-c7b653a31a36",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree11",
+            "x": -160,
+            "y": 736
+        },
+        {
+            "prefabId": "c0d76b4e-4215-46c7-a7f6-4e52c672fdb1",
+            "id": "7a7f6799-04cd-428d-9fce-af267c0719ab",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree10",
+            "x": 672,
+            "y": 576
+        },
+        {
+            "prefabId": "e5ae5fa0-6dc1-48d5-b040-80ec53ee9f1b",
+            "id": "c38368fc-9d11-4699-b6c8-0bda3c0ee90b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree9",
+            "x": 320,
+            "y": 544
+        },
+        {
+            "prefabId": "f09568ca-4e05-4ddd-ba4f-3ad6c515d28b",
+            "id": "94768911-2d2f-4013-aad9-8c89492072a7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_14",
+            "x": 272,
+            "y": 560
         }
     ],
     "plainObjects": [
