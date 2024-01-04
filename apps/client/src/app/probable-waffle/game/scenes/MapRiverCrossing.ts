@@ -519,9 +519,6 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		const sheep = new Sheep(this, -208, 1248);
 		this.add.existing(sheep);
 
-		// infantryInn (prefab fields)
-		infantryInn.z = 0;
-
 		// blockStone_5 (prefab fields)
 		blockStone_5.z = 32;
 
