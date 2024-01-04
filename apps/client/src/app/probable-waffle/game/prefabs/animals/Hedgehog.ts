@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import {
   ANIM_HEDGEHOG_BALL_DOWN,
@@ -20,29 +20,18 @@ import {
 } from "./anims/animals";
 /* END-USER-IMPORTS */
 
-export default class Hedgehog extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 16, y ?? 21.81134207891933);
+export default class Hedgehog extends Phaser.GameObjects.Sprite {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 16, y ?? 21.596080279718947, texture || "animals", frame ?? "hedgehog/10.png");
 
-    this.removeInteractive();
-    this.setInteractive(new Phaser.Geom.Circle(0, -5.81134191845878, 16), Phaser.Geom.Circle.Contains);
-
-    // hedgehog
-    const hedgehog = scene.add.sprite(0, -5.811342078919331, "animals", "hedgehog/10.png");
-    this.add(hedgehog);
-
-    // this (prefab fields)
-    this.z = 0;
-
-    this.hedgehog = hedgehog;
+    this.setInteractive(new Phaser.Geom.Circle(16, 18, 11.323425464509395), Phaser.Geom.Circle.Contains);
+    this.setOrigin(0.5, 0.6748775087412171);
 
     /* START-USER-CTR-CODE */
     this.moveHedgehog();
     this.handleClick();
     /* END-USER-CTR-CODE */
   }
-
-  private hedgehog: Phaser.GameObjects.Sprite;
 
   /* START-USER-CODE */
   private currentDelay: Phaser.Time.TimerEvent | null = null;
@@ -64,7 +53,7 @@ export default class Hedgehog extends ActorContainer {
 
       // get appropriate ball animation
       let ballAnim: string;
-      switch (this.hedgehog.anims.currentAnim?.key) {
+      switch (this.anims.currentAnim?.key) {
         case ANIM_HEDGEHOG_WALK_DOWN:
           ballAnim = ANIM_HEDGEHOG_BALL_DOWN;
           break;
@@ -80,7 +69,7 @@ export default class Hedgehog extends ActorContainer {
         default:
           ballAnim = ANIM_HEDGEHOG_BALL_DOWN;
       }
-      this.hedgehog.play(ballAnim);
+      this.play(ballAnim);
       this.scene.time.delayedCall(5000, this.moveHedgehog, [], this);
     });
   }
@@ -122,7 +111,7 @@ export default class Hedgehog extends ActorContainer {
 
     // Randomly decide if the hedgehog should pause and play an idle animation
     if (Phaser.Math.Between(0, 10) < 3) {
-      this.hedgehog.play(idleAnim);
+      this.play(idleAnim);
       this.currentDelay = this.scene.time.delayedCall(
         5000,
         () => {
@@ -138,10 +127,10 @@ export default class Hedgehog extends ActorContainer {
         y: targetY,
         duration: 2000, // adjust as needed
         onStart: () => {
-          this.hedgehog.play(walkAnim);
+          this.play(walkAnim);
         },
         onComplete: () => {
-          this.hedgehog.play(ballAnim);
+          this.play(ballAnim);
           this.scene.time.delayedCall(5000, this.moveHedgehog, [], this);
         }
       });

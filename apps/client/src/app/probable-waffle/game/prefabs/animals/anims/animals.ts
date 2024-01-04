@@ -23,3 +23,5 @@ export const ANIM_HEDGEHOG_WALK_LEFT = "hedgehog_walk_left";
 export const ANIM_HEDGEHOG_BALL_LEFT = "hedgehog_ball_left";
 
 export const ANIM_HEDGEHOG_WALK_DOWN = "hedgehog_walk_down";
+
+export const ANIM_SHEEP_IDLE_DOWN = "sheep_idle_down";

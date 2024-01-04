@@ -52,6 +52,7 @@ import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
+import Sheep from "../prefabs/animals/Sheep";
 /* START-USER-IMPORTS */
 import { ScaleHandler } from "../world/map/scale.handler";
 import { InputHandler } from "../world/managers/controllers/input/input.handler";
@@ -118,9 +119,6 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// foliage_tall_grass_tall_grass_7_png
 		const foliage_tall_grass_tall_grass_7_png = this.add.image(-261, 1256, "outside", "foliage/tall_grass/tall_grass_7.png");
 		foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
-
-		// sheep_sheep_right_png
-		this.add.image(-172, 1268, "animals", "sheep/sheep_right.png");
 
 		// foliage_trees_resources_special_tree_christmas_png_1
 		this.add.image(-110, 1166, "outside", "foliage/trees/resources/special/tree_christmas.png");
@@ -489,15 +487,6 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// architecture_obstruction_fence_top_left_png
 		this.add.image(-229, 1203, "outside", "architecture/obstruction/fence/top_left.png");
 
-		// sheep_sheep_down_png
-		this.add.image(-223, 1236, "animals", "sheep/sheep_down.png");
-
-		// sheep_sheep_left_png
-		this.add.image(-195, 1208, "animals", "sheep/sheep_left.png");
-
-		// sheep_sheep_up_png
-		this.add.image(-113, 1250, "animals", "sheep/sheep_up.png");
-
 		// tree5
 		const tree5 = new Tree5(this, -788, 484);
 		this.add.existing(tree5);
@@ -525,6 +514,10 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
 		// tree_14
 		const tree_14 = new Tree11(this, 272, 560);
 		this.add.existing(tree_14);
+
+		// sheep
+		const sheep = new Sheep(this, -208, 1248);
+		this.add.existing(sheep);
 
 		// infantryInn (prefab fields)
 		infantryInn.z = 0;

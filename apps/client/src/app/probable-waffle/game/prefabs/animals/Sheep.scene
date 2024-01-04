@@ -1,5 +1,5 @@
 {
-    "id": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
+    "id": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
     "sceneType": "PREFAB",
     "settings": {
         "exportClass": true,
@@ -8,26 +8,27 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 32,
-        "borderHeight": 32
+        "borderWidth": 64,
+        "borderHeight": 64
     },
     "displayList": [
         {
             "type": "Sprite",
-            "id": "eab19788-7d28-4ba0-9229-78de0b9e37e1",
-            "label": "hedgehog",
-            "scope": "CLASS",
+            "id": "ffe7a2b6-a747-4ad0-817a-8eec166e1274",
+            "label": "sheep_idle_down",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 16,
-            "hitArea.y": 18,
-            "hitArea.radius": 11.323425464509395,
+            "hitArea.x": 29,
+            "hitArea.y": 39,
+            "hitArea.radius": 17.805288050449516,
             "texture": {
                 "key": "animals",
-                "frame": "hedgehog/10.png"
+                "frame": "sheep/sheep_down.png"
             },
-            "x": 16,
-            "y": 21.596080279718947,
-            "originY": 0.6748775087412171
+            "x": 32,
+            "y": 49.42203448546586,
+            "originY": 0.772219288835404,
+            "animationPlayMethod": 1,
+            "animationKey": "sheep_idle_down"
         }
     ],
     "plainObjects": [],

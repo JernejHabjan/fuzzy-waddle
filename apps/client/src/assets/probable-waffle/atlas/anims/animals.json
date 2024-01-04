@@ -265,6 +265,21 @@
             "frameRate": 4,
             "skipMissedFrames": true,
             "repeat": -1
+        },
+        {
+            "key": "sheep_idle_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_down.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1
         }
     ],
     "globalTimeScale": 1,
