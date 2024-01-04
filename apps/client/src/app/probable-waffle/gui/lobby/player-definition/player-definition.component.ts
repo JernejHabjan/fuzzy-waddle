@@ -1,12 +1,18 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import {
+  GameSetupHelpers,
   PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleLevels,
+  ProbableWaffleMapData,
+  ProbableWafflePlayer,
+  ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
-import { MapPlayerDefinition } from "../map-player-definition";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
@@ -35,64 +41,155 @@ export class DifficultyDefinitions {
   styleUrls: ["./player-definition.component.scss"]
 })
 export class PlayerDefinitionComponent {
+  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly faSpinner = faSpinner;
   protected PlayerTypeDefinitions = PlayerTypeDefinitions;
   protected PlayerType = ProbableWafflePlayerType;
   protected FactionDefinitions = FactionDefinitions;
   protected DifficultyDefinitions = DifficultyDefinitions;
-  @Input({ required: true }) allowOpenSlotForMp!: boolean;
-  @Input({ required: true }) selectedMap: MapPlayerDefinition | undefined;
-  @Output() aiPlayerAdded: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
-  @Output() playerSlotOpened: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
-  @Output() playerRemoved: EventEmitter<PositionPlayerDefinition> = new EventEmitter<PositionPlayerDefinition>();
 
-  /**
-   * get first free position
-   */
-  private get firstFreePosition(): number {
-    const map = this.selectedMap as MapPlayerDefinition;
+  protected async addAiPlayer() {
+    await this.gameInstanceClientService.addAiPlayer();
+  }
 
-    // extract all positions that are already taken
-    const takenPositions = map.playerPositions.map((startPosition) => startPosition.player.playerPosition) as number[];
-    // sort them
-    takenPositions.sort();
-    // get first free position
-    let freePosition = 0;
-    for (let i = 0; i < map.allPlayerPositions.length; i++) {
-      if (takenPositions.includes(i)) {
-        continue;
+  protected async openMpSlot() {
+    await this.gameInstanceClientService.playerSlotOpened();
+  }
+
+  protected async removePlayer(playerNumber: number) {
+    await this.gameInstanceClientService.removePlayer(playerNumber);
+  }
+
+  get allowOpenSlotForMp(): boolean {
+    return (
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.type ===
+        ProbableWaffleGameInstanceType.SelfHosted ?? false
+    );
+  }
+
+  definition(player: ProbableWafflePlayer): PositionPlayerDefinition {
+    return player.playerController.data.playerDefinition!;
+  }
+
+  get mapDetails(): ProbableWaffleMapData | null {
+    if (!this.map) return null;
+    // noinspection UnnecessaryLocalVariableJS
+    const mapData = ProbableWaffleLevels[this.map];
+    return mapData;
+  }
+
+  get map() {
+    return this.gameInstanceClientService.gameInstance?.gameMode?.data.map;
+  }
+
+  get teams(): (undefined | number)[] {
+    if (!this.mapDetails) return [];
+    const teams: (undefined | number)[] = this.playerPositions;
+    teams.unshift(undefined);
+    return teams;
+  }
+
+  getColorForPlayer(player: ProbableWafflePlayer): string {
+    const definition = this.definition(player);
+    return GameSetupHelpers.getColorForPlayer(
+      definition.player.playerNumber,
+      this.mapDetails!.mapInfo!.startPositionsOnTile.length
+    );
+  }
+
+  get playerPositions(): number[] {
+    // noinspection UnnecessaryLocalVariableJS
+    const positions = new Array(this.mapDetails!.mapInfo!.startPositionsOnTile.length)
+      .fill(0)
+      .map((n, index) => index + 1);
+    return positions;
+  }
+
+  get players(): ProbableWafflePlayer[] {
+    // noinspection UnnecessaryLocalVariableJS
+    const players = this.gameInstanceClientService.gameInstance?.players ?? [];
+    return players;
+  }
+
+  get allFilled() {
+    return this.players.length === this.playerPositions.length;
+  }
+
+  protected onValueChange(property: ProbableWafflePlayerDataChangeEventProperty, player: ProbableWafflePlayer) {
+    // timeout so ngModelChange can finish
+    setTimeout(async () => {
+      const playerDefinition = this.definition(player);
+      switch (property) {
+        case "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty:
+          const factionType = playerDefinition.factionType;
+          await this.gameInstanceClientService.playerChanged(property, {
+            playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+            playerControllerData: { playerDefinition: { factionType } as PositionPlayerDefinition }
+          });
+          break;
+        case "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty:
+          const team = playerDefinition.team;
+          await this.gameInstanceClientService.playerChanged(property, {
+            playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+            playerControllerData: { playerDefinition: { team } as PositionPlayerDefinition }
+          });
+          break;
+        case "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty:
+          const difficulty = playerDefinition.difficulty;
+          await this.gameInstanceClientService.playerChanged(property, {
+            playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+            playerControllerData: { playerDefinition: { difficulty } as PositionPlayerDefinition }
+          });
+          break;
+        default:
+          throw new Error(`Unhandled property ${property}`);
       }
-      freePosition = i;
-      break;
-    }
-    return freePosition;
+      console.log("player state changed", property);
+    }, 50);
   }
 
-  protected addAiPlayer(playerIndex: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
-    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
-    startPositionPerPlayerElement.player.joined = true;
-    startPositionPerPlayerElement.difficulty = ProbableWaffleAiDifficulty.Medium;
-    startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.AI;
-    this.aiPlayerAdded.emit(startPositionPerPlayerElement);
+  changeFaction(player: ProbableWafflePlayer) {
+    this.onValueChange(
+      "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty,
+      player
+    );
   }
 
-  protected openMpSlot(playerIndex: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.allPlayerPositions[playerIndex];
-    startPositionPerPlayerElement.player.playerPosition = this.firstFreePosition;
-    startPositionPerPlayerElement.player.joined = false;
-    startPositionPerPlayerElement.difficulty = null;
-    startPositionPerPlayerElement.playerType = ProbableWafflePlayerType.NetworkOpen;
-    this.playerSlotOpened.emit(startPositionPerPlayerElement);
+  changeTeam(player: ProbableWafflePlayer) {
+    this.onValueChange(
+      "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty,
+      player
+    );
   }
 
-  protected removePlayer(playerNumber: number) {
-    const map = this.selectedMap as MapPlayerDefinition;
-    const startPositionPerPlayerElement = map.allPlayerPositions[playerNumber];
-    startPositionPerPlayerElement.player.playerPosition = null;
-    startPositionPerPlayerElement.player.joined = false;
-    this.playerRemoved.emit(startPositionPerPlayerElement);
+  changeDifficulty(player: ProbableWafflePlayer) {
+    this.onValueChange(
+      "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty,
+      player
+    );
+  }
+
+  getPlayerName(player: ProbableWafflePlayer) {
+    const playerNumber = player.playerController.data.playerDefinition!.player.playerNumber;
+    const isCurrentPlayer = this.getPlayerIsCurrentPlayer(player);
+    // noinspection UnnecessaryLocalVariableJS
+    const name = isCurrentPlayer ? "You" : `Player ${playerNumber + 1}`;
+    return name;
+  }
+
+  getPlayerIsCurrentPlayer(player: ProbableWafflePlayer) {
+    const currentPlayerNumber = this.gameInstanceClientService.currentPlayerNumber;
+    const playerNumber = player.playerController.data.playerDefinition!.player.playerNumber;
+    // noinspection UnnecessaryLocalVariableJS
+    const isCurrentPlayer = currentPlayerNumber === playerNumber;
+    return isCurrentPlayer;
+  }
+
+  getPlayerIsCreator(player: ProbableWafflePlayer) {
+    const creatorUserId = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.createdBy;
+    const userId = player.playerController.data.userId;
+    // noinspection UnnecessaryLocalVariableJS
+    const isCreator = creatorUserId === userId;
+    return isCreator;
   }
 }

@@ -1,13 +1,11 @@
 <div class="lobbies">
   <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate</div>
 
-  @if (roomsService.rooms.length === 0) {
+  @if (roomsService.rooms().length === 0) {
   <div class="text-center">No open lobbies</div>
-    <div class="text-center">
-      <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">
-        Create lobby
-      </button>
-      </div>
+  <div class="text-center">
+    <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">Create lobby</button>
+  </div>
   }@else{
 
   <div class="d-flex">
@@ -21,6 +19,7 @@
       <table class="table table-striped" style="min-width: 300px">
         <thead>
           <tr>
+            <th scope="col">Name</th>
             <th scope="col">Map</th>
             <th scope="col">Players</th>
           </tr>
@@ -28,11 +27,23 @@
         <tbody>
           <tr
             (click)="select(room)"
-            *ngFor="let room of roomsService.rooms"
+            *ngFor="let room of roomsService.rooms()"
             class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
-            <td>{{ mapInfoOfMap(room.gameMode.data.map)?.name }}</td>
-            <td>{{ ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length + "/" + room.gameMode.data.maxPlayers }}</td>
+            <td>{{ room.gameInstanceMetadataData.name }}</td>
+            <td>
+              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
+                {{ mapInfoOfMap(room.gameModeData.map)?.name }}
+              }</td>
+            <td>
+              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
+              {{
+                ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length +
+                  "/" +
+                  (mapInfoOfMap(room.gameModeData.map)?.mapInfo!.startPositionsOnTile.length)
+              }}
+              }
+            </td>
           </tr>
         </tbody>
       </table>

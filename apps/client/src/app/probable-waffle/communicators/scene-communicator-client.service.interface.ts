@@ -1,5 +1,7 @@
-export interface SceneCommunicatorClientServiceInterface {
-  startListeningToEvents(gameInstanceId: string): void;
+import { Subscription } from "rxjs";
+import { ProbableWaffleCommunicators } from "./scene-communicator-client.service";
 
-  stopListeningToEvents(): void;
+export interface SceneCommunicatorClientServiceInterface {
+  createCommunicators(gameInstanceId: string): ProbableWaffleCommunicators;
+  destroyCommunicators(gameInstanceId: string, subscriptions: Subscription[]): void;
 }

@@ -2,19 +2,27 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
   HostListener,
   inject,
-  Input,
-  Output,
+  OnDestroy,
+  OnInit,
   ViewChild
 } from "@angular/core";
 import {
+  GameSetupHelpers,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
-  ProbableWaffleAiDifficulty
+  ProbableWaffleLevels,
+  ProbableWaffleMapData,
+  ProbableWafflePlayer,
+  ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
-import { MapPlayerDefinition } from "../map-player-definition";
+import {
+  ProbableWaffleCommunicators,
+  SceneCommunicatorClientService
+} from "../../../communicators/scene-communicator-client.service";
+import { Subscription } from "rxjs";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 /**
  * canvas element containing info about current player and position.
@@ -41,14 +49,14 @@ interface DisplayRect {
   templateUrl: "./map-definition.component.html",
   styleUrls: ["./map-definition.component.scss"]
 })
-export class MapDefinitionComponent {
+export class MapDefinitionComponent implements OnInit, OnDestroy {
   private readonly preferredCanvasWidth = 400;
   private readonly preferredCanvasHeight = 200;
   protected canvasWidth = this.preferredCanvasWidth;
   protected canvasHeight = this.preferredCanvasHeight;
   private img!: HTMLImageElement;
   // get canvas related references
-  private ctx!: CanvasRenderingContext2D;
+  private ctx?: CanvasRenderingContext2D;
   private _canvas?: ElementRef;
   private canvasOffsetX!: number;
   private canvasOffsetY!: number;
@@ -63,9 +71,12 @@ export class MapDefinitionComponent {
   private rectangleWidth = 30;
   private rectangleHeight = 30;
 
-  @Output() started: EventEmitter<void> = new EventEmitter<void>();
+  private communicators?: ProbableWaffleCommunicators;
+  private communicatorSubscriptions: Subscription[] = [];
 
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
   @ViewChild("canvas")
   get canvas(): ElementRef | undefined {
@@ -79,32 +90,96 @@ export class MapDefinitionComponent {
     this.initialize();
   }
 
-  private _mapPlayerDefinition?: MapPlayerDefinition;
-
-  @Input({ required: true })
-  get mapPlayerDefinition(): MapPlayerDefinition | undefined {
-    return this._mapPlayerDefinition;
+  protected get mapData(): ProbableWaffleMapData | null {
+    const mapId = this.gameInstanceClientService.gameInstance?.gameMode?.data.map;
+    if (!mapId) return null;
+    // noinspection UnnecessaryLocalVariableJS
+    const mapData = ProbableWaffleLevels[mapId];
+    return mapData;
   }
 
-  set mapPlayerDefinition(value: MapPlayerDefinition | undefined) {
-    // check if map changed
-    if (this._mapPlayerDefinition && value && this._mapPlayerDefinition.map.name !== value.map.name) {
-      this.reset();
-    }
-    this._mapPlayerDefinition = value;
-    // noinspection JSIgnoredPromiseFromCall
-    this.initialize();
+  private get players(): ProbableWafflePlayer[] {
+    return this.gameInstanceClientService.gameInstance?.players ?? [];
   }
+
+  ngOnInit(): void {
+    this.startListeningToGameInstanceEventsInLobby();
+  }
+
+  private startListeningToGameInstanceEventsInLobby() {
+    this.communicators = this.sceneCommunicatorClientService.communicatorObservables;
+    this.listenToGameInstanceMetadataEvents();
+    this.listenToGameModeDataEvents();
+    this.listenToPlayerEvents();
+  }
+
+  listenToGameInstanceMetadataEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.gameInstanceObservable.subscribe((payload) => {
+        this.refresh();
+      })
+    );
+  }
+
+  listenToGameModeDataEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.gameModeObservable.subscribe(async (payload) => {
+        switch (payload.property) {
+          case "map":
+            await this.initializeImage();
+            break;
+        }
+        this.refresh();
+      })
+    );
+  }
+
+  listenToPlayerEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.playerObservable.subscribe((payload) => {
+        this.refresh();
+      })
+    );
+  }
+
+  private stopListeningToGameInstanceEventsInLobby() {
+    this.communicatorSubscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
+  ngOnDestroy() {
+    this.stopListeningToGameInstanceEventsInLobby();
+  }
+
+  // private _mapPlayerDefinition?: MapPlayerDefinition;
+  //
+  // @Input({ required: true })
+  // get mapPlayerDefinition(): MapPlayerDefinition | undefined {
+  //   return this._mapPlayerDefinition;
+  // }
+  //
+  // set mapPlayerDefinition(value: MapPlayerDefinition | undefined) {
+  //   // check if map changed
+  //   if (this._mapPlayerDefinition && value && this._mapPlayerDefinition.map.name !== value.map.name) {
+  //     this.reset();
+  //   }
+  //   this._mapPlayerDefinition = value;
+  //   // noinspection JSIgnoredPromiseFromCall
+  //   this.initialize();
+  // }
 
   /**
    * returns iso coordinates that correspond with image definitions for selected map definition
    * Meaning that iso coordinates are calculated based on image size and map definition
    */
   private get isoCoordinates(): { x: number; y: number }[] {
-    const { scale, x, y, width, height } = this.getImgDefinitions();
+    const data = this.getImgDefinitions();
+    if (!data) return [];
+    const { scale, x, y, width, height } = data;
 
-    const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
-    const map = mapPlayerDefinition.map;
+    const map = this.mapData!;
     const mapWidth = map.mapInfo.widthTiles;
     const mapHeight = map.mapInfo.heightTiles;
     const isoCoordinates: { x: number; y: number }[] = [];
@@ -144,6 +219,7 @@ export class MapDefinitionComponent {
   }
 
   refresh() {
+    if (!this.initialized) return;
     this.setCanvasSize();
     this.recalculateOffset();
     this.reInitializePlayerPositions();
@@ -155,24 +231,24 @@ export class MapDefinitionComponent {
    */
   private initializePlayerPositions() {
     // an array of objects that define different rectangles
-    if (!this.mapPlayerDefinition) {
+    if (!this.mapData) {
       return;
     }
     const isoCoordinates = this.isoCoordinates;
 
     let i = -1;
-    for (const positionForPlayer of this.mapPlayerDefinition.allPlayerPositions) {
+    for (const positionForPlayer of this.players) {
+      const definition = positionForPlayer.playerController.data.playerDefinition;
       i++;
-      if (!positionForPlayer.player.joined) {
-        continue;
-      }
 
-      const player = positionForPlayer.player as PlayerLobbyDefinition;
-      const playerRect = this.rects.find((rect) => rect.playerNumber === player.playerNumber);
+      const playerRect = this.rects.find((rect) => rect.playerNumber === definition!.player.playerNumber);
       if (!playerRect) {
-        const playerPosition = player.playerPosition as number;
+        const playerPosition = definition!.player.playerPosition!;
         const isoCoordinate = isoCoordinates[playerPosition];
-        this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, positionForPlayer.playerColor);
+        const maxPlayers = this.mapData.mapInfo.startPositionsOnTile.length;
+        const playerNumber = definition!.player.playerNumber;
+        const color = GameSetupHelpers.getColorForPlayer(playerNumber, maxPlayers);
+        this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, color);
       }
     }
   }
@@ -206,18 +282,10 @@ export class MapDefinitionComponent {
   }
 
   /**
-   * Called when map changes - reset everything
-   */
-  private reset() {
-    this.initialized = false;
-    this.rects = [];
-  }
-
-  /**
    * initializes canvas and loads new map image
    */
   private async initialize() {
-    if (!this.mapPlayerDefinition || !this.canvas) {
+    if (!this.mapData || !this.canvas) {
       return;
     }
     if (this.initialized) {
@@ -239,7 +307,7 @@ export class MapDefinitionComponent {
     this.startX = 0;
     this.startY = 0;
 
-    await this.loadImage();
+    await this.initializeImage();
 
     this.initializePlayerPositions();
 
@@ -249,6 +317,10 @@ export class MapDefinitionComponent {
     canvas.onmousemove = this.myMove.bind(this);
     canvas.onmouseout = this.myOut.bind(this);
     this.draw();
+  }
+
+  private async initializeImage() {
+    await this.loadImage();
   }
 
   /**
@@ -271,7 +343,7 @@ export class MapDefinitionComponent {
     return new Promise((resolve) => {
       const img = new Image();
       this.img = img;
-      img.src = (this.mapPlayerDefinition as MapPlayerDefinition).map.presentation.imagePath;
+      img.src = this.mapData!.presentation.imagePath;
       img.onload = () => resolve();
     });
   }
@@ -321,6 +393,7 @@ export class MapDefinitionComponent {
    * draw a single rect
    */
   private rect(x: number, y: number, w: number, h: number, fill: string) {
+    if (!this.ctx) return;
     this.ctx.fillStyle = fill;
     this.ctx.beginPath();
 
@@ -335,7 +408,7 @@ export class MapDefinitionComponent {
    * clear the canvas
    */
   private clear() {
-    this.ctx.clearRect(0, 0, this.contextWidth, this.contextHeight);
+    this.ctx?.clearRect(0, 0, this.contextWidth, this.contextHeight);
   }
 
   /**
@@ -453,13 +526,13 @@ export class MapDefinitionComponent {
    *  checks if we placed player on non-existing-position - just snap back to previous
    *  clears all dragging flags
    */
-  private myUp(e: MouseEvent) {
+  private async myUp(e: MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
 
-    this.handleEmptyRectangleOnUp(e);
-    this.handleRectangleSwitchOnUp(e);
-    this.handleRectangleOnEmptyTileUp();
+    await this.handleEmptyRectangleOnUp(e);
+    await this.handleRectangleSwitchOnUp(e);
+    await this.handleRectangleOnEmptyTileUp();
     this.handleRectangleSnappingOnUp();
     this.clearDraggingFlags();
   }
@@ -467,7 +540,7 @@ export class MapDefinitionComponent {
   /**
    * checks if we switched two player positions
    */
-  private handleRectangleSwitchOnUp(e: MouseEvent) {
+  private async handleRectangleSwitchOnUp(e: MouseEvent) {
     const getIntersectedRectangles = this.getIntersectedRectangles(e);
     // get the rectangle that we're dragging
     const draggingRectangle = this.rects.find((r) => r.isDragging);
@@ -485,40 +558,37 @@ export class MapDefinitionComponent {
       hoveringRectangle.tileX = prevDraggingX;
       hoveringRectangle.tileY = prevDraggingY;
 
-      this.switchPlayerPositions(draggingRectangle, hoveringRectangle);
+      await this.switchPlayerPositions(draggingRectangle, hoveringRectangle);
     }
   }
 
   /**
    * checks if we switched two player positions
    */
-  private switchPlayerPositions(draggingRectangle: DisplayRect, hoveringRectangle: DisplayRect) {
+  private async switchPlayerPositions(draggingRectangle: DisplayRect, hoveringRectangle: DisplayRect) {
     const draggingPositionNumber = draggingRectangle.positionNumber;
     const hoveringPositionNumber = hoveringRectangle.positionNumber;
 
     draggingRectangle.positionNumber = hoveringPositionNumber;
     hoveringRectangle.positionNumber = draggingPositionNumber;
 
-    const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
-    const draggingPlayer = mapPlayerDefinition.allPlayerPositions.find(
-      (p) => p.player.playerPosition === draggingPositionNumber
-    ) as PositionPlayerDefinition;
-    const hoveringPlayer = mapPlayerDefinition.allPlayerPositions.find(
-      (p) => p.player.playerPosition === hoveringPositionNumber
-    ) as PositionPlayerDefinition;
+    const draggingPlayer = this.players.find(
+      (p) => p.playerController.data.playerDefinition!.player.playerPosition === draggingPositionNumber
+    )!;
+    const hoveringPlayer = this.players.find(
+      (p) => p.playerController.data.playerDefinition!.player.playerPosition === hoveringPositionNumber
+    )!;
 
-    draggingPlayer.player.playerPosition = hoveringPositionNumber;
-    hoveringPlayer.player.playerPosition = draggingPositionNumber;
+    await this.emitPlayerPositionChanged(draggingPlayer, hoveringPositionNumber);
+    await this.emitPlayerPositionChanged(hoveringPlayer, draggingPositionNumber);
 
-    console.log(
-      "player positions changed" + draggingPositionNumber + " " + hoveringPositionNumber + " todo emit event"
-    ); // todo emit event
+    console.log("player positions changed" + draggingPositionNumber + " " + hoveringPositionNumber);
   }
 
   /**
    * checks if we placed player on empty position
    */
-  private handleRectangleOnEmptyTileUp() {
+  private async handleRectangleOnEmptyTileUp() {
     const draggingRectangle = this.rects.find((r) => r.isDragging);
 
     if (!draggingRectangle) {
@@ -534,7 +604,7 @@ export class MapDefinitionComponent {
       draggingRectangle.tileX = hoveringIsoCoordinate.coordinate.x;
       draggingRectangle.tileY = hoveringIsoCoordinate.coordinate.y;
 
-      this.updatePlayerPosition(
+      await this.updatePlayerPosition(
         draggingRectangle,
         { x: previousTileX, y: previousTileY },
         { x: hoveringIsoCoordinate.coordinate.x, y: hoveringIsoCoordinate.coordinate.y }
@@ -570,7 +640,7 @@ export class MapDefinitionComponent {
   /**
    * checks if we placed player on empty position
    */
-  private updatePlayerPosition(
+  private async updatePlayerPosition(
     draggingRectangle: DisplayRect,
     previousIsoCoordinate: { x: number; y: number },
     newIsoCoordinate: { x: number; y: number }
@@ -586,15 +656,26 @@ export class MapDefinitionComponent {
     );
 
     // update map player definition
-    const mapPlayerDefinition = this.mapPlayerDefinition as MapPlayerDefinition;
-    const playerDefinition = mapPlayerDefinition.allPlayerPositions.find(
-      (startPositionPerPlayer) => startPositionPerPlayer?.player.playerPosition === previousPosition
-    ) as PositionPlayerDefinition;
-    playerDefinition.player.playerPosition = newPosition;
+    const players = this.players;
+    const player = players.find(
+      (p) => p.playerController.data.playerDefinition!.player.playerPosition === previousPosition
+    )!;
+    if (!player) throw new Error("Player not found with position " + previousPosition);
 
-    draggingRectangle.positionNumber = newPosition;
+    await this.emitPlayerPositionChanged(player, newPosition);
+    console.log("Player positions changed", previousPosition, newPosition);
+  }
 
-    console.log("player positions changed" + previousPosition + " " + newPosition + " todo emit event"); // todo emit event
+  private async emitPlayerPositionChanged(player: ProbableWafflePlayer, playerPosition: number) {
+    await this.gameInstanceClientService.playerChanged(
+      "playerController.data.playerDefinition.player.playerPosition" as ProbableWafflePlayerDataChangeEventProperty,
+      {
+        playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+        playerControllerData: {
+          playerDefinition: { player: { playerPosition } as PlayerLobbyDefinition } as PositionPlayerDefinition
+        }
+      }
+    );
   }
 
   /**
@@ -619,14 +700,12 @@ export class MapDefinitionComponent {
   /**
    * Add new A.I. player on empty rectangle click
    */
-  private handleEmptyRectangleOnUp(e: MouseEvent) {
+  private async handleEmptyRectangleOnUp(e: MouseEvent) {
     this.recalculateOffset();
     const getIntersectedRectangles = this.getIntersectedRectangles(e);
     if (getIntersectedRectangles.length) {
       return;
     }
-
-    const map = this.mapPlayerDefinition as MapPlayerDefinition;
 
     // get the current mouse position
     const mx = e.clientX - this.canvasOffsetX;
@@ -640,17 +719,8 @@ export class MapDefinitionComponent {
     const { index } = isoCoordinate;
 
     // add new player
-
-    // find first player in map.startPositionPerPlayer that is not joined
-    const player = map.allPlayerPositions.find((p) => !p.player.joined) as PositionPlayerDefinition;
-    player.player.playerPosition = index;
-    player.difficulty = ProbableWaffleAiDifficulty.Medium;
-    player.player.joined = true;
-
-    console.log("player ADDED" + index + " todo emit event"); // todo emit event
-
-    this.initializePlayerPositions();
-    this.draw();
+    await this.gameInstanceClientService.addAiPlayer(index);
+    console.log("AI player added via click on canvas" + index);
   }
 
   /**
@@ -724,7 +794,8 @@ export class MapDefinitionComponent {
    * gets canvas and image definitions - so image can be rendered on canvas correctly
    */
   private getImgDefinitions() {
-    const canvas = (this.canvas as ElementRef).nativeElement as HTMLCanvasElement;
+    if (!this.canvas) return;
+    const canvas = this.canvas.nativeElement as HTMLCanvasElement;
     const img = this.img;
 
     // clamp image to canvas
@@ -738,7 +809,10 @@ export class MapDefinitionComponent {
    * clamp image to canvas
    */
   private drawMapImage() {
-    const { img, scale, x, y, width, height } = this.getImgDefinitions();
+    if (!this.ctx) return;
+    const data = this.getImgDefinitions();
+    if (!data) return;
+    const { img, scale, x, y, width, height } = data;
     this.ctx.drawImage(img, x, y, width * scale, height * scale);
   }
 

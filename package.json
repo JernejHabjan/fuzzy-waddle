@@ -92,6 +92,7 @@
     "profanity-cleaner": "^0.0.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.7.2",
     "tslib": "^2.6.2",
     "zone.js": "0.14.2"
   },

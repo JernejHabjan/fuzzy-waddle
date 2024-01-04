@@ -3,12 +3,16 @@ import { MatchmakingService } from "./matchmaking.service";
 import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
 import { RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
-import { GameInstanceService } from "../game-instance.service";
-import { GameInstanceServiceStub } from "../game-instance.service.spec";
-import { GameInstanceGateway, GameInstanceGatewayStub } from "../game-instance.gateway";
+import { GameInstanceService } from "../game-instance/game-instance.service";
+import { GameInstanceServiceStub } from "../game-instance/game-instance.service.spec";
+import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
+import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway";
 
 export const matchmakingServiceStub = {
   async requestGameSearchForMatchMaking(body: RequestGameSearchForMatchMakingDto, user: User): Promise<void> {
+    return Promise.resolve();
+  },
+  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
     return Promise.resolve();
   }
 } satisfies MatchmakingServiceInterface;

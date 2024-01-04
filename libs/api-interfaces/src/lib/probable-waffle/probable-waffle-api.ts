@@ -45,3 +45,7 @@ export interface RequestGameSearchForMatchMakingDto {
   mapPoolIds: number[];
   factionType: FactionType | null;
 }
+
+export enum ProbableWaffleGatewayRoomTypes {
+  ProbableWaffleGameInstance = "probable_waffle_gi_"
+}

@@ -1,4 +1,4 @@
-import { inject, Injectable } from "@angular/core";
+import { computed, inject, Injectable, Signal, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
@@ -16,39 +16,40 @@ import { map } from "rxjs/operators";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 import { RoomsServiceInterface } from "./rooms.service.interface";
-import { GameInstanceClientService } from "../game-instance-client.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class RoomsService implements RoomsServiceInterface {
   private roomsSubscription?: Subscription;
-  rooms: ProbableWaffleRoom[] = [];
+  rooms = signal<ProbableWaffleRoom[]>([]);
 
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
-  get playersSearchingForMatchmakingGame(): number {
-    return this.rooms.filter(
+  playersSearchingForMatchmakingGame: Signal<number> = computed(() => {
+    // noinspection UnnecessaryLocalVariableJS
+    const rooms = this.rooms().filter(
       (room) =>
         room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
-        room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
-        room.players.length < room.gameMode.data.maxPlayers
+        room.gameInstanceMetadataData.sessionState === GameSessionState.NotStarted
     ).length;
-  }
+    return rooms;
+  });
 
-  get matchmakingGamesInProgress(): number {
-    return this.rooms.filter(
+  matchmakingGamesInProgress: Signal<number> = computed(() => {
+    // noinspection UnnecessaryLocalVariableJS
+    const rooms = this.rooms().filter(
       (room) =>
         room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
         room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
         room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
-        room.gameInstanceMetadataData.sessionState !== GameSessionState.Finished
+        room.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped
     ).length;
-  }
+    return rooms;
+  });
 
   /**
    * we need to listen to room events, so we know if we're spectating a room that is removed
@@ -56,26 +57,37 @@ export class RoomsService implements RoomsServiceInterface {
   listenToRoomEvents() {
     this.roomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
+      const rooms = this.rooms();
+      const roomLocally = rooms.find(
+        (r) => r.gameInstanceMetadataData.gameInstanceId === roomEvent.room.gameInstanceMetadataData.gameInstanceId
+      );
       switch (roomEvent.action) {
         case "added":
-          if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
-          this.rooms.push(room);
+          this.rooms.update((rooms) => [...rooms, room]);
           break;
         case "removed":
-          this.rooms = this.rooms.filter(
-            (room) =>
-              room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
+          this.rooms.update((rooms) =>
+            rooms.filter(
+              (room) =>
+                room.gameInstanceMetadataData.gameInstanceId !== roomEvent.room.gameInstanceMetadataData.gameInstanceId
+            )
           );
           break;
-        case "changed":
-          const index = this.rooms.findIndex(
-            (room) =>
-              room.gameInstanceMetadataData.gameInstanceId === roomEvent.room.gameInstanceMetadataData.gameInstanceId
-          );
-          if (index !== -1) {
-            this.rooms[index] = room;
-          }
+        case "player.joined":
+        case "player.left":
+        case "spectator.joined":
+        case "spectator.left":
+        case "game_instance_metadata":
+        case "game_mode":
+          if (!roomLocally) return;
+          roomLocally.gameInstanceMetadataData = roomEvent.room.gameInstanceMetadataData;
+          roomLocally.gameModeData = roomEvent.room.gameModeData;
+          roomLocally.players = roomEvent.room.players;
+          roomLocally.spectators = roomEvent.room.spectators;
+          this.rooms.update((rooms) => [...rooms]);
           break;
+        default:
+          throw new Error("Unknown room event action: " + roomEvent.action);
       }
     });
   }
@@ -95,7 +107,7 @@ export class RoomsService implements RoomsServiceInterface {
   }
 
   async initiallyPullRooms(): Promise<void> {
-    this.rooms = await this.getRooms();
+    this.rooms.set(await this.getRooms());
   }
 
   get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined {
@@ -105,21 +117,8 @@ export class RoomsService implements RoomsServiceInterface {
       .pipe(map((roomEvent: ProbableWaffleRoomEvent) => roomEvent));
   }
 
-  async joinRoom(gameInstanceId: string) {
-    await this.gameInstanceClientService.joinToLobbyAsSpectator(gameInstanceId);
-  }
-
-  async joinRoomSpectator(gameInstanceId: string) {
-    await this.gameInstanceClientService.joinToLobbyAsSpectator(gameInstanceId);
-  }
-
-  // todo use
-  async leaveRoom(gameInstanceId: string) {
-    // todo
-  }
-
   destroy(): void {
     this.roomsSubscription?.unsubscribe();
-    this.rooms = [];
+    this.rooms.set([]);
   }
 }

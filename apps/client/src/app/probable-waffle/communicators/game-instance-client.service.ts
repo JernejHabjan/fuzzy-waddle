@@ -3,172 +3,322 @@ import { filter, firstValueFrom, Observable, Subscription } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
-  GameInstanceDataDto,
+  DifficultyModifiers,
+  GameSessionState,
   GameSetupHelpers,
+  MapTuning,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
-  ProbableWaffleAddPlayerDto,
-  ProbableWaffleAddSpectatorDto,
   ProbableWaffleAiDifficulty,
-  ProbableWaffleChangeGameModeDto,
+  ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGameInstanceType,
-  ProbableWaffleGameMode,
+  ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData,
-  ProbableWaffleLevelStateChangeEvent,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerEvent,
-  ProbableWafflePlayerLeftDto,
+  ProbableWaffleGameStateData,
+  ProbableWaffleListeners,
+  ProbableWafflePlayerDataChangeEventPayload,
+  ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType,
-  ProbableWaffleSpectatorEvent,
-  ProbableWaffleStartLevelDto,
-  RequestGameSearchForMatchMakingDto
+  ProbableWaffleSpectatorData,
+  ProbableWaffleSpectatorDataChangeEventProperty,
+  RequestGameSearchForMatchMakingDto,
+  WinConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
-import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { AuthService } from "../../auth/auth.service";
 import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
-import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
-import { map } from "rxjs/operators";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { Router } from "@angular/router";
+import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
+import { map } from "rxjs/operators";
+import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class GameInstanceClientService implements GameInstanceClientServiceInterface {
   gameInstance?: ProbableWaffleGameInstance;
-  listeners = new Map<string, Subscription | undefined>();
+  /**
+   * used to track which player number are we in the game
+   */
+  currentPlayerNumber?: number;
 
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
+  private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
+  private readonly router = inject(Router);
+  private communicators?: ProbableWaffleCommunicators;
+  private communicatorSubscriptions: Subscription[] = [];
 
-  async createGameInstance(joinable: boolean, type: ProbableWaffleGameInstanceType): Promise<void> {
+  async createGameInstance(
+    name: string,
+    visibility: ProbableWaffleGameInstanceVisibility,
+    type: ProbableWaffleGameInstanceType
+  ): Promise<void> {
     this.gameInstance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: {
+        name,
         createdBy: this.authService.userId,
         type,
-        joinable
-      }
+        visibility
+      } satisfies ProbableWaffleGameInstanceMetadataData,
+      gameModeData: {
+        winConditions: {} satisfies WinConditions,
+        mapTuning: {} satisfies MapTuning,
+        difficultyModifiers: {} satisfies DifficultyModifiers
+      } satisfies ProbableWaffleGameModeData,
+      gameStateData: {} as ProbableWaffleGameStateData
     });
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/start-game";
       const body: ProbableWaffleGameInstanceMetadataData = this.gameInstance.gameInstanceMetadata!.data;
       await firstValueFrom(this.httpClient.post<void>(url, body));
-
-      this.listeners.set(
-        ProbableWaffleGameInstanceEvent.LevelStateChange,
-        this.listenToLevelStateChangeEvents?.subscribe(this.levelStateChange)
-      );
-      this.listeners.set(
-        ProbableWaffleGameInstanceEvent.Player,
-        this.listenToPlayerAvailability?.subscribe(this.playerAvailabilityChange)
-      );
-      this.listeners.set(
-        ProbableWaffleGameInstanceEvent.Spectator,
-        this.listenToSpectatorAvailability?.subscribe(this.spectatorAvailabilityChange)
-      );
     }
+
+    this.startListeningToGameInstanceEvents();
   }
 
-  async stopGameInstance() {
-    if (!this.gameLocalInstanceId) return;
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/stop-game";
-      const body: GameInstanceDataDto = { gameInstanceId: this.gameLocalInstanceId };
-      await firstValueFrom(this.httpClient.delete<void>(url, { body }));
-    }
-    await this.stopGame("local");
+  async stopGameInstance(): Promise<void> {
+    await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.Stopped });
   }
 
-  async startGame() {
-    if (!this.gameLocalInstanceId) return;
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/start-level";
-      const body: ProbableWaffleStartLevelDto = {
-        gameInstanceId: this.gameLocalInstanceId
-      };
-      await firstValueFrom(this.httpClient.post<void>(url, body));
-    }
-    const level = this.gameInstance!.gameMode!.data.map!;
-    // todo ??
+  listenToGameInstanceMetadataEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.gameInstanceObservable.subscribe(async (payload) => {
+        ProbableWaffleListeners.gameInstanceMetadataChanged(this.gameInstance, payload);
+        switch (payload.property) {
+          case "sessionState":
+            switch (payload.data.sessionState) {
+              case GameSessionState.Starting:
+                await this.router.navigate(["probable-waffle/game"]);
+                break;
+              case GameSessionState.Stopped:
+                this.stopListeningToGameInstanceEvents();
+                this.gameInstance = undefined;
+                break;
+            }
+            break;
+        }
+      })
+    );
+  }
+
+  listenToGameModeDataEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.gameModeObservable.subscribe((payload) =>
+        ProbableWaffleListeners.gameModeChanged(this.gameInstance, payload)
+      )
+    );
+  }
+
+  listenToPlayerEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.playerObservable.subscribe((payload) => {
+        ProbableWaffleListeners.playerChanged(this.gameInstance, payload);
+        let currentUserHasJoined = false;
+        switch (payload.property) {
+          case "joined":
+            currentUserHasJoined =
+              !!this.authService.userId && payload.data.playerControllerData!.userId === this.authService.userId;
+            if (currentUserHasJoined) {
+              this.currentPlayerNumber = payload.data.playerControllerData!.playerDefinition!.player.playerNumber;
+            }
+            break;
+          case "joinedFromNetwork":
+            const player = this.gameInstance!.players.find(
+              (p) => p.playerController.data.userId === this.authService.userId
+            );
+            if (player) {
+              this.currentPlayerNumber = player.playerController.data.playerDefinition!.player.playerNumber;
+            }
+            break;
+          case "left":
+            if (payload.data.playerControllerData!.playerDefinition!.player.playerNumber === this.currentPlayerNumber) {
+              this.currentPlayerNumber = undefined;
+            }
+            break;
+        }
+      })
+    );
+  }
+
+  listenToSpectatorEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.spectatorObservable.subscribe((payload) =>
+        ProbableWaffleListeners.spectatorChanged(this.gameInstance, payload)
+      )
+    );
+  }
+
+  private startListeningToGameInstanceEvents() {
+    if (!this.currentGameInstanceId) throw new Error("Game instance not found");
+    this.communicators = this.sceneCommunicatorClientService.createCommunicators(this.currentGameInstanceId);
+    this.listenToGameInstanceMetadataEvents();
+    this.listenToGameModeDataEvents();
+    this.listenToPlayerEvents();
+    this.listenToSpectatorEvents();
+  }
+
+  private stopListeningToGameInstanceEvents() {
+    if (!this.currentGameInstanceId) throw new Error("Game instance not found");
+    this.sceneCommunicatorClientService.destroyCommunicators(
+      this.currentGameInstanceId,
+      this.communicatorSubscriptions
+    );
+  }
+
+  async startGame(): Promise<void> {
+    await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.Starting });
+  }
+
+  private async gameInstanceMetadataChanged(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>,
+    data: Partial<ProbableWaffleGameInstanceMetadataData>
+  ) {
+    if (!this.currentGameInstanceId) return;
+
+    this.probableWaffleCommunicatorService.gameInstanceMetadataChanged?.send({
+      property: property,
+      gameInstanceId: this.currentGameInstanceId,
+      emitterUserId: this.authService.userId,
+      data
+    });
+  }
+
+  async gameModeChanged(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
+    gameModeData: Partial<ProbableWaffleGameModeData>
+  ): Promise<void> {
+    if (!this.currentGameInstanceId) return;
+
+    this.probableWaffleCommunicatorService.gameModeChanged?.send({
+      property: property,
+      gameInstanceId: this.currentGameInstanceId,
+      emitterUserId: this.authService.userId,
+      data: gameModeData
+    });
+  }
+
+  async playerChanged(
+    property: ProbableWafflePlayerDataChangeEventProperty,
+    data: ProbableWafflePlayerDataChangeEventPayload
+  ) {
+    if (!this.currentGameInstanceId) return;
+
+    this.probableWaffleCommunicatorService.playerChanged?.send({
+      property: property,
+      gameInstanceId: this.currentGameInstanceId,
+      emitterUserId: this.authService.userId,
+      data
+    });
+  }
+
+  private async spectatorChanged(
+    property: ProbableWaffleSpectatorDataChangeEventProperty,
+    data: Partial<ProbableWaffleSpectatorData>
+  ) {
+    if (!this.currentGameInstanceId) return;
+
+    this.probableWaffleCommunicatorService.spectatorChanged?.send({
+      property: property,
+      gameInstanceId: this.currentGameInstanceId,
+      emitterUserId: this.authService.userId,
+      data
+    });
+  }
+
+  /**
+   * game instance is fully prepared on server, we're just joining it
+   */
+  async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void> {
+    const gameInstanceData = (await this.getGameInstanceData(gameInstanceId))!;
+    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    this.startListeningToGameInstanceEvents();
   }
 
   /**
    * owner only
    */
-  async joinToLobbyAsPlayer(gameInstanceId: string): Promise<void> {
-    if (this.gameLocalInstanceId) throw new Error("Game instance already exists");
+  async joinGameInstanceAsPlayer(gameInstanceId: string): Promise<void> {
+    if (this.currentGameInstanceId) throw new Error("Game instance already exists");
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
 
     const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    this.startListeningToGameInstanceEvents();
 
-    await this.addSelfAsPlayer();
+    const userId = this.authService.userId;
+
+    await this.playerChanged("joinedFromNetwork", {
+      playerControllerData: { userId }
+    });
+    console.log("joined game instance as player");
   }
 
-  async addSelfAsPlayer() {
+  async addSelfAsPlayer(): Promise<void> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found");
-    const playerDefinition = new PositionPlayerDefinition( // todo move this to single place
-      new PlayerLobbyDefinition(
-        gameInstance.players.length,
-        "Player " + (gameInstance.players.length + 1),
-        gameInstance.players.length,
-        true
-      ),
-      null,
-      null,
-      ProbableWafflePlayerType.Human,
-      GameSetupHelpers.getColorForPlayer(gameInstance.players.length),
-      null
-    );
+    const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
+    const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
+    const playerDefinition = {
+      // todo move this to single place
+      player: {
+        playerNumber: firstFreePlayerNumber,
+        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerPosition: firstFreePosition,
+        joined: true
+      } satisfies PlayerLobbyDefinition,
+      playerType: ProbableWafflePlayerType.Human
+    } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);
   }
 
-  async addAiPlayer() {
+  async addAiPlayer(position?: number): Promise<void> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found");
-    const playerDefinition = new PositionPlayerDefinition( // todo move this to single place
-      new PlayerLobbyDefinition(
-        gameInstance.players.length,
-        "Player " + (gameInstance.players.length + 1),
-        gameInstance.players.length,
-        true
-      ),
-      null,
-      null,
-      ProbableWafflePlayerType.AI,
-      GameSetupHelpers.getColorForPlayer(gameInstance.players.length),
-      ProbableWaffleAiDifficulty.Medium
-    );
+    const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
+    const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
+    const playerDefinition = {
+      // todo move this to single place
+      player: {
+        playerNumber: firstFreePlayerNumber,
+        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerPosition: position ?? firstFreePosition,
+        joined: true
+      } satisfies PlayerLobbyDefinition,
+      playerType: ProbableWafflePlayerType.AI,
+      difficulty: ProbableWaffleAiDifficulty.Medium
+    } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);
   }
 
-  async joinToLobbyAsSpectator(gameInstanceId: string): Promise<void> {
-    if (this.gameLocalInstanceId) throw new Error("Game instance already exists");
+  async joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void> {
+    if (this.currentGameInstanceId) throw new Error("Game instance already exists");
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
 
     const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
     if (!gameInstanceData) throw new Error("Game instance not found");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    this.startListeningToGameInstanceEvents();
     await this.addSelfAsSpectator();
-  }
-
-  private openLevelCommunication(gameInstanceId: string) {
-    // todo use this when in game?
-    this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
   }
 
   async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
@@ -181,231 +331,79 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  /**
-   * @param removeFrom - if we destroy whole game instance, we don't need to remove game mode from remote again
-   */
-  async stopGame(removeFrom: "local" | "localAndRemote"): Promise<void> {
-    if (!this.gameLocalInstanceId) return;
-    if (
-      this.authService.isAuthenticated &&
-      this.serverHealthService.serverAvailable &&
-      removeFrom === "localAndRemote"
-    ) {
-      const url = environment.api + "api/probable-waffle/stop-game";
-      const body: GameInstanceDataDto = {
-        gameInstanceId: this.gameLocalInstanceId
-      };
-      await firstValueFrom(this.httpClient.delete<void>(url, { body }));
+  async navigateToLobbyOrDirectlyToGame(): Promise<void> {
+    if (!this.gameInstance) throw new Error("Game instance not found");
+    switch (this.gameInstance.gameInstanceMetadata!.data.type) {
+      case ProbableWaffleGameInstanceType.SelfHosted:
+        // join lobby
+        await this.router.navigate(["probable-waffle/lobby"]);
+        break;
+      case ProbableWaffleGameInstanceType.Skirmish:
+        // replaceUrl: true - we don't want to go back to skirmish page
+        await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
+        break;
+      case ProbableWaffleGameInstanceType.Matchmaking:
+        // directly to game
+        await this.router.navigate(["probable-waffle/game"]);
+        break;
+      default:
+        throw new Error("Not implemented");
     }
-    this.gameInstance = undefined;
-    this.sceneCommunicatorClientService.stopListeningToEvents();
   }
 
-  get gameLocalInstanceId(): string | null {
+  get currentGameInstanceId(): string | null {
     return this.gameInstance?.gameInstanceMetadata?.data.gameInstanceId ?? null;
   }
 
-  private levelStateChange = (levelStateChangeEvent: ProbableWaffleLevelStateChangeEvent) => {
-    if (!this.gameInstance) return;
-    this.gameInstance.gameInstanceMetadata!.data.sessionState = levelStateChangeEvent.sessionState;
-  };
-
-  private playerAvailabilityChange = (playerEvent: ProbableWafflePlayerEvent): ProbableWafflePlayer | null => {
-    if (!this.gameInstance) return null;
-    switch (playerEvent.action) {
-      case "joined":
-        const player = this.gameInstance.initPlayer(playerEvent.player.stateData, playerEvent.player.controllerData);
-        this.gameInstance.addPlayer(player);
-        return player;
-      case "left":
-        this.removePlayer(playerEvent.player.controllerData.playerDefinition!.player.playerNumber);
-        break;
-      default:
-        throw new Error("Unknown player action");
-    }
-    return null;
-  };
-
-  removePlayer(playerNumber: number) {
-    this.gameInstance!.players = this.gameInstance!.players.filter(
-      (p) => p.playerController.data.playerDefinition!.player.playerNumber !== playerNumber
-    );
-  }
-
-  private spectatorAvailabilityChange = (spectatorEvent: ProbableWaffleSpectatorEvent) => {
-    if (!this.gameInstance) return;
-    switch (spectatorEvent.action) {
-      case "joined":
-        const spectator = this.gameInstance.initSpectator(spectatorEvent.spectator.data);
-        this.gameInstance!.addSpectator(spectator);
-        break;
-      case "left":
-        this.gameInstance!.spectators = this.gameInstance!.spectators.filter(
-          (s) => s.data.userId !== spectatorEvent.spectator.data.userId
-        );
-        break;
-      default:
-        throw new Error("Unknown spectator action");
-    }
-  };
-
-  async gameModeChanged(gameModeData: ProbableWaffleGameModeData) {
-    if (!this.gameLocalInstanceId) return;
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/change-game-mode";
-      const body: ProbableWaffleChangeGameModeDto = {
-        gameInstanceId: this.gameLocalInstanceId,
-        gameModeData
-      };
-      await firstValueFrom(this.httpClient.put<void>(url, body));
-    }
-    this.gameInstance!.gameMode = new ProbableWaffleGameMode(gameModeData);
-  }
-
-  get listenToLevelStateChangeEvents(): Observable<ProbableWaffleLevelStateChangeEvent> | undefined {
-    if (!this.gameLocalInstanceId) return;
-    const socket = this.authenticatedSocketService.socket;
-
-    return socket
-      ?.fromEvent<ProbableWaffleLevelStateChangeEvent>(ProbableWaffleGameInstanceEvent.LevelStateChange)
-      .pipe(
-        filter(
-          (data: ProbableWaffleLevelStateChangeEvent) =>
-            data.gameInstanceId === this.gameLocalInstanceId && data.emittingUserId !== this.authService.userId
-        ),
-        map((data: ProbableWaffleLevelStateChangeEvent) => data)
-      );
-  }
-
-  private get listenToPlayerAvailability(): Observable<ProbableWafflePlayerEvent> | undefined {
-    if (!this.gameLocalInstanceId) return;
-    const socket = this.authenticatedSocketService.socket;
-    return socket?.fromEvent<ProbableWafflePlayerEvent>(ProbableWaffleGameInstanceEvent.Player).pipe(
-      filter(
-        (data: ProbableWafflePlayerEvent) =>
-          data.gameInstanceId === this.gameLocalInstanceId && data.emittingUserId !== this.authService.userId
-      ),
-      map((data: ProbableWafflePlayerEvent) => data)
-    );
-  }
-
-  private get listenToSpectatorAvailability(): Observable<ProbableWaffleSpectatorEvent> | undefined {
-    if (!this.gameLocalInstanceId) return;
-    const socket = this.authenticatedSocketService.socket;
-    return socket?.fromEvent<ProbableWaffleSpectatorEvent>(ProbableWaffleGameInstanceEvent.Spectator).pipe(
-      filter(
-        (data: ProbableWaffleSpectatorEvent) =>
-          data.gameInstanceId === this.gameLocalInstanceId && data.emittingUserId !== this.authService.userId
-      ),
-      map((data: ProbableWaffleSpectatorEvent) => data)
-    );
-  }
-
-  async playerSlotOpened(playerDefinition: PositionPlayerDefinition) {
-    if (!this.gameLocalInstanceId) return;
-    const openPlayerSlot = this.gameInstance!.initPlayer(
-      { scoreProbableWaffle: 0 },
-      { userId: null, playerDefinition }
-    );
-
-    this.playerAvailabilityChange({
-      player: {
-        controllerData: openPlayerSlot.playerController.data,
-        stateData: openPlayerSlot.playerState.data
-      },
-      gameInstanceId: this.gameLocalInstanceId,
-      action: "joined",
-      emittingUserId: null
+  async playerSlotOpened(): Promise<void> {
+    const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(this.gameInstance!.players);
+    const firstFreePosition = GameSetupHelpers.getFirstFreePosition(this.gameInstance!.players);
+    await this.playerChanged("joined", {
+      playerControllerData: {
+        playerDefinition: {
+          player: {
+            playerNumber: firstFreePlayerNumber,
+            playerName: "Player " + (firstFreePlayerNumber + 1),
+            playerPosition: firstFreePosition,
+            joined: false
+          } satisfies PlayerLobbyDefinition,
+          playerType: ProbableWafflePlayerType.NetworkOpen
+        } satisfies PositionPlayerDefinition
+      }
     });
-
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/open-player-slot";
-      const body: ProbableWaffleAddPlayerDto = {
-        gameInstanceId: this.gameLocalInstanceId,
-        player: {
-          stateData: openPlayerSlot.playerState.data,
-          controllerData: openPlayerSlot.playerController.data
-        }
-      };
-      await firstValueFrom(this.httpClient.post<void>(url, body));
-    }
   }
 
-  async playerLeftOrSlotClosed(playerNumber: number) {
-    if (!this.gameLocalInstanceId) return;
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/player-left";
-      const body: ProbableWafflePlayerLeftDto = {
-        gameInstanceId: this.gameLocalInstanceId,
-        playerNumber
-      };
-      await firstValueFrom(this.httpClient.post<void>(url, body));
-    }
-    this.removePlayer(playerNumber);
+  async removePlayer(playerNumber: number): Promise<void> {
+    await this.playerChanged("left", {
+      playerControllerData: {
+        playerDefinition: {
+          player: {
+            playerNumber
+          } as PlayerLobbyDefinition
+        } as PositionPlayerDefinition
+      }
+    });
   }
 
-  async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition) {
-    if (!this.gameLocalInstanceId) return;
+  private async addSelfOrAiPlayer(playerDefinition: PositionPlayerDefinition): Promise<void> {
+    if (!this.currentGameInstanceId) return;
 
     const playerNumber = playerDefinition.player.playerNumber;
-    let player = this.gameInstance!.players.find(
+    const player = this.gameInstance!.players.find(
       (p) => p.playerController.data.playerDefinition?.player.playerNumber === playerNumber
     );
     if (player) throw new Error("Player already exists");
     const userId = playerDefinition.playerType === ProbableWafflePlayerType.Human ? this.authService.userId : null;
-
-    player = this.playerAvailabilityChange({
-      player: {
-        controllerData: { userId, playerDefinition },
-        stateData: { scoreProbableWaffle: 0 }
-      },
-      gameInstanceId: this.gameLocalInstanceId,
-      action: "joined",
-      emittingUserId: null
-    })!;
-
-    // server
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/add-player";
-      const body: ProbableWaffleAddPlayerDto = {
-        gameInstanceId: this.gameLocalInstanceId,
-        player: {
-          stateData: player.playerState.data,
-          controllerData: player.playerController.data
-        }
-      };
-      await firstValueFrom(this.httpClient.post<void>(url, body));
-    }
+    await this.playerChanged("joined", {
+      playerControllerData: {
+        playerDefinition,
+        userId
+      }
+    });
   }
 
   async addSelfAsSpectator(): Promise<void> {
-    if (!this.gameLocalInstanceId) return;
-
-    let spectator = this.gameInstance!.spectators.find((s) => s.data.userId === this.authService.userId);
-    if (spectator) throw new Error("Spectator already exists");
-    const userId = this.authService.userId;
-    spectator = this.gameInstance!.initSpectator({
-      userId: userId!
-    });
-
-    this.spectatorAvailabilityChange({
-      gameInstanceId: this.gameLocalInstanceId,
-      action: "joined",
-      spectator: {
-        data: spectator.data
-      },
-      emittingUserId: null
-    });
-
-    // server
-    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
-      const url = environment.api + "api/probable-waffle/add-spectator";
-      const body: ProbableWaffleAddSpectatorDto = {
-        gameInstanceId: this.gameLocalInstanceId,
-        spectator
-      };
-      await firstValueFrom(this.httpClient.post<void>(url, body));
-    }
+    await this.spectatorChanged("joined", { userId: this.authService.userId! });
   }
 
   listenToGameFound(): Observable<ProbableWaffleGameFoundEvent> {
@@ -418,13 +416,19 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void> {
-    if (this.gameLocalInstanceId) throw new Error("Game instance already exists");
+    if (this.currentGameInstanceId) throw new Error("Game instance already exists");
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return;
-    const url = environment.api + "api/probable-waffle/request-game-search-for-matchmaking";
+    const url = environment.api + "api/probable-waffle/matchmaking/request-game-search-for-matchmaking";
     const body: RequestGameSearchForMatchMakingDto = {
       mapPoolIds: matchmakingOptions.levels.filter((l) => l.checked).map((l) => l.id),
       factionType: matchmakingOptions.factionType
     };
     await firstValueFrom(this.httpClient.post<void>(url, body));
+  }
+
+  async stopRequestGameSearchForMatchmaking(): Promise<void> {
+    if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return;
+    const url = environment.api + "api/probable-waffle/matchmaking/stop-request-game-search-for-matchmaking";
+    await firstValueFrom(this.httpClient.delete<void>(url, {}));
   }
 }

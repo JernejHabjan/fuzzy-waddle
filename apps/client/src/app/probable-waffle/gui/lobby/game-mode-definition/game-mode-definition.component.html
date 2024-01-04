@@ -1,12 +1,17 @@
-<form>
+<form *ngIf="gameMode && gameMode.map" class="card-container">
   <div class="general-title">Game Setup</div>
   <fieldset>
     <legend>Win Conditions</legend>
     <div class="p-2">
       <label class="form-label" for="timeLimit">Time limit (in minutes)</label>
       <input
-        (ngModelChange)="onValueChange()"
-        [(ngModel)]="gameModeLobby.winConditions.timeLimit"
+        (ngModelChange)="
+          onValueChange('winConditions.timeLimit', {
+            winConditions: { timeLimit: gameMode.winConditions.timeLimit }
+          })
+        "
+        [placeholder]="!gameMode.winConditions.timeLimit ? 'No time limit' : ''"
+        [(ngModel)]="gameMode.winConditions.timeLimit"
         class="mr-1 form-control"
         id="timeLimit"
         name="timeLimit"
@@ -19,8 +24,9 @@
     <div class="p-2">
       <label class="form-label" for="unitCap">Unit cap</label>
       <input
-        (ngModelChange)="onValueChange()"
-        [(ngModel)]="gameModeLobby.mapTuning.unitCap"
+        (ngModelChange)="onValueChange('mapTuning.unitCap', { mapTuning: { unitCap: gameMode.mapTuning.unitCap } })"
+        [placeholder]="!gameMode.mapTuning.unitCap ? 'No unit cap' : ''"
+        [(ngModel)]="gameMode.mapTuning.unitCap"
         class="mr-1 form-control"
         id="unitCap"
         name="unitCap"
@@ -32,8 +38,12 @@
     <legend>Modifiers</legend>
     <div class="p-2">
       <input
-        (ngModelChange)="onValueChange()"
-        [(ngModel)]="gameModeLobby.difficultyModifiers.aiAdvantageResources"
+        (ngModelChange)="
+          onValueChange('difficultyModifiers.aiAdvantageResources', {
+            difficultyModifiers: { aiAdvantageResources: gameMode.difficultyModifiers.aiAdvantageResources }
+          })
+        "
+        [(ngModel)]="gameMode.difficultyModifiers.aiAdvantageResources"
         class="mr-1 form-check-input"
         id="aiAdvantageResources"
         name="additionalResources"
@@ -43,8 +53,12 @@
     </div>
     <div class="p-2">
       <input
-        (ngModelChange)="onValueChange()"
-        [(ngModel)]="gameModeLobby.difficultyModifiers.reducedIncome"
+        (ngModelChange)="
+          onValueChange('difficultyModifiers.reducedIncome', {
+            difficultyModifiers: { reducedIncome: gameMode.difficultyModifiers.reducedIncome }
+          })
+        "
+        [(ngModel)]="gameMode.difficultyModifiers.reducedIncome"
         class="mr-1 form-check-input"
         id="reducedIncome"
         name="reducedIncome"

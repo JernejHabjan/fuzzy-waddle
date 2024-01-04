@@ -4,10 +4,10 @@ import { SceneCommunicatorClientService } from "./scene-communicator-client.serv
 import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 
 export const SceneCommunicatorClientServiceStub = {
-  startListeningToEvents() {
+  createCommunicators() {
     //
   },
-  stopListeningToEvents() {
+  destroyCommunicators() {
     //
   }
 } satisfies SceneCommunicatorClientServiceInterface;

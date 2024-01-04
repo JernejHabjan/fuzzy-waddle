@@ -3,14 +3,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { PlayerDefinitionComponent } from "./player-definition.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { FormsModule } from "@angular/forms";
-import { Component, Input } from "@angular/core";
-import { MapPlayerDefinition } from "../map-player-definition";
+import { Component } from "@angular/core";
 
 @Component({ selector: "probable-waffle-player-definition", template: "" })
-export class PlayerDefinitionTestingComponent {
-  @Input({ required: true }) selectedMap?: MapPlayerDefinition;
-  @Input({ required: true }) allowOpenSlotForMp?: boolean;
-}
+export class PlayerDefinitionTestingComponent {}
 
 describe("PlayerDefinitionComponent", () => {
   let component: PlayerDefinitionComponent;

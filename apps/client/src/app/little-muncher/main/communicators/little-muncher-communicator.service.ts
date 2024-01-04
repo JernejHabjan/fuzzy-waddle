@@ -5,6 +5,7 @@ import {
   LittleMuncherCommunicatorPauseEvent,
   LittleMuncherCommunicatorResetEvent,
   LittleMuncherCommunicatorScoreEvent,
+  LittleMuncherCommunicatorType,
   LittleMuncherGatewayEvent,
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
@@ -14,38 +15,38 @@ import { TwoWayCommunicator } from "../../../shared/game/communicators/two-way-c
   providedIn: "root"
 })
 export class LittleMuncherCommunicatorService implements OnDestroy {
-  move?: TwoWayCommunicator<LittleMuncherPosition>;
-  score?: TwoWayCommunicator<LittleMuncherCommunicatorScoreEvent>;
-  timeClimbing?: TwoWayCommunicator<LittleMuncherCommunicatorClimbingEvent>;
-  pause?: TwoWayCommunicator<LittleMuncherCommunicatorPauseEvent>;
-  reset?: TwoWayCommunicator<LittleMuncherCommunicatorResetEvent>;
+  move?: TwoWayCommunicator<LittleMuncherPosition, LittleMuncherCommunicatorType>;
+  score?: TwoWayCommunicator<LittleMuncherCommunicatorScoreEvent, LittleMuncherCommunicatorType>;
+  timeClimbing?: TwoWayCommunicator<LittleMuncherCommunicatorClimbingEvent, LittleMuncherCommunicatorType>;
+  pause?: TwoWayCommunicator<LittleMuncherCommunicatorPauseEvent, LittleMuncherCommunicatorType>;
+  reset?: TwoWayCommunicator<LittleMuncherCommunicatorResetEvent, LittleMuncherCommunicatorType>;
 
   startCommunication(gameInstanceId: string, socket?: Socket) {
-    this.move = new TwoWayCommunicator<LittleMuncherPosition>(
+    this.move = new TwoWayCommunicator<LittleMuncherPosition, LittleMuncherCommunicatorType>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       "move",
       gameInstanceId,
       socket
     );
-    this.score = new TwoWayCommunicator<LittleMuncherCommunicatorScoreEvent>(
+    this.score = new TwoWayCommunicator<LittleMuncherCommunicatorScoreEvent, LittleMuncherCommunicatorType>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       "score",
       gameInstanceId,
       socket
     );
-    this.timeClimbing = new TwoWayCommunicator<LittleMuncherCommunicatorClimbingEvent>(
+    this.timeClimbing = new TwoWayCommunicator<LittleMuncherCommunicatorClimbingEvent, LittleMuncherCommunicatorType>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       "timeClimbing",
       gameInstanceId,
       socket
     );
-    this.pause = new TwoWayCommunicator<LittleMuncherCommunicatorPauseEvent>(
+    this.pause = new TwoWayCommunicator<LittleMuncherCommunicatorPauseEvent, LittleMuncherCommunicatorType>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       "pause",
       gameInstanceId,
       socket
     );
-    this.reset = new TwoWayCommunicator<LittleMuncherCommunicatorResetEvent>(
+    this.reset = new TwoWayCommunicator<LittleMuncherCommunicatorResetEvent, LittleMuncherCommunicatorType>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       "reset",
       gameInstanceId,

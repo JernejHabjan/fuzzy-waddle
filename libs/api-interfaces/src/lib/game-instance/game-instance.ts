@@ -54,7 +54,7 @@ export abstract class GameInstance<
   TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>
 > {
   gameMode: TGameMode | null = null;
-  gameInstanceMetadata: TGameInstanceMetadata | null = null;
+  gameInstanceMetadata: TGameInstanceMetadata;
   gameState: TGameState | null = null;
   players: TPlayer[] = [];
   spectators: TSpectator[] = [];
@@ -79,8 +79,10 @@ export abstract class GameInstance<
     >
   ) {
     this.gameInstanceMetadata = new constructors.gameInstanceMetadata(gameInstanceData?.gameInstanceMetadataData);
-    this.gameMode = new constructors.gameMode(gameInstanceData?.gameModeData);
-    this.gameState = new constructors.gameState(gameInstanceData?.gameStateData);
+    this.gameMode = gameInstanceData?.gameModeData ? new constructors.gameMode(gameInstanceData?.gameModeData) : null;
+    this.gameState = gameInstanceData?.gameStateData
+      ? new constructors.gameState(gameInstanceData?.gameStateData)
+      : null;
     this.players =
       gameInstanceData?.players?.map(
         (playerData) =>
@@ -112,7 +114,10 @@ export abstract class GameInstance<
     };
   }
 
-  initPlayer(playerStateData: TPlayerStateData, playerControllerData: TPlayerControllerData): TPlayer {
+  initPlayer(
+    playerControllerData: TPlayerControllerData,
+    playerStateData: TPlayerStateData | undefined = undefined
+  ): TPlayer {
     const playerState = new this.constructors.playerState(playerStateData);
     const playerController = new this.constructors.playerController(playerControllerData);
     return new this.constructors.player(playerState, playerController);
@@ -126,8 +131,12 @@ export abstract class GameInstance<
     this.spectators = this.spectators.filter((s) => s.data.userId !== userId);
   }
 
-  removePlayer(userId: string) {
+  removePlayerByUserId(userId: string) {
     this.players = this.players.filter((p) => p.playerController.data.userId !== userId);
+  }
+
+  removePlayerByPlayer(player: TPlayer) {
+    this.players = this.players.filter((p) => p !== player);
   }
 
   addPlayer(player: TPlayer) {

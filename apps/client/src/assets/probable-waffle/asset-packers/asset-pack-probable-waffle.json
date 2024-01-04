@@ -324,6 +324,17 @@
                 "key": "slingshot_female_walk"
             },
             {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/units.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "units"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/anims/units.json",
+                "type": "animation",
+                "key": "units_1"
+            },
+            {
                 "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",
                 "path": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",
                 "type": "animation",

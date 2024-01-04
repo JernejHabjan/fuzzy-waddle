@@ -1,6 +1,6 @@
-import { Component, Output } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { ProbableWaffleGameModeLobby } from "@fuzzy-waddle/api-interfaces";
+import { Component, inject } from "@angular/core";
+import { ProbableWaffleDataChangeEventProperty, ProbableWaffleGameModeData } from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",
@@ -8,16 +8,17 @@ import { ProbableWaffleGameModeLobby } from "@fuzzy-waddle/api-interfaces";
   styleUrls: ["./game-mode-definition.component.scss"]
 })
 export class GameModeDefinitionComponent {
-  gameModeLobby: ProbableWaffleGameModeLobby;
-  @Output() gameModeLobbyChange;
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
-  constructor() {
-    this.gameModeLobby = new ProbableWaffleGameModeLobby();
-    this.gameModeLobbyChange = new BehaviorSubject<ProbableWaffleGameModeLobby>(this.gameModeLobby);
+  protected async onValueChange(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
+    data: Partial<ProbableWaffleGameModeData>
+  ): Promise<void> {
+    console.log("game mode changed", property, data);
+    await this.gameInstanceClientService.gameModeChanged(property, data);
   }
 
-  onValueChange() {
-    console.log("game setup changed");
-    this.gameModeLobbyChange.next(this.gameModeLobby);
+  protected get gameMode(): ProbableWaffleGameModeData | undefined {
+    return this.gameInstanceClientService.gameInstance?.gameMode?.data;
   }
 }

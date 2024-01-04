@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
 import { Router } from "@angular/router";
 
 @Component({
@@ -14,22 +14,19 @@ export class HostComponent {
 
   protected gameModeLobby: {
     lobbyName: string;
-    visibility: "public" | "private";
-    setPassword: string;
+    visibility: ProbableWaffleGameInstanceVisibility;
   } = {
     lobbyName: "",
-    visibility: "public",
-    setPassword: ""
+    visibility: ProbableWaffleGameInstanceVisibility.Public
   };
 
   protected async createLobby() {
-    console.warn("todo use game mode lobby here"); // todo use game mode lobby here
-
     await this.gameInstanceClientService.createGameInstance(
-      this.gameModeLobby.visibility === "public", // todo?
+      this.gameModeLobby.lobbyName,
+      this.gameModeLobby.visibility,
       ProbableWaffleGameInstanceType.SelfHosted
     );
     await this.gameInstanceClientService.addSelfAsPlayer();
-    await this.router.navigate(["probable-waffle/lobby"]);
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 }

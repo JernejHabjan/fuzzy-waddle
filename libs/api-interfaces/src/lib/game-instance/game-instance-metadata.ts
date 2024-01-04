@@ -7,7 +7,6 @@ export interface GameInstanceMetadataData {
   createdBy: string | null;
   updatedOn?: Date;
   sessionState?: GameSessionState;
-  joinable?: boolean;
 }
 
 export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataData = GameInstanceMetadataData> {
@@ -19,7 +18,6 @@ export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataDat
     this.data.createdOn ??= new Date();
     this.data.sessionState ??= GameSessionState.NotStarted;
     this.data.updatedOn ??= new Date();
-    this.data.joinable ??= false;
   }
 
   resetData() {

@@ -99,7 +99,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
     return {
       gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
-      gameMode: gameInstance.gameMode
+      gameModeData: gameInstance.gameMode
     };
   }
 

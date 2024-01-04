@@ -36,8 +36,8 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.roomsService.destroy();
   }
+
   protected canAddSelfAsPlayer(): boolean {
-    // check if the selected room is joinable by checking if player type is NetworkOpen
     if (!this.selectedRoom) return false;
     return this.selectedRoom.players.some(
       (player) => player.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen
@@ -50,16 +50,18 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected async addSelfAsPlayer() {
     if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
-    await this.gameInstanceClientService.joinToLobbyAsPlayer(this.selectedRoom.gameInstanceMetadataData.gameInstanceId);
-    await this.router.navigate(["probable-waffle/lobby"]);
+    await this.gameInstanceClientService.joinGameInstanceAsPlayer(
+      this.selectedRoom.gameInstanceMetadataData.gameInstanceId
+    );
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 
   protected async addSelfAsSpectator() {
     if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
-    await this.gameInstanceClientService.joinToLobbyAsSpectator(
+    await this.gameInstanceClientService.joinGameInstanceAsSpectator(
       this.selectedRoom.gameInstanceMetadataData.gameInstanceId
     );
-    await this.router.navigate(["probable-waffle/lobby"]);
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
 
   protected select(room: ProbableWaffleRoom) {
@@ -77,7 +79,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected get mapInfo(): null | ProbableWaffleMapData {
     if (!this.selectedRoom) return null;
-    return this.mapInfoOfMap(this.selectedRoom.gameMode.data.map);
+    return this.mapInfoOfMap(this.selectedRoom.gameModeData?.map);
   }
 
   protected mapInfoOfMap(map?: ProbableWaffleMapEnum): null | ProbableWaffleMapData {

@@ -1,85 +1,90 @@
-<div *ngIf="selectedMap" class="start-position-container">
+<div *ngIf="map" class="card-container start-position-container">
   <div class="general-title">Players</div>
 
   <div class="player-rows">
-    <div *ngFor="let position of selectedMap.allPlayerPositions" class="start-position-row">
-      <ng-container *ngIf="position.player.playerPosition !== null">
-        <div [style.background-color]="position.playerColor" class="color-box"></div>
-        <div class="p-2">
-          <label class="form-label" for="playerName">Player:</label>
-          <div id="playerName">
-            {{
-              position.player.playerNumber + 1 + (position.player.playerName ? " - " + position.player.playerName : "")
-            }}
-          </div>
+    <div *ngFor="let player of players" class="start-position-row">
+      <div [style.background-color]="getColorForPlayer(player)" class="color-box"></div>
+      <div class="p-2">
+        <label class="form-label" for="playerName">Player:</label>
+        <div id="playerName">
+          {{ getPlayerName(player) }}
         </div>
-        <div class="p-2">
-          <label class="form-label" for="factionTypes">Faction:</label>
-          <select [(ngModel)]="position.factionType" class="form-select" id="factionTypes">
-            <option [ngValue]="null">Random</option>
-            <option
-              *ngFor="let factionTypeType of FactionDefinitions.factions"
-              [ngValue]="factionTypeType.value.factionType"
-            >
-              {{ factionTypeType.value.name }}
-            </option>
-          </select>
+      </div>
+      <div class="p-2">
+        <label class="form-label" for="factionTypes">Faction:</label>
+        <select
+          (ngModelChange)="changeFaction(player)"
+          [(ngModel)]="definition(player).factionType"
+          class="form-select"
+          id="factionTypes"
+        >
+          <option [ngValue]="undefined">Random</option>
+          <option
+            *ngFor="let factionTypeType of FactionDefinitions.factions"
+            [ngValue]="factionTypeType.value.factionType"
+          >
+            {{ factionTypeType.value.name }}
+          </option>
+        </select>
+      </div>
+      <div class="p-2">
+        <label class="form-label" for="playerType">Type:</label>
+        <div id="playerType">
+          {{ PlayerTypeDefinitions.playerTypeLookup[definition(player).playerType] }}
+          @if (definition(player).playerType === PlayerType.NetworkOpen) {
+          <fa-icon [icon]="faSpinner" animation="spin" />
+          }
         </div>
-        <div class="p-2">
-          <label class="form-label" for="playerType">Type:</label>
-          <div id="playerType">
-            {{ PlayerTypeDefinitions.playerTypeLookup[position.playerType] }}
-            @if (position.playerType === PlayerType.NetworkOpen) {
-            <fa-icon [icon]="faSpinner" animation="spin" />
-            }
-          </div>
-        </div>
+      </div>
 
-        <div class="p-2" style="margin-left: 10px">
-          <label class="form-label" for="team">Team:</label>
-          <select [(ngModel)]="position.team" class="form-select" id="team">
-            <option *ngFor="let team of selectedMap.allTeams" [ngValue]="team">
-              {{ team === null ? "No team" : team + 1 }}
-            </option>
-          </select>
-        </div>
+      @if(teams.length){
+      <div class="p-2" style="margin-left: 10px">
+        <label class="form-label" for="team">Team:</label>
+        <select
+          (ngModelChange)="changeTeam(player)"
+          [(ngModel)]="definition(player).team"
+          class="form-select"
+          id="team"
+        >
+          <option *ngFor="let team of teams" [ngValue]="team">
+            {{ team === undefined ? "No team" : team + 1 }}
+          </option>
+        </select>
+      </div>
+      }
+      <div *ngIf="definition(player).playerType === PlayerType.AI" class="p-2">
+        <label class="form-label" for="difficulty">Difficulty:</label>
+        <select
+          (ngModelChange)="changeDifficulty(player)"
+          [(ngModel)]="definition(player).difficulty"
+          class="form-select"
+          id="difficulty"
+        >
+          <option *ngFor="let difficulty of DifficultyDefinitions.difficulties" [ngValue]="difficulty.value">
+            {{ difficulty.name }}
+          </option>
+        </select>
+      </div>
 
-        <div *ngIf="position.playerType === PlayerType.AI" class="p-2">
-          <label class="form-label" for="difficulty">Difficulty:</label>
-          <select [(ngModel)]="position.difficulty" class="form-select" id="difficulty">
-            <option *ngFor="let difficulty of DifficultyDefinitions.difficulties" [ngValue]="difficulty.value">
-              {{ difficulty.name }}
-            </option>
-          </select>
-        </div>
-
-        <div class="p-2" style="margin-left: 10px">
-          <div class="form-label">&nbsp;</div>
-          <button
-            (click)="removePlayer(position.player.playerNumber)"
-            *ngIf="position.player.playerNumber !== 0"
-            aria-label="Close"
-            class="btn-close"
-            type="button"
-          ></button>
-        </div>
-      </ng-container>
+      <div class="p-2" style="margin-left: 10px">
+        <div class="form-label">&nbsp;</div>
+        <button
+          (click)="removePlayer(definition(player).player.playerNumber)"
+          *ngIf="!getPlayerIsCreator(player) && !getPlayerIsCurrentPlayer(player)"
+          aria-label="Close"
+          class="btn-close"
+          type="button"
+        ></button>
+      </div>
     </div>
   </div>
   <button
-    (click)="openMpSlot(selectedMap.playerPositions.length)"
-    *ngIf="allowOpenSlotForMp && selectedMap.playerPositions.length !== selectedMap.allPlayerPositions.length"
+    (click)="openMpSlot()"
+    *ngIf="allowOpenSlotForMp && !allFilled"
     class="btn btn-primary mt-4 me-4"
     type="button"
   >
     Open slot for MP
   </button>
-  <button
-    (click)="addAiPlayer(selectedMap.playerPositions.length)"
-    *ngIf="selectedMap.playerPositions.length !== selectedMap.allPlayerPositions.length"
-    class="btn btn-primary mt-4"
-    type="button"
-  >
-    Add A.I. player
-  </button>
+  <button (click)="addAiPlayer()" *ngIf="!allFilled" class="btn btn-primary mt-4" type="button">Add A.I. player</button>
 </div>

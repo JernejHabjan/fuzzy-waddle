@@ -49,13 +49,11 @@ export enum ProbableWaffleAiDifficulty {
   Hard = 2
 }
 
-export class PlayerLobbyDefinition {
-  constructor(
-    public playerNumber: number,
-    public playerName: string | null,
-    public playerPosition: number | null,
-    public joined: boolean
-  ) {}
+export interface PlayerLobbyDefinition {
+  playerNumber: number;
+  playerName?: string;
+  playerPosition?: number;
+  joined: boolean;
 }
 
 export enum FactionType {
@@ -63,13 +61,10 @@ export enum FactionType {
   Skaduwee
 }
 
-export class PositionPlayerDefinition {
-  constructor(
-    public player: PlayerLobbyDefinition,
-    public team: number | null = null,
-    public factionType: FactionType | null = null,
-    public playerType: ProbableWafflePlayerType,
-    public playerColor: string,
-    public difficulty: ProbableWaffleAiDifficulty | null
-  ) {}
+export interface PositionPlayerDefinition {
+  player: PlayerLobbyDefinition;
+  team?: number;
+  factionType?: FactionType;
+  playerType: ProbableWafflePlayerType;
+  difficulty?: ProbableWaffleAiDifficulty;
 }

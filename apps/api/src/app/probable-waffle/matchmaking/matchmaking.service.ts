@@ -3,26 +3,30 @@ import {
   DifficultyModifiers,
   FactionType,
   GameSessionState,
+  GameSetupHelpers,
   MapTuning,
   PendingMatchmakingGameInstance,
+  PlayerLobbyDefinition,
   PositionPlayerDefinition,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,
+  ProbableWaffleGameStateData,
   ProbableWaffleLevels,
   ProbableWaffleMapEnum,
   ProbableWafflePlayerControllerData,
-  ProbableWafflePlayerStateData,
   ProbableWafflePlayerType,
   RequestGameSearchForMatchMakingDto,
   WinConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { GameInstanceService } from "../game-instance.service";
-import { GameInstanceGateway } from "../game-instance.gateway";
 import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
+import { GameInstanceService } from "../game-instance/game-instance.service";
+import { RoomServerService } from "../game-room/room-server.service";
+import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
 
 @Injectable()
 export class MatchmakingService implements MatchmakingServiceInterface {
@@ -30,6 +34,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
   constructor(
     private readonly gameInstanceService: GameInstanceService,
+    private readonly roomServerService: RoomServerService,
     private readonly gameInstanceGateway: GameInstanceGateway
   ) {}
   /**
@@ -47,7 +52,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
-        // todo needed? this.gameInstanceGateway.emitRoom(this.getRoomEvent(gi, "removed"));
+        this.roomServerService.roomEvent("removed", gi.gameInstance, null);
         console.log("Probable Waffle - Cron - Pending matchmaking instance removed");
       }
       return !isOld;
@@ -64,22 +69,20 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     }
   }
 
-  private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance) {
+  private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance, user: User) {
+    const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) =>
         gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !==
         gameInstance.gameInstanceMetadata.data.gameInstanceId
     );
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.EnteringMap;
-    this.gameInstanceService.addGameInstance(gameInstance);
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.Starting;
     this.gameInstanceGateway.emitGameFound({
       userIds: gameInstance.players.map((p) => p.playerController.data.userId),
-      gameInstanceId: gameInstance.gameInstanceMetadata.data.gameInstanceId
+      gameInstanceId
     });
-    console.log(
-      "Probable Waffle - Matchmaking game fully loaded",
-      gameInstance.gameInstanceMetadata.data.gameInstanceId
-    );
+    this.roomServerService.roomEvent("game_instance_metadata", gameInstance, user);
+    console.log("Probable Waffle - Matchmaking game fully loaded", gameInstanceId);
   }
 
   private async joinGameInstanceForMatchmaking(
@@ -88,36 +91,50 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     user: User
   ) {
     const gameInstance = pendingMatchmakingGameInstance.gameInstance;
-    // join it
+    // PLAYER:
     const player = this.getNewPlayer(gameInstance, user.id, matchMakingDto.factionType);
-    gameInstance.players.push(player);
+    gameInstance.addPlayer(player);
+    this.roomServerService.roomEvent("player.joined", gameInstance, user);
 
+    // GAME MODE
     const mapPoolIds = pendingMatchmakingGameInstance.commonMapPoolIds;
     const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)];
-    gameInstance.gameMode = this.getNewGameMode(randomMapId);
+    gameInstance.gameMode = this.getNewMatchmakingGameMode(randomMapId);
+    this.roomServerService.roomEvent("game_mode", gameInstance, user);
 
     // emit game found event when all players have joined
-    const maxPlayers = gameInstance.gameMode.data.maxPlayers;
+    const maxPlayers = ProbableWaffleLevels[randomMapId].mapInfo.startPositionsOnTile.length;
     if (gameInstance.players.length === maxPlayers) {
-      this.promoteGameInstanceToLoaded(gameInstance);
+      // GAME METADATA
+      this.promoteGameInstanceToLoaded(gameInstance, user);
     }
   }
   private createGameInstanceForMatchmaking(matchMakingDto: RequestGameSearchForMatchMakingDto, user: User) {
     // create new one
     const newGameInstance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: {
+        name: "Matchmaking",
         createdBy: user.id,
         type: ProbableWaffleGameInstanceType.Matchmaking,
-        joinable: true
-      }
+        visibility: ProbableWaffleGameInstanceVisibility.Public
+      },
+      gameModeData: {
+        winConditions: {} satisfies WinConditions,
+        mapTuning: {} satisfies MapTuning,
+        difficultyModifiers: {} satisfies DifficultyModifiers
+      } satisfies ProbableWaffleGameModeData,
+      gameStateData: {} as ProbableWaffleGameStateData
     });
 
     const player = this.getNewPlayer(newGameInstance, user.id, matchMakingDto.factionType);
-    newGameInstance.players.push(player);
+    newGameInstance.addPlayer(player);
+
     this.pendingMatchmakingGameInstances.push({
       gameInstance: newGameInstance,
       commonMapPoolIds: matchMakingDto.mapPoolIds
     });
+    this.gameInstanceService.addGameInstance(newGameInstance, user);
+
     console.log("Probable Waffle - Game instance created for matchmaking", this.pendingMatchmakingGameInstances.length);
   }
 
@@ -149,39 +166,70 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     return foundGameInstanceWithCommonMap ?? null;
   }
 
-  getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
+  private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
     const allFactions = Object.values(FactionType);
     const randomFactionType = allFactions[Math.floor(Math.random() * allFactions.length)] as FactionType;
 
-    const playerDefinition = new PositionPlayerDefinition(
-      this.gameInstanceService.getPlayerLobbyDefinitionForNewPlayer(gameInstance),
-      null,
-      factionType ?? randomFactionType,
-      ProbableWafflePlayerType.Human,
-      this.gameInstanceService.getPlayerColorForNewPlayer(gameInstance),
-      null
-    );
-    const player = gameInstance.initPlayer(
-      {
-        scoreProbableWaffle: 0
-      } satisfies ProbableWafflePlayerStateData,
-      {
-        userId,
-        playerDefinition
-      } satisfies ProbableWafflePlayerControllerData
-    );
+    const playerDefinition = {
+      player: {
+        playerNumber: gameInstance.players.length,
+        playerName: "Player " + (gameInstance.players.length + 1),
+        playerPosition: gameInstance.players.length,
+        joined: true
+      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      factionType: factionType ?? randomFactionType,
+      playerType: ProbableWafflePlayerType.Human
+    } satisfies PositionPlayerDefinition;
+    // noinspection UnnecessaryLocalVariableJS
+    const player = gameInstance.initPlayer({
+      userId,
+      playerDefinition
+    } satisfies ProbableWafflePlayerControllerData);
     return player;
   }
 
-  getNewGameMode(mapId: ProbableWaffleMapEnum): ProbableWaffleGameMode {
-    const mapData = ProbableWaffleLevels[mapId];
+  private getNewMatchmakingGameMode(mapId: ProbableWaffleMapEnum): ProbableWaffleGameMode {
     const gameModeData = {
       map: mapId,
-      maxPlayers: mapData.mapInfo.startPositionsOnTile.length,
-      difficultyModifiers: new DifficultyModifiers(),
-      winConditions: new WinConditions(),
-      mapTuning: new MapTuning()
+      difficultyModifiers: {} satisfies DifficultyModifiers,
+      winConditions: {
+        timeLimit: 60
+      } satisfies WinConditions,
+      mapTuning: {
+        unitCap: 20
+      } satisfies MapTuning
     } satisfies ProbableWaffleGameModeData;
     return new ProbableWaffleGameMode(gameModeData);
+  }
+
+  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
+    // remove self as player from pending matchmaking game instances
+    // if game instance has no players left, then remove it
+    const pendingMatchMakingGameInstance = this.pendingMatchmakingGameInstances.find((gi) =>
+      gi.gameInstance.players.some((p) => p.playerController.data.userId === user.id)
+    );
+    if (!pendingMatchMakingGameInstance) return;
+    const gameInstanceId = pendingMatchMakingGameInstance.gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    const player = pendingMatchMakingGameInstance.gameInstance.players.find(
+      (p) => p.playerController.data.userId === user.id
+    );
+    if (!player) return;
+
+    this.roomServerService.roomEvent("player.left", pendingMatchMakingGameInstance.gameInstance, user);
+    pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
+      (p) => p.playerController.data.userId !== user.id
+    );
+    console.log("Probable Waffle - Player left pending matchmaking instance", user.id);
+
+    if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
+      this.removePendingMatchmakingGameInstance(gameInstanceId);
+      this.gameInstanceService.stopGameInstance(gameInstanceId, user);
+    }
+  }
+
+  private removePendingMatchmakingGameInstance(gameInstanceId: string) {
+    this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
+      (gi) => gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !== gameInstanceId
+    );
   }
 }

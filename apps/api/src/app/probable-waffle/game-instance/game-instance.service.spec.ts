@@ -2,23 +2,20 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { GameInstanceService } from "./game-instance.service";
 import {
   GameInstanceDataDto,
-  PlayerAction,
+  ProbableWaffleAddPlayerDto,
+  ProbableWaffleAddSpectatorDto,
+  ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerEvent,
-  ProbableWaffleRoom,
-  ProbableWaffleRoomEvent,
-  ProbableWaffleSpectator,
-  ProbableWaffleSpectatorEvent,
-  ProbableWaffleStartLevelDto,
-  RoomAction,
-  SpectatorAction
+  ProbableWafflePlayerLeftDto,
+  ProbableWaffleStartLevelDto
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { User } from "../../../users/users.service";
-import { GameInstanceGateway, GameInstanceGatewayStub } from "./game-instance.gateway";
+import { GameInstanceGateway } from "./game-instance.gateway";
+import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
+import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
@@ -27,24 +24,8 @@ export const GameInstanceServiceStub = {
   createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
     //
   },
-  stopGameInstance(body: GameInstanceDataDto, user: User) {
-    //
-  },
-  getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom {
-    return undefined;
-  },
-  getRoomEvent(gameInstance: ProbableWaffleGameInstance, action: RoomAction): ProbableWaffleRoomEvent {
-    return undefined;
-  },
-  getSpectatorEvent(
-    spectator: ProbableWaffleSpectator,
-    gameInstanceId: string,
-    action: SpectatorAction
-  ): ProbableWaffleSpectatorEvent {
-    return undefined;
-  },
-  getJoinableRooms(user: User): Promise<ProbableWaffleRoom[]> {
-    return undefined;
+  getPlayerColorForNewPlayer(gameInstance: ProbableWaffleGameInstance): string {
+    return "hsl(0, 0%, 0%)";
   },
   joinRoom(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData> {
     return undefined;
@@ -55,15 +36,26 @@ export const GameInstanceServiceStub = {
   startLevel(body: ProbableWaffleStartLevelDto, user: User) {
     //
   },
-  stopLevel(body: GameInstanceDataDto, user: User) {
-    //
-  },
-  getPlayerEvent(
-    player: ProbableWafflePlayer,
-    gameInstanceId: string,
-    action: PlayerAction
-  ): ProbableWafflePlayerEvent {
+  async changeGameMode(user: User, body: ProbableWaffleChangeGameModeDto): Promise<void> {
     return undefined;
+  },
+  async openPlayerSlot(body: ProbableWaffleAddPlayerDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async playerLeft(body: ProbableWafflePlayerLeftDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async addPlayer(body: ProbableWaffleAddPlayerDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async addSpectator(body: ProbableWaffleAddSpectatorDto, user: User): Promise<void> {
+    return undefined;
+  },
+  async getGameInstance(gameInstanceId: string, user: User): Promise<ProbableWaffleGameInstanceData | null> {
+    return undefined;
+  },
+  async stopGameInstance(gameInstanceId: string, user: User) {
+    //
   }
 } satisfies GameInstanceServiceInterface;
 
@@ -77,7 +69,8 @@ describe("GameInstanceService", () => {
         {
           provide: GameInstanceGateway,
           useValue: GameInstanceGatewayStub
-        }
+        },
+        TextSanitizationService
       ]
     }).compile();
 

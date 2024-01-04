@@ -4,9 +4,8 @@ import { AuthUser } from "@supabase/supabase-js";
 import { UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../auth/guards/supabase-auth.guard";
 import { ChatService } from "../chat/chat.service";
-import { Server } from "net";
 import { ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
-import { MyConnectedSocket } from "../little-muncher/game-instance/game-state.gateway";
+import { Server, Socket } from "socket.io";
 
 @WebSocketGateway({
   cors: {
@@ -14,27 +13,22 @@ import { MyConnectedSocket } from "../little-muncher/game-instance/game-state.ga
   }
 })
 export class ChatGateway {
-  @WebSocketServer()
-  private server: Server;
+  @WebSocketServer() private readonly server: Server;
 
   constructor(private readonly chatService: ChatService) {}
-  // @SubscribeMessage(GatewayEvent.CHAT_MESSAGE)
-  // findAll(@MessageBody() data: ChatMessage): Observable<WsResponse<ChatMessage>> {
-  //   return from([data]).pipe(map(item => ({ event: GatewayEvent.CHAT_MESSAGE, data: item })));
-  // }
-
   //subscribe to chat message and broadcast to all clients
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(GatewayChatEvent.CHAT_MESSAGE)
   async broadcastMessage(
     @CurrentUser() user: AuthUser,
     @MessageBody() payload: ChatMessage,
-    @ConnectedSocket() client: MyConnectedSocket
+    @ConnectedSocket() socket: Socket
   ) {
     // clone the payload
     const newPayload = { ...payload };
 
     // post to supabase
+    // noinspection UnnecessaryLocalVariableJS
     const sanitizedMessage = await this.chatService.postMessage(newPayload.text, user); // todo for demo
     newPayload.text = sanitizedMessage;
 
