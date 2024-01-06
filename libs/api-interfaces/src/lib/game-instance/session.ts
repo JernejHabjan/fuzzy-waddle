@@ -3,7 +3,6 @@ export enum GameSessionState {
   MovingPlayersToGame,
   StartingTheGame,
   InProgress,
-  EnteringScoreScreen,
-  InScoreScreen,
+  ToScoreScreen,
   Stopped
 }

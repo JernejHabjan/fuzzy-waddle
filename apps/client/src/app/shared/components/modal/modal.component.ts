@@ -1,11 +1,14 @@
 import { Component, inject, Injectable, Input, TemplateRef, ViewChild } from "@angular/core";
 import { ModalConfig } from "./modal-config";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "fuzzy-waddle-modal",
   templateUrl: "./modal.component.html",
-  styleUrls: ["./modal.component.scss"]
+  styleUrls: ["./modal.component.scss"],
+  standalone: true,
+  imports: [CommonModule]
 })
 @Injectable()
 export class ModalComponent {

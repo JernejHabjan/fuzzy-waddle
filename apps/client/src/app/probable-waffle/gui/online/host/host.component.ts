@@ -2,11 +2,15 @@ import { Component, inject } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
 import { Router } from "@angular/router";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "probable-waffle-host",
   templateUrl: "./host.component.html",
-  styleUrls: ["./host.component.scss"]
+  styleUrls: ["./host.component.scss"],
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class HostComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);

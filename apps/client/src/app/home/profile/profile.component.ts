@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { AuthService } from "../../auth/auth.service";
 import { UserInstanceService } from "./user-instance.service";
+import { CommonModule } from "@angular/common";
+import { ProfileNavComponent } from "./profile-nav/profile-nav.component";
 
 @Component({
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [CommonModule, ProfileNavComponent]
 })
 export class ProfileComponent {
   protected readonly authService = inject(AuthService);

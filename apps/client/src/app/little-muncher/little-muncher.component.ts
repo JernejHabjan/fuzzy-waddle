@@ -5,10 +5,17 @@ import { SpectateService } from "./home/spectate/spectate.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "./main/communicators/game-instance-client.service";
 import { UserInstanceService } from "../home/profile/user-instance.service";
+import { CommonModule } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { HomeComponent } from "./home/home.component";
+import { MainComponent } from "./main/main.component";
+import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   templateUrl: "./little-muncher.component.html",
-  styleUrls: ["./little-muncher.component.scss"]
+  styleUrls: ["./little-muncher.component.scss"],
+  standalone: true,
+  imports: [CommonModule, FaIconComponent, HomeComponent, MainComponent, NgbToast]
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;

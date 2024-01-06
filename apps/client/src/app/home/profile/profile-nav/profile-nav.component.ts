@@ -1,11 +1,15 @@
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../../../auth/auth.service";
+import { CommonModule } from "@angular/common";
+import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 
 @Component({
   selector: "fuzzy-waddle-profile-nav",
   templateUrl: "./profile-nav.component.html",
-  styleUrls: ["./profile-nav.component.scss"]
+  styleUrls: ["./profile-nav.component.scss"],
+  standalone: true,
+  imports: [CommonModule, HomeNavComponent]
 })
 export class ProfileNavComponent {
   protected readonly authService = inject(AuthService);

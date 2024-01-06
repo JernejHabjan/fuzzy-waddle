@@ -102,6 +102,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               case GameSessionState.MovingPlayersToGame:
                 await this.router.navigate(["probable-waffle/game"]);
                 break;
+              case GameSessionState.ToScoreScreen:
+                await this.router.navigate(["probable-waffle/score-screen"]);
+                break;
               case GameSessionState.Stopped:
                 this.stopListeningToGameInstanceEvents();
                 this.gameInstance = undefined;

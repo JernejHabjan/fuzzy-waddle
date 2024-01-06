@@ -1,11 +1,14 @@
 import { Component, inject } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ProbableWaffleLevels, ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "probable-waffle-map-selector",
   templateUrl: "./map-selector.component.html",
-  styleUrls: ["./map-selector.component.scss"]
+  styleUrls: ["./map-selector.component.scss"],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class MapSelectorComponent {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);

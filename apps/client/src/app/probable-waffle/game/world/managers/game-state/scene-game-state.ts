@@ -61,13 +61,9 @@ export class SceneGameState {
       case GameSessionState.InProgress:
         this.scene.scene.resume();
         break;
-      case GameSessionState.EnteringScoreScreen:
-        // change scene
-        const newSceneKey = "ScoreScreen";
+      case GameSessionState.ToScoreScreen:
         this.scene.scene.stop();
-        this.scene.scene.start(newSceneKey);
         break;
-      case GameSessionState.InScoreScreen:
       case GameSessionState.Stopped:
         throw new Error("HUD should be destroyed at this point");
     }

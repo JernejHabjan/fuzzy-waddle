@@ -4,22 +4,17 @@ import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { HomeModule } from "./home/home.module";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AuthGuard } from "./auth/auth.guard";
 import { SocketIoModule } from "ngx-socket-io";
 import { environment } from "../environments/environment";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { ComponentsModule } from "./shared/components/components.module";
 import { AccessTokenInterceptor } from "./auth/access-token.interceptor";
-import { LoaderComponent } from "./shared/loader/loader.component";
+import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
-    HomeModule,
     // app routing module must be included last, as it contains the wildcard route
     AppRoutingModule,
     ServiceWorkerModule.register("ngsw-worker.js", {
@@ -29,10 +24,7 @@ import { LoaderComponent } from "./shared/loader/loader.component";
       registrationStrategy: "registerWhenStable:30000"
     }),
     SocketIoModule.forRoot(environment.socketIoConfig),
-    FontAwesomeModule,
-    NgbModule,
-    ComponentsModule,
-    LoaderComponent
+    SwRefreshComponent
   ],
   providers: [AuthGuard, { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true }],
   bootstrap: [AppComponent]

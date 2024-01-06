@@ -3,11 +3,16 @@ import { HighScoreService } from "./high-score.service";
 import { FlySquasherLevelEnum, FlySquasherLevels, ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { faExclamationTriangle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { ServerHealthService } from "../../shared/services/server-health.service";
+import { CommonModule } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "fly-squasher-high-score",
   templateUrl: "./high-score.component.html",
-  styleUrls: ["./high-score.component.scss"]
+  styleUrls: ["./high-score.component.scss"],
+  standalone: true,
+  imports: [CommonModule, FaIconComponent, RouterLink]
 })
 export class HighScoreComponent implements OnInit {
   protected readonly faSpinner = faSpinner;

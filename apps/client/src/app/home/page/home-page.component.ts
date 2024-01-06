@@ -5,6 +5,10 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { firstValueFrom } from "rxjs";
 import { ServerHealthService } from "../../shared/services/server-health.service";
+import { CommonModule } from "@angular/common";
+import { ChatFloatComponent } from "../chat/chat-float/chat-float.component";
+import { RouterLink } from "@angular/router";
+import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 
 export type DisplayGame = {
   name: string;
@@ -17,7 +21,9 @@ export type DisplayGame = {
 
 @Component({
   templateUrl: "./home-page.component.html",
-  styleUrls: ["./home-page.component.scss"]
+  styleUrls: ["./home-page.component.scss"],
+  standalone: true,
+  imports: [CommonModule, ChatFloatComponent, RouterLink, HomePageNavComponent]
 })
 export class HomePageComponent {
   protected readonly environment = environment;

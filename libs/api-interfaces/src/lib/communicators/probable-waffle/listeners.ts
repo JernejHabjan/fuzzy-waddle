@@ -30,8 +30,7 @@ export class ProbableWaffleListeners {
           case GameSessionState.MovingPlayersToGame:
           case GameSessionState.StartingTheGame:
           case GameSessionState.InProgress:
-          case GameSessionState.EnteringScoreScreen:
-          case GameSessionState.InScoreScreen:
+          case GameSessionState.ToScoreScreen:
           case GameSessionState.Stopped:
             // none of these need any additional handling here
             break;

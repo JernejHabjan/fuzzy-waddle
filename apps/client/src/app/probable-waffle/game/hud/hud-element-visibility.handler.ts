@@ -13,7 +13,7 @@ export class HudElementVisibilityHandler {
 
   private handleHudElements() {
     this.handleCurrentSessionState(this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState!);
-    this.sessionStateSubscription = this.scene.baseGameData.communicator.gameInstanceMetadataChanged?.on.subscribe(
+    this.sessionStateSubscription = this.scene.communicator.gameInstanceMetadataChanged?.on.subscribe(
       (metadataEvent) => {
         switch (metadataEvent.property) {
           case "sessionState":

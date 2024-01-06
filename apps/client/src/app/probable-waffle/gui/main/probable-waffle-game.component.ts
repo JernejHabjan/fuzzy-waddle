@@ -5,10 +5,14 @@ import { ProbableWaffleCommunicatorService } from "../../communicators/probable-
 import { AuthService } from "../../../auth/auth.service";
 import { probableWaffleGameConfig } from "../../game/world/const/game-config";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import { CommonModule } from "@angular/common";
+import { GameContainerComponent } from "../../../shared/game/game-container/game-container.component";
 
 @Component({
   templateUrl: "./probable-waffle-game.component.html",
-  styleUrls: ["./probable-waffle-game.component.scss"]
+  styleUrls: ["./probable-waffle-game.component.scss"],
+  standalone: true,
+  imports: [CommonModule, GameContainerComponent]
 })
 export class ProbableWaffleGameComponent implements OnInit {
   protected readonly probableWaffleGameConfig = probableWaffleGameConfig;

@@ -17,20 +17,20 @@
     },
     "displayList": [
         {
-            "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
-            "id": "08527d63-d35e-452c-be2e-9a98a726c5e2",
+            "prefabId": "31e2d0cd-3fec-4e93-92cf-ebe85c98f5e2",
+            "id": "c16b264b-88b7-4583-bad4-e2cb3a636f0a",
             "unlock": [
                 "x",
                 "y",
                 "scaleX",
                 "scaleY"
             ],
-            "label": "buttonSmall",
+            "label": "buttonLarge",
             "scope": "CLASS",
-            "x": 1232,
+            "x": 1226,
             "y": 40,
-            "scaleX": 2,
-            "scaleY": 2
+            "scaleX": 3,
+            "scaleY": 3
         }
     ],
     "plainObjects": [],
@@ -43,10 +43,7 @@
     "lists": [
         {
             "id": "a9e1809e-2eca-4d40-8c83-7c158f629362",
-            "label": "hudElements",
-            "objectIds": [
-                "08527d63-d35e-452c-be2e-9a98a726c5e2"
-            ]
+            "label": "hudElements"
         }
     ]
 }

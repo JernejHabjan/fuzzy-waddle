@@ -23,6 +23,9 @@ import {
 } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { CommonModule } from "@angular/common";
+import { MapSelectorComponent } from "../map-selector/map-selector.component";
+import { TriggerComponent } from "../trigger/trigger.component";
 
 /**
  * canvas element containing info about current player and position.
@@ -47,7 +50,9 @@ interface DisplayRect {
 @Component({
   selector: "probable-waffle-map-definition",
   templateUrl: "./map-definition.component.html",
-  styleUrls: ["./map-definition.component.scss"]
+  styleUrls: ["./map-definition.component.scss"],
+  standalone: true,
+  imports: [CommonModule, MapSelectorComponent, TriggerComponent]
 })
 export class MapDefinitionComponent implements OnInit, OnDestroy {
   private readonly preferredCanvasWidth = 400;

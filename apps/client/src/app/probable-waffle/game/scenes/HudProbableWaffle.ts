@@ -2,16 +2,19 @@
 
 /* START OF COMPILED CODE */
 
-import ButtonSmall from "../prefabs/gui/buttons/ButtonSmall";
+import ButtonLarge from "../prefabs/gui/buttons/ButtonLarge";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
 import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
+import { Subscription } from "rxjs";
+import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
+  private quitButtonSubscription?: Subscription;
   constructor() {
     super("HudProbableWaffle");
 
@@ -21,23 +24,23 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-    // buttonSmall
-    const buttonSmall = new ButtonSmall(this, 1232, 40);
-    this.add.existing(buttonSmall);
-    buttonSmall.scaleX = 2;
-    buttonSmall.scaleY = 2;
+    // buttonLarge
+    const buttonLarge = new ButtonLarge(this, 1226, 40);
+    this.add.existing(buttonLarge);
+    buttonLarge.scaleX = 3;
+    buttonLarge.scaleY = 3;
 
     // lists
-    const hudElements = [buttonSmall];
+    const hudElements: Array<any> = [];
 
-    this.buttonSmall = buttonSmall;
+    this.buttonLarge = buttonLarge;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
   }
 
-  private buttonSmall!: ButtonSmall;
-  private hudElements!: ButtonSmall[];
+  private buttonLarge!: ButtonLarge;
+  private hudElements!: Array<any>;
 
   /* START-USER-CODE */
 
@@ -56,6 +59,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new HudGameState(this);
     new HudElementVisibilityHandler(this, this.hudElements);
     new MultiSelectionHandler(this);
+    this.handleQuit();
   }
 
   private resize(gameSize: { height: number; width: number }) {
@@ -65,9 +69,26 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private updatePositionOfUiElements() {
     // push button to top right (margin 40px)
-    this.buttonSmall.x = this.scale.width - this.buttonSmall.width - 40;
-    this.buttonSmall.y = 40;
+    this.buttonLarge.x = this.scale.width - this.buttonLarge.width - 40;
+    this.buttonLarge.y = 40;
   }
+
+  private handleQuit() {
+    this.quitButtonSubscription = this.buttonLarge.clicked.subscribe(() => {
+      this.communicator.gameInstanceMetadataChanged?.send({
+        property: "sessionState",
+        gameInstanceId: this.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
+        data: { sessionState: GameSessionState.ToScoreScreen },
+        emitterUserId: this.baseGameData.user.userId
+      });
+    });
+  }
+
+  destroy() {
+    this.quitButtonSubscription?.unsubscribe();
+    super.destroy();
+  }
+
   /* END-USER-CODE */
 }
 

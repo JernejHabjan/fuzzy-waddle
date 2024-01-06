@@ -13,6 +13,9 @@ import {
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
@@ -38,7 +41,9 @@ export class DifficultyDefinitions {
 @Component({
   selector: "probable-waffle-player-definition",
   templateUrl: "./player-definition.component.html",
-  styleUrls: ["./player-definition.component.scss"]
+  styleUrls: ["./player-definition.component.scss"],
+  standalone: true,
+  imports: [CommonModule, FormsModule, FaIconComponent]
 })
 export class PlayerDefinitionComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
