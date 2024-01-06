@@ -1,0 +1,188 @@
+{
+	"textures": [
+		{
+			"image": "gui.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 60,
+				"h": 57
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "cryos_mini_gui/borders/border_wood.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 40,
+						"h": 12
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 40,
+						"h": 12
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 40,
+						"h": 12
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/surfaces/surface_parchment.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 24,
+						"h": 24
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 24,
+						"h": 24
+					},
+					"frame": {
+						"x": 1,
+						"y": 15,
+						"w": 24,
+						"h": 24
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/buttons/button_large_pressed.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 24,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1,
+						"y": 41,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/buttons/button_small.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 16,
+						"h": 16
+					},
+					"frame": {
+						"x": 43,
+						"y": 1,
+						"w": 16,
+						"h": 16
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/buttons/button_large.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 24,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 24,
+						"h": 16
+					},
+					"frame": {
+						"x": 27,
+						"y": 19,
+						"w": 24,
+						"h": 16
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/buttons/button_small_pressed.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 16,
+						"h": 15
+					},
+					"frame": {
+						"x": 27,
+						"y": 37,
+						"w": 16,
+						"h": 15
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/borders/border_dark_outer.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 8,
+						"h": 8
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 8,
+						"h": 8
+					},
+					"frame": {
+						"x": 45,
+						"y": 37,
+						"w": 8,
+						"h": 8
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/surfaces/surface_dark.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 8,
+						"h": 8
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 8,
+						"h": 8
+					},
+					"frame": {
+						"x": 45,
+						"y": 47,
+						"w": 8,
+						"h": 8
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:187f7eacccb0c4dfa735511cd7c84b01:225e1a5308fb4ed331caf097b7e7325b:788b34ed4e778d63c84b2c3df4d44949$"
+	}
+}
