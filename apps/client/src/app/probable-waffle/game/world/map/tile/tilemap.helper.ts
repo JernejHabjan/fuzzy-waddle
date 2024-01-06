@@ -2,7 +2,6 @@ import { MapDefinitions, MapSizeInfo } from "../../const/map-size.info";
 import { TileCenterOptions, TileIndexProperties, TilePossibleProperties } from "./types/tile-types";
 import { IsoHelper } from "./iso-helper";
 import { TilePlacementData } from "../../managers/controllers/input/tilemap/tilemap-input.handler";
-import { SceneCommunicatorService } from "../../../../communicators/scene-communicator.service";
 import { MapHelper } from "./map-helper";
 import { Scene, Tilemaps } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
@@ -19,7 +18,7 @@ export class TilemapHelper {
   }
 
   private get nrTilesToReplace(): number {
-    return SceneCommunicatorService.tileEmitterNrSubject.getValue();
+    return 0; // return Deprecated_SceneCommunicatorService.tileEmitterNrSubject.getValue();
   }
 
   static adjustTileWorldWithVerticalOffset(
@@ -57,7 +56,7 @@ export class TilemapHelper {
   createTilemap() {
     const createBlankLayer = false; // https://github.com/photonstorm/phaser/issues/6262
     let tilemap: Tilemaps.Tilemap;
-    const tilemapWithLayers = (tilemap = this.scene.make.tilemap({ key: MapDefinitions.tilemapMapName }));
+    const tilemapWithLayers = (tilemap = this.scene.make.tilemap({ key: "MapDefinitions.tilemapMapName" }));
     if (createBlankLayer) {
       const mapData = new Tilemaps.MapData({
         width: MapSizeInfo.info.width,

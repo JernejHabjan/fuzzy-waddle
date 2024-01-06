@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing";
 
-import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 
 export const SceneCommunicatorClientServiceStub = {
-  createCommunicators() {
-    //
+  createCommunicators(gameInstanceId: string): ProbableWaffleCommunicators {
+    return {} as ProbableWaffleCommunicators;
   },
   destroyCommunicators() {
     //

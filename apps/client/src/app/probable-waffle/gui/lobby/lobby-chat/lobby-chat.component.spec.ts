@@ -1,14 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { LobbyChatComponent } from "./lobby-chat.component";
-import {
-  ProbableWaffleCommunicatorService,
-  probableWaffleCommunicatorServiceStub
-} from "../../../communicators/probable-waffle-communicator.service";
+import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { AuthService } from "../../../../auth/auth.service";
 import { authServiceStub } from "../../../../auth/auth.service.spec";
 import { Component } from "@angular/core";
+import { probableWaffleCommunicatorServiceStub } from "../../../communicators/probable-waffle-communicator.service.spec";
 
 @Component({ selector: "probable-waffle-lobby-chat", template: "" })
 export class LobbyChatTestingComponent {}

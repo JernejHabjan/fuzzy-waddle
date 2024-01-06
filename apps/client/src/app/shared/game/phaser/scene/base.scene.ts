@@ -15,7 +15,6 @@ import {
   BaseSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { Loader } from "../../../../little-muncher/game/loader";
-import { LittleMuncherCommunicatorService } from "../../../../little-muncher/main/communicators/little-muncher-communicator.service";
 import { CommunicatorService } from "../../communicators/CommunicatorService";
 
 export class BaseScene<
@@ -79,7 +78,7 @@ export class BaseScene<
   init() {
     this.game = this.sys.game as BaseGame<TGameData>;
     this.baseGameData = this.game.data;
-    this.communicator = this.baseGameData.communicator;
+    this.communicator = this.baseGameData.communicator as TCommunicatorService;
     this.registerSceneDestroy();
     this.registerSceneResize();
     this.registerScenePostCreate();

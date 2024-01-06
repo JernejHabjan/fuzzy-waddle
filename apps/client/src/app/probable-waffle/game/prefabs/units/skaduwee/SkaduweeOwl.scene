@@ -13,23 +13,9 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
+            "type": "Container",
             "id": "081b7121-ec3e-46d4-942e-5206fe180c80",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
             "label": "units_skaduwee_owl_idle_down_png",
-            "z": 0,
             "hitArea.shape": "CIRCLE",
             "hitArea.x": 1,
             "hitArea.y": 4,
@@ -39,15 +25,14 @@
             "list": [
                 {
                     "type": "Sprite",
-                    "id": "e43749e6-718f-4d92-9566-32a0fa96944f",
+                    "id": "f2d7c1b1-44b1-4f62-872f-326616bccb71",
                     "label": "owl",
                     "scope": "CLASS",
                     "texture": {
                         "key": "units",
-                        "frame": "skaduwee/owl/idle_down_1.png"
+                        "frame": "skaduwee/owl/idle/down_1.png"
                     },
-                    "x": 1,
-                    "y": -107.3778401387357,
+                    "y": -108,
                     "animationPlayMethod": 1,
                     "animationKey": "skaduwee/owl/idle/down"
                 }

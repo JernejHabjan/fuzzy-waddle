@@ -2,36 +2,33 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class SkaduweeOwl extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 33, y ?? 127.37785319200148);
+export default class SkaduweeOwl extends Phaser.GameObjects.Container {
 
-    this.removeInteractive();
-    this.setInteractive(new Phaser.Geom.Circle(1, 4, 11), Phaser.Geom.Circle.Contains);
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 33, y ?? 127.37785319200148);
 
-    // owl
-    const owl = scene.add.sprite(1, -107.3778401387357, "units", "skaduwee/owl/idle_down_1.png");
-    owl.play("skaduwee/owl/idle/down");
-    this.add(owl);
+		this.setInteractive(new Phaser.Geom.Circle(1, 4, 11), Phaser.Geom.Circle.Contains);
 
-    // this (prefab fields)
-    this.z = 0;
+		// owl
+		const owl = scene.add.sprite(0, -108, "units", "skaduwee/owl/idle/down_1.png");
+		owl.play("skaduwee/owl/idle/down");
+		this.add(owl);
 
-    this.owl = owl;
+		this.owl = owl;
 
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     this.drawFlyingUnitVerticalLine();
     this.moveOwl();
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  private owl: Phaser.GameObjects.Sprite;
+	private owl: Phaser.GameObjects.Sprite;
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   /**
    * draw a vertical line from bottom of unit to bottom of current container.

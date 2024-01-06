@@ -1,8 +1,3 @@
-import {
-  AtlasEmitValue,
-  GameObjectSelection,
-  SceneCommunicatorService
-} from "../../../communicators/scene-communicator.service";
 import { CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
 import { DEPRECATED_inputHandler } from "../managers/controllers/input/DEPRECATED_input.handler";
 import { DEPRECATED_scaleHandler } from "../map/DEPRECATED_scale.handler";
@@ -77,7 +72,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private manualTileSelectedSub!: Subscription;
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
-  private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
+  private editorLayerNr = Deprecated_SceneCommunicatorService.DEFAULT_LAYER;
   private selected: Actor[] = [];
   private atlasToBePlaced: AtlasEmitValue | null = null;
   private warningText: GameObjects.Text | null = null;
@@ -100,30 +95,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   }
 
   preload() {
-    this.load.atlas(
-      MapDefinitions.atlasBuildings + MapDefinitions.atlasSuffix,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.png`,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.json`
-    );
-    this.load.atlas(
-      MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasCharacters}.png`,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasCharacters}.json`
-    );
-
-    MapDefinitions.mapAtlases.forEach((atlas) => {
-      // used by this.scene.add.image(...
-      this.load.atlas(
-        `${atlas}${MapDefinitions.atlasSuffix}`,
-        `assets/probable-waffle/atlas/${atlas}.png`,
-        `assets/probable-waffle/atlas/${atlas}.json`
-      );
-      // used by addTilesetImage
-      this.load.image(atlas, `assets/probable-waffle/atlas/${atlas}.png`);
-    });
-
-    this.load.tilemapTiledJSON(MapDefinitions.tilemapMapName, MapDefinitions.tilemapMapJson);
-
     this.load.spritesheet(
       WarriorDefinition.textureMapDefinition.textureName,
       "assets/probable-waffle/spritesheets/" +
@@ -297,11 +268,11 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private deselectPlacementInEditor() {
     // deselect in editor
     if (this.atlasToBePlaced) {
-      SceneCommunicatorService.atlasEmitterSubject.next(null);
+      Deprecated_SceneCommunicatorService.atlasEmitterSubject.next(null);
     }
     // deselect in editor
     if (this.tileToBeReplaced) {
-      SceneCommunicatorService.tileEmitterSubject.next(null);
+      Deprecated_SceneCommunicatorService.tileEmitterSubject.next(null);
     }
   }
 
@@ -370,7 +341,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
       const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => ({
         name: s.name
       }));
-      SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
+      Deprecated_SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
     });
   }
 
@@ -425,16 +396,16 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   }
 
   private bindSceneCommunicator() {
-    SceneCommunicatorService.addSubscription(
-      SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
+    Deprecated_SceneCommunicatorService.addSubscription(
+      Deprecated_SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
         this.tileToBeReplaced = tileNr;
         this.atlasToBePlaced = null; // stop placing atlas
         this.selected = [];
       }),
-      SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
+      Deprecated_SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
         this.editorLayerNr = layerNr;
       }),
-      SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
+      Deprecated_SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
         this.atlasToBePlaced = atlas;
         this.tileToBeReplaced = null; // stop placing tile
         this.selected = [];

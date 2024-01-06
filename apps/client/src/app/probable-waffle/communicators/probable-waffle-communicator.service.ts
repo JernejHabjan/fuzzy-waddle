@@ -14,16 +14,14 @@ import {
 import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
 import { Socket } from "ngx-socket-io";
 import { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
-
-export const probableWaffleCommunicatorServiceStub = {
-  startCommunication: () => {},
-  stopCommunication: () => {}
-};
+import { ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
 
 @Injectable({
   providedIn: "root"
 })
-export class ProbableWaffleCommunicatorService implements CommunicatorService, OnDestroy {
+export class ProbableWaffleCommunicatorService
+  implements CommunicatorService, OnDestroy, ProbableWaffleCommunicatorServiceInterface
+{
   gameInstanceMetadataChanged?: TwoWayCommunicator<
     ProbableWaffleGameInstanceMetadataChangeEvent,
     ProbableWaffleCommunicatorType

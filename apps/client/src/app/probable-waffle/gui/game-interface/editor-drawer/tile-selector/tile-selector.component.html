@@ -1,8 +1,0 @@
-<button
-  (click)="selectTile()"
-  *ngIf="textureName"
-  [class.selected]="selectedTile === frameWithMeta.id"
-  class="btn btn-light m-1"
->
-  <probable-waffle-atlas-display [atlasFrame]="frameWithMeta" [textureName]="textureName" />
-</button>
