@@ -2,6 +2,8 @@
     "id": "83b754e4-4d45-480d-923c-5b7fccee4e93",
     "sceneType": "SCENE",
     "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
         "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,

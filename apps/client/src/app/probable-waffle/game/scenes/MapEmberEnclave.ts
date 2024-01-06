@@ -41,18 +41,8 @@ import { GameObjects, Input } from "phaser";
 import { AnimatedTilemap } from "../world/map/animated-tile.helper";
 /* END-USER-IMPORTS */
 
-export default class MapEmberEnclave extends BaseScene<
-  ProbableWaffleGameData,
-  ProbableWaffleGameStateData,
-  ProbableWaffleGameState,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameMode,
-  ProbableWafflePlayerStateData,
-  ProbableWafflePlayerControllerData,
-  ProbableWafflePlayer,
-  ProbableWaffleSpectatorData,
-  ProbableWaffleSpectator
-> {
+export default class MapEmberEnclave extends BaseScene<ProbableWaffleGameData, ProbableWaffleGameStateData, ProbableWaffleGameState, ProbableWaffleGameModeData, ProbableWaffleGameMode, ProbableWafflePlayerStateData, ProbableWafflePlayerControllerData, ProbableWafflePlayer, ProbableWaffleSpectatorData, ProbableWaffleSpectator> {
+
   constructor() {
     super("MapEmberEnclave");
 
@@ -62,13 +52,14 @@ export default class MapEmberEnclave extends BaseScene<
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
 
     // blockObsidianLava5
     const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);
