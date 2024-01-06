@@ -1,10 +1,11 @@
 import { Observable } from "rxjs";
 import { ProbableWaffleMapEnum, ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
-import { WritableSignal } from "@angular/core";
+import { computed, Signal, WritableSignal } from "@angular/core";
 
 export interface RoomsServiceInterface {
   rooms: WritableSignal<ProbableWaffleRoom[]>;
-
+  playersSearchingForMatchmakingGame: Signal<number>;
+  matchmakingGamesInProgress: Signal<number>;
   init(): Promise<void>;
   listenToRoomEvents(): void;
 

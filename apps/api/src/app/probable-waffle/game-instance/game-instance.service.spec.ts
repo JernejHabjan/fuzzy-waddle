@@ -12,6 +12,7 @@ import { TextSanitizationService } from "../../../core/content-filters/text-sani
 import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway";
 import { RoomServerService } from "../game-room/room-server.service";
 import { roomServerServiceStub } from "../game-room/room-server.service.spec";
+import { GameInstanceHolderService } from "./game-instance-holder.service";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
@@ -34,6 +35,7 @@ describe("GameInstanceService", () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        GameInstanceHolderService,
         GameInstanceService,
         {
           provide: GameInstanceGateway,

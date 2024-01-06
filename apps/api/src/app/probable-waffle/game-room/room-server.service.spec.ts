@@ -11,6 +11,7 @@ import {
 import { User } from "@supabase/supabase-js";
 import { RoomServerServiceInterface } from "./room-server.service.interface";
 import { RoomGateway } from "./room.gateway";
+import { GameInstanceHolderService } from "../game-instance/game-instance-holder.service";
 
 export const roomServerServiceStub = {
   getVisibleRooms(user: User, body: ProbableWaffleGetRoomsDto): Promise<ProbableWaffleRoom[]> {
@@ -32,7 +33,7 @@ describe("RoomServerService", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RoomServerService, RoomGateway]
+      providers: [RoomServerService, RoomGateway, GameInstanceHolderService]
     }).compile();
 
     service = module.get<RoomServerService>(RoomServerService);

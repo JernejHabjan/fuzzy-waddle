@@ -24,7 +24,6 @@ describe("MainComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ModalTestComponent, GameContainerTestingComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: FlySquasherCommunicatorService, useValue: flySquasherCommunicatorServiceStub },

@@ -7,10 +7,12 @@ import { Observable } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
 import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
-import { signal } from "@angular/core";
+import { computed, signal } from "@angular/core";
 
 export const roomsServiceStub = {
   rooms: signal<ProbableWaffleRoom[]>([]),
+  playersSearchingForMatchmakingGame: computed(() => 0),
+  matchmakingGamesInProgress: computed(() => 0),
   init(): Promise<void> {
     return Promise.resolve();
   },
