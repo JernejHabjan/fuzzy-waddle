@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";
-import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import { ChatMessage, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
 import { Subject, Subscription } from "rxjs";
 import { ChatComponent } from "../../../../shared/components/chat/chat.component";
 
@@ -16,7 +16,7 @@ import { ChatComponent } from "../../../../shared/components/chat/chat.component
 })
 export class LobbyChatComponent implements OnInit, OnDestroy {
   private readonly communicatorService = inject(ProbableWaffleCommunicatorService);
-  private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly authService = inject(AuthService);
 
   private messagesSubscription: Subscription | undefined;
@@ -39,4 +39,6 @@ export class LobbyChatComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.messagesSubscription?.unsubscribe();
   }
+
+  protected readonly ProbableWaffleGameInstanceType = ProbableWaffleGameInstanceType;
 }

@@ -1,1 +1,8 @@
-<fuzzy-waddle-chat [listenToMessages]="listenToMessages" (newMessage)="sendMessage($event)" />
+<fuzzy-waddle-chat
+  *ngIf="
+    gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data?.type &&
+    gameInstanceClientService.gameInstance!.gameInstanceMetadata!.data!.type !== ProbableWaffleGameInstanceType.Skirmish
+  "
+  [listenToMessages]="listenToMessages"
+  (newMessage)="sendMessage($event)"
+/>

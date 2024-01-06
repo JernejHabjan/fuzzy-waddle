@@ -11,6 +11,10 @@ export class TriggerComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
 
+  protected get mapSelected(): boolean {
+    return !!this.gameInstanceClientService.gameInstance!.gameMode?.data.map;
+  }
+
   /**
    * at least two players selected and at least two different teams
    */
