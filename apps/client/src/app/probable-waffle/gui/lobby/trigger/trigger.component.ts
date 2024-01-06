@@ -15,7 +15,7 @@ export class TriggerComponent {
   private readonly router = inject(Router);
 
   protected get mapSelected(): boolean {
-    return !!this.gameInstanceClientService.gameInstance!.gameMode?.data.map;
+    return !!this.gameInstanceClientService.gameInstance?.gameMode?.data.map;
   }
 
   /**

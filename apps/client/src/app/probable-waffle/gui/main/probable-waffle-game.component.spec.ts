@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProbableWaffleGameComponent } from "./probable-waffle-game.component";
-import { EditorDrawerTestingComponent } from "../game-interface/editor-drawer/editor-drawer.component.spec";
 import { GameContainerTestingComponent } from "../../../shared/game/game-container/game-container.component.spec";
-import { SelectionGroupTestingComponent } from "../game-interface/selection/selection-group/selection-group.component.spec";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import { GameContainerComponent } from "../../../shared/game/game-container/game-container.component";
 
 jest.mock("../../game/world/const/game-config", () => ({
   probableWaffleGameConfig: {}
@@ -18,13 +17,17 @@ describe("ProbableWaffleGameComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
-      declarations: [
-        ProbableWaffleGameComponent,
-        GameContainerTestingComponent,
-        EditorDrawerTestingComponent,
-        SelectionGroupTestingComponent
-      ]
-    }).compileComponents();
+      imports: [ProbableWaffleGameComponent]
+    })
+      .overrideComponent(ProbableWaffleGameComponent, {
+        remove: {
+          imports: [GameContainerComponent]
+        },
+        add: {
+          imports: [GameContainerTestingComponent]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
     component = fixture.componentInstance;

@@ -17,8 +17,7 @@ describe("ProbableWaffleComponent", () => {
           useValue: gameInstanceClientServiceStub
         }
       ],
-      declarations: [ProbableWaffleComponent],
-      imports: [RouterTestingModule]
+      imports: [ProbableWaffleComponent, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProbableWaffleComponent);

@@ -9,8 +9,7 @@ describe("FlySquasherComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FlySquasherComponent],
-      imports: [RouterTestingModule]
+      imports: [FlySquasherComponent, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlySquasherComponent);

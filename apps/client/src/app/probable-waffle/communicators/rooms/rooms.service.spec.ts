@@ -7,9 +7,10 @@ import { Observable } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
 import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { signal } from "@angular/core";
 
 export const roomsServiceStub = {
-  rooms: [],
+  rooms: signal<ProbableWaffleRoom[]>([]),
   init(): Promise<void> {
     return Promise.resolve();
   },

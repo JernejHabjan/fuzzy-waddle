@@ -9,8 +9,9 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import { CommonModule } from "@angular/common";
 
-@Component({ selector: "probable-waffle-lobbies", template: "" })
+@Component({ selector: "probable-waffle-lobbies", template: "", standalone: true, imports: [CommonModule] })
 export class LobbiesTestingComponent {}
 
 describe("LobbiesComponent", () => {
@@ -33,8 +34,7 @@ describe("LobbiesComponent", () => {
           useValue: gameInstanceClientServiceStub
         }
       ],
-      declarations: [LobbiesComponent],
-      imports: [FontAwesomeTestingModule]
+      imports: [LobbiesComponent, FontAwesomeTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LobbiesComponent);

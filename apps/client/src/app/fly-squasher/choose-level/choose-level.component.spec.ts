@@ -9,8 +9,7 @@ describe("ChooseLevelComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChooseLevelComponent],
-      imports: [RouterTestingModule]
+      imports: [ChooseLevelComponent, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChooseLevelComponent);

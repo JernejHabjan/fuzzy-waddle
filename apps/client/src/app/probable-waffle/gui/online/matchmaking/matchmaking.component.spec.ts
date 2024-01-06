@@ -7,8 +7,9 @@ import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { roomsServiceStub } from "../../../communicators/rooms/rooms.service.spec";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { CommonModule } from "@angular/common";
 
-@Component({ selector: "probable-waffle-matchmaking", template: "" })
+@Component({ selector: "probable-waffle-matchmaking", template: "", standalone: true, imports: [CommonModule] })
 export class MatchmakingTestingComponent {}
 
 describe("MatchmakingComponent", () => {
@@ -21,8 +22,7 @@ describe("MatchmakingComponent", () => {
         { provide: RoomsService, useValue: roomsServiceStub },
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }
       ],
-      declarations: [MatchmakingComponent],
-      imports: [FormsModule]
+      imports: [MatchmakingComponent, FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MatchmakingComponent);

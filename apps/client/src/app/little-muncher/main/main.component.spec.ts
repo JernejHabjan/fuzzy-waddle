@@ -7,6 +7,8 @@ import { authServiceStub } from "../../auth/auth.service.spec";
 import { GameInterfaceTestingComponent } from "./game-interface/game-interface.component.spec";
 import { GameInstanceClientService } from "./communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "./communicators/game-instance-client.service.spec";
+import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
+import { GameInterfaceComponent } from "./game-interface/game-interface.component";
 
 jest.mock("../game/const/game-config", () => ({
   littleMuncherGameConfig: {}
@@ -18,12 +20,21 @@ describe("MainComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MainComponent, GameContainerTestingComponent, GameInterfaceTestingComponent],
+      imports: [MainComponent],
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: AuthService, useValue: authServiceStub }
       ]
-    }).compileComponents();
+    })
+      .overrideComponent(MainComponent, {
+        remove: {
+          imports: [GameContainerComponent, GameInterfaceComponent]
+        },
+        add: {
+          imports: [GameContainerTestingComponent, GameInterfaceTestingComponent]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MainComponent);
     component = fixture.componentInstance;

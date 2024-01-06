@@ -25,8 +25,7 @@ describe("OptionsComponent", () => {
           }
         }
       ],
-      declarations: [OptionsComponent],
-      imports: [FormsModule]
+      imports: [OptionsComponent, FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(OptionsComponent);

@@ -1,21 +1,17 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { GameInstanceService } from "./game-instance.service";
 import {
-  GameInstanceDataDto,
-  ProbableWaffleAddPlayerDto,
-  ProbableWaffleAddSpectatorDto,
-  ProbableWaffleChangeGameModeDto,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceMetadataData,
-  ProbableWafflePlayerLeftDto,
-  ProbableWaffleStartLevelDto
+  ProbableWaffleGameInstanceMetadataData
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { User } from "../../../users/users.service";
 import { GameInstanceGateway } from "./game-instance.gateway";
 import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
 import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway";
+import { RoomServerService } from "../game-room/room-server.service";
+import { roomServerServiceStub } from "../game-room/room-server.service.spec";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
@@ -42,6 +38,10 @@ describe("GameInstanceService", () => {
         {
           provide: GameInstanceGateway,
           useValue: GameInstanceGatewayStub
+        },
+        {
+          provide: RoomServerService,
+          useValue: roomServerServiceStub
         },
         TextSanitizationService
       ]

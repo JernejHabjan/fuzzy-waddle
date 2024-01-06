@@ -6,6 +6,8 @@ import { serverHealthServiceStub } from "../../shared/services/server-health.ser
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import { SpectateTestComponent } from "./spectate/spectate.component.spec";
+import { RouterTestingModule } from "@angular/router/testing";
+import { SpectateComponent } from "./spectate/spectate.component";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -13,7 +15,6 @@ describe("HomeComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomeComponent, SpectateTestComponent],
       providers: [
         {
           provide: ServerHealthService,
@@ -23,8 +24,18 @@ describe("HomeComponent", () => {
           provide: AuthService,
           useValue: authServiceStub
         }
-      ]
-    }).compileComponents();
+      ],
+      imports: [HomeComponent, RouterTestingModule]
+    })
+      .overrideComponent(HomeComponent, {
+        remove: {
+          imports: [SpectateComponent]
+        },
+        add: {
+          imports: [SpectateTestComponent]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;

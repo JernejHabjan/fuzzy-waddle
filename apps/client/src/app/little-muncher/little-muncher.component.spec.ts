@@ -13,8 +13,7 @@ describe("LittleMuncherComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LittleMuncherComponent],
-      imports: [FontAwesomeTestingModule],
+      imports: [LittleMuncherComponent, FontAwesomeTestingModule],
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: SpectateService, useValue: spectateServiceStub }

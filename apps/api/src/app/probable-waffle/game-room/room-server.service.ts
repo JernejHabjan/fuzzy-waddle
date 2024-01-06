@@ -15,9 +15,10 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
 import { GameInstanceHolderService } from "../game-instance/game-instance-holder.service";
+import { RoomServerServiceInterface } from "./room-server.service.interface";
 
 @Injectable()
-export class RoomServerService {
+export class RoomServerService implements RoomServerServiceInterface {
   constructor(
     private readonly roomGateway: RoomGateway,
     private readonly gameInstanceHolderService: GameInstanceHolderService

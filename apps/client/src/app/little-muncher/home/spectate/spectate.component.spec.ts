@@ -6,8 +6,9 @@ import { spectateServiceStub } from "./spectate.service.spec";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
 import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
-@Component({ selector: "little-muncher-spectate", template: "" })
+@Component({ selector: "little-muncher-spectate", template: "", standalone: true, imports: [CommonModule] })
 export class SpectateTestComponent {}
 
 describe("SpectateComponent", () => {
@@ -16,7 +17,7 @@ describe("SpectateComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SpectateComponent],
+      imports: [SpectateComponent],
       providers: [
         { provide: ServerHealthService, useValue: serverHealthServiceStub },
         { provide: SpectateService, useValue: spectateServiceStub }

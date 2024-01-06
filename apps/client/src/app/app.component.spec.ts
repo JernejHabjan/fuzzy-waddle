@@ -10,8 +10,8 @@ import { SwRefreshTestingComponent } from "./shared/components/sw-refresh/sw-ref
 describe("AppComponent", () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent, SwRefreshTestingComponent],
-      imports: [RouterTestingModule],
+      declarations: [AppComponent],
+      imports: [RouterTestingModule, SwRefreshTestingComponent],
       providers: [
         {
           provide: ServerHealthService,

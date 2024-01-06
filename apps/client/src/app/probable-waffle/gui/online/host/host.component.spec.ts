@@ -6,8 +6,10 @@ import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { LobbyComponent } from "../../lobby/lobby.component";
 
-@Component({ selector: "probable-waffle-host", template: "" })
+@Component({ selector: "probable-waffle-host", template: "", standalone: true, imports: [CommonModule] })
 export class HostTestingComponent {}
 
 describe("HostComponent", () => {
@@ -17,9 +19,17 @@ describe("HostComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
-      declarations: [HostComponent, LobbyTestingComponent],
-      imports: [FormsModule]
-    }).compileComponents();
+      imports: [HostComponent, FormsModule]
+    })
+      .overrideComponent(HostComponent, {
+        remove: {
+          imports: [LobbyComponent]
+        },
+        add: {
+          imports: [LobbyTestingComponent]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);
     component = fixture.componentInstance;

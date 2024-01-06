@@ -21,7 +21,6 @@ import { RouterLink } from "@angular/router";
 })
 export class HomeComponent {
   protected readonly LittleMuncherHills = LittleMuncherHills;
-  protected readonly LittleMuncherHill = LittleMuncherHillEnum;
   @Output() startLevel: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
   protected readonly serverHealthService = inject(ServerHealthService);
   private readonly authService = inject(AuthService);

@@ -7,6 +7,8 @@ import { GameInstanceService } from "../game-instance/game-instance.service";
 import { GameInstanceServiceStub } from "../game-instance/game-instance.service.spec";
 import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
 import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway";
+import { RoomServerService } from "../game-room/room-server.service";
+import { roomServerServiceStub } from "../game-room/room-server.service.spec";
 
 export const matchmakingServiceStub = {
   async requestGameSearchForMatchMaking(body: RequestGameSearchForMatchMakingDto, user: User): Promise<void> {
@@ -27,6 +29,10 @@ describe("MatchmakingService", () => {
         {
           provide: GameInstanceGateway,
           useValue: GameInstanceGatewayStub
+        },
+        {
+          provide: RoomServerService,
+          useValue: roomServerServiceStub
         }
       ]
     }).compile();

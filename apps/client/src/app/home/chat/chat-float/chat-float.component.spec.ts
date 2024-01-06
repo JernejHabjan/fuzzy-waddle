@@ -9,8 +9,7 @@ describe("ChatFloatComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChatFloatComponent],
-      imports: [FontAwesomeTestingModule]
+      imports: [ChatFloatComponent, FontAwesomeTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChatFloatComponent);

@@ -11,6 +11,10 @@ import { LobbiesTestingComponent } from "./lobbies/lobbies.component.spec";
 import { HostTestingComponent } from "./host/host.component.spec";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
+import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
+import { MatchmakingComponent } from "./matchmaking/matchmaking.component";
+import { LobbiesComponent } from "./lobbies/lobbies.component";
+import { HostComponent } from "./host/host.component";
 
 describe("OnlineComponent", () => {
   let component: OnlineComponent;
@@ -18,14 +22,7 @@ describe("OnlineComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        OnlineComponent,
-        HomeNavTestingComponent,
-        MatchmakingTestingComponent,
-        LobbiesTestingComponent,
-        HostTestingComponent
-      ],
-      imports: [NgbModule],
+      imports: [OnlineComponent, NgbModule],
       providers: [
         provideRouter([]),
         {
@@ -37,7 +34,16 @@ describe("OnlineComponent", () => {
           useValue: authServiceStub
         }
       ]
-    }).compileComponents();
+    })
+      .overrideComponent(OnlineComponent, {
+        remove: {
+          imports: [HomeNavComponent, MatchmakingComponent, LobbiesComponent, HostComponent]
+        },
+        add: {
+          imports: [HomeNavTestingComponent, MatchmakingTestingComponent, LobbiesTestingComponent, HostTestingComponent]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(OnlineComponent);
     component = fixture.componentInstance;

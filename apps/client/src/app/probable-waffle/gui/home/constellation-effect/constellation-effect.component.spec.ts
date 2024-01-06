@@ -2,8 +2,14 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ConstellationEffectComponent } from "./constellation-effect.component";
 import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
-@Component({ selector: "probable-waffle-constellation-effect", template: "" })
+@Component({
+  selector: "probable-waffle-constellation-effect",
+  template: "",
+  standalone: true,
+  imports: [CommonModule]
+})
 export class ConstellationEffectTestComponent {}
 
 describe("ConstellationEffectComponent", () => {
@@ -12,7 +18,7 @@ describe("ConstellationEffectComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ConstellationEffectComponent]
+      imports: [ConstellationEffectComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConstellationEffectComponent);
