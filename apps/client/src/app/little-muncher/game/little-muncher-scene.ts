@@ -17,6 +17,7 @@ import { Pause } from "./pause";
 import { PlayerInputController } from "./player-input-controller";
 import { UiCommunicator, UiCommunicatorData } from "./ui-communicator";
 import { Fireworks } from "../../shared/game/phaser/components/fireworks";
+import { LittleMuncherCommunicatorService } from "../main/communicators/little-muncher-communicator.service";
 
 export enum ObjectName {
   "obstacle" = "obstacle",
@@ -48,7 +49,8 @@ export class LittleMuncherScene extends BaseScene<
   LittleMuncherPlayerControllerData,
   LittleMuncherPlayer,
   LittleMuncherSpectatorData,
-  LittleMuncherSpectator
+  LittleMuncherSpectator,
+  LittleMuncherCommunicatorService
 > {
   private playerInputController!: PlayerInputController;
 
@@ -145,7 +147,7 @@ export class LittleMuncherScene extends BaseScene<
     this.setupUiScene();
 
     this.subscribe(
-      this.communicator.timeClimbing?.onWithInitial(
+      this.communicator.timeClimbing?.onWithInitialStateChange(
         this.manageTimeClimbing,
         (event) => (this.gameState.data.climbedHeight = event.timeClimbing)
       )

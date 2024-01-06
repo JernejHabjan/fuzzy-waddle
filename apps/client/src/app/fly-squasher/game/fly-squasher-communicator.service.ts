@@ -5,6 +5,7 @@ import {
   FlySquasherGatewayEvent,
   LittleMuncherCommunicatorType
 } from "@fuzzy-waddle/api-interfaces";
+import { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
 
 export const flySquasherCommunicatorServiceStub = {
   startCommunication: () => {},
@@ -14,7 +15,7 @@ export const flySquasherCommunicatorServiceStub = {
 @Injectable({
   providedIn: "root"
 })
-export class FlySquasherCommunicatorService implements OnDestroy {
+export class FlySquasherCommunicatorService implements CommunicatorService, OnDestroy {
   score?: TwoWayCommunicator<FlySquasherCommunicatorScoreEvent, LittleMuncherCommunicatorType>;
 
   startCommunication() {

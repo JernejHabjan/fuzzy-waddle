@@ -1,4 +1,4 @@
-import { Observable, Subject, Subscription } from "rxjs";
+import { Observable, Subject, Subscription, take } from "rxjs";
 import { Socket } from "ngx-socket-io";
 import { CommunicatorEvent } from "@fuzzy-waddle/api-interfaces";
 
@@ -23,6 +23,10 @@ export class TwoWayCommunicator<T, K> {
 
   get on(): Observable<T> {
     return this.onSubject.asObservable();
+  }
+
+  get once(): Observable<T> {
+    return this.on.pipe(take(1));
   }
 
   /**
@@ -90,7 +94,7 @@ export class TwoWayCommunicator<T, K> {
    * @param valueChange
    * @returns {Subscription}
    */
-  onWithInitial(stateChanged: () => void, valueChange: (event: T) => void): Subscription {
+  onWithInitialStateChange(stateChanged: () => void, valueChange: (event: T) => void): Subscription {
     stateChanged();
     return this.on.subscribe((event) => {
       valueChange(event);

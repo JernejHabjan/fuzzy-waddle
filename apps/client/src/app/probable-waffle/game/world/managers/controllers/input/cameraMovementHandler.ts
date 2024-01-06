@@ -1,6 +1,6 @@
 import { Cameras, Geom, Input, Types } from "phaser";
 
-export class InputHandler {
+export class CameraMovementHandler {
   private readonly enabledMouseCornerMovement = false;
   private readonly lockToScreen = false; // todo could be enabled later
   private readonly input: Input.InputPlugin;

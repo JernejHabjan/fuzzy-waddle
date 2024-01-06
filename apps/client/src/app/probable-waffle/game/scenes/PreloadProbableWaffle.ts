@@ -4,34 +4,11 @@
 
 import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
-import {
-  ProbableWaffleGameMode,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameState,
-  ProbableWaffleGameStateData,
-  ProbableWaffleLevels,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerControllerData,
-  ProbableWafflePlayerStateData,
-  ProbableWaffleSpectator,
-  ProbableWaffleSpectatorData
-} from "@fuzzy-waddle/api-interfaces";
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import { ProbableWaffleGameData } from "./probable-waffle-game-data";
+import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 /* END-USER-IMPORTS */
 
-export default class PreloadProbableWaffle extends BaseScene<
-  ProbableWaffleGameData,
-  ProbableWaffleGameStateData,
-  ProbableWaffleGameState,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameMode,
-  ProbableWafflePlayerStateData,
-  ProbableWafflePlayerControllerData,
-  ProbableWafflePlayer,
-  ProbableWaffleSpectatorData,
-  ProbableWaffleSpectator
-> {
+export default class PreloadProbableWaffle extends ProbableWaffleScene {
   constructor() {
     super("PreloadProbableWaffle");
 

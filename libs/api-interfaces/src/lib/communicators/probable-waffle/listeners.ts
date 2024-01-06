@@ -26,11 +26,14 @@ export class ProbableWaffleListeners {
       case "sessionState":
         gameInstance.gameInstanceMetadata!.data.sessionState = payload.data.sessionState;
         switch (payload.data.sessionState) {
-          case GameSessionState.Starting:
-            // anything to do? // todo
-            break;
+          case GameSessionState.NotStarted:
+          case GameSessionState.MovingPlayersToGame:
+          case GameSessionState.StartingTheGame:
+          case GameSessionState.InProgress:
+          case GameSessionState.EnteringScoreScreen:
+          case GameSessionState.InScoreScreen:
           case GameSessionState.Stopped:
-            // handled individually
+            // none of these need any additional handling here
             break;
           default:
             throw new Error("Unknown session state: " + payload.data.sessionState);

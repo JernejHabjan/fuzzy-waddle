@@ -76,7 +76,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !==
         gameInstance.gameInstanceMetadata.data.gameInstanceId
     );
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.Starting;
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.MovingPlayersToGame;
     this.gameInstanceGateway.emitGameFound({
       userIds: gameInstance.players.map((p) => p.playerController.data.userId),
       gameInstanceId

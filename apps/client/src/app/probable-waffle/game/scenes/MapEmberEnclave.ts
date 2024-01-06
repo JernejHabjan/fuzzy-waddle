@@ -17,32 +17,10 @@ import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale"
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 /* START-USER-IMPORTS */
-import { ScaleHandler } from "../world/map/scale.handler";
-import { InputHandler } from "../world/managers/controllers/input/input.handler";
-import { LightsHandler } from "../world/map/vision/lights.handler";
-import { DepthHelper } from "../world/map/depth.helper";
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import { ProbableWaffleGameData } from "./probable-waffle-game-data";
-import {
-  ProbableWaffleGameMode,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameState,
-  ProbableWaffleGameStateData,
-  ProbableWaffleLevels,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerControllerData,
-  ProbableWafflePlayerStateData,
-  ProbableWaffleSpectator,
-  ProbableWaffleSpectatorData
-} from "@fuzzy-waddle/api-interfaces";
-import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
-import { MapSizeInfo } from "../world/const/map-size.info";
-import { GameObjects, Input } from "phaser";
-import { AnimatedTilemap } from "../world/map/animated-tile.helper";
+import { GameProbableWaffleScene } from "./GameProbableWaffleScene";
 /* END-USER-IMPORTS */
 
-export default class MapEmberEnclave extends BaseScene<ProbableWaffleGameData, ProbableWaffleGameStateData, ProbableWaffleGameState, ProbableWaffleGameModeData, ProbableWaffleGameMode, ProbableWafflePlayerStateData, ProbableWafflePlayerControllerData, ProbableWafflePlayer, ProbableWaffleSpectatorData, ProbableWaffleSpectator> {
-
+export default class MapEmberEnclave extends GameProbableWaffleScene {
   constructor() {
     super("MapEmberEnclave");
 
@@ -52,14 +30,13 @@ export default class MapEmberEnclave extends BaseScene<ProbableWaffleGameData, P
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
 
     // blockObsidianLava5
     const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);
@@ -130,7 +107,7 @@ export default class MapEmberEnclave extends BaseScene<ProbableWaffleGameData, P
     this.events.emit("scene-awake");
   }
 
-  private tilemap!: Phaser.Tilemaps.Tilemap;
+  public tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
 
@@ -139,61 +116,7 @@ export default class MapEmberEnclave extends BaseScene<ProbableWaffleGameData, P
   create() {
     this.editorCreate();
 
-    new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
-    new InputHandler(this);
-    new CursorHandler(this);
-    new LightsHandler(this, { enableLights: false });
-    new DepthHelper(this);
-    new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-
-    console.log("playing level", ProbableWaffleLevels[this.baseGameData.gameInstance.data.gameModeData!.map!].name);
-
-    this.input.on(
-      Phaser.Input.Events.POINTER_DOWN,
-      (pointer: Input.Pointer, gameObjectsUnderCursor: GameObjects.GameObject[], event: TouchEvent | MouseEvent) => {
-        // Check if an interactive object was clicked
-        if (gameObjectsUnderCursor.length > 0) {
-          // An interactive object was clicked
-          console.log("clicked on interactive objects", gameObjectsUnderCursor.length);
-          // Handle the click on the interactive object
-          // ...
-        } else {
-          // No interactive object was clicked, handle tilemap click
-
-          const tilemap = this.tilemap;
-          // offset pointer by camera position
-          const pointerX = pointer.x + this.cameras.main.scrollX;
-          const pointerY = pointer.y + this.cameras.main.scrollY + MapSizeInfo.info.tileHeight;
-
-          const clickedTileXY = new Phaser.Math.Vector2();
-          Phaser.Tilemaps.Components.IsometricWorldToTileXY(
-            pointerX,
-            pointerY,
-            true,
-            clickedTileXY,
-            this.cameras.main,
-            tilemap.layer
-          );
-
-          const maxTileX = tilemap.width;
-          const maxTileY = tilemap.height;
-          const minTileX = 0;
-          const minTileY = 0;
-          if (
-            clickedTileXY.x < minTileX ||
-            clickedTileXY.x > maxTileX ||
-            clickedTileXY.y < minTileY ||
-            clickedTileXY.y > maxTileY
-          ) {
-            return;
-          }
-          console.log("clicked on tile", clickedTileXY.x, clickedTileXY.y);
-
-          // ...
-        }
-      },
-      this
-    );
+    super.create();
   }
 
   /* END-USER-CODE */

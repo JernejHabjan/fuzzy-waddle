@@ -1,7 +1,7 @@
 export enum GameSessionState {
   NotStarted,
-  Starting = 0,
-  WaitingToStart = 1,
+  MovingPlayersToGame,
+  StartingTheGame,
   InProgress,
   EnteringScoreScreen,
   InScoreScreen,

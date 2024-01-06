@@ -54,31 +54,10 @@ import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
 import Sheep from "../prefabs/animals/Sheep";
 /* START-USER-IMPORTS */
-import { ScaleHandler } from "../world/map/scale.handler";
-import { InputHandler } from "../world/managers/controllers/input/input.handler";
-import { LightsHandler } from "../world/map/vision/lights.handler";
-import { DepthHelper } from "../world/map/depth.helper";
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import {
-  GameSessionState,
-  ProbableWaffleGameMode,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameState,
-  ProbableWaffleGameStateData,
-  ProbableWaffleLevels,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerControllerData,
-  ProbableWafflePlayerStateData,
-  ProbableWaffleSpectator,
-  ProbableWaffleSpectatorData
-} from "@fuzzy-waddle/api-interfaces";
-import { ProbableWaffleGameData } from "./probable-waffle-game-data";
-import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
-import { AnimatedTilemap } from "../world/map/animated-tile.helper";
-import { take } from "rxjs";
+import { GameProbableWaffleScene } from "./GameProbableWaffleScene";
 /* END-USER-IMPORTS */
 
-export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, ProbableWaffleGameStateData, ProbableWaffleGameState, ProbableWaffleGameModeData, ProbableWaffleGameMode, ProbableWafflePlayerStateData, ProbableWafflePlayerControllerData, ProbableWafflePlayer, ProbableWaffleSpectatorData, ProbableWaffleSpectator> {
+export default class MapRiverCrossing extends GameProbableWaffleScene {
 
   constructor() {
     super("MapRiverCrossing");
@@ -556,22 +535,14 @@ export default class MapRiverCrossing extends BaseScene<ProbableWaffleGameData, 
     this.events.emit("scene-awake");
   }
 
-  private tilemap!: Phaser.Tilemaps.Tilemap;
+  public tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
   create() {
     this.editorCreate();
 
-    new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
-    new InputHandler(this);
-    new CursorHandler(this);
-    new LightsHandler(this, { enableLights: false });
-    new DepthHelper(this);
-    new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-
-    console.log("playing level", ProbableWaffleLevels[this.baseGameData.gameInstance.data.gameModeData!.map!].name);
+    super.create();
   }
-
   /* END-USER-CODE */
 }
 

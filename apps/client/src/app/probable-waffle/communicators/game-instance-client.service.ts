@@ -99,7 +99,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         switch (payload.property) {
           case "sessionState":
             switch (payload.data.sessionState) {
-              case GameSessionState.Starting:
+              case GameSessionState.MovingPlayersToGame:
                 await this.router.navigate(["probable-waffle/game"]);
                 break;
               case GameSessionState.Stopped:
@@ -181,7 +181,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async startGame(): Promise<void> {
-    await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.Starting });
+    await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.MovingPlayersToGame });
   }
 
   private async gameInstanceMetadataChanged(

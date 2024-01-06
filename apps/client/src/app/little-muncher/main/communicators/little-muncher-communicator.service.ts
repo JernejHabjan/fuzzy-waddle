@@ -10,11 +10,12 @@ import {
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
 import { TwoWayCommunicator } from "../../../shared/game/communicators/two-way-communicator";
+import { CommunicatorService } from "../../../shared/game/communicators/CommunicatorService";
 
 @Injectable({
   providedIn: "root"
 })
-export class LittleMuncherCommunicatorService implements OnDestroy {
+export class LittleMuncherCommunicatorService implements CommunicatorService, OnDestroy {
   move?: TwoWayCommunicator<LittleMuncherPosition, LittleMuncherCommunicatorType>;
   score?: TwoWayCommunicator<LittleMuncherCommunicatorScoreEvent, LittleMuncherCommunicatorType>;
   timeClimbing?: TwoWayCommunicator<LittleMuncherCommunicatorClimbingEvent, LittleMuncherCommunicatorType>;

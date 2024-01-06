@@ -7,7 +7,7 @@
         "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
-        "superClassName": "BaseScene<ProbableWaffleGameData, ProbableWaffleGameStateData, ProbableWaffleGameState, ProbableWaffleGameModeData, ProbableWaffleGameMode, ProbableWafflePlayerStateData, ProbableWafflePlayerControllerData, ProbableWafflePlayer, ProbableWaffleSpectatorData, ProbableWaffleSpectator>",
+        "superClassName": "GameProbableWaffleScene",
         "preloadPackFiles": [],
         "createMethodName": "editorCreate",
         "sceneKey": "MapEmberEnclave",
@@ -210,6 +210,7 @@
             "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "type": "Tilemap",
             "label": "tilemap",
+            "scope": "PUBLIC",
             "key": "tiles_ember_enclave",
             "tilesets": [
                 {

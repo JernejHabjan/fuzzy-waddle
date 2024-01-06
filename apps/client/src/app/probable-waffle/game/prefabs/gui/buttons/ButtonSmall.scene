@@ -1,0 +1,34 @@
+{
+    "id": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 16,
+        "borderHeight": 16
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "582e274c-83f4-49d2-9993-2678065be934",
+            "label": "cryos_mini_gui_buttons_button_small_png",
+            "texture": {
+                "key": "gui",
+                "frame": "cryos_mini_gui/buttons/button_small.png"
+            },
+            "x": 8,
+            "y": 8
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

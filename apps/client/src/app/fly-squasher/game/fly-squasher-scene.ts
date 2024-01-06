@@ -17,6 +17,7 @@ import { Scenery } from "./scenery/Scenery";
 import { FlyFactory } from "./fly/fly.factory";
 import { FlySquasherGameData } from "./fly-squasher-game-data";
 import { FlySquasherAudio } from "./audio";
+import { FlySquasherCommunicatorService } from "./fly-squasher-communicator.service";
 
 export class FlySquasherScene extends BaseScene<
   FlySquasherGameData,
@@ -28,7 +29,8 @@ export class FlySquasherScene extends BaseScene<
   FlySquasherPlayerControllerData,
   FlySquasherPlayer,
   FlySquasherSpectatorData,
-  FlySquasherSpectator
+  FlySquasherSpectator,
+  FlySquasherCommunicatorService
 > {
   private readonly worldSpeedState = {
     initialWorldSpeedPerFrame: 0.2,

@@ -24,35 +24,8 @@ export const GameInstanceServiceStub = {
   createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
     //
   },
-  getPlayerColorForNewPlayer(gameInstance: ProbableWaffleGameInstance): string {
-    return "hsl(0, 0%, 0%)";
-  },
-  joinRoom(body: GameInstanceDataDto, user: User): Promise<ProbableWaffleGameInstanceData> {
-    return undefined;
-  },
-  leaveRoom(body: GameInstanceDataDto, user: User) {
-    //
-  },
-  startLevel(body: ProbableWaffleStartLevelDto, user: User) {
-    //
-  },
-  async changeGameMode(user: User, body: ProbableWaffleChangeGameModeDto): Promise<void> {
-    return undefined;
-  },
-  async openPlayerSlot(body: ProbableWaffleAddPlayerDto, user: User): Promise<void> {
-    return undefined;
-  },
-  async playerLeft(body: ProbableWafflePlayerLeftDto, user: User): Promise<void> {
-    return undefined;
-  },
-  async addPlayer(body: ProbableWaffleAddPlayerDto, user: User): Promise<void> {
-    return undefined;
-  },
-  async addSpectator(body: ProbableWaffleAddSpectatorDto, user: User): Promise<void> {
-    return undefined;
-  },
-  async getGameInstance(gameInstanceId: string, user: User): Promise<ProbableWaffleGameInstanceData | null> {
-    return undefined;
+  getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
+    return null;
   },
   async stopGameInstance(gameInstanceId: string, user: User) {
     //

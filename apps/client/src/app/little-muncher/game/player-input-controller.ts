@@ -22,7 +22,7 @@ export class PlayerInputController {
     this.character = character;
     this.resetPosition();
     this.littleMuncherScene.subscribe(
-      this.littleMuncherScene.communicator.move?.onWithInitial(
+      this.littleMuncherScene.communicator.move?.onWithInitialStateChange(
         this.setPosition,
         (position) => (this.littleMuncherScene.player.playerState.data.position = position)
       )

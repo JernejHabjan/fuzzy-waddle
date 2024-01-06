@@ -1,0 +1,52 @@
+{
+    "id": "04311eb6-ed91-4d74-b6e9-4bfe0fcfb458",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "superClassName": "ProbableWaffleScene",
+        "preloadMethodName": "editorPreload",
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "HudProbableWaffle",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+            "id": "08527d63-d35e-452c-be2e-9a98a726c5e2",
+            "unlock": [
+                "x",
+                "y",
+                "scaleX",
+                "scaleY"
+            ],
+            "label": "buttonSmall",
+            "scope": "CLASS",
+            "x": 1232,
+            "y": 40,
+            "scaleX": 2,
+            "scaleY": 2
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "lists": [
+        {
+            "id": "a9e1809e-2eca-4d40-8c83-7c158f629362",
+            "label": "hudElements",
+            "objectIds": [
+                "08527d63-d35e-452c-be2e-9a98a726c5e2"
+            ]
+        }
+    ]
+}

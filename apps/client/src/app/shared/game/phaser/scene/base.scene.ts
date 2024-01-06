@@ -4,7 +4,7 @@ import { EventEmitter } from "@angular/core";
 import { UpdateEventData } from "./update-event-data";
 import { BaseGame } from "../game/base-game";
 import { BaseGameData } from "../game/base-game-data";
-import { Subscription } from "rxjs";
+import { Observable, Subscription, take } from "rxjs";
 import {
   BaseData,
   BaseGameMode,
@@ -16,6 +16,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { Loader } from "../../../../little-muncher/game/loader";
 import { LittleMuncherCommunicatorService } from "../../../../little-muncher/main/communicators/little-muncher-communicator.service";
+import { CommunicatorService } from "../../communicators/CommunicatorService";
 
 export class BaseScene<
     TGameData extends BaseGameData = BaseGameData,
@@ -30,28 +31,49 @@ export class BaseScene<
       TPlayerControllerData
     >,
     TSpectatorData extends BaseSpectatorData = BaseSpectatorData,
-    TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>
+    TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>,
+    TCommunicatorService extends CommunicatorService = CommunicatorService
   >
   extends Scene
   implements CreateSceneFromObjectConfig
 {
-  onInit: EventEmitter<void> = new EventEmitter<void>();
-  onPreload: EventEmitter<void> = new EventEmitter<void>();
-  onCreate: EventEmitter<void> = new EventEmitter<void>();
-  postCreate: EventEmitter<void> = new EventEmitter<void>();
-  onDestroy: EventEmitter<void> = new EventEmitter<void>();
+  _onInit: EventEmitter<void> = new EventEmitter<void>();
+  _onPreload: EventEmitter<void> = new EventEmitter<void>();
+  _onCreate: EventEmitter<void> = new EventEmitter<void>();
+  _postCreate: EventEmitter<void> = new EventEmitter<void>();
+  _onDestroy: EventEmitter<void> = new EventEmitter<void>();
   onUpdate: EventEmitter<UpdateEventData> = new EventEmitter<UpdateEventData>();
   onResize: EventEmitter<void> = new EventEmitter<void>();
 
   private subscriptions: Subscription[] = [];
 
   override game!: BaseGame<TGameData>;
-  communicator!: LittleMuncherCommunicatorService;
+  communicator!: TCommunicatorService;
   baseGameData!: TGameData;
+
+  get onInit(): Observable<void> {
+    return this._onInit.pipe(take(1));
+  }
+
+  get onPreload(): Observable<void> {
+    return this._onPreload.pipe(take(1));
+  }
+
+  get onCreate(): Observable<void> {
+    return this._onCreate.pipe(take(1));
+  }
+
+  get onPostCreate(): Observable<void> {
+    return this._postCreate.pipe(take(1));
+  }
+
+  get onDestroy(): Observable<void> {
+    return this._onDestroy.pipe(take(1));
+  }
 
   preload() {
     new Loader(this);
-    this.onPreload.emit();
+    this._onPreload.emit();
   }
 
   init() {
@@ -61,11 +83,11 @@ export class BaseScene<
     this.registerSceneDestroy();
     this.registerSceneResize();
     this.registerScenePostCreate();
-    this.onInit.emit();
+    this._onInit.emit();
   }
 
   create() {
-    this.onCreate.emit();
+    this._onCreate.emit();
   }
 
   override update(time: number, delta: number) {
@@ -81,7 +103,7 @@ export class BaseScene<
 
   private registerScenePostCreate() {
     this.events.once(Phaser.Scenes.Events.CREATE, () => {
-      this.postCreate.emit();
+      this._postCreate.emit();
     });
   }
 
@@ -99,7 +121,7 @@ export class BaseScene<
   destroy() {
     this.scale.removeAllListeners();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
-    this.onDestroy.emit();
+    this._onDestroy.emit();
   }
 
   get gameState(): TGameState {
@@ -150,5 +172,13 @@ export class BaseScene<
 
   get isSpectator(): boolean {
     return this.baseGameData.gameInstance.isSpectator(this.baseGameData.user.userId);
+  }
+
+  get gameInstanceId(): string {
+    return this.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!;
+  }
+
+  get userId(): string | null {
+    return this.baseGameData.user.userId;
   }
 }

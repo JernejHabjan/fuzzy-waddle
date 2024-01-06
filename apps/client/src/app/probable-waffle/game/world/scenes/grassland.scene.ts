@@ -9,7 +9,7 @@ import { DEPRECATED_scaleHandler } from "../map/DEPRECATED_scale.handler";
 import { MapDefinitions, TileDefinitions } from "../const/map-size.info";
 import { CursorHandler } from "../managers/controllers/input/cursor.handler";
 import { TilemapInputHandler, TilePlacementData } from "../managers/controllers/input/tilemap/tilemap-input.handler";
-import { MultiSelectionHandler } from "../managers/controllers/input/multi-selection.handler";
+import { DEPRECATED_multiSelectionHandler } from "../managers/controllers/input/DEPRECATED_multi-selection.handler";
 import { Subscription } from "rxjs";
 import { TilemapHelper } from "../map/tile/tilemap.helper";
 import { Pathfinder } from "../map/pathfinder";
@@ -35,7 +35,6 @@ import { SpriteRepresentationComponent } from "../../entity/actor/components/spr
 import { PlayerController } from "../managers/controllers/player-controller";
 import { Barracks } from "../../entity/assets/buildings/barracks";
 import { PlayerResourcesComponent } from "../managers/controllers/player-resources-component";
-import { Resources, ResourceType } from "../../entity/economy/resource/resource-type";
 import { TownHall } from "../../entity/assets/buildings/town-hall";
 import { Minerals } from "../../entity/assets/resources/minerals";
 import { Worker } from "../../entity/assets/characters/worker";
@@ -46,7 +45,7 @@ import { GathererComponent } from "../../entity/actor/components/gatherer-compon
 import { HealthComponent } from "../../entity/combat/components/health-component";
 import { DamageTypes } from "../../entity/combat/damage-types";
 import { BuilderComponent } from "../../entity/actor/components/builder-component";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Resources, ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -61,7 +60,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
   private manualTileInputHandler!: ManualTileInputHandler;
-  private multiSelectionHandler!: MultiSelectionHandler;
+  private multiSelectionHandler!: DEPRECATED_multiSelectionHandler;
   private tilemapHelper!: TilemapHelper;
   private manualTilesHelper!: ManualTilesHelper;
   private staticObjectHelper!: StaticObjectHelper;
@@ -185,7 +184,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
       this.manualTileInputHandler
     );
     this.navInputHandler = new NavInputHandler(this, this.pathfinder, this.mapNavHelper);
-    this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
+    this.multiSelectionHandler = new DEPRECATED_multiSelectionHandler(this, this.input, this.cameras.main);
     this.minimapTextureHelper = new MinimapTextureHelper(this);
 
     this.subscribeToSelectionEvents();
@@ -318,7 +317,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
       this.inputHandler.destroy();
       this.navInputHandler.destroy();
       this.scaleHandler.destroy();
-      this.cursorHandler.destroy();
       this.tilemapInputHandler.destroy();
       this.manualTileInputHandler.destroy();
       this.multiSelectionHandler.destroy();

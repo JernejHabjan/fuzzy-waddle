@@ -9,12 +9,15 @@ import {
 } from "../../game-instance/probable-waffle/player";
 import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
 
+export type ProbableWaffleGameCommunicatorType = "selection";
+
 export type ProbableWaffleCommunicatorType =
   | "gameInstanceMetadataDataChange"
   | "gameModeDataChange"
   | "playerDataChange"
   | "spectatorDataChange"
-  | "message";
+  | "message"
+  | ProbableWaffleGameCommunicatorType;
 
 export interface ProbableWaffleCommunicatorEvent {
   gameInstanceId: string;

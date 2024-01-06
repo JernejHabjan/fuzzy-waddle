@@ -1,6 +1,7 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import {
   ProbableWaffleCommunicatorMessageEvent,
+  ProbableWaffleCommunicatorSelectionEvent,
   ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
@@ -12,6 +13,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
 import { Socket } from "ngx-socket-io";
+import { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
 
 export const probableWaffleCommunicatorServiceStub = {
   startCommunication: () => {},
@@ -21,7 +23,7 @@ export const probableWaffleCommunicatorServiceStub = {
 @Injectable({
   providedIn: "root"
 })
-export class ProbableWaffleCommunicatorService {
+export class ProbableWaffleCommunicatorService implements CommunicatorService, OnDestroy {
   gameInstanceMetadataChanged?: TwoWayCommunicator<
     ProbableWaffleGameInstanceMetadataChangeEvent,
     ProbableWaffleCommunicatorType
@@ -30,6 +32,9 @@ export class ProbableWaffleCommunicatorService {
   playerChanged?: TwoWayCommunicator<ProbableWafflePlayerDataChangeEvent, ProbableWaffleCommunicatorType>;
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
+
+  // game events
+  selection?: TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>;
 
   startCommunication(gameInstanceId: string, socket: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
@@ -61,21 +66,41 @@ export class ProbableWaffleCommunicatorService {
       socket
     );
 
+    this.createGameEvents(gameInstanceId, socket);
+
     socket.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
       gameInstanceId,
       type: "join"
     } satisfies ProbableWaffleWebsocketRoomEvent);
   }
 
+  private createGameEvents(gameInstanceId: string, socket: Socket) {
+    this.selection = new TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>(
+      ProbableWaffleGatewayEvent.ProbableWaffleAction,
+      "selection",
+      gameInstanceId,
+      socket
+    );
+  }
+
   stopCommunication(gameInstanceId: string, socket: Socket) {
+    this.destroySubscriptions();
+    socket.emit(ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance, {
+      gameInstanceId,
+      type: "leave"
+    } satisfies ProbableWaffleWebsocketRoomEvent);
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubscriptions();
+  }
+
+  private destroySubscriptions() {
     this.gameInstanceMetadataChanged?.destroy();
     this.gameModeChanged?.destroy();
     this.playerChanged?.destroy();
     this.spectatorChanged?.destroy();
     this.message?.destroy();
-    socket.emit(ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance, {
-      gameInstanceId,
-      type: "leave"
-    } satisfies ProbableWaffleWebsocketRoomEvent);
+    this.selection?.destroy();
   }
 }
