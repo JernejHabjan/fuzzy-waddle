@@ -9,10 +9,15 @@ import { GameInstanceClientService } from "./communicators/game-instance-client.
 import { gameInstanceClientServiceStub } from "./communicators/game-instance-client.service.spec";
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { GameInterfaceComponent } from "./game-interface/game-interface.component";
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 jest.mock("../game/const/game-config", () => ({
   littleMuncherGameConfig: {}
 }));
+
+@Component({ selector: "little-muncher-main", template: "", standalone: true, imports: [CommonModule] })
+export class MainTestingComponent {}
 
 describe("MainComponent", () => {
   let component: MainComponent;

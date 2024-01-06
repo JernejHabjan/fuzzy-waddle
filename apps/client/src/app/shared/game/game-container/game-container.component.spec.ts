@@ -7,20 +7,6 @@ import { LittleMuncherGameInstance, LittleMuncherUserInfo } from "@fuzzy-waddle/
 import { LittleMuncherCommunicatorService } from "../../../little-muncher/main/communicators/little-muncher-communicator.service";
 import { CommonModule } from "@angular/common";
 
-jest.mock("phaser", () => {
-  return {
-    Game: class Game {
-      constructor() {
-        //
-      }
-
-      destroy() {
-        //
-      }
-    }
-  };
-});
-
 @Component({ selector: "fuzzy-waddle-game-container", template: "", standalone: true, imports: [CommonModule] })
 export class GameContainerTestingComponent {
   @Input({ required: true }) gameConfig!: Phaser.Types.Core.GameConfig;

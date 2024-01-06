@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { UserInstanceServiceInterface } from "./user-instance.service.interface";
 
 export interface GamesVisited {
   name: string;
@@ -8,7 +9,7 @@ export interface GamesVisited {
 @Injectable({
   providedIn: "root"
 })
-export class UserInstanceService {
+export class UserInstanceService implements UserInstanceServiceInterface {
   getPageTheme = () => "light";
   private readonly gamesVisitedKey = "games-visited";
 

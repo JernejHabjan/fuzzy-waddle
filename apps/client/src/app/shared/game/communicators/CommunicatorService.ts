@@ -1,4 +1,3 @@
-import { OnDestroy } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 
 export interface CommunicatorService {

@@ -9,8 +9,10 @@ import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import { DbAccessTestService } from "../../data-access/db-access-test/db-access-test.service";
 import { dbAccessTestServiceStub } from "../../data-access/db-access-test/db-access-test.service.spec";
-import { MainComponent } from "../../fly-squasher/main/main.component";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
+import { ServerHealthService } from "../../shared/services/server-health.service";
+import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("HomePageComponent", () => {
   let component: HomePageComponent;
@@ -18,14 +20,15 @@ describe("HomePageComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomePageComponent, FontAwesomeTestingModule, RouterTestingModule],
+      imports: [HomePageComponent, FontAwesomeTestingModule, RouterTestingModule, HttpClientTestingModule],
       providers: [
         provideRouter([]),
         { provide: AuthService, useValue: authServiceStub },
-        { provide: DbAccessTestService, useValue: dbAccessTestServiceStub }
+        { provide: DbAccessTestService, useValue: dbAccessTestServiceStub },
+        { provide: ServerHealthService, useValue: serverHealthServiceStub }
       ]
     })
-      .overrideComponent(MainComponent, {
+      .overrideComponent(HomePageComponent, {
         remove: {
           imports: [HomePageNavComponent]
         },

@@ -1,7 +1,7 @@
-import 'jest-canvas-mock';
-import 'jest-preset-angular/setup-jest';
+import "jest-canvas-mock";
+import "jest-preset-angular/setup-jest";
 
-import * as failOnConsole from 'jest-fail-on-console';
+import * as failOnConsole from "jest-fail-on-console";
 
 failOnConsole();
 
@@ -10,16 +10,30 @@ failOnConsole();
 // ^^^^^^
 //
 // SyntaxError: Cannot use import statement outside a module
-jest.mock('@dicebear/core', () => {
+jest.mock("@dicebear/core", () => {
   return {
     createAvatar: () => {
-      return '';
+      return "";
     }
   };
 });
 
-jest.mock('@dicebear/pixel-art', () => {
+jest.mock("@dicebear/pixel-art", () => {
   return {
     sprites: {}
+  };
+});
+
+jest.mock("phaser", () => {
+  return {
+    Game: class Game {
+      constructor() {
+        //
+      }
+
+      destroy() {
+        //
+      }
+    }
   };
 });
