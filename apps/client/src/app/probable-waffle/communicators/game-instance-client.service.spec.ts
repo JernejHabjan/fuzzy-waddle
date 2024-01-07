@@ -12,6 +12,7 @@ import {
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
@@ -19,6 +20,8 @@ import {
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { GameInstanceStorageService } from "./storage/game-instance-storage.service";
+import { gameInstanceStorageServiceStub } from "./storage/game-instance-storage.service.spec";
 
 export const gameInstanceClientServiceStub = {
   gameInstance: undefined as ProbableWaffleGameInstance | undefined,
@@ -88,6 +91,15 @@ export const gameInstanceClientServiceStub = {
     data: Partial<ProbableWaffleGameInstanceMetadataData>
   ): Promise<void> {
     return Promise.resolve();
+  },
+  async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    return Promise.resolve();
+  },
+  async saveGameInstance(saveName: string): Promise<void> {
+    return Promise.resolve();
+  },
+  async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    return Promise.resolve();
   }
 } satisfies GameInstanceClientServiceInterface;
 describe("GameInstanceClientService", () => {
@@ -96,7 +108,10 @@ describe("GameInstanceClientService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [{ provide: AuthService, useValue: authServiceStub }]
+      providers: [
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: GameInstanceStorageService, useValue: gameInstanceStorageServiceStub }
+      ]
     });
     service = TestBed.inject(GameInstanceClientService);
   });

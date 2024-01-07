@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { LobbyComponent } from "../lobby/lobby.component";
+import { LobbyComponent } from "../../lobby/lobby.component";
 
 @Component({
   selector: "fuzzy-waddle-lobby-page",

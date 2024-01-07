@@ -5,28 +5,31 @@ import {
   GameSessionState,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleMapEnum
+  ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 @Component({
-  selector: "fuzzy-waddle-instant-demo",
+  selector: "fuzzy-waddle-instant-game",
   standalone: true,
   imports: [CommonModule, LoaderComponent],
   template: `<fuzzy-waddle-loader />`
 })
-export class InstantDemoComponent implements OnInit {
+export class InstantGameComponent implements OnInit {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
   async ngOnInit(): Promise<void> {
     await this.gameInstanceClientService.createGameInstance(
-      "InstantDemo",
+      "InstantGame",
       ProbableWaffleGameInstanceVisibility.Private,
-      ProbableWaffleGameInstanceType.InstantDemo
+      ProbableWaffleGameInstanceType.InstantGame
     );
     await this.gameInstanceClientService.addSelfAsPlayer();
     await this.gameInstanceClientService.addAiPlayer();
-    await this.gameInstanceClientService.gameModeChanged("map", { map: ProbableWaffleMapEnum.RiverCrossing });
+
+    const allMaps = Object.values(ProbableWaffleLevels);
+    const map = allMaps[Math.floor(Math.random() * allMaps.length)].id;
+    await this.gameInstanceClientService.gameModeChanged("map", { map });
     await this.gameInstanceClientService.gameInstanceMetadataChanged("sessionState", {
       sessionState: GameSessionState.MovingPlayersToGame
     });

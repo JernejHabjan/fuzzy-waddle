@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { InstantDemoComponent } from "./instant-demo.component";
+import { InstantGameComponent } from "./instant-game.component";
 
-describe("InstantDemoComponent", () => {
-  let component: InstantDemoComponent;
-  let fixture: ComponentFixture<InstantDemoComponent>;
+describe("InstantGameComponent", () => {
+  let component: InstantGameComponent;
+  let fixture: ComponentFixture<InstantGameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InstantDemoComponent]
+      imports: [InstantGameComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InstantDemoComponent);
+    fixture = TestBed.createComponent(InstantGameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

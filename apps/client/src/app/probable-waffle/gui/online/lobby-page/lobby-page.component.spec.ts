@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { LobbyPageComponent } from "./lobby-page.component";
-import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
-import { LobbyTestingComponent } from "../lobby/lobby.component.spec";
-import { LobbyComponent } from "../lobby/lobby.component";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { LobbyTestingComponent } from "../../lobby/lobby.component.spec";
+import { LobbyComponent } from "../../lobby/lobby.component";
 
 describe("LobbyPageComponent", () => {
   let component: LobbyPageComponent;

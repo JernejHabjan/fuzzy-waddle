@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 import ButtonLarge from "../prefabs/gui/buttons/ButtonLarge";
+import ButtonSmall from "../prefabs/gui/buttons/ButtonSmall";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
@@ -14,7 +15,6 @@ import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-  private quitButtonSubscription?: Subscription;
   constructor() {
     super("HudProbableWaffle");
 
@@ -30,20 +30,27 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     buttonLarge.scaleX = 3;
     buttonLarge.scaleY = 3;
 
+    // buttonSmall
+    const buttonSmall = new ButtonSmall(this, 1180, 38);
+    this.add.existing(buttonSmall);
+
     // lists
     const hudElements: Array<any> = [];
 
     this.buttonLarge = buttonLarge;
+    this.buttonSmall = buttonSmall;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
   }
 
   private buttonLarge!: ButtonLarge;
+  private buttonSmall!: ButtonSmall;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
-
+  private quitButtonSubscription?: Subscription;
+  private saveGameSubscription?: Subscription;
   preload() {
     this.load.pack("asset-pack-gui", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle-gui.json");
   }
@@ -60,6 +67,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new HudElementVisibilityHandler(this, this.hudElements);
     new MultiSelectionHandler(this);
     this.handleQuit();
+    this.handleSaveGame();
   }
 
   private resize(gameSize: { height: number; width: number }) {
@@ -85,8 +93,15 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     });
   }
 
+  private handleSaveGame() {
+    this.saveGameSubscription = this.buttonSmall.clicked.subscribe(() => {
+      this.communicator.saveGame.emit();
+    });
+  }
+
   destroy() {
     this.quitButtonSubscription?.unsubscribe();
+    this.saveGameSubscription?.unsubscribe();
     super.destroy();
   }
 

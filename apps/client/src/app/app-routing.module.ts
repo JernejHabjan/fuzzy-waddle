@@ -1,9 +1,9 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
-import { GameInstanceGuard } from "./probable-waffle/gui/lobby-page/game-instance.guard";
 import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 import { environment } from "../environments/environment";
+import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
 
 const littleMuncherRoutes = [
   {
@@ -46,10 +46,18 @@ const probableWaffleRoutes = [
               import("./probable-waffle/gui/skirmish/skirmish.component").then((m) => m.SkirmishComponent)
           },
           {
-            path: "instant-demo",
+            path: "instant-game",
             loadComponent: () =>
-              import("./probable-waffle/gui/instant-demo/instant-demo.component").then((m) => m.InstantDemoComponent),
+              import("./probable-waffle/gui/instant-game/instant-game.component").then((m) => m.InstantGameComponent),
             canActivate: [() => !environment.production]
+          },
+          {
+            path: "load",
+            loadComponent: () => import("./probable-waffle/gui/load/load.component").then((m) => m.LoadComponent)
+          },
+          {
+            path: "replay",
+            loadComponent: () => import("./probable-waffle/gui/replay/replay.component").then((m) => m.ReplayComponent)
           },
           {
             path: "progress",

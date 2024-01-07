@@ -31,6 +31,18 @@
             "y": 40,
             "scaleX": 3,
             "scaleY": 3
+        },
+        {
+            "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+            "id": "b042eaac-6d53-49e6-bfea-e1192a74a0b0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "buttonSmall",
+            "scope": "CLASS",
+            "x": 1180,
+            "y": 38
         }
     ],
     "plainObjects": [],

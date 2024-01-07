@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { EventEmitter, Injectable, OnDestroy } from "@angular/core";
 import {
   ProbableWaffleCommunicatorMessageEvent,
   ProbableWaffleCommunicatorSelectionEvent,
@@ -33,6 +33,8 @@ export class ProbableWaffleCommunicatorService
 
   // game events
   selection?: TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>;
+
+  saveGame = new EventEmitter<void>(); // todo just for test
 
   startCommunication(gameInstanceId: string, socket: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<

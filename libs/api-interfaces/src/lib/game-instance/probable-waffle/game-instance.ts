@@ -66,17 +66,3 @@ export class ProbableWaffleGameInstance extends GameInstance<
     });
   }
 }
-
-export interface ProbableWaffleJoinDto extends GameInstanceDataDto {
-  gameInstanceId: string;
-  type: "player" | "spectator";
-}
-
-export interface ProbableWaffleLeaveDto extends GameInstanceDataDto {
-  gameInstanceId: string;
-}
-
-export interface PendingMatchmakingGameInstance {
-  gameInstance: ProbableWaffleGameInstance;
-  commonMapPoolIds: number[];
-}

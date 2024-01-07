@@ -58,7 +58,6 @@ import { GameProbableWaffleScene } from "./GameProbableWaffleScene";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -68,7 +67,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
@@ -78,7 +76,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.image(-195, 1187, "outside", "architecture/obstruction/fence/top_left.png");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
 
     // hedgehog
     const hedgehog = new Hedgehog(this, 96, 1360);
@@ -98,7 +96,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.image(-261, 1219, "outside", "architecture/obstruction/fence/top_left.png");
 
     // foliage_tall_grass_tall_grass_7_png
-    const foliage_tall_grass_tall_grass_7_png = this.add.image(-261, 1256, "outside", "foliage/tall_grass/tall_grass_7.png");
+    const foliage_tall_grass_tall_grass_7_png = this.add.image(
+      -261,
+      1256,
+      "outside",
+      "foliage/tall_grass/tall_grass_7.png"
+    );
     foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
 
     // foliage_trees_resources_special_tree_christmas_png_1
@@ -167,7 +170,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerMale);
 
     // foliage_tall_grass_tall_grass_8_png
-    const foliage_tall_grass_tall_grass_8_png = this.add.image(-162, 1305, "outside", "foliage/tall_grass/tall_grass_8.png");
+    const foliage_tall_grass_tall_grass_8_png = this.add.image(
+      -162,
+      1305,
+      "outside",
+      "foliage/tall_grass/tall_grass_8.png"
+    );
     foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
     // skaduweeWorkerFemale

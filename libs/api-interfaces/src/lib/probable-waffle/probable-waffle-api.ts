@@ -7,6 +7,10 @@ import {
 import { ProbableWaffleMapEnum } from "./probable-waffle";
 import { ProbableWaffleSpectatorData } from "../game-instance/probable-waffle/spectator";
 import { GameInstanceDataDto } from "../game-instance/game-instance";
+import {
+  ProbableWaffleGameInstance,
+  ProbableWaffleGameInstanceData
+} from "../game-instance/probable-waffle/game-instance";
 
 export interface ProbableWaffleStartLevelDto extends GameInstanceDataDto {
   gameInstanceId: string;
@@ -48,4 +52,14 @@ export interface RequestGameSearchForMatchMakingDto {
 
 export enum ProbableWaffleGatewayRoomTypes {
   ProbableWaffleGameInstance = "probable_waffle_gi_"
+}
+
+export interface PendingMatchmakingGameInstance {
+  gameInstance: ProbableWaffleGameInstance;
+  commonMapPoolIds: number[];
+}
+
+export interface ProbableWaffleGameInstanceSaveData {
+  saveName: string;
+  gameInstanceData: ProbableWaffleGameInstanceData;
 }

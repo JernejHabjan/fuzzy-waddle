@@ -4,7 +4,6 @@
 
 import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
-import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 /* END-USER-IMPORTS */
 
@@ -71,8 +70,10 @@ export default class PreloadProbableWaffle extends ProbableWaffleScene {
     this.editorCreate();
     this.center();
     this.load.pack("asset-pack", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json");
-    const map = this.getMap();
-    this.load.pack("asset-pack-map", "assets/probable-waffle/asset-packers/maps/" + map.loader.mapLoaderAssetPackPath);
+    this.load.pack(
+      "asset-pack-map",
+      "assets/probable-waffle/asset-packers/maps/" + this.mapInfo.loader.mapLoaderAssetPackPath
+    );
   }
 
   center() {
@@ -93,14 +94,7 @@ export default class PreloadProbableWaffle extends ProbableWaffleScene {
   }
 
   create() {
-    const map = this.getMap();
-    this.scene.start(map.loader.mapSceneKey);
-  }
-
-  private getMap() {
-    const levelId = this.baseGameData.gameInstance.data.gameModeData!.map!;
-    const level = ProbableWaffleLevels[levelId];
-    return level;
+    this.scene.start(this.mapInfo.loader.mapSceneKey);
   }
 
   /* END-USER-CODE */

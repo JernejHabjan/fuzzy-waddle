@@ -5,6 +5,7 @@ import {
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
@@ -44,4 +45,7 @@ export interface GameInstanceClientServiceInterface {
   getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null>;
   addAiPlayer(): Promise<void>;
   addSelfAsPlayer(): Promise<void>;
+  loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
+  saveGameInstance(saveName: string): Promise<void>;
+  startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
 }

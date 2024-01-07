@@ -16,6 +16,7 @@ import {
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData,
@@ -38,6 +39,7 @@ import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
+import { GameInstanceStorageService } from "./storage/game-instance-storage.service";
 
 @Injectable({
   providedIn: "root"
@@ -55,6 +57,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
+  private readonly gameInstanceStorageService = inject(GameInstanceStorageService);
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
@@ -119,6 +122,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
+  /**
+   * todo just for test
+   */
+  listenToSaveGameEvents(): void {
+    this.communicatorSubscriptions.push(
+      this.probableWaffleCommunicatorService.saveGame.subscribe(async () => {
+        await this.saveGameInstance("test" + Math.random());
+      })
+    );
+  }
+
   listenToGameModeDataEvents(): void {
     if (!this.communicators) return;
     this.communicatorSubscriptions.push(
@@ -176,6 +190,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToGameModeDataEvents();
     this.listenToPlayerEvents();
     this.listenToSpectatorEvents();
+    this.listenToSaveGameEvents();
   }
 
   private stopListeningToGameInstanceEvents() {
@@ -352,7 +367,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         // directly to game
         await this.router.navigate(["probable-waffle/game"]);
         break;
-      case ProbableWaffleGameInstanceType.InstantDemo:
+      case ProbableWaffleGameInstanceType.InstantGame:
         // directly to game
         await this.router.navigate(["probable-waffle/game"]);
         break;
@@ -438,5 +453,31 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) return;
     const url = environment.api + "api/probable-waffle/matchmaking/stop-request-game-search-for-matchmaking";
     await firstValueFrom(this.httpClient.delete<void>(url, {}));
+  }
+
+  /**
+   * todo this is a prototype
+   */
+  async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
+    this.startListeningToGameInstanceEvents();
+    await this.navigateToLobbyOrDirectlyToGame();
+  }
+
+  async saveGameInstance(saveName: string): Promise<void> {
+    await this.gameInstanceStorageService.saveToStorage({
+      saveName,
+      gameInstanceData: this.gameInstance!.data
+    });
+  }
+
+  /**
+   * todo this is a prototype
+   */
+  async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    // todo here should be initial game instance data
+    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
+    this.startListeningToGameInstanceEvents();
+    await this.navigateToLobbyOrDirectlyToGame();
   }
 }
