@@ -3,18 +3,16 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
-import { EventEmitter } from "@angular/core";
 /* START-USER-IMPORTS */
+import { EventEmitter } from "@angular/core";
 /* END-USER-IMPORTS */
 
-export default class ButtonSmall extends Phaser.GameObjects.Image {
-  clicked = new EventEmitter<void>();
+export default class ButtonSmall extends Phaser.GameObjects.NineSlice {
 
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 8, y ?? 8, texture || "gui", frame ?? "cryos_mini_gui/buttons/button_small.png");
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string, width?: number, height?: number, leftWidth?: number, rightWidth?: number, topHeight?: number, bottomHeight?: number) {
+		super(scene, x ?? 10, y ?? 10, texture || "gui", frame ?? "cryos_mini_gui/buttons/button_small.png", width ?? 20, height ?? 20, leftWidth ?? 5, rightWidth ?? 5, topHeight ?? 5, bottomHeight ?? 5);
 
-    /* START-USER-CTR-CODE */
-
+		/* START-USER-CTR-CODE */
     this.setInteractive();
     this.on("pointerdown", () => {
       this.setTexture("gui", "cryos_mini_gui/buttons/button_small_pressed.png");
@@ -25,9 +23,10 @@ export default class ButtonSmall extends Phaser.GameObjects.Image {
       }, 100);
     });
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
+  clicked = new EventEmitter<void>();
 
   // Write your code here.
 

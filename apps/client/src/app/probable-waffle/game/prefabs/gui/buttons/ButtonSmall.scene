@@ -8,20 +8,26 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 16,
-        "borderHeight": 16
+        "borderWidth": 20,
+        "borderHeight": 20
     },
     "displayList": [
         {
-            "type": "Image",
+            "type": "NineSlice",
             "id": "582e274c-83f4-49d2-9993-2678065be934",
             "label": "cryos_mini_gui_buttons_button_small_png",
             "texture": {
                 "key": "gui",
                 "frame": "cryos_mini_gui/buttons/button_small.png"
             },
-            "x": 8,
-            "y": 8
+            "x": 10,
+            "y": 10,
+            "width": 20,
+            "height": 20,
+            "leftWidth": 5,
+            "rightWidth": 5,
+            "topHeight": 5,
+            "bottomHeight": 5
         }
     ],
     "plainObjects": [],

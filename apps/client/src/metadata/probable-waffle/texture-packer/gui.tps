@@ -180,7 +180,7 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <true/>
+                <false/>
                 <key>scale9Borders</key>
                 <rect>3,3,2,2</rect>
                 <key>scale9Paddings</key>
@@ -195,7 +195,7 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <true/>
+                <false/>
                 <key>scale9Borders</key>
                 <rect>5,5,2,2</rect>
                 <key>scale9Paddings</key>
@@ -211,7 +211,7 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <true/>
+                <false/>
                 <key>scale9Borders</key>
                 <rect>5,5,6,6</rect>
                 <key>scale9Paddings</key>
@@ -226,7 +226,7 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <true/>
+                <false/>
                 <key>scale9Borders</key>
                 <rect>2,2,4,4</rect>
                 <key>scale9Paddings</key>
@@ -241,7 +241,7 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <true/>
+                <false/>
                 <key>scale9Borders</key>
                 <rect>6,6,12,12</rect>
                 <key>scale9Paddings</key>

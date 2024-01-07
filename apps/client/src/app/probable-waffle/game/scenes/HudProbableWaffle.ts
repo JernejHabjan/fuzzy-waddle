@@ -14,6 +14,7 @@ import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
+
   constructor() {
     super("HudProbableWaffle");
 
@@ -23,6 +24,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // buttonSave
     const buttonSave = new ButtonSmall(this, 1180, 38);
     this.add.existing(buttonSave);
