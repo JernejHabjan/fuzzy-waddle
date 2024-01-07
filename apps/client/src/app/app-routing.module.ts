@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
 import { GameInstanceGuard } from "./probable-waffle/gui/lobby-page/game-instance.guard";
-import { ChooseLevelComponent } from "./fly-squasher/choose-level/choose-level.component";
 import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 
 const littleMuncherRoutes = [
@@ -63,8 +62,8 @@ const probableWaffleRoutes = [
           {
             path: "score-screen",
             loadComponent: () =>
-              import("./probable-waffle/gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent)
-            // canActivate: [GameInstanceGuard] // todo
+              import("./probable-waffle/gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent),
+            canActivate: [GameInstanceGuard]
           },
           {
             path: "game",
