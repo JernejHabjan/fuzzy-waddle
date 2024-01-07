@@ -15,6 +15,8 @@ import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.c
 import { MatchmakingComponent } from "./matchmaking/matchmaking.component";
 import { LobbiesComponent } from "./lobbies/lobbies.component";
 import { HostComponent } from "./host/host.component";
+import { GameModeDefinitionComponent } from "../lobby/game-mode-definition/game-mode-definition.component";
+import { GameModeDefinitionTestingComponent } from "../lobby/game-mode-definition/game-mode-definition.component.spec";
 
 describe("OnlineComponent", () => {
   let component: OnlineComponent;
@@ -37,10 +39,22 @@ describe("OnlineComponent", () => {
     })
       .overrideComponent(OnlineComponent, {
         remove: {
-          imports: [HomeNavComponent, MatchmakingComponent, LobbiesComponent, HostComponent]
+          imports: [
+            HomeNavComponent,
+            MatchmakingComponent,
+            GameModeDefinitionComponent,
+            LobbiesComponent,
+            HostComponent
+          ]
         },
         add: {
-          imports: [HomeNavTestingComponent, MatchmakingTestingComponent, LobbiesTestingComponent, HostTestingComponent]
+          imports: [
+            HomeNavTestingComponent,
+            MatchmakingTestingComponent,
+            GameModeDefinitionTestingComponent,
+            LobbiesTestingComponent,
+            HostTestingComponent
+          ]
         }
       })
       .compileComponents();

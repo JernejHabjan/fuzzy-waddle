@@ -4,8 +4,8 @@ import { GameModeDefinitionComponent } from "./game-mode-definition.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { GameInstanceClientService } from "../../../../little-muncher/main/communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../../little-muncher/main/communicators/game-instance-client.service.spec";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",

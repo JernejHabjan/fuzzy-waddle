@@ -30,6 +30,13 @@ export class SceneCommunicatorClientService implements SceneCommunicatorClientSe
   }
 
   get communicatorObservables(): ProbableWaffleCommunicators {
+    if (
+      !this.communicator.gameInstanceMetadataChanged ||
+      !this.communicator.gameModeChanged ||
+      !this.communicator.playerChanged ||
+      !this.communicator.spectatorChanged
+    )
+      return null;
     return {
       gameInstanceObservable: this.communicator.gameInstanceMetadataChanged!.on,
       gameModeObservable: this.communicator.gameModeChanged!.on,
