@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
 import { GameInstanceGuard } from "./probable-waffle/gui/lobby-page/game-instance.guard";
 import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
+import { environment } from "../environments/environment";
 
 const littleMuncherRoutes = [
   {
@@ -45,6 +46,12 @@ const probableWaffleRoutes = [
               import("./probable-waffle/gui/skirmish/skirmish.component").then((m) => m.SkirmishComponent)
           },
           {
+            path: "instant-demo",
+            loadComponent: () =>
+              import("./probable-waffle/gui/instant-demo/instant-demo.component").then((m) => m.InstantDemoComponent),
+            canActivate: [() => !environment.production]
+          },
+          {
             path: "progress",
             loadComponent: () =>
               import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)
@@ -70,7 +77,8 @@ const probableWaffleRoutes = [
             loadComponent: () =>
               import("./probable-waffle/gui/main/probable-waffle-game.component").then(
                 (m) => m.ProbableWaffleGameComponent
-              )
+              ),
+            canActivate: [GameInstanceGuard]
           }
         ]
       },

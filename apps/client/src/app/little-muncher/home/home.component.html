@@ -4,7 +4,7 @@
 
 <div class="card-container">
   <div class="general-title">Hill to climb on:</div>
-  <div class="d-flex flex-column" *ngIf="!serverHealthService.serverChecking; else checkingServer">
+  <div class="d-flex flex-column">
     <button
       *ngFor="let hill of LittleMuncherHills | keyvalue"
       class="btn btn-outline-primary m-2 p-2"
@@ -16,7 +16,3 @@
 </div>
 
 <little-muncher-spectate />
-
-<ng-template #checkingServer>
-  <fuzzy-waddle-loader />
-</ng-template>

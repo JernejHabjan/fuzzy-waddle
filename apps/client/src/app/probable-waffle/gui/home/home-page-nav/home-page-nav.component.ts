@@ -12,7 +12,8 @@ import { RouterLink } from "@angular/router";
   imports: [CommonModule, HomeNavComponent, RouterLink]
 })
 export class HomePageNavComponent {
-  protected enabledCampaign = !environment.production; // todo
-  protected enabledProgress = !environment.production; // todo
-  protected enabledOptions: boolean = !environment.production; // todo
+  protected readonly enabledInstantDemoGame = !environment.production;
+  protected readonly enabledCampaign = !environment.production; // todo
+  protected readonly enabledProgress = !environment.production; // todo
+  protected readonly enabledOptions: boolean = !environment.production; // todo
 }

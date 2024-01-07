@@ -95,6 +95,9 @@ importers:
       '@nestjs/websockets':
         specifier: ^10.2.8
         version: 10.2.8(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(@nestjs/platform-socket.io@10.2.8)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@ng-bootstrap/ng-bootstrap':
+        specifier: ^15.1.2
+        version: 15.1.2(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/forms@17.0.1)(@angular/localize@17.0.1)(@popperjs/core@2.11.8)(rxjs@7.8.1)
       '@nx/angular':
         specifier: 17.1.1
         version: 17.1.1(@angular-devkit/build-angular@17.0.0)(@angular-devkit/core@17.0.0)(@angular-devkit/schematics@17.0.0)(@schematics/angular@17.0.0)(@types/node@20.9.0)(cypress@13.5.0)(eslint@8.53.0)(nx@17.1.1)(rxjs@7.8.1)(ts-node@10.9.1)(typescript@5.2.2)
@@ -3801,6 +3804,25 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 7.8.1
       tslib: 2.6.2
+
+  /@ng-bootstrap/ng-bootstrap@15.1.2(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/forms@17.0.1)(@angular/localize@17.0.1)(@popperjs/core@2.11.8)(rxjs@7.8.1):
+    resolution: {integrity: sha512-mM2yiGnt9o7KZLIFp8K1vjfmVfu7HR3d8dhH5SszfArbgn9DvvQ4P5D5TDGygzyBSzeyZe18p7I8rX8vgA6DKw==}
+    peerDependencies:
+      '@angular/common': ^16.0.0
+      '@angular/core': ^16.0.0
+      '@angular/forms': ^16.0.0
+      '@angular/localize': ^16.0.0
+      '@popperjs/core': ^2.11.6
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/common': 17.0.1(@angular/core@17.0.1)(rxjs@7.8.1)
+      '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
+      '@angular/forms': 17.0.1(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/platform-browser@17.0.1)(rxjs@7.8.1)
+      '@angular/localize': 17.0.1(@angular/compiler-cli@17.0.1)(@angular/compiler@17.0.1)
+      '@popperjs/core': 2.11.8
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    dev: false
 
   /@ngtools/webpack@17.0.0(@angular/compiler-cli@17.0.1)(typescript@5.2.2)(webpack@5.89.0):
     resolution: {integrity: sha512-/Bb5MXlphNp3UDsQDa4EB4AwpF4D/plrCPd5YGfVvD43j5g5Rpen+cqz5jai1zfAkF1dPl2qq0nRp/jwmJO3uA==}

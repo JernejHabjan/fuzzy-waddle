@@ -2,12 +2,20 @@
   <div class="chart-title">
     <h3>{{ chartTitle }}</h3>
   </div>
-  <canvas
-    baseChart
-    [data]="chartData"
-    [options]="chartOptions"
-    [legend]="chartLegend"
-    [type]="chartType"
-  >
-  </canvas>
+  @if (ready) {
+    @if (chartData.labels!.length > 1) {
+      <canvas
+        baseChart
+        [data]="chartData"
+        [options]="chartOptions"
+        [legend]="chartLegend"
+        [type]="chartType"
+      >
+      </canvas>
+    } @else {
+      <div class="no-data">
+        <h3>No data available</h3>
+      </div>
+    }
+  }
 </div>

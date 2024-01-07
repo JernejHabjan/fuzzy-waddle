@@ -19,6 +19,7 @@ import { ChartConfiguration, ChartData, ChartTypeRegistry, DefaultDataPoint } fr
 })
 export class ScoreThroughTimeComponent implements OnInit {
   @Input({ required: true }) summaryType!: "units" | "buildings" | "resources";
+  protected ready = false;
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly chartData: ChartData<"line", Array<number | DefaultDataPoint<keyof ChartTypeRegistry>>, string> = {
     datasets: [],
@@ -89,6 +90,7 @@ export class ScoreThroughTimeComponent implements OnInit {
         borderColor: GameSetupHelpers.getColorForPlayer(player.playerNumber!, players.length)
       });
     });
+    this.ready = true;
   }
 
   private getBuildingProducedForPlayer(player: ProbableWafflePlayer, allTimestamps: number[]): number[] {

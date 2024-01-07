@@ -4,6 +4,7 @@ import {
   ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
@@ -25,6 +26,10 @@ export interface GameInstanceClientServiceInterface {
   joinGameInstanceAsPlayer(gameInstanceId: string): Promise<void>;
   joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void>;
   get currentGameInstanceId(): string | null;
+  gameInstanceMetadataChanged(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>,
+    data: Partial<ProbableWaffleGameInstanceMetadataData>
+  ): Promise<void>;
   gameModeChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
     gameModeData: ProbableWaffleGameModeData

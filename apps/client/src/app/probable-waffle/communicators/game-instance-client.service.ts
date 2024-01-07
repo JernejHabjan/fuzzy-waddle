@@ -1,4 +1,4 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, NgZone } from "@angular/core";
 import { filter, firstValueFrom, Observable, Subscription } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
@@ -56,6 +56,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
   private readonly router = inject(Router);
+  private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
 
@@ -103,7 +104,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
                 await this.router.navigate(["probable-waffle/game"]);
                 break;
               case GameSessionState.ToScoreScreen:
-                await this.router.navigate(["probable-waffle/score-screen"]);
+                await this.ngZone.run(async () => {
+                  await this.router.navigate(["probable-waffle/score-screen"]);
+                });
                 break;
               case GameSessionState.Stopped:
                 this.stopListeningToGameInstanceEvents();
@@ -187,10 +190,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.MovingPlayersToGame });
   }
 
-  private async gameInstanceMetadataChanged(
+  async gameInstanceMetadataChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>,
     data: Partial<ProbableWaffleGameInstanceMetadataData>
-  ) {
+  ): Promise<void> {
     if (!this.currentGameInstanceId) return;
 
     this.probableWaffleCommunicatorService.gameInstanceMetadataChanged?.send({
@@ -346,6 +349,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
         break;
       case ProbableWaffleGameInstanceType.Matchmaking:
+        // directly to game
+        await this.router.navigate(["probable-waffle/game"]);
+        break;
+      case ProbableWaffleGameInstanceType.InstantDemo:
         // directly to game
         await this.router.navigate(["probable-waffle/game"]);
         break;

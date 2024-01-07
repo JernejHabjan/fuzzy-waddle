@@ -11,6 +11,7 @@ import {
   ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
@@ -80,6 +81,12 @@ export const gameInstanceClientServiceStub = {
     this.gameInstance?.addPlayer(this.gameInstance?.initPlayer({} as any));
   },
   async addSelfAsPlayer(): Promise<void> {
+    return Promise.resolve();
+  },
+  async gameInstanceMetadataChanged(
+    property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>,
+    data: Partial<ProbableWaffleGameInstanceMetadataData>
+  ): Promise<void> {
     return Promise.resolve();
   }
 } satisfies GameInstanceClientServiceInterface;
