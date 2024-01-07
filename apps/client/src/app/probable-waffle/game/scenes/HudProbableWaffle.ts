@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import ButtonLarge from "../prefabs/gui/buttons/ButtonLarge";
 import ButtonSmall from "../prefabs/gui/buttons/ButtonSmall";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
@@ -24,28 +23,26 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-    // buttonLarge
-    const buttonLarge = new ButtonLarge(this, 1226, 40);
-    this.add.existing(buttonLarge);
-    buttonLarge.scaleX = 3;
-    buttonLarge.scaleY = 3;
+    // buttonSave
+    const buttonSave = new ButtonSmall(this, 1180, 38);
+    this.add.existing(buttonSave);
 
-    // buttonSmall
-    const buttonSmall = new ButtonSmall(this, 1180, 38);
-    this.add.existing(buttonSmall);
+    // buttonQuit
+    const buttonQuit = new ButtonSmall(this, 1201, 38);
+    this.add.existing(buttonQuit);
 
     // lists
     const hudElements: Array<any> = [];
 
-    this.buttonLarge = buttonLarge;
-    this.buttonSmall = buttonSmall;
+    this.buttonSave = buttonSave;
+    this.buttonQuit = buttonQuit;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
   }
 
-  private buttonLarge!: ButtonLarge;
-  private buttonSmall!: ButtonSmall;
+  private buttonSave!: ButtonSmall;
+  private buttonQuit!: ButtonSmall;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -77,12 +74,16 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private updatePositionOfUiElements() {
     // push button to top right (margin 40px)
-    this.buttonLarge.x = this.scale.width - this.buttonLarge.width - 40;
-    this.buttonLarge.y = 40;
+    this.buttonQuit.x = this.scale.width - this.buttonQuit.width - 40;
+    this.buttonQuit.y = 40;
+
+    // set save button to the left of quit button by 20px
+    this.buttonSave.x = this.buttonQuit.x - this.buttonSave.width - 20;
+    this.buttonSave.y = this.buttonQuit.y;
   }
 
   private handleQuit() {
-    this.quitButtonSubscription = this.buttonLarge.clicked.subscribe(() => {
+    this.quitButtonSubscription = this.buttonQuit.clicked.subscribe(() => {
       // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
       this.communicator.gameInstanceMetadataChanged?.send({
         property: "sessionState",
@@ -94,7 +95,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   private handleSaveGame() {
-    this.saveGameSubscription = this.buttonSmall.clicked.subscribe(() => {
+    this.saveGameSubscription = this.buttonSave.clicked.subscribe(() => {
       this.communicator.saveGame.emit();
     });
   }

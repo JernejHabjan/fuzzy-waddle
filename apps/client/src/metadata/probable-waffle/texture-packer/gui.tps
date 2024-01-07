@@ -174,16 +174,15 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">../sprites/gui/cryos_mini_gui/borders/border_dark_outer.png</key>
-            <key type="filename">../sprites/gui/cryos_mini_gui/surfaces/surface_dark.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <false/>
+                <true/>
                 <key>scale9Borders</key>
-                <rect>2,2,4,4</rect>
+                <rect>3,3,2,2</rect>
                 <key>scale9Paddings</key>
                 <rect>2,2,4,4</rect>
                 <key>scale9FromFile</key>
@@ -196,27 +195,11 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <false/>
+                <true/>
                 <key>scale9Borders</key>
-                <rect>10,3,20,6</rect>
+                <rect>5,5,2,2</rect>
                 <key>scale9Paddings</key>
                 <rect>10,3,20,6</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">../sprites/gui/cryos_mini_gui/buttons/button_large.png</key>
-            <key type="filename">../sprites/gui/cryos_mini_gui/buttons/button_large_pressed.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>6,4,12,8</rect>
-                <key>scale9Paddings</key>
-                <rect>6,4,12,8</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -228,11 +211,26 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <false/>
+                <true/>
                 <key>scale9Borders</key>
-                <rect>4,4,8,8</rect>
+                <rect>5,5,6,6</rect>
                 <key>scale9Paddings</key>
                 <rect>4,4,8,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/gui/cryos_mini_gui/surfaces/surface_dark.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <true/>
+                <key>scale9Borders</key>
+                <rect>2,2,4,4</rect>
+                <key>scale9Paddings</key>
+                <rect>2,2,4,4</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -243,7 +241,7 @@
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
-                <false/>
+                <true/>
                 <key>scale9Borders</key>
                 <rect>6,6,12,12</rect>
                 <key>scale9Paddings</key>
