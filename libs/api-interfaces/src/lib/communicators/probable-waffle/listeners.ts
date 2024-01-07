@@ -86,9 +86,7 @@ export class ProbableWaffleListeners {
           // check if player with this player number doesn't exist
           controllerData = payload.data.playerControllerData as ProbableWafflePlayerControllerData;
           const playerNumber = controllerData.playerDefinition!.player.playerNumber;
-          const exists = gameInstance.players.find(
-            (p) => p.playerController.data.playerDefinition!.player.playerNumber === playerNumber
-          );
+          const exists = gameInstance.players.find((p) => p.playerNumber === playerNumber);
           if (exists) throw new Error("Player already exists in this game instance with number " + playerNumber);
           player = gameInstance.initPlayer(controllerData);
           gameInstance.addPlayer(player);
@@ -119,7 +117,7 @@ export class ProbableWaffleListeners {
             "faction type changed",
             player.playerController.data.playerDefinition!.factionType,
             "for player",
-            player.playerController.data.playerDefinition!.player.playerNumber
+            player.playerNumber
           );
           break;
         case "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty:
@@ -131,7 +129,7 @@ export class ProbableWaffleListeners {
             "team changed",
             player.playerController.data.playerDefinition!.team,
             "for player",
-            player.playerController.data.playerDefinition!.player.playerNumber
+            player.playerNumber
           );
           break;
         case "playerController.data.playerDefinition.difficulty" as ProbableWafflePlayerDataChangeEventProperty:
@@ -143,7 +141,7 @@ export class ProbableWaffleListeners {
             "difficulty changed",
             player.playerController.data.playerDefinition!.difficulty,
             "for player",
-            player.playerController.data.playerDefinition!.player.playerNumber
+            player.playerNumber
           );
           break;
 

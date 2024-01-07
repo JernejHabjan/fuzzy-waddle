@@ -25,13 +25,9 @@ export class MapSelectorComponent {
     const mapData = ProbableWaffleLevels[map];
     const maxPlayers = mapData.mapInfo.startPositionsOnTile.length;
     const players = this.gameInstanceClientService.gameInstance?.players ?? [];
-    const playersToRemove = players.filter(
-      (player) => player.playerController.data.playerDefinition!.player.playerNumber >= maxPlayers
-    );
+    const playersToRemove = players.filter((player) => player.playerNumber! >= maxPlayers);
     for (const player of playersToRemove) {
-      await this.gameInstanceClientService.removePlayer(
-        player.playerController.data.playerDefinition!.player.playerNumber
-      );
+      await this.gameInstanceClientService.removePlayer(player.playerNumber!);
     }
   }
 

@@ -63,8 +63,8 @@ const probableWaffleRoutes = [
           {
             path: "score-screen",
             loadComponent: () =>
-              import("./probable-waffle/gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent),
-            canActivate: [GameInstanceGuard]
+              import("./probable-waffle/gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent)
+            // canActivate: [GameInstanceGuard] // todo
           },
           {
             path: "game",

@@ -20,7 +20,7 @@ export class GameSetupHelpers {
   }
 
   public static getFirstFreePlayerNumber(players: ProbableWafflePlayer[]) {
-    const playerNumbers = players.map((p) => p.playerController.data.playerDefinition!.player.playerNumber);
+    const playerNumbers = players.map((p) => p.playerNumber);
     // iterate from 0 to players.length and find first number that doesn't exist in playerPositions
     for (let i = 0; i < players.length; i++) {
       if (!playerNumbers.includes(i)) {

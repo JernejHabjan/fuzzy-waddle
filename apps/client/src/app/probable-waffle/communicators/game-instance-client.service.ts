@@ -144,7 +144,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               (p) => p.playerController.data.userId === this.authService.userId
             );
             if (player) {
-              this.currentPlayerNumber = player.playerController.data.playerDefinition!.player.playerNumber;
+              this.currentPlayerNumber = player.playerNumber;
             }
             break;
           case "left":
@@ -392,9 +392,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.currentGameInstanceId) return;
 
     const playerNumber = playerDefinition.player.playerNumber;
-    const player = this.gameInstance!.players.find(
-      (p) => p.playerController.data.playerDefinition?.player.playerNumber === playerNumber
-    );
+    const player = this.gameInstance!.players.find((p) => p.playerNumber === playerNumber);
     if (player) throw new Error("Player already exists");
     const userId = playerDefinition.playerType === ProbableWafflePlayerType.Human ? this.authService.userId : null;
     await this.playerChanged("joined", {

@@ -20,6 +20,7 @@ import { Observable } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 
 export const gameInstanceClientServiceStub = {
+  gameInstance: undefined as ProbableWaffleGameInstance | undefined,
   get currentGameInstanceId(): string | null {
     return null;
   },

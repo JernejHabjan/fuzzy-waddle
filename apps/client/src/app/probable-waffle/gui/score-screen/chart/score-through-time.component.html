@@ -1,0 +1,13 @@
+<div>
+  <div class="chart-title">
+    <h3>{{ chartTitle }}</h3>
+  </div>
+  <canvas
+    baseChart
+    [data]="chartData"
+    [options]="chartOptions"
+    [legend]="chartLegend"
+    [type]="chartType"
+  >
+  </canvas>
+</div>

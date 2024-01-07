@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { OnlineComponent } from "./online.component";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { provideRouter } from "@angular/router";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
 import { MatchmakingTestingComponent } from "./matchmaking/matchmaking.component.spec";
@@ -24,7 +23,7 @@ describe("OnlineComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OnlineComponent, NgbModule],
+      imports: [OnlineComponent],
       providers: [
         provideRouter([]),
         {

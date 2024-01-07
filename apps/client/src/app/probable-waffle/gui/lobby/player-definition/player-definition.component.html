@@ -69,7 +69,7 @@
       <div class="p-2" style="margin-left: 10px">
         <div class="form-label">&nbsp;</div>
         <button
-          (click)="removePlayer(definition(player).player.playerNumber)"
+          (click)="removePlayer(player.playerNumber!)"
           *ngIf="!getPlayerIsCreator(player) && !getPlayerIsCurrentPlayer(player)"
           aria-label="Close"
           class="btn-close"

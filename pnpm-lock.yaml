@@ -95,9 +95,6 @@ importers:
       '@nestjs/websockets':
         specifier: ^10.2.8
         version: 10.2.8(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(@nestjs/platform-socket.io@10.2.8)(reflect-metadata@0.1.13)(rxjs@7.8.1)
-      '@ng-bootstrap/ng-bootstrap':
-        specifier: ^15.1.2
-        version: 15.1.2(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/forms@17.0.1)(@angular/localize@17.0.1)(@popperjs/core@2.11.8)(rxjs@7.8.1)
       '@nx/angular':
         specifier: 17.1.1
         version: 17.1.1(@angular-devkit/build-angular@17.0.0)(@angular-devkit/core@17.0.0)(@angular-devkit/schematics@17.0.0)(@schematics/angular@17.0.0)(@types/node@20.9.0)(cypress@13.5.0)(eslint@8.53.0)(nx@17.1.1)(rxjs@7.8.1)(ts-node@10.9.1)(typescript@5.2.2)
@@ -116,6 +113,9 @@ importers:
       bootstrap:
         specifier: ^5.3.2
         version: 5.3.2(@popperjs/core@2.11.8)
+      chart.js:
+        specifier: ^4.4.1
+        version: 4.4.1
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -128,6 +128,9 @@ importers:
       helmet:
         specifier: ^7.1.0
         version: 7.1.0
+      ng2-charts:
+        specifier: ^5.0.4
+        version: 5.0.4(@angular/cdk@17.0.4)(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/platform-browser@17.0.1)(chart.js@4.4.1)(rxjs@7.8.1)
       ngx-socket-io:
         specifier: ^4.6.1
         version: 4.6.1(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1)
@@ -627,6 +630,21 @@ packages:
     dependencies:
       '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
       tslib: 2.6.2
+
+  /@angular/cdk@17.0.4(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1):
+    resolution: {integrity: sha512-mh/EuIR0NPfpNqAXBSZWuJeBMXUvUDYdKhiFWZet5NLO1bDgFe1MGLBjtW4us95k4BZsMLbCKNxJgc+4JqwUvg==}
+    peerDependencies:
+      '@angular/common': ^17.0.0 || ^18.0.0
+      '@angular/core': ^17.0.0 || ^18.0.0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/common': 17.0.1(@angular/core@17.0.1)(rxjs@7.8.1)
+      '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    optionalDependencies:
+      parse5: 7.1.2
+    dev: false
 
   /@angular/cli@17.0.0:
     resolution: {integrity: sha512-VzKYmN+1wSE2wLBEFu/NHSrRQbeaKkEDO9aZxd7nAnxC5T1Zcva7dfqZIXMHXH2HESYAZCvOS8ikBE/7DCtWWw==}
@@ -3438,6 +3456,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
+  /@kurkle/color@0.3.2:
+    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+    dev: false
+
   /@leichtgewicht/ip-codec@2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
 
@@ -3779,25 +3801,6 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 7.8.1
       tslib: 2.6.2
-
-  /@ng-bootstrap/ng-bootstrap@15.1.2(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/forms@17.0.1)(@angular/localize@17.0.1)(@popperjs/core@2.11.8)(rxjs@7.8.1):
-    resolution: {integrity: sha512-mM2yiGnt9o7KZLIFp8K1vjfmVfu7HR3d8dhH5SszfArbgn9DvvQ4P5D5TDGygzyBSzeyZe18p7I8rX8vgA6DKw==}
-    peerDependencies:
-      '@angular/common': ^16.0.0
-      '@angular/core': ^16.0.0
-      '@angular/forms': ^16.0.0
-      '@angular/localize': ^16.0.0
-      '@popperjs/core': ^2.11.6
-      rxjs: ^6.5.3 || ^7.4.0
-    dependencies:
-      '@angular/common': 17.0.1(@angular/core@17.0.1)(rxjs@7.8.1)
-      '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
-      '@angular/forms': 17.0.1(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/platform-browser@17.0.1)(rxjs@7.8.1)
-      '@angular/localize': 17.0.1(@angular/compiler-cli@17.0.1)(@angular/compiler@17.0.1)
-      '@popperjs/core': 2.11.8
-      rxjs: 7.8.1
-      tslib: 2.6.2
-    dev: false
 
   /@ngtools/webpack@17.0.0(@angular/compiler-cli@17.0.1)(typescript@5.2.2)(webpack@5.89.0):
     resolution: {integrity: sha512-/Bb5MXlphNp3UDsQDa4EB4AwpF4D/plrCPd5YGfVvD43j5g5Rpen+cqz5jai1zfAkF1dPl2qq0nRp/jwmJO3uA==}
@@ -6191,6 +6194,13 @@ packages:
 
   /charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
+    dev: false
+
+  /chart.js@4.4.1:
+    resolution: {integrity: sha512-C74QN1bxwV1v2PEujhmKjOZ7iUM4w6BWs23Md/6aOZZSlwMzeCIDGuZay++rBgChYru7/+QFeoQW0fQoP534Dg==}
+    engines: {pnpm: '>=7'}
+    dependencies:
+      '@kurkle/color': 0.3.2
     dev: false
 
   /check-more-types@2.24.0:
@@ -9923,6 +9933,10 @@ packages:
     dependencies:
       p-locate: 6.0.0
 
+  /lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
   /lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
     dev: true
@@ -10357,6 +10371,26 @@ packages:
 
   /next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
+    dev: false
+
+  /ng2-charts@5.0.4(@angular/cdk@17.0.4)(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/platform-browser@17.0.1)(chart.js@4.4.1)(rxjs@7.8.1):
+    resolution: {integrity: sha512-AnOZ2KSRw7QjiMMNtXz9tdnO+XrIKP/2MX1TfqEEo2fwFU5c8LFJIYqmkMPkIzAEm/U9y/1psA5TDNmxxjEdgA==}
+    peerDependencies:
+      '@angular/cdk': '>=16.0.0'
+      '@angular/common': '>=16.0.0'
+      '@angular/core': '>=16.0.0'
+      '@angular/platform-browser': '>=16.0.0'
+      chart.js: ^3.4.0 || ^4.0.0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/cdk': 17.0.4(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1)
+      '@angular/common': 17.0.1(@angular/core@17.0.1)(rxjs@7.8.1)
+      '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
+      '@angular/platform-browser': 17.0.1(@angular/animations@17.0.1)(@angular/common@17.0.1)(@angular/core@17.0.1)
+      chart.js: 4.4.1
+      lodash-es: 4.17.21
+      rxjs: 7.8.1
+      tslib: 2.6.2
     dev: false
 
   /ngx-socket-io@4.6.1(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1):

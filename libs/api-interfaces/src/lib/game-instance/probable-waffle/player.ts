@@ -10,7 +10,11 @@ export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerState,
   ProbableWafflePlayerController
-> {}
+> {
+  get playerNumber(): number | undefined {
+    return this.playerController.data.playerDefinition?.player.playerNumber ?? undefined;
+  }
+}
 
 export interface ProbableWafflePlayerStateData extends BaseData {
   resources: PlayerStateResources;

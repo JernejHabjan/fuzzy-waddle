@@ -11,7 +11,6 @@ export type PlayerStateActionType =
 export interface PlayerStateAction<T = any> {
   type: PlayerStateActionType;
   time: number;
-  playerNr: number;
   data: T;
 }
 
@@ -22,6 +21,7 @@ export interface PlayerStateActionUnitProduced extends PlayerStateAction<PlayerS
 
 export interface PlayerStateActionUnitKilledData {
   unitName: string;
+  killedPlayerNr: number;
 }
 export interface PlayerStateActionUnitKilled extends PlayerStateAction<PlayerStateActionUnitKilledData> {}
 
@@ -33,6 +33,7 @@ export interface PlayerStateActionBuildingConstructed
 
 export interface PlayerStateActionBuildingDestroyedData {
   buildingName: string;
+  killedPlayerNr: number;
 }
 export interface PlayerStateActionBuildingDestroyed extends PlayerStateAction<PlayerStateActionBuildingDestroyedData> {}
 

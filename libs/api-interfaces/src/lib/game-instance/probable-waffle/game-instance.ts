@@ -55,14 +55,14 @@ export class ProbableWaffleGameInstance extends GameInstance<
     const playerNumber = controllerData.playerDefinition.player.playerNumber;
     this.players = this.players.filter((p) => {
       if (!p.playerController.data.playerDefinition) throw new Error("Player definition is required");
-      return p.playerController.data.playerDefinition.player.playerNumber !== playerNumber;
+      return p.playerNumber !== playerNumber;
     });
   }
 
   getPlayerByNumber(playerNumber: number) {
     return this.players.find((p) => {
       if (!p.playerController.data.playerDefinition) throw new Error("Player definition is required");
-      return p.playerController.data.playerDefinition.player.playerNumber === playerNumber;
+      return p.playerNumber === playerNumber;
     });
   }
 }

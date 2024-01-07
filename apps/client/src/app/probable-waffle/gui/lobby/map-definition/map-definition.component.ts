@@ -675,7 +675,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     await this.gameInstanceClientService.playerChanged(
       "playerController.data.playerDefinition.player.playerPosition" as ProbableWafflePlayerDataChangeEventProperty,
       {
-        playerNumber: player.playerController.data.playerDefinition!.player.playerNumber,
+        playerNumber: player.playerNumber,
         playerControllerData: {
           playerDefinition: { player: { playerPosition } as PlayerLobbyDefinition } as PositionPlayerDefinition
         }

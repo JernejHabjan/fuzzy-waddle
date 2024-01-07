@@ -1,41 +1,35 @@
 <div class="container mt-4">
   <h2>Score Screen</h2>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Player Name</th>
-        <th>Units Produced</th>
-        <th>Units Killed</th>
-        <th>Buildings Constructed</th>
-        <th>Buildings Destroyed</th>
-        <th>Resources Collected</th>
-        <th>Resources Spent</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let player of players">
-        <td>{{ player.name }}</td>
-        <td>{{ player.unit_produced }}</td>
-        <td>{{ player.unit_killed }}</td>
-        <td>{{ player.building_constructed }}</td>
-        <td>{{ player.building_destroyed }}</td>
-        <td>{{ player.resource_collected }}</td>
-        <td>{{ player.resource_spent }}</td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td>Total</td>
-        <td>{{ getTotal("unit_produced") }}</td>
-        <td>{{ getTotal("unit_killed") }}</td>
-        <td>{{ getTotal("building_constructed") }}</td>
-        <td>{{ getTotal("building_destroyed") }}</td>
-        <td>{{ getTotal("resource_collected") }}</td>
-        <td>{{ getTotal("resource_spent") }}</td>
-      </tr>
-    </tfoot>
-  </table>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'scoreTable'" (click)="changeTab('scoreTable')">Score Table</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'units'" (click)="changeTab('units')">Units</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'buildings'" (click)="changeTab('buildings')">Buildings</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'resources'" (click)="changeTab('resources')">Resources</a>
+    </li>
+  </ul>
+
+  <div>
+    <div *ngIf="activeTab === 'scoreTable'">
+      <probable-waffle-score-table />
+    </div>
+    <div *ngIf="activeTab === 'units'">
+      <probable-waffle-score-through-time summaryType="units" />
+    </div>
+    <div *ngIf="activeTab === 'buildings'">
+      <probable-waffle-score-through-time summaryType="buildings" />
+    </div>
+    <div *ngIf="activeTab === 'resources'">
+      <probable-waffle-score-through-time summaryType="resources" />
+    </div>
+  </div>
 </div>
 
 <div class="container mt-4">
