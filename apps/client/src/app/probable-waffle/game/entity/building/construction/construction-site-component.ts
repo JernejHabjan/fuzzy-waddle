@@ -1,6 +1,6 @@
 import { IComponent } from "../../../core/component.service";
 import { PaymentType } from "../payment-type";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 import { Actor } from "../../actor/actor";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
@@ -9,7 +9,7 @@ import { HealthComponent } from "../../combat/components/health-component";
 import { EventEmitter } from "@angular/core";
 
 export type ConstructionSiteDefinition = {
-  constructionCosts: Map<ResourceType, number>;
+  constructionCosts: Map<ResourceTypeDefinition, number>;
   // Whether to check collision for each grid cell
   checkCollision: boolean;
   constructionCostType: PaymentType;
@@ -130,7 +130,7 @@ export class ConstructionSiteComponent implements IComponent {
     const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
 
     // refund costs
-    const refundCosts = new Map<ResourceType, number>();
+    const refundCosts = new Map<ResourceTypeDefinition, number>();
     this.constructionSiteDefinition.constructionCosts.forEach((value, key) => {
       refundCosts.set(key, value * actualRefundFactor);
     });

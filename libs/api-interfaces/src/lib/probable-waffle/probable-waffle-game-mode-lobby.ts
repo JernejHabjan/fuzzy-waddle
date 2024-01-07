@@ -1,4 +1,4 @@
-import { ResourceType } from "./resource-type";
+import { ResourceTypeDefinition } from "./resource-type-definition";
 
 export interface WinConditions {
   timeLimit?: number;
@@ -9,6 +9,6 @@ export interface MapTuning {
 }
 
 export interface DifficultyModifiers {
-  aiAdvantageResources?: Map<ResourceType, number>;
+  aiAdvantageResources?: Map<ResourceTypeDefinition, number>;
   reducedIncome?: number;
 }

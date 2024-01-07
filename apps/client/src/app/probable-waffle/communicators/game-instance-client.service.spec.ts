@@ -9,6 +9,7 @@ import {
   PositionPlayerDefinition,
   ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameFoundEvent,
+  ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
@@ -27,7 +28,7 @@ export const gameInstanceClientServiceStub = {
     visibility: ProbableWaffleGameInstanceVisibility,
     type: ProbableWaffleGameInstanceType
   ): Promise<void> {
-    return Promise.resolve();
+    this.gameInstance = new ProbableWaffleGameInstance();
   },
   async stopGameInstance(): Promise<void> {
     return Promise.resolve();
@@ -75,7 +76,7 @@ export const gameInstanceClientServiceStub = {
     return Promise.resolve(null);
   },
   async addAiPlayer(): Promise<void> {
-    return Promise.resolve();
+    this.gameInstance?.addPlayer(this.gameInstance?.initPlayer({} as any));
   },
   async addSelfAsPlayer(): Promise<void> {
     return Promise.resolve();

@@ -5,7 +5,7 @@ import { Minerals } from "../resources/minerals";
 import { Building, BuildingInfoDefinition } from "./building";
 import { CostData } from "../../building/production/production-cost-component";
 import { PaymentType } from "../../building/payment-type";
-import { Resources, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 
 export const MineDefinitions: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -22,7 +22,7 @@ export const MineDefinitions: BuildingInfoDefinition = {
   cost: new CostData(
     PaymentType.PayOverTime,
     100,
-    new Map<ResourceType, number>([
+    new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
@@ -33,7 +33,7 @@ export const MineDefinitions: BuildingInfoDefinition = {
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceType, number>([
+    constructionCosts: new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),

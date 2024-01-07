@@ -2,6 +2,8 @@ import { BasePlayer } from "../player/player";
 import { BaseData } from "../data";
 import { BasePlayerController, BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
+import { ResourceType } from "../../probable-waffle/resource-type-definition";
+import { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -11,7 +13,8 @@ export class ProbableWafflePlayer extends BasePlayer<
 > {}
 
 export interface ProbableWafflePlayerStateData extends BaseData {
-  scoreProbableWaffle: number;
+  resources: PlayerStateResources;
+  summary: PlayerStateAction[];
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
@@ -22,7 +25,13 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
   override resetData() {
     super.resetData();
     this.data = {
-      scoreProbableWaffle: 0
+      resources: {
+        [ResourceType.Ambrosia]: 0,
+        [ResourceType.Minerals]: 0,
+        [ResourceType.Stone]: 0,
+        [ResourceType.Wood]: 0
+      },
+      summary: []
     };
   }
 }
@@ -68,3 +77,7 @@ export interface PositionPlayerDefinition {
   playerType: ProbableWafflePlayerType;
   difficulty?: ProbableWaffleAiDifficulty;
 }
+
+export type PlayerStateResources = {
+  [key in ResourceType]: number;
+};

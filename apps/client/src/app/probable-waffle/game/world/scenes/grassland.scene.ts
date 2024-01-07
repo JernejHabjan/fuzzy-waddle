@@ -40,7 +40,7 @@ import { GathererComponent } from "../../entity/actor/components/gatherer-compon
 import { HealthComponent } from "../../entity/combat/components/health-component";
 import { DamageTypes } from "../../entity/combat/damage-types";
 import { BuilderComponent } from "../../entity/actor/components/builder-component";
-import { Resources, ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Resources, ResourceTypeDefinition, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -416,7 +416,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private placeActors() {
     this.playerController = new PlayerController(); // todo temp
     this.playerController.components.findComponent(PlayerResourcesComponent).addResources(
-      new Map<ResourceType, number>([
+      new Map<ResourceTypeDefinition, number>([
         [Resources.ambrosia, 5000],
         [Resources.stone, 5000],
         [Resources.wood, 5000],
@@ -444,7 +444,11 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     resourceSource.extractResources(worker, 10); // todo where to get this value from
     const resourceDrain = townHall.components.findComponent(ResourceDrainComponent);
     const gatherer = worker.components.findComponent(GathererComponent);
-    resourceDrain.returnResources(worker, gatherer.carriedResourceType as ResourceType, gatherer.carriedResourceAmount);
+    resourceDrain.returnResources(
+      worker,
+      gatherer.carriedResourceType as ResourceTypeDefinition,
+      gatherer.carriedResourceAmount
+    );
 
     const builderComponent = worker.components.findComponent(BuilderComponent);
     // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer

@@ -75,6 +75,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private handleQuit() {
     this.quitButtonSubscription = this.buttonLarge.clicked.subscribe(() => {
+      // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
       this.communicator.gameInstanceMetadataChanged?.send({
         property: "sessionState",
         gameInstanceId: this.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,

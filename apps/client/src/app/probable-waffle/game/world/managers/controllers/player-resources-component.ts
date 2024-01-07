@@ -1,36 +1,36 @@
 import { IComponent } from "../../../core/component.service";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 
 export class PlayerResourcesComponent implements IComponent {
-  resources: Map<ResourceType, number> = new Map<ResourceType, number>();
+  resources: Map<ResourceTypeDefinition, number> = new Map<ResourceTypeDefinition, number>();
 
   init(): void {
     // pass
   }
 
-  getResources(): Map<ResourceType, number> {
+  getResources(): Map<ResourceTypeDefinition, number> {
     return this.resources;
   }
 
-  addResources(resources: Map<ResourceType, number>): void {
+  addResources(resources: Map<ResourceTypeDefinition, number>): void {
     resources.forEach((value, resourceType) => {
       this.addResource(resourceType, value);
     });
   }
 
-  addResource(resourceType: ResourceType, amount: number): number {
+  addResource(resourceType: ResourceTypeDefinition, amount: number): number {
     const resourceAmount = this.resources.get(resourceType) || 0;
     this.resources.set(resourceType, resourceAmount + amount);
     return resourceAmount;
   }
 
-  payAllResources(resources: Map<ResourceType, number>): void {
+  payAllResources(resources: Map<ResourceTypeDefinition, number>): void {
     resources.forEach((value, resourceType) => {
       this.payResources(resourceType, value);
     });
   }
 
-  payResources(resourceType: ResourceType, amount: number): void {
+  payResources(resourceType: ResourceTypeDefinition, amount: number): void {
     const resourceAmount = this.resources.get(resourceType) || 0;
     if (resourceAmount - amount < 0) {
       throw new Error("Not enough resources");
@@ -38,7 +38,7 @@ export class PlayerResourcesComponent implements IComponent {
     this.resources.set(resourceType, resourceAmount - amount);
   }
 
-  canPayAllResources(constructionCosts: Map<ResourceType, number>) {
+  canPayAllResources(constructionCosts: Map<ResourceTypeDefinition, number>) {
     // noinspection UnnecessaryLocalVariableJS
     const canAfford = Array.from(constructionCosts.entries()).every(([resourceType, amount]) => {
       const resourceAmount = this.resources.get(resourceType) || 0;

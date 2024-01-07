@@ -5,7 +5,7 @@ import { DamageTypes } from "../../combat/damage-types";
 import { PlayerCharacter } from "../../actor/player-character";
 import { CostData } from "../../building/production/production-cost-component";
 import { PaymentType } from "../../building/payment-type";
-import { Resources, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 import { ContainableComponent } from "../../actor/components/containable-component";
 
 export const WarriorDefinition: PawnInfoDefinition = {
@@ -27,7 +27,12 @@ export const WarriorDefinition: PawnInfoDefinition = {
     move: "move",
     death: "death"
   },
-  cost: new CostData(PaymentType.PayOverTime, 20, new Map<ResourceType, number>([[Resources.ambrosia, 50]]), 0.5)
+  cost: new CostData(
+    PaymentType.PayOverTime,
+    20,
+    new Map<ResourceTypeDefinition, number>([[Resources.ambrosia, 50]]),
+    0.5
+  )
 };
 
 export class Warrior extends PlayerCharacter {

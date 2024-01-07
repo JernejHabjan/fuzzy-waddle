@@ -10,7 +10,7 @@ import { PlayerResourcesComponent } from "../../../world/managers/controllers/pl
 import { ContainerComponent } from "../../building/container-component";
 import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
 import { OwnerComponent } from "./owner-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 
 export type GathererClasses = typeof Mine;
 
@@ -18,14 +18,16 @@ export class GathererComponent implements IComponent {
   gatheredResources: GatherData[] = [];
   // amount the actor is carrying
   carriedResourceAmount = 0;
-  carriedResourceType: ResourceType | null = null;
+  carriedResourceType: ResourceTypeDefinition | null = null;
   currentResourceSource: Actor | null = null;
   previousResourceSource: Actor | null = null;
-  previousResourceType: ResourceType | null = null;
+  previousResourceType: ResourceTypeDefinition | null = null;
   remainingCooldown = 0;
 
   onResourceGathered: Subject<[Actor, Actor, GatherData, number]> = new Subject<[Actor, Actor, GatherData, number]>();
-  onResourcesReturned: Subject<[Actor, ResourceType, number]> = new Subject<[Actor, ResourceType, number]>();
+  onResourcesReturned: Subject<[Actor, ResourceTypeDefinition, number]> = new Subject<
+    [Actor, ResourceTypeDefinition, number]
+  >();
 
   constructor(
     private readonly actor: Actor,
@@ -148,7 +150,7 @@ export class GathererComponent implements IComponent {
     return this.getClosestResourceSource(this.previousResourceType, this.resourceSweepRadius);
   }
 
-  getClosestResourceSource(resourceType: ResourceType | null, maxDistance: number): Actor | null {
+  getClosestResourceSource(resourceType: ResourceTypeDefinition | null, maxDistance: number): Actor | null {
     let closestResourceSource: Actor | null = null;
     let closestResourceSourceDistance = 0;
 
@@ -295,7 +297,7 @@ export class GathererComponent implements IComponent {
     return gatherData.range;
   }
 
-  private getGatherDataForResourceType(carriedResourceType: ResourceType): GatherData | null {
+  private getGatherDataForResourceType(carriedResourceType: ResourceTypeDefinition): GatherData | null {
     return this.gatheredResources.find((gatherData) => gatherData.resourceType === carriedResourceType) ?? null;
   }
 

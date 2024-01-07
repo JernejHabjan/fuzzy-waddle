@@ -1,1 +1,43 @@
-<p>score-screen works!</p>
+<div class="container mt-4">
+  <h2>Score Screen</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Player Name</th>
+        <th>Units Produced</th>
+        <th>Units Killed</th>
+        <th>Buildings Constructed</th>
+        <th>Buildings Destroyed</th>
+        <th>Resources Collected</th>
+        <th>Resources Spent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let player of players">
+        <td>{{ player.name }}</td>
+        <td>{{ player.unit_produced }}</td>
+        <td>{{ player.unit_killed }}</td>
+        <td>{{ player.building_constructed }}</td>
+        <td>{{ player.building_destroyed }}</td>
+        <td>{{ player.resource_collected }}</td>
+        <td>{{ player.resource_spent }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total</td>
+        <td>{{ getTotal("unit_produced") }}</td>
+        <td>{{ getTotal("unit_killed") }}</td>
+        <td>{{ getTotal("building_constructed") }}</td>
+        <td>{{ getTotal("building_destroyed") }}</td>
+        <td>{{ getTotal("resource_collected") }}</td>
+        <td>{{ getTotal("resource_spent") }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<div class="container mt-4">
+  <button class="btn btn-primary" routerLink="/probable-waffle">Leave</button>
+</div>

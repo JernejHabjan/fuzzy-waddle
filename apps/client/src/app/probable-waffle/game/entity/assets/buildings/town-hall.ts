@@ -4,7 +4,7 @@ import { Warrior } from "../characters/warrior";
 import { Worker } from "../characters/worker";
 import { CostData } from "../../building/production/production-cost-component";
 import { PaymentType } from "../../building/payment-type";
-import { Resources, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
 
@@ -23,7 +23,7 @@ export const TownHallDefinition: BuildingInfoDefinition = {
   cost: new CostData(
     PaymentType.PayOverTime,
     100,
-    new Map<ResourceType, number>([
+    new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
@@ -34,7 +34,7 @@ export const TownHallDefinition: BuildingInfoDefinition = {
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceType, number>([
+    constructionCosts: new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
