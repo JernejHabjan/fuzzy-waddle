@@ -17,6 +17,7 @@ import {
 import { Loader } from "../../../../little-muncher/game/loader";
 import { CommunicatorService } from "../../communicators/CommunicatorService";
 
+export const SceneGameDataKey = "SceneGameData";
 export class BaseScene<
     TGameData extends BaseGameData = BaseGameData,
     TGameStateData extends BaseData = BaseData,
@@ -79,10 +80,19 @@ export class BaseScene<
     this.game = this.sys.game as BaseGame<TGameData>;
     this.baseGameData = this.game.data;
     this.communicator = this.baseGameData.communicator as TCommunicatorService;
+
+    this.data.set(SceneGameDataKey, this.getSceneGameData());
+
     this.registerSceneDestroy();
     this.registerSceneResize();
     this.registerScenePostCreate();
     this._onInit.emit();
+  }
+
+  protected getSceneGameData() {
+    return {
+      baseGameData: this.baseGameData
+    };
   }
 
   create() {

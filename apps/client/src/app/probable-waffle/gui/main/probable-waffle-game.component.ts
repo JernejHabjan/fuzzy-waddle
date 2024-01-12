@@ -32,7 +32,7 @@ export class ProbableWaffleGameComponent implements OnInit {
     this.gameData = {
       gameInstance,
       communicator: this.communicatorService,
-      user: new ProbableWaffleUserInfo(this.authService.userId)
+      user: new ProbableWaffleUserInfo(this.authService.userId, this.gameInstanceClientService.currentPlayerNumber)
     } as const;
   }
 }

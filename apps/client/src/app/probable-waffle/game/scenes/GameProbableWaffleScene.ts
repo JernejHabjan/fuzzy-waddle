@@ -8,9 +8,26 @@ import { SingleSelectionHandler } from "../world/managers/controllers/input/sing
 import HudProbableWaffle from "./HudProbableWaffle";
 import { GameObjectSelectionHandler } from "../world/managers/controllers/input/game-object-selection.handler";
 import { SceneGameState } from "../world/managers/game-state/scene-game-state";
+import { ProbableWaffleGameData } from "./probable-waffle-game-data";
+
+export interface GameProbableWaffleSceneData {
+  baseGameData: ProbableWaffleGameData;
+  systems: any[]; // todo use
+  components: any[]; // todo use
+  services: any[]; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
+}
 
 export class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
+
+  override getSceneGameData() {
+    return {
+      baseGameData: this.baseGameData,
+      systems: [], // todo use
+      components: [], // todo use
+      services: [] // todo use
+    } satisfies GameProbableWaffleSceneData;
+  }
 
   create() {
     super.create();
