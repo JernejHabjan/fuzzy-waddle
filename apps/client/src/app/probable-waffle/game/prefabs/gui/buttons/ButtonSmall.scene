@@ -13,21 +13,42 @@
     },
     "displayList": [
         {
-            "type": "NineSlice",
-            "id": "582e274c-83f4-49d2-9993-2678065be934",
-            "label": "cryos_mini_gui_buttons_button_small_png",
-            "texture": {
-                "key": "gui",
-                "frame": "cryos_mini_gui/buttons/button_small.png"
-            },
-            "x": 10,
-            "y": 10,
-            "width": 20,
-            "height": 20,
-            "leftWidth": 5,
-            "rightWidth": 5,
-            "topHeight": 5,
-            "bottomHeight": 5
+            "type": "Container",
+            "id": "a0cd022f-16aa-41e5-b945-46d19c19fdc9",
+            "label": "container_1",
+            "x": 4,
+            "y": 9,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "582e274c-83f4-49d2-9993-2678065be934",
+                    "label": "btnEle",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/buttons/button_small.png"
+                    },
+                    "x": 6,
+                    "y": 1,
+                    "width": 20,
+                    "height": 20,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3
+                },
+                {
+                    "type": "Text",
+                    "id": "8908af01-bc37-4a82-8293-61573f0d4834",
+                    "label": "textEle",
+                    "scope": "CLASS",
+                    "x": 6,
+                    "y": 1,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "align": "center"
+                }
+            ]
         }
     ],
     "plainObjects": [],
@@ -36,5 +57,47 @@
         "url": "https://phasereditor2d.com",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
-    }
+    },
+    "prefabProperties": [
+        {
+            "name": "text",
+            "label": "Text",
+            "tooltip": "",
+            "defValue": "",
+            "customDefinition": false,
+            "type": {
+                "id": "string"
+            }
+        },
+        {
+            "name": "w",
+            "label": "W",
+            "tooltip": "",
+            "defValue": 20,
+            "customDefinition": false,
+            "type": {
+                "id": "number"
+            }
+        },
+        {
+            "name": "h",
+            "label": "H",
+            "tooltip": "",
+            "defValue": 20,
+            "customDefinition": false,
+            "type": {
+                "id": "number"
+            }
+        },
+        {
+            "name": "fontSize",
+            "label": "FontSize",
+            "tooltip": "",
+            "defValue": 16,
+            "customDefinition": false,
+            "type": {
+                "id": "number"
+            }
+        }
+    ]
 }

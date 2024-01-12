@@ -36,6 +36,18 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // lists
     const hudElements: Array<any> = [];
 
+    // buttonSave (prefab fields)
+    buttonSave.text = "S";
+    buttonSave.w = 45;
+    buttonSave.h = 45;
+    buttonSave.fontSize = 30;
+
+    // buttonQuit (prefab fields)
+    buttonQuit.text = "Q";
+    buttonQuit.w = 45;
+    buttonQuit.h = 45;
+    buttonQuit.fontSize = 30;
+
     this.buttonSave = buttonSave;
     this.buttonQuit = buttonQuit;
     this.hudElements = hudElements;
@@ -76,11 +88,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private updatePositionOfUiElements() {
     // push button to top right (margin 40px)
-    this.buttonQuit.x = this.scale.width - this.buttonQuit.width - 40;
+    this.buttonQuit.x = this.scale.width - this.buttonQuit.w - 40;
     this.buttonQuit.y = 40;
 
     // set save button to the left of quit button by 20px
-    this.buttonSave.x = this.buttonQuit.x - this.buttonSave.width - 20;
+    this.buttonSave.x = this.buttonQuit.x - this.buttonSave.w - 40;
     this.buttonSave.y = this.buttonQuit.y;
   }
 

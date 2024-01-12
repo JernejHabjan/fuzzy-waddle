@@ -21,10 +21,18 @@
             "id": "b042eaac-6d53-49e6-bfea-e1192a74a0b0",
             "unlock": [
                 "x",
-                "y"
+                "y",
+                "text",
+                "w",
+                "h",
+                "fontSize"
             ],
             "label": "buttonSave",
             "scope": "CLASS",
+            "text": "S",
+            "w": 45,
+            "h": 45,
+            "fontSize": 30,
             "x": 1180,
             "y": 38
         },
@@ -33,10 +41,18 @@
             "id": "2b326e5b-e387-4267-a772-69d81569abd3",
             "unlock": [
                 "x",
-                "y"
+                "y",
+                "text",
+                "w",
+                "h",
+                "fontSize"
             ],
             "label": "buttonQuit",
             "scope": "CLASS",
+            "text": "Q",
+            "w": 45,
+            "h": 45,
+            "fontSize": 30,
             "x": 1201,
             "y": 38
         }
