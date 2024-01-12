@@ -5,7 +5,7 @@ import {
   GameSessionState,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleLevels
+  ProbableWaffleMapEnum
 } from "@fuzzy-waddle/api-interfaces";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 
@@ -27,8 +27,9 @@ export class InstantGameComponent implements OnInit {
     await this.gameInstanceClientService.addSelfAsPlayer();
     await this.gameInstanceClientService.addAiPlayer();
 
-    const allMaps = Object.values(ProbableWaffleLevels);
-    const map = allMaps[Math.floor(Math.random() * allMaps.length)].id;
+    // const allMaps = Object.values(ProbableWaffleLevels);
+    // const map = allMaps[Math.floor(Math.random() * allMaps.length)].id;
+    const map = ProbableWaffleMapEnum.RiverCrossing;
     await this.gameInstanceClientService.gameModeChanged("map", { map });
     await this.gameInstanceClientService.gameInstanceMetadataChanged("sessionState", {
       sessionState: GameSessionState.MovingPlayersToGame

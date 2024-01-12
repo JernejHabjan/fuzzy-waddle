@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
-import { ANIM_SHEEP_IDLE_DOWN, ANIM_SHEEP_IDLE_DOWN_SHEARED } from "./anims/animals";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -17,12 +16,14 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     this.handleWoolParticles(scene);
+    this.handleSheepRandomRotation();
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   private woolParticles?: Phaser.GameObjects.Particles.ParticleEmitter;
-
+  private direction: "up" | "right" | "down" | "left" = "down";
+  private sheared = false;
   private handleWoolParticles(scene: Phaser.Scene) {
     // Add wool particle emitter to the scene
     this.woolParticles = scene.add.particles(0, 0, "animals", {
@@ -46,17 +47,54 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
       }
       shearedCount++;
       if (shearedCount === maxShearedCount) {
-        this.play(ANIM_SHEEP_IDLE_DOWN_SHEARED);
         this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
-
+        this.sheared = true;
+        this.playSheepAnimation();
         // start timer to reset sheep
         scene.time.delayedCall(5000, () => {
           shearedCount = 0;
-          this.play(ANIM_SHEEP_IDLE_DOWN);
           this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
+          this.sheared = false;
+          this.playSheepAnimation();
         });
       }
     });
+  }
+
+  private handleSheepRandomRotation() {
+    this.rotateSheepToRandomDirection();
+    this.playSheepAnimation();
+    this.scene.time.addEvent({
+      delay: Phaser.Math.Between(2000, 5000),
+      callback: () => {
+        this.rotateSheepToRandomDirection();
+        this.playSheepAnimation();
+      },
+      loop: true
+    });
+  }
+
+  private rotateSheepToRandomDirection() {
+    const randomDirection = Phaser.Math.Between(0, 3);
+    switch (randomDirection) {
+      case 0:
+        this.direction = "up";
+        break;
+      case 1:
+        this.direction = "right";
+        break;
+      case 2:
+        this.direction = "down";
+        break;
+      case 3:
+        this.direction = "left";
+        break;
+    }
+  }
+
+  private playSheepAnimation() {
+    const anim = "sheep_idle_" + this.direction + (this.sheared ? "_sheared" : "");
+    this.play(anim, true);
   }
 
   setDepth(value: number): this {

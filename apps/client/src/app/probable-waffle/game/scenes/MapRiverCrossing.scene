@@ -1261,6 +1261,28 @@
             "label": "sheep",
             "x": -208,
             "y": 1248
+        },
+        {
+            "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
+            "id": "7223c165-660d-4bac-b533-149fac06021e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sheep_1",
+            "x": -160,
+            "y": 1232
+        },
+        {
+            "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
+            "id": "cf8ae8e9-caf6-4f98-b413-65bc48e97b01",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sheep_2",
+            "x": -144,
+            "y": 1280
         }
     ],
     "plainObjects": [
