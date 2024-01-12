@@ -277,7 +277,112 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_left.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_right.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_top",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_up.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_down_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_down.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_left_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_left.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_right_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_right.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_up_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_up.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1
         }

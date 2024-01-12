@@ -49,14 +49,21 @@ export class SceneGameState {
         this.scene.scene.pause();
         break;
       case GameSessionState.StartingTheGame:
-        setTimeout(() => {
+        const sendInProgress = () => {
           this.scene.baseGameData.communicator.gameInstanceMetadataChanged?.send({
             property: "sessionState",
             gameInstanceId: this.scene.gameInstanceId,
             data: { sessionState: GameSessionState.InProgress },
             emitterUserId: this.scene.userId
           });
-        }, 3000);
+        };
+        const handleCountdown = false;
+        if (handleCountdown) {
+          setTimeout(() => sendInProgress(), 3000);
+        } else {
+          sendInProgress();
+        }
+
         break;
       case GameSessionState.InProgress:
         this.scene.scene.resume();

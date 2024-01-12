@@ -62,16 +62,23 @@ export class HudGameState {
         this.text.text = "3";
         this.text.visible = true;
         this.overlay.visible = true;
-        setTimeout(() => {
-          this.text.text = "2";
-        }, 1000);
-        setTimeout(() => {
-          this.text.text = "1";
-        }, 2000);
-        setTimeout(() => {
+
+        const handleCountdown = false;
+        if (handleCountdown) {
+          setTimeout(() => {
+            this.text.text = "2";
+          }, 1000);
+          setTimeout(() => {
+            this.text.text = "1";
+          }, 2000);
+          setTimeout(() => {
+            this.text.visible = false;
+            this.overlay.visible = false;
+          }, 3000);
+        } else {
           this.text.visible = false;
           this.overlay.visible = false;
-        }, 3000);
+        }
         break;
       case GameSessionState.InProgress:
         this.text.visible = false;

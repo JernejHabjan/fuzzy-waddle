@@ -4,8 +4,8 @@
 			"image": "animals.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 127,
-				"h": 191
+				"w": 126,
+				"h": 235
 			},
 			"scale": 1,
 			"frames": [
@@ -73,7 +73,7 @@
 					}
 				},
 				{
-					"filename": "hedgehog/3.png",
+					"filename": "hedgehog/4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -83,13 +83,13 @@
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 4,
-						"w": 31,
+						"w": 30,
 						"h": 26
 					},
 					"frame": {
 						"x": 95,
 						"y": 1,
-						"w": 31,
+						"w": 30,
 						"h": 26
 					}
 				},
@@ -115,7 +115,7 @@
 					}
 				},
 				{
-					"filename": "hedgehog/15.png",
+					"filename": "hedgehog/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -123,20 +123,83 @@
 						"h": 32
 					},
 					"spriteSourceSize": {
-						"x": 1,
+						"x": 2,
 						"y": 4,
-						"w": 31,
+						"w": 30,
 						"h": 26
 					},
 					"frame": {
 						"x": 95,
 						"y": 29,
-						"w": 31,
+						"w": 30,
 						"h": 26
 					}
 				},
 				{
-					"filename": "hedgehog/1.png",
+					"filename": "sheep/sheared/sheep_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 31,
+						"w": 47,
+						"h": 27
+					},
+					"frame": {
+						"x": 1,
+						"y": 113,
+						"w": 47,
+						"h": 27
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 31,
+						"w": 47,
+						"h": 27
+					},
+					"frame": {
+						"x": 1,
+						"y": 142,
+						"w": 47,
+						"h": 27
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_up.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 19,
+						"w": 23,
+						"h": 40
+					},
+					"frame": {
+						"x": 1,
+						"y": 171,
+						"w": 23,
+						"h": 40
+					}
+				},
+				{
+					"filename": "hedgehog/6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -144,20 +207,20 @@
 						"h": 32
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 5,
-						"w": 32,
-						"h": 25
+						"x": 3,
+						"y": 8,
+						"w": 26,
+						"h": 21
 					},
 					"frame": {
 						"x": 1,
-						"y": 113,
-						"w": 32,
-						"h": 25
+						"y": 213,
+						"w": 26,
+						"h": 21
 					}
 				},
 				{
-					"filename": "hedgehog/2.png",
+					"filename": "hedgehog/1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -178,66 +241,24 @@
 					}
 				},
 				{
-					"filename": "hedgehog/13.png",
+					"filename": "sheep/sheared/sheep_down.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 32,
-						"h": 32
+						"w": 64,
+						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 5,
-						"w": 32,
-						"h": 25
+						"x": 18,
+						"y": 29,
+						"w": 25,
+						"h": 30
 					},
 					"frame": {
-						"x": 1,
-						"y": 140,
-						"w": 32,
-						"h": 25
-					}
-				},
-				{
-					"filename": "hedgehog/8.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 6,
-						"w": 30,
-						"h": 23
-					},
-					"frame": {
-						"x": 1,
-						"y": 167,
-						"w": 30,
-						"h": 23
-					}
-				},
-				{
-					"filename": "hedgehog/11.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 6,
-						"w": 30,
-						"h": 23
-					},
-					"frame": {
-						"x": 33,
-						"y": 167,
-						"w": 30,
-						"h": 23
+						"x": 26,
+						"y": 171,
+						"w": 25,
+						"h": 30
 					}
 				},
 				{
@@ -262,6 +283,27 @@
 					}
 				},
 				{
+					"filename": "hedgehog/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 56,
+						"y": 72,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
 					"filename": "hedgehog/12.png",
 					"rotated": false,
 					"trimmed": true,
@@ -276,10 +318,52 @@
 						"h": 24
 					},
 					"frame": {
-						"x": 56,
-						"y": 72,
+						"x": 90,
+						"y": 83,
 						"w": 32,
 						"h": 24
+					}
+				},
+				{
+					"filename": "hedgehog/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 31,
+						"h": 26
+					},
+					"frame": {
+						"x": 29,
+						"y": 203,
+						"w": 31,
+						"h": 26
+					}
+				},
+				{
+					"filename": "hedgehog/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 50,
+						"y": 99,
+						"w": 32,
+						"h": 25
 					}
 				},
 				{
@@ -297,14 +381,14 @@
 						"h": 25
 					},
 					"frame": {
-						"x": 90,
-						"y": 83,
+						"x": 50,
+						"y": 126,
 						"w": 32,
 						"h": 25
 					}
 				},
 				{
-					"filename": "hedgehog/4.png",
+					"filename": "hedgehog/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -312,79 +396,16 @@
 						"h": 32
 					},
 					"spriteSourceSize": {
-						"x": 0,
+						"x": 1,
 						"y": 4,
-						"w": 30,
+						"w": 31,
 						"h": 26
 					},
 					"frame": {
-						"x": 35,
-						"y": 113,
-						"w": 30,
+						"x": 84,
+						"y": 109,
+						"w": 31,
 						"h": 26
-					}
-				},
-				{
-					"filename": "hedgehog/7.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 7,
-						"w": 26,
-						"h": 22
-					},
-					"frame": {
-						"x": 35,
-						"y": 141,
-						"w": 26,
-						"h": 22
-					}
-				},
-				{
-					"filename": "hedgehog/16.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 2,
-						"y": 4,
-						"w": 30,
-						"h": 26
-					},
-					"frame": {
-						"x": 67,
-						"y": 110,
-						"w": 30,
-						"h": 26
-					}
-				},
-				{
-					"filename": "hedgehog/10.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 7,
-						"w": 26,
-						"h": 22
-					},
-					"frame": {
-						"x": 99,
-						"y": 110,
-						"w": 26,
-						"h": 22
 					}
 				},
 				{
@@ -402,10 +423,52 @@
 						"h": 25
 					},
 					"frame": {
-						"x": 67,
-						"y": 138,
+						"x": 84,
+						"y": 137,
 						"w": 30,
 						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 26,
+						"h": 22
+					},
+					"frame": {
+						"x": 53,
+						"y": 153,
+						"w": 26,
+						"h": 22
+					}
+				},
+				{
+					"filename": "hedgehog/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 6,
+						"w": 30,
+						"h": 23
+					},
+					"frame": {
+						"x": 53,
+						"y": 177,
+						"w": 30,
+						"h": 23
 					}
 				},
 				{
@@ -423,14 +486,35 @@
 						"h": 25
 					},
 					"frame": {
-						"x": 65,
-						"y": 165,
+						"x": 62,
+						"y": 202,
 						"w": 30,
 						"h": 25
 					}
 				},
 				{
-					"filename": "hedgehog/6.png",
+					"filename": "hedgehog/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 6,
+						"w": 30,
+						"h": 23
+					},
+					"frame": {
+						"x": 85,
+						"y": 164,
+						"w": 30,
+						"h": 23
+					}
+				},
+				{
+					"filename": "hedgehog/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -439,15 +523,15 @@
 					},
 					"spriteSourceSize": {
 						"x": 3,
-						"y": 8,
+						"y": 7,
 						"w": 26,
-						"h": 21
+						"h": 22
 					},
 					"frame": {
-						"x": 99,
-						"y": 134,
+						"x": 94,
+						"y": 189,
 						"w": 26,
-						"h": 21
+						"h": 22
 					}
 				},
 				{
@@ -465,10 +549,52 @@
 						"h": 21
 					},
 					"frame": {
-						"x": 99,
-						"y": 157,
+						"x": 94,
+						"y": 213,
 						"w": 26,
 						"h": 21
+					}
+				},
+				{
+					"filename": "sheep/effects/wool_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 2,
+						"h": 3
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2,
+						"h": 3
+					},
+					"frame": {
+						"x": 29,
+						"y": 231,
+						"w": 2,
+						"h": 3
+					}
+				},
+				{
+					"filename": "sheep/effects/wool_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 2,
+						"h": 2
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2,
+						"h": 2
+					},
+					"frame": {
+						"x": 81,
+						"y": 164,
+						"w": 2,
+						"h": 2
 					}
 				}
 			]
@@ -477,6 +603,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:e23af580288268463484ed1be48bc739:93017fa920e9acf53bcba0274a0b2d6b:b00d48b51f56eb7c81e25100fcce2828$"
+		"smartupdate": "$TexturePacker:SmartUpdate:a79f042c30c2b5fde2cdf0a970d75ff7:cf2c9a4cb3cbf871847bae8c8e67403d:b00d48b51f56eb7c81e25100fcce2828$"
 	}
 }

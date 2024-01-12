@@ -25,3 +25,17 @@ export const ANIM_HEDGEHOG_BALL_LEFT = "hedgehog_ball_left";
 export const ANIM_HEDGEHOG_WALK_DOWN = "hedgehog_walk_down";
 
 export const ANIM_SHEEP_IDLE_DOWN = "sheep_idle_down";
+
+export const ANIM_SHEEP_IDLE_LEFT = "sheep_idle_left";
+
+export const ANIM_SHEEP_IDLE_RIGHT = "sheep_idle_right";
+
+export const ANIM_SHEEP_IDLE_TOP = "sheep_idle_top";
+
+export const ANIM_SHEEP_IDLE_DOWN_SHEARED = "sheep_idle_down_sheared";
+
+export const ANIM_SHEEP_IDLE_LEFT_SHEARED = "sheep_idle_left_sheared";
+
+export const ANIM_SHEEP_IDLE_RIGHT_SHEARED = "sheep_idle_right_sheared";
+
+export const ANIM_SHEEP_IDLE_UP_SHEARED = "sheep_idle_up_sheared";
