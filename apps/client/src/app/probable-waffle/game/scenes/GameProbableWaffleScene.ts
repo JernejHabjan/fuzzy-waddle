@@ -9,7 +9,9 @@ import HudProbableWaffle from "./HudProbableWaffle";
 import { GameObjectSelectionHandler } from "../world/managers/controllers/input/game-object-selection.handler";
 import { SceneGameState } from "../world/managers/game-state/scene-game-state";
 import { ProbableWaffleGameData } from "./probable-waffle-game-data";
-import TivaraMacemanMale from '../prefabs/characters/tivara/TivaraMacemanMale';
+import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
+import GameObject = Phaser.GameObjects.GameObject;
+import Transform = Phaser.GameObjects.Components.Transform;
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -32,14 +34,14 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
     services: {} // todo use
   } satisfies GameProbableWaffleSceneData;
 
-  private readonly knownActorNames = ["tivaraMacemanMale"]; a b c // TODO
+  private readonly knownActorNames = [TivaraMacemanMale.name]; // TODO
 
   init() {
     super.init();
 
-    this.events.on(Phaser.GameObjects.Events.ADDED_TO_SCENE, (child: Phaser.GameObjects.GameObject) => {
-      console.log("added to scene", child); a b c // TODO
-    });
+    // todo this.events.on(Phaser.GameObjects.Events.ADDED_TO_SCENE, (child: Phaser.GameObjects.GameObject) => {
+    // todo   console.log("added to scene", child); // TODO
+    // todo });
   }
 
   create() {
@@ -58,28 +60,44 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
     this.loadActorsFromSaveGame();
   }
 
-  private loadActorsFromSaveGame(){
+  private loadActorsFromSaveGame() {
+    console.log("PRINTING KNOWN ACTOR NAMES", this.knownActorNames);
     this.knownActorNames.forEach((actorName) => {
       // destroy all actors on scene with this name
       // load them again from save file
       this.scene.scene.children.each((child) => {
-        if (child.name === actorName) {
-          child.destroy(); a b c
+        if (child.constructor.name === actorName) {
+          child.destroy(); // todo
+
+          console.warn("FOUND ACTOR WITH NAME", actorName);
         }
+        console.log(child.constructor.name, "CONSTRUCTOR NAME");
       });
-      const saveFile = this.baseGameData.saveGameService.getSaveFile();
-      const actor = saveFile.actors.find((actor) => actor.name === actorName);
-      if (actor) {
-        this.scene.add(this.getActor(actor));
-      }
+      // const saveFile = this.baseGameData.saveGameService.getSaveFile();
+
+      const maceman = this.getActor({
+        name: TivaraMacemanMale.name,
+        x: 544,
+        y: 900,
+        z: 0
+      });
+      this.scene.scene.add.existing(maceman);
     });
   }
-  private getActor(actor: any) {
-
-    switch (actor.name) {
-      case "tivaraMacemanMale":
-        return new TivaraMacemanMale(this.scene.scene, actor.x, actor.y);
+  private getActor(actorDefinition: { name: string; x: number; y: number; z: number }): GameObject {
+    let actor: GameObject | undefined = undefined;
+    switch (actorDefinition.name) {
+      case TivaraMacemanMale.name:
+        actor = new TivaraMacemanMale(this.scene.scene, actorDefinition.x, actorDefinition.y);
         break;
     }
+
+    if (actor === undefined) {
+      console.error(`Actor ${actorDefinition.name} not found`);
+      throw new Error(`Actor ${actorDefinition.name} not found`);
+    }
+    (actor as any as Transform).z = actorDefinition.z; // todo?
+    DepthHelper.setActorDepth(actor);
+    return actor;
   }
 }
