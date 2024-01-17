@@ -4,7 +4,8 @@ export enum ProbableWaffleGameInstanceType {
   Matchmaking,
   SelfHosted,
   Skirmish,
-  InstantGame
+  InstantGame,
+  LoadFromSave
 }
 
 export interface ProbableWaffleGameInstanceMetadataData extends GameInstanceMetadataData {

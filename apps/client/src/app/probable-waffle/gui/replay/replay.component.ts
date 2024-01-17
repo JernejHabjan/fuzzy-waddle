@@ -1,13 +1,13 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
-import { GameInstanceStorageService } from "../../communicators/storage/game-instance-storage.service";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceSaveData,
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 
 @Component({
   selector: "probable-waffle-replay",
@@ -17,7 +17,7 @@ import {
   styleUrls: ["./replay.component.scss"]
 })
 export class ReplayComponent implements OnInit {
-  private readonly gameInstanceStorageService = inject(GameInstanceStorageService);
+  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected gameInstanceDataRecords: ProbableWaffleGameInstanceSaveData[] = [];
   async ngOnInit(): Promise<void> {

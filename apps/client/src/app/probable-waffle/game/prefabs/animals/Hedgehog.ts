@@ -28,14 +28,19 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.6748775087412171);
 
     /* START-USER-CTR-CODE */
-    this.moveHedgehog();
-    this.handleClick();
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   private currentDelay: Phaser.Time.TimerEvent | null = null;
   private currentTween: Phaser.Tweens.Tween | null = null;
+
+  override addedToScene() {
+    super.addedToScene();
+
+    this.moveHedgehog();
+    this.handleClick();
+  }
 
   private handleClick() {
     this.on("pointerdown", () => {
@@ -74,6 +79,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     });
   }
   moveHedgehog() {
+    if (!this.active) return;
     const startX = this.x;
     const startY = this.y;
 
@@ -127,14 +133,22 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
         y: targetY,
         duration: 2000, // adjust as needed
         onStart: () => {
+          if (!this.active) return;
           this.play(walkAnim);
         },
         onComplete: () => {
+          if (!this.active) return;
           this.play(ballAnim);
           this.scene.time.delayedCall(5000, this.moveHedgehog, [], this);
         }
       });
     }
+  }
+
+  override destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.currentDelay?.remove(false);
+    this.currentTween?.stop();
   }
   /* END-USER-CODE */
 }

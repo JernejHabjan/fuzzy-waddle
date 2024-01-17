@@ -9,7 +9,7 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
   override resetData() {
     super.resetData();
     this.data = {
-      climbedHeight: 0,
+      actors: [],
       score: 0,
       pause: false
     };
@@ -17,7 +17,12 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
 }
 
 export interface ProbableWaffleGameStateData extends BaseData {
-  climbedHeight: number;
+  actors: ActorDefinition[];
   pause: boolean;
   score: number;
+}
+
+export interface ActorDefinition {
+  name: string;
+  [key: string]: any; // TODO
 }

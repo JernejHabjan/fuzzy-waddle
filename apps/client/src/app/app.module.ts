@@ -9,6 +9,8 @@ import { SocketIoModule } from "ngx-socket-io";
 import { environment } from "../environments/environment";
 import { AccessTokenInterceptor } from "./auth/access-token.interceptor";
 import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
+import { GameInstanceIndexeddbStorageService } from "./probable-waffle/communicators/storage/game-instance-indexeddb-storage.service";
+import { GameInstanceStorageServiceInterface } from "./probable-waffle/communicators/storage/game-instance-storage.service.interface";
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +28,11 @@ import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.co
     SocketIoModule.forRoot(environment.socketIoConfig),
     SwRefreshComponent
   ],
-  providers: [AuthGuard, { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true }],
+  providers: [
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true },
+    { provide: GameInstanceStorageServiceInterface, useClass: GameInstanceIndexeddbStorageService }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

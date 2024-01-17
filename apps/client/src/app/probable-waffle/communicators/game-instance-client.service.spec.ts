@@ -20,8 +20,9 @@ import {
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
-import { GameInstanceStorageService } from "./storage/game-instance-storage.service";
-import { gameInstanceStorageServiceStub } from "./storage/game-instance-storage.service.spec";
+import { GameInstanceLocalStorageService } from "./storage/game-instance-local-storage.service";
+import { gameInstanceLocalStorageServiceStub } from "./storage/game-instance-local-storage.service.spec";
+import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
 
 export const gameInstanceClientServiceStub = {
   gameInstance: undefined as ProbableWaffleGameInstance | undefined,
@@ -110,7 +111,7 @@ describe("GameInstanceClientService", () => {
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
-        { provide: GameInstanceStorageService, useValue: gameInstanceStorageServiceStub }
+        { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceLocalStorageServiceStub }
       ]
     });
     service = TestBed.inject(GameInstanceClientService);

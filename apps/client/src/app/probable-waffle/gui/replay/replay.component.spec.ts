@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReplayComponent } from "./replay.component";
 import { GameInstanceClientService } from "../../../little-muncher/main/communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../little-muncher/main/communicators/game-instance-client.service.spec";
-import { GameInstanceStorageService } from "../../communicators/storage/game-instance-storage.service";
-import { gameInstanceStorageServiceStub } from "../../communicators/storage/game-instance-storage.service.spec";
+import { gameInstanceLocalStorageServiceStub } from "../../communicators/storage/game-instance-local-storage.service.spec";
+import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 
 describe("ReplayComponent", () => {
   let component: ReplayComponent;
@@ -13,7 +13,7 @@ describe("ReplayComponent", () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: GameInstanceStorageService, useValue: gameInstanceStorageServiceStub }
+        { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceLocalStorageServiceStub }
       ],
       imports: [ReplayComponent]
     }).compileComponents();

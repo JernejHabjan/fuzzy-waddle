@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { GameInstanceStorageService } from "../../communicators/storage/game-instance-storage.service";
 import {
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceSaveData,
@@ -8,6 +7,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 
 @Component({
   selector: "fuzzy-waddle-load",
@@ -17,7 +17,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
   styleUrls: ["./load.component.scss"]
 })
 export class LoadComponent implements OnInit {
-  private readonly gameInstanceStorageService = inject(GameInstanceStorageService);
+  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected gameInstanceDataRecords: ProbableWaffleGameInstanceSaveData[] = [];
   async ngOnInit(): Promise<void> {

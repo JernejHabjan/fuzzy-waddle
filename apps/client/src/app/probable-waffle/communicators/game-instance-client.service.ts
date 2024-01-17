@@ -39,7 +39,7 @@ import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
-import { GameInstanceStorageService } from "./storage/game-instance-storage.service";
+import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
 
 @Injectable({
   providedIn: "root"
@@ -57,7 +57,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  private readonly gameInstanceStorageService = inject(GameInstanceStorageService);
+  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
@@ -371,6 +371,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         // directly to game
         await this.router.navigate(["probable-waffle/game"]);
         break;
+      case ProbableWaffleGameInstanceType.LoadFromSave:
+        // directly to game
+        await this.router.navigate(["probable-waffle/game"]);
+        break;
       default:
         throw new Error("Not implemented");
     }
@@ -459,6 +463,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
    * todo this is a prototype
    */
   async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.LoadFromSave;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
     this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();

@@ -15,13 +15,19 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.play("sheep_idle_down");
 
     /* START-USER-CTR-CODE */
-    this.handleWoolParticles(scene);
-    this.handleSheepRandomRotation();
     /* END-USER-CTR-CODE */
+  }
+
+  override addedToScene() {
+    super.addedToScene();
+
+    this.handleWoolParticles(this.scene);
+    this.handleSheepRandomRotation();
   }
 
   /* START-USER-CODE */
   private woolParticles?: Phaser.GameObjects.Particles.ParticleEmitter;
+  private repeatingEvent?: Phaser.Time.TimerEvent;
   private direction: "up" | "right" | "down" | "left" = "down";
   private sheared = false;
   private handleWoolParticles(scene: Phaser.Scene) {
@@ -64,9 +70,10 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   private handleSheepRandomRotation() {
     this.rotateSheepToRandomDirection();
     this.playSheepAnimation();
-    this.scene.time.addEvent({
+    this.repeatingEvent = this.scene.time.addEvent({
       delay: Phaser.Math.Between(2000, 5000),
       callback: () => {
+        if (!this.active) return;
         this.rotateSheepToRandomDirection();
         this.playSheepAnimation();
       },
@@ -100,6 +107,11 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   setDepth(value: number): this {
     this.woolParticles?.setDepth(value + 1);
     return super.setDepth(value);
+  }
+
+  override destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.repeatingEvent?.remove(false);
   }
 
   // Write your code here.

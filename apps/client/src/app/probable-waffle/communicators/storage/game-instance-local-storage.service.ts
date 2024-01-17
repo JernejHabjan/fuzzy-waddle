@@ -5,7 +5,7 @@ import { ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces
 @Injectable({
   providedIn: "root"
 })
-export class GameInstanceStorageService implements GameInstanceStorageServiceInterface {
+export class GameInstanceLocalStorageService implements GameInstanceStorageServiceInterface {
   private readonly localStorageKey = "probable-waffle-game-instances";
   async saveToStorage(saveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     return this.saveToLocalStorage(saveData);

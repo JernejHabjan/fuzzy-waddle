@@ -7,28 +7,33 @@ import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 33, y ?? 127.37785319200148);
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 33, y ?? 127.37785319200148);
+    this.setInteractive(new Phaser.Geom.Circle(1, 4, 11), Phaser.Geom.Circle.Contains);
 
-		this.setInteractive(new Phaser.Geom.Circle(1, 4, 11), Phaser.Geom.Circle.Contains);
+    // owl
+    const owl = scene.add.sprite(0, -108, "units", "skaduwee/owl/idle/down_1.png");
+    owl.play("skaduwee/owl/idle/down");
+    this.add(owl);
 
-		// owl
-		const owl = scene.add.sprite(0, -108, "units", "skaduwee/owl/idle/down_1.png");
-		owl.play("skaduwee/owl/idle/down");
-		this.add(owl);
+    this.owl = owl;
 
-		this.owl = owl;
+    /* START-USER-CTR-CODE */
+    /* END-USER-CTR-CODE */
+  }
 
-		/* START-USER-CTR-CODE */
+  private owl: Phaser.GameObjects.Sprite;
+  private delayedCaller?: Phaser.Time.TimerEvent;
+
+  /* START-USER-CODE */
+
+  override addedToScene() {
+    super.addedToScene();
+
     this.drawFlyingUnitVerticalLine();
     this.moveOwl();
-    /* END-USER-CTR-CODE */
-	}
-
-	private owl: Phaser.GameObjects.Sprite;
-
-	/* START-USER-CODE */
+  }
 
   /**
    * draw a vertical line from bottom of unit to bottom of current container.
@@ -52,7 +57,8 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   /**
    * move owl around randomly. After 3-5 seconds, move to a new random location.
    */
-  private moveOwl() {
+  private moveOwl(): void {
+    if (!this.active) return;
     const startX = this.x;
     const startY = this.y;
 
@@ -72,8 +78,14 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     });
 
     // after 3-5 seconds, move to a new random location
-    this.scene.time.delayedCall(duration, this.moveOwl, [], this);
+    this.delayedCaller = this.scene.time.delayedCall(duration, this.moveOwl, [], this);
   }
+
+  override destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.delayedCaller?.destroy();
+  }
+
   /* END-USER-CODE */
 }
 
