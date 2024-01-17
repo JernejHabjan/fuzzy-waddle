@@ -24,7 +24,6 @@ export class SceneCommunicatorClientService implements SceneCommunicatorClientSe
   private readonly communicator = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
   createCommunicators(gameInstanceId: string): ProbableWaffleCommunicators {
-    if (!this.authenticatedSocketService.socket) return null;
     this.communicator.startCommunication(gameInstanceId, this.authenticatedSocketService.socket);
     return this.communicatorObservables;
   }
@@ -46,7 +45,6 @@ export class SceneCommunicatorClientService implements SceneCommunicatorClientSe
   }
 
   destroyCommunicators(gameInstanceId: string, subscriptions: Subscription[]) {
-    if (!this.authenticatedSocketService.socket) return;
     this.communicator.stopCommunication(gameInstanceId, this.authenticatedSocketService.socket);
     subscriptions.forEach((subscription) => subscription.unsubscribe());
   }

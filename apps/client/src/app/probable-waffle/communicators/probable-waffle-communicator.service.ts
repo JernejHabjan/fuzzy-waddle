@@ -36,7 +36,7 @@ export class ProbableWaffleCommunicatorService
 
   saveGame = new EventEmitter<void>(); // todo just for test
 
-  startCommunication(gameInstanceId: string, socket: Socket) {
+  startCommunication(gameInstanceId: string, socket?: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
       ProbableWaffleGameInstanceMetadataChangeEvent,
       ProbableWaffleCommunicatorType
@@ -68,13 +68,13 @@ export class ProbableWaffleCommunicatorService
 
     this.createGameEvents(gameInstanceId, socket);
 
-    socket.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
+    socket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
       gameInstanceId,
       type: "join"
     } satisfies ProbableWaffleWebsocketRoomEvent);
   }
 
-  private createGameEvents(gameInstanceId: string, socket: Socket) {
+  private createGameEvents(gameInstanceId: string, socket?: Socket) {
     this.selection = new TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>(
       ProbableWaffleGatewayEvent.ProbableWaffleAction,
       "selection",
@@ -83,9 +83,9 @@ export class ProbableWaffleCommunicatorService
     );
   }
 
-  stopCommunication(gameInstanceId: string, socket: Socket) {
+  stopCommunication(gameInstanceId: string, socket?: Socket) {
     this.destroySubscriptions();
-    socket.emit(ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance, {
+    socket?.emit(ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance, {
       gameInstanceId,
       type: "leave"
     } satisfies ProbableWaffleWebsocketRoomEvent);
