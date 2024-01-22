@@ -136,9 +136,11 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
   protected postCreate() {
     super.postCreate();
 
-    this.loadActorsFromSaveGame();
-    // this.demoFillStateForSaveGame();
-    this.saveAllKnownActorsToSaveGame();
+    setTimeout(() => {
+      this.loadActorsFromSaveGame();
+      // this.demoFillStateForSaveGame();
+      this.saveAllKnownActorsToSaveGame();
+    }, 500);
   }
 
   private demoFillStateForSaveGame() {
@@ -200,19 +202,24 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
 
     // destroy all actors on scene with this name
     // load them again from save file
-    this.scene.scene.children.each((child) => {
-      const knownActorName = this.actorMap[child.constructor.name];
+    const toRemove: GameObject[] = [];
+    this.children.each((child) => {
+      const name = child.constructor.name;
+      console.log("Child", name);
+      const knownActorName = this.actorMap[name];
       if (knownActorName) {
-        child.destroy();
-
-        console.log("Removed actor from scene on game load", knownActorName);
+        toRemove.push(child);
+        console.log("Removed actor from scene on game load", name);
+      } else {
+        console.log("Not removed actor from scene on game load", name);
       }
     });
+    toRemove.forEach((child) => child.destroy());
 
     this.baseGameData.gameInstance.gameState!.data.actors.forEach((actorDefinition) => {
-      // todo const actor = this.createActor(actorDefinition.name, actorDefinition);
-      // todo this.scene.scene.add.existing(actor);
-      // todo console.log("Added actor to scene on game load", actor);
+      const actor = this.createActor(actorDefinition.name, actorDefinition);
+      this.scene.scene.add.existing(actor);
+      console.log("Added actor to scene on game load", actor);
     });
   }
   private createActor(name: string, properties: any): GameObject {
