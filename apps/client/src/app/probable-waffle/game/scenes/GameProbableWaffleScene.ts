@@ -131,6 +131,10 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
     new SingleSelectionHandler(this, this.tilemap);
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
+  }
+
+  protected postCreate() {
+    super.postCreate();
 
     this.loadActorsFromSaveGame();
     // this.demoFillStateForSaveGame();
@@ -194,25 +198,24 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
     if (this.baseGameData.gameInstance.gameInstanceMetadata.data.type !== ProbableWaffleGameInstanceType.LoadFromSave)
       return;
 
-    Object.keys(this.actorMap).forEach((actorName) => {
-      // destroy all actors on scene with this name
-      // load them again from save file
-      this.scene.scene.children.each((child) => {
-        if (child.constructor.name === actorName) {
-          child.destroy();
+    // destroy all actors on scene with this name
+    // load them again from save file
+    this.scene.scene.children.each((child) => {
+      const knownActorName = this.actorMap[child.constructor.name];
+      if (knownActorName) {
+        child.destroy();
 
-          console.log("Removed actor from scene on game load", actorName);
-        }
-      });
+        console.log("Removed actor from scene on game load", knownActorName);
+      }
     });
 
     this.baseGameData.gameInstance.gameState!.data.actors.forEach((actorDefinition) => {
-      const actor = this.getActor(actorDefinition.name, actorDefinition);
-      this.scene.scene.add.existing(actor);
-      console.log("Added actor to scene on game load", actor);
+      // todo const actor = this.createActor(actorDefinition.name, actorDefinition);
+      // todo this.scene.scene.add.existing(actor);
+      // todo console.log("Added actor to scene on game load", actor);
     });
   }
-  private getActor(name: string, properties: any): GameObject {
+  private createActor(name: string, properties: any): GameObject {
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {

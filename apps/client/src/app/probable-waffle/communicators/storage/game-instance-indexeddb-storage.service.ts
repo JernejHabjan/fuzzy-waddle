@@ -9,13 +9,21 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
   private readonly dbName = "probable-waffle-db";
   private readonly objectStoreName = "game-instances";
   private db: IDBDatabase | null = null;
+  private initializationPromise: Promise<void> | null = null;
+  private isInitialized = false;
 
   constructor() {
     this.initializeDatabase();
   }
 
-  private async initializeDatabase(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+  private initializeDatabase(): Promise<void> {
+    if (this.isInitialized) {
+      // Already initialized, return the existing promise
+      return this.initializationPromise as Promise<void>;
+    }
+
+    // Not initialized, create a new promise
+    this.initializationPromise = new Promise<void>((resolve, reject) => {
       const request = indexedDB.open(this.dbName);
 
       request.onerror = (event) => {
@@ -25,6 +33,7 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
 
       request.onsuccess = (event) => {
         this.db = (event.target as IDBOpenDBRequest).result;
+        this.isInitialized = true;
         resolve();
       };
 
@@ -33,6 +42,8 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
         db.createObjectStore(this.objectStoreName, { keyPath: "saveName" });
       };
     });
+
+    return this.initializationPromise;
   }
 
   private getObjectStore(mode: IDBTransactionMode = "readwrite"): IDBObjectStore {
@@ -45,6 +56,7 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
   }
 
   async saveToStorage(saveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    await this.initializeDatabase();
     const objectStore = this.getObjectStore();
     await new Promise<void>((resolve, reject) => {
       const request = objectStore.add(saveData);
@@ -55,6 +67,7 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
   }
 
   async getFromStorage(): Promise<ProbableWaffleGameInstanceSaveData[]> {
+    await this.initializeDatabase();
     const objectStore = this.getObjectStore("readonly");
     return new Promise<ProbableWaffleGameInstanceSaveData[]>((resolve, reject) => {
       const request = objectStore.getAll();
@@ -65,6 +78,7 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
   }
 
   async deleteFromStorage(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    await this.initializeDatabase();
     const objectStore = this.getObjectStore();
     await new Promise<void>((resolve, reject) => {
       const request = objectStore.delete(
