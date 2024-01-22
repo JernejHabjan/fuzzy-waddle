@@ -312,7 +312,7 @@
             "repeat": -1
         },
         {
-            "key": "sheep_idle_top",
+            "key": "sheep_idle_up",
             "type": "frame",
             "frames": [
                 {

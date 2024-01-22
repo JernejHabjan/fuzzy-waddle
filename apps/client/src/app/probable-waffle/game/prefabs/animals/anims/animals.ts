@@ -30,7 +30,7 @@ export const ANIM_SHEEP_IDLE_LEFT = "sheep_idle_left";
 
 export const ANIM_SHEEP_IDLE_RIGHT = "sheep_idle_right";
 
-export const ANIM_SHEEP_IDLE_TOP = "sheep_idle_top";
+export const ANIM_SHEEP_IDLE_UP = "sheep_idle_up";
 
 export const ANIM_SHEEP_IDLE_DOWN_SHEARED = "sheep_idle_down_sheared";
 
