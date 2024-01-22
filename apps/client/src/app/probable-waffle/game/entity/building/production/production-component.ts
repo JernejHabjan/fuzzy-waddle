@@ -4,7 +4,7 @@ import { ActorAbleToBeProduced, ActorAbleToBeProducedClass, ProductionQueue } fr
 import { CostData } from "./production-cost-component";
 import { PaymentType } from "../payment-type";
 import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
-import { OwnerComponent } from "../../actor/components/owner-component";
+import { DEPRECATEDownerComponent } from "../../actor/components/DEPRECATEDowner-component";
 import { Actor } from "../../actor/actor";
 import { SpriteRepresentationComponent } from "../../actor/components/sprite-representable-component";
 import { TransformComponent } from "../../actor/components/transformable-component";
@@ -18,7 +18,7 @@ export type ProductionQueueItem = {
 export class ProductionComponent implements IComponent {
   productionQueues: ProductionQueue[] = [];
   rallyPoint?: RallyPoint;
-  private ownerComponent!: OwnerComponent;
+  private ownerComponent!: DEPRECATEDownerComponent;
   private spriteRepresentationComponent!: SpriteRepresentationComponent;
   private transformComponent!: TransformComponent;
 
@@ -31,7 +31,7 @@ export class ProductionComponent implements IComponent {
   ) {}
 
   init() {
-    this.ownerComponent = this.owner.components.findComponent(OwnerComponent);
+    this.ownerComponent = this.owner.components.findComponent(DEPRECATEDownerComponent);
     this.spriteRepresentationComponent = this.owner.components.findComponent(SpriteRepresentationComponent);
     this.transformComponent = this.owner.components.findComponent(TransformComponent);
     // setup queues

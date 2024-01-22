@@ -33,7 +33,6 @@ import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
-
 export class ActorManager {
   public static actorMap: { [name: string]: ActorConstructor } = {
     // ANIMALS

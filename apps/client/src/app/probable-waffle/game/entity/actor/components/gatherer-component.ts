@@ -9,7 +9,7 @@ import { PlayerController } from "../../../world/managers/controllers/player-con
 import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
 import { ContainerComponent } from "../../building/container-component";
 import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
-import { OwnerComponent } from "./owner-component";
+import { DEPRECATEDownerComponent } from "./DEPRECATEDowner-component";
 import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 
 export type GathererClasses = typeof Mine;
@@ -106,7 +106,7 @@ export class GathererComponent implements IComponent {
     let closestResourceDrainDistance = 0;
 
     const gatherer = this.actor;
-    const gatherOwnerComponent = gatherer.components.findComponent(OwnerComponent);
+    const gatherOwnerComponent = gatherer.components.findComponent(DEPRECATEDownerComponent);
 
     const actors: Actor[] = []; // todo get all actors in the world
     for (const resourceDrain of actors) {

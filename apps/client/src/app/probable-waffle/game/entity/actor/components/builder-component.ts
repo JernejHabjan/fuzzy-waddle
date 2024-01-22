@@ -10,7 +10,7 @@ import { GameMode } from "../../../world/managers/game-mode/game-mode";
 import { GameModeSkirmish } from "../../../world/managers/game-mode/game-modes/game-mode-skirmish";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
-import { OwnerComponent } from "./owner-component";
+import { DEPRECATEDownerComponent } from "./DEPRECATEDowner-component";
 import { SpriteRepresentationComponent } from "./sprite-representable-component";
 
 export type ActorAbleToBeBuilt = Barracks | Mine;
@@ -86,7 +86,7 @@ export class BuilderComponent implements IComponent {
     // todo
 
     // spawn building
-    const ownerController = this.actor.components.findComponent(OwnerComponent);
+    const ownerController = this.actor.components.findComponent(DEPRECATEDownerComponent);
     const scene = this.actor.components.findComponent(SpriteRepresentationComponent).scene;
     const building = gameMode.spawnActorForPlayer(
       scene,

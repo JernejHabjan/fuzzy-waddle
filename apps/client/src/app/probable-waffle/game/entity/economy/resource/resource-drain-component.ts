@@ -2,7 +2,7 @@ import { IComponent } from "../../../core/component.service";
 import { Actor } from "../../actor/actor";
 import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
-import { OwnerComponent } from "../../actor/components/owner-component";
+import { DEPRECATEDownerComponent } from "../../actor/components/DEPRECATEDowner-component";
 import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
 import { Subject } from "rxjs";
 
@@ -30,7 +30,7 @@ export class ResourceDrainComponent implements IComponent {
    * returns resources to player controller
    */
   returnResources(gatherer: Actor, resourceType: ResourceTypeDefinition, amount: number): number {
-    const ownerComponent = this.actor.components.findComponent(OwnerComponent);
+    const ownerComponent = this.actor.components.findComponent(DEPRECATEDownerComponent);
     if (!ownerComponent.playerController) throw new Error("ownerComponent.playerController is null");
     const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
 

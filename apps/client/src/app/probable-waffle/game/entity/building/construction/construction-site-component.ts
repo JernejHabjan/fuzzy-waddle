@@ -2,7 +2,7 @@ import { IComponent } from "../../../core/component.service";
 import { PaymentType } from "../payment-type";
 import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 import { Actor } from "../../actor/actor";
-import { OwnerComponent } from "../../actor/components/owner-component";
+import { DEPRECATEDownerComponent } from "../../actor/components/DEPRECATEDowner-component";
 import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
 import { ConstructionStateEnum } from "./construction-state-enum";
 import { HealthComponent } from "../../combat/components/health-component";
@@ -86,7 +86,7 @@ export class ConstructionSiteComponent implements IComponent {
       throw new Error("ConstructionSiteComponent can only be started once");
     }
     if (this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately) {
-      const ownerComponent = this.owner.components.findComponent(OwnerComponent);
+      const ownerComponent = this.owner.components.findComponent(DEPRECATEDownerComponent);
       if (!ownerComponent.playerController) throw new Error("PlayerController not found");
       const playerResourcesComponent =
         ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
@@ -119,7 +119,7 @@ export class ConstructionSiteComponent implements IComponent {
     }
     // refund resources
 
-    const ownerComponent = this.owner.components.findComponent(OwnerComponent);
+    const ownerComponent = this.owner.components.findComponent(DEPRECATEDownerComponent);
     if (!ownerComponent.playerController) throw new Error("PlayerController not found");
     const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
 
