@@ -19,6 +19,7 @@ import {
   ANIM_HEDGEHOG_WALK_TOP
 } from "./anims/animals";
 import { DepthHelper } from "../../world/map/depth.helper";
+import { throttle } from "../../library/throttle";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -128,6 +129,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
         this
       );
     } else {
+      const throttledSetActorDepth = throttle(this.setActorDepth, 360);
       this.currentTween = this.scene.tweens.add({
         targets: this,
         x: targetX,
@@ -138,7 +140,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
           this.play(walkAnim);
         },
         onUpdate: () => {
-          DepthHelper.setActorDepth(this);
+          throttledSetActorDepth();
         },
         onComplete: () => {
           if (!this.active) return;
@@ -148,7 +150,9 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
       });
     }
   }
-
+  private setActorDepth = () => {
+    DepthHelper.setActorDepth(this);
+  };
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.currentDelay?.remove(false);

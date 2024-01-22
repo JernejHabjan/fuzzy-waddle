@@ -3,8 +3,9 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
-import { DepthHelper } from "../../../world/map/depth.helper";
 /* START-USER-IMPORTS */
+import { DepthHelper } from "../../../world/map/depth.helper";
+import { throttle } from "../../../library/throttle";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -68,6 +69,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
 
     const duration = Phaser.Math.Between(3000, 5000);
 
+    const throttledSetActorDepth = throttle(this.setActorDepth, 360);
     this.scene.tweens.add({
       targets: this,
       x: targetX,
@@ -77,13 +79,17 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       yoyo: false,
       repeat: 0,
       onUpdate: () => {
-        DepthHelper.setActorDepth(this);
+        throttledSetActorDepth();
       }
     });
 
     // after 3-5 seconds, move to a new random location
     this.delayedCaller = this.scene.time.delayedCall(duration, this.moveOwl, [], this);
   }
+
+  private setActorDepth = () => {
+    DepthHelper.setActorDepth(this);
+  };
 
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
