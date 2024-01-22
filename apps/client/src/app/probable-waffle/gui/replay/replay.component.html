@@ -9,8 +9,7 @@
       @for (rec of gameInstanceDataRecords;track rec) {
       <div>{{ getMapName(rec.gameInstanceData) }}</div>
       <div>{{ rec.gameInstanceData.gameInstanceMetadataData!.updatedOn | date: "medium" }}</div>
-      <!-- todo -->
-      <div>10min</div>
+      <div>{{ rec.gameInstanceData | gameLength }}</div>
       <div style="text-align: right">
         <button class="btn btn-primary" type="button" (click)="startReplay(rec)">Replay</button>
         <button class="btn btn-primary ms-2" type="button" (click)="deleteReplay(rec)">Delete</button>
