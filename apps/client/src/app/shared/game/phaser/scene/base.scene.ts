@@ -113,6 +113,7 @@ export class BaseScene<
   private registerScenePostCreate() {
     this.events.once(Phaser.Scenes.Events.CREATE, () => {
       this._postCreate.emit();
+      this.postCreate();
     });
   }
 
@@ -132,6 +133,8 @@ export class BaseScene<
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this._onDestroy.emit();
   }
+
+  protected postCreate(): void {}
 
   get gameState(): TGameState {
     if (!this.baseGameData.gameInstance.gameState) throw new Error("GameState is not defined");
