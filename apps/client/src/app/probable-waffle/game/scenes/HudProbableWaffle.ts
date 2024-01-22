@@ -78,6 +78,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new MultiSelectionHandler(this);
     this.handleQuit();
     this.handleSaveGame();
+    this.handleButtonVisibility();
   }
 
   private resize(gameSize: { height: number; width: number }) {
@@ -117,6 +118,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.quitButtonSubscription?.unsubscribe();
     this.saveGameSubscription?.unsubscribe();
     super.destroy();
+  }
+  get isVisibleSaveButton() {
+    return !this.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
+  }
+
+  private handleButtonVisibility() {
+    const saveButtonVisibile = this.isVisibleSaveButton;
+    this.buttonSave.visible = saveButtonVisibile;
   }
 
   /* END-USER-CODE */

@@ -11,7 +11,6 @@ export class SaveGame {
   static SaveGameEvent = "SaveGameEvent";
 
   constructor(private scene: GameProbableWaffleScene) {
-    this.loadActorsFromSaveGame();
     scene.onPostCreate.subscribe(() => this.postCreate());
     // only ones that have name: SaveGame.SaveGameEvent
     scene.communicator.allScenes
@@ -23,27 +22,21 @@ export class SaveGame {
   private postCreate() {
     this.loadActorsFromSaveGame();
     // this.demoFillStateForSaveGame();
-    this.saveAllKnownActorsToSaveGame();
   }
   private loadActorsFromSaveGame() {
-    if (
-      this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.type !==
-      ProbableWaffleGameInstanceType.LoadFromSave
-    )
-      return;
+    if (!this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
 
     // destroy all actors on scene with this name
     // load them again from save file
     const toRemove: GameObject[] = [];
     this.scene.children.each((child) => {
       const name = child.constructor.name;
-      console.log("Child", name);
       const knownActorName = ActorManager.actorMap[name];
       if (knownActorName) {
         toRemove.push(child);
-        console.log("Removed actor from scene on game load", name);
+        // console.log("Removed actor from scene on game load", name);
       } else {
-        console.log("Not removed actor from scene on game load", name);
+        // console.log("Not removed actor from scene on game load", name);
       }
     });
     toRemove.forEach((child) => child.destroy());
@@ -51,17 +44,12 @@ export class SaveGame {
     this.scene.baseGameData.gameInstance.gameState!.data.actors.forEach((actorDefinition) => {
       const actor = ActorManager.createActor(this.scene, actorDefinition.name, actorDefinition);
       this.scene.add.existing(actor);
-      console.log("Added actor to scene on game load", actor);
+      // console.log("Added actor to scene on game load", actor);
     });
+    console.log("Loaded game");
   }
 
   private saveAllKnownActorsToSaveGame() {
-    if (
-      this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.type ===
-      ProbableWaffleGameInstanceType.LoadFromSave
-    )
-      return;
-
     this.scene.baseGameData.gameInstance.gameState!.data.actors = [];
     this.scene.children.each((child) => {
       const actorDefinition = ActorManager.getActorDefinitionFromActor(child);
@@ -72,11 +60,7 @@ export class SaveGame {
   }
 
   private demoFillStateForSaveGame() {
-    if (
-      this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.type ===
-      ProbableWaffleGameInstanceType.LoadFromSave
-    )
-      return;
+    if (this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
     this.scene.baseGameData.gameInstance.gameState!.data.actors.push(
       {
         name: TivaraMacemanMale.name,

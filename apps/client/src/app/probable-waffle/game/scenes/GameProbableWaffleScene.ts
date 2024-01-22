@@ -34,10 +34,6 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
 
   init() {
     super.init();
-
-    // todo this.events.on(Phaser.GameObjects.Events.ADDED_TO_SCENE, (child: Phaser.GameObjects.GameObject) => {
-    // todo   console.log("added to scene", child); // TODO
-    // todo });
   }
 
   create() {

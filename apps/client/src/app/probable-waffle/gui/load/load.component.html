@@ -9,7 +9,7 @@
       @for (rec of gameInstanceDataRecords;track rec) {
       <div>{{ rec.saveName }}</div>
       <div>{{ getMapName(rec.gameInstanceData) }}</div>
-      <div>{{ rec.gameInstanceData.gameInstanceMetadataData!.updatedOn | date: "medium" }}</div>
+      <div>{{ rec.created | date: "medium" }}</div>
       <div style="text-align: right">
         <button class="btn btn-primary" type="button" (click)="loadSave(rec)">Load</button>
         <button class="btn btn-primary ms-2" type="button" (click)="deleteSave(rec)">Delete</button>

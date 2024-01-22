@@ -23,7 +23,7 @@ export class LoadComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.gameInstanceDataRecords = await this.gameInstanceStorageService.getFromStorage();
     // sort descending
-    this.gameInstanceDataRecords.sort((a, b) => b.created - a.created);
+    this.gameInstanceDataRecords.sort((a, b) => a.created - b.created);
   }
 
   protected getMapName(gameInstanceData: ProbableWaffleGameInstanceData): string {

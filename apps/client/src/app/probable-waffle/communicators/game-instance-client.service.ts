@@ -73,7 +73,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         name,
         createdBy: this.authService.userId,
         type,
-        visibility
+        visibility,
+        startOptions: {}
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
         winConditions: {} satisfies WinConditions,
@@ -364,14 +365,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
         break;
       case ProbableWaffleGameInstanceType.Matchmaking:
-        // directly to game
-        await this.router.navigate(["probable-waffle/game"]);
-        break;
       case ProbableWaffleGameInstanceType.InstantGame:
-        // directly to game
-        await this.router.navigate(["probable-waffle/game"]);
-        break;
-      case ProbableWaffleGameInstanceType.LoadFromSave:
+      case ProbableWaffleGameInstanceType.Replay:
         // directly to game
         await this.router.navigate(["probable-waffle/game"]);
         break;
@@ -463,7 +458,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
    * todo this is a prototype
    */
   async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.LoadFromSave;
+    gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.startOptions.loadFromSave = true;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
     this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();
@@ -481,7 +476,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
    * todo this is a prototype
    */
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    // todo here should be initial game instance data
+    gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.Replay;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
     this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();

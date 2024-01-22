@@ -116,7 +116,8 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         name: "Matchmaking",
         createdBy: user.id,
         type: ProbableWaffleGameInstanceType.Matchmaking,
-        visibility: ProbableWaffleGameInstanceVisibility.Public
+        visibility: ProbableWaffleGameInstanceVisibility.Public,
+        startOptions: {}
       },
       gameModeData: {
         winConditions: {} satisfies WinConditions,
