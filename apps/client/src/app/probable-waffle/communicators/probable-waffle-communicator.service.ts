@@ -35,6 +35,7 @@ export class ProbableWaffleCommunicatorService
   selection?: TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>;
 
   saveGame = new EventEmitter<void>(); // todo just for test
+  allScenes = new EventEmitter<{ name: string; data?: any }>();
 
   startCommunication(gameInstanceId: string, socket?: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<

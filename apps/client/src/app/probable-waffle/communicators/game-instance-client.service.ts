@@ -472,6 +472,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async saveGameInstance(saveName: string): Promise<void> {
     await this.gameInstanceStorageService.saveToStorage({
       saveName,
+      created: Date.now(),
       gameInstanceData: this.gameInstance!.data
     });
   }

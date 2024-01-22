@@ -11,10 +11,10 @@ import { CursorHandler } from "../world/managers/controllers/input/cursor.handle
 import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
 import { Subscription } from "rxjs";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
+import { SaveGame } from "../data/save-game";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-
   constructor() {
     super("HudProbableWaffle");
 
@@ -24,7 +24,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // buttonSave
     const buttonSave = new ButtonSmall(this, 1180, 38);
     this.add.existing(buttonSave);
@@ -110,7 +109,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private handleSaveGame() {
     this.saveGameSubscription = this.buttonSave.clicked.subscribe(() => {
-      this.communicator.saveGame.emit();
+      this.communicator.allScenes.emit({ name: SaveGame.SaveGameEvent });
     });
   }
 

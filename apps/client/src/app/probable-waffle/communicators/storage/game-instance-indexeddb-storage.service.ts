@@ -81,9 +81,7 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
     await this.initializeDatabase();
     const objectStore = this.getObjectStore();
     await new Promise<void>((resolve, reject) => {
-      const request = objectStore.delete(
-        gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.gameInstanceId!
-      );
+      const request = objectStore.delete(gameInstanceSaveData.saveName);
 
       request.onsuccess = () => resolve();
       request.onerror = (event) => reject((event.target as IDBRequest).error);
