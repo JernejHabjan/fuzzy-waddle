@@ -18,6 +18,7 @@ import {
   ANIM_HEDGEHOG_WALK_RIGHT,
   ANIM_HEDGEHOG_WALK_TOP
 } from "./anims/animals";
+import { DepthHelper } from "../../world/map/depth.helper";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -135,6 +136,9 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
         onStart: () => {
           if (!this.active) return;
           this.play(walkAnim);
+        },
+        onUpdate: () => {
+          DepthHelper.setActorDepth(this);
         },
         onComplete: () => {
           if (!this.active) return;

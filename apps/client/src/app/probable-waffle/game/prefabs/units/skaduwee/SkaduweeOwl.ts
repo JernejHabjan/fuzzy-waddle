@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
+import { DepthHelper } from "../../../world/map/depth.helper";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -74,7 +75,10 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       duration,
       ease: "Sine.easeInOut",
       yoyo: false,
-      repeat: 0
+      repeat: 0,
+      onUpdate: () => {
+        DepthHelper.setActorDepth(this);
+      }
     });
 
     // after 3-5 seconds, move to a new random location
