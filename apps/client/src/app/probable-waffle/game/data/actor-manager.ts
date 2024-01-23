@@ -31,6 +31,8 @@ import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { DepthHelper } from "../world/map/depth.helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
+import { getActorComponent } from "./actor-component";
+import { OwnerComponent } from "../entity/actor/components/owner-component";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export class ActorManager {
@@ -87,11 +89,14 @@ export class ActorManager {
       return undefined;
     }
     const actorDefinition: ActorDefinition = {
-      name: actorName,
-      x: (actor as any as Transform).x,
-      y: (actor as any as Transform).y,
-      z: (actor as any as Transform).z
+      name: actorName
     };
+    const transform = actor as any as Transform;
+    if (transform.x !== undefined) actorDefinition["x"] = transform.x;
+    if (transform.y !== undefined) actorDefinition["y"] = transform.y;
+    if (transform.z !== undefined) actorDefinition["z"] = transform.z;
+    const ownerComponent = getActorComponent(actor, OwnerComponent);
+    if (ownerComponent) actorDefinition["owner"] = ownerComponent.getOwner();
     return actorDefinition;
   }
 
@@ -104,9 +109,12 @@ export class ActorManager {
     }
     actor = new actorConstructor(scene);
 
-    (actor as any as Transform).x = properties.x; // todo?
-    (actor as any as Transform).y = properties.y; // todo?
-    (actor as any as Transform).z = properties.z; // todo?
+    const transform = actor as any as Transform;
+    if (transform.x !== undefined) transform.x = properties.x;
+    if (transform.y !== undefined) transform.y = properties.y;
+    if (transform.z !== undefined) transform.z = properties.z;
+    if (properties.owner) getActorComponent(actor, OwnerComponent)?.setOwner(properties.owner);
+
     DepthHelper.setActorDepth(actor);
     return actor;
   }

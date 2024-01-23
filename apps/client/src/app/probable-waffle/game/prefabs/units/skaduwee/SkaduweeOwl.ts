@@ -6,6 +6,8 @@ import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { DepthHelper } from "../../../world/map/depth.helper";
 import { throttle } from "../../../library/throttle";
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -22,6 +24,8 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     this.owl = owl;
 
     /* START-USER-CTR-CODE */
+    setActorData(this, [new OwnerComponent(this)], []);
+
     /* END-USER-CTR-CODE */
   }
 

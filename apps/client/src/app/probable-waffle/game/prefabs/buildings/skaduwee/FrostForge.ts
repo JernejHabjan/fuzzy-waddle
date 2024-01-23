@@ -4,6 +4,8 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -65,6 +67,8 @@ export default class FrostForge extends Phaser.GameObjects.Container {
     this.cloud_1 = cloud_1;
 
     /* START-USER-CTR-CODE */
+    setActorData(this, [new OwnerComponent(this)], []);
+
     this.setupCloudsTween(this.cloud_1);
     this.setupCloudsTween(this.cloud_2);
     this.setupCloudsTween(this.cloud_3);

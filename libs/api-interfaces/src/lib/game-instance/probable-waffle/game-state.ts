@@ -22,7 +22,6 @@ export interface ProbableWaffleGameStateData extends BaseData {
   score: number;
 }
 
-export interface ActorDefinition {
+export interface ActorDefinition extends Record<string, any> {
   name: string;
-  [key: string]: any; // TODO
 }

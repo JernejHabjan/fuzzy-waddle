@@ -4,6 +4,8 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
@@ -18,6 +20,8 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
     this.add(tivara_maceman_male_idle_down);
 
     /* START-USER-CTR-CODE */
+    setActorData(this, [new OwnerComponent(this)], []);
+
     this.on("pointerdown", () => {
       tivara_maceman_male_idle_down.setTint(0xff0000); // Tint to red
       // tint back to transparent after 1 second

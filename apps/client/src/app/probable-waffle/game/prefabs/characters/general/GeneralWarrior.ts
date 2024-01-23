@@ -4,6 +4,8 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -15,6 +17,8 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
     this.play("general_warrior_idle_down");
 
     /* START-USER-CTR-CODE */
+    setActorData(this, [new OwnerComponent(this)], []);
+
     this.on("pointerdown", () => {
       this.setTint(0xff0000); // Tint to red
       // tint back to transparent after 1 second

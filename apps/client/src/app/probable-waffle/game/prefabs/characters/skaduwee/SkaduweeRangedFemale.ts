@@ -4,7 +4,8 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
-
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
@@ -16,7 +17,7 @@ export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
     this.play("skaduwee_ranged_female_idle_down");
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    setActorData(this, [new OwnerComponent(this)], []);
 
     this.on("pointerdown", () => {
       this.setTint(0xff0000); // Tint to red

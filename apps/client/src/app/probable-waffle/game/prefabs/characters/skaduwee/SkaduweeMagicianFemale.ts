@@ -4,6 +4,8 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -18,6 +20,8 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
     this.add(skaduwee_magician_female_idle_down);
 
     /* START-USER-CTR-CODE */
+    setActorData(this, [new OwnerComponent(this)], []);
+
     this.skaduwee_magician_female_idle_down = skaduwee_magician_female_idle_down;
     this.on("pointerdown", () => {
       skaduwee_magician_female_idle_down.setTint(0xff0000); // Tint to red
