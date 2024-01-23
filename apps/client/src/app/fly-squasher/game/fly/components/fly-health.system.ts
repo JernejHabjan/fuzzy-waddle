@@ -3,7 +3,7 @@ import { FlyRepresentableComponent } from "./fly-representable-component";
 import { Subject, Subscription } from "rxjs";
 import { FlyMovementComponent } from "./fly-movement-component";
 import { FlySoundComponent } from "./fly-sound-component";
-import { HealthComponent } from "../../../../probable-waffle/game/entity/combat/components/health-component";
+import { FlyHealthComponent } from "./fly-health-component";
 import { Fly } from "../fly";
 import { DamageTypes } from "../../../../probable-waffle/game/entity/combat/damage-types";
 
@@ -13,7 +13,7 @@ export class FlyHealthSystem implements IComponent {
   private flyRepresentableComponent!: FlyRepresentableComponent;
   private flyMovementComponent!: FlyMovementComponent;
   private flySoundComponent!: FlySoundComponent;
-  private healthComponent!: HealthComponent;
+  private healthComponent!: FlyHealthComponent;
 
   constructor(private readonly fly: Fly) {}
 
@@ -21,7 +21,7 @@ export class FlyHealthSystem implements IComponent {
     this.flyRepresentableComponent = this.fly.components.findComponent(FlyRepresentableComponent);
     this.flyMovementComponent = this.fly.components.findComponent(FlyMovementComponent);
     this.flySoundComponent = this.fly.components.findComponent(FlySoundComponent);
-    this.healthComponent = this.fly.components.findComponent(HealthComponent);
+    this.healthComponent = this.fly.components.findComponent(FlyHealthComponent);
 
     this.flyPrefabPointerHitSubscription = this.flyRepresentableComponent.pointerDown.subscribe(this.flyHit);
   }
