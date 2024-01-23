@@ -33,6 +33,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
+import { SelectableComponent } from "../entity/actor/components/selectable-component";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export class ActorManager {
@@ -97,6 +98,8 @@ export class ActorManager {
     if (transform.z !== undefined) actorDefinition["z"] = transform.z;
     const ownerComponent = getActorComponent(actor, OwnerComponent);
     if (ownerComponent) actorDefinition["owner"] = ownerComponent.getOwner();
+    const selectableComponent = getActorComponent(actor, SelectableComponent);
+    if (selectableComponent) actorDefinition["selectable"] = selectableComponent.getSelected();
     return actorDefinition;
   }
 
@@ -114,7 +117,7 @@ export class ActorManager {
     if (transform.y !== undefined) transform.y = properties.y;
     if (transform.z !== undefined) transform.z = properties.z;
     if (properties.owner) getActorComponent(actor, OwnerComponent)?.setOwner(properties.owner);
-
+    if (properties.selectable) getActorComponent(actor, SelectableComponent)?.setSelected(properties.selectable);
     DepthHelper.setActorDepth(actor);
     return actor;
   }

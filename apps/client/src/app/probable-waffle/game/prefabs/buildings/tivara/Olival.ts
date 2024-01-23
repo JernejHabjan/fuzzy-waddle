@@ -7,6 +7,7 @@ import Phaser from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -34,7 +35,7 @@ export default class Olival extends Phaser.GameObjects.Container {
     this.add(buildings_tivara_olival);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new OwnerComponent(this)], []);
+    setActorData(this, [new OwnerComponent(this), new SelectableComponent(this)], []);
 
     this.bounce(buildings_tivara_olival);
 

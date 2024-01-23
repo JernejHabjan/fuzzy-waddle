@@ -6,6 +6,7 @@ import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
@@ -20,7 +21,7 @@ export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
     this.add(skaduwee_warrior_male_idle_down);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new OwnerComponent(this)], []);
+    setActorData(this, [new OwnerComponent(this), new SelectableComponent(this)], []);
 
     this.on("pointerdown", () => {
       skaduwee_warrior_male_idle_down.setTint(0xff0000); // Tint to red

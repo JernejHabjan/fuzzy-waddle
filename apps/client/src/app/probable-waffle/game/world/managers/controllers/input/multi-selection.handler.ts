@@ -57,7 +57,7 @@ export class MultiSelectionHandler {
 
   private handlePointerUp(pointer: Input.Pointer) {
     if (!pointer.rightButtonReleased()) {
-      this.sendSelection();
+      this.sendSelection("multiSelect");
 
       this.hideSelectionRectangle();
     }
@@ -95,15 +95,15 @@ export class MultiSelectionHandler {
     }
 
     // use the new Rectangle to check for overlap
-    this.sendSelection();
+    this.sendSelection("multiSelectPreview");
   }
 
-  private sendSelection() {
+  private sendSelection(type: "multiSelectPreview" | "multiSelect") {
     if (!this.selectionRect) return;
     this.hudScene.communicator.selection!.sendLocally({
       gameInstanceId: this.hudScene.gameInstanceId,
       emitterUserId: this.hudScene.userId,
-      type: "multiSelectPreview",
+      type,
       data: {
         selectedArea: {
           x: this.selectionRect.x,

@@ -7,6 +7,7 @@ import Phaser from "phaser";
 import { ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 /* END-USER-IMPORTS */
 
 export default class AnkGuard extends Phaser.GameObjects.Container {
@@ -70,7 +71,7 @@ export default class AnkGuard extends Phaser.GameObjects.Container {
     this.add(tivara_buildings_ankguard_flag);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new OwnerComponent(this)], []);
+    setActorData(this, [new OwnerComponent(this), new SelectableComponent(this)], []);
 
     // delay playing of animation for one of flame stick
     setTimeout(() => {

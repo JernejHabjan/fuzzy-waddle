@@ -7,6 +7,7 @@ import Phaser from "phaser";
 import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { setActorData } from "../../../data/actor-data";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -28,7 +29,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
 
-    setActorData(this, [new OwnerComponent(this)], []);
+    setActorData(this, [new OwnerComponent(this), new SelectableComponent(this)], []);
 
     // Create a continuous hover effect for hover_crystal
     scene.tweens.add({
