@@ -7,6 +7,7 @@ import Phaser from "phaser";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -30,7 +31,17 @@ export default class WorkMill extends Phaser.GameObjects.Container {
     this.add(buildings_tivara_workmill_png_1);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new OwnerComponent(this), new SelectableComponent(this)], []);
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
 
     this.on("pointerdown", () => {
       buildings_tivara_workmill_png_1.setTint(0xff0000); // Tint to red

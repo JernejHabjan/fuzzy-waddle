@@ -8,6 +8,7 @@ import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../assets/pro
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { setActorData } from "../../../data/actor-data";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -29,7 +30,18 @@ export default class Sandhold extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
 
-    setActorData(this, [new OwnerComponent(this), new SelectableComponent(this)], []);
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100,
+          maxArmor: 50
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
 
     // Create a continuous hover effect for hover_crystal
     scene.tweens.add({

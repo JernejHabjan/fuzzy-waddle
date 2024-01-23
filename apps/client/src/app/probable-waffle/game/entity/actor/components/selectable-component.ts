@@ -1,4 +1,5 @@
 import GameObject = Phaser.GameObjects.GameObject;
+import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
 
 export class SelectableComponent {
   private selected: boolean = false;
@@ -9,9 +10,8 @@ export class SelectableComponent {
   }
 
   private createSelectionCircle() {
-    const boundsComponent = this.gameObject as any as Phaser.GameObjects.Components.GetBounds;
-    if (boundsComponent.getBounds === undefined) return;
-    const bounds = boundsComponent.getBounds();
+    const bounds = getGameObjectBounds(this.gameObject);
+    if (!bounds) return;
     const ellipse = new Phaser.Geom.Ellipse(0, 0, bounds.width, bounds.width / 2);
     const graphics = this.gameObject.scene.add.graphics();
     graphics.lineStyle(2, 0xffffff); // todo color from player
@@ -45,8 +45,8 @@ export class SelectableComponent {
   }
 
   private setDepth() {
-    const actorDepth = (this.gameObject as any).depth;
-    if (actorDepth !== undefined) this.selectionCircle.depth = actorDepth - 1;
+    const gameObjectDepth = getGameObjectDepth(this.gameObject);
+    if (gameObjectDepth !== null) this.selectionCircle.depth = gameObjectDepth - 1;
   }
 
   private destroy = () => {

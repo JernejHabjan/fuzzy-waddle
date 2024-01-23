@@ -7,6 +7,7 @@ import Phaser from "phaser";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -43,7 +44,17 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
     this.add(skaduwee_buildings_infantry_inn_entrance);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new OwnerComponent(this), new SelectableComponent(this)], []);
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
 
     this.cloud1 = cloud_1;
     this.cloud2 = cloud_2;

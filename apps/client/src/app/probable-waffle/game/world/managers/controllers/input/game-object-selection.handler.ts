@@ -2,6 +2,7 @@ import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
+import { getGameObjectBounds } from "../../../../data/game-object-helper";
 
 export class GameObjectSelectionHandler {
   private sub!: Subscription;
@@ -67,10 +68,8 @@ export class GameObjectSelectionHandler {
     );
 
     return selectableChildren.filter((selectableChild) => {
-      const boundsComponent = selectableChild as any as Phaser.GameObjects.Components.GetBounds;
-      if (boundsComponent.getBounds === undefined) return false;
-
-      const bounds = boundsComponent.getBounds();
+      const bounds = getGameObjectBounds(selectableChild);
+      if (!bounds) return false;
       const actorBounds = new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
 
       // Calculate intersection rectangle
