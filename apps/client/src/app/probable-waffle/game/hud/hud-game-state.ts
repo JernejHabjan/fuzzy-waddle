@@ -1,6 +1,7 @@
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { Subscription } from "rxjs";
+import { environment } from "../../../../environments/environment";
 
 export class HudGameState {
   private sessionStateSubscription?: Subscription;
@@ -63,7 +64,7 @@ export class HudGameState {
         this.text.visible = true;
         this.overlay.visible = true;
 
-        const handleCountdown = false;
+        const handleCountdown = environment.production;
         if (handleCountdown) {
           setTimeout(() => {
             this.text.text = "2";
