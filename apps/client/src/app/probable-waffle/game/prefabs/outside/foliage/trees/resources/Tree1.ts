@@ -2,36 +2,44 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../../../data/actor-data";
+import {
+  ResourceSourceComponent,
+  ResourceSourceDefinition
+} from "../../../../../entity/economy/resource/resource-source-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { SelectableComponent } from "../../../../../entity/actor/components/selectable-component";
 /* END-USER-IMPORTS */
 
-export default class Tree1 extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 64, y ?? 348.0602852374069);
+export default class Tree1 extends Phaser.GameObjects.Image {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 64, y ?? 350, texture || "outside", frame ?? "foliage/trees/resources/tree1.png");
 
-    this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon(
-        "-27.862347263091753 -77.60610819112789 -1.6363241440769727 -130.05815442915744 22.632533070533718 -92.48056906459895 28.09918858249329 -51.03929790889784 6.5543968367218 -18.392904645403036 5.204032881692719 5.09670439248319 -5.868115903051976 4.577697418198255 -6.156800195497937 -20.208789935720148 -23.105062905124257 -29.893511484078033"
+        "9.50898862920253 84.3071381154135 31.7553002941515 46.17060383264382 47.3158245459587 69.86247500887781 62.08358924839645 120.642858897962 53.274747145187966 144.7376328861499 37.7297316689377 152.76922421554588 38.97812875679727 179.64847382233765 24.2435586929999 180.22630009934932 24.2435586929999 154.22411763382453 6.619857244144221 138.91172129301552 5.464204690120898 118.1099753205957"
       ),
       Phaser.Geom.Polygon.Contains
     );
     this.scaleX = 2;
     this.scaleY = 2;
-
-    // outside_foliage_trees_resources_tree1
-    const outside_foliage_trees_resources_tree1 = scene.add.image(
-      0,
-      -80.53014195357605,
-      "outside",
-      "foliage/trees/resources/tree1.png"
-    );
-    outside_foliage_trees_resources_tree1.setOrigin(0.5, 0.4867656180230016);
-    this.add(outside_foliage_trees_resources_tree1);
+    this.setOrigin(0.5, 0.911458);
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    setActorData(
+      this,
+      [
+        new SelectableComponent(this),
+        new ResourceSourceComponent(this, {
+          resourceType: ResourceType.Wood,
+          maximumResources: 100,
+          gatheringFactor: 1
+        } satisfies ResourceSourceDefinition)
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 
