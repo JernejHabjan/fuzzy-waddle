@@ -11,14 +11,14 @@ import { GameInstanceClientService } from "../communicators/game-instance-client
 import { LittleMuncherCommunicatorService } from "../communicators/little-muncher-communicator.service";
 import { CommonModule } from "@angular/common";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { WrapPipeModule } from "../../../shared/pipes/wrap-pipe.module";
+import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
 
 @Component({
   selector: "little-muncher-game-interface",
   templateUrl: "./game-interface.component.html",
   styleUrls: ["./game-interface.component.scss"],
   standalone: true,
-  imports: [CommonModule, ModalComponent, FaIconComponent, WrapPipeModule]
+  imports: [CommonModule, ModalComponent, FaIconComponent, WrapPipe]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);

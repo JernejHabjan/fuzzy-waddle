@@ -8,12 +8,12 @@ import {
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
-import { GameLengthPipeModule } from "../../../shared/pipes/game-length-pipe.module";
+import { GameLengthPipe } from "../../../shared/pipes/game-length.pipe";
 
 @Component({
   selector: "probable-waffle-replay",
   standalone: true,
-  imports: [CommonModule, RouterLink, GameLengthPipeModule],
+  imports: [CommonModule, RouterLink, GameLengthPipe],
   templateUrl: "./replay.component.html",
   styleUrls: ["./replay.component.scss"]
 })
