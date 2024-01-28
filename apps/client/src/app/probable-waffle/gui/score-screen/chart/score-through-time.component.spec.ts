@@ -3,15 +3,20 @@ import { ScoreThroughTimeComponent } from "./score-through-time.component";
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
+  FactionType,
+  PlayerLobbyDefinition,
   PlayerStateActionBuildingConstructed,
   PlayerStateActionBuildingDestroyed,
   PlayerStateActionUnitKilled,
   PlayerStateActionUnitProduced,
+  PositionPlayerDefinition,
   ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility
+  ProbableWaffleGameInstanceVisibility,
+  ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { NgChartsModule } from "ng2-charts";
+import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
   selector: "probable-waffle-score-through-time",
@@ -29,7 +34,8 @@ describe("ScoreThroughTimeComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ScoreThroughTimeComponent]
+      imports: [ScoreThroughTimeComponent],
+      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ScoreThroughTimeComponent);
@@ -52,8 +58,20 @@ describe("ScoreThroughTimeComponent", () => {
 
     await gameInstanceService.addAiPlayer();
     await gameInstanceService.addAiPlayer();
-
+    const gameInstance = gameInstanceClientServiceStub.gameInstance!;
+    const playerDefinition = {
+      player: {
+        playerNumber: gameInstance.players.length,
+        playerName: "Player " + (gameInstance.players.length + 1),
+        playerPosition: gameInstance.players.length,
+        joined: true
+      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      factionType: FactionType.Skaduwee,
+      playerType: ProbableWafflePlayerType.AI
+    } satisfies PositionPlayerDefinition;
     const players = gameInstanceService.gameInstance!.players!;
+    players[0].playerController.data.playerDefinition = playerDefinition;
+    players[1].playerController.data.playerDefinition = playerDefinition;
 
     players[0].playerState.data.summary.push(
       {
