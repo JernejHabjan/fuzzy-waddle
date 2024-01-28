@@ -1,10 +1,10 @@
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../../actor/actor';
-import { AttackData } from '../attack-data';
-import { EventEmitter } from '@angular/core';
-import { HealthComponent } from './health-component';
-import { RepresentableActor } from '../../actor/representable-actor';
-import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../../actor/actor";
+import { AttackData } from "../attack-data";
+import { EventEmitter } from "@angular/core";
+import { HealthComponent } from "./health-component";
+import { RepresentableActor } from "../../actor/representable-actor";
+import { SpriteRepresentationComponent } from "../../actor/components/sprite-representable-component";
 
 export class AttackComponent implements IComponent {
   // when cooldown has expired
@@ -14,7 +14,10 @@ export class AttackComponent implements IComponent {
   remainingCooldown = 0;
   private spriteRepresentationComponent!: SpriteRepresentationComponent;
 
-  constructor(private owner: RepresentableActor, private attacks: AttackData[]) {}
+  constructor(
+    private owner: RepresentableActor,
+    private attacks: AttackData[]
+  ) {}
 
   init(): void {
     this.spriteRepresentationComponent = this.owner.components.findComponent(SpriteRepresentationComponent);
@@ -35,7 +38,7 @@ export class AttackComponent implements IComponent {
       return;
     }
     if (attackIndex >= this.attacks.length) {
-      throw new Error('Invalid attack index');
+      throw new Error("Invalid attack index");
     }
 
     const attack = this.attacks[attackIndex];

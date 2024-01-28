@@ -2,19 +2,22 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import {
   ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL,
   ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL_FLAP
 } from "../../../../../../assets/probable-waffle/atlas/anims/skaduwee/buildings";
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
-export default class Owlery extends ActorContainer {
+export default class Owlery extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 32, y ?? 176);
 
-    this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon(
         "-29.198913756532136 -132.13554367686658 -29.393053965807688 -151.14078501381945 -19.073855503242058 -165.58766286141133 1.0485814987609317 -172.81110178520728 21.686978423892192 -164.8137229767189 30.20031715550884 -150.36684512912703 30.45829711707298 -133.34016766589374 26.008798018194 -123.10624502212163 25.82529643447679 4.115500961156727 20.519498822728373 11.61680103293898 10.456779214239987 14.910054722989713 -8.387950234383709 15.093013261325865 -21.926882071258987 9.60425711124131 -25.22013576130973 3.749583884484423 -24.81325440994174 -123.10624502212163"
@@ -36,10 +39,19 @@ export default class Owlery extends ActorContainer {
     skaduwee_buildings_owlery_owl.play("skaduwee-buildings-owlery-owl");
     this.add(skaduwee_buildings_owlery_owl);
 
-    // this (prefab fields)
-    this.z = 0;
-
     /* START-USER-CTR-CODE */
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
+
     this.on("pointerdown", () => {
       owlery_building.setTint(0xff0000); // Tint to red
       // tint back to transparent after 1 second

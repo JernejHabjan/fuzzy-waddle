@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { ITextSanitizationService } from './text-sanitization.service.interface';
-import { clean } from 'profanity-cleaner';
-import { slovenianBadWords } from './slovenian-bad-words';
+import { Injectable } from "@nestjs/common";
+import { ITextSanitizationService } from "./text-sanitization.service.interface";
+import { clean } from "profanity-cleaner";
+import { slovenianBadWords } from "./slovenian-bad-words";
 
 @Injectable()
 export class TextSanitizationService implements ITextSanitizationService {

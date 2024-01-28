@@ -27,7 +27,7 @@
     <div class="text-center">
       <!-- check if loading -->
       <div *ngIf="loading; else noScoresBlock">
-        <fa-icon [icon]="faSpinner" animation="spin"/>
+        <fa-icon [icon]="faSpinner" animation="spin" />
       </div>
       <!-- no scores -->
       <ng-template #noScoresBlock>
@@ -41,7 +41,7 @@
           <div>Server unavailable</div>
           <div>Try again later</div>
           <ng-container *ngIf="!this.serverHealthService.serverAvailable">
-            <fa-icon [icon]="faExclamationTriangle" class="text-warning"/>
+            <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
           </ng-container>
         </ng-template>
       </ng-template>

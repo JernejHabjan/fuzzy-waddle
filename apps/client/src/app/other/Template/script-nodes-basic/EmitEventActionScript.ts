@@ -1,4 +1,3 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
@@ -9,68 +8,65 @@ import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class EmitEventActionScript extends ScriptNode {
+  constructor(parent: ScriptNode | Phaser.GameObjects.GameObject | Phaser.Scene) {
+    super(parent);
 
-	constructor(parent: ScriptNode | Phaser.GameObjects.GameObject | Phaser.Scene) {
-		super(parent);
+    /* START-USER-CTR-CODE */
+    // Write your code here.
+    /* END-USER-CTR-CODE */
+  }
 
-		/* START-USER-CTR-CODE */
-		// Write your code here.
-		/* END-USER-CTR-CODE */
-	}
+  public eventName: string = "";
+  public eventEmitter:
+    | "game.events"
+    | "scene.events"
+    | "scene.loader"
+    | "scene.input"
+    | "scene.input.keyboard"
+    | "scene.anims"
+    | "gameObject" = "gameObject";
 
-	public eventName: string = "";
-	public eventEmitter: "game.events"|"scene.events"|"scene.loader"|"scene.input"|"scene.input.keyboard"|"scene.anims"|"gameObject" = "gameObject";
+  /* START-USER-CODE */
 
-	/* START-USER-CODE */
+  execute(...args: any[]): void {
+    let emitter: Phaser.Events.EventEmitter | null | undefined;
 
-	execute(...args: any[]): void {
+    switch (this.eventEmitter) {
+      case "game.events":
+        emitter = this.scene.game.events;
+        break;
 
-		let emitter: Phaser.Events.EventEmitter | null | undefined;
+      case "scene.events":
+        emitter = this.scene.events;
+        break;
 
-		switch (this.eventEmitter) {
-			case "game.events":
+      case "scene.loader":
+        emitter = this.scene.load;
+        break;
 
-				emitter = this.scene.game.events;
-				break;
+      case "scene.input":
+        emitter = this.scene.input;
+        break;
 
-			case "scene.events":
+      case "scene.input.keyboard":
+        emitter = this.scene.input.keyboard;
+        break;
 
-				emitter = this.scene.events;
-				break;
+      case "scene.anims":
+        emitter = this.scene.anims;
+        break;
 
-			case "scene.loader":
+      case "gameObject":
+        emitter = this.gameObject;
+        break;
+    }
 
-				emitter = this.scene.load;
-				break;
+    if (emitter) {
+      emitter.emit(this.eventName, ...args);
+    }
+  }
 
-			case "scene.input":
-
-				emitter = this.scene.input;
-				break;
-
-			case "scene.input.keyboard":
-
-				emitter = this.scene.input.keyboard;
-				break;
-
-			case "scene.anims":
-
-				emitter = this.scene.anims;
-				break;
-
-			case "gameObject":
-
-				emitter = this.gameObject;
-				break;
-		}
-
-		if (emitter) {
-
-			emitter.emit(this.eventName, ...args);
-		}
-	}
-
-	/* END-USER-CODE */
+  /* END-USER-CODE */
 }
 
 /* END OF COMPILED CODE */

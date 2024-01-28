@@ -1,4 +1,4 @@
-import { DecoratorData, IDecorator } from './decorator.interface';
+import { DecoratorData, IDecorator } from "./decorator.interface";
 
 export class TargetIsAliveDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {

@@ -3,10 +3,10 @@ import { TestBed } from "@angular/core/testing";
 import { SpectateService } from "./spectate.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SpectateServiceInterface } from "./spectate.service.interface";
-import { RoomEvent } from "@fuzzy-waddle/api-interfaces";
 import { Observable, Subject } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
+import { LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
 
 export const spectateServiceStub = {
   rooms: [],
@@ -17,7 +17,7 @@ export const spectateServiceStub = {
   destroy() {
     //
   },
-  get roomEvent(): Observable<RoomEvent> | undefined {
+  get roomEvent(): Observable<LittleMuncherRoomEvent> | undefined {
     return undefined;
   },
   getRooms() {

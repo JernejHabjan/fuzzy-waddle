@@ -1,0 +1,19 @@
+@import "../../../../styles/_variables.scss";
+
+:host {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: $tertiary;
+  padding: 2rem;
+  flex-grow: 1;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+  @media (max-width: 576px) {
+    padding: 0.5rem;
+  }
+}

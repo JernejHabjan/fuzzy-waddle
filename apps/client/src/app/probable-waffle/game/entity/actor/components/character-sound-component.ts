@@ -1,5 +1,5 @@
-import { GameObjects } from 'phaser';
-import { IComponent } from '../../../core/component.service';
+import { GameObjects } from "phaser";
+import { IComponent } from "../../../core/component.service";
 
 export type SoundDefinition = {
   move?: string;

@@ -1,19 +1,22 @@
-import { Component, Injectable, Input, TemplateRef, ViewChild } from '@angular/core';
-import { ModalConfig } from './modal-config';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, inject, Injectable, Input, TemplateRef, ViewChild } from "@angular/core";
+import { ModalConfig } from "./modal-config";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'fuzzy-waddle-modal',
-  templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  selector: "fuzzy-waddle-modal",
+  templateUrl: "./modal.component.html",
+  styleUrls: ["./modal.component.scss"],
+  standalone: true,
+  imports: [CommonModule]
 })
 @Injectable()
 export class ModalComponent {
   @Input({ required: true }) public modalConfig!: ModalConfig;
-  @ViewChild('modal') private modalContent!: TemplateRef<ModalComponent>;
+  @ViewChild("modal") private modalContent!: TemplateRef<ModalComponent>;
   private modalRef!: NgbModalRef;
 
-  constructor(private modalService: NgbModal) {}
+  private readonly modalService = inject(NgbModal);
 
   open(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
@@ -22,14 +25,14 @@ export class ModalComponent {
     });
   }
 
-  async close(): Promise<void> {
+  protected async close(): Promise<void> {
     if (this.modalConfig.shouldClose === undefined || (await this.modalConfig.shouldClose())) {
       const result = this.modalConfig.onClose === undefined || (await this.modalConfig.onClose());
       this.modalRef.close(result);
     }
   }
 
-  async dismiss(): Promise<void> {
+  protected async dismiss(): Promise<void> {
     if (this.modalConfig.shouldDismiss === undefined || (await this.modalConfig.shouldDismiss())) {
       const result = this.modalConfig.onDismiss === undefined || (await this.modalConfig.onDismiss());
       this.modalRef.dismiss(result);

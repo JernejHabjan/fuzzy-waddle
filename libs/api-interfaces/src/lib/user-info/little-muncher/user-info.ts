@@ -1,3 +1,3 @@
-import {BaseUserInfo} from "../user-info";
+import { BaseUserInfo } from "../user-info";
 
 export class LittleMuncherUserInfo extends BaseUserInfo {}

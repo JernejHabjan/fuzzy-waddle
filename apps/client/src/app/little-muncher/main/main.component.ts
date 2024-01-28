@@ -1,25 +1,28 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { littleMuncherGameConfig } from "../game/const/game-config";
 import { LittleMuncherGameData } from "../game/little-muncher-game-data";
-import { LittleMuncherCommunicatorService } from "../game/little-muncher-communicator.service";
-import { GameInstanceClientService } from "./game-instance-client.service";
 import { AuthService } from "../../auth/auth.service";
 import { LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherCommunicatorService } from "./communicators/little-muncher-communicator.service";
+import { GameInstanceClientService } from "./communicators/game-instance-client.service";
+import { CommonModule } from "@angular/common";
+import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
+import { GameInterfaceComponent } from "./game-interface/game-interface.component";
 
 @Component({
   selector: "little-muncher-main",
   templateUrl: "./main.component.html",
-  styleUrls: ["./main.component.scss"]
+  styleUrls: ["./main.component.scss"],
+  standalone: true,
+  imports: [CommonModule, GameContainerComponent, GameInterfaceComponent]
 })
 export class MainComponent implements OnInit {
   protected readonly littleMuncherGameConfig = littleMuncherGameConfig;
   protected gameData?: LittleMuncherGameData;
 
-  constructor(
-    private readonly communicator: LittleMuncherCommunicatorService,
-    protected readonly gameInstanceClientService: GameInstanceClientService,
-    private readonly authService: AuthService
-  ) {}
+  protected readonly communicator = inject(LittleMuncherCommunicatorService);
+  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
+  protected readonly authService = inject(AuthService);
 
   ngOnInit(): void {
     this.gameData = {

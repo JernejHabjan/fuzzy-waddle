@@ -2,15 +2,18 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
-export default class InfantryInn extends ActorContainer {
+export default class InfantryInn extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 64, y ?? 128);
 
-    this.removeInteractive();
     this.setInteractive(new Phaser.Geom.Circle(0, -35, 59.91620797027979), Phaser.Geom.Circle.Contains);
 
     // infantry_inn_building
@@ -40,10 +43,19 @@ export default class InfantryInn extends ActorContainer {
     skaduwee_buildings_infantry_inn_entrance.play("skaduwee-buildings-infantry-inn-entrance");
     this.add(skaduwee_buildings_infantry_inn_entrance);
 
-    // this (prefab fields)
-    this.z = 0;
-
     /* START-USER-CTR-CODE */
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
+
     this.cloud1 = cloud_1;
     this.cloud2 = cloud_2;
     this.setupCloudsTween(this.cloud1);
@@ -62,32 +74,42 @@ export default class InfantryInn extends ActorContainer {
   /* START-USER-CODE */
   private readonly cloud1: Phaser.GameObjects.Image;
   private readonly cloud2: Phaser.GameObjects.Image;
-
+  private readonly tweens: Phaser.Tweens.Tween[] = [];
   private setupCloudsTween(cloud: Phaser.GameObjects.Image) {
+    if (!this.active) return;
     // Moving up and disappearing
-    this.scene.tweens.add({
-      targets: cloud,
-      y: -128,
-      alpha: 0,
-      duration: 3000,
-      onComplete: () => {
-        // Waiting for 2-4 seconds
-        this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
-          // Re-appearing and setting down
-          cloud.y = -80;
-          this.scene.tweens.add({
-            targets: cloud,
-            y: -100,
-            alpha: 1,
-            duration: 1000,
-            onComplete: () => {
-              // Setting up the next upward movement
-              this.setupCloudsTween(cloud);
-            }
+    this.tweens.push(
+      this.scene.tweens.add({
+        targets: cloud,
+        y: -128,
+        alpha: 0,
+        duration: 3000,
+        onComplete: () => {
+          if (!this.active) return;
+          // Waiting for 2-4 seconds
+          this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
+            if (!this.active) return;
+            // Re-appearing and setting down
+            cloud.y = -80;
+            this.scene.tweens.add({
+              targets: cloud,
+              y: -100,
+              alpha: 1,
+              duration: 1000,
+              onComplete: () => {
+                // Setting up the next upward movement
+                this.setupCloudsTween(cloud);
+              }
+            });
           });
-        });
-      }
-    });
+        }
+      })
+    );
+  }
+
+  override destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.tweens.forEach((tween) => tween.destroy());
   }
 
   /* END-USER-CODE */

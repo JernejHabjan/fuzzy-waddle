@@ -1,0 +1,41 @@
+{
+    "id": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "ffe7a2b6-a747-4ad0-817a-8eec166e1274",
+            "label": "sheep_idle_down",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 29,
+            "hitArea.y": 39,
+            "hitArea.radius": 17.805288050449516,
+            "texture": {
+                "key": "animals",
+                "frame": "sheep/sheep_down.png"
+            },
+            "x": 32,
+            "y": 49.42203448546586,
+            "originY": 0.772219288835404,
+            "animationPlayMethod": 1,
+            "animationKey": "sheep_idle_down"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -2,15 +2,15 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
-import Croissants from '../prefabs/Croissants';
-import Fly from '../prefabs/Fly';
+import Phaser from "phaser";
+import Croissants from "../prefabs/Croissants";
+import Fly from "../prefabs/Fly";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class FlySquasher extends Phaser.Scene {
   constructor() {
-    super('FlySquasher');
+    super("FlySquasher");
 
     /* START-USER-CTR-CODE */
     // Write your code here.
@@ -26,7 +26,7 @@ export default class FlySquasher extends Phaser.Scene {
     const fly = new Fly(this, 299, 150);
     this.add.existing(fly);
 
-    this.events.emit('scene-awake');
+    this.events.emit("scene-awake");
   }
 
   /* START-USER-CODE */

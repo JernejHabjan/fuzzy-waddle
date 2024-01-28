@@ -1,4 +1,4 @@
-import { ActorAbleToBeBuiltClass } from '../../actor/components/builder-component';
+import { ActorAbleToBeBuiltClass } from "../../actor/components/builder-component";
 
 export type BeginConstructionArgs = [ActorAbleToBeBuiltClass];
 

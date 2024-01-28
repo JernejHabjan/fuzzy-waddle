@@ -1,15 +1,15 @@
-import { IComponent } from '../../../core/component.service';
-import { PaymentType } from '../payment-type';
-import { ResourceType } from '../../economy/resource/resource-type';
-import { Actor } from '../../actor/actor';
-import { OwnerComponent } from '../../actor/components/owner-component';
-import { PlayerResourcesComponent } from '../../../world/managers/controllers/player-resources-component';
-import { ConstructionStateEnum } from './construction-state-enum';
-import { HealthComponent } from '../../combat/components/health-component';
-import { EventEmitter } from '@angular/core';
+import { IComponent } from "../../../core/component.service";
+import { PaymentType } from "../payment-type";
+import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import { Actor } from "../../actor/actor";
+import { DEPRECATEDownerComponent } from "../../actor/components/DEPRECATEDowner-component";
+import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
+import { ConstructionStateEnum } from "./construction-state-enum";
+import { HealthComponent } from "../../combat/components/health-component";
+import { EventEmitter } from "@angular/core";
 
 export type ConstructionSiteDefinition = {
-  constructionCosts: Map<ResourceType, number>;
+  constructionCosts: Map<ResourceTypeDefinition, number>;
   // Whether to check collision for each grid cell
   checkCollision: boolean;
   constructionCostType: PaymentType;
@@ -35,7 +35,10 @@ export class ConstructionSiteComponent implements IComponent {
   private assignedBuilders: Actor[] = [];
   private onConstructionFinished: EventEmitter<Actor> = new EventEmitter<Actor>();
 
-  constructor(private owner: Actor, private constructionSiteDefinition: ConstructionSiteDefinition) {}
+  constructor(
+    private owner: Actor,
+    private constructionSiteDefinition: ConstructionSiteDefinition
+  ) {}
 
   init(): void {
     // pass
@@ -80,18 +83,18 @@ export class ConstructionSiteComponent implements IComponent {
 
   startConstruction() {
     if (this.state !== ConstructionStateEnum.NotStarted) {
-      throw new Error('ConstructionSiteComponent can only be started once');
+      throw new Error("ConstructionSiteComponent can only be started once");
     }
     if (this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately) {
-      const ownerComponent = this.owner.components.findComponent(OwnerComponent);
-      if (!ownerComponent.playerController) throw new Error('PlayerController not found');
+      const ownerComponent = this.owner.components.findComponent(DEPRECATEDownerComponent);
+      if (!ownerComponent.playerController) throw new Error("PlayerController not found");
       const playerResourcesComponent =
         ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
       const canAfford = playerResourcesComponent.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
       if (canAfford) {
         playerResourcesComponent.payAllResources(this.constructionSiteDefinition.constructionCosts);
       } else {
-        throw new Error('Cannot afford building costs');
+        throw new Error("Cannot afford building costs");
       }
     }
 
@@ -116,8 +119,8 @@ export class ConstructionSiteComponent implements IComponent {
     }
     // refund resources
 
-    const ownerComponent = this.owner.components.findComponent(OwnerComponent);
-    if (!ownerComponent.playerController) throw new Error('PlayerController not found');
+    const ownerComponent = this.owner.components.findComponent(DEPRECATEDownerComponent);
+    if (!ownerComponent.playerController) throw new Error("PlayerController not found");
     const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
 
     const TimeRefundFactor =
@@ -127,7 +130,7 @@ export class ConstructionSiteComponent implements IComponent {
     const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
 
     // refund costs
-    const refundCosts = new Map<ResourceType, number>();
+    const refundCosts = new Map<ResourceTypeDefinition, number>();
     this.constructionSiteDefinition.constructionCosts.forEach((value, key) => {
       refundCosts.set(key, value * actualRefundFactor);
     });

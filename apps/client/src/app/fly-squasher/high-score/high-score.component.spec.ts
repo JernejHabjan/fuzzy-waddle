@@ -8,6 +8,7 @@ import { authServiceStub } from "../../auth/auth.service.spec";
 import { HighScoreService } from "./high-score.service";
 import { highScoreServiceStub } from "./high-score.service.spec";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe("HighScoreComponent", () => {
   let component: HighScoreComponent;
@@ -15,7 +16,6 @@ describe("HighScoreComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HighScoreComponent],
       providers: [
         {
           provide: ServerHealthService,
@@ -30,7 +30,7 @@ describe("HighScoreComponent", () => {
           useValue: highScoreServiceStub
         }
       ],
-      imports: [FontAwesomeTestingModule]
+      imports: [HighScoreComponent, FontAwesomeTestingModule, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HighScoreComponent);

@@ -1,18 +1,18 @@
-import { Observable, Subject, Subscription } from "rxjs";
+import { Observable, Subject, Subscription, take } from "rxjs";
 import { Socket } from "ngx-socket-io";
-import { CommunicatorEvent, LittleMuncherCommunicatorType } from "@fuzzy-waddle/api-interfaces";
+import { CommunicatorEvent } from "@fuzzy-waddle/api-interfaces";
 
-export class TwoWayCommunicator<T> {
+export class TwoWayCommunicator<T, K> {
   private onSubject: Subject<T> = new Subject<T>();
   private sendSubject: Subject<T> = new Subject<T>();
   private sendLocallySubject: Subject<T> = new Subject<T>();
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private readonly eventName: string,
-    private readonly communicator: LittleMuncherCommunicatorType,
+    eventName: string,
+    private readonly communicator: K,
     gameInstanceId?: string,
-    socket?: Socket
+    private readonly socket?: Socket
   ) {
     this.listenToCommunication(eventName, gameInstanceId, socket);
   }
@@ -25,9 +25,16 @@ export class TwoWayCommunicator<T> {
     return this.onSubject.asObservable();
   }
 
+  get once(): Observable<T> {
+    return this.on.pipe(take(1));
+  }
+
   /**
-   * Sends data to UI + Server from Game or Server + Game from UI
-   * @param data
+   * Sends data to Server if we're connected to a socket, otherwise manage data locally
+   *
+   * Note - this sends data locally (so event is seen immediately) and to the server (so event is seen by other players).
+   * On server, use socket.emit to send data to other players or socket.to(room).emit to send data to other players in the same room.
+   * https://socket.io/docs/v3/emit-cheatsheet/
    */
   send(data: T): void {
     this.sendSubject.next(data);
@@ -61,17 +68,20 @@ export class TwoWayCommunicator<T> {
         socket?.emit(eventName, {
           gameInstanceId,
           communicator: this.communicator,
-          data: data
+          payload: data
         } satisfies CommunicatorEvent<T, unknown>);
       })
     );
 
     // listen from server
-    if (socket) {
+    if (socket && gameInstanceId) {
       this.subscriptions.push(
         socket.fromEvent<CommunicatorEvent<T, unknown>>(eventName).subscribe((event) => {
+          if (event.communicator === undefined) {
+            console.error("Communicator received from socket event is undefined", event);
+          }
           if (event.communicator !== this.communicator) return;
-          this.onSubject.next(event.data);
+          this.onSubject.next(event.payload);
         })
       );
     }
@@ -84,7 +94,7 @@ export class TwoWayCommunicator<T> {
    * @param valueChange
    * @returns {Subscription}
    */
-  onWithInitial(stateChanged: () => void, valueChange: (event: T) => void): Subscription {
+  onWithInitialStateChange(stateChanged: () => void, valueChange: (event: T) => void): Subscription {
     stateChanged();
     return this.on.subscribe((event) => {
       valueChange(event);

@@ -1,16 +1,10 @@
-import { Scenes } from "./scenes";
-import {
-  AtlasEmitValue,
-  GameObjectSelection,
-  SceneCommunicatorService
-} from "../../../communicators/scene-communicator.service";
 import { CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
-import { InputHandler } from "../managers/controllers/input/input.handler";
-import { ScaleHandler } from "../map/scale.handler";
+import { DEPRECATED_inputHandler } from "../managers/controllers/input/DEPRECATED_input.handler";
+import { DEPRECATED_scaleHandler } from "../map/DEPRECATED_scale.handler";
 import { MapDefinitions, TileDefinitions } from "../const/map-size.info";
 import { CursorHandler } from "../managers/controllers/input/cursor.handler";
 import { TilemapInputHandler, TilePlacementData } from "../managers/controllers/input/tilemap/tilemap-input.handler";
-import { MultiSelectionHandler } from "../managers/controllers/input/multi-selection.handler";
+import { DEPRECATED_multiSelectionHandler } from "../managers/controllers/input/DEPRECATED_multi-selection.handler";
 import { Subscription } from "rxjs";
 import { TilemapHelper } from "../map/tile/tilemap.helper";
 import { Pathfinder } from "../map/pathfinder";
@@ -21,10 +15,8 @@ import {
 } from "../managers/controllers/input/manual-tiles/manual-tile-input.handler";
 import { ManualTile, ManualTilesHelper } from "../map/tile/manual-tiles/manual-tiles.helper";
 import { TileIndexProperties, TilePossibleProperties } from "../map/tile/types/tile-types";
-import { Vector2Simple } from "../../library/math/intersection";
 import { MapPropertiesHelper } from "../map/tile/map-properties-helper";
 import { MapHelper } from "../map/tile/map-helper";
-import { LayerLines } from "../map/tile/layer-lines";
 import { StaticObjectHelper } from "../../entity/placable-objects/static-object";
 import { DynamicObjectHelper } from "../../entity/placable-objects/dynamic-object";
 import { MapNavHelper } from "../map/map-nav-helper";
@@ -38,7 +30,6 @@ import { SpriteRepresentationComponent } from "../../entity/actor/components/spr
 import { PlayerController } from "../managers/controllers/player-controller";
 import { Barracks } from "../../entity/assets/buildings/barracks";
 import { PlayerResourcesComponent } from "../managers/controllers/player-resources-component";
-import { Resources, ResourceType } from "../../entity/economy/resource/resource-type";
 import { TownHall } from "../../entity/assets/buildings/town-hall";
 import { Minerals } from "../../entity/assets/resources/minerals";
 import { Worker } from "../../entity/assets/characters/worker";
@@ -49,6 +40,7 @@ import { GathererComponent } from "../../entity/actor/components/gatherer-compon
 import { HealthComponent } from "../../entity/combat/components/health-component";
 import { DamageTypes } from "../../entity/combat/damage-types";
 import { BuilderComponent } from "../../entity/actor/components/builder-component";
+import { Resources, ResourceTypeDefinition, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -58,12 +50,12 @@ export interface TilemapToAtlasMap {
 }
 
 export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig {
-  private inputHandler!: InputHandler;
-  private scaleHandler!: ScaleHandler;
+  private inputHandler!: DEPRECATED_inputHandler;
+  private scaleHandler!: DEPRECATED_scaleHandler;
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
   private manualTileInputHandler!: ManualTileInputHandler;
-  private multiSelectionHandler!: MultiSelectionHandler;
+  private multiSelectionHandler!: DEPRECATED_multiSelectionHandler;
   private tilemapHelper!: TilemapHelper;
   private manualTilesHelper!: ManualTilesHelper;
   private staticObjectHelper!: StaticObjectHelper;
@@ -80,14 +72,13 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private manualTileSelectedSub!: Subscription;
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
-  private editorLayerNr = SceneCommunicatorService.DEFAULT_LAYER;
+  private editorLayerNr = Deprecated_SceneCommunicatorService.DEFAULT_LAYER;
   private selected: Actor[] = [];
   private atlasToBePlaced: AtlasEmitValue | null = null;
   private warningText: GameObjects.Text | null = null;
   private mapPropertiesHelper!: MapPropertiesHelper;
   private mapHelper!: MapHelper;
   private gameObjectsHelper!: GameObjectsHelper;
-  private layerLines!: LayerLines;
   private playerNumber = 1; // todo
   private mapNavHelper!: MapNavHelper;
   private warriorGroup: RepresentableActor[] = [];
@@ -96,7 +87,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private playerController!: PlayerController; // todo temp
 
   constructor() {
-    super({ key: Scenes.GrasslandScene });
+    super({ key: "GrasslandScene" });
   }
 
   init(data: unknown) {
@@ -104,30 +95,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   }
 
   preload() {
-    this.load.atlas(
-      MapDefinitions.atlasBuildings + MapDefinitions.atlasSuffix,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.png`,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasBuildings}.json`
-    );
-    this.load.atlas(
-      MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasCharacters}.png`,
-      `assets/probable-waffle/atlas/${MapDefinitions.atlasCharacters}.json`
-    );
-
-    MapDefinitions.mapAtlases.forEach((atlas) => {
-      // used by this.scene.add.image(...
-      this.load.atlas(
-        `${atlas}${MapDefinitions.atlasSuffix}`,
-        `assets/probable-waffle/atlas/${atlas}.png`,
-        `assets/probable-waffle/atlas/${atlas}.json`
-      );
-      // used by addTilesetImage
-      this.load.image(atlas, `assets/probable-waffle/atlas/${atlas}.png`);
-    });
-
-    this.load.tilemapTiledJSON(MapDefinitions.tilemapMapName, MapDefinitions.tilemapMapJson);
-
     this.load.spritesheet(
       WarriorDefinition.textureMapDefinition.textureName,
       "assets/probable-waffle/spritesheets/" +
@@ -164,7 +131,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     this.manualTilesHelper = new ManualTilesHelper(this.mapHelper, this, this.tilemapHelper);
     this.staticObjectHelper = new StaticObjectHelper(this.gameObjectsHelper, this);
     this.dynamicObjectHelper = new DynamicObjectHelper(this.gameObjectsHelper, this);
-    this.layerLines = new LayerLines(this);
     this.pathfinder = new Pathfinder(this);
 
     this.bindSceneCommunicator();
@@ -177,9 +143,9 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     this.dynamicObjectHelper.createDynamicObjectLayer();
 
     // input handling
-    this.scaleHandler = new ScaleHandler(this.cameras, this.scale);
-    this.inputHandler = new InputHandler(this.input, this.cameras.main);
-    this.cursorHandler = new CursorHandler(this.input);
+    this.scaleHandler = new DEPRECATED_scaleHandler(this.cameras, this.scale);
+    this.inputHandler = new DEPRECATED_inputHandler(this.input, this.cameras.main);
+    this.cursorHandler = new CursorHandler(this);
     this.tilemapInputHandler = new TilemapInputHandler(this.mapHelper.tilemapLayer);
     this.manualTileInputHandler = new ManualTileInputHandler(this, this.mapHelper.manualLayers);
     this.mapNavHelper = new MapNavHelper(
@@ -189,7 +155,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
       this.manualTileInputHandler
     );
     this.navInputHandler = new NavInputHandler(this, this.pathfinder, this.mapNavHelper);
-    this.multiSelectionHandler = new MultiSelectionHandler(this, this.input, this.cameras.main);
+    this.multiSelectionHandler = new DEPRECATED_multiSelectionHandler(this, this.input, this.cameras.main);
     this.minimapTextureHelper = new MinimapTextureHelper(this);
 
     this.subscribeToSelectionEvents();
@@ -200,9 +166,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     // this.minimapTextureHelper.createRenderTexture(); // todo temp
 
     // placing objects on map
-    this.placeAdditionalItemsOnManualLayers();
-    this.placeRawSpriteStaticObjectsOnMap();
-    this.placeRawSpriteDynamicObjectsOnMap();
+    this.placeActors();
   }
 
   override update(time: number, delta: number) {
@@ -304,40 +268,12 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private deselectPlacementInEditor() {
     // deselect in editor
     if (this.atlasToBePlaced) {
-      SceneCommunicatorService.atlasEmitterSubject.next(null);
+      Deprecated_SceneCommunicatorService.atlasEmitterSubject.next(null);
     }
     // deselect in editor
     if (this.tileToBeReplaced) {
-      SceneCommunicatorService.tileEmitterSubject.next(null);
+      Deprecated_SceneCommunicatorService.tileEmitterSubject.next(null);
     }
-  }
-
-  private placeAdditionalItemsOnManualLayers(): void {
-    const buildingCubeIndex = 137;
-    const buildingStairsSouthWestIndex = 191;
-    const buildingStairsSouthEastIndex = 192;
-    const waterIndex = 63;
-    this.manualTilesHelper.placeTilesOnLayer(this.mapHelper.mappedTilesetsToAtlasesWithProperties, [
-      { tilePlacementData: { tileXY: { x: 3, y: 7 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      { tilePlacementData: { tileXY: { x: 6, y: 4 }, z: 0 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      {
-        tilePlacementData: { tileXY: { x: 7, y: 4 }, z: 0 },
-        tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
-      },
-      {
-        tilePlacementData: { tileXY: { x: 4, y: 6 }, z: 0 },
-        tileIndexProperties: { tileIndex: buildingStairsSouthWestIndex }
-      },
-      { tilePlacementData: { tileXY: { x: 0, y: 2 }, z: 0 }, tileIndexProperties: { tileIndex: waterIndex } },
-
-      // layer 1
-      { tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 }, tileIndexProperties: { tileIndex: buildingCubeIndex } },
-      {
-        tilePlacementData: { tileXY: { x: 6, y: 4 }, z: 1 },
-        tileIndexProperties: { tileIndex: buildingStairsSouthEastIndex }
-      }
-    ]);
   }
 
   private destroyListener() {
@@ -352,7 +288,6 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
       this.inputHandler.destroy();
       this.navInputHandler.destroy();
       this.scaleHandler.destroy();
-      this.cursorHandler.destroy();
       this.tilemapInputHandler.destroy();
       this.manualTileInputHandler.destroy();
       this.multiSelectionHandler.destroy();
@@ -406,7 +341,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
       const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => ({
         name: s.name
       }));
-      SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
+      Deprecated_SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
     });
   }
 
@@ -461,60 +396,27 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   }
 
   private bindSceneCommunicator() {
-    SceneCommunicatorService.addSubscription(
-      SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
+    Deprecated_SceneCommunicatorService.addSubscription(
+      Deprecated_SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
         this.tileToBeReplaced = tileNr;
         this.atlasToBePlaced = null; // stop placing atlas
         this.selected = [];
-        this.conditionallyDrawLayerLines();
       }),
-      SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
+      Deprecated_SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
         this.editorLayerNr = layerNr;
-        this.conditionallyDrawLayerLines();
       }),
-      SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
+      Deprecated_SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
         this.atlasToBePlaced = atlas;
         this.tileToBeReplaced = null; // stop placing tile
         this.selected = [];
-        this.conditionallyDrawLayerLines();
       })
     );
   }
 
-  private conditionallyDrawLayerLines() {
-    if (this.tileToBeReplaced === null && this.atlasToBePlaced === null) return;
-    this.layerLines.drawLayerLines(this.editorLayerNr);
-  }
-
-  private placeRawSpriteStaticObjectsOnMap(): void {
-    this.staticObjectHelper.placeRawSpriteObjectsOnMap([
-      // {
-      //   tilePlacementData: { tileXY: { x: 5, y: 4 }, z: 1 },
-      //   placeableObjectProperties: {
-      //     placeableAtlasProperties: {
-      //       texture: 'house1',
-      //       frame: 'house1_1'
-      //     }
-      //   }
-      // }
-    ]);
-  }
-
-  private placeRawSpriteDynamicObjectsOnMap() {
-    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
-      // {
-      //   tilePlacementData: { tileXY: { x: 1, y: 1 }, z: 0 },
-      //   placeableObjectProperties: {
-      //     placeableAtlasProperties: {
-      //       texture: MapDefinitions.atlasCharacters + MapDefinitions.atlasSuffix,
-      //       frame: Warrior.textureName
-      //     }
-      //   }
-      // }
-    ]);
+  private placeActors() {
     this.playerController = new PlayerController(); // todo temp
     this.playerController.components.findComponent(PlayerResourcesComponent).addResources(
-      new Map<ResourceType, number>([
+      new Map<ResourceTypeDefinition, number>([
         [Resources.ambrosia, 5000],
         [Resources.stone, 5000],
         [Resources.wood, 5000],
@@ -542,26 +444,15 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     resourceSource.extractResources(worker, 10); // todo where to get this value from
     const resourceDrain = townHall.components.findComponent(ResourceDrainComponent);
     const gatherer = worker.components.findComponent(GathererComponent);
-    resourceDrain.returnResources(worker, gatherer.carriedResourceType as ResourceType, gatherer.carriedResourceAmount);
+    resourceDrain.returnResources(
+      worker,
+      gatherer.carriedResourceType as ResourceTypeDefinition,
+      gatherer.carriedResourceAmount
+    );
 
     const builderComponent = worker.components.findComponent(BuilderComponent);
     // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer
     builderComponent.beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 });
-
-    // todo this.demoPlaceWarriors();
-  }
-
-  private demoPlaceWarriors() {
-    let i = 0;
-    this.mapHelper.tilemapLayer.forEachTile((tile) => {
-      if (tile.index === -1) return;
-      if (i < 50) {
-        this.placeWarrior({ tileXY: { x: tile.x, y: tile.y }, z: 0 });
-      }
-
-      i++;
-    });
-    console.log("placed " + i + " warriors");
   }
 
   private placeWarrior(tilePlacementData: TilePlacementData) {

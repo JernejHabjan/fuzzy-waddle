@@ -1,4 +1,8 @@
 export enum GameSessionState {
-  NotPlaying,
-  Playing
+  NotStarted,
+  MovingPlayersToGame,
+  StartingTheGame,
+  InProgress,
+  ToScoreScreen,
+  Stopped
 }

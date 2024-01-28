@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, inject, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { flySquasherGameConfig } from "../game/consts/game-config";
 import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../auth/auth.service";
@@ -9,16 +9,25 @@ import { Router } from "@angular/router";
 import { PreventNavigateBack } from "../../shared/handlers/prevent-navigate-back";
 import { ModalConfig } from "../../shared/components/modal/modal-config";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
+import { CommonModule } from "@angular/common";
+import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 
 @Component({
   templateUrl: "./main.component.html",
-  styleUrls: ["./main.component.scss"]
+  styleUrls: ["./main.component.scss"],
+  standalone: true,
+  imports: [CommonModule, ModalComponent, GameContainerComponent]
 })
 export class MainComponent implements OnInit, OnDestroy {
+  private readonly authService = inject(AuthService);
+  private readonly communicatorService = inject(FlySquasherCommunicatorService);
+  private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
+  private readonly router = inject(Router);
+
   @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly flySquasherGameConfig = flySquasherGameConfig;
   protected gameData!: FlySquasherGameData;
-  @Input() level!: string;
+  @Input({ required: true }) level!: string;
   private preventNavigateBack = new PreventNavigateBack(this.router);
   protected leaveModalConfirm: ModalConfig = {
     modalTitle: "Leave the game?",
@@ -26,12 +35,6 @@ export class MainComponent implements OnInit, OnDestroy {
     closeButtonLabel: "Leave",
     onClose: async () => this.preventNavigateBack.navigateBack()
   };
-  constructor(
-    private readonly authService: AuthService,
-    private readonly communicatorService: FlySquasherCommunicatorService,
-    private readonly sceneCommunicatorClientService: SceneCommunicatorClientService,
-    private readonly router: Router
-  ) {}
 
   ngOnInit(): void {
     const levelData = Object.values(FlySquasherLevels).find((level) => level.id === Number.parseInt(this.level))!;

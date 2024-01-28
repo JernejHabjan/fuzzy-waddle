@@ -1,22 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SpectateComponent } from './spectate.component';
-import { SpectateService } from './spectate.service';
-import { spectateServiceStub } from './spectate.service.spec';
-import { ServerHealthService } from '../../../shared/services/server-health.service';
-import { serverHealthServiceStub } from '../../../shared/services/server-health.service.spec';
-import { Component } from '@angular/core';
+import { SpectateComponent } from "./spectate.component";
+import { SpectateService } from "./spectate.service";
+import { spectateServiceStub } from "./spectate.service.spec";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
+import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
-@Component({ selector: 'little-muncher-spectate', template: '' })
+@Component({ selector: "little-muncher-spectate", template: "", standalone: true, imports: [CommonModule] })
 export class SpectateTestComponent {}
 
-describe('SpectateComponent', () => {
+describe("SpectateComponent", () => {
   let component: SpectateComponent;
   let fixture: ComponentFixture<SpectateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SpectateComponent],
+      imports: [SpectateComponent],
       providers: [
         { provide: ServerHealthService, useValue: serverHealthServiceStub },
         { provide: SpectateService, useValue: spectateServiceStub }
@@ -28,7 +29,7 @@ describe('SpectateComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

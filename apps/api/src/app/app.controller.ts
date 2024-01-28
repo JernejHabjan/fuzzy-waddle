@@ -1,10 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get } from "@nestjs/common";
 
 @Controller()
 export class AppController {
   // health endpoint always returns OK used for monitoring for zero downtime deploys
-  @Get('health')
+  @Get("health")
   getHealth(): string {
-    return 'OK';
+    return "OK";
   }
 }

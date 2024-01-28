@@ -1,5 +1,5 @@
-import { Vector2Simple } from '../../../library/math/intersection';
-import { Geom, Scene } from 'phaser';
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Geom, Scene } from "phaser";
 
 export class DebugShapes {
   static drawDebugPoint(scene: Scene, clickPoint: Vector2Simple) {

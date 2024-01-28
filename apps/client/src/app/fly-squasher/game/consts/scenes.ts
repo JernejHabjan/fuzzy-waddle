@@ -1,3 +1,3 @@
 export enum Scenes {
-  'MainScene' = 'MainScene'
+  "MainScene" = "MainScene"
 }

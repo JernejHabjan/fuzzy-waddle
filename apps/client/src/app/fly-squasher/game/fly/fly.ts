@@ -5,7 +5,7 @@ import { FlySoundComponent } from "./components/fly-sound-component";
 import { FlyMovementComponent, WorldSpeedState } from "./components/fly-movement-component";
 import { FlyHealthSystem } from "./components/fly-health.system";
 import { FlyRepresentableComponent } from "./components/fly-representable-component";
-import { HealthComponent } from "../../../probable-waffle/game/entity/combat/components/health-component";
+import { FlyHealthComponent } from "./components/fly-health-component";
 import { FlySquasherAudio } from "../audio";
 
 export type FlyOptions = {
@@ -39,7 +39,7 @@ export class Fly extends Actor {
       new FlyRepresentableComponent(this, scene, actorOptions)
     );
     this.components.addComponent(
-      new HealthComponent(this, scene, { maxHealth: this.maxHealth }, this.healthBarOptions)
+      new FlyHealthComponent(this, scene, { maxHealth: this.maxHealth }, this.healthBarOptions)
     );
 
     this.flyHealthSystem = this.components.addComponent(new FlyHealthSystem(this)); // todo add system?

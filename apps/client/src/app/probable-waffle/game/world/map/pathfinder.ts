@@ -9,13 +9,13 @@ import {
   TOP as EasyStar_TOP,
   TOP_LEFT as EasyStar_TOP_LEFT,
   TOP_RIGHT as EasyStar_TOP_RIGHT
-} from 'easystarjs';
-import { TilemapHelper } from './tile/tilemap.helper';
-import { Vector2Simple } from '../../library/math/intersection';
-import { TilePlacementWorldWithProperties } from './tile/manual-tiles/manual-tiles.helper';
-import { MapSizeInfo, TileDefinitions } from '../const/map-size.info';
-import { SlopeDirection } from './tile/types/tile-types';
-import { Scene } from 'phaser';
+} from "easystarjs";
+import { TilemapHelper } from "./tile/tilemap.helper";
+import { TilePlacementWorldWithProperties } from "./tile/manual-tiles/manual-tiles.helper";
+import { MapSizeInfo, TileDefinitions } from "../const/map-size.info";
+import { SlopeDirection } from "./tile/types/tile-types";
+import { Scene } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class Pathfinder {
   private readonly enableDiagonals = true;
@@ -60,8 +60,8 @@ export class Pathfinder {
       }
       easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
         if (!path) {
-          console.log('Path was not found.');
-          reject('Path was not found.');
+          console.log("Path was not found.");
+          reject("Path was not found.");
         } else {
           if (path.length === 0) {
             resolve([]);

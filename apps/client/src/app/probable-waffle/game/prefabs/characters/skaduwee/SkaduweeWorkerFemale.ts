@@ -4,6 +4,10 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../data/actor-data";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -15,6 +19,18 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
     this.play("skaduwee_worker_female_idle_down");
 
     /* START-USER-CTR-CODE */
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
+
     this.on("pointerdown", () => {
       this.setTint(0xff0000); // Tint to red
       // tint back to transparent after 1 second

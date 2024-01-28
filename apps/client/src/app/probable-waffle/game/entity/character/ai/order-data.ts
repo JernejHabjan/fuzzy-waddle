@@ -1,6 +1,6 @@
-import { OrderType } from './order-type';
-import { Actor } from '../../actor/actor';
-import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
+import { OrderType } from "./order-type";
+import { Actor } from "../../actor/actor";
+import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 
 export class OrderData {
   constructor(

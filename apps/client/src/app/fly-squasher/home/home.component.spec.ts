@@ -6,6 +6,7 @@ import { serverHealthServiceStub } from "../../shared/services/server-health.ser
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -13,7 +14,6 @@ describe("HomeComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomeComponent],
       providers: [
         {
           provide: ServerHealthService,
@@ -24,7 +24,7 @@ describe("HomeComponent", () => {
           useValue: authServiceStub
         }
       ],
-      imports: [FontAwesomeTestingModule]
+      imports: [HomeComponent, FontAwesomeTestingModule, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);

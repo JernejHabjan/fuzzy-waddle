@@ -1,6 +1,6 @@
-import { Subscription } from 'rxjs';
-import { BaseScene } from '../scene/base.scene';
-import { UpdateEventData } from '../scene/update-event-data';
+import { Subscription } from "rxjs";
+import { BaseScene } from "../scene/base.scene";
+import { UpdateEventData } from "../scene/update-event-data";
 
 const { Between } = Phaser.Math;
 const { GetRandom } = Phaser.Utils.Array;
@@ -19,7 +19,10 @@ export class Fireworks {
   private emitter3Event?: Phaser.Time.TimerEvent;
   private subscriptions: Subscription[] = [];
 
-  constructor(private readonly scene: BaseScene, autoStart = false) {
+  constructor(
+    private readonly scene: BaseScene,
+    autoStart = false
+  ) {
     this.registerEvents(autoStart);
     if (autoStart) {
       this.create();
@@ -39,12 +42,12 @@ export class Fireworks {
     this.renderTexture = this.scene.add
       .renderTexture(0, 0, this.scene.cameras.main.width, this.scene.cameras.main.height)
       .setOrigin(0, 0)
-      .setBlendMode('ADD');
+      .setBlendMode("ADD");
 
     const emitterConfig: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig = {
-      alpha: { start: 1, end: 0, ease: 'Quad.easeOut' },
+      alpha: { start: 1, end: 0, ease: "Quad.easeOut" },
       angle: { start: 0, end: 360, steps: 100 },
-      blendMode: 'SCREEN',
+      blendMode: "SCREEN",
       emitting: false,
       frequency: -1,
       gravityY: 100,
@@ -55,12 +58,12 @@ export class Fireworks {
       speed: { min: 100, max: 200 }
     };
 
-    this.emitter1 = this.scene.make.particles({ key: '__WHITE', config: emitterConfig }, false);
-    this.emitter2 = this.scene.make.particles({ key: '__WHITE', config: emitterConfig }, false);
-    this.emitter3 = this.scene.make.particles({ key: '__WHITE', config: emitterConfig }, false);
+    this.emitter1 = this.scene.make.particles({ key: "__WHITE", config: emitterConfig }, false);
+    this.emitter2 = this.scene.make.particles({ key: "__WHITE", config: emitterConfig }, false);
+    this.emitter3 = this.scene.make.particles({ key: "__WHITE", config: emitterConfig }, false);
 
     if (!this.emitter1 || !this.emitter2 || !this.emitter3) {
-      console.error('Could not create fireworks');
+      console.error("Could not create fireworks");
       return;
     }
     this.emitter1Event = this.scene.time.addEvent({

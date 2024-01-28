@@ -2,41 +2,26 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class BlockObsidian1 extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class BlockObsidian1 extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-32 -32 0 -48 32 -32 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 48.14660195684367, texture || "outside", frame ?? "nature/block_obsidian/1.png");
 
-    // outside_nature_block_obsidian_1
-    const outside_nature_block_obsidian_1 = scene.add.image(
-      0,
-      -17.87410141979456,
-      "outside",
-      "nature/block_obsidian/1.png"
-    );
-    outside_nature_block_obsidian_1.setOrigin(0.5, 0.470717165742086);
-    this.add(outside_nature_block_obsidian_1);
+		this.setInteractive(new Phaser.Geom.Polygon("0 16 32 0 64 16 63.87692032463579 48.25256512899465 32.007514849696626 64.03752963689782 0.012200041952727503 47.373360474054735"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.7522906265785319);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	public z: number = 0;
+
+	/* START-USER-CODE */
 
   // Write your code here.
 

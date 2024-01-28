@@ -1,4 +1,4 @@
-import { BaseData } from '../data';
+import { BaseData } from "../data";
 
 export abstract class BasePlayerState<TData extends BaseData = BaseData> {
   protected constructor(public data: TData) {

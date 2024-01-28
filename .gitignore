@@ -12,6 +12,7 @@ node_modules
 /.idea/*
 !/.idea/dataSources.xml
 !/.idea/sqldialects.xml
+!/.idea/icon.svg
 .project
 .classpath
 .c9/

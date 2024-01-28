@@ -1,18 +1,23 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { CommonModule } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgbAlert } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "fuzzy-waddle-sw-refresh",
   templateUrl: "./sw-refresh.component.html",
-  styleUrls: ["./sw-refresh.component.scss"]
+  styleUrls: ["./sw-refresh.component.scss"],
+  standalone: true,
+  imports: [CommonModule, FaIconComponent, NgbAlert]
 })
 export class SwRefreshComponent implements OnInit {
   protected readonly faSpinner = faSpinner;
   protected showNewVersion = false;
   protected showVersionReady = false;
 
-  constructor(private swUpdate: SwUpdate) {}
+  private readonly swUpdate = inject(SwUpdate);
 
   ngOnInit(): void {
     this.swUpdateCheck();

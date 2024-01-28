@@ -2,15 +2,19 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { setActorData } from "../../../data/actor-data";
+import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
-export default class Sandhold extends ActorContainer {
+export default class Sandhold extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 160, y ?? 240);
 
-    this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon("-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22"),
       Phaser.Geom.Polygon.Contains
@@ -24,10 +28,21 @@ export default class Sandhold extends ActorContainer {
     const hover_crystal = scene.add.image(0, -192, "factions", "buildings/tivara/sandhold/sandhold-crystal.png");
     this.add(hover_crystal);
 
-    // this (prefab fields)
-    this.z = 0;
-
     /* START-USER-CTR-CODE */
+
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100,
+          maxArmor: 50
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
+
     // Create a continuous hover effect for hover_crystal
     scene.tweens.add({
       targets: hover_crystal,
@@ -63,7 +78,7 @@ export default class Sandhold extends ActorContainer {
     span.scaleX = 0.5;
     span.scaleY = 0.5;
     span.angle = -70;
-    span.play("anim-tivara-buildings-olival-small");
+    span.play(ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL);
     this.add(span);
 
     scene.tweens.add({

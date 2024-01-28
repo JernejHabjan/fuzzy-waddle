@@ -1,16 +1,16 @@
-import { RepresentableActor, RepresentableActorDefinition } from '../../actor/representable-actor';
-import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { ResourceSourceComponent } from '../../economy/resource/resource-source-component';
-import { ContainerComponent } from '../../building/container-component';
-import { Resources } from '../../economy/resource/resource-type';
-import { Scene } from 'phaser';
+import { RepresentableActor, RepresentableActorDefinition } from "../../actor/representable-actor";
+import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { ResourceSourceComponent } from "../../economy/resource/resource-source-component";
+import { ContainerComponent } from "../../building/container-component";
+import { Resources } from "@fuzzy-waddle/api-interfaces";
+import { Scene } from "phaser";
 
 export const MineralsDefinitions: RepresentableActorDefinition = {
   textureMapDefinition: {
-    textureName: 'warrior',
+    textureName: "warrior",
     spriteSheet: {
-      name: 'minerals',
-      path: 'general/minerals/',
+      name: "minerals",
+      path: "general/minerals/",
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64

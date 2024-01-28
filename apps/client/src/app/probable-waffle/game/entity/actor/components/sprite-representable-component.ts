@@ -1,16 +1,20 @@
-import { IComponent } from '../../../core/component.service';
-import { Subscription } from 'rxjs';
-import { SpriteHelper, SpritePlacementData } from '../sprite-helper';
-import { TransformComponent } from './transformable-component';
-import { Actor } from '../actor';
-import { GameObjects, Scene } from 'phaser';
+import { IComponent } from "../../../core/component.service";
+import { Subscription } from "rxjs";
+import { SpriteHelper, SpritePlacementData } from "../sprite-helper";
+import { TransformComponent } from "./transformable-component";
+import { Actor } from "../actor";
+import { GameObjects, Scene } from "phaser";
 
 export class SpriteRepresentationComponent implements IComponent {
   scene: Scene;
   sprite: GameObjects.Sprite;
   private transformSubscription?: Subscription;
 
-  constructor(private actor: Actor, scene: Scene, spritePlacementData: SpritePlacementData) {
+  constructor(
+    private actor: Actor,
+    scene: Scene,
+    spritePlacementData: SpritePlacementData
+  ) {
     this.scene = scene;
     const spriteWorldPlacementInfo = SpriteHelper.getSpriteWorldPlacementInfo(spritePlacementData.tilePlacementData);
     this.sprite = this.scene.add.sprite(

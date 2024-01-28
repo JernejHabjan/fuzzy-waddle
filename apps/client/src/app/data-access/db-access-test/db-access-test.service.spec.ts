@@ -1,21 +1,21 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { DbAccessTestService } from './db-access-test.service';
-import { DataAccessService } from '../data-access.service';
-import { dataAccessServiceStub } from '../data-access.service.spec';
+import { DbAccessTestService } from "./db-access-test.service";
+import { DataAccessService } from "../data-access.service";
+import { dataAccessServiceStub } from "../data-access.service.spec";
 
 export const dbAccessTestServiceStub = {
   get(): void {
-    console.log('test');
+    console.log("test");
   },
   add(): void {
-    console.log('test');
+    console.log("test");
   },
   async getStorageEntry(): Promise<void> {
-    console.log('test');
+    console.log("test");
   }
 };
-describe('DbAccessTest', () => {
+describe("DbAccessTest", () => {
   let service: DbAccessTestService;
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe('DbAccessTest', () => {
     service = TestBed.inject(DbAccessTestService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

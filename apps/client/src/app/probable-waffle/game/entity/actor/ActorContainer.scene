@@ -4,6 +4,7 @@
     "settings": {
         "exportClass": true,
         "autoImport": true,
+        "superClassName": "Phaser.GameObjects.Container implements IComponent",
         "preloadMethodName": "",
         "preloadPackFiles": [],
         "createMethodName": "",

@@ -1,18 +1,18 @@
-import { ContainerComponent } from '../../building/container-component';
-import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
-import { PlacementRestrictionComponent } from '../../building/placement-restriction-component';
-import { Minerals } from '../resources/minerals';
-import { Building, BuildingInfoDefinition } from './building';
-import { CostData } from '../../building/production/production-cost-component';
-import { PaymentType } from '../../building/payment-type';
+import { ContainerComponent } from "../../building/container-component";
+import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
+import { PlacementRestrictionComponent } from "../../building/placement-restriction-component";
+import { Minerals } from "../resources/minerals";
+import { Building, BuildingInfoDefinition } from "./building";
+import { CostData } from "../../building/production/production-cost-component";
+import { PaymentType } from "../../building/payment-type";
+import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 
 export const MineDefinitions: BuildingInfoDefinition = {
   textureMapDefinition: {
-    textureName: 'warrior',
+    textureName: "warrior",
     spriteSheet: {
-      name: 'mine',
-      path: 'general/mine/',
+      name: "mine",
+      path: "general/mine/",
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64
@@ -22,7 +22,7 @@ export const MineDefinitions: BuildingInfoDefinition = {
   cost: new CostData(
     PaymentType.PayOverTime,
     100,
-    new Map<ResourceType, number>([
+    new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
@@ -33,7 +33,7 @@ export const MineDefinitions: BuildingInfoDefinition = {
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceType, number>([
+    constructionCosts: new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
@@ -48,7 +48,7 @@ export const MineDefinitions: BuildingInfoDefinition = {
     refundFactor: 0.5,
     startImmediately: false,
     gridWidthAndHeight: { width: 2, height: 2 },
-    finishedSound: 'building-finished' // todo
+    finishedSound: "building-finished" // todo
   }
 };
 

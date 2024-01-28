@@ -4,6 +4,7 @@
     "settings": {
         "exportClass": true,
         "autoImport": true,
+        "superClassName": "ProbableWaffleScene",
         "preloadMethodName": "editorPreload",
         "preloadPackFiles": [],
         "createMethodName": "editorCreate",
@@ -16,22 +17,21 @@
         {
             "type": "Image",
             "id": "e413cbbf-ce25-4dad-a117-b7cf0791f655",
-            "label": "guapen",
-            "components": [],
+            "label": "probable-waffle-loader",
+            "scope": "CLASS",
             "texture": {
-                "key": "guapen"
+                "key": "probable-waffle-loader"
             },
             "x": 505.0120544433594,
             "y": 360,
-            "scaleX": 0.32715486817515643,
-            "scaleY": 0.32715486817515643,
-            "list": []
+            "scaleX": 2,
+            "scaleY": 2
         },
         {
             "type": "Rectangle",
             "id": "845d4ca6-7417-44fc-97e3-a3bb2fbbdd03",
             "label": "progressBar",
-            "components": [],
+            "scope": "CLASS",
             "x": 553.0120849609375,
             "y": 361,
             "originX": 0,
@@ -44,10 +44,7 @@
                 {
                     "prefabId": "ca949479-ab4d-45d5-b856-2cbecbd8d127",
                     "id": "250eaa8f-b143-4e41-9ddf-052dfd99672c",
-                    "label": "preloadUpdater",
-                    "components": [],
-                    "nestedPrefabs": [],
-                    "list": []
+                    "label": "preloadUpdater"
                 }
             ]
         },
@@ -55,7 +52,7 @@
             "type": "Rectangle",
             "id": "10e175a4-81b6-449e-9561-6d8ba54d3812",
             "label": "progressBarBg",
-            "components": [],
+            "scope": "CLASS",
             "x": 553.0120849609375,
             "y": 361,
             "originX": 0,
@@ -63,21 +60,32 @@
             "fillColor": "#e0e0e0",
             "isStroked": true,
             "width": 256,
-            "height": 20,
-            "list": []
+            "height": 20
         },
         {
             "type": "Text",
             "id": "c4092661-6339-47cf-9fea-8abff3a46e0c",
             "label": "loadingText",
-            "components": [],
+            "scope": "CLASS",
             "x": 552.0120849609375,
             "y": 329,
             "text": "Loading...",
             "fontFamily": "arial",
             "fontSize": "20px",
-            "color": "#e0e0e0",
-            "list": []
+            "color": "#e0e0e0"
+        },
+        {
+            "type": "Image",
+            "id": "dcdf4273-7526-450f-ab08-ba20c427f8d3",
+            "label": "probable-waffle-loader_1",
+            "scope": "CLASS",
+            "texture": {
+                "key": "probable-waffle-loader"
+            },
+            "x": 847,
+            "y": 364,
+            "scaleX": 2,
+            "scaleY": 2
         }
     ],
     "plainObjects": [],
@@ -85,6 +93,6 @@
         "app": "Phaser Editor 2D - Scene Editor",
         "url": "https://phasereditor2d.com",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
-        "version": 3
+        "version": 5
     }
 }

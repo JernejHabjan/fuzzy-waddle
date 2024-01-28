@@ -1,12 +1,11 @@
-import { GameInstanceMetadata, GameInstanceMetadataData } from './game-instance-metadata';
-import { GameSessionState } from './session';
-import { BaseData } from './data';
-import { BaseSpectator, BaseSpectatorData } from './spectator';
-import { BaseGameState } from './game-state';
-import { BaseGameMode } from './game-mode';
-import { BasePlayerState } from './player/player-state';
-import { BasePlayerController } from './player/player-controller';
-import { BasePlayer } from './player/player';
+import { GameInstanceMetadata, GameInstanceMetadataData } from "./game-instance-metadata";
+import { BaseData } from "./data";
+import { BaseSpectator, BaseSpectatorData } from "./spectator";
+import { BaseGameState } from "./game-state";
+import { BaseGameMode } from "./game-mode";
+import { BasePlayerState } from "./player/player-state";
+import { BasePlayerController, BasePlayerControllerData } from "./player/player-controller";
+import { BasePlayer } from "./player/player";
 
 export interface GameInstanceDataDto {
   gameInstanceId: string;
@@ -24,7 +23,6 @@ export type GameInstanceData<
   gameStateData?: TGameStateData;
   gameModeData?: TGameModeData;
   players?: {
-    userId: string | null;
     playerControllerData?: TPlayerControllerData;
     playerStateData?: TPlayerStateData;
   }[];
@@ -36,13 +34,14 @@ export type GameInstanceData<
  */
 export abstract class GameInstance<
   TGameInstanceMetadataData extends GameInstanceMetadataData = GameInstanceMetadataData,
-  TGameInstanceMetadata extends GameInstanceMetadata<TGameInstanceMetadataData> = GameInstanceMetadata<TGameInstanceMetadataData>,
+  TGameInstanceMetadata extends
+    GameInstanceMetadata<TGameInstanceMetadataData> = GameInstanceMetadata<TGameInstanceMetadataData>,
   TGameStateData extends BaseData = BaseData,
   TGameState extends BaseGameState<TGameStateData> = BaseGameState<TGameStateData>,
   TGameModeData extends BaseData = BaseData,
   TGameMode extends BaseGameMode<TGameModeData> = BaseGameMode<TGameModeData>,
   TPlayerStateData extends BaseData = BaseData,
-  TPlayerControllerData extends BaseData = BaseData,
+  TPlayerControllerData extends BasePlayerControllerData = BasePlayerControllerData,
   TPlayerState extends BasePlayerState<TPlayerStateData> = BasePlayerState<TPlayerStateData>,
   TPlayerController extends BasePlayerController<TPlayerControllerData> = BasePlayerController<TPlayerControllerData>,
   TPlayer extends BasePlayer<TPlayerStateData, TPlayerControllerData, TPlayerState, TPlayerController> = BasePlayer<
@@ -55,7 +54,7 @@ export abstract class GameInstance<
   TSpectator extends BaseSpectator<TSpectatorData> = BaseSpectator<TSpectatorData>
 > {
   gameMode: TGameMode | null = null;
-  gameInstanceMetadata: TGameInstanceMetadata | null = null;
+  gameInstanceMetadata: TGameInstanceMetadata;
   gameState: TGameState | null = null;
   players: TPlayer[] = [];
   spectators: TSpectator[] = [];
@@ -67,11 +66,7 @@ export abstract class GameInstance<
       gameState: new (...args: any /*TGameStateData */) => TGameState;
       playerState: new (...args: any /*TPlayerStateData */) => TPlayerState;
       playerController: new (...args: any /*TPlayerControllerData */) => TPlayerController;
-      player: new (
-        userId: string | null,
-        playerState: any /*TPlayerState*/,
-        playerController: any /*TPlayerController*/
-      ) => TPlayer;
+      player: new (playerState: any /*TPlayerState*/, playerController: any /*TPlayerController*/) => TPlayer;
       spectator: new (...args: any /*TSpectatorData*/) => TSpectator;
     },
     gameInstanceData?: GameInstanceData<
@@ -84,13 +79,14 @@ export abstract class GameInstance<
     >
   ) {
     this.gameInstanceMetadata = new constructors.gameInstanceMetadata(gameInstanceData?.gameInstanceMetadataData);
-    this.gameMode = new constructors.gameMode(gameInstanceData?.gameModeData);
-    this.gameState = new constructors.gameState(gameInstanceData?.gameStateData);
+    this.gameMode = gameInstanceData?.gameModeData ? new constructors.gameMode(gameInstanceData?.gameModeData) : null;
+    this.gameState = gameInstanceData?.gameStateData
+      ? new constructors.gameState(gameInstanceData?.gameStateData)
+      : null;
     this.players =
       gameInstanceData?.players?.map(
         (playerData) =>
           new constructors.player(
-            playerData.userId,
             new constructors.playerState(playerData.playerStateData),
             new constructors.playerController(playerData.playerControllerData)
           )
@@ -111,7 +107,6 @@ export abstract class GameInstance<
       gameStateData: this.gameState?.data,
       gameModeData: this.gameMode?.data,
       players: this.players.map((player) => ({
-        userId: player.userId,
         playerStateData: player.playerState.data,
         playerControllerData: player.playerController.data
       })),
@@ -119,25 +114,37 @@ export abstract class GameInstance<
     };
   }
 
-  initGame(gameModeData: TGameModeData) {
-    if (!this.gameMode || !this.gameInstanceMetadata)
-      throw new Error('Game mode or game instance metadata is not initialized');
-    this.gameMode.data = gameModeData;
-    this.gameInstanceMetadata.data.sessionState = GameSessionState.Playing;
-  }
-
-  initPlayer(userId: string | null, playerStateData: TPlayerStateData, playerControllerData: TPlayerControllerData) {
+  initPlayer(
+    playerControllerData: TPlayerControllerData,
+    playerStateData: TPlayerStateData | undefined = undefined
+  ): TPlayer {
     const playerState = new this.constructors.playerState(playerStateData);
     const playerController = new this.constructors.playerController(playerControllerData);
-    this.players.push(new this.constructors.player(userId, playerState, playerController));
+    return new this.constructors.player(playerState, playerController);
   }
 
-  initSpectator(spectatorData: TSpectatorData) {
-    this.spectators.push(new this.constructors.spectator(spectatorData));
+  initSpectator(spectatorData: TSpectatorData): TSpectator {
+    return new this.constructors.spectator(spectatorData);
   }
 
   removeSpectator(userId: string) {
     this.spectators = this.spectators.filter((s) => s.data.userId !== userId);
+  }
+
+  removePlayerByUserId(userId: string) {
+    this.players = this.players.filter((p) => p.playerController.data.userId !== userId);
+  }
+
+  removePlayerByPlayer(player: TPlayer) {
+    this.players = this.players.filter((p) => p !== player);
+  }
+
+  addPlayer(player: TPlayer) {
+    this.players.push(player);
+  }
+
+  addSpectator(spectator: TSpectator) {
+    this.spectators.push(spectator);
   }
 
   stopLevel() {
@@ -152,7 +159,7 @@ export abstract class GameInstance<
   }
 
   getPlayer(userId: string | null): TPlayer | null {
-    return this.players.find((p) => p.userId === userId) ?? null;
+    return this.players.find((p) => p.playerController.data.userId === userId) ?? null;
   }
 
   getSpectator(userId: string | null): TSpectator | null {
@@ -164,7 +171,7 @@ export abstract class GameInstance<
   }
 
   isPlayer(userId: string | null): boolean {
-    return this.players.some((p) => p.userId === userId);
+    return this.players.some((p) => p.playerController.data.userId === userId);
   }
 
   isSpectator(userId: string | null): boolean {

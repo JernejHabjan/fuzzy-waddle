@@ -89,9 +89,6 @@ importers:
       '@nestjs/schedule':
         specifier: ^4.0.0
         version: 4.0.0(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(reflect-metadata@0.1.13)
-      '@nestjs/swagger':
-        specifier: 7.1.15
-        version: 7.1.15(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
       '@nestjs/throttler':
         specifier: ^5.0.1
         version: 5.0.1(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(reflect-metadata@0.1.13)
@@ -119,6 +116,9 @@ importers:
       bootstrap:
         specifier: ^5.3.2
         version: 5.3.2(@popperjs/core@2.11.8)
+      chart.js:
+        specifier: ^4.4.1
+        version: 4.4.1
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -131,6 +131,9 @@ importers:
       helmet:
         specifier: ^7.1.0
         version: 7.1.0
+      ng2-charts:
+        specifier: ^5.0.4
+        version: 5.0.4(@angular/cdk@17.0.4)(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/platform-browser@17.0.1)(chart.js@4.4.1)(rxjs@7.8.1)
       ngx-socket-io:
         specifier: ^4.6.1
         version: 4.6.1(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1)
@@ -164,6 +167,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
+      socket.io:
+        specifier: ^4.7.2
+        version: 4.7.2
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -195,6 +201,9 @@ importers:
       '@nestjs/schematics':
         specifier: 10.0.3
         version: 10.0.3(typescript@5.2.2)
+      '@nestjs/swagger':
+        specifier: 7.1.15
+        version: 7.1.15(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
       '@nestjs/testing':
         specifier: 10.2.8
         version: 10.2.8(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(@nestjs/platform-express@10.2.8)
@@ -624,6 +633,21 @@ packages:
     dependencies:
       '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
       tslib: 2.6.2
+
+  /@angular/cdk@17.0.4(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1):
+    resolution: {integrity: sha512-mh/EuIR0NPfpNqAXBSZWuJeBMXUvUDYdKhiFWZet5NLO1bDgFe1MGLBjtW4us95k4BZsMLbCKNxJgc+4JqwUvg==}
+    peerDependencies:
+      '@angular/common': ^17.0.0 || ^18.0.0
+      '@angular/core': ^17.0.0 || ^18.0.0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/common': 17.0.1(@angular/core@17.0.1)(rxjs@7.8.1)
+      '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    optionalDependencies:
+      parse5: 7.1.2
+    dev: false
 
   /@angular/cli@17.0.0:
     resolution: {integrity: sha512-VzKYmN+1wSE2wLBEFu/NHSrRQbeaKkEDO9aZxd7nAnxC5T1Zcva7dfqZIXMHXH2HESYAZCvOS8ikBE/7DCtWWw==}
@@ -3435,6 +3459,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
+  /@kurkle/color@0.3.2:
+    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+    dev: false
+
   /@leichtgewicht/ip-codec@2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
 
@@ -3607,7 +3635,7 @@ packages:
       class-transformer: 0.5.1
       class-validator: 0.14.0
       reflect-metadata: 0.1.13
-    dev: false
+    dev: true
 
   /@nestjs/passport@10.0.2(@nestjs/common@10.2.8)(passport@0.6.0):
     resolution: {integrity: sha512-od31vfB2z3y05IDB5dWSbCGE2+pAf2k2WCBinNuTTOxN0O0+wtO1L3kawj/aCW3YR9uxsTOVbTDwtwgpNNsnjQ==}
@@ -3722,7 +3750,7 @@ packages:
       path-to-regexp: 3.2.0
       reflect-metadata: 0.1.13
       swagger-ui-dist: 5.9.1
-    dev: false
+    dev: true
 
   /@nestjs/testing@10.2.8(@nestjs/common@10.2.8)(@nestjs/core@10.2.8)(@nestjs/platform-express@10.2.8):
     resolution: {integrity: sha512-9Kj5IQhM67/nj/MT6Wi2OmWr5YQnCMptwKVFrX1TDaikpY12196v7frk0jVjdT7wms7rV07GZle9I2z0aSjqtQ==}
@@ -6024,7 +6052,7 @@ packages:
       serve-index: 1.9.1
       serve-static: 1.13.2
       server-destroy: 1.0.1
-      socket.io: 4.7.1
+      socket.io: 4.7.2
       ua-parser-js: 1.0.37
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -6188,6 +6216,13 @@ packages:
 
   /charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
+    dev: false
+
+  /chart.js@4.4.1:
+    resolution: {integrity: sha512-C74QN1bxwV1v2PEujhmKjOZ7iUM4w6BWs23Md/6aOZZSlwMzeCIDGuZay++rBgChYru7/+QFeoQW0fQoP534Dg==}
+    engines: {pnpm: '>=7'}
+    dependencies:
+      '@kurkle/color': 0.3.2
     dev: false
 
   /check-more-types@2.24.0:
@@ -7198,32 +7233,9 @@ packages:
     resolution: {integrity: sha512-tjuoZDMAdEhVnSFleYPCtdL2GXwVTGtNjoeJd9IhIG3C1xs9uwxqRNEu5WpnDZCaozwVlK/nuQhpodhXSIMaxw==}
     engines: {node: '>=10.0.0'}
 
-  /engine.io-parser@5.1.0:
-    resolution: {integrity: sha512-enySgNiK5tyZFynt3z7iqBR+Bto9EVVVvDFuTT0ioHCGbzirZVGDGiQjZzEp8hWl6hd5FSVytJGuScX1C1C35w==}
-    engines: {node: '>=10.0.0'}
-
   /engine.io-parser@5.2.1:
     resolution: {integrity: sha512-9JktcM3u18nU9N2Lz3bWeBgxVgOKpw7yhRaoxQA3FUDZzzw+9WlA6p4G4u0RixNkg14fH7EfEc/RhpurtiROTQ==}
     engines: {node: '>=10.0.0'}
-
-  /engine.io@6.5.1:
-    resolution: {integrity: sha512-mGqhI+D7YxS9KJMppR6Iuo37Ed3abhU8NdfgSvJSDUafQutrN+sPTncJYTyM9+tkhSmWodKtVYGPPHyXJEwEQA==}
-    engines: {node: '>=10.0.0'}
-    dependencies:
-      '@types/cookie': 0.4.1
-      '@types/cors': 2.8.13
-      '@types/node': 20.9.0
-      accepts: 1.3.8
-      base64id: 2.0.0
-      cookie: 0.4.2
-      cors: 2.8.5
-      debug: 4.3.4(supports-color@8.1.1)
-      engine.io-parser: 5.1.0
-      ws: 8.11.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
 
   /engine.io@6.5.4:
     resolution: {integrity: sha512-KdVSDKhVKyOi+r5uEabrDLZw2qXStVvCsEB/LN3mw4WFi6Gx50jTyuxYVCwAAC0U46FdnzP/ScKRBTXb/NiEOg==}
@@ -9943,6 +9955,10 @@ packages:
     dependencies:
       p-locate: 6.0.0
 
+  /lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
   /lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
     dev: true
@@ -10377,6 +10393,26 @@ packages:
 
   /next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
+    dev: false
+
+  /ng2-charts@5.0.4(@angular/cdk@17.0.4)(@angular/common@17.0.1)(@angular/core@17.0.1)(@angular/platform-browser@17.0.1)(chart.js@4.4.1)(rxjs@7.8.1):
+    resolution: {integrity: sha512-AnOZ2KSRw7QjiMMNtXz9tdnO+XrIKP/2MX1TfqEEo2fwFU5c8LFJIYqmkMPkIzAEm/U9y/1psA5TDNmxxjEdgA==}
+    peerDependencies:
+      '@angular/cdk': '>=16.0.0'
+      '@angular/common': '>=16.0.0'
+      '@angular/core': '>=16.0.0'
+      '@angular/platform-browser': '>=16.0.0'
+      chart.js: ^3.4.0 || ^4.0.0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/cdk': 17.0.4(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1)
+      '@angular/common': 17.0.1(@angular/core@17.0.1)(rxjs@7.8.1)
+      '@angular/core': 17.0.1(rxjs@7.8.1)(zone.js@0.14.2)
+      '@angular/platform-browser': 17.0.1(@angular/animations@17.0.1)(@angular/common@17.0.1)(@angular/core@17.0.1)
+      chart.js: 4.4.1
+      lodash-es: 4.17.21
+      rxjs: 7.8.1
+      tslib: 2.6.2
     dev: false
 
   /ngx-socket-io@4.6.1(@angular/common@17.0.1)(@angular/core@17.0.1)(rxjs@7.8.1):
@@ -11012,7 +11048,7 @@ packages:
     dev: false
 
   /phasereditor2d-launcher@3.65.0:
-    resolution: { integrity: sha512-2ucHdBN+3lSHDyZsRc6EIPURhIhAhyIIHVwRBAIIFs8WscLtN3U6b5MpuEEnW7KKaueAwSV0/5GsC8vvFQzHlQ== }
+    resolution: {integrity: sha512-2ucHdBN+3lSHDyZsRc6EIPURhIhAhyIIHVwRBAIIFs8WscLtN3U6b5MpuEEnW7KKaueAwSV0/5GsC8vvFQzHlQ==}
     hasBin: true
     dependencies:
       adm-zip: 0.5.10
@@ -12162,22 +12198,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /socket.io@4.7.1:
-    resolution: {integrity: sha512-W+utHys2w//dhFjy7iQQu9sGd3eokCjGbl2r59tyLqNiJJBdIebn3GAKEXBr3osqHTObJi2die/25bCx2zsaaw==}
-    engines: {node: '>=10.0.0'}
-    dependencies:
-      accepts: 1.3.8
-      base64id: 2.0.0
-      cors: 2.8.5
-      debug: 4.3.4(supports-color@8.1.1)
-      engine.io: 6.5.1
-      socket.io-adapter: 2.5.2
-      socket.io-parser: 4.2.4
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
   /socket.io@4.7.2:
     resolution: {integrity: sha512-bvKVS29/I5fl2FGLNHuXlQaUH/BlzX1IN6S+NKLNZpBsPZIDH+90eQmCs2Railn4YUiww4SzUedJ6+uzwFnKLw==}
     engines: {node: '>=10.2.0'}
@@ -12555,7 +12575,7 @@ packages:
 
   /swagger-ui-dist@5.9.1:
     resolution: {integrity: sha512-5zAx+hUwJb9T3EAntc7TqYkV716CMqG6sZpNlAAMOMWkNXRYxGkN8ADIvD55dQZ10LxN90ZM/TQmN7y1gpICnw==}
-    dev: false
+    dev: true
 
   /symbol-observable@1.2.0:
     resolution: {integrity: sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==}

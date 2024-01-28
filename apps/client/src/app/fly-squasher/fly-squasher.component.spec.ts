@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { FlySquasherComponent } from './fly-squasher.component';
-import { RouterTestingModule } from '@angular/router/testing';
+import { FlySquasherComponent } from "./fly-squasher.component";
+import { RouterTestingModule } from "@angular/router/testing";
 
-describe('FlySquasherComponent', () => {
+describe("FlySquasherComponent", () => {
   let component: FlySquasherComponent;
   let fixture: ComponentFixture<FlySquasherComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FlySquasherComponent],
-      imports: [RouterTestingModule]
+      imports: [FlySquasherComponent, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlySquasherComponent);
@@ -18,7 +17,7 @@ describe('FlySquasherComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -3,13 +3,13 @@ import {
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
   LittleMuncherGameInstanceData,
-  Room,
+  LittleMuncherRoom,
+  LittleMuncherRoomEvent,
+  LittleMuncherSpectatorEvent,
   RoomAction,
-  RoomEvent,
-  SpectatorAction,
-  SpectatorEvent
-} from '@fuzzy-waddle/api-interfaces';
-import { User } from '@supabase/supabase-js';
+  SpectatorAction
+} from "@fuzzy-waddle/api-interfaces";
+import { User } from "@supabase/supabase-js";
 
 export interface GameInstanceServiceInterface {
   startGame(body: GameInstanceDataDto, user: User);
@@ -18,9 +18,18 @@ export interface GameInstanceServiceInterface {
   spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData>;
   spectatorLeft(body: GameInstanceDataDto, user: User);
   stopLevel(body: GameInstanceDataDto, user: User);
-  getSpectatorRooms(user: User): Promise<Room[]>;
-  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): Room;
-  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): RoomEvent;
-  getSpectatorEvent(user: User, room: Room, action: SpectatorAction): SpectatorEvent;
+
+  getSpectatorRooms(user: User): Promise<LittleMuncherRoom[]>;
+
+  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom;
+
+  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): LittleMuncherRoomEvent;
+
+  getSpectatorEvent(
+    user: User,
+    room: LittleMuncherRoom,
+    gameInstanceId: string,
+    action: SpectatorAction
+  ): LittleMuncherSpectatorEvent;
   findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined;
 }

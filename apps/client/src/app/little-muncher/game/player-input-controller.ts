@@ -1,6 +1,6 @@
-import { LittleMuncherScene } from './little-muncher-scene';
-import { Subscription } from 'rxjs';
-import Swipe from 'phaser3-rex-plugins/plugins/input/gestures/swipe/Swipe';
+import { LittleMuncherScene } from "./little-muncher-scene";
+import { Subscription } from "rxjs";
+import Swipe from "phaser3-rex-plugins/plugins/input/gestures/swipe/Swipe";
 
 export class PlayerInputController {
   private subscriptions: Subscription[] = [];
@@ -10,7 +10,7 @@ export class PlayerInputController {
   private worldWidth = 0;
 
   constructor(private readonly littleMuncherScene: LittleMuncherScene) {
-    this.swipeInput = new Swipe(littleMuncherScene, { velocityThreshold: 500, dir: 'left&right' }) as Swipe & {
+    this.swipeInput = new Swipe(littleMuncherScene, { velocityThreshold: 500, dir: "left&right" }) as Swipe & {
       left: boolean;
       right: boolean;
     };
@@ -22,7 +22,7 @@ export class PlayerInputController {
     this.character = character;
     this.resetPosition();
     this.littleMuncherScene.subscribe(
-      this.littleMuncherScene.communicator.move?.onWithInitial(
+      this.littleMuncherScene.communicator.move?.onWithInitialStateChange(
         this.setPosition,
         (position) => (this.littleMuncherScene.player.playerState.data.position = position)
       )
@@ -58,18 +58,18 @@ export class PlayerInputController {
     // move the character left or right based on the arrow keys
     if (this.cursors.left.isDown) {
       // move left
-      this.character.anims.play('character-walk-left', true);
+      this.character.anims.play("character-walk-left", true);
       this.character.x -= this.characterSpeed * worldSpeed;
       position.x = this.character.x;
       this.send();
     } else if (this.cursors.right.isDown) {
       // move right
-      this.character.anims.play('character-walk-right', true);
+      this.character.anims.play("character-walk-right", true);
       this.character.x += this.characterSpeed * worldSpeed;
       position.x = this.character.x;
       this.send();
     } else {
-      this.character.anims.play('character-walk-back', true);
+      this.character.anims.play("character-walk-back", true);
     }
   };
 

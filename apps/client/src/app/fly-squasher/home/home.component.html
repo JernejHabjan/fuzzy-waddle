@@ -3,8 +3,11 @@
 </button>
 
 <div class="card-container d-flex flex-column">
-  <div *ngIf="!serverHealthService.serverChecking && !serverHealthService.serverAvailable; else checkAuthenticated"
-       class="alert alert-warning d-flex align-items-center" role="alert">
+  <div
+    *ngIf="!serverHealthService.serverChecking && !serverHealthService.serverAvailable; else checkAuthenticated"
+    class="alert alert-warning d-flex align-items-center"
+    role="alert"
+  >
     <fa-icon [icon]="faExclamationTriangle" class="me-2"></fa-icon>
     Warning! Server is not available. Your score will not be saved.
   </div>

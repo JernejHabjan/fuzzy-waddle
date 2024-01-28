@@ -1,16 +1,16 @@
-import { PlayerController } from './player-controller';
+import { PlayerController } from "./player-controller";
 import {
   ActorAbleToBeCreatedClass,
   ActorAbleToBeProducedClass
-} from '../../../entity/building/production/production-queue';
-import { Actor } from '../../../entity/actor/actor';
-import { ResourceDrainComponent } from '../../../entity/economy/resource/resource-drain-component';
-import { GameplayLibrary } from '../../../library/gameplay-library';
-import { ResourceSourceComponent } from '../../../entity/economy/resource/resource-source-component';
-import { ResourceType } from '../../../entity/economy/resource/resource-type';
-import { PlayerAiBlackboard } from '../../../entity/character/ai/player-ai/player-ai-blackboard';
-import { DefaultPlayerAiBehaviorTree } from '../../../entity/character/ai/player-ai/default-player-ai-behavior-tree';
-import { ProductionComponent } from '../../../entity/building/production/production-component';
+} from "../../../entity/building/production/production-queue";
+import { Actor } from "../../../entity/actor/actor";
+import { ResourceDrainComponent } from "../../../entity/economy/resource/resource-drain-component";
+import { GameplayLibrary } from "../../../library/gameplay-library";
+import { ResourceSourceComponent } from "../../../entity/economy/resource/resource-source-component";
+import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import { PlayerAiBlackboard } from "../../../entity/character/ai/player-ai/player-ai-blackboard";
+import { DefaultPlayerAiBehaviorTree } from "../../../entity/character/ai/player-ai/default-player-ai-behavior-tree";
+import { ProductionComponent } from "../../../entity/building/production/production-component";
 
 export class PlayerAiController extends PlayerController {
   /**
@@ -38,7 +38,7 @@ export class PlayerAiController extends PlayerController {
   /**
    * Type of the primary resource for the ai to gather (e.g. used for placing resource drains)
    */
-  private primaryResourceType?: ResourceType;
+  private primaryResourceType?: ResourceTypeDefinition;
 
   constructor() {
     super();
@@ -132,7 +132,7 @@ export class PlayerAiController extends PlayerController {
         continue;
       }
 
-      console.log('starting production of ' + pawnClass.name);
+      console.log("starting production of " + pawnClass.name);
       // todo productionComponent.startProduction(pawnClass as ActorsAbleToBeProducedClass);
 
       // todo ...

@@ -1,27 +1,29 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from "@angular/core";
 import {
   HillData,
   LittleMuncherGameCreate,
   LittleMuncherHillEnum,
   LittleMuncherHills
-} from '@fuzzy-waddle/api-interfaces';
-import { ServerHealthService } from '../../shared/services/server-health.service';
-import { AuthService } from '../../auth/auth.service';
+} from "@fuzzy-waddle/api-interfaces";
+import { ServerHealthService } from "../../shared/services/server-health.service";
+import { AuthService } from "../../auth/auth.service";
+import { CommonModule } from "@angular/common";
+import { SpectateComponent } from "./spectate/spectate.component";
+import { LoaderComponent } from "../../shared/loader/loader.component";
+import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'little-muncher-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: "little-muncher-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.scss"],
+  standalone: true,
+  imports: [CommonModule, SpectateComponent, LoaderComponent, RouterLink]
 })
 export class HomeComponent {
   protected readonly LittleMuncherHills = LittleMuncherHills;
-  protected readonly LittleMuncherHill = LittleMuncherHillEnum;
   @Output() startLevel: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
-
-  constructor(
-    protected readonly serverHealthService: ServerHealthService,
-    protected readonly authService: AuthService
-  ) {}
+  protected readonly serverHealthService = inject(ServerHealthService);
+  private readonly authService = inject(AuthService);
 
   climbOn(hillKey: unknown) {
     this.startLevel.next({
@@ -30,5 +32,5 @@ export class HomeComponent {
     });
   }
 
-  getHillName = (hill: HillData) => hill.name + ' ' + hill.height + 'm';
+  getHillName = (hill: HillData) => hill.name + " " + hill.height + "m";
 }

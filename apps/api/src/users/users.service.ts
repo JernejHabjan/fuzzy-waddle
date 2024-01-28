@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { IUsersService } from './users.service.interface';
+import { Injectable } from "@nestjs/common";
+import { IUsersService } from "./users.service.interface";
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -9,13 +9,13 @@ export class UsersService implements IUsersService {
   private readonly users = [
     {
       userId: 1,
-      username: 'john',
-      password: 'changeme'
+      username: "john",
+      password: "changeme"
     },
     {
       userId: 2,
-      username: 'maria',
-      password: 'guess'
+      username: "maria",
+      password: "guess"
     }
   ];
 

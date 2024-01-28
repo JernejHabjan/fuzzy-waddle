@@ -1,4 +1,4 @@
-import { BaseScene } from '../../../shared/game/phaser/scene/base.scene';
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 
 // prefab combined in Phaser Editor 2D
 export class Croissants extends Phaser.GameObjects.Container {
@@ -13,20 +13,20 @@ export class Croissants extends Phaser.GameObjects.Container {
     this.height = 190;
 
     // towel
-    this.towel = scene.add.image(25, 38, 'croissants-spritesheet', 'croissants/towel');
+    this.towel = scene.add.image(25, 38, "croissants-spritesheet", "croissants/towel");
     this.add(this.towel);
 
     // plate
-    this.plate = scene.add.image(30, 26, 'croissants-spritesheet', 'croissants/plate');
+    this.plate = scene.add.image(30, 26, "croissants-spritesheet", "croissants/plate");
     this.add(this.plate);
 
     // croissant_bottom
-    this.croissant_bottom = scene.add.image(54, 0, 'croissants-spritesheet', 'croissants/croissant');
+    this.croissant_bottom = scene.add.image(54, 0, "croissants-spritesheet", "croissants/croissant");
     this.croissant_bottom.angle = 132;
     this.add(this.croissant_bottom);
 
     // croissant_top
-    this.croissant_top = scene.add.image(0, 1, 'croissants-spritesheet', 'croissants/croissant');
+    this.croissant_top = scene.add.image(0, 1, "croissants-spritesheet", "croissants/croissant");
     this.add(this.croissant_top);
 
     this.tween();

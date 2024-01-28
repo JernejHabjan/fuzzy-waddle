@@ -1,5 +1,5 @@
-import { DecoratorData, IDecorator } from './decorator.interface';
-import { CharacterMovementComponent } from '../../../../actor/components/character-movement-component';
+import { DecoratorData, IDecorator } from "./decorator.interface";
+import { CharacterMovementComponent } from "../../../../actor/components/character-movement-component";
 
 export class CanMoveDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {

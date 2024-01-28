@@ -1,5 +1,5 @@
-import { DamageType } from './damage-type';
-import { ProjectileClass } from './projectiles/projectiles';
+import { DamageType } from "./damage-type";
+import { ProjectileClass } from "./projectiles/projectiles";
 
 export class AttackData {
   constructor(

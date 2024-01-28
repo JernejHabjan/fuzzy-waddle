@@ -2,6 +2,17 @@
     "section1": {
         "files": [
             {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/animals.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "animals"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/anims/animals.json",
+                "type": "animation",
+                "key": "animals_1"
+            },
+            {
                 "url": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "path": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "type": "animation",
@@ -14,17 +25,17 @@
                 "key": "buildings_1"
             },
             {
-              "url": "assets/probable-waffle/atlas/anims/effects.json",
-              "type": "animation",
-              "key": "effects"
+                "url": "assets/probable-waffle/atlas/anims/effects.json",
+                "type": "animation",
+                "key": "effects"
             },
-          {
-            "type": "multiatlas",
-            "url": "assets/probable-waffle/atlas/effects.json",
-            "path": "assets/probable-waffle/atlas",
-            "key": "effects_1"
-          },
-          {
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/effects.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "effects_1"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/factions.json",
                 "path": "assets/probable-waffle/atlas",
@@ -313,24 +324,15 @@
                 "key": "slingshot_female_walk"
             },
             {
-                "url": "assets/probable-waffle/tilemaps/tiles.json",
-                "path": "assets/probable-waffle/tilemaps/tiles.json",
-                "type": "tilemapTiledJSON",
-                "key": "tiles"
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/units.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "units"
             },
             {
-                "url": "assets/probable-waffle/tilesets/tiles.png",
-                "path": "assets/probable-waffle/tilesets/tiles.png",
-                "frameConfig": {
-                    "frameWidth": 64,
-                    "frameHeight": 32,
-                    "startFrame": 0,
-                    "endFrame": -1,
-                    "spacing": 0,
-                    "margin": 0
-                },
-                "type": "spritesheet",
-                "key": "tiles_1"
+                "url": "assets/probable-waffle/atlas/anims/units.json",
+                "type": "animation",
+                "key": "units_1"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",

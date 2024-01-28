@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { FlySquasherLevels } from "@fuzzy-waddle/api-interfaces";
 
@@ -6,7 +6,7 @@ import { FlySquasherLevels } from "@fuzzy-waddle/api-interfaces";
   providedIn: "root"
 })
 export class LevelGuard implements CanActivate {
-  constructor(private router: Router) {}
+  private readonly router = inject(Router);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const levelId = route.paramMap.get("level"); // Get the level ID from the route parameter

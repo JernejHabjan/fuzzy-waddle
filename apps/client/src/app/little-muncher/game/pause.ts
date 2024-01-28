@@ -1,4 +1,4 @@
-import { LittleMuncherScene } from './little-muncher-scene';
+import { LittleMuncherScene } from "./little-muncher-scene";
 
 export class Pause {
   constructor(private readonly littleMuncherScene: LittleMuncherScene) {
@@ -8,7 +8,7 @@ export class Pause {
   private init() {
     this.manageGamePause();
     this.littleMuncherScene.subscribe(
-      this.littleMuncherScene.communicator.pause?.onWithInitial(
+      this.littleMuncherScene.communicator.pause?.onWithInitialStateChange(
         this.manageGamePause,
         (event) => (this.littleMuncherScene.gameState.data.pause = event.pause)
       )

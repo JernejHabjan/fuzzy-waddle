@@ -1,11 +1,13 @@
-import { IComponent } from '../../../core/component.service';
-import { ResourceType } from './resource-type';
-import { Actor } from '../../actor/actor';
-import { ContainerComponent } from '../../building/container-component';
-import { Subject } from 'rxjs';
+import { IComponent } from "../../../core/component.service";
+import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import { Actor } from "../../actor/actor";
+import { ContainerComponent } from "../../building/container-component";
+import { Subject } from "rxjs";
 
 export class ResourceSourceComponent implements IComponent {
-  onResourcesChanged: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
+  onResourcesChanged: Subject<[ResourceTypeDefinition, number, Actor]> = new Subject<
+    [ResourceTypeDefinition, number, Actor]
+  >();
   onDepleted: Subject<Actor> = new Subject<Actor>();
   private currentResources: number;
   private containerComponent: ContainerComponent | null = null;
@@ -14,7 +16,7 @@ export class ResourceSourceComponent implements IComponent {
 
   constructor(
     private readonly actor: Actor,
-    private resourceType: ResourceType,
+    private resourceType: ResourceTypeDefinition,
     private maximumResources: number,
     private gatheringFactor: number
   ) {
@@ -40,16 +42,16 @@ export class ResourceSourceComponent implements IComponent {
     const newResources = this.currentResources;
 
     console.log(
-      'gatherer',
+      "gatherer",
       gatherer,
-      'extracted',
+      "extracted",
       gatheredAmount,
       this.resourceType,
-      'from',
+      "from",
       this.actor,
-      'oldResources',
+      "oldResources",
       oldResources,
-      'newResources',
+      "newResources",
       newResources
     );
 
@@ -66,7 +68,7 @@ export class ResourceSourceComponent implements IComponent {
     return this.containerComponent?.canLoadActor(gatherer) ?? true;
   }
 
-  getResourceType(): ResourceType {
+  getResourceType(): ResourceTypeDefinition {
     return this.resourceType;
   }
 

@@ -1,19 +1,19 @@
-import { Building, BuildingInfoDefinition } from './building';
-import { ProductionComponent } from '../../building/production/production-component';
-import { Warrior } from '../characters/warrior';
-import { Worker } from '../characters/worker';
-import { CostData } from '../../building/production/production-cost-component';
-import { PaymentType } from '../../building/payment-type';
-import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { ContainerComponent } from '../../building/container-component';
-import { ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
+import { Building, BuildingInfoDefinition } from "./building";
+import { ProductionComponent } from "../../building/production/production-component";
+import { Warrior } from "../characters/warrior";
+import { Worker } from "../characters/worker";
+import { CostData } from "../../building/production/production-cost-component";
+import { PaymentType } from "../../building/payment-type";
+import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import { ContainerComponent } from "../../building/container-component";
+import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
 
 export const TownHallDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
-    textureName: 'warrior',
+    textureName: "warrior",
     spriteSheet: {
-      name: 'warrior',
-      path: 'general/town-hall/',
+      name: "warrior",
+      path: "general/town-hall/",
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64
@@ -23,7 +23,7 @@ export const TownHallDefinition: BuildingInfoDefinition = {
   cost: new CostData(
     PaymentType.PayOverTime,
     100,
-    new Map<ResourceType, number>([
+    new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
@@ -34,7 +34,7 @@ export const TownHallDefinition: BuildingInfoDefinition = {
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceType, number>([
+    constructionCosts: new Map<ResourceTypeDefinition, number>([
       [Resources.wood, 100],
       [Resources.stone, 100]
     ]),
@@ -49,7 +49,7 @@ export const TownHallDefinition: BuildingInfoDefinition = {
     refundFactor: 0.5,
     startImmediately: false,
     gridWidthAndHeight: { width: 2, height: 2 },
-    finishedSound: 'building-finished' // todo
+    finishedSound: "building-finished" // todo
   }
 };
 

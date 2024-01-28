@@ -173,6 +173,38 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../sprites/factions/buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/frost_forge/flame/frost_forge_flame_2.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/frost_forge/flame/frost_forge_flame_3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,12,32,24</rect>
+                <key>scale9Paddings</key>
+                <rect>16,12,32,24</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/factions/buildings/skaduwee/frost_forge/frost_forge.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>64,96,128,192</rect>
+                <key>scale9Paddings</key>
+                <rect>64,96,128,192</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/cloud-vertical.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -224,6 +256,7 @@
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-1.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-2.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-3.png</key>
+            <key type="filename">../sprites/factions/character_icons/skaduwee/owl.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

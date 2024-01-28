@@ -1,7 +1,7 @@
-import { PlayerState } from '../../../player/player-state';
-import { GameMode } from '../game-mode/game-mode';
-import { VisionManager } from '../../map/vision/vision-manager';
-import { Actor } from '../../../entity/actor/actor';
+import { PlayerState } from "../../../player/player-state";
+import { GameMode } from "../game-mode/game-mode";
+import { VisionManager } from "../../map/vision/vision-manager";
+import { Actor } from "../../../entity/actor/actor";
 
 export class MapObject {
   // todo

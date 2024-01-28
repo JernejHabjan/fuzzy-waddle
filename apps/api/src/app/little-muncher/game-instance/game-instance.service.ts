@@ -1,20 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { User } from '@supabase/supabase-js';
+import { Injectable } from "@nestjs/common";
+import { User } from "@supabase/supabase-js";
 import {
   GameInstanceDataDto,
   GameSessionState,
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
   LittleMuncherGameInstanceData,
-  Room,
+  LittleMuncherRoom,
+  LittleMuncherRoomEvent,
+  LittleMuncherSpectatorEvent,
   RoomAction,
-  RoomEvent,
-  SpectatorAction,
-  SpectatorEvent
-} from '@fuzzy-waddle/api-interfaces';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { GameInstanceGateway } from './game-instance.gateway';
-import { GameInstanceServiceInterface } from './game-instance.service.interface';
+  SpectatorAction
+} from "@fuzzy-waddle/api-interfaces";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { GameInstanceGateway } from "./game-instance.gateway";
+import { GameInstanceServiceInterface } from "./game-instance.service.interface";
 
 @Injectable()
 export class GameInstanceService implements GameInstanceServiceInterface {
@@ -25,10 +25,10 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   async startGame(body: GameInstanceDataDto, user: User) {
     const newGameInstance = new LittleMuncherGameInstance({
       gameInstanceMetadataData: { gameInstanceId: body.gameInstanceId, createdBy: user.id },
-      players: [{ userId: user.id }]
+      players: [{ playerControllerData: { userId: user.id } }]
     });
     this.openGameInstances.push(newGameInstance);
-    console.log('game instance created on server', this.openGameInstances.length);
+    console.log("Little Muncher - Game instance created on server. Open instances: " + this.openGameInstances.length);
   }
 
   async stopGame(body: GameInstanceDataDto, user: User) {
@@ -38,7 +38,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.openGameInstances = this.openGameInstances.filter(
       (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId !== body.gameInstanceId
     );
-    console.log('game instance deleted on server', this.openGameInstances.length);
+    console.log("Little Muncher - Game instance deleted on server. Remaining: " + this.openGameInstances.length);
   }
 
   async startLevel(body: LittleMuncherGameCreateDto, user: User) {
@@ -48,9 +48,9 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     gameInstance.initGame({
       hill: body.level.hill
     });
-    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.Playing;
-    console.log('game mode set on server', body.level.hill);
-    this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'added'));
+    gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
+    console.log("Little Muncher - Game mode set on server", body.level.hill);
+    this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "added"));
   }
 
   async spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData> {
@@ -59,9 +59,9 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     gameInstance.initSpectator({
       userId: user.id
     });
-    console.log('spectator joined', user.id);
+    console.log("Little Muncher - Spectator joined", user.id);
     this.gameInstanceGateway.emitSpectator(
-      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'joined')
+      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), body.gameInstanceId, "joined")
     );
     return gameInstance.data;
   }
@@ -70,9 +70,9 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
     if (!gameInstance) return;
     gameInstance.removeSpectator(user.id);
-    console.log('spectator left', user.id);
+    console.log("Little Muncher - spectator left", user.id);
     this.gameInstanceGateway.emitSpectator(
-      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), 'left')
+      this.getSpectatorEvent(user, this.getGameInstanceToRoom(gameInstance), body.gameInstanceId, "left")
     );
   }
 
@@ -81,40 +81,46 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
     gameInstance.stopLevel();
-    console.log('game mode deleted on server');
+    console.log("Little Muncher - Game mode deleted on server");
 
-    this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, 'removed'));
+    this.gameInstanceGateway.emitRoom(this.getRoomEvent(gameInstance, "removed"));
   }
 
-  async getSpectatorRooms(user: User): Promise<Room[]> {
+  async getSpectatorRooms(user: User): Promise<LittleMuncherRoom[]> {
     return this.openGameInstances
       .filter(
         (gi) =>
-          gi.gameInstanceMetadata.data.sessionState === GameSessionState.Playing &&
+          gi.gameInstanceMetadata.data.sessionState === GameSessionState.InProgress &&
           gi.gameInstanceMetadata.data.createdBy !== user.id
       )
       .map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
   }
 
-  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): Room {
+  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
     return {
-      gameInstanceId: gameInstance.gameInstanceMetadata.data.gameInstanceId
+      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
+      gameModeData: gameInstance.gameMode
     };
   }
 
-  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): RoomEvent {
+  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): LittleMuncherRoomEvent {
     return {
       room: this.getGameInstanceToRoom(gameInstance),
-      action,
-      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data
+      action
     };
   }
 
-  getSpectatorEvent(user: User, room: Room, action: SpectatorAction): SpectatorEvent {
+  getSpectatorEvent(
+    user: User,
+    room: LittleMuncherRoom,
+    gameInstanceId: string,
+    action: SpectatorAction
+  ): LittleMuncherSpectatorEvent {
     return {
       user_id: user.id,
       room,
-      action
+      action,
+      gameInstanceId
     };
   }
 
@@ -133,7 +139,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
-        this.gameInstanceGateway.emitRoom(this.getRoomEvent(gi, 'removed'));
+        this.gameInstanceGateway.emitRoom(this.getRoomEvent(gi, "removed"));
       }
       return !isOld;
     });

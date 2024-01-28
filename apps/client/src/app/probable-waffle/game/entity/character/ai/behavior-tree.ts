@@ -1,5 +1,5 @@
-import { Blackboard } from './blackboard';
-import { Actor } from '../../actor/actor';
+import { Blackboard } from "./blackboard";
+import { Actor } from "../../actor/actor";
 
 export abstract class BehaviorTree {
   abstract name: string;

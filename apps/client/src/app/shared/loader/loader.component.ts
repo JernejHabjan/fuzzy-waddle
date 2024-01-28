@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'fuzzy-waddle-loader',
+  selector: "fuzzy-waddle-loader",
   standalone: true,
   imports: [CommonModule],
   template: `<div class="loader"></div>`,

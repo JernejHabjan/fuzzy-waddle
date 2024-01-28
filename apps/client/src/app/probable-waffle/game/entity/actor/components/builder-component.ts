@@ -1,17 +1,17 @@
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../actor';
-import { Barracks } from '../../assets/buildings/barracks';
-import { Mine } from '../../assets/buildings/mine';
-import { ConstructionSiteComponent } from '../../building/construction/construction-site-component';
-import { ContainerComponent } from '../../building/container-component';
-import { Subject } from 'rxjs';
-import { PawnAiControllerComponent } from '../../../world/managers/controllers/pawn-ai-controller-component';
-import { GameMode } from '../../../world/managers/game-mode/game-mode';
-import { GameModeSkirmish } from '../../../world/managers/game-mode/game-modes/game-mode-skirmish';
-import { GameplayLibrary } from '../../../library/gameplay-library';
-import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { OwnerComponent } from './owner-component';
-import { SpriteRepresentationComponent } from './sprite-representable-component';
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../actor";
+import { Barracks } from "../../assets/buildings/barracks";
+import { Mine } from "../../assets/buildings/mine";
+import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
+import { ContainerComponent } from "../../building/container-component";
+import { Subject } from "rxjs";
+import { PawnAiControllerComponent } from "../../../world/managers/controllers/pawn-ai-controller-component";
+import { GameMode } from "../../../world/managers/game-mode/game-mode";
+import { GameModeSkirmish } from "../../../world/managers/game-mode/game-modes/game-mode-skirmish";
+import { GameplayLibrary } from "../../../library/gameplay-library";
+import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { DEPRECATEDownerComponent } from "./DEPRECATEDowner-component";
+import { SpriteRepresentationComponent } from "./sprite-representable-component";
 
 export type ActorAbleToBeBuilt = Barracks | Mine;
 export type ActorAbleToBeBuiltClass = typeof Barracks | typeof Mine;
@@ -75,7 +75,7 @@ export class BuilderComponent implements IComponent {
     // check requirements
     const missingRequirement = GameplayLibrary.getMissingRequirementsFor(this.actor, buildingClass);
     if (missingRequirement) {
-      console.log('missing requirement', missingRequirement);
+      console.log("missing requirement", missingRequirement);
       // player is missing a required actor. stop
 
       pawnAiController.issueStopOrder();
@@ -86,7 +86,7 @@ export class BuilderComponent implements IComponent {
     // todo
 
     // spawn building
-    const ownerController = this.actor.components.findComponent(OwnerComponent);
+    const ownerController = this.actor.components.findComponent(DEPRECATEDownerComponent);
     const scene = this.actor.components.findComponent(SpriteRepresentationComponent).scene;
     const building = gameMode.spawnActorForPlayer(
       scene,
@@ -96,7 +96,7 @@ export class BuilderComponent implements IComponent {
     );
 
     if (!building) {
-      console.log('building could not be spawned');
+      console.log("building could not be spawned");
       return false;
     }
 
@@ -124,7 +124,7 @@ export class BuilderComponent implements IComponent {
     // notify listeners
     this.onRemovedFromConstructionSite.next([this.actor, constructionSite]);
 
-    console.log('builder left building site');
+    console.log("builder left building site");
     if (this.enterConstructionSite) {
       // leave building site
       const containerComponent = constructionSite.components.findComponentOrNull(ContainerComponent);

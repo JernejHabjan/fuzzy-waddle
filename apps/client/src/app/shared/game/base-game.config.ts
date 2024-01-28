@@ -1,5 +1,5 @@
-import { Scale, Types } from 'phaser';
-import { GameContainerElement } from './game-container/game-container';
+import { Scale, Types } from "phaser";
+import { GameContainerElement } from "./game-container/game-container";
 
 export const baseGameConfig: Types.Core.GameConfig = {
   width: window.innerWidth,

@@ -23,7 +23,7 @@ export class Queue<T> implements IQueue<T> {
 
   enqueueBack(item: T): void {
     if (this.size() === this.capacity) {
-      throw Error('Queue has reached max capacity, you cannot add more items');
+      throw Error("Queue has reached max capacity, you cannot add more items");
     }
     this.storage.push(item);
   }
@@ -46,7 +46,7 @@ export class Queue<T> implements IQueue<T> {
 
   enqueueFront(item: T): void {
     if (this.size() === this.capacity) {
-      throw Error('Queue has reached max capacity, you cannot add more items');
+      throw Error("Queue has reached max capacity, you cannot add more items");
     }
     this.storage.unshift(item);
   }

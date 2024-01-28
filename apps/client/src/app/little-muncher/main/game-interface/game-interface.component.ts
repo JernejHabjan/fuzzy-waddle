@@ -1,23 +1,34 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ModalConfig } from "../../../shared/components/modal/modal-config";
 import { ModalComponent } from "../../../shared/components/modal/modal.component";
-import { GameInstanceClientService } from "../game-instance-client.service";
-import { LittleMuncherCommunicatorService } from "../../game/little-muncher-communicator.service";
 import { Subscription } from "rxjs";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../auth/auth.service";
 import { LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/api-interfaces";
 import { PreventNavigateBack } from "../../../shared/handlers/prevent-navigate-back";
 import { Router } from "@angular/router";
+import { GameInstanceClientService } from "../communicators/game-instance-client.service";
+import { LittleMuncherCommunicatorService } from "../communicators/little-muncher-communicator.service";
+import { CommonModule } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
 
 @Component({
-  selector: "fuzzy-waddle-game-interface",
+  selector: "little-muncher-game-interface",
   templateUrl: "./game-interface.component.html",
-  styleUrls: ["./game-interface.component.scss"]
+  styleUrls: ["./game-interface.component.scss"],
+  standalone: true,
+  imports: [CommonModule, ModalComponent, FaIconComponent, WrapPipe]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
-  score = 0;
-  remaining = 0;
+  private readonly authService = inject(AuthService);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly communicatorService = inject(LittleMuncherCommunicatorService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
+
+  protected score = 0;
+  protected remaining = 0;
   @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
@@ -35,14 +46,6 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   };
   private scoreSubscription?: Subscription;
   private pauseSubscription?: Subscription;
-
-  constructor(
-    private readonly authService: AuthService,
-    private readonly gameInstanceClientService: GameInstanceClientService,
-    private readonly communicatorService: LittleMuncherCommunicatorService,
-    private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly router: Router
-  ) {}
 
   protected async leave() {
     await this.openModal();
@@ -79,25 +82,18 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private manageRemaining() {
-    if (
-      !this.gameInstanceClientService.gameInstance?.gameMode?.data.hill ||
-      !this.gameInstanceClientService.gameInstance?.gameState
-    ) {
+    const hill = this.gameInstanceClientService.gameInstance?.gameMode?.data.hill;
+    const gameState = this.gameInstanceClientService.gameInstance?.gameState;
+    if (!hill || !gameState) {
       return;
     }
     // set initial remaining:
-    this.remaining = this.getRemaining(
-      this.gameInstanceClientService.gameInstance.gameMode.data.hill,
-      this.gameInstanceClientService.gameInstance.gameState.data.climbedHeight
-    );
+    this.remaining = this.getRemaining(hill, gameState.data.climbedHeight);
     this.scoreSubscription = this.communicatorService.timeClimbing?.on.subscribe((event) => {
       if (!this.gameInstanceClientService.gameInstance?.gameMode?.data.hill) {
         return;
       }
-      this.remaining = this.getRemaining(
-        this.gameInstanceClientService.gameInstance.gameMode.data.hill,
-        event.timeClimbing
-      );
+      this.remaining = this.getRemaining(hill, event.timeClimbing);
       this.changeDetectorRef.detectChanges();
     });
   }

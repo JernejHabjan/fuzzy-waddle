@@ -1,25 +1,76 @@
-import { GameInstanceMetadataData } from './game-instance-metadata';
+import { LittleMuncherGameMode } from "./little-muncher/game-mode";
+import { LittleMuncherGameInstanceMetadataData } from "./little-muncher/game-instance-medatada";
+import { ProbableWaffleGameModeData } from "./probable-waffle/game-mode";
+import { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/game-instance-medatada";
+import { ProbableWafflePlayerControllerData, ProbableWafflePlayerType } from "./probable-waffle/player";
+import { ProbableWaffleSpectatorData } from "./probable-waffle/spectator";
 
-export interface Room {
-  gameInstanceId: string;
+interface Room<TGameInstanceMetadataData, TGameModeData> {
+  gameInstanceMetadataData: TGameInstanceMetadataData;
+  gameModeData?: TGameModeData;
 }
 
-export interface RoomEvent {
-  room: Room;
+interface RoomEvent<TRoom> {
+  room: TRoom;
   action: RoomAction;
-  gameInstanceMetadataData: GameInstanceMetadataData;
 }
 
-export type RoomAction = 'added' | 'existing' | 'removed';
-
-export interface SpectatorEvent {
-  room: Room;
-  user_id: string;
+interface SpectatorEvent {
+  gameInstanceId: string;
   action: SpectatorAction;
 }
 
-export type SpectatorAction = 'joined' | 'left';
+interface PlayerEvent {
+  gameInstanceId: string;
+  action: PlayerAction;
+}
 
-export enum GatewaySpectatorEvent {
-  Spectator = 'room-spectator'
+export type SpectatorAction = "joined" | "left";
+export type PlayerAction = "joined" | "left";
+
+export type RoomAction =
+  | "added"
+  | "removed"
+  | "game_instance_metadata"
+  | "game_mode"
+  | "player.joined"
+  | "player.left"
+  | "spectator.joined"
+  | "spectator.left";
+
+export enum ProbableWaffleGameInstanceEvent {
+  GameFound = "game-found"
+}
+
+export interface LittleMuncherRoom extends Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
+
+export interface LittleMuncherRoomEvent extends RoomEvent<LittleMuncherRoom> {}
+
+export interface LittleMuncherSpectatorEvent extends SpectatorEvent {
+  user_id: string;
+  room: Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode>;
+}
+
+export interface ProbableWaffleRoomPlayer {
+  controllerData: ProbableWafflePlayerControllerData;
+}
+
+export interface ProbableWaffleRoom extends Room<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameModeData> {
+  players: ProbableWaffleRoomPlayer[];
+  spectators: ProbableWaffleSpectatorData[];
+}
+
+export interface ProbableWaffleRoomEvent extends RoomEvent<ProbableWaffleRoom> {}
+
+export interface ProbableWaffleGameFoundEvent {
+  userIds: string[];
+  gameInstanceId: string;
+}
+
+export class ProbableWaffleRoomHelper {
+  public static getActivatedPlayersInRoom(room: ProbableWaffleRoom): ProbableWaffleRoomPlayer[] {
+    return room.players.filter(
+      (p) => p.controllerData.playerDefinition?.playerType !== ProbableWafflePlayerType.NetworkOpen
+    );
+  }
 }

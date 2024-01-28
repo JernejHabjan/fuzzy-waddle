@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ChooseLevelComponent } from './choose-level.component';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ChooseLevelComponent } from "./choose-level.component";
+import { RouterTestingModule } from "@angular/router/testing";
 
-describe('ChooseLevelComponent', () => {
+describe("ChooseLevelComponent", () => {
   let component: ChooseLevelComponent;
   let fixture: ComponentFixture<ChooseLevelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChooseLevelComponent],
-      imports: [RouterTestingModule]
+      imports: [ChooseLevelComponent, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChooseLevelComponent);
@@ -18,7 +17,7 @@ describe('ChooseLevelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

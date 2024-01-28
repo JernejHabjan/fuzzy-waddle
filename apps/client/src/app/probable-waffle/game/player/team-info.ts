@@ -1,4 +1,4 @@
-import { PlayerController } from '../world/managers/controllers/player-controller';
+import { PlayerController } from "../world/managers/controllers/player-controller";
 
 export class TeamInfo {
   constructor(

@@ -1,8 +1,8 @@
-import { FactionInfo } from './faction-info';
-import { TeamInfo } from './team-info';
-import { PlayerStart } from './player-start';
-import { PlayerResourcesComponent } from '../world/managers/controllers/player-resources-component';
-import { Actor } from '../entity/actor/actor';
+import { FactionInfo } from "./faction-info";
+import { TeamInfo } from "./team-info";
+import { PlayerStart } from "./player-start";
+import { PlayerResourcesComponent } from "../world/managers/controllers/player-resources-component";
+import { Actor } from "../entity/actor/actor";
 
 export type PlayerActors = Actor; // todo remove?
 

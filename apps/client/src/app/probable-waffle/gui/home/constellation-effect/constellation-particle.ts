@@ -4,10 +4,14 @@ export class ConstellationParticle {
   private readonly speedX: number;
   private readonly speedY: number;
 
-  constructor(public x: number, public y: number, hueCol: number) {
+  constructor(
+    public x: number,
+    public y: number,
+    hueCol: number
+  ) {
     this.speedX = Math.random() * 5 - 1.5;
     this.speedY = Math.random() * 5 - 1.5;
-    this.color = 'hsl(' + hueCol + ', 100%, 50%)';
+    this.color = "hsl(" + hueCol + ", 100%, 50%)";
     this.size = Math.random() * 50 + 1;
   }
 

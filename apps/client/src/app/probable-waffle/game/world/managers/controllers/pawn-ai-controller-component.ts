@@ -1,19 +1,23 @@
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../../../entity/actor/actor';
-import { TilePlacementData } from './input/tilemap/tilemap-input.handler';
-import { OrderData } from '../../../entity/character/ai/order-data';
-import { Queue } from '../../../library/queue';
-import { BeginConstructionArgs, OrderType } from '../../../entity/character/ai/order-type';
-import { ActorAbleToBeBuiltClass } from '../../../entity/actor/components/builder-component';
-import { GathererComponent } from '../../../entity/actor/components/gatherer-component';
-import { PawnAiBlackboard } from '../../../entity/character/ai/pawn-ai-blackboard';
-import { PawnBehaviorTree } from '../../../entity/character/ai/behavior-trees';
+import { IComponent } from "../../../core/component.service";
+import { Actor } from "../../../entity/actor/actor";
+import { TilePlacementData } from "./input/tilemap/tilemap-input.handler";
+import { OrderData } from "../../../entity/character/ai/order-data";
+import { Queue } from "../../../library/queue";
+import { BeginConstructionArgs, OrderType } from "../../../entity/character/ai/order-type";
+import { ActorAbleToBeBuiltClass } from "../../../entity/actor/components/builder-component";
+import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
+import { PawnAiBlackboard } from "../../../entity/character/ai/pawn-ai-blackboard";
+import { PawnBehaviorTree } from "../../../entity/character/ai/behavior-trees";
 
 export class PawnAiControllerComponent implements IComponent {
   // declare queue of OrderData
   orders: Queue<OrderData> = new Queue<OrderData>();
 
-  constructor(private owner: Actor, public blackboard: PawnAiBlackboard, public behaviorTree: PawnBehaviorTree) {}
+  constructor(
+    private owner: Actor,
+    public blackboard: PawnAiBlackboard,
+    public behaviorTree: PawnBehaviorTree
+  ) {}
 
   init(): void {
     this.behaviorTree.run();
@@ -56,7 +60,7 @@ export class PawnAiControllerComponent implements IComponent {
   }
 
   issueOrder(orderData: OrderData) {
-    console.log('issueOrder', orderData);
+    console.log("issueOrder", orderData);
     this.orders.empty();
     this.addOrder(orderData);
     this.obtainNextOrder();

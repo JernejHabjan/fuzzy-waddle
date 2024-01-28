@@ -7,23 +7,22 @@ import FoodItem from "./FoodItem";
 /* END-USER-IMPORTS */
 
 export default class Apple extends FoodItem {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 359, y ?? 153, texture || "volcano", frame ?? "Tiny Caveman_Game Object - Apple.png");
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 359, y ?? 153, texture || "volcano", frame ?? "Tiny Caveman_Game Object - Apple.png");
+    this.body.setOffset(7, 15);
+    this.body.setSize(67, 62, false);
 
-		this.body.setOffset(7, 15);
-		this.body.setSize(67, 62, false);
+    /* START-USER-CTR-CODE */
+    // Write your code here.
+    /* END-USER-CTR-CODE */
+  }
 
-		/* START-USER-CTR-CODE */
-		// Write your code here.
-		/* END-USER-CTR-CODE */
-	}
+  /* START-USER-CODE */
 
-	/* START-USER-CODE */
+  // Write your code here.
 
-	// Write your code here.
-
-	/* END-USER-CODE */
+  /* END-USER-CODE */
 }
 
 /* END OF COMPILED CODE */

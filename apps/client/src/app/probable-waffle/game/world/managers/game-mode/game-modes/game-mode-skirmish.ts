@@ -1,9 +1,9 @@
-import { GameMode } from '../game-mode';
-import { Limitations } from '../limitations';
-import { VictoryCondition, VictoryConditions } from '../victory-conditions';
-import { PlayerController } from '../../controllers/player-controller';
-import { EventEmitter } from '@angular/core';
-import { PlayerAiController } from '../../controllers/player-ai-controller';
+import { GameMode } from "../game-mode";
+import { Limitations } from "../limitations";
+import { VictoryCondition, VictoryConditions } from "../victory-conditions";
+import { PlayerController } from "../../controllers/player-controller";
+import { EventEmitter } from "@angular/core";
+import { PlayerAiController } from "../../controllers/player-ai-controller";
 
 export class GameModeSkirmish extends GameMode {
   // events:

@@ -1,14 +1,14 @@
-import { IComponent } from '../../../core/component.service';
-import { RallyPoint } from '../../../player/rally-point';
-import { ActorAbleToBeProduced, ActorAbleToBeProducedClass, ProductionQueue } from './production-queue';
-import { CostData } from './production-cost-component';
-import { PaymentType } from '../payment-type';
-import { PlayerResourcesComponent } from '../../../world/managers/controllers/player-resources-component';
-import { OwnerComponent } from '../../actor/components/owner-component';
-import { Actor } from '../../actor/actor';
-import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
-import { TransformComponent } from '../../actor/components/transformable-component';
-import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
+import { IComponent } from "../../../core/component.service";
+import { RallyPoint } from "../../../player/rally-point";
+import { ActorAbleToBeProduced, ActorAbleToBeProducedClass, ProductionQueue } from "./production-queue";
+import { CostData } from "./production-cost-component";
+import { PaymentType } from "../payment-type";
+import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
+import { DEPRECATEDownerComponent } from "../../actor/components/DEPRECATEDowner-component";
+import { Actor } from "../../actor/actor";
+import { SpriteRepresentationComponent } from "../../actor/components/sprite-representable-component";
+import { TransformComponent } from "../../actor/components/transformable-component";
+import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 
 export type ProductionQueueItem = {
   actorClass: ActorAbleToBeProducedClass;
@@ -18,7 +18,7 @@ export type ProductionQueueItem = {
 export class ProductionComponent implements IComponent {
   productionQueues: ProductionQueue[] = [];
   rallyPoint?: RallyPoint;
-  private ownerComponent!: OwnerComponent;
+  private ownerComponent!: DEPRECATEDownerComponent;
   private spriteRepresentationComponent!: SpriteRepresentationComponent;
   private transformComponent!: TransformComponent;
 
@@ -31,7 +31,7 @@ export class ProductionComponent implements IComponent {
   ) {}
 
   init() {
-    this.ownerComponent = this.owner.components.findComponent(OwnerComponent);
+    this.ownerComponent = this.owner.components.findComponent(DEPRECATEDownerComponent);
     this.spriteRepresentationComponent = this.owner.components.findComponent(SpriteRepresentationComponent);
     this.transformComponent = this.owner.components.findComponent(TransformComponent);
     // setup queues
@@ -54,7 +54,7 @@ export class ProductionComponent implements IComponent {
         let productionCostPaid = false;
         if (costData.costType == PaymentType.PayOverTime) {
           if (!this.ownerComponent.playerController) {
-            throw new Error('Player controller not found');
+            throw new Error("Player controller not found");
           }
           // get player resources and pay for production
           const playerResourcesComponent =
@@ -98,13 +98,13 @@ export class ProductionComponent implements IComponent {
   startProduction(queueItem: ProductionQueueItem): void {
     // check production state
     if (!this.canAssignProduction(queueItem)) {
-      throw new Error('Cannot assign production');
+      throw new Error("Cannot assign production");
     }
 
     // find queue
     const queue = this.findQueueForProduct();
     if (!queue) {
-      throw new Error('No queue found');
+      throw new Error("No queue found");
     }
 
     // add to queue
@@ -117,7 +117,7 @@ export class ProductionComponent implements IComponent {
 
   private finishProduction(queue: ProductionQueue, queueIndex: number) {
     if (queueIndex >= queue.queuedActors.length) {
-      throw new Error('Invalid queue index');
+      throw new Error("Invalid queue index");
     }
     const { actorClass } = queue.queuedActors[queueIndex];
 
@@ -177,7 +177,7 @@ export class ProductionComponent implements IComponent {
     }
 
     // check if player has enough resources
-    if (!this.ownerComponent.playerController) throw new Error('Player controller not found');
+    if (!this.ownerComponent.playerController) throw new Error("Player controller not found");
     const playerResourcesComponent =
       this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
     return playerResourcesComponent.canPayAllResources(item.costData.resources);
@@ -185,7 +185,7 @@ export class ProductionComponent implements IComponent {
 
   private startProductionInQueue(queue: ProductionQueue) {
     if (queue.queuedActors.length <= 0) {
-      throw new Error('No actor in queue');
+      throw new Error("No actor in queue");
     }
     const { costData } = queue.queuedActors[0];
 

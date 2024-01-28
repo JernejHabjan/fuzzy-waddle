@@ -1,15 +1,16 @@
-import { GameInstance, GameInstanceData } from '../game-instance';
-import { LittleMuncherGameInstanceMetadata, LittleMuncherGameInstanceMetadataData } from './game-instance-medatada';
-import { LittleMuncherGameMode, LittleMuncherGameModeData } from './game-mode';
-import { LittleMuncherGameState, LittleMuncherGameStateData } from './game-state';
+import { GameInstance, GameInstanceData } from "../game-instance";
+import { LittleMuncherGameInstanceMetadata, LittleMuncherGameInstanceMetadataData } from "./game-instance-medatada";
+import { LittleMuncherGameMode, LittleMuncherGameModeData } from "./game-mode";
+import { LittleMuncherGameState, LittleMuncherGameStateData } from "./game-state";
 import {
   LittleMuncherPlayer,
   LittleMuncherPlayerController,
   LittleMuncherPlayerControllerData,
   LittleMuncherPlayerState,
   LittleMuncherPlayerStateData
-} from './player';
-import { LittleMuncherSpectator, LittleMuncherSpectatorData } from './spectator';
+} from "./player";
+import { LittleMuncherSpectator, LittleMuncherSpectatorData } from "./spectator";
+import { GameSessionState } from "../session";
 
 export type LittleMuncherGameInstanceData = GameInstanceData<
   LittleMuncherGameInstanceMetadataData,
@@ -48,5 +49,11 @@ export class LittleMuncherGameInstance extends GameInstance<
       },
       gameInstanceData
     );
+  }
+
+  initGame(gameModeData: LittleMuncherGameModeData) {
+    this.gameMode = new LittleMuncherGameMode(gameModeData);
+    this.gameState = new LittleMuncherGameState();
+    this.gameInstanceMetadata.data.sessionState = GameSessionState.InProgress;
   }
 }

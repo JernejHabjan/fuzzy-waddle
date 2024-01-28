@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { AppController } from './app.controller';
+import { AppController } from "./app.controller";
 
-describe('AppController', () => {
+describe("AppController", () => {
   let app: TestingModule;
 
   beforeAll(async () => {
@@ -11,10 +11,10 @@ describe('AppController', () => {
     }).compile();
   });
 
-  describe('getHealth', () => {
+  describe("getHealth", () => {
     it('should return "OK"', () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.getHealth()).toBe('OK');
+      expect(appController.getHealth()).toBe("OK");
     });
   });
 });

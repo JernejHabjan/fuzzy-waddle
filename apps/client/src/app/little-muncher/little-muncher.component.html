@@ -1,26 +1,26 @@
 <div
-  *ngIf='loading || !gameInstanceClientService.gameInstance; else content'
-  class='align-items-center d-flex h-100 justify-content-center'
-  style='font-size: 70px'
+  *ngIf="loading || !gameInstanceClientService.gameInstance; else content"
+  class="align-items-center d-flex h-100 justify-content-center"
+  style="font-size: 70px"
 >
-  <fa-icon [icon]='faSpinner' animation='spin' />
+  <fa-icon [icon]="faSpinner" animation="spin" />
 </div>
 <ng-template #content>
-  <ng-container *ngIf='gameInstanceClientService.gameInstance'>
-    <little-muncher-home *ngIf='notPlaying; else gameStart' (startLevel)='startLevel($event)' />
+  <ng-container *ngIf="gameInstanceClientService.gameInstance">
+    <little-muncher-home *ngIf="notPlaying; else gameStart" (startLevel)="startLevel($event)" />
     <ng-template #gameStart>
-      <little-muncher-main *ngIf='gameInstanceClientService.gameInstance.gameMode' />
+      <little-muncher-main *ngIf="gameInstanceClientService.gameInstance.gameMode" />
     </ng-template>
   </ng-container>
 </ng-template>
 
 <!-- display nbg-toast center screen-->
 <ngb-toast
-  *ngIf='toastData.show'
-  [header]='toastData.title'
-  [autohide]='false'
-  (hidden)='toastData.show = false'
-  class='toast-center'
+  *ngIf="toastData.show"
+  [header]="toastData.title"
+  [autohide]="false"
+  (hidden)="toastData.show = false"
+  class="toast-center"
 >
   {{ toastData.text }}
 </ngb-toast>

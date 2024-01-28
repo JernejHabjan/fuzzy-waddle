@@ -6,10 +6,10 @@ export enum FlySquasherLevelEnum {
 }
 
 export type FlySquasherLevelType = {
-  [key in FlySquasherLevelEnum]: LevelData;
+  [key in FlySquasherLevelEnum]: FlySquasherLevelData;
 };
 
-export type LevelData = {
+export type FlySquasherLevelData = {
   id: FlySquasherLevelEnum;
   name: string;
   description: string;
