@@ -27,7 +27,6 @@ export class CameraMovementHandler {
     this.input = scene.input;
     this.createKeyboardControls();
     this.zoomListener();
-    this.zoomToDefault();
     this.screenEdgeListener();
     this.lockCursorToScreen();
     this.scene.events.on("update", this.update, this);
@@ -116,33 +115,44 @@ export class CameraMovementHandler {
     deltaZ: number
   ) {
     if (deltaY > 0) {
-      this.zoomOutByFactor();
+      this.zoomOut();
     }
 
     if (deltaY < 0) {
-      // zoom in
-      const newZoom = this.mainCamera.zoom + this.cameraZoomFactor;
-      if (newZoom < this.cameraMinZoom) {
-        this.mainCamera.zoom = newZoom;
-      }
+      this.zoomIn();
     }
   }
 
-  /**
-   * @returns {boolean} true if camera is zoomed out
-   */
-  private zoomOutByFactor(): boolean {
-    const newZoom = this.mainCamera.zoom - this.cameraZoomFactor;
-    if (newZoom > this.cameraMaxZoom) {
-      this.mainCamera.zoom = newZoom;
-    }
+  private zoomIn(): void {
+    const newZoom = this.mainCamera.zoom * 2;
+    const validZoom = this.findNearestValidZoom(newZoom);
 
-    if (this.isCameraOutOfBounds) {
-      // if out of bounds, zoom back in
-      this.mainCamera.zoom += this.cameraZoomFactor;
-      return false;
+    if (validZoom <= this.cameraMinZoom) {
+      this.mainCamera.zoom = validZoom;
     }
-    return true;
+  }
+
+  private zoomOut(): void {
+    const newZoom = this.mainCamera.zoom * 0.5;
+    const validZoom = this.findNearestValidZoom(newZoom);
+
+    if (validZoom >= this.cameraMaxZoom) {
+      this.mainCamera.zoom = validZoom;
+    }
+    if (this.isCameraOutOfBounds) {
+      this.zoomIn();
+    }
+  }
+
+  private findNearestValidZoom(zoom: number): number {
+    const powersOfTwo = [0.5, 1, 2, 4, 8];
+    let nearest = powersOfTwo[0];
+    for (const power of powersOfTwo) {
+      if (Math.abs(zoom - power) < Math.abs(zoom - nearest)) {
+        nearest = power;
+      }
+    }
+    return nearest;
   }
 
   /**
@@ -185,16 +195,6 @@ export class CameraMovementHandler {
     this.input.on(Input.Events.GAME_OVER, () => {
       this.cursorOverGameInstance = true;
     });
-  }
-
-  /**
-   * Zooms to recommended zoom. It ensures that camera doesn't go out of bounds
-   */
-  private zoomToDefault() {
-    this.mainCamera.setZoom(this.cameraMinZoom);
-    while (this.mainCamera.zoom > this.recommendedZoom && this.zoomOutByFactor()) {
-      // zoom out until camera is out of bounds or we reached recommended zoom
-    }
   }
 
   /**
