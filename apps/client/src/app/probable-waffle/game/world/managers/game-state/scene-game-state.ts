@@ -1,5 +1,6 @@
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
+import { environment } from "../../../../../../environments/environment";
 
 export class MapObject {
   // todo
@@ -57,7 +58,7 @@ export class SceneGameState {
             emitterUserId: this.scene.userId
           });
         };
-        const handleCountdown = false;
+        const handleCountdown = environment.production;
         if (handleCountdown) {
           setTimeout(() => sendInProgress(), 3000);
         } else {
