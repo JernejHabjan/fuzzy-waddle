@@ -91,7 +91,7 @@ export class GathererComponent implements IComponent {
       // enter resource source
       const containerComponent = resourceSource.components.findComponentOrNull(ContainerComponent);
       if (containerComponent) {
-        containerComponent.loadActor(this.actor);
+        containerComponent.loadGameObject(this.actor);
       }
     }
   }
@@ -320,7 +320,7 @@ export class GathererComponent implements IComponent {
   private leaveCurrentResourceSource() {
     const containerComponent = this.currentResourceSource?.components.findComponentOrNull(ContainerComponent);
     if (containerComponent) {
-      containerComponent.unloadActor(this.actor);
+      containerComponent.unloadGameObject(this.actor);
     }
 
     // store data about resource source for future reference (e.g. return here, or find similar)

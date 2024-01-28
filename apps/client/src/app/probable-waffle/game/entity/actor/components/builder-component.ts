@@ -1,5 +1,4 @@
 import { IComponent } from "../../../core/component.service";
-import { Actor } from "../actor";
 import { Barracks } from "../../assets/buildings/barracks";
 import { Mine } from "../../assets/buildings/mine";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
@@ -10,31 +9,35 @@ import { GameMode } from "../../../world/managers/game-mode/game-mode";
 import { GameModeSkirmish } from "../../../world/managers/game-mode/game-modes/game-mode-skirmish";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
-import { DEPRECATEDownerComponent } from "./DEPRECATEDowner-component";
-import { SpriteRepresentationComponent } from "./sprite-representable-component";
+import { getActorComponent } from "../../../data/actor-component";
+import { OwnerComponent } from "./owner-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ActorAbleToBeBuilt = Barracks | Mine;
 export type ActorAbleToBeBuiltClass = typeof Barracks | typeof Mine;
+export type BuilderComponentDefinition = {
+  // types of building the gameObject can produce
+  constructableBuildingClasses: string[];
+  // Whether the builder enters the building site while working on it, or not.
+  enterConstructionSite: boolean;
+  // from how far builder builds building site
+  constructionSiteOffset: number;
+};
 
 // Allows the actor to construct building
 export class BuilderComponent implements IComponent {
   // building site the builder is currently working on
-  assignedConstructionSite?: Actor;
+  assignedConstructionSite?: GameObject;
 
-  onConstructionSiteEntered: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
-  onAssignedToConstructionSite: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
-  onConstructionStarted: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
-  onRemovedFromConstructionSite: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
-  onConstructionSiteLeft: Subject<[Actor, Actor]> = new Subject<[Actor, Actor]>();
+  onConstructionSiteEntered: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  onAssignedToConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  onConstructionStarted: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
 
   constructor(
-    private readonly actor: Actor,
-    // types of building the actor can produce
-    private constructableBuildingClasses: ActorAbleToBeBuiltClass[],
-    // Whether the builder enters the building site while working on it, or not.
-    private enterConstructionSite: boolean,
-    // from how far builder builds building site
-    private constructionSiteOffset: number
+    private readonly gameObject: GameObject,
+    private readonly builderComponentDefinition: BuilderComponentDefinition
   ) {}
 
   init(): void {
@@ -45,38 +48,38 @@ export class BuilderComponent implements IComponent {
     return this.assignedConstructionSite;
   }
 
-  assignToConstructionSite(constructionSite: Actor) {
+  assignToConstructionSite(constructionSite: GameObject) {
     if (this.assignedConstructionSite === constructionSite) {
       return;
     }
-    const constructionSiteComponent = constructionSite.components.findComponentOrNull(ConstructionSiteComponent);
+    const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
     if (!constructionSiteComponent) {
       return;
     }
     if (constructionSiteComponent.canAssignBuilder()) {
       this.assignedConstructionSite = constructionSite;
-      constructionSiteComponent.assignBuilder(this.actor);
-      this.onAssignedToConstructionSite.next([this.actor, constructionSite]);
+      constructionSiteComponent.assignBuilder(this.gameObject);
+      this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
 
       if (this.enterConstructionSite) {
-        const containerComponent = constructionSite.components.findComponentOrNull(ContainerComponent);
+        const containerComponent = getActorComponent(constructionSite, ContainerComponent);
         if (containerComponent) {
-          containerComponent.loadActor(this.actor);
-          this.onConstructionSiteEntered.next([this.actor, constructionSite]);
+          containerComponent.loadGameObject(this.gameObject);
+          this.onConstructionSiteEntered.next([this.gameObject, constructionSite]);
         }
       }
     }
   }
 
-  beginConstruction(buildingClass: ActorAbleToBeBuiltClass, targetLocation: TilePlacementData): boolean {
+  beginConstruction(buildingClass: GameObjectAbleToBeBuiltClass, targetLocation: TilePlacementData): boolean {
     const gameMode: GameMode = new GameModeSkirmish(); // todo !!!!!!!!!!!!
-    const pawnAiController = this.actor.components.findComponent(PawnAiControllerComponent);
+    const pawnAiController = this.gameObject.components.findComponent(PawnAiControllerComponent);
 
     // check requirements
-    const missingRequirement = GameplayLibrary.getMissingRequirementsFor(this.actor, buildingClass);
+    const missingRequirement = GameplayLibrary.getMissingRequirementsFor(this.gameObject, buildingClass);
     if (missingRequirement) {
       console.log("missing requirement", missingRequirement);
-      // player is missing a required actor. stop
+      // player is missing a required gameObject. stop
 
       pawnAiController.issueStopOrder();
       return false;
@@ -86,13 +89,13 @@ export class BuilderComponent implements IComponent {
     // todo
 
     // spawn building
-    const ownerController = this.actor.components.findComponent(DEPRECATEDownerComponent);
-    const scene = this.actor.components.findComponent(SpriteRepresentationComponent).scene;
-    const building = gameMode.spawnActorForPlayer(
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const scene = this.gameObject.scene;
+    const building = gameMode.spawnGameObjectForPlayer(
       scene,
       buildingClass,
       targetLocation,
-      ownerController.playerController
+      ownerComponent.playerController
     );
 
     if (!building) {
@@ -100,7 +103,7 @@ export class BuilderComponent implements IComponent {
       return false;
     }
 
-    this.onConstructionStarted.next([this.actor, building]);
+    this.onConstructionStarted.next([this.gameObject, building]);
 
     // issue building order
     pawnAiController.issueContinueConstructionOrder(building);
@@ -113,29 +116,29 @@ export class BuilderComponent implements IComponent {
     }
 
     const constructionSite = this.assignedConstructionSite;
-    const constructionSiteComponent = constructionSite.components.findComponentOrNull(ConstructionSiteComponent);
+    const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
     if (!constructionSiteComponent) {
       return;
     }
     // remove builder
     this.assignedConstructionSite = undefined;
-    constructionSiteComponent.unAssignBuilder(this.actor);
+    constructionSiteComponent.unAssignBuilder(this.gameObject);
 
     // notify listeners
-    this.onRemovedFromConstructionSite.next([this.actor, constructionSite]);
+    this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
 
     console.log("builder left building site");
-    if (this.enterConstructionSite) {
+    if (this.builderComponentDefinition.enterConstructionSite) {
       // leave building site
-      const containerComponent = constructionSite.components.findComponentOrNull(ContainerComponent);
+      const containerComponent = getActorComponent(constructionSite, ContainerComponent);
       if (containerComponent) {
-        containerComponent.unloadActor(this.actor);
-        this.onConstructionSiteLeft.next([this.actor, constructionSite]);
+        containerComponent.unloadGameObject(this.gameObject);
+        this.onConstructionSiteLeft.next([this.gameObject, constructionSite]);
       }
     }
   }
 
-  getConstructionRange(buildingType: ActorAbleToBeBuiltClass | undefined): number {
+  getConstructionRange(buildingType: string | undefined): number {
     // return collision radius of building
     // todo return URTSCollisionLibrary::GetCollisionSize(ConstructibleBuildingClasses[Index]) / 2;
     return 1; // todo

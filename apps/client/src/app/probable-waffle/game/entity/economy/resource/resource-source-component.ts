@@ -1,40 +1,43 @@
 import { IComponent } from "../../../core/component.service";
-import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
-import { Actor } from "../../actor/actor";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
+import { getActorComponent } from "../../../data/actor-component";
+import GameObject = Phaser.GameObjects.GameObject;
+
+export type ResourceSourceDefinition = {
+  resourceType: ResourceType;
+  maximumResources: number;
+  gatheringFactor: number;
+};
 
 export class ResourceSourceComponent implements IComponent {
-  onResourcesChanged: Subject<[ResourceTypeDefinition, number, Actor]> = new Subject<
-    [ResourceTypeDefinition, number, Actor]
-  >();
-  onDepleted: Subject<Actor> = new Subject<Actor>();
+  onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
+  onDepleted: Subject<GameObject> = new Subject<GameObject>();
   private currentResources: number;
-  private containerComponent: ContainerComponent | null = null;
+  private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
   private gathererCapacity = 0;
 
   constructor(
-    private readonly actor: Actor,
-    private resourceType: ResourceTypeDefinition,
-    private maximumResources: number,
-    private gatheringFactor: number
+    private readonly gameObject: GameObject,
+    private readonly resourceSourceDefinition: ResourceSourceDefinition
   ) {
-    this.currentResources = this.maximumResources;
+    this.currentResources = this.resourceSourceDefinition.maximumResources;
   }
 
   init(): void {
-    this.containerComponent = this.actor.components.findComponentOrNull(ContainerComponent);
+    this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
     this.gathererCapacity = this.containerComponent?.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
   }
 
-  extractResources(gatherer: Actor, amount: number): number {
+  extractResources(gatherer: GameObject, amount: number): number {
     if (this.gathererMustEnter) {
       // todo!!!!!!
     }
 
-    const gatheredAmount = Math.min(amount * this.gatheringFactor, this.currentResources);
+    const gatheredAmount = Math.min(amount * this.resourceSourceDefinition.gatheringFactor, this.currentResources);
 
     // deduct resources
     const oldResources = this.currentResources;
@@ -46,38 +49,38 @@ export class ResourceSourceComponent implements IComponent {
       gatherer,
       "extracted",
       gatheredAmount,
-      this.resourceType,
+      this.resourceSourceDefinition.resourceType,
       "from",
-      this.actor,
+      this.gameObject,
       "oldResources",
       oldResources,
       "newResources",
       newResources
     );
 
-    this.onResourcesChanged.next([this.resourceType, gatheredAmount, gatherer]);
+    this.onResourcesChanged.next([this.resourceSourceDefinition.resourceType, gatheredAmount, gatherer]);
     // check if we're depleted
     if (this.currentResources <= 0) {
-      this.onDepleted.next(this.actor);
-      this.actor.destroy();
+      this.onDepleted.next(this.gameObject);
+      this.gameObject.destroy();
     }
     return gatheredAmount;
   }
 
-  canGathererEnter(gatherer: Actor): boolean {
-    return this.containerComponent?.canLoadActor(gatherer) ?? true;
+  canGathererEnter(gatherer: GameObject): boolean {
+    return this.containerComponent?.canLoadGameObject(gatherer) ?? true;
   }
 
-  getResourceType(): ResourceTypeDefinition {
-    return this.resourceType;
+  getResourceType(): ResourceType {
+    return this.resourceSourceDefinition.resourceType;
   }
 
   getMaximumResources(): number {
-    return this.maximumResources;
+    return this.resourceSourceDefinition.maximumResources;
   }
 
   getGatheringFactor(): number {
-    return this.gatheringFactor;
+    return this.resourceSourceDefinition.gatheringFactor;
   }
 
   mustGathererEnter(): boolean {
