@@ -6,12 +6,13 @@ import { serverHealthServiceStub } from "./shared/services/server-health.service
 import { AuthService } from "./auth/auth.service";
 import { authServiceStub } from "./auth/auth.service.spec";
 import { SwRefreshTestingComponent } from "./shared/components/sw-refresh/sw-refresh.component.spec";
+import { HomeComponent } from "./little-muncher/home/home.component";
+import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
 
 describe("AppComponent", () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      imports: [RouterTestingModule, SwRefreshTestingComponent],
+      imports: [AppComponent, RouterTestingModule, SwRefreshTestingComponent],
       providers: [
         {
           provide: ServerHealthService,
@@ -22,7 +23,16 @@ describe("AppComponent", () => {
           useValue: authServiceStub
         }
       ]
-    }).compileComponents();
+    })
+      .overrideComponent(AppComponent, {
+        remove: {
+          imports: [SwRefreshComponent]
+        },
+        add: {
+          imports: [SwRefreshTestingComponent]
+        }
+      })
+      .compileComponents();
   }));
 
   it("should create the app", () => {

@@ -8,9 +8,9 @@ import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../communicators/game-instance-client.service.spec";
-import { WrapPipeModule } from "../../../shared/pipes/wrap-pipe.module";
 import { ModalComponent } from "../../../shared/components/modal/modal.component";
 import { CommonModule } from "@angular/common";
+import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
 
 @Component({ selector: "little-muncher-game-interface", template: "", standalone: true, imports: [CommonModule] })
 export class GameInterfaceTestingComponent {}
@@ -26,7 +26,7 @@ describe("GameInterfaceComponent", () => {
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: AuthService, useValue: authServiceStub }
       ],
-      imports: [GameInterfaceComponent, WrapPipeModule]
+      imports: [GameInterfaceComponent, WrapPipe]
     })
       .overrideComponent(GameInterfaceComponent, {
         remove: {

@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReplayComponent } from "./replay.component";
-import { GameInstanceClientService } from "../../../little-muncher/main/communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../little-muncher/main/communicators/game-instance-client.service.spec";
 import { gameInstanceLocalStorageServiceStub } from "../../communicators/storage/game-instance-local-storage.service.spec";
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
+import { GameLengthPipe } from "../../../shared/pipes/game-length.pipe";
+import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
+import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe("ReplayComponent", () => {
   let component: ReplayComponent;
@@ -15,7 +17,7 @@ describe("ReplayComponent", () => {
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceLocalStorageServiceStub }
       ],
-      imports: [ReplayComponent]
+      imports: [ReplayComponent, GameLengthPipe, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ReplayComponent);

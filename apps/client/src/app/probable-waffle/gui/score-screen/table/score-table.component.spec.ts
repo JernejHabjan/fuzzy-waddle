@@ -1,7 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { PlayerSummary, ScoreTableComponent } from "./score-table.component";
-import { RouterTestingModule } from "@angular/router/testing";
-import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
+import {
+  FactionType,
+  PlayerLobbyDefinition,
+  PositionPlayerDefinition,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/api-interfaces";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
@@ -36,6 +42,18 @@ describe("ScoreTableComponent", () => {
     );
 
     gameInstanceClientServiceStub.addAiPlayer();
+    const gameInstance = gameInstanceClientServiceStub.gameInstance!;
+    const playerDefinition = {
+      player: {
+        playerNumber: gameInstance.players.length,
+        playerName: "Player " + (gameInstance.players.length + 1),
+        playerPosition: gameInstance.players.length,
+        joined: true
+      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      factionType: FactionType.Skaduwee,
+      playerType: ProbableWafflePlayerType.AI
+    } satisfies PositionPlayerDefinition;
+    gameInstance.players[0].playerController.data.playerDefinition = playerDefinition;
 
     component.ngOnInit();
     expect(component["players"].length).toBe(1);
