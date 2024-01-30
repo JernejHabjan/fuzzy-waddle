@@ -1,9 +1,9 @@
-import { Actor } from "../../../../actor/actor";
 import { PawnAiBlackboard } from "../../pawn-ai-blackboard";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class DecoratorData {
   constructor(
-    public owner: Actor,
+    public owner: GameObject,
     public blackboard: PawnAiBlackboard
   ) {}
 }

@@ -1,20 +1,14 @@
-import { Barracks } from "../../assets/buildings/barracks";
-import { Mine } from "../../assets/buildings/mine";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { PawnAiControllerComponent } from "../../../world/managers/controllers/pawn-ai-controller-component";
-import { GameMode } from "../../../world/managers/game-mode/game-mode";
-import { GameModeSkirmish } from "../../../world/managers/game-mode/game-modes/game-mode-skirmish";
 import { GameplayLibrary } from "../../../library/gameplay-library";
-import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
-export type ActorAbleToBeBuilt = Barracks | Mine;
-export type ActorAbleToBeBuiltClass = typeof Barracks | typeof Mine;
-export type BuilderComponentDefinition = {
+export type BuilderDefinition = {
   // types of building the gameObject can produce
   constructableBuildingClasses: string[];
   // Whether the builder enters the building site while working on it, or not.
@@ -36,7 +30,7 @@ export class BuilderComponent {
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly builderComponentDefinition: BuilderComponentDefinition
+    private readonly builderComponentDefinition: BuilderDefinition
   ) {}
 
   getAssignedConstructionSite() {
@@ -44,32 +38,28 @@ export class BuilderComponent {
   }
 
   assignToConstructionSite(constructionSite: GameObject) {
-    if (this.assignedConstructionSite === constructionSite) {
-      return;
-    }
-    const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
-    if (!constructionSiteComponent) {
-      return;
-    }
-    if (constructionSiteComponent.canAssignBuilder()) {
-      this.assignedConstructionSite = constructionSite;
-      constructionSiteComponent.assignBuilder(this.gameObject);
-      this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
+    if (this.assignedConstructionSite === constructionSite) return;
 
-      if (this.builderComponentDefinition.enterConstructionSite) {
-        const containerComponent = getActorComponent(constructionSite, ContainerComponent);
-        if (containerComponent) {
-          containerComponent.loadGameObject(this.gameObject);
-          this.onConstructionSiteEntered.next([this.gameObject, constructionSite]);
-        }
+    const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return;
+
+    if (!constructionSiteComponent.canAssignBuilder()) return;
+    this.assignedConstructionSite = constructionSite;
+    constructionSiteComponent.assignBuilder(this.gameObject);
+    this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
+
+    if (this.builderComponentDefinition.enterConstructionSite) {
+      const containerComponent = getActorComponent(constructionSite, ContainerComponent);
+      if (containerComponent) {
+        containerComponent.loadGameObject(this.gameObject);
+        this.onConstructionSiteEntered.next([this.gameObject, constructionSite]);
       }
     }
   }
 
-  beginConstruction(buildingClass: GameObjectAbleToBeBuiltClass, targetLocation: TilePlacementData): boolean {
-    const gameMode: GameMode = new GameModeSkirmish(); // todo !!!!!!!!!!!!
-    const pawnAiController = this.gameObject.components.findComponent(PawnAiControllerComponent);
-
+  beginConstruction(buildingClass: string, targetLocation: Vector3Simple): boolean {
+    const pawnAiController = getActorComponent(this.gameObject, PawnAiControllerComponent);
+    if (!pawnAiController) return false;
     // check requirements
     const missingRequirement = GameplayLibrary.getMissingRequirementsFor(this.gameObject, buildingClass);
     if (missingRequirement) {
@@ -86,12 +76,13 @@ export class BuilderComponent {
     // spawn building
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const scene = this.gameObject.scene;
-    const building = gameMode.spawnGameObjectForPlayer(
-      scene,
-      buildingClass,
-      targetLocation,
-      ownerComponent.playerController
-    );
+    // todo const building = gameMode.spawnGameObjectForPlayer(
+    // todo   scene,
+    // todo   buildingClass,
+    // todo   targetLocation,
+    // todo   ownerComponent.playerController
+    // todo );
+    const building = null;
 
     if (!building) {
       console.log("building could not be spawned");
@@ -106,15 +97,12 @@ export class BuilderComponent {
   }
 
   leaveConstructionSite() {
-    if (!this.assignedConstructionSite) {
-      return;
-    }
+    if (!this.assignedConstructionSite) return;
 
     const constructionSite = this.assignedConstructionSite;
     const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
-    if (!constructionSiteComponent) {
-      return;
-    }
+    if (!constructionSiteComponent) return;
+
     // remove builder
     this.assignedConstructionSite = undefined;
     constructionSiteComponent.unAssignBuilder(this.gameObject);

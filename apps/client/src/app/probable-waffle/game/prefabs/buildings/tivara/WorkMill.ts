@@ -8,6 +8,16 @@ import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
+import {
+  ProductionCostComponent,
+  ProductionCostDefinition
+} from "../../../entity/building/production/production-cost-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { PaymentType } from "../../../entity/building/payment-type";
+import {
+  ResourceDrainComponent,
+  ResourceDrainDefinition
+} from "../../../entity/economy/resource/resource-drain-component";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -38,19 +48,22 @@ export default class WorkMill extends Phaser.GameObjects.Container {
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
-        } satisfies HealthDefinition)
+        } satisfies HealthDefinition),
+        new ProductionCostComponent(this, {
+          resources: {
+            [ResourceType.Wood]: 10,
+            [ResourceType.Minerals]: 10
+          },
+          refundFactor: 0.5,
+          productionTime: 1000,
+          costType: PaymentType.PayImmediately
+        } satisfies ProductionCostDefinition),
+        new ResourceDrainComponent(this, {
+          resourceTypes: [ResourceType.Wood]
+        } satisfies ResourceDrainDefinition)
       ],
       []
     );
-
-    this.on("pointerdown", () => {
-      buildings_tivara_workmill_png_1.setTint(0xff0000); // Tint to red
-      // tint back to transparent after 1 second
-      setTimeout(() => {
-        buildings_tivara_workmill_png_1.clearTint();
-      }, 1000);
-    });
-
     /* END-USER-CTR-CODE */
   }
 

@@ -29,7 +29,7 @@ export class ResourceSourceComponent {
 
   init(): void {
     this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
-    this.gathererCapacity = this.containerComponent?.capacity ?? 0;
+    this.gathererCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
   }
 

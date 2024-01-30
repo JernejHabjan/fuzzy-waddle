@@ -1,6 +1,5 @@
 import { GatherData } from "../../economy/gather-data";
 import { ResourceSourceComponent } from "../../economy/resource/resource-source-component";
-import { Mine } from "../../assets/buildings/mine";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { Subject } from "rxjs";
 import { PlayerController } from "../../../world/managers/controllers/player-controller";
@@ -13,7 +12,12 @@ import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
-export type GathererClasses = typeof Mine;
+export type GathererDefinition = {
+  // types of gameObjects the gatherer can gather resourcesFrom
+  resourceSourceGameObjectClasses: string[];
+  // radius in which gameObject will automatically gather resourcesFrom
+  resourceSweepRadius: number;
+};
 
 export class GathererComponent {
   gatheredResources: GatherData[] = [];
@@ -32,10 +36,7 @@ export class GathererComponent {
 
   constructor(
     private readonly gameObject: GameObject,
-    // type of gameObjects the gatherer can gather resources from
-    public resourceSourceGameObjectClasses: GathererClasses[],
-    // radius in which gameObject will automatically gather resourcesFrom
-    public resourceSweepRadius: number
+    private readonly gathererComponentDefinition: GathererDefinition
   ) {}
 
   canGatherFrom(gameObject: GameObject): boolean {
@@ -138,7 +139,10 @@ export class GathererComponent {
     if (this.previousResourceSource) {
       return this.previousResourceSource;
     }
-    return this.getClosestResourceSource(this.previousResourceType, this.resourceSweepRadius);
+    return this.getClosestResourceSource(
+      this.previousResourceType,
+      this.gathererComponentDefinition.resourceSweepRadius
+    );
   }
 
   getClosestResourceSource(resourceType: ResourceType | null, maxDistance: number): GameObject | undefined {

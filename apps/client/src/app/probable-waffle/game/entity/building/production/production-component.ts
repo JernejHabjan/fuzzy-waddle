@@ -1,5 +1,4 @@
 import { RallyPoint } from "../../../player/rally-point";
-import { CostData } from "./production-cost-component";
 import { PaymentType } from "../payment-type";
 import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
 import { ProductionQueue } from "./production-queue";
@@ -7,10 +6,18 @@ import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ProductionCostDefinition } from "./production-cost-component";
 
 export type ProductionQueueItem = {
-  gameObjectClass: any;
-  costData: CostData;
+  gameObjectClass: string;
+  costData: ProductionCostDefinition;
+};
+
+export type ProductionDefinition = {
+  availableProductGameObjectClasses: string[];
+  // How many products can be produced simultaneously - for example 2 marines (SC2)
+  queueCount: number;
+  capacityPerQueue: number;
 };
 
 export class ProductionComponent {
@@ -20,17 +27,14 @@ export class ProductionComponent {
 
   constructor(
     private readonly gameObject: GameObject,
-    public availableProductGameObjectClasses: string[],
-    // How many products can be produced simultaneously - for example 2 marines (SC2)
-    private queueCount: number,
-    private capacityPerQueue: number
+    public readonly productionDefinition: ProductionDefinition
   ) {}
 
   init() {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
     // setup queues
-    for (let i = 0; i < this.queueCount; i++) {
-      this.productionQueues.push(new ProductionQueue(this.capacityPerQueue));
+    for (let i = 0; i < this.productionDefinition.queueCount; i++) {
+      this.productionQueues.push(new ProductionQueue(this.productionDefinition.capacityPerQueue));
     }
   }
 
@@ -159,7 +163,7 @@ export class ProductionComponent {
 
   private canAssignProduction(item: ProductionQueueItem): boolean {
     // check if gameObject can be produced
-    if (!this.availableProductGameObjectClasses.includes(item.gameObjectClass)) {
+    if (!this.productionDefinition.availableProductGameObjectClasses.includes(item.gameObjectClass)) {
       return false;
     }
 

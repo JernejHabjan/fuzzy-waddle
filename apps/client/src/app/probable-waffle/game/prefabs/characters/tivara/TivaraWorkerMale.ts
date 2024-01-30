@@ -8,6 +8,22 @@ import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
+import {
+  ProductionCostComponent,
+  ProductionCostDefinition
+} from "../../../entity/building/production/production-cost-component";
+import { AttackComponent, AttackDefinition } from "../../../entity/combat/components/attack-component";
+import { DamageType } from "../../../entity/combat/damage-type";
+import { AttackData } from "../../../entity/combat/attack-data";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { PaymentType } from "../../../entity/building/payment-type";
+import { ContainableComponent } from "../../../entity/actor/components/containable-component";
+import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
+import AnkGuard from "../../buildings/tivara/AnkGuard";
+import Sandhold from "../../buildings/tivara/Sandhold";
+import { BuilderComponent, BuilderDefinition } from "../../../entity/actor/components/builder-component";
+import { ActorManager } from "../../../data/actor-manager";
+import { GathererComponent, GathererDefinition } from "../../../entity/actor/components/gatherer-component";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
@@ -26,18 +42,49 @@ export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
-        } satisfies HealthDefinition)
+        } satisfies HealthDefinition),
+        new AttackComponent(this, {
+          attacks: [
+            {
+              damage: 1,
+              damageType: DamageType.Physical,
+              cooldown: 1000,
+              range: 3
+            } satisfies AttackData
+          ]
+        } satisfies AttackDefinition),
+        new ProductionCostComponent(this, {
+          resources: {
+            [ResourceType.Wood]: 10,
+            [ResourceType.Minerals]: 10
+          },
+          refundFactor: 0.5,
+          productionTime: 1000,
+          costType: PaymentType.PayImmediately
+        } satisfies ProductionCostDefinition),
+        new ContainableComponent(this),
+        new RequirementsComponent(this, {
+          actors: [Sandhold.name]
+        } satisfies RequirementsDefinition),
+        new BuilderComponent(this, {
+          constructableBuildingClasses: Object.keys({ ...ActorManager.tivaraBuildings }),
+          constructionSiteOffset: 2,
+          enterConstructionSite: false
+        } satisfies BuilderDefinition),
+        new GathererComponent(this, {
+          resourceSweepRadius: 100,
+          resourceSourceGameObjectClasses: [
+            ResourceType.Ambrosia,
+            ResourceType.Wood,
+            ResourceType.Minerals,
+            ResourceType.Stone
+          ]
+        } satisfies GathererDefinition)
       ],
       []
     );
 
     this.on("pointerdown", () => {
-      this.setTint(0xff0000); // Tint to red
-      // tint back to transparent after 1 second
-      setTimeout(() => {
-        this.clearTint();
-      }, 1000);
-
       // and play anim skaduwee_worker_male_slash_down
       this.play("tivara_worker_male_slash_down", true);
       // after anim complete, remove tint

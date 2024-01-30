@@ -1,6 +1,5 @@
 import { GameState } from "../game-state/game-state";
 import { VisionManager } from "../../map/vision/vision-manager";
-import { ActorAbleToBeBuilt, ActorAbleToBeBuiltClass } from "../../../entity/actor/components/builder-component";
 import { PlayerController } from "../controllers/player-controller";
 import { TilePlacementData } from "../controllers/input/tilemap/tilemap-input.handler";
 import { Scene } from "phaser";
@@ -39,7 +38,7 @@ export abstract class GameMode {
 
   spawnActorForPlayer(
     scene: Scene,
-    buildingClass: ActorAbleToBeBuiltClass,
+    buildingClass: string,
     targetLocation: TilePlacementData,
     playerController?: PlayerController
   ): ActorAbleToBeBuilt {

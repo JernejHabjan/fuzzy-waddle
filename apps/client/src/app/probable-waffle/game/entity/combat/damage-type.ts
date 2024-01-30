@@ -1,3 +1,4 @@
-export class DamageType {
-  constructor(public type: string) {}
+export enum DamageType {
+  Physical,
+  Magical
 }

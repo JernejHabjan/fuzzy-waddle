@@ -8,6 +8,12 @@ import { setActorData } from "../../../../data/actor-data";
 import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { HealthComponent, HealthDefinition } from "../../../../entity/combat/components/health-component";
+import {
+  ProductionCostComponent,
+  ProductionCostDefinition
+} from "../../../../entity/building/production/production-cost-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { PaymentType } from "../../../../entity/building/payment-type";
 /* END-USER-IMPORTS */
 
 export default class WallBottomLeft extends Phaser.GameObjects.Image {
@@ -36,7 +42,16 @@ export default class WallBottomLeft extends Phaser.GameObjects.Image {
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
-        } satisfies HealthDefinition)
+        } satisfies HealthDefinition),
+        new ProductionCostComponent(this, {
+          resources: {
+            [ResourceType.Wood]: 10,
+            [ResourceType.Minerals]: 10
+          },
+          refundFactor: 0.5,
+          productionTime: 1000,
+          costType: PaymentType.PayImmediately
+        } satisfies ProductionCostDefinition)
       ],
       []
     );

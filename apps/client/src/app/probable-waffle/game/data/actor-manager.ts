@@ -34,44 +34,86 @@ import Transform = Phaser.GameObjects.Components.Transform;
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
+import StairsLeft from "../prefabs/buildings/tivara/wall/StairsLeft";
+import WallBottomLeft from "../prefabs/buildings/tivara/wall/WallBottomLeft";
+import WallBottomLeftBottomRight from "../prefabs/buildings/tivara/wall/WallBottomLeftBottomRight";
+import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
+import WallBottomRight from "../prefabs/buildings/tivara/wall/WallBottomRight";
+import WallEmpty from "../prefabs/buildings/tivara/wall/WallEmpty";
+import WallTopLeft from "../prefabs/buildings/tivara/wall/WallTopLeft";
+import WallTopLeftBottomLeft from "../prefabs/buildings/tivara/wall/WallTopLeftBottomLeft";
+import WallTopLeftBottomRight from "../prefabs/buildings/tivara/wall/WallTopLeftBottomRight";
+import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
+import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
+import WallTopRightBottomLeft from "../prefabs/buildings/tivara/wall/WallTopRightBottomLeft";
+import WallTopRightBottomRight from "../prefabs/buildings/tivara/wall/WallTopRightBottomRight";
+import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
+export type ActorMap = { [name: string]: ActorConstructor };
 export class ActorManager {
-  public static actorMap: { [name: string]: ActorConstructor } = {
-    // ANIMALS
+  public static animals: ActorMap = {
     [Hedgehog.name]: Hedgehog,
-    [Sheep.name]: Sheep,
-    // END ANIMALS
+    [Sheep.name]: Sheep
+  };
 
-    // GENERAL
-    [GeneralWarrior.name]: GeneralWarrior,
-    // END GENERAL
+  public static general: ActorMap = {
+    [GeneralWarrior.name]: GeneralWarrior
+  };
 
-    // TIVARA
-    [TivaraMacemanMale.name]: TivaraMacemanMale,
-    [TivaraSlingshotFemale.name]: TivaraSlingshotFemale,
+  public static tivaraWorkers: ActorMap = {
     [TivaraWorkerFemale.name]: TivaraWorkerFemale,
-    [TivaraWorkerMale.name]: TivaraWorkerMale,
+    [TivaraWorkerMale.name]: TivaraWorkerMale
+  };
+
+  public static tivaraUnits: ActorMap = {
+    [TivaraMacemanMale.name]: TivaraMacemanMale,
+    [TivaraSlingshotFemale.name]: TivaraSlingshotFemale
+  };
+
+  public static tivaraBuildings: ActorMap = {
     [AnkGuard.name]: AnkGuard,
     [Olival.name]: Olival,
     [Sandhold.name]: Sandhold,
     [Temple.name]: Temple,
-    [WorkMill.name]: WorkMill,
-    // END TIVARA
+    [WorkMill.name]: WorkMill
+  };
 
-    // SKADUWEE
+  public static tivaraWall: ActorMap = {
+    [StairsLeft.name]: StairsLeft,
+    [StairsRight.name]: StairsRight,
+    [WallBottomLeft.name]: WallBottomLeft,
+    [WallBottomLeftBottomRight.name]: WallBottomLeftBottomRight,
+    [WallBottomRight.name]: WallBottomRight,
+    [WallEmpty.name]: WallEmpty,
+    [WallTopLeft.name]: WallTopLeft,
+    [WallTopLeftBottomLeft.name]: WallTopLeftBottomLeft,
+    [WallTopLeftBottomRight.name]: WallTopLeftBottomRight,
+    [WallTopLeftTopRight.name]: WallTopLeftTopRight,
+    [WallTopRight.name]: WallTopRight,
+    [WallTopRightBottomLeft.name]: WallTopRightBottomLeft,
+    [WallTopRightBottomRight.name]: WallTopRightBottomRight,
+    [WatchTower.name]: WatchTower
+  };
+
+  public static skaduweeWorkers: ActorMap = {
+    [SkaduweeWorkerMale.name]: SkaduweeWorkerMale,
+    [SkaduweeWorkerFemale.name]: SkaduweeWorkerFemale
+  };
+  public static skaduweeUnits: ActorMap = {
     [SkaduweeOwl.name]: SkaduweeOwl,
     [SkaduweeRangedFemale.name]: SkaduweeRangedFemale,
     [SkaduweeMagicianFemale.name]: SkaduweeMagicianFemale,
-    [SkaduweeWarriorMale.name]: SkaduweeWarriorMale,
-    [SkaduweeWorkerMale.name]: SkaduweeWorkerMale,
-    [SkaduweeWorkerFemale.name]: SkaduweeWorkerFemale,
+    [SkaduweeWarriorMale.name]: SkaduweeWarriorMale
+  };
+
+  public static skaduweeBuildings: ActorMap = {
     [FrostForge.name]: FrostForge,
     [InfantryInn.name]: InfantryInn,
-    [Owlery.name]: Owlery,
-    // END SKADUWEE
+    [Owlery.name]: Owlery
+  };
 
-    // Trees
+  public static trees: ActorMap = {
     [Tree1.name]: Tree1,
     [Tree4.name]: Tree4,
     [Tree5.name]: Tree5,
@@ -80,7 +122,19 @@ export class ActorManager {
     [Tree9.name]: Tree9,
     [Tree10.name]: Tree10,
     [Tree11.name]: Tree11
-    // END Trees
+  };
+
+  public static actorMap: ActorMap = {
+    ...ActorManager.animals,
+    ...ActorManager.general,
+    ...ActorManager.tivaraWorkers,
+    ...ActorManager.tivaraUnits,
+    ...ActorManager.tivaraBuildings,
+    ...ActorManager.tivaraWall,
+    ...ActorManager.skaduweeWorkers,
+    ...ActorManager.skaduweeUnits,
+    ...ActorManager.skaduweeBuildings,
+    ...ActorManager.trees
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {

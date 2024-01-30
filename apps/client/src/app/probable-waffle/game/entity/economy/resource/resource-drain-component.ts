@@ -1,10 +1,13 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
-import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
+
+export type ResourceDrainDefinition = {
+  resourceTypes: ResourceType[];
+};
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent {
@@ -15,14 +18,14 @@ export class ResourceDrainComponent {
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly resourceTypes: ResourceType[]
+    private readonly resourceDrainDefinition: ResourceDrainDefinition
   ) {
     this.init();
   }
 
   init(): void {
     this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
-    this.gathererCapacity = this.containerComponent?.capacity ?? 0;
+    this.gathererCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
   }
 
@@ -31,10 +34,10 @@ export class ResourceDrainComponent {
    */
   returnResources(gatherer: GameObject, resourceType: ResourceType, amount: number): number {
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    if (!ownerComponent.playerController) throw new Error("ownerComponent.playerController is null");
-    const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
+    // todo if (!ownerComponent.playerController) throw new Error("ownerComponent.playerController is null");
+    // todo const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
 
-    const returnedResources = playerResourcesComponent.addResource(resourceType, amount);
+    const returnedResources = 0; // todo playerResourcesComponent.addResource(resourceType, amount);
 
     if (returnedResources <= 0) {
       return 0;
@@ -51,6 +54,6 @@ export class ResourceDrainComponent {
   }
 
   getResourceTypes(): ResourceType[] {
-    return this.resourceTypes;
+    return this.resourceDrainDefinition.resourceTypes;
   }
 }

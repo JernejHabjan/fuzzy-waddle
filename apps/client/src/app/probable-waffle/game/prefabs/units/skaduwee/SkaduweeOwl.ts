@@ -10,6 +10,17 @@ import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
+import {
+  ProductionCostComponent,
+  ProductionCostDefinition
+} from "../../../entity/building/production/production-cost-component";
+import { AttackComponent, AttackDefinition } from "../../../entity/combat/components/attack-component";
+import { DamageType } from "../../../entity/combat/damage-type";
+import { AttackData } from "../../../entity/combat/attack-data";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { PaymentType } from "../../../entity/building/payment-type";
+import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
+import Owlery from "../../buildings/skaduwee/Owlery";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -33,7 +44,29 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
-        } satisfies HealthDefinition)
+        } satisfies HealthDefinition),
+        new AttackComponent(this, {
+          attacks: [
+            {
+              damage: 10,
+              damageType: DamageType.Physical,
+              cooldown: 1000,
+              range: 3
+            } satisfies AttackData
+          ]
+        } satisfies AttackDefinition),
+        new ProductionCostComponent(this, {
+          resources: {
+            [ResourceType.Wood]: 10,
+            [ResourceType.Minerals]: 10
+          },
+          refundFactor: 0.5,
+          productionTime: 1000,
+          costType: PaymentType.PayImmediately
+        } satisfies ProductionCostDefinition),
+        new RequirementsComponent(this, {
+          actors: [Owlery.name]
+        } satisfies RequirementsDefinition)
       ],
       []
     );

@@ -1,10 +1,17 @@
 import GameObject = Phaser.GameObjects.GameObject;
 
+export type ContainerDefinition = {
+  capacity: number;
+};
+
 // apply to resource source that needs gameObjects to enter to gather
 export class ContainerComponent {
   private containedGameObjects = new Set<GameObject>();
 
-  constructor(public readonly capacity: number) {}
+  constructor(
+    private readonly gameObject: GameObject,
+    public readonly containerDefinition: ContainerDefinition
+  ) {}
 
   getContainedGameObjects(): GameObject[] {
     return Array.from(this.containedGameObjects);
@@ -30,7 +37,7 @@ export class ContainerComponent {
     if (this.containedGameObjects.has(gameObject)) {
       return false;
     }
-    return this.containedGameObjects.size < this.capacity;
+    return this.containedGameObjects.size < this.containerDefinition.capacity;
   }
 
   loadGameObject(gameObject: GameObject) {

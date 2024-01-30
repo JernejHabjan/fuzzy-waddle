@@ -1,13 +1,9 @@
 import { RepresentableActor, RepresentableActorDefinition } from "../../actor/representable-actor";
 import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
-import { DEPRECATEDownerComponent } from "../../actor/components/DEPRECATEDowner-component";
 import { PlayerController } from "../../../world/managers/controllers/player-controller";
-import { CostData, ProductionCostComponent } from "../../building/production/production-cost-component";
+import { CostData } from "../../building/production/production-cost-component";
 import { PawnInfoDefinition } from "../../actor/character";
-import {
-  ConstructionSiteComponent,
-  ConstructionSiteDefinition
-} from "../../building/construction/construction-site-component";
+import { ConstructionSiteDefinition } from "../../building/construction/construction-site-component";
 import { Scene } from "phaser";
 
 export type BuildingInfoDefinition = PawnInfoDefinition & {
@@ -36,15 +32,15 @@ export abstract class Building extends RepresentableActor {
   override initComponents(): void {
     super.initComponents();
 
-    this.components.addComponent(new DEPRECATEDownerComponent());
-    this.components.addComponent(
-      new ConstructionSiteComponent(this, this.buildingInfoDefinition.constructionSiteDefinition)
-    );
-    this.components.addComponent(new ProductionCostComponent(this.cost));
+    // this.components.addComponent(new OwnerComponent(this as any));
+    // this.components.addComponent(
+    //   new ConstructionSiteComponent(this, this.buildingInfoDefinition.constructionSiteDefinition)
+    // );
+    // this.components.addComponent(new ProductionCostComponent(this.cost));
   }
 
   possess(playerController?: PlayerController) {
     if (!playerController) return;
-    this.components.findComponent(DEPRECATEDownerComponent).possess(playerController);
+    // this.components.findComponent(DEPRECATEDownerComponent).possess(playerController);
   }
 }

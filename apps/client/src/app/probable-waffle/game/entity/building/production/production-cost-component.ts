@@ -1,23 +1,18 @@
 import { PaymentType } from "../payment-type";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import GameObject = Phaser.GameObjects.GameObject;
 
-export class CostData {
-  static NoCost: CostData = {
-    costType: PaymentType.PayImmediately,
-    resources: new Map(),
-    productionTime: 0,
-    refundFactor: 1
-  };
-
-  constructor(
-    public costType: PaymentType,
-    public productionTime: number,
-    public resources: Map<ResourceType, number>,
-    public refundFactor: number
-  ) {}
-}
+export type ProductionCostDefinition = {
+  costType: PaymentType;
+  productionTime: number;
+  resources: Partial<Record<ResourceType, number>>;
+  refundFactor: number;
+};
 
 export class ProductionCostComponent {
   finishedSound?: string; // todo
-  constructor(public costData: CostData) {}
+  constructor(
+    private readonly owner: GameObject,
+    private readonly productionCostDefinition: ProductionCostDefinition
+  ) {}
 }
