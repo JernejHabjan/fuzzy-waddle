@@ -1,4 +1,3 @@
-import { IComponent } from "../../../core/component.service";
 import { Barracks } from "../../assets/buildings/barracks";
 import { Mine } from "../../assets/buildings/mine";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
@@ -25,7 +24,7 @@ export type BuilderComponentDefinition = {
 };
 
 // Allows the actor to construct building
-export class BuilderComponent implements IComponent {
+export class BuilderComponent {
   // building site the builder is currently working on
   assignedConstructionSite?: GameObject;
 
@@ -39,10 +38,6 @@ export class BuilderComponent implements IComponent {
     private readonly gameObject: GameObject,
     private readonly builderComponentDefinition: BuilderComponentDefinition
   ) {}
-
-  init(): void {
-    // pass
-  }
 
   getAssignedConstructionSite() {
     return this.assignedConstructionSite;
@@ -61,7 +56,7 @@ export class BuilderComponent implements IComponent {
       constructionSiteComponent.assignBuilder(this.gameObject);
       this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
 
-      if (this.enterConstructionSite) {
+      if (this.builderComponentDefinition.enterConstructionSite) {
         const containerComponent = getActorComponent(constructionSite, ContainerComponent);
         if (containerComponent) {
           containerComponent.loadGameObject(this.gameObject);

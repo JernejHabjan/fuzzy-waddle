@@ -7,7 +7,7 @@ export class AttackTask implements ITask {
     if (!attackComponent) {
       return TaskResultType.Failure;
     }
-    const target = taskData.blackboard.targetActor;
+    const target = taskData.blackboard.targetGameObject;
     if (!target) {
       return TaskResultType.Failure;
     }

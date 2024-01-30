@@ -1,39 +1,33 @@
-import { IComponent } from "../../../core/component.service";
 import { RallyPoint } from "../../../player/rally-point";
-import { ActorAbleToBeProduced, ActorAbleToBeProducedClass, ProductionQueue } from "./production-queue";
 import { CostData } from "./production-cost-component";
 import { PaymentType } from "../payment-type";
 import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
-import { DEPRECATEDownerComponent } from "../../actor/components/DEPRECATEDowner-component";
-import { Actor } from "../../actor/actor";
-import { SpriteRepresentationComponent } from "../../actor/components/sprite-representable-component";
-import { TransformComponent } from "../../actor/components/transformable-component";
-import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { ProductionQueue } from "./production-queue";
+import { OwnerComponent } from "../../actor/components/owner-component";
+import { getActorComponent } from "../../../data/actor-component";
+import GameObject = Phaser.GameObjects.GameObject;
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export type ProductionQueueItem = {
-  actorClass: ActorAbleToBeProducedClass;
+  gameObjectClass: any;
   costData: CostData;
 };
 
-export class ProductionComponent implements IComponent {
+export class ProductionComponent {
   productionQueues: ProductionQueue[] = [];
   rallyPoint?: RallyPoint;
-  private ownerComponent!: DEPRECATEDownerComponent;
-  private spriteRepresentationComponent!: SpriteRepresentationComponent;
-  private transformComponent!: TransformComponent;
+  private ownerComponent!: OwnerComponent;
 
   constructor(
-    private readonly owner: Actor,
-    public availableProductActorClasses: ActorAbleToBeProducedClass[],
+    private readonly gameObject: GameObject,
+    public availableProductGameObjectClasses: string[],
     // How many products can be produced simultaneously - for example 2 marines (SC2)
     private queueCount: number,
     private capacityPerQueue: number
   ) {}
 
   init() {
-    this.ownerComponent = this.owner.components.findComponent(DEPRECATEDownerComponent);
-    this.spriteRepresentationComponent = this.owner.components.findComponent(SpriteRepresentationComponent);
-    this.transformComponent = this.owner.components.findComponent(TransformComponent);
+    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
     // setup queues
     for (let i = 0; i < this.queueCount; i++) {
       this.productionQueues.push(new ProductionQueue(this.capacityPerQueue));
@@ -44,12 +38,12 @@ export class ProductionComponent implements IComponent {
     // process all queues
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
-      if (queue.queuedActors.length <= 0) {
+      if (queue.queuedItems.length <= 0) {
         continue;
       }
 
-      for (let j = 0; j < queue.queuedActors.length; j++) {
-        const { costData } = queue.queuedActors[j];
+      for (let j = 0; j < queue.queuedItems.length; j++) {
+        const { costData } = queue.queuedItems[j];
 
         let productionCostPaid = false;
         if (costData.costType == PaymentType.PayOverTime) {
@@ -88,7 +82,7 @@ export class ProductionComponent implements IComponent {
   isProducing(): boolean {
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
-      if (queue.queuedActors.length > 0) {
+      if (queue.queuedItems.length > 0) {
         return true;
       }
     }
@@ -108,43 +102,43 @@ export class ProductionComponent implements IComponent {
     }
 
     // add to queue
-    queue.queuedActors.push(queueItem);
-    if (queue.queuedActors.length === 1) {
+    queue.queuedItems.push(queueItem);
+    if (queue.queuedItems.length === 1) {
       // start production
       this.startProductionInQueue(queue);
     }
   }
 
   private finishProduction(queue: ProductionQueue, queueIndex: number) {
-    if (queueIndex >= queue.queuedActors.length) {
+    if (queueIndex >= queue.queuedItems.length) {
       throw new Error("Invalid queue index");
     }
-    const { actorClass } = queue.queuedActors[queueIndex];
+    const { gameObjectClass } = queue.queuedItems[queueIndex];
 
     queue.remainingProductionTime = 0;
-    queue.queuedActors.splice(queueIndex, 1);
+    queue.queuedItems.splice(queueIndex, 1);
 
-    // spawn actor
-    this.spawnActor(actorClass);
+    // spawn gameObject
+    this.spawnGameObject(gameObjectClass);
   }
 
-  private spawnActor(actorClass: ActorAbleToBeProducedClass): ActorAbleToBeProduced {
-    const tilePlacementData = this.transformComponent.tilePlacementData;
+  private spawnGameObject(gameObjectClass: string): any {
+    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    if (!transform) throw new Error("Transform not found" + this.gameObject);
+    const tilePlacementData = { x: transform.x, y: transform.y, z: transform.z } satisfies Vector3Simple;
 
     // offset spawn position
-    const spawnPosition: TilePlacementData = {
+    const spawnPosition: Vector3Simple = {
       // todo demo
-      tileXY: {
-        x: tilePlacementData.tileXY.x + 1,
-        y: tilePlacementData.tileXY.y + 1
-      },
+      x: tilePlacementData.x + 1,
+      y: tilePlacementData.y + 1,
       z: tilePlacementData.z
     };
 
-    const actor = new actorClass(this.spriteRepresentationComponent.scene, spawnPosition);
-    actor.registerGameObject(); // todo should be called by registration engine
-    actor.possess(this.ownerComponent.playerController);
-    return actor;
+    const gameObject = new gameObjectClass(this.spriteRepresentationComponent.scene, spawnPosition);
+    gameObject.registerGameObject(); // todo should be called by registration engine
+    gameObject.possess(this.ownerComponent.playerController);
+    return gameObject;
   }
 
   /**
@@ -155,17 +149,17 @@ export class ProductionComponent implements IComponent {
     let queueWithLeastProductsCount = Number.MAX_SAFE_INTEGER;
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
-      if (queue.queuedActors.length < queueWithLeastProductsCount) {
+      if (queue.queuedItems.length < queueWithLeastProductsCount) {
         queueWithLeastProducts = queue;
-        queueWithLeastProductsCount = queue.queuedActors.length;
+        queueWithLeastProductsCount = queue.queuedItems.length;
       }
     }
     return queueWithLeastProducts;
   }
 
   private canAssignProduction(item: ProductionQueueItem): boolean {
-    // check if actor can be produced
-    if (!this.availableProductActorClasses.includes(item.actorClass)) {
+    // check if gameObject can be produced
+    if (!this.availableProductGameObjectClasses.includes(item.gameObjectClass)) {
       return false;
     }
 
@@ -184,10 +178,10 @@ export class ProductionComponent implements IComponent {
   }
 
   private startProductionInQueue(queue: ProductionQueue) {
-    if (queue.queuedActors.length <= 0) {
-      throw new Error("No actor in queue");
+    if (queue.queuedItems.length <= 0) {
+      throw new Error("No gameObject in queue");
     }
-    const { costData } = queue.queuedActors[0];
+    const { costData } = queue.queuedItems[0];
 
     queue.remainingProductionTime = costData.productionTime;
   }

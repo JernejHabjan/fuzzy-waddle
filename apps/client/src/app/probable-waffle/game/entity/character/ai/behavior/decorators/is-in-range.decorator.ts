@@ -3,7 +3,7 @@ import { GameplayLibrary } from "../../../../../library/gameplay-library";
 
 export class IsInRangeDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {
-    const targetActor = decoratorData.blackboard.targetActor;
+    const targetActor = decoratorData.blackboard.targetGameObject;
     if (!targetActor) {
       return false;
     }

@@ -1,8 +1,8 @@
-import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
 
 export class GatherData {
   constructor(
-    public resourceType: ResourceTypeDefinition,
+    public resourceType: ResourceType,
     public amountPerGathering: number,
     public capacity: number,
     public cooldown: number,

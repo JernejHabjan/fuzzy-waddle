@@ -11,7 +11,7 @@ export type ResourceSourceDefinition = {
   gatheringFactor: number;
 };
 
-export class ResourceSourceComponent implements IComponent {
+export class ResourceSourceComponent {
   onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
   onDepleted: Subject<GameObject> = new Subject<GameObject>();
   private currentResources: number;
@@ -24,6 +24,7 @@ export class ResourceSourceComponent implements IComponent {
     private readonly resourceSourceDefinition: ResourceSourceDefinition
   ) {
     this.currentResources = this.resourceSourceDefinition.maximumResources;
+    this.init();
   }
 
   init(): void {

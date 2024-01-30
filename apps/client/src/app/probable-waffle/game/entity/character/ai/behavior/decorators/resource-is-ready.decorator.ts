@@ -4,7 +4,7 @@ import { ResourceSourceComponent } from "../../../../economy/resource/resource-s
 export class ResourceIsReadyDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {
     const owner = decoratorData.owner;
-    const targetActor = decoratorData.blackboard.targetActor;
+    const targetActor = decoratorData.blackboard.targetGameObject;
     if (!targetActor) {
       return false;
     }

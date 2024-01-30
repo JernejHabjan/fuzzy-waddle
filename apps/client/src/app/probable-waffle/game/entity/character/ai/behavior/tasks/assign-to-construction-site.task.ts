@@ -8,7 +8,7 @@ export class AssignToConstructionSiteTask implements ITask {
       return TaskResultType.Failure;
     }
 
-    const constructionSite = taskData.blackboard.targetActor;
+    const constructionSite = taskData.blackboard.targetGameObject;
     if (!constructionSite) {
       return TaskResultType.Failure;
     }
