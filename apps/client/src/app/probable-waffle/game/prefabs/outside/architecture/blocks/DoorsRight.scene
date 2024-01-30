@@ -2,7 +2,6 @@
     "id": "ec58b20e-e04f-4bd4-840e-856ffe433f25",
     "sceneType": "PREFAB",
     "settings": {
-        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -14,38 +13,18 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
+            "type": "Image",
+            "id": "d4c74ec3-d703-4709-82d9-cda0273daf35",
+            "label": "architecture_blocks_doors_right_png",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "-32 -32 0 -48 32 -32 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516",
+            "hitArea.points": "0 16 32 0 64 16 64.11143276305131 48.33617198576798 31.975650332859217 64 -0.03311481410391082 47.32002073702097",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/blocks/doors_right.png"
+            },
             "x": 32,
             "y": 48,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_architecture_blocks_doors_right",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "architecture/blocks/doors_right.png"
-                    },
-                    "y": -16
-                }
-            ]
+            "originY": 0.75
         }
     ],
     "plainObjects": [],

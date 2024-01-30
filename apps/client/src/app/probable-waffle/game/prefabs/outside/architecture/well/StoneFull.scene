@@ -14,39 +14,18 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
+            "type": "Image",
+            "id": "04db41d4-9e3a-4ef7-82f0-c8fbb333453f",
+            "label": "architecture_well_stone_full_png",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "-31.970945813448747 -8.425157501202627 0.2079425134422337 -24.255094500721576 31.867816512480132 -8.425157501202627 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516",
+            "hitArea.points": "0.1967635986524776 39.97958706008617 32.351296793420744 24.223144903318914 63.91733350997241 40.16243077009252 64.07360101847019 48.44460872047489 32.976366827411866 63.91509206175515 0.1182114366805962 47.9919075812182",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/well/stone_full.png"
+            },
             "x": 32,
             "y": 48,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_architecture_well_stone_full",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "architecture/well/stone_full.png"
-                    },
-                    "y": -15.681967484131384,
-                    "originY": 0.5049692580604471
-                }
-            ]
+            "originY": 0.75
         }
     ],
     "plainObjects": [],

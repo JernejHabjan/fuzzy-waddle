@@ -2,29 +2,16 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class BushDownwardsSmall extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class BushDownwardsSmall extends Phaser.GameObjects.Image {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "foliage/bushes/bush_downwards_small.png");
 
-    this.removeInteractive();
-    this.setInteractive(new Phaser.Geom.Ellipse(2, -9, 54, 36), Phaser.Geom.Ellipse.Contains);
-
-    // outside_foliage_bushes_bush_downwards_small
-    const outside_foliage_bushes_bush_downwards_small = scene.add.image(
-      0,
-      -16.847000446527897,
-      "outside",
-      "foliage/bushes/bush_downwards_small.png"
-    );
-    outside_foliage_bushes_bush_downwards_small.setOrigin(0.5, 0.4867656180230016);
-    this.add(outside_foliage_bushes_bush_downwards_small);
-
-    // this (prefab fields)
-    this.z = 0;
+    this.setInteractive(new Phaser.Geom.Ellipse(34, 40, 54, 36), Phaser.Geom.Ellipse.Contains);
+    this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
     this.on("pointerdown", () => {
@@ -32,7 +19,7 @@ export default class BushDownwardsSmall extends ActorContainer {
       if (this.playingTween) return;
       this.playingTween = true;
       this.scene.tweens.add({
-        targets: outside_foliage_bushes_bush_downwards_small,
+        targets: this,
         scaleX: 1.1,
         scaleY: 0.9,
         duration: 50,

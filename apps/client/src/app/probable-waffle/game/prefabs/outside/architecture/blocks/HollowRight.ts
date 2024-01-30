@@ -2,41 +2,24 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class HollowRight extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class HollowRight extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-32 -32 0 -48 32 -32 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "architecture/blocks/hollow_right.png");
 
-    // outside_architecture_blocks_hollow_right
-    const outside_architecture_blocks_hollow_right = scene.add.image(
-      0,
-      -16.42350022326395,
-      "outside",
-      "architecture/blocks/hollow_right.png"
-    );
-    outside_architecture_blocks_hollow_right.setOrigin(0.5, 0.4933828090115008);
-    this.add(outside_architecture_blocks_hollow_right);
+		this.setInteractive(new Phaser.Geom.Polygon("0 16 32 0 64 16 64.06008016753376 48.20051894405962 31.99335553006827 64 0.09903471103025652 48.20051894405962"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.75);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

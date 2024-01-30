@@ -2,36 +2,23 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class TreeTrunk extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 15.406372095183762);
+export default class TreeTrunk extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(new Phaser.Geom.Rectangle(-3, -8, 6, 10), Phaser.Geom.Rectangle.Contains);
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 16, texture || "outside", frame ?? "foliage/tree_trunks/tree_trunk.png");
 
-    // outside_foliage_tree_trunks_tree_trunk
-    const outside_foliage_tree_trunks_tree_trunk = scene.add.image(
-      0,
-      0.5936279048162376,
-      "outside",
-      "foliage/tree_trunks/tree_trunk.png"
-    );
-    outside_foliage_tree_trunks_tree_trunk.setOrigin(0.5, 0.4867656180230016);
-    this.add(outside_foliage_tree_trunks_tree_trunk);
+		this.setInteractive(new Phaser.Geom.Rectangle(24, 6, 16, 16), Phaser.Geom.Rectangle.Contains);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

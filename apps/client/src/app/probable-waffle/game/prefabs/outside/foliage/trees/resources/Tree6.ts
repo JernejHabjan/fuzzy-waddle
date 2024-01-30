@@ -2,40 +2,26 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class Tree6 extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 64, y ?? 352.80224260710486);
+export default class Tree6 extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-27.808172867632734 -79.78225154635899 -1.053496160903876 -136.82894483574324 22.57143521003693 -107.40139874211522 28.061089611147928 -35.591790582944526 4.674648072005091 -21.00515225255461 4.985488463771958 3.2403983052611807 -6.20476563983533 3.3958185011446176 -5.1168242686512855 -22.55935421138895 -25.166029537614346 -32.817087139695616"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
-    this.scaleX = 2;
-    this.scaleY = 2;
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 64, y ?? 350, texture || "outside", frame ?? "foliage/trees/resources/tree6.png");
 
-    // outside_foliage_trees_resources_tree6
-    const outside_foliage_trees_resources_tree6 = scene.add.image(
-      0,
-      -82.74812175008033,
-      "outside",
-      "foliage/trees/resources/tree6.png"
-    );
-    outside_foliage_trees_resources_tree6.setOrigin(0.5, 0.4867656180230016);
-    this.add(outside_foliage_trees_resources_tree6);
+		this.setInteractive(new Phaser.Geom.Polygon("9.977702960675252 80.26137979733159 33.30697223012269 40.04616324714124 61.968645904015254 91.3705556399256 63.96829755568218 119.32084602647369 54.414406331051325 142.872298812773 36.86190849975277 157.31422740814523 39.528110701975336 181.08786371129642 25.308365623454996 179.97694612703702 26.19709969086252 156.86986037444146 9.533335926971493 145.76068453184746 0.6459952528962809 129.5412878016602"), Phaser.Geom.Polygon.Contains);
+		this.scaleX = 2;
+		this.scaleY = 2;
+		this.setOrigin(0.5, 0.911458);
 
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

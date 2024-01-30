@@ -2,41 +2,24 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class RampStoneBottomLeft extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class RampStoneBottomLeft extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-32 -32 -18.751175440168986 -37.58466281259941 29.412655085929643 -7.274666016002861 29.82786052149946 1.6522508487481744 0.28628033313970036 16 -31.98714686381638 0.6221098782742516"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "nature/ramp/stone/bottom_left.png");
 
-    // outside_nature_ramp_stone_bottom_left
-    const outside_nature_ramp_stone_bottom_left = scene.add.image(
-      0,
-      -17.87410141979456,
-      "outside",
-      "nature/ramp/stone/bottom_left.png"
-    );
-    outside_nature_ramp_stone_bottom_left.setOrigin(0.5, 0.470717165742086);
-    this.add(outside_nature_ramp_stone_bottom_left);
+		this.setInteractive(new Phaser.Geom.Polygon("0 16 12.844166973377895 11.454943302915773 58.421737015571296 39.186647891968654 59.3204496642906 48.43054942165295 34.7984331063781 63.83705197112677 0.1338023700619928 48.0453868579161"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.75);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

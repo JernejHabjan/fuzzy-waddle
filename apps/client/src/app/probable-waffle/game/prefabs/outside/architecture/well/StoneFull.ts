@@ -2,41 +2,24 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class StoneFull extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class StoneFull extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-31.970945813448747 -8.425157501202627 0.2079425134422337 -24.255094500721576 31.867816512480132 -8.425157501202627 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "architecture/well/stone_full.png");
 
-    // outside_architecture_well_stone_full
-    const outside_architecture_well_stone_full = scene.add.image(
-      0,
-      -15.681967484131384,
-      "outside",
-      "architecture/well/stone_full.png"
-    );
-    outside_architecture_well_stone_full.setOrigin(0.5, 0.5049692580604471);
-    this.add(outside_architecture_well_stone_full);
+		this.setInteractive(new Phaser.Geom.Polygon("0.1967635986524776 39.97958706008617 32.351296793420744 24.223144903318914 63.91733350997241 40.16243077009252 64.07360101847019 48.44460872047489 32.976366827411866 63.91509206175515 0.1182114366805962 47.9919075812182"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.75);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

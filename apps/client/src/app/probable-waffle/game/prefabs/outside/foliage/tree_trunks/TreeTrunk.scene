@@ -14,42 +14,20 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
+            "type": "Image",
+            "id": "af7c0382-2ff2-45cc-bc35-50b81668a6b7",
+            "label": "foliage_tree_trunks_tree_trunk_png",
             "hitArea.shape": "RECTANGLE",
-            "hitArea.x": -3,
-            "hitArea.y": -8,
-            "hitArea.width": 6,
-            "hitArea.height": 10,
+            "hitArea.x": 24,
+            "hitArea.y": 6,
+            "hitArea.width": 16,
+            "hitArea.height": 16,
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tree_trunks/tree_trunk.png"
+            },
             "x": 32,
-            "y": 15.406372095183762,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_foliage_tree_trunks_tree_trunk",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "foliage/tree_trunks/tree_trunk.png"
-                    },
-                    "y": 0.5936279048162376,
-                    "originY": 0.4867656180230016
-                }
-            ]
+            "y": 16
         }
     ],
     "plainObjects": [],

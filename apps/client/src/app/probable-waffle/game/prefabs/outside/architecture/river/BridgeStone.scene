@@ -14,39 +14,17 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
+            "type": "Image",
+            "id": "ace2e4c8-00bf-48a5-9998-87089175a12d",
+            "label": "architecture_river_bridge_stone_png",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "27.479304206049022 -65.1928965620433 60.915991860768884 -65.1928965620433 117.9550472717616 -40.27928615264419 -70.86389477842118 61.34201946464171 -131.18105682222958 33.150302422426904 -83.32069998312075 -12.0875691104294",
+            "hitArea.points": "76.20450677413014 103.3684282381837 188.70588473344927 47.26014606606756 224.59240023439665 46.97533245098068 269.5929514181243 71.4693033484527 89.3059330681268 171.15406862886206 35.19134620161887 145.5208432710425",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/river/bridge_stone.png"
+            },
             "x": 160,
-            "y": 112,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_architecture_river_bridge_stone",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "architecture/river/bridge_stone.png"
-                    },
-                    "y": -17,
-                    "originY": 0.4947916666666667
-                }
-            ]
+            "y": 96
         }
     ],
     "plainObjects": [],

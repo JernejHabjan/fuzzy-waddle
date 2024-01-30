@@ -2,7 +2,6 @@
     "id": "ec58b20e-e04f-4bd4-8401-856efe433f30",
     "sceneType": "PREFAB",
     "settings": {
-        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -14,41 +13,20 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "scaleX",
-                "scaleY"
-            ],
-            "label": "container_1",
+            "type": "Image",
+            "id": "1d752122-e21d-48e0-a646-92b737734d74",
+            "label": "foliage_trees_resources_tree5_png",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "-25.159565619192996 -47.761600453826134 -2.884335461153192 -103.78717933616866 18.378384235157526 -71.72434804808108 23.167120355607608 -27.317839464219105 13.178584756039967 -12.005446686633107 3.605442204035377 -7.31656053871248 2.433220667055224 4.014914318762351 -3.623257274008907 3.6241738064356213 -5.1862193233157825 -10.83322514965296 -14.931623322607877 -19.489330489243315",
+            "hitArea.points": "15.340660978964024 33.00603992235928 31.62097021533904 6.289635021641303 48.73616710486149 37.18047818809646 57.085043636335854 77.88125127903399 49.98849858458264 86.23012781050836 45.81406031884546 99.58833026086735 34.96052082792878 103.34532470003082 36.4215742209368 114.82502993080806 28.072697689462434 114.82502993080806 26.40292238316756 98.33599878114619 7.826672100637094 84.97779633078721 6.15689679434222 56.80033803706122",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/tree5.png"
+            },
             "x": 64,
-            "y": 221.42563503512523,
+            "y": 220,
             "scaleX": 2,
             "scaleY": 2,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_foliage_trees_resources_tree5",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "foliage/trees/resources/tree5.png"
-                    },
-                    "y": -47.55981796409051,
-                    "originY": 0.4867656180230016
-                }
-            ]
+            "originY": 0.859375
         }
     ],
     "plainObjects": [],
