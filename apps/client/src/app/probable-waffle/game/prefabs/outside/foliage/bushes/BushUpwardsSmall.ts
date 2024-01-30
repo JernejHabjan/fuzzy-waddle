@@ -2,36 +2,24 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class BushUpwardsSmall extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class BushUpwardsSmall extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(new Phaser.Geom.Ellipse(14, -6, 30, 30), Phaser.Geom.Ellipse.Contains);
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "foliage/bushes/bush_upwards_small.png");
 
-    // outside_foliage_bushes_bush_upwards_small
-    const outside_foliage_bushes_bush_upwards_small = scene.add.image(
-      0,
-      -16.847000446527897,
-      "outside",
-      "foliage/bushes/bush_upwards_small.png"
-    );
-    outside_foliage_bushes_bush_upwards_small.setOrigin(0.5, 0.4867656180230016);
-    this.add(outside_foliage_bushes_bush_upwards_small);
+		this.setInteractive(new Phaser.Geom.Circle(45, 40, 16), Phaser.Geom.Circle.Contains);
+		this.setOrigin(0.5, 0.75);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

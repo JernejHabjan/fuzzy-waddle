@@ -3,6 +3,7 @@
     "sceneType": "PREFAB",
     "settings": {
         "snapEnabled": true,
+        "snapHeight": 8,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -14,39 +15,18 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
+            "type": "Image",
+            "id": "0a7a383c-1b12-496b-b1c8-888f11b8d7c1",
+            "label": "buildings_tivara_wall_wall_bottom_right_png",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "-31.902864864568688 -40.826839959506685 0.25428694321482226 -57.06001755478201 15.714456081572273 -48.866127911452566 15.869057772955848 -54.27718710987767 24.37215079905245 -58.91523785138491 32 -56 32.06942659568871 0.06510365557899433 -0.1769536357396042 16.031757944926994 -32.00590499685817 0.899961396198492",
+            "hitArea.points": "-0.08773680073041845 40.12188671501689 32.49020235140491 23.549630711539358 47.92931264524296 31.056721037900978 48.21259907265283 25.815922130818336 55.86133261271939 21.28333929226038 63.934995793900754 25.249349275998597 63.943493321894906 80.0709025042004 31.790483050169087 96 -0.07923927273626674 80.63747535902016",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/wall/wall_bottom_right.png"
+            },
             "x": 32,
-            "y": 80,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "buildings_tivara_wall_bottom_right",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/wall/wall_bottom_right.png"
-                    },
-                    "y": -48.92040993725062,
-                    "originY": 0.32374573266281254
-                }
-            ]
+            "y": 80.10288150619456,
+            "originY": 0.8344050156895267
         }
     ],
     "plainObjects": [],

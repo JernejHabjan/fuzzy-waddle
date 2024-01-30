@@ -2,43 +2,38 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../../data/actor-data";
+import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
-export default class StairsLeft extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class StairsLeft extends Phaser.GameObjects.Image {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 32, y ?? 48, texture || "factions", frame ?? "buildings/tivara/wall/stairs_left.png");
 
-    this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon(
-        "-32.20109221451683 -32.74753993756093 -0.2743153597745689 -48.49617426052796 8.029510010517143 -46.062294410614875 32.08196970377588 -8.695080244302183 31.938800300839823 1.469947364158358 1.1573786695860733 16.073226463636885 -32.05792281158077 0.3245921406698429"
+        "0 16 32 0 39.93927126126608 3.9325941130380144 64.28297785980033 40.32136387230537 64.15618772126629 47.80198204581329 32.07828267215606 64.15790991670349 0.2539579001138854 47.80198204581329"
       ),
       Phaser.Geom.Polygon.Contains
     );
-
-    // buildings_tivara_wall_stairs_left
-    const buildings_tivara_wall_stairs_left = scene.add.image(
-      0,
-      -31.962293194621118,
-      "factions",
-      "buildings/tivara/wall/stairs_left.png"
-    );
-    buildings_tivara_wall_stairs_left.setOrigin(0.5, 0.24952659683163414);
-    this.add(buildings_tivara_wall_stairs_left);
-
-    // this (prefab fields)
-    this.z = 0;
+    this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    this.on("pointerdown", () => {
-      buildings_tivara_wall_stairs_left.setTint(0xff0000); // Tint to red
-      // tint back to transparent after 1 second
-      setTimeout(() => {
-        buildings_tivara_wall_stairs_left.clearTint();
-      }, 1000);
-    });
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

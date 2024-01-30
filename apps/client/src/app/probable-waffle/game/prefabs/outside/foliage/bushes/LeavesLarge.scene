@@ -14,42 +14,20 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": -1,
-            "hitArea.y": -11,
-            "hitArea.width": 30,
-            "hitArea.height": 20,
+            "type": "Image",
+            "id": "d2e6490c-affa-4f4d-bdfa-49d21e852494",
+            "label": "foliage_bushes_leaves_large_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 16,
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/bushes/leaves_large.png"
+            },
             "x": 32,
             "y": 48,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_foliage_bushes_leaves_large",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "foliage/bushes/leaves_large.png"
-                    },
-                    "y": -16.847000446527897,
-                    "originY": 0.4867656180230016
-                }
-            ]
+            "originY": 0.75
         }
     ],
     "plainObjects": [],

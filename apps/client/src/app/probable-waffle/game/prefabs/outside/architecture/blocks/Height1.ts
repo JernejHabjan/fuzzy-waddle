@@ -2,41 +2,24 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class Height1 extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class Height1 extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-31.970945813448747 -8.425157501202627 0.2079425134422337 -24.255094500721576 31.867816512480132 -8.425157501202627 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "architecture/blocks/height_1.png");
 
-    // outside_architecture_blocks_height_1
-    const outside_architecture_blocks_height_1 = scene.add.image(
-      0,
-      -16.89676219552307,
-      "outside",
-      "architecture/blocks/height_1.png"
-    );
-    outside_architecture_blocks_height_1.setOrigin(0.5, 0.485988090694952);
-    this.add(outside_architecture_blocks_height_1);
+		this.setInteractive(new Phaser.Geom.Polygon("0.11231818329484256 40.180736565559364 31.862876907291625 24.157090106719867 63.91016982497062 39.88400237187715 64.05853692181174 48.19255979497911 32.01124295273492 64 -0.03604891354626716 47.45072431077358"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.75);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

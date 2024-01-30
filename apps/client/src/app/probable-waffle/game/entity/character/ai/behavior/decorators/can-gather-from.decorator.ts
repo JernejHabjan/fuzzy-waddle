@@ -3,7 +3,7 @@ import { GathererComponent } from "../../../../actor/components/gatherer-compone
 
 export class CanGatherFromDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {
-    const target = decoratorData.blackboard.targetActor;
+    const target = decoratorData.blackboard.targetGameObject;
     if (!target) {
       return false;
     }

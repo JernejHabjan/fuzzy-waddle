@@ -1,6 +1,5 @@
-import { IComponent } from "../../../core/component.service";
 import { PaymentType } from "../payment-type";
-import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export class CostData {
   static NoCost: CostData = {
@@ -13,16 +12,12 @@ export class CostData {
   constructor(
     public costType: PaymentType,
     public productionTime: number,
-    public resources: Map<ResourceTypeDefinition, number>,
+    public resources: Map<ResourceType, number>,
     public refundFactor: number
   ) {}
 }
 
-export class ProductionCostComponent implements IComponent {
+export class ProductionCostComponent {
   finishedSound?: string; // todo
   constructor(public costData: CostData) {}
-
-  init(): void {
-    // pass
-  }
 }

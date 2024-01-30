@@ -1,4 +1,4 @@
-import ActorContainer from "../../../entity/actor/ActorContainer";
+import Container = Phaser.GameObjects.Container;
 
 export class LightsHandler {
   private lights!: Phaser.GameObjects.LightsManager;
@@ -27,7 +27,7 @@ export class LightsHandler {
         child.setPipeline("Light2D");
       }
       // if instanceOf ActorContainer, then add lights2d pipeline to all children of the container
-      if (child instanceof ActorContainer) {
+      if (child instanceof Container) {
         child.each((child: any) => {
           if (child.setPipeline) {
             child.setPipeline("Light2D");

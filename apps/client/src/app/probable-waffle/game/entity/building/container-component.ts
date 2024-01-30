@@ -1,19 +1,13 @@
-import { IComponent } from "../../core/component.service";
-import { Actor } from "../actor/actor";
-import { SpriteRepresentationComponent } from "../actor/components/sprite-representable-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
-// apply to resource source that needs actors to enter to gather
-export class ContainerComponent implements IComponent {
-  containedActors = new Set<Actor>();
+// apply to resource source that needs gameObjects to enter to gather
+export class ContainerComponent {
+  private containedGameObjects = new Set<GameObject>();
 
   constructor(public readonly capacity: number) {}
 
-  init(): void {
-    // pass
-  }
-
-  getContainedActors(): Actor[] {
-    return Array.from(this.containedActors);
+  getContainedGameObjects(): GameObject[] {
+    return Array.from(this.containedGameObjects);
   }
 
   onKilled() {
@@ -21,36 +15,35 @@ export class ContainerComponent implements IComponent {
   }
 
   unloadAll() {
-    this.containedActors.forEach((actor) => {
-      this.unloadActor(actor);
+    this.containedGameObjects.forEach((gameObject) => {
+      this.unloadGameObject(gameObject);
     });
   }
 
-  unloadActor(actor: Actor) {
-    this.containedActors.delete(actor);
-    this.setActorVisible(actor, true);
+  unloadGameObject(gameObject: GameObject) {
+    this.containedGameObjects.delete(gameObject);
+    this.setGameObjectVisible(gameObject, true);
   }
 
-  canLoadActor(actor: Actor): boolean {
-    // check if actor is not already in container
-    if (this.containedActors.has(actor)) {
+  canLoadGameObject(gameObject: GameObject): boolean {
+    // check if gameObject is not already in container
+    if (this.containedGameObjects.has(gameObject)) {
       return false;
     }
-    return this.containedActors.size < this.capacity;
+    return this.containedGameObjects.size < this.capacity;
   }
 
-  loadActor(actor: Actor) {
-    if (!this.canLoadActor(actor)) {
+  loadGameObject(gameObject: GameObject) {
+    if (!this.canLoadGameObject(gameObject)) {
       return;
     }
-    this.containedActors.add(actor);
-    this.setActorVisible(actor, false);
+    this.containedGameObjects.add(gameObject);
+    this.setGameObjectVisible(gameObject, false);
   }
 
-  setActorVisible(actor: Actor, visible: boolean) {
-    const representableComponent = actor.components.findComponentOrNull(SpriteRepresentationComponent);
-    if (representableComponent) {
-      representableComponent.sprite.setVisible(visible);
-    }
+  setGameObjectVisible(gameObject: GameObject, visible: boolean) {
+    const visibleComponent = gameObject as unknown as Phaser.GameObjects.Components.Visible;
+    if (visibleComponent.setVisible === undefined) return;
+    visibleComponent.setVisible(visible);
   }
 }

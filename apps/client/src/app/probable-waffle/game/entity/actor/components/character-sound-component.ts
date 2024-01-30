@@ -1,25 +1,18 @@
 import { GameObjects } from "phaser";
-import { IComponent } from "../../../core/component.service";
 
-export type SoundDefinition = {
-  move?: string;
-  attack?: string;
-  death?: string;
-  select?: string;
-};
+// export type SoundDefinition = {
+//   move?: string;
+//   attack?: string;
+//   death?: string;
+//   select?: string;
+// };
 
-export class CharacterSoundComponent implements IComponent {
-  constructor(private readonly gameObject: GameObjects.Sprite) {}
-
-  init() {
-    // do nothing
-  }
+export class CharacterSoundComponent {
+  constructor(private readonly gameObject: GameObjects.GameObject) {}
 
   play(key: string, loop: boolean = false) {
     const { scene } = this.gameObject;
-    if (scene.sound.locked) {
-      return;
-    }
+    if (scene.sound.locked) return;
 
     // get sound from scene
     const sound = scene.sound.get(key);

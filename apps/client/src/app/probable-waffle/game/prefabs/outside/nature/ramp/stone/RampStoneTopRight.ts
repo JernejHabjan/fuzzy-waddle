@@ -2,41 +2,23 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class RampStoneTopRight extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 48);
+export default class RampStoneTopRight extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-11.47784760037866 -20.430076407574912 0.11236239279749327 -41.52686313672701 27.46004889355021 -32.4109676364761 29.82786052149946 1.6522508487481744 -0.1480917643525359 12.25692031475333 -25.67259916505507 -1.6773770927730496 -21.76578680780468 -13.918722478824264"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 32, texture || "outside", frame ?? "nature/ramp/stone/top_right.png");
 
-    // outside_nature_ramp_stone_top_right
-    const outside_nature_ramp_stone_top_right = scene.add.image(
-      0,
-      -17.87410141979456,
-      "outside",
-      "nature/ramp/stone/top_right.png"
-    );
-    outside_nature_ramp_stone_top_right.setOrigin(0.5, 0.470717165742086);
-    this.add(outside_nature_ramp_stone_top_right);
+		this.setInteractive(new Phaser.Geom.Polygon("23.4308967376896 26.445948267467557 27.813899875941992 11.314151718739055 33.05703964174182 6.993014134310254 58.72891516579155 15.654663193237603 62.147424458919076 48.25660674115208 30.214115880223066 60.77947285044464 6.942456360454408 46.48253404233564 11.63853115143911 33.959667933043086"), Phaser.Geom.Polygon.Contains);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

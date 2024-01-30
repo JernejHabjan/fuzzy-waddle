@@ -2,34 +2,24 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class ChimneyShort extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 16, y ?? 32);
+export default class ChimneyShort extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 16, y ?? 24, texture || "outside", frame ?? "architecture/chimneys/chimney_short.png");
 
-    // outside_architecture_chimneys_chimney_short
-    const outside_architecture_chimneys_chimney_short = scene.add.image(
-      0,
-      -16,
-      "outside",
-      "architecture/chimneys/chimney_short.png"
-    );
-    this.add(outside_architecture_chimneys_chimney_short);
+		this.setInteractive(new Phaser.Geom.Polygon("0 8 16 0 32 8 32.04202888733553 24.466066423095242 16.04827544949468 32 0.05452265115179422 24.614156729744238"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.75);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

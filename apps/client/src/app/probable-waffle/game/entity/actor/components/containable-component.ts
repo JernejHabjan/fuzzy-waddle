@@ -1,20 +1,16 @@
-import { Actor } from "../actor";
 import { ContainerComponent } from "../../building/container-component";
-import { IComponent } from "../../../core/component.service";
+import { getActorComponent } from "../../../data/actor-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Apply on actor that can be loaded into a container - for example enter a mine to gather resources or enter a tower to repair or shoot
  */
-export class ContainableComponent implements IComponent {
-  private containerOwner: Actor | null = null;
+export class ContainableComponent {
+  private containerOwner: GameObject | null = null;
 
-  constructor(public owner: Actor) {}
+  constructor(public owner: GameObject) {}
 
-  init() {
-    // pass
-  }
-
-  setContainer(containerOwner: Actor) {
+  setContainer(containerOwner: GameObject) {
     this.containerOwner = containerOwner;
   }
 
@@ -25,7 +21,7 @@ export class ContainableComponent implements IComponent {
     if (!this.containerOwner) {
       return;
     }
-    const containerComponent = this.containerOwner.components.findComponent(ContainerComponent);
-    containerComponent.unloadActor(this.owner);
+    const containerComponent = getActorComponent(this.containerOwner, ContainerComponent);
+    containerComponent?.unloadGameObject(this.owner);
   }
 }

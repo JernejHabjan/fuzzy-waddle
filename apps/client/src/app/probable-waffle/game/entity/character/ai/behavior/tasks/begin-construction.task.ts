@@ -8,7 +8,7 @@ export class BeginConstructionTask implements ITask {
     if (!builderComponent) {
       return TaskResultType.Failure;
     }
-    const target = taskData.blackboard.targetActor;
+    const target = taskData.blackboard.targetGameObject;
     if (!target) {
       return TaskResultType.Failure;
     }

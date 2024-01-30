@@ -7,7 +7,7 @@ export class GatherResourcesTask implements ITask {
     if (!gathererComponent) {
       return TaskResultType.Failure;
     }
-    const targetResource = taskData.blackboard.targetActor;
+    const targetResource = taskData.blackboard.targetGameObject;
     if (!targetResource) {
       return TaskResultType.Failure;
     }

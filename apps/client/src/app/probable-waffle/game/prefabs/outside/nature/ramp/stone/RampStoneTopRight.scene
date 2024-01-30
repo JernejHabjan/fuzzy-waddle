@@ -14,39 +14,17 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
+            "type": "Image",
+            "id": "c40dfdce-a8a9-40b9-b33f-556abcd0a55d",
+            "label": "nature_ramp_stone_top_right_png",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "-11.47784760037866 -20.430076407574912 0.11236239279749327 -41.52686313672701 27.46004889355021 -32.4109676364761 29.82786052149946 1.6522508487481744 -0.1480917643525359 12.25692031475333 -25.67259916505507 -1.6773770927730496 -21.76578680780468 -13.918722478824264",
+            "hitArea.points": "23.4308967376896 26.445948267467557 27.813899875941992 11.314151718739055 33.05703964174182 6.993014134310254 58.72891516579155 15.654663193237603 62.147424458919076 48.25660674115208 30.214115880223066 60.77947285044464 6.942456360454408 46.48253404233564 11.63853115143911 33.959667933043086",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/ramp/stone/top_right.png"
+            },
             "x": 32,
-            "y": 48,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_nature_ramp_stone_top_right",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "nature/ramp/stone/top_right.png"
-                    },
-                    "y": -17.87410141979456,
-                    "originY": 0.470717165742086
-                }
-            ]
+            "y": 32
         }
     ],
     "plainObjects": [],

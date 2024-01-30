@@ -2,40 +2,26 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class Tree5 extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 64, y ?? 221.42563503512523);
+export default class Tree5 extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-25.159565619192996 -47.761600453826134 -2.884335461153192 -103.78717933616866 18.378384235157526 -71.72434804808108 23.167120355607608 -27.317839464219105 13.178584756039967 -12.005446686633107 3.605442204035377 -7.31656053871248 2.433220667055224 4.014914318762351 -3.623257274008907 3.6241738064356213 -5.1862193233157825 -10.83322514965296 -14.931623322607877 -19.489330489243315"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
-    this.scaleX = 2;
-    this.scaleY = 2;
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 64, y ?? 220, texture || "outside", frame ?? "foliage/trees/resources/tree5.png");
 
-    // outside_foliage_trees_resources_tree5
-    const outside_foliage_trees_resources_tree5 = scene.add.image(
-      0,
-      -47.55981796409051,
-      "outside",
-      "foliage/trees/resources/tree5.png"
-    );
-    outside_foliage_trees_resources_tree5.setOrigin(0.5, 0.4867656180230016);
-    this.add(outside_foliage_trees_resources_tree5);
+		this.setInteractive(new Phaser.Geom.Polygon("15.340660978964024 33.00603992235928 31.62097021533904 6.289635021641303 48.73616710486149 37.18047818809646 57.085043636335854 77.88125127903399 49.98849858458264 86.23012781050836 45.81406031884546 99.58833026086735 34.96052082792878 103.34532470003082 36.4215742209368 114.82502993080806 28.072697689462434 114.82502993080806 26.40292238316756 98.33599878114619 7.826672100637094 84.97779633078721 6.15689679434222 56.80033803706122"), Phaser.Geom.Polygon.Contains);
+		this.scaleX = 2;
+		this.scaleY = 2;
+		this.setOrigin(0.5, 0.859375);
 
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

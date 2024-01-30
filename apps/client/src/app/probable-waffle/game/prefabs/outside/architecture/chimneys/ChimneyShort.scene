@@ -3,6 +3,7 @@
     "sceneType": "PREFAB",
     "settings": {
         "snapEnabled": true,
+        "snapHeight": 4,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
@@ -14,37 +15,18 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
-            "hitArea.shape": "NONE",
+            "type": "Image",
+            "id": "6f454346-d244-4279-8abe-202206fcbf9e",
+            "label": "architecture_chimneys_chimney_short_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "0 8 16 0 32 8 32.04202888733553 24.466066423095242 16.04827544949468 32 0.05452265115179422 24.614156729744238",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/chimneys/chimney_short.png"
+            },
             "x": 16,
-            "y": 32,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "outside_architecture_chimneys_chimney_short",
-                    "texture": {
-                        "key": "outside",
-                        "frame": "architecture/chimneys/chimney_short.png"
-                    },
-                    "y": -16
-                }
-            ]
+            "y": 24,
+            "originY": 0.75
         }
     ],
     "plainObjects": [],

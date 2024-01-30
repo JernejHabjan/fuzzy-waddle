@@ -14,39 +14,18 @@
     },
     "displayList": [
         {
-            "prefabId": "9cd01380-cd4d-4b82-aeab-d2af9c7f111b",
-            "unlock": [
-                "x",
-                "y",
-                "hitArea.shape",
-                "hitArea.x",
-                "hitArea.y",
-                "hitArea.width",
-                "hitArea.height",
-                "hitArea.radius",
-                "hitArea.points",
-                "hitArea.alphaTolerance",
-                "z"
-            ],
-            "label": "container_1",
-            "z": 0,
+            "type": "Image",
+            "id": "99c3784d-df25-4bd1-9ee1-7c26335e9948",
+            "label": "buildings_tivara_wall_stairs_left_png",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "-32.20109221451683 -32.74753993756093 -0.2743153597745689 -48.49617426052796 8.029510010517143 -46.062294410614875 32.08196970377588 -8.695080244302183 31.938800300839823 1.469947364158358 1.1573786695860733 16.073226463636885 -32.05792281158077 0.3245921406698429",
+            "hitArea.points": "0 16 32 0 39.93927126126608 3.9325941130380144 64.28297785980033 40.32136387230537 64.15618772126629 47.80198204581329 32.07828267215606 64.15790991670349 0.2539579001138854 47.80198204581329",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/wall/stairs_left.png"
+            },
             "x": 32,
             "y": 48,
-            "list": [
-                {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "buildings_tivara_wall_stairs_left",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/wall/stairs_left.png"
-                    },
-                    "y": -31.962293194621118,
-                    "originY": 0.24952659683163414
-                }
-            ]
+            "originY": 0.75
         }
     ],
     "plainObjects": [],

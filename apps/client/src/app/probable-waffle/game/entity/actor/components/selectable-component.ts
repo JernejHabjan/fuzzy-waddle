@@ -39,7 +39,7 @@ export class SelectableComponent {
   }
 
   private setPosition() {
-    const transform = this.gameObject as any as Phaser.GameObjects.Components.Transform;
+    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
     if (transform.x === undefined || transform.y === undefined) return;
     this.selectionCircle.setPosition(transform.x, transform.y); // todo
   }

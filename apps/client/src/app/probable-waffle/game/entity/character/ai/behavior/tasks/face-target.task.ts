@@ -3,7 +3,7 @@ import { TransformComponent } from "../../../../actor/components/transformable-c
 
 export class FaceTargetTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
-    const targetActor = taskData.blackboard.targetActor;
+    const targetActor = taskData.blackboard.targetGameObject;
     if (!targetActor) {
       return TaskResultType.Failure;
     }

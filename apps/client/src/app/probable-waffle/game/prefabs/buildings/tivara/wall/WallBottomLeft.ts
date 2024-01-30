@@ -2,43 +2,44 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../../data/actor-data";
+import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
+import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
+import { HealthComponent, HealthDefinition } from "../../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
-export default class WallBottomLeft extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 79.97895767255348);
+export default class WallBottomLeft extends Phaser.GameObjects.Image {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(
+      scene,
+      x ?? 32,
+      y ?? 80.18960216826852,
+      texture || "factions",
+      frame ?? "buildings/tivara/wall/wall_bottom_left.png"
+    );
 
-    this.removeInteractive();
     this.setInteractive(
       new Phaser.Geom.Polygon(
-        "-31.974340311316016 -57.291677833627986 -23.383032665122595 -62.03337344865734 -15.98350295152499 -57.56435055232612 -15.83697761066167 -49.139143452685275 0.8182564134912482 -57.14593295929551 32.07680885164362 -41.00698703477107 32.14643107920537 1.2978925329840507 0.1985989137153652 16.138906765888976 -32.08910380672666 1.2978925329840507"
+        "0 24 7.204722308428629 18.716250108698873 16.021705373363574 22.751140663838598 16.917483748350534 31.00733681491144 32.16126759392246 23.199461836631897 64.14151125317802 38.59182210253528 64.15270339559345 79.59313574989041 31.72413856354457 96.03157875231149 0.04277568615120586 80.63921848640811"
       ),
       Phaser.Geom.Polygon.Contains
     );
-
-    // buildings_tivara_wall_bottom_left
-    const buildings_tivara_wall_bottom_left = scene.add.image(
-      0,
-      -47.96466252248314,
-      "factions",
-      "buildings/tivara/wall/wall_bottom_left.png"
-    );
-    buildings_tivara_wall_bottom_left.setOrigin(0.5, 0.3334822468676007);
-    this.add(buildings_tivara_wall_bottom_left);
-
-    // this (prefab fields)
-    this.z = 0;
+    this.setOrigin(0.5, 0.8353083559194637);
 
     /* START-USER-CTR-CODE */
-    this.on("pointerdown", () => {
-      buildings_tivara_wall_bottom_left.setTint(0xff0000); // Tint to red
-      // tint back to transparent after 1 second
-      setTimeout(() => {
-        buildings_tivara_wall_bottom_left.clearTint();
-      }, 1000);
-    });
+    setActorData(
+      this,
+      [
+        new OwnerComponent(this),
+        new SelectableComponent(this),
+        new HealthComponent(this, {
+          maxHealth: 100
+        } satisfies HealthDefinition)
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

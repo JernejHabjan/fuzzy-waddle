@@ -2,41 +2,23 @@
 
 /* START OF COMPILED CODE */
 
-import ActorContainer from "../../../../entity/actor/ActorContainer";
+import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class BridgeStone extends ActorContainer {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 160, y ?? 112);
+export default class BridgeStone extends Phaser.GameObjects.Image {
 
-    this.removeInteractive();
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "27.479304206049022 -65.1928965620433 60.915991860768884 -65.1928965620433 117.9550472717616 -40.27928615264419 -70.86389477842118 61.34201946464171 -131.18105682222958 33.150302422426904 -83.32069998312075 -12.0875691104294"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 160, y ?? 96, texture || "outside", frame ?? "architecture/river/bridge_stone.png");
 
-    // outside_architecture_river_bridge_stone
-    const outside_architecture_river_bridge_stone = scene.add.image(
-      0,
-      -17,
-      "outside",
-      "architecture/river/bridge_stone.png"
-    );
-    outside_architecture_river_bridge_stone.setOrigin(0.5, 0.4947916666666667);
-    this.add(outside_architecture_river_bridge_stone);
+		this.setInteractive(new Phaser.Geom.Polygon("76.20450677413014 103.3684282381837 188.70588473344927 47.26014606606756 224.59240023439665 46.97533245098068 269.5929514181243 71.4693033484527 89.3059330681268 171.15406862886206 35.19134620161887 145.5208432710425"), Phaser.Geom.Polygon.Contains);
 
-    // this (prefab fields)
-    this.z = 0;
-
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 
