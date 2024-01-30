@@ -42,7 +42,7 @@ export class ContainerComponent {
   }
 
   setGameObjectVisible(gameObject: GameObject, visible: boolean) {
-    const visibleComponent = gameObject as any as Phaser.GameObjects.Components.Visible;
+    const visibleComponent = gameObject as unknown as Phaser.GameObjects.Components.Visible;
     if (visibleComponent.setVisible === undefined) return;
     visibleComponent.setVisible(visible);
   }
