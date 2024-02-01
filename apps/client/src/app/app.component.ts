@@ -5,11 +5,11 @@ import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.co
 import { RouterOutlet } from "@angular/router";
 
 @Component({
-    selector: "fuzzy-waddle-root",
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.scss"],
-    standalone: true,
-    imports: [RouterOutlet, SwRefreshComponent]
+  selector: "fuzzy-waddle-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
+  standalone: true,
+  imports: [RouterOutlet, SwRefreshComponent]
 })
 export class AppComponent implements OnInit {
   protected readonly authService = inject(AuthService);
