@@ -126,6 +126,20 @@ const flySquasherRoutes = [
   }
 ] satisfies Routes;
 
+const dungeonCrawlerRoutes = [
+  {
+    path: "dungeon-crawler",
+    children: [
+      {
+        path: "",
+        loadComponent: () =>
+          import("./dungeon-crawler/dungeon-crawler.component").then((m) => m.DungeonCrawlerComponent)
+      },
+      { path: "**", redirectTo: "" }
+    ]
+  }
+] satisfies Routes;
+
 const routes = [
   {
     path: "",
@@ -139,6 +153,7 @@ const routes = [
   ...littleMuncherRoutes,
   ...probableWaffleRoutes,
   ...flySquasherRoutes,
+  ...dungeonCrawlerRoutes,
   {
     path: "**",
     redirectTo: ""
