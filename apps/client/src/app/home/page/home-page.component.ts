@@ -27,7 +27,7 @@ export type DisplayGame = {
 })
 export class HomePageComponent {
   protected readonly environment = environment;
-  private readonly currentlyFeaturedGame = "fly-squasher";
+  private readonly currentlyFeaturedGame = "dungeon-crawler";
   displayGames: DisplayGame[] = [
     {
       name: "Probable Waffle",
@@ -42,7 +42,6 @@ export class HomePageComponent {
       description: "Infinite scroller",
       image: "little-muncher.webp",
       bannerImage: "probable-waffle-banner.webp",
-
       route: "little-muncher"
     },
     {
@@ -51,6 +50,13 @@ export class HomePageComponent {
       image: "fly-squasher.webp",
       bannerImage: "fly-squasher-banner.webp",
       route: "fly-squasher"
+    },
+    {
+      name: "Dungeon Crawler",
+      description: "Creepy crawlies",
+      image: "dungeon-crawler.webp",
+      bannerImage: "dungeon-crawler-banner.webp",
+      route: "dungeon-crawler"
     }
   ];
 
