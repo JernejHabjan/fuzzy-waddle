@@ -3,10 +3,11 @@ import { PaymentType } from "../payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ProductionCostDefinition } from "./production-cost-component";
 import { getPlayerController } from "../../../data/scene-data";
+import { SceneActorCreatorCommunicator } from "../../../scenes/components/scene-actor-creator-communicator";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export type ProductionQueueItem = {
   gameObjectClass: string;
@@ -130,10 +131,7 @@ export class ProductionComponent {
     queue.queuedItems.splice(queueIndex, 1);
 
     // spawn gameObject
-    this.spawnGameObject(gameObjectClass);
-  }
 
-  private spawnGameObject(gameObjectName: string): any {
     const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
     if (!transform) throw new Error("Transform not found" + this.gameObject);
     const tilePlacementData = { x: transform.x, y: transform.y, z: transform.z } satisfies Vector3Simple;
@@ -146,20 +144,17 @@ export class ProductionComponent {
       z: tilePlacementData.z
     };
 
-    // todo const gameObject = ActorManager.createActor(this.gameObject.scene, gameObjectName, {
-    // todo   x: spawnPosition.x,
-    // todo   y: spawnPosition.y,
-    // todo   z: spawnPosition.z
-    // todo } as unknown as ActorDefinition);
-    // todo const originalOwner = this.ownerComponent.getOwner();
-    // todo if (originalOwner) {
-    // todo   // get game object owner
-    // todo   const ownerComponentOfNewActor = getActorComponent(gameObject, OwnerComponent);
-    // todo   if (ownerComponentOfNewActor) {
-    // todo     ownerComponentOfNewActor.setOwner(originalOwner);
-    // todo   }
-    // todo }
-    // todo return gameObject;
+    const originalOwner = this.ownerComponent.getOwner();
+
+    const actorDefinition = {
+      name: gameObjectClass,
+      x: spawnPosition.x,
+      y: spawnPosition.y,
+      ...(spawnPosition.z && { z: spawnPosition.z }),
+      ...(originalOwner && { owner: originalOwner })
+    } as ActorDefinition;
+
+    this.gameObject.scene.events.emit(SceneActorCreatorCommunicator, actorDefinition);
   }
 
   /**

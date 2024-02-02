@@ -52,26 +52,26 @@ import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
 export class ActorManager {
-  public static animals: ActorMap = {
+  private static animals: ActorMap = {
     [Hedgehog.name]: Hedgehog,
     [Sheep.name]: Sheep
   };
 
-  public static general: ActorMap = {
+  private static general: ActorMap = {
     [GeneralWarrior.name]: GeneralWarrior
   };
 
-  public static tivaraWorkers: ActorMap = {
+  private static tivaraWorkers: ActorMap = {
     [TivaraWorkerFemale.name]: TivaraWorkerFemale,
     [TivaraWorkerMale.name]: TivaraWorkerMale
   };
 
-  public static tivaraUnits: ActorMap = {
+  private static tivaraUnits: ActorMap = {
     [TivaraMacemanMale.name]: TivaraMacemanMale,
     [TivaraSlingshotFemale.name]: TivaraSlingshotFemale
   };
 
-  public static tivaraBuildings: ActorMap = {
+  private static tivaraBuildings: ActorMap = {
     [AnkGuard.name]: AnkGuard,
     [Olival.name]: Olival,
     [Sandhold.name]: Sandhold,
@@ -79,7 +79,7 @@ export class ActorManager {
     [WorkMill.name]: WorkMill
   };
 
-  public static tivaraWall: ActorMap = {
+  private static tivaraWall: ActorMap = {
     [StairsLeft.name]: StairsLeft,
     [StairsRight.name]: StairsRight,
     [WallBottomLeft.name]: WallBottomLeft,
@@ -96,24 +96,24 @@ export class ActorManager {
     [WatchTower.name]: WatchTower
   };
 
-  public static skaduweeWorkers: ActorMap = {
+  private static skaduweeWorkers: ActorMap = {
     [SkaduweeWorkerMale.name]: SkaduweeWorkerMale,
     [SkaduweeWorkerFemale.name]: SkaduweeWorkerFemale
   };
-  public static skaduweeUnits: ActorMap = {
+  private static skaduweeUnits: ActorMap = {
     [SkaduweeOwl.name]: SkaduweeOwl,
     [SkaduweeRangedFemale.name]: SkaduweeRangedFemale,
     [SkaduweeMagicianFemale.name]: SkaduweeMagicianFemale,
     [SkaduweeWarriorMale.name]: SkaduweeWarriorMale
   };
 
-  public static skaduweeBuildings: ActorMap = {
+  private static skaduweeBuildings: ActorMap = {
     [FrostForge.name]: FrostForge,
     [InfantryInn.name]: InfantryInn,
     [Owlery.name]: Owlery
   };
 
-  public static trees: ActorMap = {
+  private static trees: ActorMap = {
     [Tree1.name]: Tree1,
     [Tree4.name]: Tree4,
     [Tree5.name]: Tree5,

@@ -6,6 +6,10 @@ import Sheep from "../prefabs/animals/Sheep";
 import { ActorManager } from "./actor-manager";
 import { filter } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
+import {
+  SceneActorCreatorCommunicator,
+  SceneActorSaveCommunicator
+} from "../scenes/components/scene-actor-creator-communicator";
 
 export class SaveGame {
   static SaveGameEvent = "SaveGameEvent";
@@ -42,24 +46,9 @@ export class SaveGame {
     toRemove.forEach((child) => child.destroy());
 
     this.scene.baseGameData.gameInstance.gameState!.data.actors.forEach((actorDefinition) => {
-      this.createActorFromDefinition(actorDefinition);
+      this.scene.events.emit(SceneActorCreatorCommunicator, actorDefinition);
     });
     console.log("Loaded game");
-  }
-
-  private createActorFromDefinition(actorDefinition: ActorDefinition) {
-    const actor = ActorManager.createActor(this.scene, actorDefinition.name, actorDefinition);
-    this.scene.add.existing(actor);
-  }
-
-  private saveAllKnownActorsToSaveGame() {
-    this.scene.baseGameData.gameInstance.gameState!.data.actors = [];
-    this.scene.children.each((child) => {
-      const actorDefinition = ActorManager.getActorDefinitionFromActor(child);
-      if (actorDefinition) {
-        this.scene.baseGameData.gameInstance.gameState!.data.actors.push(actorDefinition);
-      }
-    });
   }
 
   private demoPostNewActors() {
@@ -85,8 +74,8 @@ export class SaveGame {
         z: 0
       } as ActorDefinition
     ];
-    actors.forEach((actor) => {
-      this.createActorFromDefinition(actor);
+    actors.forEach((actorDefinition) => {
+      this.scene.events.emit(SceneActorCreatorCommunicator, actorDefinition);
     });
   }
 
@@ -95,7 +84,7 @@ export class SaveGame {
   }
 
   private onSaveGame() {
-    this.saveAllKnownActorsToSaveGame();
+    this.scene.events.emit(SceneActorSaveCommunicator);
     this.scene.communicator.saveGame.emit();
     console.log("Saved game");
   }
