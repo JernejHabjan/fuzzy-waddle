@@ -1,7 +1,6 @@
 import { GameObjects, Scene } from "phaser";
 import { IsoHelper } from "../../world/map/tile/iso-helper";
 import { MapSizeInfo } from "../../world/const/map-size.info";
-import { ManualTilesHelper } from "../../world/map/tile/manual-tiles/manual-tiles.helper";
 import { TilemapHelper } from "../../world/map/tile/tilemap.helper";
 import { TilePlacementData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 import { PlaceableAtlasProperties } from "../placable-objects/static-object";
@@ -27,7 +26,7 @@ export class SpriteHelper {
 
     // create object
 
-    const depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
+    const depth = 0;
     return {
       x: tileWorldXYCenter.x,
       y: tileWorldXYCenter.y,

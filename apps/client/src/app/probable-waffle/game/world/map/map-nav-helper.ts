@@ -1,5 +1,3 @@
-import { TilePlacementWorldWithProperties } from "./tile/manual-tiles/manual-tiles.helper";
-import { MapHelper } from "./tile/map-helper";
 import { TilemapInputHandler } from "../managers/controllers/input/tilemap/tilemap-input.handler";
 import { ManualTileInputHandler } from "../managers/controllers/input/manual-tiles/manual-tile-input.handler";
 import { TileLayerProperties } from "./tile/types/tile-types";
@@ -9,7 +7,7 @@ import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class MapNavHelper {
   constructor(
-    private readonly mapHelper: MapHelper,
+    private readonly mapHelper: any,
     private readonly gameObjectsHelper: GameObjectsHelper,
     private readonly tilemapInputHandler: TilemapInputHandler,
     private readonly manualTileInputHandler: ManualTileInputHandler
@@ -18,7 +16,7 @@ export class MapNavHelper {
   /**
    * flattens all layers into one array
    */
-  get getFlattenedGrid(): TilePlacementWorldWithProperties[][] {
+  get getFlattenedGrid(): any[][] {
     const tilemapPlacementWithProperties = this.getTilemapLayerTilePlacementWithProperties();
     const manualPlacementWithProperties = this.getManualLayerTilePlacementWithProperties();
 
@@ -37,7 +35,7 @@ export class MapNavHelper {
   /**
    * todo this needs to be removed later as we should be manually updating arrays of static objects
    */
-  getTilemapLayerTilePlacementWithProperties(): TilePlacementWorldWithProperties[][] {
+  getTilemapLayerTilePlacementWithProperties(): any[][] {
     return this.mapHelper.tilemapLayer.layer.data.map((row: Tilemaps.Tile[]) =>
       row.map(
         (tile) =>
@@ -50,7 +48,7 @@ export class MapNavHelper {
             tileLayerProperties: Object.assign(TilemapInputHandler.defaultTilemapLayerProperties, {
               tileIndex: tile.index
             } satisfies Partial<TileLayerProperties>)
-          }) satisfies TilePlacementWorldWithProperties
+          }) satisfies any
       )
     );
   }
@@ -58,8 +56,8 @@ export class MapNavHelper {
   /**
    * todo this needs to be removed later as we should be manually updating arrays of static objects
    */
-  getManualLayerTilePlacementWithProperties(): TilePlacementWorldWithProperties[][] {
-    return this.mapHelper.manualLayers.map((layer) =>
+  getManualLayerTilePlacementWithProperties(): any[][] {
+    return (this.mapHelper as any).manualLayers.map((layer) =>
       layer.tiles.map((tile) => ({
         tileWorldData: tile.tileWorldData,
         tileLayerProperties: tile.tileLayerProperties
@@ -70,7 +68,7 @@ export class MapNavHelper {
   /**
    * gets the first tile from top-down layer that is navigable. Used when clicking by cursor
    */
-  getNavigableTile(worldXY: Vector2Simple): TilePlacementWorldWithProperties | null {
+  getNavigableTile(worldXY: Vector2Simple): any | null {
     // todo maybe compare this staticObjects.find same way as cursor is doing. because atlas bounds might not be the same as object bounds - diff "collision" box
     const existingBuildingSelected = this.gameObjectsHelper.staticObjects.find((s) =>
       s.spriteInstance.getBounds().contains(worldXY.x, worldXY.y)

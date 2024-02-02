@@ -1,4 +1,3 @@
-import { TilePlacementWorldWithProperties } from "../../../../map/tile/manual-tiles/manual-tiles.helper";
 import { MapSizeInfo } from "../../../../const/map-size.info";
 import { IsoHelper } from "../../../../map/tile/iso-helper";
 import { TileLayerProperties } from "../../../../map/tile/types/tile-types";
@@ -28,7 +27,7 @@ export class TilemapInputHandler {
    *
    * Returns true if the tile was found and selected
    */
-  getTileFromTilemapOnWorldXY(worldXY: Vector2Simple): TilePlacementWorldWithProperties | null {
+  getTileFromTilemapOnWorldXY(worldXY: Vector2Simple): any | null {
     const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
     const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
 
