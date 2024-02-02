@@ -1,11 +1,8 @@
 import { Building, BuildingInfoDefinition } from "./building";
 import { ProductionComponent } from "../../building/production/production-component";
-import { Warrior, WarriorDefinition } from "../characters/warrior";
-import { Worker } from "../characters/worker";
-import { CostData } from "../../building/production/production-cost-component";
 import { PaymentType } from "../../building/payment-type";
-import { ContainerComponent } from "../../building/container-component";
 import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import Tree1 from "../../../prefabs/outside/foliage/trees/resources/Tree1";
 
 export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -19,24 +16,13 @@ export const BarracksDefinition: BuildingInfoDefinition = {
       }
     }
   },
-  cost: new CostData(
-    PaymentType.PayOverTime,
-    100,
-    new Map<ResourceTypeDefinition, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
-    0.5
-  ),
+  cost: null,
   healthDefinition: {
     maxHealth: 400
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceTypeDefinition, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
+    constructionCosts: {},
     checkCollision: true,
     constructionCostType: PaymentType.PayOverTime,
     constructionTime: 100,
@@ -59,15 +45,15 @@ export class Barracks extends Building {
   override initComponents() {
     super.initComponents();
 
-    this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
-    this.components.addComponent(new ContainerComponent(10));
+    // this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
+    // this.components.addComponent(new ContainerComponent(10));
   }
 
   override postStart() {
     super.postStart();
 
     setTimeout(() => {
-      this.productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });
+      this.productionComponent.startProduction({ gameObjectClass: Tree1.name, costData: null as any });
       console.log("started production of 1 warrior");
     }, 1000);
   }

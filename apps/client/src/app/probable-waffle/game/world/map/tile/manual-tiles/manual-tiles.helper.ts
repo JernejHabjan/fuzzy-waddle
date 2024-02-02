@@ -89,7 +89,7 @@ export class ManualTilesHelper {
       const tile = this.scene.add.image(
         worldCenterXY.x,
         worldCenterXY.y,
-        atlasMap.atlasName + MapDefinitions.atlasSuffix,
+        atlasMap.atlasName,
         `${atlasMap.imageName}.${atlasMap.imageSuffix}`
       );
 

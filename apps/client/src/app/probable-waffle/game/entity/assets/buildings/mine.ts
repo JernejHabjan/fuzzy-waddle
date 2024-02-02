@@ -1,11 +1,7 @@
-import { ContainerComponent } from "../../building/container-component";
-import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
 import { PlacementRestrictionComponent } from "../../building/placement-restriction-component";
-import { Minerals } from "../resources/minerals";
 import { Building, BuildingInfoDefinition } from "./building";
-import { CostData } from "../../building/production/production-cost-component";
 import { PaymentType } from "../../building/payment-type";
-import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import Tree1 from "../../../prefabs/outside/foliage/trees/resources/Tree1";
 
 export const MineDefinitions: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -19,24 +15,13 @@ export const MineDefinitions: BuildingInfoDefinition = {
       }
     }
   },
-  cost: new CostData(
-    PaymentType.PayOverTime,
-    100,
-    new Map<ResourceTypeDefinition, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
-    0.5
-  ),
+  cost: null,
   healthDefinition: {
     maxHealth: 400
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceTypeDefinition, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
+    constructionCosts: {},
     checkCollision: true,
     constructionCostType: PaymentType.PayOverTime,
     constructionTime: 100,
@@ -58,8 +43,9 @@ export class Mine extends Building {
   override initComponents() {
     super.initComponents();
 
-    this.components.addComponent(new ContainerComponent(2));
-    this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
-    this.components.addComponent(new PlacementRestrictionComponent(this, [Minerals]));
+    // this.components.addComponent(new ContainerComponent(2));
+    // this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
+    // this.components.addComponent(new PlacementRestrictionComponent(this as any, [Tree1.name]));
+    new PlacementRestrictionComponent(this as any, [Tree1.name]);
   }
 }

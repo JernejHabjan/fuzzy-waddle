@@ -1,12 +1,13 @@
 import { RallyPoint } from "../../../player/rally-point";
 import { PaymentType } from "../payment-type";
-import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ProductionCostDefinition } from "./production-cost-component";
+import { ActorManager } from "../../../data/actor-manager";
+import { getPlayerController } from "../../../data/scene-data";
 
 export type ProductionQueueItem = {
   gameObjectClass: string;
@@ -28,7 +29,11 @@ export class ProductionComponent {
   constructor(
     private readonly gameObject: GameObject,
     public readonly productionDefinition: ProductionDefinition
-  ) {}
+  ) {
+    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    this.gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+  }
 
   init() {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
@@ -51,16 +56,19 @@ export class ProductionComponent {
 
         let productionCostPaid = false;
         if (costData.costType == PaymentType.PayOverTime) {
-          if (!this.ownerComponent.playerController) {
-            throw new Error("Player controller not found");
+          const owner = this.ownerComponent.getOwner();
+          if (!owner) {
+            throw new Error("Owner not found");
+          }
+          const playerController = getPlayerController(this.gameObject.scene, owner);
+          if (!playerController) {
+            throw new Error("PlayerController not found");
           }
           // get player resources and pay for production
-          const playerResourcesComponent =
-            this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
-          const canPayAllResources = playerResourcesComponent.canPayAllResources(costData.resources);
+          const canPayAllResources = playerController.canPayAllResources(costData.resources);
 
           if (canPayAllResources) {
-            playerResourcesComponent.payAllResources(costData.resources);
+            playerController.payAllResources(costData.resources);
             productionCostPaid = true;
           }
         } else {
@@ -126,7 +134,7 @@ export class ProductionComponent {
     this.spawnGameObject(gameObjectClass);
   }
 
-  private spawnGameObject(gameObjectClass: string): any {
+  private spawnGameObject(gameObjectName: string): any {
     const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
     if (!transform) throw new Error("Transform not found" + this.gameObject);
     const tilePlacementData = { x: transform.x, y: transform.y, z: transform.z } satisfies Vector3Simple;
@@ -139,9 +147,19 @@ export class ProductionComponent {
       z: tilePlacementData.z
     };
 
-    const gameObject = new gameObjectClass(this.spriteRepresentationComponent.scene, spawnPosition);
-    gameObject.registerGameObject(); // todo should be called by registration engine
-    gameObject.possess(this.ownerComponent.playerController);
+    const gameObject = ActorManager.createActor(this.gameObject.scene, gameObjectName, {
+      x: spawnPosition.x,
+      y: spawnPosition.y,
+      z: spawnPosition.z
+    } as unknown as ActorDefinition);
+    const originalOwner = this.ownerComponent.getOwner();
+    if (originalOwner) {
+      // get game object owner
+      const ownerComponentOfNewActor = getActorComponent(gameObject, OwnerComponent);
+      if (ownerComponentOfNewActor) {
+        ownerComponentOfNewActor.setOwner(originalOwner);
+      }
+    }
     return gameObject;
   }
 
@@ -163,22 +181,21 @@ export class ProductionComponent {
 
   private canAssignProduction(item: ProductionQueueItem): boolean {
     // check if gameObject can be produced
-    if (!this.productionDefinition.availableProductGameObjectClasses.includes(item.gameObjectClass)) {
-      return false;
-    }
+    if (!this.productionDefinition.availableProductGameObjectClasses.includes(item.gameObjectClass)) return false;
 
     // check if queue is not full
     const queue = this.findQueueForProduct();
     // noinspection RedundantIfStatementJS
-    if (!queue) {
-      return false;
-    }
+    if (!queue) return false;
+
+    const owner = this.ownerComponent.getOwner();
+    if (!owner) return false;
 
     // check if player has enough resources
-    if (!this.ownerComponent.playerController) throw new Error("Player controller not found");
-    const playerResourcesComponent =
-      this.ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
-    return playerResourcesComponent.canPayAllResources(item.costData.resources);
+    const playerController = getPlayerController(this.gameObject.scene, owner);
+    if (!playerController) return false;
+
+    return playerController.canPayAllResources(item.costData.resources);
   }
 
   private startProductionInQueue(queue: ProductionQueue) {
@@ -188,5 +205,9 @@ export class ProductionComponent {
     const { costData } = queue.queuedItems[0];
 
     queue.remainingProductionTime = costData.productionTime;
+  }
+
+  private destroy() {
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 }

@@ -1,4 +1,3 @@
-import { Vector2Simple } from "../../library/math/intersection";
 import { TilePlacementWorldWithProperties } from "./tile/manual-tiles/manual-tiles.helper";
 import { MapHelper } from "./tile/map-helper";
 import { TilemapInputHandler } from "../managers/controllers/input/tilemap/tilemap-input.handler";
@@ -6,6 +5,7 @@ import { ManualTileInputHandler } from "../managers/controllers/input/manual-til
 import { TileLayerProperties } from "./tile/types/tile-types";
 import { GameObjectsHelper } from "./game-objects-helper";
 import { Tilemaps } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class MapNavHelper {
   constructor(

@@ -17,7 +17,7 @@ export class MapPropertiesHelper {
       for (i; i < tileset.firstgid; i++) {
         tilesetAtlasNameMapper.push({ imageName: null, atlasName: null, imageSuffix: null, tileProperties: null });
       }
-      const atlasTexture = this.textures.get(tileset.name + MapDefinitions.atlasSuffix);
+      const atlasTexture = this.textures.get(tileset.name);
 
       const frames = atlasTexture.getFrameNames();
       // push to array

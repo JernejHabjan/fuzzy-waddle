@@ -1,7 +1,6 @@
 import { RepresentableActor, RepresentableActorDefinition } from "../../actor/representable-actor";
 import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 import { PlayerController } from "../../../world/managers/controllers/player-controller";
-import { CostData } from "../../building/production/production-cost-component";
 import { PawnInfoDefinition } from "../../actor/character";
 import { ConstructionSiteDefinition } from "../../building/construction/construction-site-component";
 import { Scene } from "phaser";
@@ -16,7 +15,6 @@ export abstract class Building extends RepresentableActor {
   representableActorDefinition!: RepresentableActorDefinition;
 
   // make it public constructor
-  private cost!: CostData;
 
   constructor(scene: Scene, tilePlacementData: TilePlacementData) {
     super(scene, tilePlacementData);
@@ -26,7 +24,7 @@ export abstract class Building extends RepresentableActor {
     super.init();
 
     this.representableActorDefinition = this.buildingInfoDefinition;
-    this.cost = this.buildingInfoDefinition.cost ?? CostData.NoCost;
+    // this.cost = this.buildingInfoDefinition.cost ?? CostData.NoCost;
   }
 
   override initComponents(): void {

@@ -21,26 +21,20 @@ import { StaticObjectHelper } from "../../entity/placable-objects/static-object"
 import { DynamicObjectHelper } from "../../entity/placable-objects/dynamic-object";
 import { MapNavHelper } from "../map/map-nav-helper";
 import { MinimapTextureHelper } from "../map/minimap-texture.helper";
-import { Warrior, WarriorDefinition } from "../../entity/assets/characters/warrior";
+
 import { GameObjectsHelper } from "../map/game-objects-helper";
-import { LpcAnimationHelper } from "../../entity/character/animation/lpc-animation-helper";
 import { Actor } from "../../entity/actor/actor";
 import { RepresentableActor } from "../../entity/actor/representable-actor";
 import { SpriteRepresentationComponent } from "../../entity/actor/components/sprite-representable-component";
 import { PlayerController } from "../managers/controllers/player-controller";
 import { Barracks } from "../../entity/assets/buildings/barracks";
-import { PlayerResourcesComponent } from "../managers/controllers/player-resources-component";
 import { TownHall } from "../../entity/assets/buildings/town-hall";
-import { Minerals } from "../../entity/assets/resources/minerals";
-import { Worker } from "../../entity/assets/characters/worker";
 import { GameObjects, Geom, Input, Scale, Scene } from "phaser";
 import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../entity/economy/resource/resource-drain-component";
 import { GathererComponent } from "../../entity/actor/components/gatherer-component";
-import { HealthComponent } from "../../entity/combat/components/health-component";
-import { DamageTypes } from "../../entity/combat/damage-types";
 import { BuilderComponent } from "../../entity/actor/components/builder-component";
-import { Resources, ResourceTypeDefinition, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface TilemapToAtlasMap {
   imageSuffix: string | null;
@@ -72,9 +66,9 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private manualTileSelectedSub!: Subscription;
   private onEditorTileSelectedSub!: Subscription;
   private tileToBeReplaced: number | null = null; // todo should be moved
-  private editorLayerNr = Deprecated_SceneCommunicatorService.DEFAULT_LAYER;
+  private editorLayerNr = 1;
   private selected: Actor[] = [];
-  private atlasToBePlaced: AtlasEmitValue | null = null;
+  private atlasToBePlaced: null = null;
   private warningText: GameObjects.Text | null = null;
   private mapPropertiesHelper!: MapPropertiesHelper;
   private mapHelper!: MapHelper;
@@ -83,46 +77,13 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private mapNavHelper!: MapNavHelper;
   private warriorGroup: RepresentableActor[] = [];
   private updateLoopActors: Actor[] = []; // todo to separate update loop then
-  private animHelper!: LpcAnimationHelper;
   private playerController!: PlayerController; // todo temp
 
   constructor() {
     super({ key: "GrasslandScene" });
   }
 
-  init(data: unknown) {
-    // todo?
-  }
-
-  preload() {
-    this.load.spritesheet(
-      WarriorDefinition.textureMapDefinition.textureName,
-      "assets/probable-waffle/spritesheets/" +
-        WarriorDefinition.textureMapDefinition.spriteSheet.path +
-        WarriorDefinition.textureMapDefinition.spriteSheet.name +
-        ".png",
-      WarriorDefinition.textureMapDefinition.spriteSheet.frameConfig
-    );
-
-    this.load.audio(
-      WarriorDefinition.soundDefinition.move as string,
-      "assets/probable-waffle/sfx/character/move/footstep.mp3"
-    );
-
-    this.load.audio(
-      WarriorDefinition.soundDefinition.death as string,
-      "assets/probable-waffle/sfx/character/death/death1.mp3"
-    );
-  }
-
   create() {
-    this.animHelper = new LpcAnimationHelper(this.anims);
-    this.animHelper.createAnimationsForLPCSpriteSheet(WarriorDefinition.textureMapDefinition.spriteSheet.name);
-    // iterate over WarriorSoundEnum and load all sounds
-    Object.values(WarriorDefinition.soundDefinition).forEach((sound) => {
-      this.sound.add(sound);
-    });
-
     // navigable map
     this.mapHelper = new MapHelper();
     this.gameObjectsHelper = new GameObjectsHelper();
@@ -268,11 +229,11 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private deselectPlacementInEditor() {
     // deselect in editor
     if (this.atlasToBePlaced) {
-      Deprecated_SceneCommunicatorService.atlasEmitterSubject.next(null);
+      // Deprecated_SceneCommunicatorService.atlasEmitterSubject.next(null);
     }
     // deselect in editor
     if (this.tileToBeReplaced) {
-      Deprecated_SceneCommunicatorService.tileEmitterSubject.next(null);
+      // Deprecated_SceneCommunicatorService.tileEmitterSubject.next(null);
     }
   }
 
@@ -338,10 +299,10 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
       });
 
       // extract sprite frame name
-      const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => ({
-        name: s.name
-      }));
-      Deprecated_SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
+      // const gameObjectSelection: GameObjectSelection[] = this.selected.map((s) => ({
+      //   name: s.name
+      // }));
+      // Deprecated_SceneCommunicatorService.selectionChangedSubject.next(gameObjectSelection); // todo
     });
   }
 
@@ -375,100 +336,66 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     }
   }
 
-  private placeAtlasOnCoords(atlasToBePlaced: AtlasEmitValue | null, tilePlacementData: TilePlacementData): void {
+  private placeAtlasOnCoords(atlasToBePlaced: any | null, tilePlacementData: TilePlacementData): void {
     if (atlasToBePlaced === null) return;
 
-    if (atlasToBePlaced.atlasFrame.filename === WarriorDefinition.textureMapDefinition.textureName + ".png") {
-      this.placeWarrior(tilePlacementData);
-    } else {
-      this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
-        {
-          tilePlacementData,
-          placeableObjectProperties: {
-            placeableAtlasProperties: {
-              texture: atlasToBePlaced.tilesetName + MapDefinitions.atlasSuffix,
-              frame: atlasToBePlaced.atlasFrame.filename
-            }
+    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
+      {
+        tilePlacementData,
+        placeableObjectProperties: {
+          placeableAtlasProperties: {
+            texture: atlasToBePlaced.tilesetName,
+            frame: atlasToBePlaced.atlasFrame.filename
           }
         }
-      ]);
-    }
+      }
+    ]);
   }
 
   private bindSceneCommunicator() {
-    Deprecated_SceneCommunicatorService.addSubscription(
-      Deprecated_SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
-        this.tileToBeReplaced = tileNr;
-        this.atlasToBePlaced = null; // stop placing atlas
-        this.selected = [];
-      }),
-      Deprecated_SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
-        this.editorLayerNr = layerNr;
-      }),
-      Deprecated_SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
-        this.atlasToBePlaced = atlas;
-        this.tileToBeReplaced = null; // stop placing tile
-        this.selected = [];
-      })
-    );
+    // Deprecated_SceneCommunicatorService.addSubscription(
+    //   Deprecated_SceneCommunicatorService.tileEmitterSubject.subscribe((tileNr) => {
+    //     this.tileToBeReplaced = tileNr;
+    //     this.atlasToBePlaced = null; // stop placing atlas
+    //     this.selected = [];
+    //   }),
+    //   Deprecated_SceneCommunicatorService.layerEmitterSubject.subscribe((layerNr) => {
+    //     this.editorLayerNr = layerNr;
+    //   }),
+    //   Deprecated_SceneCommunicatorService.atlasEmitterSubject.subscribe((atlas) => {
+    //     this.atlasToBePlaced = atlas;
+    //     this.tileToBeReplaced = null; // stop placing tile
+    //     this.selected = [];
+    //   })
+    // );
   }
 
   private placeActors() {
-    this.playerController = new PlayerController(); // todo temp
-    this.playerController.components.findComponent(PlayerResourcesComponent).addResources(
-      new Map<ResourceTypeDefinition, number>([
-        [Resources.ambrosia, 5000],
-        [Resources.stone, 5000],
-        [Resources.wood, 5000],
-        [Resources.minerals, 5000]
-      ])
-    );
+    // todo this.playerController = new PlayerController(); // todo temp
+    // this.playerController.components.findComponent(PlayerResourcesComponent).addResources(
+    //   new Map<ResourceTypeDefinition, number>([
+    //     [Resources.ambrosia, 5000],
+    //     [Resources.stone, 5000],
+    //     [Resources.wood, 5000],
+    //     [Resources.minerals, 5000]
+    //   ])
+    // );
     this.updateLoopActors.push(this.playerController);
-    const warrior = this.placeWarrior({ tileXY: { x: 1, y: 1 }, z: 0 });
-    const worker = this.placeWorker({ tileXY: { x: 2, y: 2 }, z: 0 });
     const barracks = this.placeBarracks({ tileXY: { x: 1, y: 2 }, z: 0 });
     const townHall = this.placeTownHall({ tileXY: { x: 1, y: 4 }, z: 0 });
-    const minerals = this.placeMinerals({ tileXY: { x: 1, y: 6 }, z: 0 });
 
     // test for periodically take damage
-    const warriorHealthComponent = warrior.components.findComponent(HealthComponent);
+    // const warriorHealthComponent = warrior.components.findComponent(HealthComponent);
     window.setInterval(() => {
       // disabled for now
       const takeDamage = false;
       if (takeDamage) {
-        warriorHealthComponent.takeDamage(10, DamageTypes.DamageTypeNormal);
+        // warriorHealthComponent.takeDamage(10, DamageTypes.DamageTypeNormal);
       }
     }, 300);
 
-    const resourceSource = minerals.components.findComponent(ResourceSourceComponent);
-    resourceSource.extractResources(worker, 10); // todo where to get this value from
-    const resourceDrain = townHall.components.findComponent(ResourceDrainComponent);
-    const gatherer = worker.components.findComponent(GathererComponent);
-    resourceDrain.returnResources(
-      worker,
-      gatherer.carriedResourceType as ResourceTypeDefinition,
-      gatherer.carriedResourceAmount
-    );
-
-    const builderComponent = worker.components.findComponent(BuilderComponent);
     // todo not working yet because gameMode doesn't have scene defined yet! - for spawnActorForPlayer
-    builderComponent.beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 });
-  }
-
-  private placeWarrior(tilePlacementData: TilePlacementData) {
-    const warrior = new Warrior(this, tilePlacementData);
-    warrior.registerGameObject(); // todo should be called by registration engine - pass "world" to creation of warrior and there we can access world.registrationEngine.registerWarrior(warrior) // todo it also registers on "update" hook
-    warrior.possess(this.playerController);
-    this.warriorGroup.push(warrior);
-    return warrior;
-  }
-
-  private placeWorker(tilePlacementData: TilePlacementData) {
-    const worker = new Worker(this, tilePlacementData);
-    worker.registerGameObject(); // todo should be called by registration engine -
-    worker.possess(this.playerController);
-    this.warriorGroup.push(worker);
-    return worker;
+    // (builderComponent as any).beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 });
   }
 
   private placeBarracks(tilePlacementData: TilePlacementData) {
@@ -485,12 +412,5 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     townHall.possess(this.playerController);
     this.warriorGroup.push(townHall); // todo
     return townHall;
-  }
-
-  private placeMinerals(tilePlacementData: TilePlacementData) {
-    const minerals = new Minerals(this, tilePlacementData);
-    minerals.registerGameObject(); // todo should be called by registration engine
-    this.warriorGroup.push(minerals); // todo
-    return minerals;
   }
 }

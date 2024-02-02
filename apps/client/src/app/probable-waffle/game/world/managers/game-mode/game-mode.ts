@@ -41,8 +41,8 @@ export abstract class GameMode {
     buildingClass: string,
     targetLocation: TilePlacementData,
     playerController?: PlayerController
-  ): ActorAbleToBeBuilt {
-    const building = new buildingClass(scene, targetLocation); // todo
+  ): any {
+    const building = new (buildingClass as any)(scene, targetLocation); // todo
     building.registerGameObject();
     building.possess(playerController);
     // this.gameState.addActor(building); // todo
