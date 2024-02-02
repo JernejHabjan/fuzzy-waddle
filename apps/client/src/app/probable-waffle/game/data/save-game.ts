@@ -4,7 +4,7 @@ import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
 import Hedgehog from "../prefabs/animals/Hedgehog";
 import Sheep from "../prefabs/animals/Sheep";
 import { ActorManager } from "./actor-manager";
-import { filter } from "rxjs";
+import { filter, Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
 import {
   SceneActorCreatorCommunicator,
@@ -13,11 +13,12 @@ import {
 
 export class SaveGame {
   static SaveGameEvent = "SaveGameEvent";
+  private saveSubscription: Subscription;
 
   constructor(private scene: GameProbableWaffleScene) {
     scene.onPostCreate.subscribe(() => this.postCreate());
     // only ones that have name: SaveGame.SaveGameEvent
-    scene.communicator.allScenes
+    this.saveSubscription = scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === SaveGame.SaveGameEvent))
       .subscribe(() => this.onSaveGame());
     scene.onDestroy.subscribe(() => this.destroy());
@@ -81,6 +82,7 @@ export class SaveGame {
 
   private destroy() {
     this.scene.events.off(SaveGame.SaveGameEvent);
+    this.saveSubscription.unsubscribe();
   }
 
   private onSaveGame() {
