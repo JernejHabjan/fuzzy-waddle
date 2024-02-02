@@ -15,7 +15,6 @@ import {
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
-import { ActorManager } from "../../../data/actor-manager";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -72,7 +71,7 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: Object.keys(ActorManager.skaduweeUnits)
+          availableProductGameObjectClasses: [] // todo
         } satisfies ProductionDefinition)
       ],
       []

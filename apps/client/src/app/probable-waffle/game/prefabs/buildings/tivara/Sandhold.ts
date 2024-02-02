@@ -16,7 +16,6 @@ import {
 } from "../../../entity/economy/resource/resource-drain-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
-import { ActorManager } from "../../../data/actor-manager";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -56,7 +55,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: Object.keys(ActorManager.tivaraWorkers)
+          availableProductGameObjectClasses: [] // todo
         } satisfies ProductionDefinition)
       ],
       []

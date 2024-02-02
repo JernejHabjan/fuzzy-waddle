@@ -3,11 +3,10 @@ import { PaymentType } from "../payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import GameObject = Phaser.GameObjects.GameObject;
-import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ProductionCostDefinition } from "./production-cost-component";
-import { ActorManager } from "../../../data/actor-manager";
 import { getPlayerController } from "../../../data/scene-data";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ProductionQueueItem = {
   gameObjectClass: string;
@@ -147,20 +146,20 @@ export class ProductionComponent {
       z: tilePlacementData.z
     };
 
-    const gameObject = ActorManager.createActor(this.gameObject.scene, gameObjectName, {
-      x: spawnPosition.x,
-      y: spawnPosition.y,
-      z: spawnPosition.z
-    } as unknown as ActorDefinition);
-    const originalOwner = this.ownerComponent.getOwner();
-    if (originalOwner) {
-      // get game object owner
-      const ownerComponentOfNewActor = getActorComponent(gameObject, OwnerComponent);
-      if (ownerComponentOfNewActor) {
-        ownerComponentOfNewActor.setOwner(originalOwner);
-      }
-    }
-    return gameObject;
+    // todo const gameObject = ActorManager.createActor(this.gameObject.scene, gameObjectName, {
+    // todo   x: spawnPosition.x,
+    // todo   y: spawnPosition.y,
+    // todo   z: spawnPosition.z
+    // todo } as unknown as ActorDefinition);
+    // todo const originalOwner = this.ownerComponent.getOwner();
+    // todo if (originalOwner) {
+    // todo   // get game object owner
+    // todo   const ownerComponentOfNewActor = getActorComponent(gameObject, OwnerComponent);
+    // todo   if (ownerComponentOfNewActor) {
+    // todo     ownerComponentOfNewActor.setOwner(originalOwner);
+    // todo   }
+    // todo }
+    // todo return gameObject;
   }
 
   /**

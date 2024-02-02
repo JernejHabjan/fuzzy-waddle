@@ -19,9 +19,7 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { ContainableComponent } from "../../../entity/actor/components/containable-component";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
-import Sandhold from "../../buildings/tivara/Sandhold";
 import { BuilderComponent, BuilderDefinition } from "../../../entity/actor/components/builder-component";
-import { ActorManager } from "../../../data/actor-manager";
 import { GathererComponent, GathererDefinition } from "../../../entity/actor/components/gatherer-component";
 /* END-USER-IMPORTS */
 
@@ -63,10 +61,10 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
         } satisfies ProductionCostDefinition),
         new ContainableComponent(this),
         new RequirementsComponent(this, {
-          actors: [Sandhold.name]
+          actors: [] // todo
         } satisfies RequirementsDefinition),
         new BuilderComponent(this, {
-          constructableBuildingClasses: Object.keys({ ...ActorManager.tivaraBuildings }),
+          constructableBuildingClasses: [], // todo
           constructionSiteOffset: 2,
           enterConstructionSite: false
         } satisfies BuilderDefinition),

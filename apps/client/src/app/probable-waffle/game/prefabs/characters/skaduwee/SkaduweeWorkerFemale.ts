@@ -19,10 +19,7 @@ import { AttackData } from "../../../entity/combat/attack-data";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { ContainableComponent } from "../../../entity/actor/components/containable-component";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
-import InfantryInn from "../../buildings/skaduwee/InfantryInn";
-import FrostForge from "../../buildings/skaduwee/FrostForge";
 import { BuilderComponent, BuilderDefinition } from "../../../entity/actor/components/builder-component";
-import { ActorManager } from "../../../data/actor-manager";
 import { GathererComponent, GathererDefinition } from "../../../entity/actor/components/gatherer-component";
 /* END-USER-IMPORTS */
 
@@ -64,10 +61,10 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
         } satisfies ProductionCostDefinition),
         new ContainableComponent(this),
         new RequirementsComponent(this, {
-          actors: [FrostForge.name]
+          actors: [] // todo
         } satisfies RequirementsDefinition),
         new BuilderComponent(this, {
-          constructableBuildingClasses: Object.keys({ ...ActorManager.skaduweeBuildings }),
+          constructableBuildingClasses: [], // todo
           constructionSiteOffset: 2,
           enterConstructionSite: false
         } satisfies BuilderDefinition),

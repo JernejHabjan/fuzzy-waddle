@@ -15,9 +15,7 @@ import {
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
-import AnkGuard from "./AnkGuard";
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
-import { ActorManager } from "../../../data/actor-manager";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -68,12 +66,12 @@ export default class Temple extends Phaser.GameObjects.Container {
           costType: PaymentType.PayImmediately
         } satisfies ProductionCostDefinition),
         new RequirementsComponent(this, {
-          actors: [AnkGuard.name]
+          actors: [] // todo
         } satisfies RequirementsDefinition),
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: Object.keys(ActorManager.tivaraUnits)
+          availableProductGameObjectClasses: [] // todo
         } satisfies ProductionDefinition)
       ],
       []
