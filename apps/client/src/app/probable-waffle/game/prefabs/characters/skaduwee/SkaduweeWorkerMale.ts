@@ -21,6 +21,9 @@ import { ContainableComponent } from "../../../entity/actor/components/containab
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import { BuilderComponent, BuilderDefinition } from "../../../entity/actor/components/builder-component";
 import { GathererComponent, GathererDefinition } from "../../../entity/actor/components/gatherer-component";
+import FrostForge from "../../buildings/skaduwee/FrostForge";
+import InfantryInn from "../../buildings/skaduwee/InfantryInn";
+import Owlery from "../../buildings/skaduwee/Owlery";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
@@ -61,10 +64,10 @@ export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
         } satisfies ProductionCostDefinition),
         new ContainableComponent(this),
         new RequirementsComponent(this, {
-          actors: [] // todo
+          actors: [FrostForge.name]
         } satisfies RequirementsDefinition),
         new BuilderComponent(this, {
-          constructableBuildingClasses: [], // todo
+          constructableBuildingClasses: [FrostForge.name, InfantryInn.name, Owlery.name],
           constructionSiteOffset: 2,
           enterConstructionSite: false
         } satisfies BuilderDefinition),

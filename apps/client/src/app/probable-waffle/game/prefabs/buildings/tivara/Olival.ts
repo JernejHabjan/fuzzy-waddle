@@ -15,6 +15,7 @@ import {
 } from "../../../entity/building/production/production-cost-component";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
+import Sandhold from "./Sandhold";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -60,7 +61,7 @@ export default class Olival extends Phaser.GameObjects.Container {
           costType: PaymentType.PayImmediately
         } satisfies ProductionCostDefinition),
         new RequirementsComponent(this, {
-          actors: [] // todo
+          actors: [Sandhold.name]
         } satisfies RequirementsDefinition)
       ],
       []

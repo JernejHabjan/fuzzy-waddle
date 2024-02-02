@@ -20,6 +20,8 @@ import {
   ResourceDrainDefinition
 } from "../../../entity/economy/resource/resource-drain-component";
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
+import SkaduweeWorkerMale from "../../characters/skaduwee/SkaduweeWorkerMale";
+import SkaduweeWorkerFemale from "../../characters/skaduwee/SkaduweeWorkerFemale";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -107,7 +109,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: [] // todo
+          availableProductGameObjectClasses: [SkaduweeWorkerMale.name, SkaduweeWorkerFemale.name]
         } satisfies ProductionDefinition)
       ],
       []

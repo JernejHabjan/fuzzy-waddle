@@ -21,6 +21,10 @@ import { ContainableComponent } from "../../../entity/actor/components/containab
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import { BuilderComponent, BuilderDefinition } from "../../../entity/actor/components/builder-component";
 import { GathererComponent, GathererDefinition } from "../../../entity/actor/components/gatherer-component";
+import Sandhold from "../../buildings/tivara/Sandhold";
+import AnkGuard from "../../buildings/tivara/AnkGuard";
+import Olival from "../../buildings/tivara/Olival";
+import Temple from "../../buildings/tivara/Temple";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -61,10 +65,10 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
         } satisfies ProductionCostDefinition),
         new ContainableComponent(this),
         new RequirementsComponent(this, {
-          actors: [] // todo
+          actors: [Sandhold.name]
         } satisfies RequirementsDefinition),
         new BuilderComponent(this, {
-          constructableBuildingClasses: [], // todo
+          constructableBuildingClasses: [Sandhold.name, AnkGuard.name, Olival.name, Temple.name],
           constructionSiteOffset: 2,
           enterConstructionSite: false
         } satisfies BuilderDefinition),
