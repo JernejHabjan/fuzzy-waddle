@@ -7,7 +7,19 @@ import Phaser from "phaser";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { IdComponent } from "../../../entity/actor/components/id-component";
+
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
+import {
+  ProductionCostComponent,
+  ProductionCostDefinition
+} from "../../../entity/building/production/production-cost-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { AttackComponent, AttackDefinition } from "../../../entity/combat/components/attack-component";
+import { DamageType } from "../../../entity/combat/damage-type";
+import { AttackData } from "../../../entity/combat/attack-data";
+import { PaymentType } from "../../../entity/building/payment-type";
+import { ContainableComponent } from "../../../entity/actor/components/containable-component";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -23,21 +35,36 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
       this,
       [
         new OwnerComponent(this),
+        new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
-        } satisfies HealthDefinition)
+        } satisfies HealthDefinition),
+        new AttackComponent(this, {
+          attacks: [
+            {
+              damage: 10,
+              damageType: DamageType.Physical,
+              cooldown: 1000,
+              range: 3
+            } satisfies AttackData
+          ]
+        } satisfies AttackDefinition),
+        new ProductionCostComponent(this, {
+          resources: {
+            [ResourceType.Wood]: 10,
+            [ResourceType.Minerals]: 10
+          },
+          refundFactor: 0.5,
+          productionTime: 1000,
+          costType: PaymentType.PayImmediately
+        } satisfies ProductionCostDefinition),
+        new ContainableComponent(this)
       ],
       []
     );
 
     this.on("pointerdown", () => {
-      this.setTint(0xff0000); // Tint to red
-      // tint back to transparent after 1 second
-      setTimeout(() => {
-        this.clearTint();
-      }, 1000);
-
       // and play anim skaduwee_worker_male_slash_down
       this.play("general_warrior_thrust_down", true);
       // after anim complete, remove tint

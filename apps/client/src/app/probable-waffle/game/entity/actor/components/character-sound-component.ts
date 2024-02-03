@@ -1,12 +1,4 @@
 import { GameObjects } from "phaser";
-
-// export type SoundDefinition = {
-//   move?: string;
-//   attack?: string;
-//   death?: string;
-//   select?: string;
-// };
-
 export class CharacterSoundComponent {
   constructor(private readonly gameObject: GameObjects.GameObject) {}
 

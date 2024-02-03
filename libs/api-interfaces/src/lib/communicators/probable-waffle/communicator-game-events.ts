@@ -6,5 +6,7 @@ export interface ProbableWaffleCommunicatorSelectionEvent extends ProbableWaffle
     selected?: string[];
     selectedArea?: { x: number; y: number; width: number; height: number };
     terrainSelected?: { x: number; y: number; z: number };
+    shiftKey?: boolean;
+    ctrlKey?: boolean;
   };
 }

@@ -1,12 +1,5 @@
 import { Building, BuildingInfoDefinition } from "./building";
-import { ProductionComponent } from "../../building/production/production-component";
-import { Warrior } from "../characters/warrior";
-import { Worker } from "../characters/worker";
-import { CostData } from "../../building/production/production-cost-component";
 import { PaymentType } from "../../building/payment-type";
-import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
-import { ContainerComponent } from "../../building/container-component";
-import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
 
 export const TownHallDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -20,24 +13,13 @@ export const TownHallDefinition: BuildingInfoDefinition = {
       }
     }
   },
-  cost: new CostData(
-    PaymentType.PayOverTime,
-    100,
-    new Map<ResourceTypeDefinition, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
-    0.5
-  ),
+  cost: null,
   healthDefinition: {
     maxHealth: 400
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceTypeDefinition, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
+    constructionCosts: {},
     checkCollision: true,
     constructionCostType: PaymentType.PayOverTime,
     constructionTime: 100,
@@ -59,8 +41,8 @@ export class TownHall extends Building {
   override initComponents() {
     super.initComponents();
 
-    this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
-    this.components.addComponent(new ContainerComponent(10));
-    this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
+    // this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
+    // this.components.addComponent(new ContainerComponent(10));
+    // this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
   }
 }

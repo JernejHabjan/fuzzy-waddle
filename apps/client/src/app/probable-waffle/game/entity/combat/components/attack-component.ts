@@ -1,8 +1,12 @@
 import { AttackData } from "../attack-data";
 import { EventEmitter } from "@angular/core";
 import { HealthComponent } from "./health-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
+import GameObject = Phaser.GameObjects.GameObject;
+
+export type AttackDefinition = {
+  attacks: AttackData[];
+};
 
 export class AttackComponent {
   // when cooldown has expired
@@ -12,11 +16,17 @@ export class AttackComponent {
   remainingCooldown = 0;
 
   constructor(
-    private owner: GameObject,
-    private attacks: AttackData[]
-  ) {}
+    private readonly owner: GameObject,
+    private readonly attackDefinition: AttackDefinition
+  ) {
+    owner.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    owner.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+  }
 
-  update(time: number, delta: number): void {
+  private destroy() {
+    this.owner.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+  }
+  private update(time: number, delta: number): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
@@ -30,16 +40,16 @@ export class AttackComponent {
     if (this.remainingCooldown > 0) {
       return;
     }
-    if (attackIndex >= this.attacks.length) {
+    if (attackIndex >= this.attackDefinition.attacks.length) {
       throw new Error("Invalid attack index");
     }
 
-    const attack = this.attacks[attackIndex];
+    const attack = this.attackDefinition.attacks[attackIndex];
 
-    if (attack.projectileClass) {
-      const projectile = new attack.projectileClass(this.owner.scene, this.owner); // todo here it should be getWorld.SpawnGameObject<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
-      projectile.registerGameObject(); // todo should be called by registration engine
-      projectile.fireAtGameObject(enemy);
+    if (attack.projectileType) {
+      // todo   const projectile = new attack.projectileClass(this.owner.scene, this.owner); // todo here it should be getWorld.SpawnGameObject<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
+      // todo   projectile.registerGameObject(); // todo should be called by registration engine
+      // todo   projectile.fireAtGameObject(enemy);
     } else {
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
       if (!enemyHealthComponent) {
@@ -62,7 +72,7 @@ export class AttackComponent {
 
   // Different attacks might be used at different ranges, or against different types of targets
   getAttacks(): AttackData[] {
-    return this.attacks;
+    return this.attackDefinition.attacks;
   }
 
   // time till next attack

@@ -1,10 +1,7 @@
 import { GatherData } from "../../economy/gather-data";
 import { ResourceSourceComponent } from "../../economy/resource/resource-source-component";
-import { Mine } from "../../assets/buildings/mine";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { Subject } from "rxjs";
-import { PlayerController } from "../../../world/managers/controllers/player-controller";
-import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
 import { ContainerComponent } from "../../building/container-component";
 import { ResourceDrainComponent } from "../../economy/resource/resource-drain-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
@@ -12,8 +9,14 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { getPlayerController } from "../../../data/scene-data";
 
-export type GathererClasses = typeof Mine;
+export type GathererDefinition = {
+  // types of gameObjects the gatherer can gather resourcesFrom
+  resourceSourceGameObjectClasses: string[];
+  // radius in which gameObject will automatically gather resourcesFrom
+  resourceSweepRadius: number;
+};
 
 export class GathererComponent {
   gatheredResources: GatherData[] = [];
@@ -32,10 +35,7 @@ export class GathererComponent {
 
   constructor(
     private readonly gameObject: GameObject,
-    // type of gameObjects the gatherer can gather resources from
-    public resourceSourceGameObjectClasses: GathererClasses[],
-    // radius in which gameObject will automatically gather resourcesFrom
-    public resourceSweepRadius: number
+    private readonly gathererComponentDefinition: GathererDefinition
   ) {}
 
   canGatherFrom(gameObject: GameObject): boolean {
@@ -138,7 +138,10 @@ export class GathererComponent {
     if (this.previousResourceSource) {
       return this.previousResourceSource;
     }
-    return this.getClosestResourceSource(this.previousResourceType, this.resourceSweepRadius);
+    return this.getClosestResourceSource(
+      this.previousResourceType,
+      this.gathererComponentDefinition.resourceSweepRadius
+    );
   }
 
   getClosestResourceSource(resourceType: ResourceType | null, maxDistance: number): GameObject | undefined {
@@ -212,13 +215,11 @@ export class GathererComponent {
       // check if we're at capacity or the resource source is empty
       if (this.carriedResourceAmount >= gatherData.capacity || resourceSourceComponent.getCurrentResources() === 0) {
         // return immediately
-        const playerController = getActorComponent(this.gameObject, PlayerController);
+        const owner = getActorComponent(resourceSource, OwnerComponent)?.getOwner();
+        if (!owner) throw new Error("Owner not found");
+        const playerController = getPlayerController(this.gameObject.scene, owner);
         if (playerController) {
-          const playerResourcesComponent = playerController.components.findComponent(PlayerResourcesComponent);
-          const returnedResources = playerResourcesComponent.addResource(
-            this.carriedResourceType,
-            this.carriedResourceAmount
-          );
+          const returnedResources = playerController.addResource(this.carriedResourceType, this.carriedResourceAmount);
           if (returnedResources > 0) {
             this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
 

@@ -7,7 +7,19 @@ import Phaser from "phaser";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { IdComponent } from "../../../entity/actor/components/id-component";
+
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
+import {
+  ProductionCostComponent,
+  ProductionCostDefinition
+} from "../../../entity/building/production/production-cost-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { PaymentType } from "../../../entity/building/payment-type";
+import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
+import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
+import AnkGuard from "./AnkGuard";
+import TivaraSlingshotFemale from "../../characters/tivara/TivaraSlingshotFemale";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -44,10 +56,28 @@ export default class Temple extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
-        } satisfies HealthDefinition)
+        } satisfies HealthDefinition),
+        new ProductionCostComponent(this, {
+          resources: {
+            [ResourceType.Wood]: 10,
+            [ResourceType.Minerals]: 10
+          },
+          refundFactor: 0.5,
+          productionTime: 1000,
+          costType: PaymentType.PayImmediately
+        } satisfies ProductionCostDefinition),
+        new RequirementsComponent(this, {
+          actors: [AnkGuard.name]
+        } satisfies RequirementsDefinition),
+        new ProductionComponent(this, {
+          queueCount: 1,
+          capacityPerQueue: 5,
+          availableProductGameObjectClasses: [TivaraSlingshotFemale.name]
+        } satisfies ProductionDefinition)
       ],
       []
     );
@@ -56,14 +86,6 @@ export default class Temple extends Phaser.GameObjects.Container {
     setTimeout(() => {
       this.addGlow(scene, buildings_tivara_temple_temple_olival);
     }, 1000);
-    this.on("pointerdown", () => {
-      buildings_tivara_temple.setTint(0xff0000); // Tint to red
-      // tint back to transparent after 1 second
-      setTimeout(() => {
-        buildings_tivara_temple.clearTint();
-      }, 1000);
-    });
-
     /* END-USER-CTR-CODE */
   }
 

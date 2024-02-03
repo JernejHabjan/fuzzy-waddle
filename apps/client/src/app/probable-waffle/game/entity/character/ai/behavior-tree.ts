@@ -1,9 +1,9 @@
 import { Blackboard } from "./blackboard";
-import { Actor } from "../../actor/actor";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export abstract class BehaviorTree {
   abstract name: string;
-  protected owner!: Actor;
+  protected owner!: GameObject;
   protected blackboard!: Blackboard;
   private running = false;
 
@@ -15,7 +15,7 @@ export abstract class BehaviorTree {
     this.runDecisionTree();
   }
 
-  public init(owner: Actor, blackboard: Blackboard): void {
+  public init(owner: GameObject, blackboard: Blackboard): void {
     this.owner = owner;
     this.blackboard = blackboard;
   }

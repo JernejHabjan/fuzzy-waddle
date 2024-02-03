@@ -10,11 +10,12 @@ import { GameObjectSelectionHandler } from "../world/managers/controllers/input/
 import { SceneGameState } from "../world/managers/game-state/scene-game-state";
 import { ProbableWaffleGameData } from "./probable-waffle-game-data";
 import { SaveGame } from "../data/save-game";
+import { SceneActorCreator } from "./components/scene-actor-creator";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
   systems: Record<string, any>; // todo use
-  components: Record<string, any>; // todo use
+  components: any[]; // todo use
   services: Record<string, any>; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
 }
 
@@ -28,7 +29,7 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
   private sceneGameData: GameProbableWaffleSceneData = {
     baseGameData: this.baseGameData,
     systems: {}, // todo use
-    components: {}, // todo use
+    components: [],
     services: {} // todo use
   } satisfies GameProbableWaffleSceneData;
 
@@ -38,16 +39,17 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
 
   create() {
     super.create();
-
-    this.scene.get<HudProbableWaffle>("HudProbableWaffle").scene.start();
+    const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle");
+    hud.scene.start();
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     new CameraMovementHandler(this);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-    new SingleSelectionHandler(this, this.tilemap);
+    new SingleSelectionHandler(this, hud, this.tilemap);
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
+    new SceneActorCreator(this);
   }
 }

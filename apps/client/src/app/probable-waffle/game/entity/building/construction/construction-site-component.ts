@@ -1,15 +1,15 @@
 import { PaymentType } from "../payment-type";
-import { ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
-import { PlayerResourcesComponent } from "../../../world/managers/controllers/player-resources-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionStateEnum } from "./construction-state-enum";
 import { HealthComponent } from "../../combat/components/health-component";
 import { EventEmitter } from "@angular/core";
-import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
+import { getPlayerController } from "../../../data/scene-data";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
-  constructionCosts: Map<ResourceTypeDefinition, number>;
+  constructionCosts: Partial<Record<ResourceType, number>>;
   // Whether to check collision for each grid cell
   checkCollision: boolean;
   constructionCostType: PaymentType;
@@ -89,12 +89,13 @@ export class ConstructionSiteComponent {
     }
     if (this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately) {
       const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-      if (!ownerComponent?.getOwner()) throw new Error("Owner not found");
-      const playerResourcesComponent =
-        ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
-      const canAfford = playerResourcesComponent.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
+      const owner = ownerComponent?.getOwner();
+      if (!owner) throw new Error("Owner not found");
+      const playerController = getPlayerController(this.gameObject.scene, owner);
+      if (!playerController) throw new Error("PlayerController not found");
+      const canAfford = playerController.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
       if (canAfford) {
-        playerResourcesComponent.payAllResources(this.constructionSiteDefinition.constructionCosts);
+        playerController.payAllResources(this.constructionSiteDefinition.constructionCosts);
       } else {
         throw new Error("Cannot afford building costs");
       }
@@ -122,8 +123,10 @@ export class ConstructionSiteComponent {
     // refund resources
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    if (!ownerComponent?.getOwner()) throw new Error("Owner not found");
-    const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
+    const owner = ownerComponent?.getOwner();
+    if (!owner) throw new Error("Owner not found");
+    const playerController = getPlayerController(this.gameObject.scene, owner);
+    if (!playerController) throw new Error("PlayerController not found");
 
     const TimeRefundFactor =
       this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately
@@ -132,12 +135,12 @@ export class ConstructionSiteComponent {
     const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
 
     // refund costs
-    const refundCosts = new Map<ResourceTypeDefinition, number>();
-    this.constructionSiteDefinition.constructionCosts.forEach((value, key) => {
-      refundCosts.set(key, value * actualRefundFactor);
+    const refundCosts: Partial<Record<ResourceType, number>> = {};
+    Object.entries(this.constructionSiteDefinition.constructionCosts).forEach(([key, value]) => {
+      refundCosts[key as ResourceType] = value * actualRefundFactor;
     });
 
-    playerResourcesComponent.addResources(refundCosts);
+    playerController.addResources(refundCosts);
 
     // destroy building
     this.gameObject.destroy();

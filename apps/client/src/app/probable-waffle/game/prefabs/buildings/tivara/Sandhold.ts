@@ -8,7 +8,17 @@ import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../assets/pro
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { setActorData } from "../../../data/actor-data";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { IdComponent } from "../../../entity/actor/components/id-component";
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
+import { ContainerComponent, ContainerDefinition } from "../../../entity/building/container-component";
+import {
+  ResourceDrainComponent,
+  ResourceDrainDefinition
+} from "../../../entity/economy/resource/resource-drain-component";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
+import TivaraWorkerMale from "../../characters/tivara/TivaraWorkerMale";
+import TivaraWorkerFemale from "../../characters/tivara/TivaraWorkerFemale";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -34,11 +44,23 @@ export default class Sandhold extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100,
           maxArmor: 50
-        } satisfies HealthDefinition)
+        } satisfies HealthDefinition),
+        new ContainerComponent(this, {
+          capacity: 2
+        } satisfies ContainerDefinition),
+        new ResourceDrainComponent(this, {
+          resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Ambrosia]
+        } satisfies ResourceDrainDefinition),
+        new ProductionComponent(this, {
+          queueCount: 1,
+          capacityPerQueue: 5,
+          availableProductGameObjectClasses: [TivaraWorkerMale.name, TivaraWorkerFemale.name]
+        } satisfies ProductionDefinition)
       ],
       []
     );
@@ -51,14 +73,6 @@ export default class Sandhold extends Phaser.GameObjects.Container {
       ease: "Sine.InOut",
       yoyo: true, // reverse the animation after it completes
       loop: -1 // loop indefinitely
-    });
-
-    this.on("pointerdown", () => {
-      sandhold_building.setTint(0xff0000); // Tint to red
-      // tint back to transparent after 1 second
-      setTimeout(() => {
-        sandhold_building.clearTint();
-      }, 1000);
     });
 
     // spawn crystal every 4-6 seconds

@@ -1,14 +1,12 @@
 import { Actor } from "../entity/actor/actor";
-import { DEPRECATEDownerComponent } from "../entity/actor/components/DEPRECATEDowner-component";
-import { ActorAbleToBeBuiltClass } from "../entity/actor/components/builder-component";
 import { TransformComponent } from "../entity/actor/components/transformable-component";
-import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../data/actor-component";
+import { OwnerComponent } from "../entity/actor/components/owner-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameplayLibrary {
-  static getMissingRequirementsFor(ownedActor: Actor, desiredProduct: ActorAbleToBeBuiltClass): Actor | false {
-    const ownerComponent = ownedActor.components.findComponentOrNull(DEPRECATEDownerComponent);
+  static getMissingRequirementsFor(ownedActor: GameObject, desiredProduct: string): Actor | false {
+    const ownerComponent = getActorComponent(ownedActor, OwnerComponent);
 
     if (!ownerComponent) {
       return false;

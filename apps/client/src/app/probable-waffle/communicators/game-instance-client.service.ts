@@ -152,7 +152,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         switch (payload.property) {
           case "joined":
             currentUserHasJoined =
-              !!this.authService.userId && payload.data.playerControllerData!.userId === this.authService.userId;
+              // offline
+              (!this.authService.userId &&
+                payload.data.playerControllerData!.playerDefinition!.playerType === ProbableWafflePlayerType.Human) ||
+              // logged in
+              (!!this.authService.userId && payload.data.playerControllerData!.userId === this.authService.userId);
             if (currentUserHasJoined) {
               this.currentPlayerNumber = payload.data.playerControllerData!.playerDefinition!.player.playerNumber;
             }

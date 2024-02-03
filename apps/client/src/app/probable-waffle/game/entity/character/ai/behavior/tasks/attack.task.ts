@@ -1,9 +1,10 @@
 import { ITask, TaskData, TaskResultType } from "./task.interface";
 import { AttackComponent } from "../../../../combat/components/attack-component";
+import { getActorComponent } from "../../../../../data/actor-component";
 
 export class AttackTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
-    const attackComponent = taskData.owner.components.findComponentOrNull(AttackComponent);
+    const attackComponent = getActorComponent(taskData.owner, AttackComponent);
     if (!attackComponent) {
       return TaskResultType.Failure;
     }

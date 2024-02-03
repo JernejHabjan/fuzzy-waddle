@@ -5,7 +5,7 @@ import { FlyMovementComponent } from "./fly-movement-component";
 import { FlySoundComponent } from "./fly-sound-component";
 import { FlyHealthComponent } from "./fly-health-component";
 import { Fly } from "../fly";
-import { DamageTypes } from "../../../../probable-waffle/game/entity/combat/damage-types";
+import { DamageType } from "../../../../probable-waffle/game/entity/combat/damage-type";
 
 export class FlyHealthSystem implements IComponent {
   private flyPrefabPointerHitSubscription!: Subscription;
@@ -28,7 +28,7 @@ export class FlyHealthSystem implements IComponent {
 
   private flyHit = () => {
     if (this.fly.killed) return;
-    this.healthComponent.takeDamage(1, DamageTypes.DamageTypeNormal);
+    this.healthComponent.takeDamage(1, DamageType.Physical);
     if (this.healthComponent.isAlive()) {
       this.flySoundComponent.playHitSound();
     }
