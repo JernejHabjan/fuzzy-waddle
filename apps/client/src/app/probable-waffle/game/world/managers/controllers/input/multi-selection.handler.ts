@@ -1,7 +1,16 @@
-import { GameObjects, Geom, Input } from "phaser";
+import Phaser, { GameObjects, Geom, Input } from "phaser";
 import HudProbableWaffle from "../../../../scenes/HudProbableWaffle";
 
+export const MULTI_SELECTING = "multiSelecting";
+
 export class MultiSelectionHandler {
+  private _multiSelecting = false;
+  set multiSelecting(value: boolean) {
+    if (this._multiSelecting === value) return;
+    this._multiSelecting = value;
+    this.hudScene.events.emit(MULTI_SELECTING, value);
+  }
+
   private selection: GameObjects.Rectangle;
   private selectionRect: Geom.Rectangle | null = null;
 
@@ -53,14 +62,18 @@ export class MultiSelectionHandler {
     this.selection.width = 0;
     this.selection.height = 0;
     this.selectionRect = null;
+    this.multiSelecting = false;
   }
 
   private handlePointerUp(pointer: Input.Pointer) {
+    const isShiftDown = pointer.event.shiftKey;
+    const isCtrlDown = pointer.event.ctrlKey;
     if (!pointer.rightButtonReleased()) {
-      this.sendSelection("multiSelect");
+      this.sendSelection("multiSelect", isShiftDown, isCtrlDown);
 
       this.hideSelectionRectangle();
     }
+    this.multiSelecting = false;
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
@@ -74,6 +87,11 @@ export class MultiSelectionHandler {
 
     this.selection.width += dx;
     this.selection.height += dy;
+
+    // check if rectangle is at least 10x10 (absolute value)
+    if (Math.abs(this.selection.width) < 10 || Math.abs(this.selection.height) < 10) {
+      return;
+    }
 
     // create a new Rectangle
     this.selectionRect = new Geom.Rectangle(
@@ -94,11 +112,14 @@ export class MultiSelectionHandler {
       this.selectionRect.height *= -1;
     }
 
+    this.multiSelecting = true;
+    const isShiftDown = pointer.event.shiftKey;
+    const isCtrlDown = pointer.event.ctrlKey;
     // use the new Rectangle to check for overlap
-    this.sendSelection("multiSelectPreview");
+    this.sendSelection("multiSelectPreview", isShiftDown, isCtrlDown);
   }
 
-  private sendSelection(type: "multiSelectPreview" | "multiSelect") {
+  private sendSelection(type: "multiSelectPreview" | "multiSelect", shiftKey = false, ctrlKey = false) {
     if (!this.selectionRect) return;
     this.hudScene.communicator.selection!.sendLocally({
       gameInstanceId: this.hudScene.gameInstanceId,
@@ -110,7 +131,9 @@ export class MultiSelectionHandler {
           y: this.selectionRect.y,
           width: this.selectionRect.width,
           height: this.selectionRect.height
-        }
+        },
+        shiftKey,
+        ctrlKey
       }
     });
   }

@@ -14,6 +14,7 @@ import {
 } from "../../../../entity/building/production/production-cost-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
+import { IdComponent } from "../../../../entity/actor/components/id-component";
 /* END-USER-IMPORTS */
 
 export default class WallBottomLeftBottomRight extends Phaser.GameObjects.Image {
@@ -39,6 +40,7 @@ export default class WallBottomLeftBottomRight extends Phaser.GameObjects.Image 
       this,
       [
         new OwnerComponent(this),
+        new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

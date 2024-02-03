@@ -22,6 +22,7 @@ import {
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
 import SkaduweeWorkerMale from "../../characters/skaduwee/SkaduweeWorkerMale";
 import SkaduweeWorkerFemale from "../../characters/skaduwee/SkaduweeWorkerFemale";
+import { IdComponent } from "../../../entity/actor/components/id-component";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -87,6 +88,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

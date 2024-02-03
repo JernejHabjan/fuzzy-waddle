@@ -11,6 +11,7 @@ import {
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { IdComponent } from "../../../entity/actor/components/id-component";
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 import {
   ProductionCostComponent,
@@ -52,6 +53,7 @@ export default class Owlery extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

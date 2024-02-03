@@ -11,6 +11,7 @@ import {
   ResourceSourceDefinition
 } from "../../../../../entity/economy/resource/resource-source-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { IdComponent } from "../../../../../entity/actor/components/id-component";
 /* END-USER-IMPORTS */
 
 export default class Tree6 extends Phaser.GameObjects.Image {
@@ -31,6 +32,7 @@ export default class Tree6 extends Phaser.GameObjects.Image {
     setActorData(
       this,
       [
+        new IdComponent(),
         new SelectableComponent(this),
         new ResourceSourceComponent(this, {
           resourceType: ResourceType.Wood,

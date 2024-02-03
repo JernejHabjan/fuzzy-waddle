@@ -39,15 +39,15 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
 
   create() {
     super.create();
-
-    this.scene.get<HudProbableWaffle>("HudProbableWaffle").scene.start();
+    const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle");
+    hud.scene.start();
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     new CameraMovementHandler(this);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-    new SingleSelectionHandler(this, this.tilemap);
+    new SingleSelectionHandler(this, hud, this.tilemap);
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
     new SceneActorCreator(this);

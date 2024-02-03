@@ -11,6 +11,24 @@ export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerState,
   ProbableWafflePlayerController
 > {
+  setSelectedActor(guid: string) {
+    if (!this.playerState.data.selection.includes(guid)) {
+      this.playerState.data.selection.push(guid);
+    }
+  }
+
+  removeSelectedActor(guid: string) {
+    this.playerState.data.selection = this.playerState.data.selection.filter((id) => id !== guid);
+  }
+
+  getSelection() {
+    return this.playerState.data.selection;
+  }
+
+  clearSelection() {
+    this.playerState.data.selection = [];
+  }
+
   get playerNumber(): number | undefined {
     return this.playerController.data.playerDefinition?.player.playerNumber ?? undefined;
   }
@@ -58,6 +76,7 @@ export class ProbableWafflePlayer extends BasePlayer<
 export interface ProbableWafflePlayerStateData extends BaseData {
   resources: PlayerStateResources;
   summary: PlayerStateAction[];
+  selection: string[]; // guid from idComponent
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
@@ -74,7 +93,8 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
         [ResourceType.Stone]: 0,
         [ResourceType.Wood]: 0
       },
-      summary: []
+      summary: [],
+      selection: []
     };
   }
 }
