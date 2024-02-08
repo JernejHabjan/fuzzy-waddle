@@ -11,12 +11,13 @@ import { SceneGameState } from "../world/managers/game-state/scene-game-state";
 import { ProbableWaffleGameData } from "./probable-waffle-game-data";
 import { SaveGame } from "../data/save-game";
 import { SceneActorCreator } from "./components/scene-actor-creator";
+import { NavigationService } from "./services/navigation.service";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
-  systems: Record<string, any>; // todo use
+  systems: any[]; // todo use
   components: any[]; // todo use
-  services: Record<string, any>; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
+  services: any[]; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
 }
 
 export class GameProbableWaffleScene extends ProbableWaffleScene {
@@ -28,9 +29,9 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
 
   private sceneGameData: GameProbableWaffleSceneData = {
     baseGameData: this.baseGameData,
-    systems: {}, // todo use
+    systems: [], // todo use
     components: [],
-    services: {} // todo use
+    services: [] // todo use
   } satisfies GameProbableWaffleSceneData;
 
   init() {
@@ -51,5 +52,6 @@ export class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
     new SceneActorCreator(this);
+    this.sceneGameData.services.push(new NavigationService(this, this.tilemap));
   }
 }

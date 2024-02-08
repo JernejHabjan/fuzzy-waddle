@@ -23,7 +23,7 @@ export class Pathfinder {
 
   constructor(private readonly scene: Scene) {}
 
-  private static getTileWorldCenterByPath(path: Vector2Simple): Vector2Simple {
+  public static getTileWorldCenterByPath(path: Vector2Simple): Vector2Simple {
     return TilemapHelper.getTileWorldCenterByTilemapTileXY(path, {
       centerOfTile: true
     });
