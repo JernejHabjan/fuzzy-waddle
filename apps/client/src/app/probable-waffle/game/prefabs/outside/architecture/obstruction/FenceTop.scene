@@ -1,0 +1,39 @@
+{
+    "id": "33eba8e6-5b92-4639-8c95-37073f210ca1",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "snapWidth": 4,
+        "snapHeight": 4,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 80
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "f2466051-cf4a-4574-8d64-2c552c557a05",
+            "label": "architecture_obstruction_fence_top_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-0.08228049345267863 41.629732112627394 27.372465006994624 28.35161883422925 27.971477636095294 19.46626483590267 35.459135499853645 19.26659395953578 36.4574898816881 28.451454272412693 64.1824189574486 41.733423138690846 64.1824189574486 59.84567177298093 36.55732531987154 46.52166858361619 35.85847725258743 50.814592425504316 27.572135883361515 50.41525067277053 27.072958692444292 46.62150402179963 0.05526838739454476 60.00884518410066",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/obstruction/fence/top.png"
+            },
+            "x": 32,
+            "y": 40
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
