@@ -20,6 +20,7 @@ import { RequirementsComponent, RequirementsDefinition } from "../../../entity/a
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
 import AnkGuard from "./AnkGuard";
 import TivaraSlingshotFemale from "../../characters/tivara/TivaraSlingshotFemale";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -56,6 +57,9 @@ export default class Temple extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

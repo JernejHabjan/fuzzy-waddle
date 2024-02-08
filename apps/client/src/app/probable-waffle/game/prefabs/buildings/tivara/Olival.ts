@@ -18,6 +18,7 @@ import {
 import { PaymentType } from "../../../entity/building/payment-type";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import Sandhold from "./Sandhold";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -49,6 +50,9 @@ export default class Olival extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

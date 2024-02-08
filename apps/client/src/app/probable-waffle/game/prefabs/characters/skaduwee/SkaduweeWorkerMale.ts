@@ -26,6 +26,7 @@ import { GathererComponent, GathererDefinition } from "../../../entity/actor/com
 import FrostForge from "../../buildings/skaduwee/FrostForge";
 import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import Owlery from "../../buildings/skaduwee/Owlery";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
@@ -41,6 +42,9 @@ export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

@@ -20,6 +20,7 @@ import { ProductionComponent, ProductionDefinition } from "../../../entity/build
 import SkaduweeMagicianFemale from "../../characters/skaduwee/SkaduweeMagicianFemale";
 import SkaduweeRangedFemale from "../../characters/skaduwee/SkaduweeRangedFemale";
 import SkaduweeWarriorMale from "../../characters/skaduwee/SkaduweeWarriorMale";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -60,6 +61,9 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

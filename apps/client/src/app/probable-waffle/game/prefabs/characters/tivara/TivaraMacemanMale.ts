@@ -22,6 +22,7 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ContainableComponent } from "../../../entity/actor/components/containable-component";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import AnkGuard from "../../buildings/tivara/AnkGuard";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
@@ -40,6 +41,9 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

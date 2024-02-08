@@ -20,6 +20,7 @@ import { DamageType } from "../../../entity/combat/damage-type";
 import { AttackData } from "../../../entity/combat/attack-data";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { ContainableComponent } from "../../../entity/actor/components/containable-component";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -35,6 +36,9 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

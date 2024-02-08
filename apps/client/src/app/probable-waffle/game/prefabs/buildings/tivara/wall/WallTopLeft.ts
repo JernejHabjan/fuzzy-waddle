@@ -15,6 +15,7 @@ import {
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
+import { VisionComponent, VisionDefinition } from "../../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class WallTopLeft extends Phaser.GameObjects.Image {
@@ -40,6 +41,9 @@ export default class WallTopLeft extends Phaser.GameObjects.Image {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

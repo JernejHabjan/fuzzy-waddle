@@ -27,6 +27,7 @@ import Sandhold from "../../buildings/tivara/Sandhold";
 import AnkGuard from "../../buildings/tivara/AnkGuard";
 import Olival from "../../buildings/tivara/Olival";
 import Temple from "../../buildings/tivara/Temple";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -42,6 +43,9 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

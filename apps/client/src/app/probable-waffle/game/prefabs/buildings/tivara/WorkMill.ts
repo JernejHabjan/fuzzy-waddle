@@ -20,6 +20,7 @@ import {
   ResourceDrainComponent,
   ResourceDrainDefinition
 } from "../../../entity/economy/resource/resource-drain-component";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -47,6 +48,9 @@ export default class WorkMill extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
