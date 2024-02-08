@@ -19,6 +19,11 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
 import TivaraWorkerMale from "../../characters/tivara/TivaraWorkerMale";
 import TivaraWorkerFemale from "../../characters/tivara/TivaraWorkerFemale";
+import {
+  ProductionCostComponent,
+  ProductionCostDefinition
+} from "../../../entity/building/production/production-cost-component";
+import { PaymentType } from "../../../entity/building/payment-type";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -50,6 +55,15 @@ export default class Sandhold extends Phaser.GameObjects.Container {
           maxHealth: 100,
           maxArmor: 50
         } satisfies HealthDefinition),
+        new ProductionCostComponent(this, {
+          resources: {
+            [ResourceType.Wood]: 10,
+            [ResourceType.Minerals]: 10
+          },
+          refundFactor: 0.5,
+          productionTime: 1000,
+          costType: PaymentType.PayImmediately
+        } satisfies ProductionCostDefinition),
         new ContainerComponent(this, {
           capacity: 2
         } satisfies ContainerDefinition),

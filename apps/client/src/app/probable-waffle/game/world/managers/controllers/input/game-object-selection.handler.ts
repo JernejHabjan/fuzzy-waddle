@@ -5,6 +5,10 @@ import { SelectableComponent } from "../../../../entity/actor/components/selecta
 import { getGameObjectBounds } from "../../../../data/game-object-helper";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { getPlayerController } from "../../../../data/scene-data";
+import { AttackComponent } from "../../../../entity/combat/components/attack-component";
+import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
+import { HealthComponent } from "../../../../entity/combat/components/health-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameObjectSelectionHandler {
   private sub!: Subscription;
@@ -46,14 +50,16 @@ export class GameObjectSelectionHandler {
           break;
         case "multiSelect":
           const area = selection.data!.selectedArea!;
-          console.log("multiSelect", area);
+          // console.log("multiSelect", area);
+          const actorsUnderArea = this.getSelectableComponentsUnderSelectedArea(area);
+          const actorsWithHighestPriority = this.getChildrenWithHighestPriority(actorsUnderArea);
           if (selection.data!.shiftKey) {
-            this.getSelectableComponentsUnderSelectedArea(area).forEach((actor) => this.deselectActor(actor));
+            actorsUnderArea.forEach((actor) => this.deselectActor(actor));
           } else if (selection.data!.ctrlKey) {
-            this.getSelectableComponentsUnderSelectedArea(area).forEach((actor) => this.selectActor(actor));
+            actorsWithHighestPriority.forEach((actor) => this.selectActor(actor));
           } else {
             this.deselectActorsForPlayer();
-            this.getSelectableComponentsUnderSelectedArea(area).forEach((actor) => this.selectActor(actor));
+            actorsWithHighestPriority.forEach((actor) => this.selectActor(actor));
           }
           break;
         case "multiSelectPreview":
@@ -144,6 +150,41 @@ export class GameObjectSelectionHandler {
 
       return actorOverlapPercentageWidth > minOverlapPercentage && actorOverlapPercentageHeight > minOverlapPercentage;
     });
+  }
+
+  /**
+   *  most important - those that have AttackComponent
+   *  next - those that have ProductionCostComponent
+   *  next - those that have health component
+   *  others
+   */
+  private getChildrenWithHighestPriority(children: GameObject[]): GameObject[] {
+    const grouped: { priority: number; actors: Phaser.GameObjects.GameObject[] }[] = [];
+
+    children.forEach((actor) => {
+      const attackComponent = getActorComponent(actor, AttackComponent);
+      if (attackComponent) {
+        grouped.push({ priority: 0, actors: [actor] });
+      }
+
+      const productionCostComponent = getActorComponent(actor, ProductionCostComponent);
+      if (productionCostComponent) {
+        grouped.push({ priority: 1, actors: [actor] });
+      }
+
+      const healthComponent = getActorComponent(actor, HealthComponent);
+      if (healthComponent) {
+        grouped.push({ priority: 2, actors: [actor] });
+      }
+      grouped.push({ priority: 3, actors: [actor] });
+    });
+
+    // return actors with the highest priority
+    const highestPriority = Math.min(...grouped.map((group) => group.priority));
+    return grouped
+      .filter((group) => group.priority === highestPriority)
+      .map((group) => group.actors)
+      .flat();
   }
 
   private destroy() {
