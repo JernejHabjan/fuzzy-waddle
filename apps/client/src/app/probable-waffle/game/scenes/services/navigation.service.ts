@@ -1,11 +1,17 @@
 import EasyStar from "easystarjs";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { Pathfinder } from "../../world/map/pathfinder";
+import Phaser from "phaser";
+import { getActorComponent } from "../../data/actor-component";
+import { WalkableComponent } from "../../entity/actor/components/walkable-component";
+import { ColliderComponent } from "../../entity/actor/components/collider-component";
+import { getTileIndexesUnderObject } from "../../library/tile-under-object";
+import { drawDebugPath } from "../../debug/debug-path";
 
 export class NavigationService {
   private easyStar: EasyStar.js;
   private grid: number[][] = [];
   private tilemapGrid: number[][] = [];
+  private readonly DEBUG = true;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -18,12 +24,19 @@ export class NavigationService {
 
     this.updateNavigation();
 
-    this.find({ x: 25, y: 25 }, { x: 33, y: 33 }); // todo for test
+    this.find({ x: 33, y: 33 }, { x: 5, y: 10 }); // todo for test
   }
 
   private setup() {
     const objectsGrid = this.extractGridFromObjects();
-    this.grid = this.tilemapGrid.map((row, i) => row.map((tile, j) => tile + objectsGrid[i][j]));
+    this.grid = this.tilemapGrid.map((row, i) =>
+      row.map((tile, j) => {
+        const objectValue = objectsGrid[i][j];
+        if (objectValue === 0) return 0; // walkable object
+        if (objectValue === 1) return 1; // blocked by object
+        return tile; // tilemap grid
+      })
+    );
     this.setupNavigation();
   }
 
@@ -38,38 +51,11 @@ export class NavigationService {
             resolve([]);
             return;
           }
-          // draw straight line from start to end colored red
-          let graphics = this.scene.add.graphics();
-          graphics.lineStyle(2, 0xff0000, 1);
-          graphics.beginPath();
-          let tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
-          graphics.moveTo(tileCenter.x, tileCenter.y);
-          tileCenter = Pathfinder.getTileWorldCenterByPath(path[path.length - 1]);
-          graphics.lineTo(tileCenter.x, tileCenter.y);
-          graphics.strokePath();
 
-          // draw phaser line from one point to the next
-          graphics = this.scene.add.graphics();
-          graphics.lineStyle(2, 0xffffff, 1);
-          graphics.beginPath();
-          tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
-          graphics.moveTo(tileCenter.x, tileCenter.y);
-
-          const allTileWorldXYCentersWithoutFirst = path.map((path) => Pathfinder.getTileWorldCenterByPath(path));
-          allTileWorldXYCentersWithoutFirst.shift();
-
-          for (let i = 0; i < path.length - 1; i++) {
-            tileCenter = allTileWorldXYCentersWithoutFirst[i];
-            graphics.lineTo(tileCenter.x, tileCenter.y);
+          if (this.DEBUG) {
+            drawDebugPath(this.scene, this.tilemap, path);
           }
-          graphics.strokePath();
-
-          // map all tileXYPathWithoutFirst to tilePlacementWorldWithProperties
-          const tilePlacementWorldWithPropertiesPath = path.map((tileXY) => ({
-            x: tileXY.x,
-            y: tileXY.y
-          }));
-          resolve(tilePlacementWorldWithPropertiesPath);
+          resolve(path);
         }
       });
       this.easyStar.calculate();
@@ -89,15 +75,77 @@ export class NavigationService {
     this.tilemapGrid = grid;
   }
 
-  private extractGridFromObjects(): number[][] {
-    const emptyGrid = this.tilemapGrid.map((row) => row.map(() => 0));
+  /**
+   * Undefined by default
+   * 0 for walkable
+   * 1 for blocked
+   */
+  private extractGridFromObjects(): (number | undefined)[][] {
+    const emptyGrid: (number | undefined)[][] = this.tilemapGrid.map((row) => row.map(() => undefined));
 
-    // todo
-    // get objects from scene - if bridge, set grid to 0
-    // if wall, set grid to 1
-    // if navigatable wall, set grid to 0
+    const tileIndexesUnderColliders = this.getTileIndexesUnderColliders();
+    const actualTilesUnderColliders = tileIndexesUnderColliders.map((tileIndex) =>
+      this.tilemap.getTileAt(tileIndex.x, tileIndex.y)
+    );
+    // tint tiles to red
+    actualTilesUnderColliders.forEach((tile) => {
+      if (!tile) return;
+      if (this.DEBUG) tile.tint = 0xff0000;
+      emptyGrid[tile.y][tile.x] = 1;
+    });
+
+    const walkables = this.getTileIndexesForWalkables();
+    const actualWalkableTiles = walkables.map((tileIndex) => this.tilemap.getTileAt(tileIndex.x, tileIndex.y));
+    // tint tiles to green
+    actualWalkableTiles.forEach((tile) => {
+      if (!tile) return;
+      if (this.DEBUG) tile.tint = 0x00ff00;
+      emptyGrid[tile.y][tile.x] = 0;
+    });
 
     return emptyGrid;
+  }
+
+  /**
+   * Returns all tile indexes under colliders
+   */
+  private getTileIndexesUnderColliders(): Vector2Simple[] {
+    const colliders: Vector2Simple[] = [];
+    this.scene.children.each((child) => {
+      const colliderComponent = getActorComponent(child, ColliderComponent);
+      if (!colliderComponent) return;
+      const tilesUnderObject = getTileIndexesUnderObject(this.tilemap, child);
+      colliders.push(...tilesUnderObject);
+    });
+    return colliders;
+  }
+
+  /**
+   * Returns all tile indexes under walkables (bridge, stairs, etc.)
+   */
+  private getTileIndexesForWalkables(): Vector2Simple[] {
+    const walkables: Vector2Simple[] = [];
+    this.scene.children.each((child) => {
+      const walkableComponent = getActorComponent(child, WalkableComponent);
+      if (!walkableComponent) return;
+      const tilesUnderObject: Vector2Simple[] = getTileIndexesUnderObject(this.tilemap, child);
+      const { shrinkX, shrinkY } = WalkableComponent.handleWalkable(child);
+
+      const minX = Math.min(...tilesUnderObject.map((tile) => tile.x));
+      const maxX = Math.max(...tilesUnderObject.map((tile) => tile.x));
+      const minY = Math.min(...tilesUnderObject.map((tile) => tile.y));
+      const maxY = Math.max(...tilesUnderObject.map((tile) => tile.y));
+      const shrinkedTiles = tilesUnderObject.filter((tile) => {
+        const x = tile.x;
+        const y = tile.y;
+        const isShrinkedX = x >= minX + shrinkX && x <= maxX - shrinkX;
+        const isShrinkedY = y >= minY + shrinkY && y <= maxY - shrinkY;
+        return isShrinkedX && isShrinkedY;
+      });
+
+      walkables.push(...shrinkedTiles);
+    });
+    return walkables;
   }
 
   private setupNavigation() {

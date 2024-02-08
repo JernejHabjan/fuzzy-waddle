@@ -4,22 +4,28 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../../data/actor-data";
+import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class ChimneyShort extends Phaser.GameObjects.Image {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 16, y ?? 24, texture || "outside", frame ?? "architecture/chimneys/chimney_short.png");
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 16, y ?? 24, texture || "outside", frame ?? "architecture/chimneys/chimney_short.png");
+    this.setInteractive(
+      new Phaser.Geom.Polygon(
+        "0 8 16 0 32 8 32.04202888733553 24.466066423095242 16.04827544949468 32 0.05452265115179422 24.614156729744238"
+      ),
+      Phaser.Geom.Polygon.Contains
+    );
+    this.setOrigin(0.5, 0.75);
 
-		this.setInteractive(new Phaser.Geom.Polygon("0 8 16 0 32 8 32.04202888733553 24.466066423095242 16.04827544949468 32 0.05452265115179422 24.614156729744238"), Phaser.Geom.Polygon.Contains);
-		this.setOrigin(0.5, 0.75);
-
-		/* START-USER-CTR-CODE */
-    // Write your code here.
+    /* START-USER-CTR-CODE */
+    setActorData(this, [new ColliderComponent()], []);
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
 
   // Write your code here.
 

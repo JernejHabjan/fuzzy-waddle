@@ -21,6 +21,7 @@ import { ProductionComponent, ProductionDefinition } from "../../../entity/build
 import AnkGuard from "./AnkGuard";
 import TivaraSlingshotFemale from "../../characters/tivara/TivaraSlingshotFemale";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -81,7 +82,8 @@ export default class Temple extends Phaser.GameObjects.Container {
           queueCount: 1,
           capacityPerQueue: 5,
           availableProductGameObjectClasses: [TivaraSlingshotFemale.name]
-        } satisfies ProductionDefinition)
+        } satisfies ProductionDefinition),
+        new ColliderComponent()
       ],
       []
     );

@@ -12,6 +12,7 @@ import {
 } from "../../../../../entity/economy/resource/resource-source-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../../../../../entity/actor/components/id-component";
+import { ColliderComponent } from "../../../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class Tree7 extends Phaser.GameObjects.Image {
@@ -33,6 +34,7 @@ export default class Tree7 extends Phaser.GameObjects.Image {
       this,
       [
         new IdComponent(),
+        new ColliderComponent(),
         new SelectableComponent(this),
         new ResourceSourceComponent(this, {
           resourceType: ResourceType.Wood,

@@ -19,6 +19,7 @@ import { PaymentType } from "../../../entity/building/payment-type";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import Sandhold from "./Sandhold";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -69,7 +70,8 @@ export default class Olival extends Phaser.GameObjects.Container {
         } satisfies ProductionCostDefinition),
         new RequirementsComponent(this, {
           actors: [Sandhold.name]
-        } satisfies RequirementsDefinition)
+        } satisfies RequirementsDefinition),
+        new ColliderComponent()
       ],
       []
     );

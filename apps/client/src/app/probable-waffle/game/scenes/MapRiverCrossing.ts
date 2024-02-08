@@ -86,20 +86,24 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
+    // christmasTree
+    const christmasTree = new ChristmasTree(this, -288, 1184);
+    this.add.existing(christmasTree);
+
     // christmasTree_1
-    const christmasTree_1 = new ChristmasTree(this, -130, 1196);
+    const christmasTree_1 = new ChristmasTree(this, -128, 1168);
     this.add.existing(christmasTree_1);
 
     // sheep_2
-    const sheep_2 = new Sheep(this, -144, 1280);
+    const sheep_2 = new Sheep(this, -144, 1264);
     this.add.existing(sheep_2);
 
     // nature_grass_grass_0_png
-    const nature_grass_grass_0_png = this.add.image(-92, 1266, "outside", "nature/grass/grass_0.png");
+    const nature_grass_grass_0_png = this.add.image(-80, 1248, "outside", "nature/grass/grass_0.png");
     nature_grass_grass_0_png.setOrigin(0.5, 0.75);
 
     // fenceRight
-    const fenceRight = new FenceRight(this, -50, 1260);
+    const fenceRight = new FenceRight(this, -48, 1248);
     this.add.existing(fenceRight);
 
     // hedgehog
@@ -107,11 +111,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(hedgehog);
 
     // foliage_tall_grass_tall_grass_7_png
-    const foliage_tall_grass_tall_grass_7_png = this.add.image(-261, 1256, "outside", "foliage/tall_grass/tall_grass_7.png");
+    const foliage_tall_grass_tall_grass_7_png = this.add.image(-256, 1248, "outside", "foliage/tall_grass/tall_grass_7.png");
     foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
 
     // tree_12
-    const tree_12 = new Tree7(this, -16, 1376);
+    const tree_12 = new Tree7(this, -32, 1376);
     this.add.existing(tree_12);
 
     // tree_11
@@ -119,15 +123,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_11);
 
     // sandhold
-    const sandhold = new Sandhold(this, 32, 592);
+    const sandhold = new Sandhold(this, 32, 608);
     this.add.existing(sandhold);
 
     // owlery
-    const owlery = new Owlery(this, 1056, 896);
+    const owlery = new Owlery(this, 1024, 912);
     this.add.existing(owlery);
 
     // infantryInn
-    const infantryInn = new InfantryInn(this, 1360, 800);
+    const infantryInn = new InfantryInn(this, 1376, 800);
     this.add.existing(infantryInn);
 
     // ankGuard
@@ -135,15 +139,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(ankGuard);
 
     // temple
-    const temple = new Temple(this, -176, 464);
+    const temple = new Temple(this, -192, 464);
     this.add.existing(temple);
 
     // skaduweeWorkerMale
-    const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
+    const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 816);
     this.add.existing(skaduweeWorkerMale);
 
     // skaduweeWorkerFemale
-    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1088, 1024);
+    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1088, 944);
     this.add.existing(skaduweeWorkerFemale);
 
     // skaduweeRangedFemale
@@ -151,15 +155,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeRangedFemale);
 
     // skaduweeMagicianFemale
-    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1360, 848);
+    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1344, 848);
     this.add.existing(skaduweeMagicianFemale);
 
     // skaduweeWarriorMale
-    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1424, 864);
+    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1408, 848);
     this.add.existing(skaduweeWarriorMale);
 
     // generalWarrior
-    const generalWarrior = new GeneralWarrior(this, 144, 1360);
+    const generalWarrior = new GeneralWarrior(this, 128, 1360);
     this.add.existing(generalWarrior);
 
     // tivaraSlingshotFemale
@@ -171,11 +175,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 736);
+    const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 720);
     this.add.existing(tivaraWorkerMale);
 
     // foliage_tall_grass_tall_grass_8_png
-    const foliage_tall_grass_tall_grass_8_png = this.add.image(-162, 1305, "outside", "foliage/tall_grass/tall_grass_8.png");
+    const foliage_tall_grass_tall_grass_8_png = this.add.image(-160, 1296, "outside", "foliage/tall_grass/tall_grass_8.png");
     foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
     // tivaraMacemanMale
@@ -183,7 +187,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraMacemanMale);
 
     // olival
-    const olival = new Olival(this, 160, 784);
+    const olival = new Olival(this, 128, 784);
     this.add.existing(olival);
 
     // wallTopLeftTopRight
@@ -207,7 +211,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDownwardsLarge);
 
     // bridgeStone
-    const bridgeStone = new BridgeStone(this, -99, 882);
+    const bridgeStone = new BridgeStone(this, -96, 848);
     this.add.existing(bridgeStone);
 
     // blockStone2
@@ -247,11 +251,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(blockStone_4);
 
     // treeTrunk
-    const treeTrunk = new TreeTrunk(this, -681, 537);
+    const treeTrunk = new TreeTrunk(this, -672, 528);
     this.add.existing(treeTrunk);
 
     // rampStoneTopRight
-    const rampStoneTopRight = new RampStoneTopRight(this, -64, 112);
+    const rampStoneTopRight = new RampStoneTopRight(this, -64, 96);
     this.add.existing(rampStoneTopRight);
 
     // rampStoneTopLeft
@@ -315,19 +319,19 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree4);
 
     // tree7
-    const tree7 = new Tree7(this, -720, 400);
+    const tree7 = new Tree7(this, -736, 400);
     this.add.existing(tree7);
 
     // tree6
-    const tree6 = new Tree6(this, -656, 400);
+    const tree6 = new Tree6(this, -672, 400);
     this.add.existing(tree6);
 
     // tree_1
-    const tree_1 = new Tree7(this, -624, 448);
+    const tree_1 = new Tree7(this, -608, 448);
     this.add.existing(tree_1);
 
     // tree_2
-    const tree_2 = new Tree4(this, -912, 848);
+    const tree_2 = new Tree4(this, -928, 848);
     this.add.existing(tree_2);
 
     // tree1
@@ -335,7 +339,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree1);
 
     // tree_3
-    const tree_3 = new Tree4(this, -896, 1040);
+    const tree_3 = new Tree4(this, -896, 1024);
     this.add.existing(tree_3);
 
     // treeTrunk_1
@@ -343,27 +347,27 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(treeTrunk_1);
 
     // tree_4
-    const tree_4 = new Tree5(this, 432, 1312);
+    const tree_4 = new Tree5(this, 448, 1312);
     this.add.existing(tree_4);
 
     // tree_5
-    const tree_5 = new Tree6(this, 29, 1424);
+    const tree_5 = new Tree6(this, 32, 1424);
     this.add.existing(tree_5);
 
     // bushDry
-    const bushDry = new BushDry(this, 761, 1046);
+    const bushDry = new BushDry(this, 768, 1040);
     this.add.existing(bushDry);
 
     // bushDry_1
-    const bushDry_1 = new BushDry(this, -1072, 944);
+    const bushDry_1 = new BushDry(this, -1056, 944);
     this.add.existing(bushDry_1);
 
     // bushDry_2
-    const bushDry_2 = new BushDry(this, 416, 784);
+    const bushDry_2 = new BushDry(this, 416, 800);
     this.add.existing(bushDry_2);
 
     // bushDry_3
-    const bushDry_3 = new BushDry(this, -60, 301);
+    const bushDry_3 = new BushDry(this, -64, 304);
     this.add.existing(bushDry_3);
 
     // bushUpwardsSmall
@@ -375,7 +379,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDownwardsSmall_1);
 
     // bushUpwardsSmall_1
-    const bushUpwardsSmall_1 = new BushUpwardsSmall(this, 52, 1440);
+    const bushUpwardsSmall_1 = new BushUpwardsSmall(this, 32, 1440);
     this.add.existing(bushUpwardsSmall_1);
 
     // bushDry_4
@@ -383,11 +387,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDry_4);
 
     // tree
-    const tree = new Tree5(this, -706, 468);
+    const tree = new Tree5(this, -704, 480);
     this.add.existing(tree);
 
     // workMill
-    const workMill = new WorkMill(this, -566, 516);
+    const workMill = new WorkMill(this, -560, 512);
     this.add.existing(workMill);
 
     // blockStone_12
@@ -415,19 +419,19 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(rockPiles_1);
 
     // tree_6
-    const tree_6 = new Tree7(this, 368, 1328);
+    const tree_6 = new Tree7(this, 384, 1328);
     this.add.existing(tree_6);
 
     // tree_7
-    const tree_7 = new Tree6(this, 304, 1376);
+    const tree_7 = new Tree6(this, 320, 1376);
     this.add.existing(tree_7);
 
     // tree_8
-    const tree_8 = new Tree7(this, 512, 1312);
+    const tree_8 = new Tree7(this, 512, 1328);
     this.add.existing(tree_8);
 
     // tree_9
-    const tree_9 = new Tree5(this, 416, 1376);
+    const tree_9 = new Tree5(this, 384, 1376);
     this.add.existing(tree_9);
 
     // tree_10
@@ -435,11 +439,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_10);
 
     // tree_13
-    const tree_13 = new Tree7(this, 112, 1520);
+    const tree_13 = new Tree7(this, 128, 1520);
     this.add.existing(tree_13);
 
     // tree5
-    const tree5 = new Tree5(this, -788, 484);
+    const tree5 = new Tree5(this, -800, 464);
     this.add.existing(tree5);
 
     // frostForge
@@ -447,7 +451,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(frostForge);
 
     // skaduweeOwl
-    const skaduweeOwl = new SkaduweeOwl(this, 1056, 912);
+    const skaduweeOwl = new SkaduweeOwl(this, 1056, 784);
     this.add.existing(skaduweeOwl);
 
     // tree11
@@ -467,68 +471,64 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_14);
 
     // sheep
-    const sheep = new Sheep(this, -208, 1248);
+    const sheep = new Sheep(this, -224, 1232);
     this.add.existing(sheep);
 
     // fenceTop
-    const fenceTop = new FenceTop(this, -197, 1185);
+    const fenceTop = new FenceTop(this, -192, 1168);
     this.add.existing(fenceTop);
 
     // fenceTopRight
-    const fenceTopRight = new FenceTopRight(this, -164, 1198);
+    const fenceTopRight = new FenceTopRight(this, -160, 1184);
     this.add.existing(fenceTopRight);
 
     // sheep_1
-    const sheep_1 = new Sheep(this, -160, 1232);
+    const sheep_1 = new Sheep(this, -176, 1216);
     this.add.existing(sheep_1);
 
     // fenceTopRight_1
-    const fenceTopRight_1 = new FenceTopRight(this, -132, 1214);
+    const fenceTopRight_1 = new FenceTopRight(this, -128, 1200);
     this.add.existing(fenceTopRight_1);
 
     // fenceTopRight_2
-    const fenceTopRight_2 = new FenceTopRight(this, -100, 1229);
+    const fenceTopRight_2 = new FenceTopRight(this, -96, 1216);
     this.add.existing(fenceTopRight_2);
 
     // fenceTopLeft
-    const fenceTopLeft = new FenceTopLeft(this, -232, 1204);
+    const fenceTopLeft = new FenceTopLeft(this, -224, 1184);
     this.add.existing(fenceTopLeft);
 
     // fenceTopLeft_1
-    const fenceTopLeft_1 = new FenceTopLeft(this, -267, 1221);
+    const fenceTopLeft_1 = new FenceTopLeft(this, -256, 1200);
     this.add.existing(fenceTopLeft_1);
 
     // fenceLeft
-    const fenceLeft = new FenceLeft(this, -313, 1249);
+    const fenceLeft = new FenceLeft(this, -304, 1232);
     this.add.existing(fenceLeft);
 
     // fenceBottomLeft
-    const fenceBottomLeft = new FenceBottomLeft(this, -268, 1281);
+    const fenceBottomLeft = new FenceBottomLeft(this, -256, 1264);
     this.add.existing(fenceBottomLeft);
 
     // fenceBottomLeft_1
-    const fenceBottomLeft_1 = new FenceBottomLeft(this, -235, 1298);
+    const fenceBottomLeft_1 = new FenceBottomLeft(this, -224, 1280);
     this.add.existing(fenceBottomLeft_1);
 
     // fenceBottomLeft_2
-    const fenceBottomLeft_2 = new FenceBottomLeft(this, -202, 1314);
+    const fenceBottomLeft_2 = new FenceBottomLeft(this, -192, 1296);
     this.add.existing(fenceBottomLeft_2);
 
     // fenceBottomRight
-    const fenceBottomRight = new FenceBottomRight(this, -99, 1292);
+    const fenceBottomRight = new FenceBottomRight(this, -96, 1280);
     this.add.existing(fenceBottomRight);
 
     // fenceBottomRight_1
-    const fenceBottomRight_1 = new FenceBottomRight(this, -134, 1311);
+    const fenceBottomRight_1 = new FenceBottomRight(this, -128, 1296);
     this.add.existing(fenceBottomRight_1);
 
     // fenceBottom
-    const fenceBottom = new FenceBottom(this, -168, 1328);
+    const fenceBottom = new FenceBottom(this, -160, 1312);
     this.add.existing(fenceBottom);
-
-    // christmasTree
-    const christmasTree = new ChristmasTree(this, -291, 1208);
-    this.add.existing(christmasTree);
 
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;

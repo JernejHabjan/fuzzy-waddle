@@ -25,6 +25,7 @@ import {
 } from "../../../entity/building/production/production-cost-component";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -45,7 +46,6 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     this.add(hover_crystal);
 
     /* START-USER-CTR-CODE */
-
     setActorData(
       this,
       [
@@ -78,7 +78,8 @@ export default class Sandhold extends Phaser.GameObjects.Container {
           queueCount: 1,
           capacityPerQueue: 5,
           availableProductGameObjectClasses: [TivaraWorkerMale.name, TivaraWorkerFemale.name]
-        } satisfies ProductionDefinition)
+        } satisfies ProductionDefinition),
+        new ColliderComponent()
       ],
       []
     );

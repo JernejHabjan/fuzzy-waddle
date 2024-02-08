@@ -22,6 +22,7 @@ import { PaymentType } from "../../../entity/building/payment-type";
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
 import SkaduweeOwl from "../../units/skaduwee/SkaduweeOwl";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class Owlery extends Phaser.GameObjects.Container {
@@ -75,7 +76,8 @@ export default class Owlery extends Phaser.GameObjects.Container {
           queueCount: 1,
           capacityPerQueue: 5,
           availableProductGameObjectClasses: [SkaduweeOwl.name]
-        } satisfies ProductionDefinition)
+        } satisfies ProductionDefinition),
+        new ColliderComponent()
       ],
       []
     );
