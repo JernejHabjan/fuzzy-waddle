@@ -21,6 +21,7 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
 import SkaduweeOwl from "../../units/skaduwee/SkaduweeOwl";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class Owlery extends Phaser.GameObjects.Container {
@@ -53,6 +54,9 @@ export default class Owlery extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {

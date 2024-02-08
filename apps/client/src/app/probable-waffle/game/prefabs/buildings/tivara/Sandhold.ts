@@ -24,6 +24,7 @@ import {
   ProductionCostDefinition
 } from "../../../entity/building/production/production-cost-component";
 import { PaymentType } from "../../../entity/building/payment-type";
+import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -49,6 +50,9 @@ export default class Sandhold extends Phaser.GameObjects.Container {
       this,
       [
         new OwnerComponent(this),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
         new IdComponent(),
         new SelectableComponent(this),
         new HealthComponent(this, {
