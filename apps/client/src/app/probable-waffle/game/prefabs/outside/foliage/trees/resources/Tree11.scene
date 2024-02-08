@@ -8,8 +8,8 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 92,
-        "borderHeight": 92
+        "borderWidth": 184,
+        "borderHeight": 184
     },
     "displayList": [
         {
@@ -22,8 +22,10 @@
                 "key": "outside",
                 "frame": "foliage/trees/resources/tree11.png"
             },
-            "x": 46,
-            "y": 84.39785986873036,
+            "x": 92,
+            "y": 169,
+            "scaleX": 2,
+            "scaleY": 2,
             "originY": 0.917368042051417
         }
     ],

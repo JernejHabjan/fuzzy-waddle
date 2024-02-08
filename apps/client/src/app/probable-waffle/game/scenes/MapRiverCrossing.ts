@@ -53,9 +53,9 @@ import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockS
 import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
 import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
-import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
+import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import FenceTop from "../prefabs/outside/architecture/obstruction/FenceTop";
 import FenceTopRight from "../prefabs/outside/architecture/obstruction/FenceTopRight";
 import FenceTopLeft from "../prefabs/outside/architecture/obstruction/FenceTopLeft";
@@ -331,15 +331,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_1);
 
     // tree_2
-    const tree_2 = new Tree4(this, -928, 848);
+    const tree_2 = new Tree4(this, -832, 848);
     this.add.existing(tree_2);
 
     // tree1
-    const tree1 = new Tree1(this, -1184, 832);
+    const tree1 = new Tree1(this, -1152, 784);
     this.add.existing(tree1);
 
     // tree_3
-    const tree_3 = new Tree4(this, -896, 1024);
+    const tree_3 = new Tree4(this, -640, 1040);
     this.add.existing(tree_3);
 
     // treeTrunk_1
@@ -347,7 +347,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(treeTrunk_1);
 
     // tree_4
-    const tree_4 = new Tree5(this, 448, 1312);
+    const tree_4 = new Tree5(this, 448, 1328);
     this.add.existing(tree_4);
 
     // tree_5
@@ -387,7 +387,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDry_4);
 
     // tree
-    const tree = new Tree5(this, -704, 480);
+    const tree = new Tree5(this, -704, 464);
     this.add.existing(tree);
 
     // workMill
@@ -423,7 +423,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_6);
 
     // tree_7
-    const tree_7 = new Tree6(this, 320, 1376);
+    const tree_7 = new Tree6(this, 320, 1392);
     this.add.existing(tree_7);
 
     // tree_8
@@ -435,7 +435,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_9);
 
     // tree_10
-    const tree_10 = new Tree7(this, 192, 1440);
+    const tree_10 = new Tree7(this, 192, 1456);
     this.add.existing(tree_10);
 
     // tree_13
@@ -443,7 +443,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_13);
 
     // tree5
-    const tree5 = new Tree5(this, -800, 464);
+    const tree5 = new Tree5(this, -800, 480);
     this.add.existing(tree5);
 
     // frostForge
@@ -454,20 +454,16 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const skaduweeOwl = new SkaduweeOwl(this, 1056, 784);
     this.add.existing(skaduweeOwl);
 
-    // tree11
-    const tree11 = new Tree11(this, -160, 736);
-    this.add.existing(tree11);
-
     // tree10
     const tree10 = new Tree10(this, 672, 576);
     this.add.existing(tree10);
 
     // tree9
-    const tree9 = new Tree9(this, 320, 544);
+    const tree9 = new Tree9(this, 352, 512);
     this.add.existing(tree9);
 
     // tree_14
-    const tree_14 = new Tree11(this, 272, 560);
+    const tree_14 = new Tree11(this, -384, 672);
     this.add.existing(tree_14);
 
     // sheep

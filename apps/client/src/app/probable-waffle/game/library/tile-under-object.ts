@@ -3,6 +3,8 @@ import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds } from "../data/game-object-helper";
 import { environment } from "../../../../environments/environment";
 import { drawDebugPoint } from "../debug/debug-point";
+import { getActorComponent } from "../data/actor-component";
+import { ColliderComponent } from "../entity/actor/components/collider-component";
 
 export function getTileIndexesUnderObject(
   tilemap: Phaser.Tilemaps.Tilemap,
@@ -13,9 +15,11 @@ export function getTileIndexesUnderObject(
   const bounds = getGameObjectBounds(gameObject);
   if (!bounds) return [];
 
+  const reduction = getActorComponent(gameObject, ColliderComponent)?.colliderDefinition?.colliderFactorReduction ?? 0;
+
   const origin = {
     x: bounds.left + bounds.width / 2,
-    y: bounds.top + bounds.height - bounds.width / 4
+    y: bounds.top + bounds.height - bounds.width / 4 + (bounds.width / 8) * reduction
   };
 
   if (DEBUG) drawDebugPoint(gameObject.scene, origin, 0x00ff00);
@@ -24,7 +28,7 @@ export function getTileIndexesUnderObject(
   if (DEBUG && tileUnderOrigin && !environment.production) {
     tileUnderOrigin.tint = 0x00ff00;
   }
-  const nrOfTiles = bounds.width / tilemap.tileWidth;
+  const nrOfTiles = (reduction ? bounds.width * reduction : bounds.width) / tilemap.tileWidth;
   const onEachSide = Math.floor(nrOfTiles / 2);
 
   const tileIndexes1: Vector2Simple[] = [];
