@@ -4,7 +4,6 @@
     "settings": {
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
-        "snapEnabled": true,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -40,15 +39,15 @@
             ]
         },
         {
-            "prefabId": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
-            "id": "be48f7ce-f66c-403f-8dc9-64875869a8a8",
+            "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
+            "id": "cf8ae8e9-caf6-4f98-b413-65bc48e97b01",
             "unlock": [
                 "x",
                 "y"
             ],
-            "label": "hedgehog",
-            "x": 96,
-            "y": 1360
+            "label": "sheep_2",
+            "x": -144,
+            "y": 1280
         },
         {
             "type": "Image",
@@ -63,15 +62,26 @@
             "originY": 0.75
         },
         {
-            "type": "Image",
-            "id": "3429ce0c-7fcf-402a-a36b-6fb2ddc2539d",
-            "label": "architecture_obstruction_fence_left_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/left.png"
-            },
-            "x": -297,
-            "y": 1233
+            "prefabId": "fdf8e2c2-f0e4-45f6-98b5-25a0be5ecb93",
+            "id": "8adadf79-08c8-4964-bbec-83e2af597a89",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceRight",
+            "x": -61,
+            "y": 1248
+        },
+        {
+            "prefabId": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
+            "id": "be48f7ce-f66c-403f-8dc9-64875869a8a8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "hedgehog",
+            "x": 96,
+            "y": 1360
         },
         {
             "type": "Image",
@@ -83,17 +93,6 @@
             },
             "x": -284,
             "y": 1174
-        },
-        {
-            "type": "Image",
-            "id": "e9ed2d21-ca39-488f-a035-472850960757",
-            "label": "architecture_obstruction_fence_top_left_png_1",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top_left.png"
-            },
-            "x": -261,
-            "y": 1219
         },
         {
             "type": "Image",
@@ -117,116 +116,6 @@
             },
             "x": -110,
             "y": 1166
-        },
-        {
-            "type": "Image",
-            "id": "80521525-c678-4c87-bae8-c2c1247d161e",
-            "label": "architecture_obstruction_fence_top_right_png_2",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top_right.png"
-            },
-            "x": -95,
-            "y": 1234
-        },
-        {
-            "type": "Image",
-            "id": "bf279a50-0ed7-485b-91c6-21ba7a6eb635",
-            "label": "architecture_obstruction_fence_right_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/right.png"
-            },
-            "x": -61,
-            "y": 1249
-        },
-        {
-            "type": "Image",
-            "id": "e855255d-18de-4fc4-ba11-9a0bf0e1f60d",
-            "label": "architecture_obstruction_fence_bottom_left_png_2",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/bottom_left.png"
-            },
-            "x": -263,
-            "y": 1250
-        },
-        {
-            "type": "Image",
-            "id": "24aa2023-2f8b-4e8a-b165-d5e99d66e40f",
-            "label": "architecture_obstruction_fence_bottom_left_png_1",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/bottom_left.png"
-            },
-            "x": -229,
-            "y": 1266
-        },
-        {
-            "type": "Image",
-            "id": "6a55c840-26b3-4c04-aa78-132519c72c69",
-            "label": "architecture_obstruction_fence_bottom_left_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/bottom_left.png"
-            },
-            "x": -196,
-            "y": 1281
-        },
-        {
-            "type": "Image",
-            "id": "aa077662-01c0-49d9-af91-a65beefe6b47",
-            "label": "architecture_obstruction_fence_bottom_right_png_1",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/bottom_right.png"
-            },
-            "x": -95,
-            "y": 1266
-        },
-        {
-            "type": "Image",
-            "id": "36c12f69-502e-4dc3-84a1-ba76f0185b3a",
-            "label": "architecture_obstruction_fence_bottom_right_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/bottom_right.png"
-            },
-            "x": -128,
-            "y": 1281
-        },
-        {
-            "type": "Image",
-            "id": "4da6b673-2264-4a5e-aa16-53293d0fbb76",
-            "label": "architecture_obstruction_fence_top_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top.png"
-            },
-            "x": -195,
-            "y": 1187
-        },
-        {
-            "type": "Image",
-            "id": "81db0c37-14bc-4779-a6e7-346037187c6a",
-            "label": "architecture_obstruction_fence_top_right_png_4",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top_right.png"
-            },
-            "x": -163,
-            "y": 1202
-        },
-        {
-            "type": "Image",
-            "id": "9aafdd85-56ed-44e8-a4ae-f907cad603b6",
-            "label": "architecture_obstruction_fence_top_right_png_3",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top_right.png"
-            },
-            "x": -131,
-            "y": 1217
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -318,18 +207,6 @@
             "y": 800
         },
         {
-            "type": "Image",
-            "id": "5fc1a945-a4e3-44f4-af67-cd9e929d3935",
-            "label": "foliage_tall_grass_tall_grass_8_png",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/tall_grass/tall_grass_8.png"
-            },
-            "x": -162,
-            "y": 1305,
-            "originY": 0.75
-        },
-        {
             "prefabId": "415773de-cdc9-4a20-afd1-61fd57044e8a",
             "id": "760d4176-106c-41b8-8c22-351f6f8456a0",
             "unlock": [
@@ -416,6 +293,18 @@
             "label": "tivaraWorkerMale",
             "x": 320,
             "y": 736
+        },
+        {
+            "type": "Image",
+            "id": "5fc1a945-a4e3-44f4-af67-cd9e929d3935",
+            "label": "foliage_tall_grass_tall_grass_8_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tall_grass/tall_grass_8.png"
+            },
+            "x": -162,
+            "y": 1305,
+            "originY": 0.75
         },
         {
             "prefabId": "54836fe4-5089-4b7e-9db4-b71382bcb55f",
@@ -672,7 +561,6 @@
                 "z"
             ],
             "label": "rampStoneTopRight_1",
-            "z": 32,
             "x": 0,
             "y": 16
         },
@@ -803,7 +691,6 @@
                 "z"
             ],
             "label": "tree4",
-            "z": 160,
             "x": 0,
             "y": 16
         },
@@ -1153,28 +1040,6 @@
             "y": 1520
         },
         {
-            "type": "Image",
-            "id": "40f23690-190e-4c1c-a984-5b7b0ef10758",
-            "label": "architecture_obstruction_fence_bottom_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/bottom.png"
-            },
-            "x": -162,
-            "y": 1297
-        },
-        {
-            "type": "Image",
-            "id": "cd687eaa-f95b-476b-aef5-ff50b03231c5",
-            "label": "architecture_obstruction_fence_top_left_png",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top_left.png"
-            },
-            "x": -229,
-            "y": 1203
-        },
-        {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
             "id": "2d3db8c9-4a78-4954-9259-5a4aa775ba82",
             "unlock": [
@@ -1263,6 +1128,28 @@
             "y": 1248
         },
         {
+            "prefabId": "33eba8e6-5b92-4639-8c95-37073f210ca1",
+            "id": "f90b6c1a-cba3-4952-901b-2894bbc47839",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceTop",
+            "x": -197,
+            "y": 1186
+        },
+        {
+            "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
+            "id": "2b17fe14-6fed-44df-b10e-15d22a3a71c1",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceTopRight",
+            "x": -163,
+            "y": 1200
+        },
+        {
             "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
             "id": "7223c165-660d-4bac-b533-149fac06021e",
             "unlock": [
@@ -1274,15 +1161,125 @@
             "y": 1232
         },
         {
-            "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
-            "id": "cf8ae8e9-caf6-4f98-b413-65bc48e97b01",
+            "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
+            "id": "fe576654-4d94-4a27-9d3d-e1b8384d7a1b",
             "unlock": [
                 "x",
                 "y"
             ],
-            "label": "sheep_2",
-            "x": -144,
-            "y": 1280
+            "label": "fenceTopRight_1",
+            "x": -130,
+            "y": 1217
+        },
+        {
+            "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
+            "id": "1f64eb52-cc79-425f-886e-1027c318d24a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceTopRight_2",
+            "x": -97,
+            "y": 1230
+        },
+        {
+            "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
+            "id": "7738b87a-4a1c-4f09-8f9b-81478a790f9b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceTopLeft",
+            "x": -230,
+            "y": 1200
+        },
+        {
+            "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
+            "id": "dd4f65d4-5233-41de-980e-920cbc6f6c32",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceTopLeft_1",
+            "x": -262,
+            "y": 1214
+        },
+        {
+            "prefabId": "d3b57804-cd8e-45fa-95de-8558ed83120b",
+            "id": "943712df-c0b4-4c72-8086-74bd995545de",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceLeft",
+            "x": -297,
+            "y": 1231
+        },
+        {
+            "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
+            "id": "cac4b112-60ed-4a55-989a-85a594040d2f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceBottomLeft",
+            "x": -263,
+            "y": 1245
+        },
+        {
+            "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
+            "id": "4fe78445-f2da-44b9-88c0-729d48f07537",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceBottomLeft_1",
+            "x": -229,
+            "y": 1259
+        },
+        {
+            "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
+            "id": "1ef1ad3f-a6a2-46da-9d85-94bd5bcb8fb0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceBottomLeft_2",
+            "x": -195,
+            "y": 1277
+        },
+        {
+            "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
+            "id": "77b23676-bdde-4a1c-ba15-0a75a2b7f094",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceBottomRight",
+            "x": -95,
+            "y": 1263
+        },
+        {
+            "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
+            "id": "2457851a-57b6-4b67-8d6c-f7f0373c399b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceBottomRight_1",
+            "x": -129,
+            "y": 1278
+        },
+        {
+            "prefabId": "c5a01cf8-4a85-4704-834d-9cb28cf1048d",
+            "id": "13fd7639-21b4-4f51-a246-2bce39dd7d50",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceBottom",
+            "x": -163,
+            "y": 1291
         }
     ],
     "plainObjects": [

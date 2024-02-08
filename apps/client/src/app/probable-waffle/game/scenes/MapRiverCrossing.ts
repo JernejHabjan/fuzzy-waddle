@@ -1,7 +1,10 @@
+
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
+import Sheep from "../prefabs/animals/Sheep";
+import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
 import Hedgehog from "../prefabs/animals/Hedgehog";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
@@ -52,12 +55,18 @@ import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
-import Sheep from "../prefabs/animals/Sheep";
+import FenceTop from "../prefabs/outside/architecture/obstruction/FenceTop";
+import FenceTopRight from "../prefabs/outside/architecture/obstruction/FenceTopRight";
+import FenceTopLeft from "../prefabs/outside/architecture/obstruction/FenceTopLeft";
+import FenceLeft from "../prefabs/outside/architecture/obstruction/FenceLeft";
+import FenceBottomLeft from "../prefabs/outside/architecture/obstruction/FenceBottomLeft";
+import FenceBottomRight from "../prefabs/outside/architecture/obstruction/FenceBottomRight";
+import FenceBottom from "../prefabs/outside/architecture/obstruction/FenceBottom";
 /* START-USER-IMPORTS */
-import { GameProbableWaffleScene } from "./GameProbableWaffleScene";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -67,6 +76,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
@@ -76,66 +86,33 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.image(-195, 1187, "outside", "architecture/obstruction/fence/top_left.png");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
-    // hedgehog
-    const hedgehog = new Hedgehog(this, 96, 1360);
-    this.add.existing(hedgehog);
+    // sheep_2
+    const sheep_2 = new Sheep(this, -144, 1280);
+    this.add.existing(sheep_2);
 
     // nature_grass_grass_0_png
     const nature_grass_grass_0_png = this.add.image(-92, 1266, "outside", "nature/grass/grass_0.png");
     nature_grass_grass_0_png.setOrigin(0.5, 0.75);
 
-    // architecture_obstruction_fence_left_png
-    this.add.image(-297, 1233, "outside", "architecture/obstruction/fence/left.png");
+    // fenceRight
+    const fenceRight = new FenceRight(this, -61, 1248);
+    this.add.existing(fenceRight);
+
+    // hedgehog
+    const hedgehog = new Hedgehog(this, 96, 1360);
+    this.add.existing(hedgehog);
 
     // foliage_trees_resources_special_tree_christmas_png
     this.add.image(-284, 1174, "outside", "foliage/trees/resources/special/tree_christmas.png");
 
-    // architecture_obstruction_fence_top_left_png_1
-    this.add.image(-261, 1219, "outside", "architecture/obstruction/fence/top_left.png");
-
     // foliage_tall_grass_tall_grass_7_png
-    const foliage_tall_grass_tall_grass_7_png = this.add.image(
-      -261,
-      1256,
-      "outside",
-      "foliage/tall_grass/tall_grass_7.png"
-    );
+    const foliage_tall_grass_tall_grass_7_png = this.add.image(-261, 1256, "outside", "foliage/tall_grass/tall_grass_7.png");
     foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
 
     // foliage_trees_resources_special_tree_christmas_png_1
     this.add.image(-110, 1166, "outside", "foliage/trees/resources/special/tree_christmas.png");
-
-    // architecture_obstruction_fence_top_right_png_2
-    this.add.image(-95, 1234, "outside", "architecture/obstruction/fence/top_right.png");
-
-    // architecture_obstruction_fence_right_png
-    this.add.image(-61, 1249, "outside", "architecture/obstruction/fence/right.png");
-
-    // architecture_obstruction_fence_bottom_left_png_2
-    this.add.image(-263, 1250, "outside", "architecture/obstruction/fence/bottom_left.png");
-
-    // architecture_obstruction_fence_bottom_left_png_1
-    this.add.image(-229, 1266, "outside", "architecture/obstruction/fence/bottom_left.png");
-
-    // architecture_obstruction_fence_bottom_left_png
-    this.add.image(-196, 1281, "outside", "architecture/obstruction/fence/bottom_left.png");
-
-    // architecture_obstruction_fence_bottom_right_png_1
-    this.add.image(-95, 1266, "outside", "architecture/obstruction/fence/bottom_right.png");
-
-    // architecture_obstruction_fence_bottom_right_png
-    this.add.image(-128, 1281, "outside", "architecture/obstruction/fence/bottom_right.png");
-
-    // architecture_obstruction_fence_top_png
-    this.add.image(-195, 1187, "outside", "architecture/obstruction/fence/top.png");
-
-    // architecture_obstruction_fence_top_right_png_4
-    this.add.image(-163, 1202, "outside", "architecture/obstruction/fence/top_right.png");
-
-    // architecture_obstruction_fence_top_right_png_3
-    this.add.image(-131, 1217, "outside", "architecture/obstruction/fence/top_right.png");
 
     // tree_12
     const tree_12 = new Tree7(this, -16, 1376);
@@ -169,15 +146,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 800);
     this.add.existing(skaduweeWorkerMale);
 
-    // foliage_tall_grass_tall_grass_8_png
-    const foliage_tall_grass_tall_grass_8_png = this.add.image(
-      -162,
-      1305,
-      "outside",
-      "foliage/tall_grass/tall_grass_8.png"
-    );
-    foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
-
     // skaduweeWorkerFemale
     const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1088, 1024);
     this.add.existing(skaduweeWorkerFemale);
@@ -209,6 +177,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraWorkerMale
     const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 736);
     this.add.existing(tivaraWorkerMale);
+
+    // foliage_tall_grass_tall_grass_8_png
+    const foliage_tall_grass_tall_grass_8_png = this.add.image(-162, 1305, "outside", "foliage/tall_grass/tall_grass_8.png");
+    foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
     // tivaraMacemanMale
     const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
@@ -470,12 +442,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree_13 = new Tree7(this, 112, 1520);
     this.add.existing(tree_13);
 
-    // architecture_obstruction_fence_bottom_png
-    this.add.image(-162, 1297, "outside", "architecture/obstruction/fence/bottom.png");
-
-    // architecture_obstruction_fence_top_left_png
-    this.add.image(-229, 1203, "outside", "architecture/obstruction/fence/top_left.png");
-
     // tree5
     const tree5 = new Tree5(this, -788, 484);
     this.add.existing(tree5);
@@ -508,22 +474,67 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const sheep = new Sheep(this, -208, 1248);
     this.add.existing(sheep);
 
+    // fenceTop
+    const fenceTop = new FenceTop(this, -197, 1186);
+    this.add.existing(fenceTop);
+
+    // fenceTopRight
+    const fenceTopRight = new FenceTopRight(this, -163, 1200);
+    this.add.existing(fenceTopRight);
+
     // sheep_1
     const sheep_1 = new Sheep(this, -160, 1232);
     this.add.existing(sheep_1);
 
-    // sheep_2
-    const sheep_2 = new Sheep(this, -144, 1280);
-    this.add.existing(sheep_2);
+    // fenceTopRight_1
+    const fenceTopRight_1 = new FenceTopRight(this, -130, 1217);
+    this.add.existing(fenceTopRight_1);
+
+    // fenceTopRight_2
+    const fenceTopRight_2 = new FenceTopRight(this, -97, 1230);
+    this.add.existing(fenceTopRight_2);
+
+    // fenceTopLeft
+    const fenceTopLeft = new FenceTopLeft(this, -230, 1200);
+    this.add.existing(fenceTopLeft);
+
+    // fenceTopLeft_1
+    const fenceTopLeft_1 = new FenceTopLeft(this, -262, 1214);
+    this.add.existing(fenceTopLeft_1);
+
+    // fenceLeft
+    const fenceLeft = new FenceLeft(this, -297, 1231);
+    this.add.existing(fenceLeft);
+
+    // fenceBottomLeft
+    const fenceBottomLeft = new FenceBottomLeft(this, -263, 1245);
+    this.add.existing(fenceBottomLeft);
+
+    // fenceBottomLeft_1
+    const fenceBottomLeft_1 = new FenceBottomLeft(this, -229, 1259);
+    this.add.existing(fenceBottomLeft_1);
+
+    // fenceBottomLeft_2
+    const fenceBottomLeft_2 = new FenceBottomLeft(this, -195, 1277);
+    this.add.existing(fenceBottomLeft_2);
+
+    // fenceBottomRight
+    const fenceBottomRight = new FenceBottomRight(this, -95, 1263);
+    this.add.existing(fenceBottomRight);
+
+    // fenceBottomRight_1
+    const fenceBottomRight_1 = new FenceBottomRight(this, -129, 1278);
+    this.add.existing(fenceBottomRight_1);
+
+    // fenceBottom
+    const fenceBottom = new FenceBottom(this, -163, 1291);
+    this.add.existing(fenceBottom);
 
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;
 
     // blockStone_6 (prefab fields)
     blockStone_6.z = 32;
-
-    // rampStoneTopRight_1 (prefab fields)
-    rampStoneTopRight_1.z = 32;
 
     // blockStone_8 (prefab fields)
     blockStone_8.z = 32;
@@ -536,9 +547,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // blockStone_11 (prefab fields)
     blockStone_11.z = 128;
-
-    // tree4 (prefab fields)
-    tree4.z = 160;
 
     // blockStoneWater1 (prefab fields)
     blockStoneWater1.z = 16;
@@ -554,11 +562,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   public tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
-  create() {
-    this.editorCreate();
 
-    super.create();
+  // Write your code here
+
+  create() {
+
+    this.editorCreate();
   }
+
   /* END-USER-CODE */
 }
 
