@@ -575,6 +575,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
   create() {
     this.editorCreate();
+
+    super.create();
   }
 
   /* END-USER-CODE */
