@@ -16,17 +16,6 @@
     },
     "displayList": [
         {
-            "type": "Image",
-            "id": "0cc1306a-c2b8-4f06-b28e-8b16a5ff75db",
-            "label": "architecture_obstruction_fence_top_left_png_3",
-            "texture": {
-                "key": "outside",
-                "frame": "architecture/obstruction/fence/top_left.png"
-            },
-            "x": -195,
-            "y": 1187
-        },
-        {
             "type": "TilemapLayer",
             "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
             "label": "tilemap_level_1",
@@ -37,6 +26,17 @@
                 "tiles",
                 "tiles_2"
             ]
+        },
+        {
+            "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
+            "id": "0b6c7a93-6fac-4437-a304-ed2e0a3c46c2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "christmasTree_1",
+            "x": -130,
+            "y": 1196
         },
         {
             "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
@@ -69,8 +69,8 @@
                 "y"
             ],
             "label": "fenceRight",
-            "x": -61,
-            "y": 1248
+            "x": -50,
+            "y": 1260
         },
         {
             "prefabId": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
@@ -85,17 +85,6 @@
         },
         {
             "type": "Image",
-            "id": "d513086d-6eac-4b19-8b73-75a850bc1c2e",
-            "label": "foliage_trees_resources_special_tree_christmas_png",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/trees/resources/special/tree_christmas.png"
-            },
-            "x": -284,
-            "y": 1174
-        },
-        {
-            "type": "Image",
             "id": "cc89c32e-7f83-4a80-9e65-f5f8ad0e2787",
             "label": "foliage_tall_grass_tall_grass_7_png",
             "texture": {
@@ -105,17 +94,6 @@
             "x": -261,
             "y": 1256,
             "originY": 0.75
-        },
-        {
-            "type": "Image",
-            "id": "b0ca54c2-dcb2-49f9-a08e-8bea2c24c2d4",
-            "label": "foliage_trees_resources_special_tree_christmas_png_1",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/trees/resources/special/tree_christmas.png"
-            },
-            "x": -110,
-            "y": 1166
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -1136,7 +1114,7 @@
             ],
             "label": "fenceTop",
             "x": -197,
-            "y": 1186
+            "y": 1185
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1146,8 +1124,8 @@
                 "y"
             ],
             "label": "fenceTopRight",
-            "x": -163,
-            "y": 1200
+            "x": -164,
+            "y": 1198
         },
         {
             "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
@@ -1168,8 +1146,8 @@
                 "y"
             ],
             "label": "fenceTopRight_1",
-            "x": -130,
-            "y": 1217
+            "x": -132,
+            "y": 1214
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1179,8 +1157,8 @@
                 "y"
             ],
             "label": "fenceTopRight_2",
-            "x": -97,
-            "y": 1230
+            "x": -100,
+            "y": 1229
         },
         {
             "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
@@ -1190,8 +1168,8 @@
                 "y"
             ],
             "label": "fenceTopLeft",
-            "x": -230,
-            "y": 1200
+            "x": -232,
+            "y": 1204
         },
         {
             "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
@@ -1201,8 +1179,8 @@
                 "y"
             ],
             "label": "fenceTopLeft_1",
-            "x": -262,
-            "y": 1214
+            "x": -267,
+            "y": 1221
         },
         {
             "prefabId": "d3b57804-cd8e-45fa-95de-8558ed83120b",
@@ -1212,8 +1190,8 @@
                 "y"
             ],
             "label": "fenceLeft",
-            "x": -297,
-            "y": 1231
+            "x": -313,
+            "y": 1249
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1223,8 +1201,8 @@
                 "y"
             ],
             "label": "fenceBottomLeft",
-            "x": -263,
-            "y": 1245
+            "x": -268,
+            "y": 1281
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1234,8 +1212,8 @@
                 "y"
             ],
             "label": "fenceBottomLeft_1",
-            "x": -229,
-            "y": 1259
+            "x": -235,
+            "y": 1298
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1245,8 +1223,8 @@
                 "y"
             ],
             "label": "fenceBottomLeft_2",
-            "x": -195,
-            "y": 1277
+            "x": -202,
+            "y": 1314
         },
         {
             "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
@@ -1256,8 +1234,8 @@
                 "y"
             ],
             "label": "fenceBottomRight",
-            "x": -95,
-            "y": 1263
+            "x": -99,
+            "y": 1292
         },
         {
             "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
@@ -1267,8 +1245,8 @@
                 "y"
             ],
             "label": "fenceBottomRight_1",
-            "x": -129,
-            "y": 1278
+            "x": -134,
+            "y": 1311
         },
         {
             "prefabId": "c5a01cf8-4a85-4704-834d-9cb28cf1048d",
@@ -1278,8 +1256,19 @@
                 "y"
             ],
             "label": "fenceBottom",
-            "x": -163,
-            "y": 1291
+            "x": -168,
+            "y": 1328
+        },
+        {
+            "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
+            "id": "7a27448b-9ab5-4257-9039-8c64c006968e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "christmasTree",
+            "x": -291,
+            "y": 1208
         }
     ],
     "plainObjects": [

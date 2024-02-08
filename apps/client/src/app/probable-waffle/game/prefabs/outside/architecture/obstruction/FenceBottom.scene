@@ -26,7 +26,8 @@
                 "frame": "architecture/obstruction/fence/bottom.png"
             },
             "x": 32,
-            "y": 40
+            "y": 76.52307895592904,
+            "originY": 0.9565384869491129
         }
     ],
     "plainObjects": [],

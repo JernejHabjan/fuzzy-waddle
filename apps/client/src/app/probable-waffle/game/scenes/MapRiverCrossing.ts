@@ -2,6 +2,7 @@
 
 /* START OF COMPILED CODE */
 
+import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
 import Sheep from "../prefabs/animals/Sheep";
 import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
 import Hedgehog from "../prefabs/animals/Hedgehog";
@@ -80,11 +81,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
-    // architecture_obstruction_fence_top_left_png_3
-    this.add.image(-195, 1187, "outside", "architecture/obstruction/fence/top_left.png");
-
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
+
+    // christmasTree_1
+    const christmasTree_1 = new ChristmasTree(this, -130, 1196);
+    this.add.existing(christmasTree_1);
 
     // sheep_2
     const sheep_2 = new Sheep(this, -144, 1280);
@@ -95,15 +97,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     nature_grass_grass_0_png.setOrigin(0.5, 0.75);
 
     // fenceRight
-    const fenceRight = new FenceRight(this, -61, 1248);
+    const fenceRight = new FenceRight(this, -50, 1260);
     this.add.existing(fenceRight);
 
     // hedgehog
     const hedgehog = new Hedgehog(this, 96, 1360);
     this.add.existing(hedgehog);
-
-    // foliage_trees_resources_special_tree_christmas_png
-    this.add.image(-284, 1174, "outside", "foliage/trees/resources/special/tree_christmas.png");
 
     // foliage_tall_grass_tall_grass_7_png
     const foliage_tall_grass_tall_grass_7_png = this.add.image(
@@ -113,9 +112,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
       "foliage/tall_grass/tall_grass_7.png"
     );
     foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
-
-    // foliage_trees_resources_special_tree_christmas_png_1
-    this.add.image(-110, 1166, "outside", "foliage/trees/resources/special/tree_christmas.png");
 
     // tree_12
     const tree_12 = new Tree7(this, -16, 1376);
@@ -483,11 +479,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(sheep);
 
     // fenceTop
-    const fenceTop = new FenceTop(this, -197, 1186);
+    const fenceTop = new FenceTop(this, -197, 1185);
     this.add.existing(fenceTop);
 
     // fenceTopRight
-    const fenceTopRight = new FenceTopRight(this, -163, 1200);
+    const fenceTopRight = new FenceTopRight(this, -164, 1198);
     this.add.existing(fenceTopRight);
 
     // sheep_1
@@ -495,48 +491,52 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(sheep_1);
 
     // fenceTopRight_1
-    const fenceTopRight_1 = new FenceTopRight(this, -130, 1217);
+    const fenceTopRight_1 = new FenceTopRight(this, -132, 1214);
     this.add.existing(fenceTopRight_1);
 
     // fenceTopRight_2
-    const fenceTopRight_2 = new FenceTopRight(this, -97, 1230);
+    const fenceTopRight_2 = new FenceTopRight(this, -100, 1229);
     this.add.existing(fenceTopRight_2);
 
     // fenceTopLeft
-    const fenceTopLeft = new FenceTopLeft(this, -230, 1200);
+    const fenceTopLeft = new FenceTopLeft(this, -232, 1204);
     this.add.existing(fenceTopLeft);
 
     // fenceTopLeft_1
-    const fenceTopLeft_1 = new FenceTopLeft(this, -262, 1214);
+    const fenceTopLeft_1 = new FenceTopLeft(this, -267, 1221);
     this.add.existing(fenceTopLeft_1);
 
     // fenceLeft
-    const fenceLeft = new FenceLeft(this, -297, 1231);
+    const fenceLeft = new FenceLeft(this, -313, 1249);
     this.add.existing(fenceLeft);
 
     // fenceBottomLeft
-    const fenceBottomLeft = new FenceBottomLeft(this, -263, 1245);
+    const fenceBottomLeft = new FenceBottomLeft(this, -268, 1281);
     this.add.existing(fenceBottomLeft);
 
     // fenceBottomLeft_1
-    const fenceBottomLeft_1 = new FenceBottomLeft(this, -229, 1259);
+    const fenceBottomLeft_1 = new FenceBottomLeft(this, -235, 1298);
     this.add.existing(fenceBottomLeft_1);
 
     // fenceBottomLeft_2
-    const fenceBottomLeft_2 = new FenceBottomLeft(this, -195, 1277);
+    const fenceBottomLeft_2 = new FenceBottomLeft(this, -202, 1314);
     this.add.existing(fenceBottomLeft_2);
 
     // fenceBottomRight
-    const fenceBottomRight = new FenceBottomRight(this, -95, 1263);
+    const fenceBottomRight = new FenceBottomRight(this, -99, 1292);
     this.add.existing(fenceBottomRight);
 
     // fenceBottomRight_1
-    const fenceBottomRight_1 = new FenceBottomRight(this, -129, 1278);
+    const fenceBottomRight_1 = new FenceBottomRight(this, -134, 1311);
     this.add.existing(fenceBottomRight_1);
 
     // fenceBottom
-    const fenceBottom = new FenceBottom(this, -163, 1291);
+    const fenceBottom = new FenceBottom(this, -168, 1328);
     this.add.existing(fenceBottom);
+
+    // christmasTree
+    const christmasTree = new ChristmasTree(this, -291, 1208);
+    this.add.existing(christmasTree);
 
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;

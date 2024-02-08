@@ -25,8 +25,10 @@
                 "key": "outside",
                 "frame": "architecture/obstruction/fence/right.png"
             },
-            "x": 32,
-            "y": 40
+            "x": 46.771659868606356,
+            "y": 62.465232849121094,
+            "originX": 0.7308071854469743,
+            "originY": 0.7808154089604854
         }
     ],
     "plainObjects": [],
