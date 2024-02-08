@@ -11,19 +11,6 @@
     ],
     "propertyTypes": [
         {
-            "id": 1,
-            "name": "slopeDir",
-            "storageType": "int",
-            "type": "enum",
-            "values": [
-                "NorthEast",
-                "SouthEast",
-                "SouthWest",
-                "NorthWest"
-            ],
-            "valuesAsFlags": false
-        },
-        {
             "id": 2,
             "name": "navigationRestriction",
             "storageType": "string",
