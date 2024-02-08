@@ -20,7 +20,7 @@ export interface GameProbableWaffleSceneData {
   services: any[]; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
 }
 
-export class GameProbableWaffleScene extends ProbableWaffleScene {
+export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
 
   override getSceneGameData() {

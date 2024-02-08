@@ -1,4 +1,4 @@
-import { GameProbableWaffleScene } from "../GameProbableWaffleScene";
+import GameProbableWaffleScene from "../GameProbableWaffleScene";
 
 export function getSceneComponent<T>(scene: Phaser.Scene, componentClass: new (...args: any[]) => T): T | undefined {
   if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleSceneData");

@@ -2,6 +2,7 @@
 
 /* START OF COMPILED CODE */
 
+import GameProbableWaffleScene from "./GameProbableWaffleScene";
 import BlockObsidianLava5 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
 import BlockObsidianLava4 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava4";
@@ -17,10 +18,10 @@ import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale"
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 /* START-USER-IMPORTS */
-import { GameProbableWaffleScene } from "./GameProbableWaffleScene";
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends GameProbableWaffleScene {
+
   constructor() {
     super("MapEmberEnclave");
 
@@ -30,13 +31,14 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
 
     // blockObsidianLava5
     const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);

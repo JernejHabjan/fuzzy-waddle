@@ -1,7 +1,7 @@
 import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import { SceneActorCreatorCommunicator, SceneActorSaveCommunicator } from "./scene-actor-creator-communicator";
-import { GameProbableWaffleScene } from "../GameProbableWaffleScene";
+import GameProbableWaffleScene from "../GameProbableWaffleScene";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {

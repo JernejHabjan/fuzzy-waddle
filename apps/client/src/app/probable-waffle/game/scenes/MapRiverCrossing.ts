@@ -2,6 +2,7 @@
 
 /* START OF COMPILED CODE */
 
+import GameProbableWaffleScene from "./GameProbableWaffleScene";
 import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
 import Sheep from "../prefabs/animals/Sheep";
 import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
@@ -63,10 +64,10 @@ import FenceBottomLeft from "../prefabs/outside/architecture/obstruction/FenceBo
 import FenceBottomRight from "../prefabs/outside/architecture/obstruction/FenceBottomRight";
 import FenceBottom from "../prefabs/outside/architecture/obstruction/FenceBottom";
 /* START-USER-IMPORTS */
-import { GameProbableWaffleScene } from "./GameProbableWaffleScene";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -76,13 +77,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
     // christmasTree_1
     const christmasTree_1 = new ChristmasTree(this, -130, 1196);
@@ -105,12 +107,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(hedgehog);
 
     // foliage_tall_grass_tall_grass_7_png
-    const foliage_tall_grass_tall_grass_7_png = this.add.image(
-      -261,
-      1256,
-      "outside",
-      "foliage/tall_grass/tall_grass_7.png"
-    );
+    const foliage_tall_grass_tall_grass_7_png = this.add.image(-261, 1256, "outside", "foliage/tall_grass/tall_grass_7.png");
     foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
 
     // tree_12
@@ -178,12 +175,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraWorkerMale);
 
     // foliage_tall_grass_tall_grass_8_png
-    const foliage_tall_grass_tall_grass_8_png = this.add.image(
-      -162,
-      1305,
-      "outside",
-      "foliage/tall_grass/tall_grass_8.png"
-    );
+    const foliage_tall_grass_tall_grass_8_png = this.add.image(-162, 1305, "outside", "foliage/tall_grass/tall_grass_8.png");
     foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
     // tivaraMacemanMale
