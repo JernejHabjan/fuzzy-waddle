@@ -2,6 +2,7 @@
 
 /* START OF COMPILED CODE */
 
+import GameProbableWaffleScene from "./GameProbableWaffleScene";
 import BlockObsidianLava5 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
 import BlockObsidianLava4 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava4";
@@ -17,10 +18,10 @@ import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale"
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 /* START-USER-IMPORTS */
-import { GameProbableWaffleScene } from "./GameProbableWaffleScene";
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends GameProbableWaffleScene {
+
   constructor() {
     super("MapEmberEnclave");
 
@@ -30,24 +31,25 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
 
     // blockObsidianLava5
     const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);
     this.add.existing(blockObsidianLava5);
 
     // bushDownwardsLarge
-    const bushDownwardsLarge = new BushDownwardsLarge(this, 32, 688);
+    const bushDownwardsLarge = new BushDownwardsLarge(this, 32, 704);
     this.add.existing(bushDownwardsLarge);
 
     // blockObsidianLava4
-    const blockObsidianLava4 = new BlockObsidianLava4(this, 208, 544);
+    const blockObsidianLava4 = new BlockObsidianLava4(this, 224, 544);
     this.add.existing(blockObsidianLava4);
 
     // tree6
@@ -55,11 +57,11 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     this.add.existing(tree6);
 
     // bushUpwardsLarge
-    const bushUpwardsLarge = new BushUpwardsLarge(this, -48, 768);
+    const bushUpwardsLarge = new BushUpwardsLarge(this, -64, 768);
     this.add.existing(bushUpwardsLarge);
 
     // bushDownwardsSmall
-    const bushDownwardsSmall = new BushDownwardsSmall(this, 48, 768);
+    const bushDownwardsSmall = new BushDownwardsSmall(this, 64, 752);
     this.add.existing(bushDownwardsSmall);
 
     // blockStoneWater4
@@ -67,35 +69,35 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     this.add.existing(blockStoneWater4);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, 688, 752);
+    const ankGuard = new AnkGuard(this, 704, 752);
     this.add.existing(ankGuard);
 
     // sandhold
-    const sandhold = new Sandhold(this, 496, 880);
+    const sandhold = new Sandhold(this, 480, 880);
     this.add.existing(sandhold);
 
     // sandhold_1
-    const sandhold_1 = new Sandhold(this, -880, 592);
+    const sandhold_1 = new Sandhold(this, -864, 592);
     this.add.existing(sandhold_1);
 
     // temple
-    const temple = new Temple(this, -607, 882);
+    const temple = new Temple(this, -608, 880);
     this.add.existing(temple);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 457, 1095);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 448, 1088);
     this.add.existing(tivaraSlingshotFemale);
 
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -992, 736);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -992, 720);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, -592, 688);
+    const tivaraWorkerMale = new TivaraWorkerMale(this, -576, 688);
     this.add.existing(tivaraWorkerMale);
 
     // workMill
-    const workMill = new WorkMill(this, -160, 736);
+    const workMill = new WorkMill(this, -128, 736);
     this.add.existing(workMill);
 
     // workMill_1

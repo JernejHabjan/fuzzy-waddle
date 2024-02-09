@@ -1,0 +1,41 @@
+{
+    "id": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "snapWidth": 4,
+        "snapHeight": 4,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "6b482b42-98dc-4516-aed7-b7c8c2f57987",
+            "label": "foliage_trees_resources_special_tree_christmas_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "13.213926832923768 55.204565590672786 32.28211534184152 18.33940114009848 44.35863473082276 41.856833634430366 52.62151641802045 75.54396666685172 48.5960099550267 101.18008677328558 37.36696561088625 105.62933075869971 36.51949056604546 114.527818729528 28.25660887884777 114.95155625194839 25.29044622190501 107.1124120871711 7.917207802668841 100.12074296723459",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/special/tree_christmas.png"
+            },
+            "x": 32,
+            "y": 108.49244127610987,
+            "originY": 0.8475971974696084
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

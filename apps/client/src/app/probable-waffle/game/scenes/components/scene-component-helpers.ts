@@ -1,4 +1,4 @@
-import { GameProbableWaffleScene } from "../GameProbableWaffleScene";
+import GameProbableWaffleScene from "../GameProbableWaffleScene";
 
 export function getSceneComponent<T>(scene: Phaser.Scene, componentClass: new (...args: any[]) => T): T | undefined {
   if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleSceneData");
@@ -7,4 +7,13 @@ export function getSceneComponent<T>(scene: Phaser.Scene, componentClass: new (.
     return undefined;
   }
   return component;
+}
+
+export function getSceneService<T>(scene: Phaser.Scene, serviceClass: new (...args: any[]) => T): T | undefined {
+  if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleSceneData");
+  const service = scene.getSceneGameData().services.find((s) => s instanceof serviceClass);
+  if (!service) {
+    return undefined;
+  }
+  return service;
 }

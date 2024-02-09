@@ -1,5 +1,4 @@
 import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
-import { GameProbableWaffleScene } from "../scenes/GameProbableWaffleScene";
 import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
 import Hedgehog from "../prefabs/animals/Hedgehog";
 import Sheep from "../prefabs/animals/Sheep";
@@ -10,6 +9,7 @@ import {
   SceneActorCreatorCommunicator,
   SceneActorSaveCommunicator
 } from "../scenes/components/scene-actor-creator-communicator";
+import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 
 export class SaveGame {
   static SaveGameEvent = "SaveGameEvent";

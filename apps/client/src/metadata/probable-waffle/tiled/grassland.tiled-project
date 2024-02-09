@@ -7,19 +7,21 @@
         "../tilemaps",
         "../tilesets"
     ],
+    "properties": [
+    ],
     "propertyTypes": [
         {
-            "id": 1,
-            "name": "slopeDir",
-            "storageType": "int",
+            "id": 2,
+            "name": "navigationRestriction",
+            "storageType": "string",
             "type": "enum",
             "values": [
-                "NorthEast",
-                "SouthEast",
-                "SouthWest",
-                "NorthWest"
+                "north",
+                "west",
+                "east",
+                "south"
             ],
-            "valuesAsFlags": false
+            "valuesAsFlags": true
         }
     ]
 }

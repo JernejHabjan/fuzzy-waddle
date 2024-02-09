@@ -12,11 +12,12 @@ import {
 } from "../../../../../entity/economy/resource/resource-source-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../../../../../entity/actor/components/id-component";
+import { ColliderComponent, ColliderDefinition } from "../../../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class Tree11 extends Phaser.GameObjects.Image {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 46, y ?? 84.39785986873036, texture || "outside", frame ?? "foliage/trees/resources/tree11.png");
+    super(scene, x ?? 92, y ?? 169, texture || "outside", frame ?? "foliage/trees/resources/tree11.png");
 
     this.setInteractive(
       new Phaser.Geom.Polygon(
@@ -24,6 +25,8 @@ export default class Tree11 extends Phaser.GameObjects.Image {
       ),
       Phaser.Geom.Polygon.Contains
     );
+    this.scaleX = 2;
+    this.scaleY = 2;
     this.setOrigin(0.5, 0.917368042051417);
 
     /* START-USER-CTR-CODE */
@@ -31,6 +34,9 @@ export default class Tree11 extends Phaser.GameObjects.Image {
       this,
       [
         new IdComponent(),
+        new ColliderComponent({
+          colliderFactorReduction: 0.5
+        } satisfies ColliderDefinition),
         new SelectableComponent(this),
         new ResourceSourceComponent(this, {
           resourceType: ResourceType.Wood,

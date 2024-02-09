@@ -21,6 +21,7 @@ import {
   ResourceDrainDefinition
 } from "../../../entity/economy/resource/resource-drain-component";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -67,7 +68,8 @@ export default class WorkMill extends Phaser.GameObjects.Container {
         } satisfies ProductionCostDefinition),
         new ResourceDrainComponent(this, {
           resourceTypes: [ResourceType.Wood]
-        } satisfies ResourceDrainDefinition)
+        } satisfies ResourceDrainDefinition),
+        new ColliderComponent()
       ],
       []
     );

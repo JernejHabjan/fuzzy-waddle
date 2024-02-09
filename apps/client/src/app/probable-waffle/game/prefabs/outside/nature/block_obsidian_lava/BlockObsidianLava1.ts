@@ -5,6 +5,8 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { LavaParticles } from "../../../../effects/particles/LavaParticles";
+import { setActorData } from "../../../../data/actor-data";
+import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class BlockObsidianLava1 extends Phaser.GameObjects.Container {
@@ -33,6 +35,7 @@ export default class BlockObsidianLava1 extends Phaser.GameObjects.Container {
     this.add(outside_nature_block_obsidian_lava_1);
 
     /* START-USER-CTR-CODE */
+    setActorData(this, [new ColliderComponent()], []);
     this.particles = new LavaParticles(scene, this.x, this.y);
     /* END-USER-CTR-CODE */
   }

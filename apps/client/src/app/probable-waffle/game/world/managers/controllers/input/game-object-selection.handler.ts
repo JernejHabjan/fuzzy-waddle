@@ -126,7 +126,7 @@ export class GameObjectSelectionHandler {
   }) {
     const selectableChildren = this.getSelectableChildren();
 
-    // Apply camera offset and scale
+    // Apply camera offset and scale // TODO SCALE NOT HANDLED CORRECTLY
     const selectedAreaBounds = new Phaser.Geom.Rectangle(
       selectedArea.x * this.scene.cameras.main.zoom + this.scene.cameras.main.scrollX,
       selectedArea.y * this.scene.cameras.main.zoom + this.scene.cameras.main.scrollY,

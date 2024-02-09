@@ -21,6 +21,7 @@ import SkaduweeMagicianFemale from "../../characters/skaduwee/SkaduweeMagicianFe
 import SkaduweeRangedFemale from "../../characters/skaduwee/SkaduweeRangedFemale";
 import SkaduweeWarriorMale from "../../characters/skaduwee/SkaduweeWarriorMale";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -86,7 +87,8 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
             SkaduweeRangedFemale.name,
             SkaduweeWarriorMale.name
           ]
-        } satisfies ProductionDefinition)
+        } satisfies ProductionDefinition),
+        new ColliderComponent()
       ],
       []
     );

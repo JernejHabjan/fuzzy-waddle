@@ -24,6 +24,7 @@ import SkaduweeWorkerMale from "../../characters/skaduwee/SkaduweeWorkerMale";
 import SkaduweeWorkerFemale from "../../characters/skaduwee/SkaduweeWorkerFemale";
 import { IdComponent } from "../../../entity/actor/components/id-component";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -116,7 +117,8 @@ export default class FrostForge extends Phaser.GameObjects.Container {
           queueCount: 1,
           capacityPerQueue: 5,
           availableProductGameObjectClasses: [SkaduweeWorkerMale.name, SkaduweeWorkerFemale.name]
-        } satisfies ProductionDefinition)
+        } satisfies ProductionDefinition),
+        new ColliderComponent()
       ],
       []
     );

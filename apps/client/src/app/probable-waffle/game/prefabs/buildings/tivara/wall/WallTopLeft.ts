@@ -16,6 +16,7 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { VisionComponent, VisionDefinition } from "../../../../entity/actor/components/vision-component";
+import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class WallTopLeft extends Phaser.GameObjects.Image {
@@ -57,7 +58,8 @@ export default class WallTopLeft extends Phaser.GameObjects.Image {
           refundFactor: 0.5,
           productionTime: 1000,
           costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition)
+        } satisfies ProductionCostDefinition),
+        new ColliderComponent()
       ],
       []
     );
