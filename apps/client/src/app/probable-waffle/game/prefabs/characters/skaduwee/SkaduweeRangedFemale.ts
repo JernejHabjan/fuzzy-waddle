@@ -23,6 +23,7 @@ import { ContainableComponent } from "../../../entity/actor/components/containab
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
@@ -42,6 +43,14 @@ export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Skaduwee Ranged",
+          description: "A ranged unit",
+          smallImage: {
+            key: "factions",
+            frame: "character_icons/skaduwee/ranged_female.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

@@ -25,6 +25,8 @@ import SkaduweeWorkerFemale from "../../characters/skaduwee/SkaduweeWorkerFemale
 import { IdComponent } from "../../../entity/actor/components/id-component";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE } from "../../gui/icon-animations";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -94,6 +96,18 @@ export default class FrostForge extends Phaser.GameObjects.Container {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Frost Forge",
+          description: "Main building of the Skaduwee faction. It is used to produce workers and store resources.",
+          portraitAnimation: {
+            idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE,
+            action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE
+          },
+          smallImage: {
+            key: "factions",
+            frame: "building_icons/skaduwee/frost_forge.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

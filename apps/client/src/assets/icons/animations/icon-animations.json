@@ -1,0 +1,237 @@
+{
+    "anims": [
+        {
+            "key": "building_icon_anims/skaduwee/frost_forge",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/frost_forge/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/frost_forge/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/skaduwee/infantry_inn",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/infantry_inn/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/infantry_inn/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/skaduwee/owlery_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/owlery/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/owlery/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.01,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/skaduwee/owlery_action",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/owlery/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/skaduwee/owlery/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/tivara/temple_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/temple/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/temple/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.01,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/tivara/temple_action",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/temple/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/temple/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/tivara/ankguard_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/ankguard/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/ankguard/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/ankguard/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.5,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/tivara/ankguard_action",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/ankguard/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/ankguard/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/ankguard/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/tivara/sandhold_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/sandhold/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/sandhold/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.5,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "building_icon_anims/tivara/sandhold_action",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/sandhold/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "building_icon_anims/tivara/sandhold/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true,
+        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/prefabs/gui"
+    }
+}
