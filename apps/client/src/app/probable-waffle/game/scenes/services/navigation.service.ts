@@ -1,4 +1,4 @@
-import EasyStar from "easystarjs";
+import { js as EasyStar } from "easystarjs";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
@@ -6,12 +6,14 @@ import { WalkableComponent } from "../../entity/actor/components/walkable-compon
 import { ColliderComponent } from "../../entity/actor/components/collider-component";
 import { getTileIndexesUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
+import { Pathfinder } from "../../world/map/pathfinder";
+import { drawDebugPoint } from "../../debug/debug-point";
 
 export class NavigationService {
-  private easyStar: EasyStar.js;
+  private easyStar: EasyStar;
   private grid: number[][] = [];
   private tilemapGrid: number[][] = [];
-  private readonly DEBUG = true;
+  private readonly DEBUG = false;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -20,11 +22,32 @@ export class NavigationService {
     this.extractTilemapGrid();
 
     this.scene.events.on("updateNavigation", this.updateNavigation, this);
-    this.easyStar = new EasyStar.js();
+    this.easyStar = new EasyStar();
 
     this.updateNavigation();
 
-    this.find({ x: 33, y: 33 }, { x: 5, y: 10 }); // todo for test
+    if (this.DEBUG) {
+      try {
+        this.find({ x: 33, y: 33 }, { x: 5, y: 10 });
+        this.debugNavigableRadius();
+      } catch (e) {
+        console.error("debug navigation", e);
+      }
+    }
+  }
+
+  private async debugNavigableRadius() {
+    const findAndDebugDrawRandomTileInNavigableRadius = async () => {
+      const randomTile = await this.randomTileInNavigableRadius({ x: 33, y: 30 }, 15);
+      if (!randomTile) return;
+      console.log("RANDOM TILE", randomTile);
+      const tileWorldXY = Pathfinder.getTileWorldCenter(this.tilemap, randomTile)!;
+      drawDebugPoint(this.scene, tileWorldXY, 0x0000ff);
+    };
+
+    for (let i = 0; i < 200; i++) {
+      findAndDebugDrawRandomTileInNavigableRadius();
+    }
   }
 
   private setup() {
@@ -156,5 +179,64 @@ export class NavigationService {
 
   private updateNavigation() {
     this.setup();
+  }
+
+  /**
+   * Uses navigation grid to find a random tile that can be navigated to from the current tile within the radius
+   */
+  public async randomTileInNavigableRadius(
+    currentTile: Vector2Simple,
+    radiusTiles: number
+  ): Promise<Vector2Simple | null> {
+    // 1. Get a list of valid tile coordinates within the radius
+    const validTiles: Vector2Simple[] = [];
+    for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
+      for (let x = currentTile.x - radiusTiles; x <= currentTile.x + radiusTiles; x++) {
+        // Ensure coordinates are within grid bounds
+        if (0 <= x && x < this.grid[0].length && 0 <= y && y < this.grid.length) {
+          // Check if tile is navigable (value 0 in the grid)
+          if (this.grid[y][x] === 0) {
+            validTiles.push({ x, y });
+          }
+        }
+      }
+    }
+
+    // 2. Ensure there are valid tiles within the radius
+    if (validTiles.length === 0) {
+      return null;
+    }
+
+    // 3. Randomly pick tiles until a reachable one within the radius is found
+    let attempts = 0;
+    const maxAttempts = validTiles.length; // Limit attempts to prevent infinite loops
+    while (attempts < maxAttempts) {
+      const randomIndex = Math.floor(Math.random() * validTiles.length);
+      const tile = validTiles[randomIndex];
+
+      // Check path to the random tile
+      const path = await this.find(currentTile, tile);
+
+      // Calculate path length based on XY distances:
+      const sumPathLengthByXY = path.reduce((sum, node, index) => {
+        const previousNode = index === 0 ? currentTile : path[index - 1]; // Use currentTile as the "previous" for the first node
+        const dx = Math.abs(node.x - previousNode.x);
+        const dy = Math.abs(node.y - previousNode.y);
+        // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
+        const diagonalCost = Math.sqrt(2); // Precalculate for efficiency
+        const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
+        return sum + distance;
+      }, 0);
+
+      if (path.length > 0 && sumPathLengthByXY <= radiusTiles) {
+        return tile; // Reachable tile within radius found, return it
+      }
+
+      attempts++;
+      validTiles.splice(randomIndex, 1); // Remove non-reachable or out-of-radius tile
+    }
+
+    // all attempts failed
+    return null;
   }
 }
