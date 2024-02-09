@@ -1,0 +1,40 @@
+{
+    "id": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 32,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "eab19788-7d28-4ba0-9229-78de0b9e37e1",
+            "label": "hedgehog",
+            "scope": "CLASS",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 18,
+            "hitArea.radius": 11.323425464509395,
+            "texture": {
+                "key": "animals",
+                "frame": "hedgehog/10.png"
+            },
+            "x": 16,
+            "y": 21.596080279718947,
+            "originY": 0.6748775087412171
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,16 +1,18 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ServerHealthService } from './shared/services/server-health.service';
-import { serverHealthServiceStub } from './shared/services/server-health.service.spec';
-import { AuthService } from './auth/auth.service';
-import { authServiceStub } from './auth/auth.service.spec';
+import { TestBed, waitForAsync } from "@angular/core/testing";
+import { AppComponent } from "./app.component";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ServerHealthService } from "./shared/services/server-health.service";
+import { serverHealthServiceStub } from "./shared/services/server-health.service.spec";
+import { AuthService } from "./auth/auth.service";
+import { authServiceStub } from "./auth/auth.service.spec";
+import { SwRefreshTestingComponent } from "./shared/components/sw-refresh/sw-refresh.component.spec";
+import { HomeComponent } from "./little-muncher/home/home.component";
+import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
 
-describe('AppComponent', () => {
+describe("AppComponent", () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      imports: [RouterTestingModule],
+      imports: [AppComponent, RouterTestingModule, SwRefreshTestingComponent],
       providers: [
         {
           provide: ServerHealthService,
@@ -21,10 +23,19 @@ describe('AppComponent', () => {
           useValue: authServiceStub
         }
       ]
-    }).compileComponents();
+    })
+      .overrideComponent(AppComponent, {
+        remove: {
+          imports: [SwRefreshComponent]
+        },
+        add: {
+          imports: [SwRefreshTestingComponent]
+        }
+      })
+      .compileComponents();
   }));
 
-  it('should create the app', () => {
+  it("should create the app", () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();

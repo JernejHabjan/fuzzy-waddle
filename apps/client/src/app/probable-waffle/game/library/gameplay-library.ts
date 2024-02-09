@@ -1,12 +1,12 @@
-import { Actor } from '../entity/actor/actor';
-import { OwnerComponent } from '../entity/actor/components/owner-component';
-import { ActorAbleToBeBuiltClass } from '../entity/actor/components/builder-component';
-import { TransformComponent } from '../entity/actor/components/transformable-component';
-import { ConstructionSiteComponent } from '../entity/building/construction/construction-site-component';
+import { Actor } from "../entity/actor/actor";
+import { TransformComponent } from "../entity/actor/components/transformable-component";
+import { getActorComponent } from "../data/actor-component";
+import { OwnerComponent } from "../entity/actor/components/owner-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameplayLibrary {
-  static getMissingRequirementsFor(ownedActor: Actor, desiredProduct: ActorAbleToBeBuiltClass): Actor | false {
-    const ownerComponent = ownedActor.components.findComponentOrNull(OwnerComponent);
+  static getMissingRequirementsFor(ownedActor: GameObject, desiredProduct: string): Actor | false {
+    const ownerComponent = getActorComponent(ownedActor, OwnerComponent);
 
     if (!ownerComponent) {
       return false;
@@ -43,15 +43,23 @@ export class GameplayLibrary {
     return distance;
   }
 
-  /**
-   * Checks whether the specified actor is ready to use (e.g. finished building).
-   */
-  static isReadyToUse(resourceDrain: Actor): boolean {
-    const constructionSiteComponent = resourceDrain.components.findComponentOrNull(ConstructionSiteComponent);
-
-    if (!constructionSiteComponent) {
-      return true;
+  static getDistanceBetweenGameObjects(gameObject1: GameObject, gameObject2: GameObject): number | null {
+    const transform1 = gameObject1 as unknown as Phaser.GameObjects.Components.Transform;
+    const transform2 = gameObject2 as unknown as Phaser.GameObjects.Components.Transform;
+    if (
+      transform1.x === undefined ||
+      transform1.y === undefined ||
+      transform2.x === undefined ||
+      transform2.y === undefined
+    ) {
+      return null;
     }
-    return constructionSiteComponent.isFinished();
+    // also check z
+    const distance = Math.sqrt(
+      Math.pow(transform1.x - transform2.x, 2) +
+        Math.pow(transform1.y - transform2.y, 2) +
+        Math.pow(transform1.z - transform2.z, 2)
+    );
+    return distance;
   }
 }

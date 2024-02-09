@@ -1,12 +1,10 @@
-import { GameObjects, Scene } from 'phaser';
-import { IsoHelper } from '../../world/map/tile/iso-helper';
-import { MapSizeInfo } from '../../world/const/map-size.info';
-import { ManualTilesHelper } from '../../world/map/tile/manual-tiles/manual-tiles.helper';
-import { TilemapHelper } from '../../world/map/tile/tilemap.helper';
-import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { PlaceableAtlasProperties } from '../placable-objects/static-object';
-import { WarriorDefinition } from '../assets/characters/warrior';
-import { Vector2Simple } from '../../library/math/intersection';
+import { GameObjects, Scene } from "phaser";
+import { IsoHelper } from "../../world/map/tile/iso-helper";
+import { MapSizeInfo } from "../../world/const/map-size.info";
+import { TilemapHelper } from "../../world/map/tile/tilemap.helper";
+import { TilePlacementData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { PlaceableAtlasProperties } from "../placable-objects/static-object";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export type SpritePlacementData = {
   textureName: string;
@@ -28,7 +26,7 @@ export class SpriteHelper {
 
     // create object
 
-    const depth = ManualTilesHelper.getDepth(tileXY, tileWorldXYCenter, layer);
+    const depth = 0;
     return {
       x: tileWorldXYCenter.x,
       y: tileWorldXYCenter.y,
@@ -50,16 +48,10 @@ export class SpriteHelper {
     sprite.setInteractive();
     sprite.depth = spriteWorldPlacementInfo.depth;
 
-    const [imageName] = frame.split('.');
-    if (imageName === WarriorDefinition.textureMapDefinition.textureName) {
-      // todo
-      this.placeSpriteAsIs(sprite);
-    } else if (imageName === 'barracks') {
-      // todo just for test
-      this.rescaleSpriteToFitTwoTiles(sprite);
-    } else {
-      this.rescaleSpriteToFitTile(sprite);
-    }
+    const [imageName] = frame.split(".");
+
+    this.rescaleSpriteToFitTile(sprite);
+
     return sprite;
   }
 
@@ -69,20 +61,5 @@ export class SpriteHelper {
     const height = sprite.height;
     const scale = Math.min(MapSizeInfo.info.tileWidthHalf / width, MapSizeInfo.info.tileHeightHalf / height);
     sprite.setScale(scale);
-  }
-
-  private static rescaleSpriteToFitTwoTiles(sprite: GameObjects.Sprite) {
-    // todo just for test
-    const width = sprite.width;
-    const scale = MapSizeInfo.info.tileWidth / width;
-    sprite.setScale(scale * 2);
-    // offset sprite on x and y by 10
-    sprite.x -= 5; // offset so it looks nice
-    sprite.y -= 7; // offset so it looks nice
-  }
-
-  private static placeSpriteAsIs(sprite: GameObjects.Sprite) {
-    // todo?
-    sprite.y -= MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
   }
 }

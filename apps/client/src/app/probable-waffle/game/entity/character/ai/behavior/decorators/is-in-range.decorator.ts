@@ -1,9 +1,9 @@
-import { DecoratorData, IDecorator } from './decorator.interface';
-import { GameplayLibrary } from '../../../../../library/gameplay-library';
+import { DecoratorData, IDecorator } from "./decorator.interface";
+import { GameplayLibrary } from "../../../../../library/gameplay-library";
 
 export class IsInRangeDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {
-    const targetActor = decoratorData.blackboard.targetActor;
+    const targetActor = decoratorData.blackboard.targetGameObject;
     if (!targetActor) {
       return false;
     }

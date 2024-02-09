@@ -1,20 +1,25 @@
-import { Component } from '@angular/core';
-import { SpectateService } from './spectate.service';
-import { Room } from '@fuzzy-waddle/api-interfaces';
-import { ServerHealthService } from '../../../shared/services/server-health.service';
+import { Component, inject, OnInit } from "@angular/core";
+import { SpectateService } from "./spectate.service";
+import { LittleMuncherRoom } from "@fuzzy-waddle/api-interfaces";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'little-muncher-spectate',
-  templateUrl: './spectate.component.html',
-  styleUrls: ['./spectate.component.scss']
+  selector: "little-muncher-spectate",
+  templateUrl: "./spectate.component.html",
+  styleUrls: ["./spectate.component.scss"],
+  standalone: true,
+  imports: [CommonModule]
 })
-export class SpectateComponent {
-  constructor(
-    protected readonly spectateService: SpectateService,
-    protected readonly serverHealthService: ServerHealthService
-  ) {}
+export class SpectateComponent implements OnInit {
+  protected readonly spectateService = inject(SpectateService);
+  protected readonly serverHealthService = inject(ServerHealthService);
 
-  async spectate(room: Room) {
-    await this.spectateService.joinRoom(room.gameInstanceId);
+  async ngOnInit(): Promise<void> {
+    await this.spectateService.initiallyPullRooms();
+  }
+
+  async spectate(room: LittleMuncherRoom) {
+    await this.spectateService.joinRoom(room.gameInstanceMetadataData.gameInstanceId!);
   }
 }

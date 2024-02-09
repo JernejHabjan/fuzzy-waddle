@@ -1,14 +1,31 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OptionsComponent } from './options.component';
+import { OptionsComponent } from "./options.component";
+import { ActivatedRoute } from "@angular/router";
+import { FormsModule } from "@angular/forms";
 
-describe('OptionsComponent', () => {
+describe("OptionsComponent", () => {
   let component: OptionsComponent;
   let fixture: ComponentFixture<OptionsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [OptionsComponent]
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            // add your mock values here that replicate the ActivatedRoute API
+            // snapshot: {
+            //   paramMap: {
+            //     get(): string {
+            //       return '1';  // Mock route parameter
+            //     }
+            //   }
+            // }
+          }
+        }
+      ],
+      imports: [OptionsComponent, FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(OptionsComponent);
@@ -16,7 +33,7 @@ describe('OptionsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

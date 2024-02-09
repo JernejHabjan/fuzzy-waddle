@@ -17,7 +17,7 @@
         "inlineStyleLanguage": "scss",
         "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets", "apps/client/src/manifest.webmanifest"],
         "styles": ["apps/client/src/styles/styles.scss"],
-        "scripts": [],
+        "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
         "serviceWorker": true,
         "ngswConfigPath": "apps/client/ngsw-config.json",
         "allowedCommonJsDependencies": ["phaser", "websocket", "cross-fetch"]
@@ -27,8 +27,8 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
             },
             {
               "type": "anyComponentStyle",
@@ -59,10 +59,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "client:build:production"
+          "buildTarget": "client:build:production"
         },
         "development": {
-          "browserTarget": "client:build:development"
+          "buildTarget": "client:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -70,7 +70,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "client:build"
+        "buildTarget": "client:build"
       }
     },
     "lint": {
@@ -83,14 +83,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/client/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/client/jest.config.ts"
       }
     }
   },

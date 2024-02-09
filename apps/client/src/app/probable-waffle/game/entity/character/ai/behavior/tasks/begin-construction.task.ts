@@ -1,6 +1,6 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { BuilderComponent } from '../../../../actor/components/builder-component';
-import { TransformComponent } from '../../../../actor/components/transformable-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { BuilderComponent } from "../../../../actor/components/builder-component";
+import { TransformComponent } from "../../../../actor/components/transformable-component";
 
 export class BeginConstructionTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
@@ -8,7 +8,7 @@ export class BeginConstructionTask implements ITask {
     if (!builderComponent) {
       return TaskResultType.Failure;
     }
-    const target = taskData.blackboard.targetActor;
+    const target = taskData.blackboard.targetGameObject;
     if (!target) {
       return TaskResultType.Failure;
     }

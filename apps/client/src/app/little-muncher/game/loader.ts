@@ -1,4 +1,4 @@
-import BaseScene from '../../shared/game/phaser/scene/base.scene';
+import { BaseScene } from "../../shared/game/phaser/scene/base.scene";
 
 export class Loader {
   constructor(scene: BaseScene) {
@@ -17,10 +17,10 @@ export class Loader {
     const loadingText = scene.make.text({
       x: width / 2,
       y: height / 2 - progressBarHeight,
-      text: 'Loading...',
+      text: "Loading...",
       style: {
-        font: '20px monospace',
-        color: '#ffffff'
+        font: "20px monospace",
+        color: "#ffffff"
       }
     });
     loadingText.setOrigin(0.5, 0.5);
@@ -28,10 +28,10 @@ export class Loader {
     const percentText = scene.make.text({
       x: width / 2,
       y: height / 2,
-      text: '0%',
+      text: "0%",
       style: {
-        font: '18px monospace',
-        color: '#ffffff'
+        font: "18px monospace",
+        color: "#ffffff"
       }
     });
     percentText.setOrigin(0.5, 0.5);
@@ -39,16 +39,16 @@ export class Loader {
     const assetText = scene.make.text({
       x: width / 2,
       y: height / 2 + 50,
-      text: '',
+      text: "",
       style: {
-        font: '18px monospace',
-        color: '#ffffff'
+        font: "18px monospace",
+        color: "#ffffff"
       }
     });
     assetText.setOrigin(0.5, 0.5);
 
     scene.load.on(Phaser.Loader.Events.PROGRESS, (value: number) => {
-      percentText.setText(Math.round(value * 100) + '%');
+      percentText.setText(Math.round(value * 100) + "%");
       progressBar.clear();
       progressBar.fillStyle(0xffffff, 1);
       progressBar.fillRect(
@@ -60,7 +60,7 @@ export class Loader {
     });
 
     scene.load.on(Phaser.Loader.Events.FILE_PROGRESS, (file: Phaser.Loader.File) => {
-      assetText.setText('Loading asset: ' + file.key);
+      assetText.setText("Loading asset: " + file.key);
     });
 
     scene.load.on(Phaser.Loader.Events.COMPLETE, function () {

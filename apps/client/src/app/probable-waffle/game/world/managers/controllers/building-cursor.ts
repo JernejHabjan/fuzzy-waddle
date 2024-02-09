@@ -1,10 +1,10 @@
 // when placing new building
-import { MapSizeInfo } from '../../const/map-size.info';
-import { Vector2Simple } from '../../../library/math/intersection';
-import { AttackComponent } from '../../../entity/combat/components/attack-component';
-import { ConstructionSiteComponent } from '../../../entity/building/construction/construction-site-component';
-import { RepresentableActor } from '../../../entity/actor/representable-actor';
-import { Scene, Types } from 'phaser';
+import { MapSizeInfo } from "../../const/map-size.info";
+import { AttackComponent } from "../../../entity/combat/components/attack-component";
+import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import { RepresentableActor } from "../../../entity/actor/representable-actor";
+import { Scene, Types } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class BuildingCursor {
   placementGrid: unknown; // todo
@@ -37,7 +37,7 @@ export class BuildingCursor {
 
     const constructionSiteComponent = building.components.findComponent(ConstructionSiteComponent);
     const attackComponent = building.components.findComponent(AttackComponent);
-    this.gridWidthAndHeight = constructionSiteComponent.gridWidthAndHeight;
+    this.gridWidthAndHeight = { height: 3, width: 2 }; // todo constructionSiteComponent.gridWidthAndHeight;
     this.previewAttackRange = !!attackComponent;
   }
 
@@ -90,9 +90,9 @@ export class BuildingCursor {
     if (!this.building || !this.pointerLocation) {
       return;
     }
-    const buildingSprite = this.building.spriteRepresentationComponent.sprite;
-    buildingSprite.setPosition(this.pointerLocation.x, this.pointerLocation.y);
-    buildingSprite.setAlpha(0.5);
-    buildingSprite.setVisible(true);
+    // todo const buildingSprite = this.building.spriteRepresentationComponent.sprite;
+    // todo buildingSprite.setPosition(this.pointerLocation.x, this.pointerLocation.y);
+    // todo buildingSprite.setAlpha(0.5);
+    // todo buildingSprite.setVisible(true);
   }
 }

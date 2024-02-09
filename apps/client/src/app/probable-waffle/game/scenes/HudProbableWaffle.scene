@@ -1,0 +1,73 @@
+{
+    "id": "04311eb6-ed91-4d74-b6e9-4bfe0fcfb458",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "superClassName": "ProbableWaffleScene",
+        "preloadMethodName": "editorPreload",
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "HudProbableWaffle",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+            "id": "b042eaac-6d53-49e6-bfea-e1192a74a0b0",
+            "unlock": [
+                "x",
+                "y",
+                "text",
+                "w",
+                "h",
+                "fontSize"
+            ],
+            "label": "buttonSave",
+            "scope": "CLASS",
+            "text": "S",
+            "w": 45,
+            "h": 45,
+            "fontSize": 30,
+            "x": 1180,
+            "y": 38
+        },
+        {
+            "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+            "id": "2b326e5b-e387-4267-a772-69d81569abd3",
+            "unlock": [
+                "x",
+                "y",
+                "text",
+                "w",
+                "h",
+                "fontSize"
+            ],
+            "label": "buttonQuit",
+            "scope": "CLASS",
+            "text": "Q",
+            "w": 45,
+            "h": 45,
+            "fontSize": 30,
+            "x": 1201,
+            "y": 38
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "lists": [
+        {
+            "id": "a9e1809e-2eca-4d40-8c83-7c158f629362",
+            "label": "hudElements"
+        }
+    ]
+}

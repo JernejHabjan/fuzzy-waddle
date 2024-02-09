@@ -1,0 +1,20 @@
+<button
+  routerLink="/fly-squasher"
+  class="btn btn-danger m-1 position-absolute"
+  style="left: 20px; top: 20px"
+  type="button"
+>
+  Leave
+</button>
+
+<div class="card-container">
+  <div class="general-title">Choose level:</div>
+
+  <div class="level-list">
+    <div class="level-list-item" *ngFor="let level of flySquasherLevels | keyvalue">
+      <div class="level-name">{{ level.value.name }}</div>
+      <div class="level-description">{{ level.value.description }}</div>
+      <button class="btn btn-primary" type="button" routerLink="/fly-squasher/play/{{ level.value.id }}">Play</button>
+    </div>
+  </div>
+</div>

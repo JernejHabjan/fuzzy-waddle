@@ -1,10 +1,7 @@
-import { ChatMessage } from '@fuzzy-waddle/api-interfaces';
-import { Observable } from 'rxjs';
+import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import { Observable } from "rxjs";
 
 export interface IChatService {
   sendMessage(msg: ChatMessage): void;
-
-  getMessage(): Observable<ChatMessage> | undefined;
-
-  createMessage(message: string): ChatMessage;
+  get listenToMessages(): Observable<ChatMessage> | undefined;
 }

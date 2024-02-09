@@ -1,0 +1,39 @@
+{
+    "id": "ec58b20e-e04f-4bd4-840e-856ffe433f35",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "snapHeight": 4,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 32,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "6f454346-d244-4279-8abe-202206fcbf9e",
+            "label": "architecture_chimneys_chimney_short_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "0 8 16 0 32 8 32.04202888733553 24.466066423095242 16.04827544949468 32 0.05452265115179422 24.614156729744238",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/chimneys/chimney_short.png"
+            },
+            "x": 16,
+            "y": 24,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

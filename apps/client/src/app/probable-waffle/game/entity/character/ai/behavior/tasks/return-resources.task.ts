@@ -1,13 +1,14 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { GathererComponent } from '../../../../actor/components/gatherer-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { GathererComponent } from "../../../../actor/components/gatherer-component";
+import { getActorComponent } from "../../../../../data/actor-component";
 
 export class ReturnResourcesTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
-    const resourceDrain = taskData.blackboard.targetActor;
+    const resourceDrain = taskData.blackboard.targetGameObject;
     if (!resourceDrain) {
       return TaskResultType.Failure;
     }
-    const gathererComponent = taskData.owner.components.findComponentOrNull(GathererComponent);
+    const gathererComponent = getActorComponent(taskData.owner, GathererComponent);
     if (!gathererComponent) {
       return TaskResultType.Failure;
     }

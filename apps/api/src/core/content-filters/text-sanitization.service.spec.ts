@@ -1,14 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { TextSanitizationService } from './text-sanitization.service';
-import { ITextSanitizationService } from './text-sanitization.service.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { TextSanitizationService } from "./text-sanitization.service";
+import { ITextSanitizationService } from "./text-sanitization.service.interface";
 
 export const textSanitizationServiceStub = {
   cleanBadWords(text: string): string {
     return text;
   }
-} as ITextSanitizationService;
+} satisfies ITextSanitizationService;
 
-describe('TextSanitizationService', () => {
+describe("TextSanitizationService", () => {
   let service: TextSanitizationService;
 
   beforeEach(async () => {
@@ -19,7 +19,7 @@ describe('TextSanitizationService', () => {
     service = module.get<TextSanitizationService>(TextSanitizationService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

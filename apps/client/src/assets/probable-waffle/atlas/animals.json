@@ -1,0 +1,608 @@
+{
+	"textures": [
+		{
+			"image": "animals.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 126,
+				"h": 235
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "sheep/sheep_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/sheep_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 1,
+						"y": 37,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/sheep_up.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 37,
+						"h": 42
+					},
+					"frame": {
+						"x": 56,
+						"y": 1,
+						"w": 37,
+						"h": 42
+					}
+				},
+				{
+					"filename": "hedgehog/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 30,
+						"h": 26
+					},
+					"frame": {
+						"x": 95,
+						"y": 1,
+						"w": 30,
+						"h": 26
+					}
+				},
+				{
+					"filename": "sheep/sheep_down.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 1,
+						"y": 73,
+						"w": 37,
+						"h": 38
+					}
+				},
+				{
+					"filename": "hedgehog/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 30,
+						"h": 26
+					},
+					"frame": {
+						"x": 95,
+						"y": 29,
+						"w": 30,
+						"h": 26
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 31,
+						"w": 47,
+						"h": 27
+					},
+					"frame": {
+						"x": 1,
+						"y": 113,
+						"w": 47,
+						"h": 27
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 31,
+						"w": 47,
+						"h": 27
+					},
+					"frame": {
+						"x": 1,
+						"y": 142,
+						"w": 47,
+						"h": 27
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_up.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 19,
+						"w": 23,
+						"h": 40
+					},
+					"frame": {
+						"x": 1,
+						"y": 171,
+						"w": 23,
+						"h": 40
+					}
+				},
+				{
+					"filename": "hedgehog/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 8,
+						"w": 26,
+						"h": 21
+					},
+					"frame": {
+						"x": 1,
+						"y": 213,
+						"w": 26,
+						"h": 21
+					}
+				},
+				{
+					"filename": "hedgehog/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 56,
+						"y": 45,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_down.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 29,
+						"w": 25,
+						"h": 30
+					},
+					"frame": {
+						"x": 26,
+						"y": 171,
+						"w": 25,
+						"h": 30
+					}
+				},
+				{
+					"filename": "hedgehog/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 6,
+						"w": 32,
+						"h": 24
+					},
+					"frame": {
+						"x": 90,
+						"y": 57,
+						"w": 32,
+						"h": 24
+					}
+				},
+				{
+					"filename": "hedgehog/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 56,
+						"y": 72,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 6,
+						"w": 32,
+						"h": 24
+					},
+					"frame": {
+						"x": 90,
+						"y": 83,
+						"w": 32,
+						"h": 24
+					}
+				},
+				{
+					"filename": "hedgehog/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 31,
+						"h": 26
+					},
+					"frame": {
+						"x": 29,
+						"y": 203,
+						"w": 31,
+						"h": 26
+					}
+				},
+				{
+					"filename": "hedgehog/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 50,
+						"y": 99,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 50,
+						"y": 126,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 31,
+						"h": 26
+					},
+					"frame": {
+						"x": 84,
+						"y": 109,
+						"w": 31,
+						"h": 26
+					}
+				},
+				{
+					"filename": "hedgehog/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 30,
+						"h": 25
+					},
+					"frame": {
+						"x": 84,
+						"y": 137,
+						"w": 30,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 26,
+						"h": 22
+					},
+					"frame": {
+						"x": 53,
+						"y": 153,
+						"w": 26,
+						"h": 22
+					}
+				},
+				{
+					"filename": "hedgehog/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 6,
+						"w": 30,
+						"h": 23
+					},
+					"frame": {
+						"x": 53,
+						"y": 177,
+						"w": 30,
+						"h": 23
+					}
+				},
+				{
+					"filename": "hedgehog/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 30,
+						"h": 25
+					},
+					"frame": {
+						"x": 62,
+						"y": 202,
+						"w": 30,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 6,
+						"w": 30,
+						"h": 23
+					},
+					"frame": {
+						"x": 85,
+						"y": 164,
+						"w": 30,
+						"h": 23
+					}
+				},
+				{
+					"filename": "hedgehog/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 26,
+						"h": 22
+					},
+					"frame": {
+						"x": 94,
+						"y": 189,
+						"w": 26,
+						"h": 22
+					}
+				},
+				{
+					"filename": "hedgehog/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 8,
+						"w": 26,
+						"h": 21
+					},
+					"frame": {
+						"x": 94,
+						"y": 213,
+						"w": 26,
+						"h": 21
+					}
+				},
+				{
+					"filename": "sheep/effects/wool_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 2,
+						"h": 3
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2,
+						"h": 3
+					},
+					"frame": {
+						"x": 29,
+						"y": 231,
+						"w": 2,
+						"h": 3
+					}
+				},
+				{
+					"filename": "sheep/effects/wool_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 2,
+						"h": 2
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2,
+						"h": 2
+					},
+					"frame": {
+						"x": 81,
+						"y": 164,
+						"w": 2,
+						"h": 2
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:a79f042c30c2b5fde2cdf0a970d75ff7:cf2c9a4cb3cbf871847bae8c8e67403d:b00d48b51f56eb7c81e25100fcce2828$"
+	}
+}

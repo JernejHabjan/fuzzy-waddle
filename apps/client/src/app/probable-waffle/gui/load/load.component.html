@@ -1,0 +1,27 @@
+<div class="container mt-4">
+  <div class="card-container">
+    @if(gameInstanceDataRecords.length){
+    <div class="d-grid text-center" style="grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 4px">
+      <div class="text-primary">Save Name</div>
+      <div class="text-primary">Map Name</div>
+      <div class="text-primary">Last Played</div>
+      <div></div>
+      @for (rec of gameInstanceDataRecords;track rec) {
+      <div>{{ rec.saveName }}</div>
+      <div>{{ getMapName(rec.gameInstanceData) }}</div>
+      <div>{{ rec.created | date: "medium" }}</div>
+      <div style="text-align: right">
+        <button class="btn btn-primary" type="button" (click)="loadSave(rec)">Load</button>
+        <button class="btn btn-primary ms-2" type="button" (click)="deleteSave(rec)">Delete</button>
+      </div>
+      }
+    </div>
+    }@else{
+    <div class="text-center">No saved games found.</div>
+    }
+
+    <div class="mt-4">
+      <button class="btn btn-primary" routerLink="/probable-waffle">Leave</button>
+    </div>
+  </div>
+</div>

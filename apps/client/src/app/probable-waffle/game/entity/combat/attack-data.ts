@@ -1,14 +1,11 @@
-import { DamageType } from './damage-type';
-import { ProjectileClass } from './projectiles/projectiles';
+import { DamageType } from "./damage-type";
 
-export class AttackData {
-  constructor(
-    // Time before this attack can be used again, in seconds
-    public cooldown: number,
-    public damage: number,
-    public damageType: DamageType,
-    public range: number,
-    // Type of the projectile to spawn - if not set, damage will be dealt instantly
-    public projectileClass?: ProjectileClass
-  ) {}
+export interface AttackData {
+  // Time before this attack can be used again, in seconds
+  cooldown: number;
+  damage: number;
+  damageType: DamageType;
+  range: number;
+  // Type of the projectile to spawn - if not set, damage will be dealt instantly
+  projectileType?: string;
 }

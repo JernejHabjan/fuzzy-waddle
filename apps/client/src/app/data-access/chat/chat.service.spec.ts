@@ -1,27 +1,21 @@
-import { TestBed } from '@angular/core/testing';
-import { ChatService } from './chat.service';
-import { AuthenticatedSocketService } from './authenticated-socket.service';
-import { createAuthenticatedSocketServiceStub } from './authenticated-socket.service.spec';
-import { ChatMessage } from '@fuzzy-waddle/api-interfaces';
-import { IChatService } from './chat.service.interface';
+import { TestBed } from "@angular/core/testing";
+import { ChatService } from "./chat.service";
+import { AuthenticatedSocketService } from "./authenticated-socket.service";
+import { createAuthenticatedSocketServiceStub } from "./authenticated-socket.service.spec";
+import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import { IChatService } from "./chat.service.interface";
+import { Observable } from "rxjs";
 
 export const chatServiceStub = {
   sendMessage(msg: ChatMessage) {
     // do nothing
   },
-  getMessage() {
-    return {
-      subscribe: () => {
-        // do nothing
-      }
-    };
-  },
-  createMessage(message: string): ChatMessage {
-    return null as unknown as ChatMessage;
+  get listenToMessages(): Observable<ChatMessage> | undefined {
+    return undefined;
   }
-} as IChatService;
+} satisfies IChatService;
 
-describe('Chat', () => {
+describe("Chat", () => {
   let service: ChatService;
 
   beforeEach(() => {
@@ -37,7 +31,7 @@ describe('Chat', () => {
     service = TestBed.inject(ChatService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

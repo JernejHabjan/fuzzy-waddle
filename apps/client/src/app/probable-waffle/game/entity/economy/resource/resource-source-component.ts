@@ -1,38 +1,44 @@
-import { IComponent } from '../../../core/component.service';
-import { ResourceType } from './resource-type';
-import { Actor } from '../../actor/actor';
-import { ContainerComponent } from '../../building/container-component';
-import { Subject } from 'rxjs';
+import { IComponent } from "../../../core/component.service";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ContainerComponent } from "../../building/container-component";
+import { Subject } from "rxjs";
+import { getActorComponent } from "../../../data/actor-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
-export class ResourceSourceComponent implements IComponent {
-  onResourcesChanged: Subject<[ResourceType, number, Actor]> = new Subject<[ResourceType, number, Actor]>();
-  onDepleted: Subject<Actor> = new Subject<Actor>();
+export type ResourceSourceDefinition = {
+  resourceType: ResourceType;
+  maximumResources: number;
+  gatheringFactor: number;
+};
+
+export class ResourceSourceComponent {
+  onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
+  onDepleted: Subject<GameObject> = new Subject<GameObject>();
   private currentResources: number;
-  private containerComponent: ContainerComponent | null = null;
+  private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
   private gathererCapacity = 0;
 
   constructor(
-    private readonly actor: Actor,
-    private resourceType: ResourceType,
-    private maximumResources: number,
-    private gatheringFactor: number
+    private readonly gameObject: GameObject,
+    private readonly resourceSourceDefinition: ResourceSourceDefinition
   ) {
-    this.currentResources = this.maximumResources;
+    this.currentResources = this.resourceSourceDefinition.maximumResources;
+    this.init();
   }
 
   init(): void {
-    this.containerComponent = this.actor.components.findComponentOrNull(ContainerComponent);
-    this.gathererCapacity = this.containerComponent?.capacity ?? 0;
+    this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
+    this.gathererCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
   }
 
-  extractResources(gatherer: Actor, amount: number): number {
+  extractResources(gatherer: GameObject, amount: number): number {
     if (this.gathererMustEnter) {
       // todo!!!!!!
     }
 
-    const gatheredAmount = Math.min(amount * this.gatheringFactor, this.currentResources);
+    const gatheredAmount = Math.min(amount * this.resourceSourceDefinition.gatheringFactor, this.currentResources);
 
     // deduct resources
     const oldResources = this.currentResources;
@@ -40,42 +46,42 @@ export class ResourceSourceComponent implements IComponent {
     const newResources = this.currentResources;
 
     console.log(
-      'gatherer',
+      "gatherer",
       gatherer,
-      'extracted',
+      "extracted",
       gatheredAmount,
-      this.resourceType,
-      'from',
-      this.actor,
-      'oldResources',
+      this.resourceSourceDefinition.resourceType,
+      "from",
+      this.gameObject,
+      "oldResources",
       oldResources,
-      'newResources',
+      "newResources",
       newResources
     );
 
-    this.onResourcesChanged.next([this.resourceType, gatheredAmount, gatherer]);
+    this.onResourcesChanged.next([this.resourceSourceDefinition.resourceType, gatheredAmount, gatherer]);
     // check if we're depleted
     if (this.currentResources <= 0) {
-      this.onDepleted.next(this.actor);
-      this.actor.destroy();
+      this.onDepleted.next(this.gameObject);
+      this.gameObject.destroy();
     }
     return gatheredAmount;
   }
 
-  canGathererEnter(gatherer: Actor): boolean {
-    return this.containerComponent?.canLoadActor(gatherer) ?? true;
+  canGathererEnter(gatherer: GameObject): boolean {
+    return this.containerComponent?.canLoadGameObject(gatherer) ?? true;
   }
 
   getResourceType(): ResourceType {
-    return this.resourceType;
+    return this.resourceSourceDefinition.resourceType;
   }
 
   getMaximumResources(): number {
-    return this.maximumResources;
+    return this.resourceSourceDefinition.maximumResources;
   }
 
   getGatheringFactor(): number {
-    return this.gatheringFactor;
+    return this.resourceSourceDefinition.gatheringFactor;
   }
 
   mustGathererEnter(): boolean {

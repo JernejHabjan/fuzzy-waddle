@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserAuthCacheService } from './user-auth-cache.service';
-import { authUserStub } from '../../../auth/auth.service.spec';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UserAuthCacheService } from "./user-auth-cache.service";
+import { authUserStub } from "../../../auth/auth.service.spec";
 
-describe('UserAuthCacheService', () => {
+describe("UserAuthCacheService", () => {
   let service: UserAuthCacheService;
 
   beforeEach(async () => {
@@ -13,13 +13,13 @@ describe('UserAuthCacheService', () => {
     service = module.get<UserAuthCacheService>(UserAuthCacheService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it('should set and get user', () => {
+  it("should set and get user", () => {
     const user = authUserStub;
-    const idToken = 'idToken';
+    const idToken = "idToken";
     service.setUser(idToken, user);
     expect(service.getUser(idToken)).toEqual(user);
   });

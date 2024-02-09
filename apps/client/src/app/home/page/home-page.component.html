@@ -1,16 +1,10 @@
-<fuzzy-waddle-home-page-nav />
+<probable-waffle-home-page-nav />
 
-<a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ probableWaffle.route }}">
-  <img
-    [alt]="probableWaffle.name"
-    [src]="'assets/games/images/' + probableWaffle.image"
-    class="featured-image"
-    height="100px"
-    width="200px"
-  />
+<a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ featuredGame.route }}">
+  <img [alt]="featuredGame.name" [src]="'assets/games/images/' + featuredGame.bannerImage" class="featured-image" />
   <div class="featured-title">
     <div>Featured</div>
-    <div style="margin-left: 30px">{{ probableWaffle.name }}</div>
+    <div style="margin-left: 30px">{{ featuredGame.name }}</div>
   </div>
 </a>
 
@@ -19,18 +13,17 @@
     <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
     <div class="game-title">
       <h2>{{ game.name }}</h2>
+      <div *ngIf="game.inDevelopment" class="in-development">In Development</div>
     </div>
     <div class="game-description">
       <p>{{ game.description }}</p>
     </div>
   </a>
 </div>
-<fuzzy-waddle-chat-float
-  *ngIf="serverHealthService.serverAvailable && authService.isAuthenticated"
-></fuzzy-waddle-chat-float>
+<fuzzy-waddle-chat-float *ngIf="serverHealthService.serverAvailable && authService.isAuthenticated" />
 <div *ngIf="authService.isAuthenticated && !environment.production">
-  <button class="btn btn-outline-primary" (click)="dbAccessTestService.add()">Add Test</button>
-  <button class="btn btn-outline-primary" (click)="addViaMw()">Add Test via MW</button>
-  <button class="btn btn-outline-primary" (click)="dbAccessTestService.get()">Get Test</button>
-  <button class="btn btn-outline-primary" (click)="dbAccessTestService.getStorageEntry()">Get Storage Entry</button>
+  <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.add()">Add Test</button>
+  <button class="btn btn-outline-primary ms-1" (click)="addViaMw()">Add Test via MW</button>
+  <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.get()">Get Test</button>
+  <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.getStorageEntry()">Get Storage Entry</button>
 </div>

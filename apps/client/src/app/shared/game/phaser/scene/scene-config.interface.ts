@@ -1,4 +1,4 @@
-import { Types } from 'phaser';
+import { Types } from "phaser";
 
 export interface CreateSceneFromObjectConfig {
   /**
@@ -21,5 +21,5 @@ export interface CreateSceneFromObjectConfig {
   /**
    * Any values, which will be merged into the Scene's Data Manager store.
    */
-  'extend.data'?: unknown;
+  "extend.data"?: unknown;
 }

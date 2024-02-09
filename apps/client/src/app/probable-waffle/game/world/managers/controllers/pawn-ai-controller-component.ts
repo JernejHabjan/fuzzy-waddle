@@ -1,26 +1,31 @@
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../../../entity/actor/actor';
-import { TilePlacementData } from './input/tilemap/tilemap-input.handler';
-import { OrderData } from '../../../entity/character/ai/order-data';
-import { Queue } from '../../../library/queue';
-import { BeginConstructionArgs, OrderType } from '../../../entity/character/ai/order-type';
-import { ActorAbleToBeBuiltClass } from '../../../entity/actor/components/builder-component';
-import { GathererComponent } from '../../../entity/actor/components/gatherer-component';
-import { PawnAiBlackboard } from '../../../entity/character/ai/pawn-ai-blackboard';
-import { PawnBehaviorTree } from '../../../entity/character/ai/behavior-trees';
+import { OrderData } from "../../../entity/character/ai/order-data";
+import { Queue } from "../../../library/queue";
+import { OrderType } from "../../../entity/character/ai/order-type";
+import { PawnAiBlackboard } from "../../../entity/character/ai/pawn-ai-blackboard";
+import { PawnBehaviorTree } from "../../../entity/character/ai/behavior-trees";
+import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
+import { getActorComponent } from "../../../data/actor-component";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import GameObject = Phaser.GameObjects.GameObject;
 
-export class PawnAiControllerComponent implements IComponent {
+export class PawnAiControllerComponent {
   // declare queue of OrderData
   orders: Queue<OrderData> = new Queue<OrderData>();
 
-  constructor(private owner: Actor, public blackboard: PawnAiBlackboard, public behaviorTree: PawnBehaviorTree) {}
+  constructor(
+    private readonly gameObject: GameObject,
+    public blackboard: PawnAiBlackboard,
+    public behaviorTree: PawnBehaviorTree
+  ) {
+    this.init();
+  }
 
   init(): void {
     this.behaviorTree.run();
   }
 
   /**
-   * look for a feasible target in its acquisition radius // circle overlap actors
+   * look for a feasible target in its acquisition radius // circle overlap gameObjects
    */
   findTargetInAcquisitionRadius(): void {
     // todo
@@ -56,48 +61,48 @@ export class PawnAiControllerComponent implements IComponent {
   }
 
   issueOrder(orderData: OrderData) {
-    console.log('issueOrder', orderData);
+    console.log("issueOrder", orderData);
     this.orders.empty();
     this.addOrder(orderData);
     this.obtainNextOrder();
   }
 
-  issueAttackOrder(target: Actor) {
+  issueAttackOrder(target: GameObject) {
     const orderData: OrderData = {
       orderType: OrderType.Attack,
-      targetActor: target
+      targetGameObject: target
     };
 
     this.issueOrder(orderData);
   }
 
-  issueBeginConstructionOrder(constructableBuildingClass: ActorAbleToBeBuiltClass, targetLocation: TilePlacementData) {
+  issueBeginConstructionOrder(constructableBuildingClass: string, targetLocation: Vector3Simple) {
     const orderData: OrderData = {
       orderType: OrderType.BeginConstruction,
       targetLocation,
-      args: [constructableBuildingClass] as BeginConstructionArgs
+      args: [constructableBuildingClass] as any
     };
     this.issueOrder(orderData);
   }
 
-  issueContinueConstructionOrder(constructionSite: Actor) {
+  issueContinueConstructionOrder(constructionSite: GameObject) {
     const orderData: OrderData = {
       orderType: OrderType.ContinueConstruction,
-      targetActor: constructionSite
+      targetGameObject: constructionSite
     };
     this.issueOrder(orderData);
   }
 
-  issueGatherOrder(resourceSource: Actor) {
+  issueGatherOrder(resourceSource: GameObject) {
     const orderData: OrderData = {
       orderType: OrderType.Gather,
-      targetActor: resourceSource
+      targetGameObject: resourceSource
     };
     this.issueOrder(orderData);
   }
 
   insertContinueGathersOrder(): boolean {
-    const gathererComponent = this.owner.components.findComponentOrNull(GathererComponent);
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) {
       return false;
     }
@@ -107,17 +112,17 @@ export class PawnAiControllerComponent implements IComponent {
     }
     const orderData: OrderData = {
       orderType: OrderType.Gather,
-      targetActor: resourceSource
+      targetGameObject: resourceSource
     };
     this.insertOrder(orderData);
 
     return true;
   }
 
-  issueMoveOrder(tilePlacementData: TilePlacementData) {
+  issueMoveOrder(vector3: Vector3Simple) {
     const orderData: OrderData = {
       orderType: OrderType.Move,
-      targetLocation: tilePlacementData
+      targetLocation: vector3
     };
     this.issueOrder(orderData);
   }
@@ -154,12 +159,12 @@ export class PawnAiControllerComponent implements IComponent {
       return;
     }
     this.blackboard.orderType = orderData.orderType;
-    this.blackboard.targetActor = orderData.targetActor;
+    this.blackboard.targetGameObject = orderData.targetGameObject;
     this.blackboard.targetLocation = orderData.targetLocation;
   }
 
   private composeReturnResourcesOrder(): OrderData | null {
-    const gathererComponent = this.owner.components.findComponentOrNull(GathererComponent);
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) {
       return null;
     }
@@ -169,7 +174,7 @@ export class PawnAiControllerComponent implements IComponent {
     }
     const orderData: OrderData = {
       orderType: OrderType.ReturnResources,
-      targetActor: resourceDrain
+      targetGameObject: resourceDrain
     };
     return orderData;
   }

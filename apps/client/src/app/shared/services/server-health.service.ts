@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { firstValueFrom } from 'rxjs';
-import { ServerHealthServiceInterface } from './server-health.service.interface';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../../environments/environment";
+import { firstValueFrom } from "rxjs";
+import { ServerHealthServiceInterface } from "./server-health.service.interface";
 
 export enum ServerState {
   available = 0,
@@ -11,10 +11,11 @@ export enum ServerState {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ServerHealthService implements ServerHealthServiceInterface {
   private serverState: ServerState = ServerState.checking;
+  private checkHealthPromise: Promise<void> | null = null;
 
   get serverAvailable(): boolean {
     return this.serverState === ServerState.available;
@@ -31,12 +32,21 @@ export class ServerHealthService implements ServerHealthServiceInterface {
   constructor(private readonly httpClient: HttpClient) {}
 
   async checkHealth() {
-    const url = environment.api + 'api/health';
+    if (!this.checkHealthPromise) {
+      const url = environment.api + "api/health";
+      this.checkHealthPromise = this.runCheck(url);
+      await this.checkHealthPromise;
+      this.checkHealthPromise = null;
+    }
+    return this.checkHealthPromise;
+  }
+
+  private async runCheck(url: string) {
     try {
-      await firstValueFrom(this.httpClient.get(url, { responseType: 'text' }));
+      await firstValueFrom(this.httpClient.get(url, { responseType: "text" }));
       this.serverState = ServerState.available;
     } catch (e) {
-      console.warn('Server is down', e);
+      console.warn("Server is down", e);
       this.serverState = ServerState.down;
     }
   }

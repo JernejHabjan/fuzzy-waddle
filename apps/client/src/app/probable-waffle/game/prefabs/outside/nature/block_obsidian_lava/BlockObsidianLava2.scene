@@ -1,0 +1,67 @@
+{
+    "id": "ec58b20e-e03e-4bd4-140e-156ffe433f26",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-32 -32 0 -48 32 -32 31.94308756244577 1.2220034195229061 0.28628033313970036 16 -31.98714686381638 0.6221098782742516",
+            "x": 32,
+            "y": 48,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "14dda69e-0e2e-4507-9a16-d51b69a8b47b",
+                    "label": "image_1",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/block_obsidian/1.png"
+                    },
+                    "y": -16
+                },
+                {
+                    "type": "Image",
+                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
+                    "label": "outside_nature_block_obsidian_lava_2",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "nature/block_obsidian_lava/2.png"
+                    },
+                    "y": -17.87410141979456,
+                    "originY": 0.470717165742086
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "prefabProperties": [
+        {
+            "name": "z",
+            "label": "Z",
+            "tooltip": "",
+            "defValue": 0,
+            "customDefinition": false,
+            "type": {
+                "id": "number"
+            }
+        }
+    ]
+}

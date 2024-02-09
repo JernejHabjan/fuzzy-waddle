@@ -1,6 +1,6 @@
 <fuzzy-waddle-home-nav>
   <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="enabledCampaign">
       <a class="nav-link active" routerLink="campaign">Campaign</a>
     </li>
     <li class="nav-item">
@@ -10,17 +10,20 @@
       <a class="nav-link active" routerLink="skirmish">Skirmish</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link active" routerLink="editor">Editor</a>
+      <a class="nav-link active" routerLink="load">Load</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link active" routerLink="playground">Playground</a>
+      <a class="nav-link active" routerLink="replay">Replay</a>
+    </li>
+    <li class="nav-item" *ngIf="enabledInstantDemoGame">
+      <a class="nav-link active" routerLink="instant-game">Instant</a>
     </li>
   </ul>
   <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="enabledProgress">
       <a class="nav-link active" routerLink="progress">Progress</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="enabledOptions">
       <a class="nav-link active" routerLink="options">Options</a>
     </li>
   </ul>

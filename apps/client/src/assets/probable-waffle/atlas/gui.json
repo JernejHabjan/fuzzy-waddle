@@ -1,0 +1,146 @@
+{
+	"textures": [
+		{
+			"image": "gui.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 32,
+				"h": 61
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "cryos_mini_gui/surfaces/surface_parchment.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 24,
+						"h": 24
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 24,
+						"h": 24
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 24,
+						"h": 24
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/buttons/button_small.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 16,
+						"h": 16
+					},
+					"frame": {
+						"x": 1,
+						"y": 27,
+						"w": 16,
+						"h": 16
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/borders/border_wood.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 12,
+						"h": 12
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 19,
+						"y": 27,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/buttons/button_small_pressed.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 16,
+						"h": 15
+					},
+					"frame": {
+						"x": 1,
+						"y": 45,
+						"w": 16,
+						"h": 15
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/borders/border_dark_outer.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 8,
+						"h": 8
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 8,
+						"h": 8
+					},
+					"frame": {
+						"x": 19,
+						"y": 41,
+						"w": 8,
+						"h": 8
+					}
+				},
+				{
+					"filename": "cryos_mini_gui/surfaces/surface_dark.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 8,
+						"h": 8
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 8,
+						"h": 8
+					},
+					"frame": {
+						"x": 19,
+						"y": 51,
+						"w": 8,
+						"h": 8
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:c98be47b1af7d86376ba7c18386b3f92:d39a72ccda7a7f25046cca4558fa85e0:788b34ed4e778d63c84b2c3df4d44949$"
+	}
+}

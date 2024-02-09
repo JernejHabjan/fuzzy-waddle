@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-import { AuthenticatedSocketService } from './authenticated-socket.service';
-import { IAuthenticatedSocketService } from './authenticated-socket.service.interface';
-import { WrappedSocket } from 'ngx-socket-io/src/socket-io.service';
+import { TestBed } from "@angular/core/testing";
+import { AuthenticatedSocketService } from "./authenticated-socket.service";
+import { IAuthenticatedSocketService } from "./authenticated-socket.service.interface";
+import { WrappedSocket } from "ngx-socket-io/src/socket-io.service";
 
 export const createAuthenticatedSocketServiceStub = {
   get socket(): WrappedSocket | undefined {
     return undefined;
   }
-} as IAuthenticatedSocketService;
+} satisfies IAuthenticatedSocketService;
 
-describe('AuthenticatedSocketService', () => {
+describe("AuthenticatedSocketService", () => {
   let service: AuthenticatedSocketService;
 
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('AuthenticatedSocketService', () => {
     service = TestBed.inject(AuthenticatedSocketService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

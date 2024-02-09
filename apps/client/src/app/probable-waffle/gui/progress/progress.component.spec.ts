@@ -1,14 +1,29 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ProgressComponent } from './progress.component';
+import { ProgressComponent } from "./progress.component";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
+import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
+import { AuthService } from "../../../auth/auth.service";
+import { authServiceStub } from "../../../auth/auth.service.spec";
+import { RouterTestingModule } from "@angular/router/testing";
 
-describe('ProfileComponent', () => {
+describe("ProfileComponent", () => {
   let component: ProgressComponent;
   let fixture: ComponentFixture<ProgressComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ProgressComponent]
+      imports: [ProgressComponent, RouterTestingModule],
+      providers: [
+        {
+          provide: ServerHealthService,
+          useValue: serverHealthServiceStub
+        },
+        {
+          provide: AuthService,
+          useValue: authServiceStub
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProgressComponent);
@@ -16,7 +31,7 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

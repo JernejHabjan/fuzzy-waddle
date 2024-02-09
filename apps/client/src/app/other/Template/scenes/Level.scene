@@ -1,0 +1,792 @@
+{
+    "id": "01aefa93-6044-4159-8358-7e91310aa05f",
+    "sceneType": "SCENE",
+    "settings": {
+        "snapWidth": 40,
+        "snapHeight": 750,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "Level",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Layer",
+            "id": "51c9c4d7-fe09-45dd-9a00-d3b2644bf9b8",
+            "label": "backgroundLayer",
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "41073760-e113-4d3f-a85d-f52c66a9d40c",
+                    "label": "background",
+                    "components": [
+                        "ScrollFactor"
+                    ],
+                    "texture": {
+                        "key": "Volcano Level Set_Background - Layer 00"
+                    },
+                    "y": 1,
+                    "scaleX": 1.1,
+                    "scaleY": 1.1,
+                    "originX": 0,
+                    "originY": 0,
+                    "tintTopLeft": "",
+                    "tintTopRight": "",
+                    "tintBottomLeft": "",
+                    "tintBottomRight": "",
+                    "list": [
+                        {
+                            "prefabId": "844ca766-244c-4ade-b490-bbab3b42d0e2",
+                            "id": "bc58054f-a4c1-4bd7-8480-ad84e8a4e9fa",
+                            "unlock": [
+                                "x"
+                            ],
+                            "label": "scrollFactorScript_1",
+                            "x": 0.1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "6652b381-2d9f-4139-9d3b-e66152f2cb88",
+            "label": "platformBottomItemsLayer",
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "9dd8fb03-dcec-413c-892b-649a83a3e251",
+                    "label": "signpost1",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Environment - Signpost 01.png"
+                    },
+                    "x": 1536,
+                    "y": -344
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "04834bab-9f37-4624-9ace-4c1834404fe3",
+            "label": "platformsLayer",
+            "list": [
+                {
+                    "prefabId": "4067c8d7-b512-4e73-897d-f33aa7713a53",
+                    "id": "666dc2f5-48fd-4c36-b383-f9a9247f26ca",
+                    "unlock": [
+                        "HorizontalMove.minX",
+                        "HorizontalMove.maxX",
+                        "HorizontalMove.horizVelocity",
+                        "x",
+                        "y"
+                    ],
+                    "label": "movingPlatform2",
+                    "x": 890,
+                    "y": 256,
+                    "list": [
+                        {
+                            "prefabId": "c7a6a49e-e3f2-4786-88c3-4a93b572a86e",
+                            "id": "5be17d69-8007-4533-aa79-6da4edd44bb8",
+                            "unlock": [
+                                "horizVelocity",
+                                "minX",
+                                "maxX"
+                            ],
+                            "label": "horizontalMoveScript_3",
+                            "horizVelocity": -50,
+                            "minX": 540,
+                            "maxX": 1170
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "164dfa03-f3fa-4cc3-89ae-164be0665e68",
+                    "id": "4f07f26e-c670-4f6f-8323-5f9bde8b1eb5",
+                    "unlock": [
+                        "HorizontalMove.maxX",
+                        "HorizontalMove.minX",
+                        "x",
+                        "y"
+                    ],
+                    "label": "movingPlatform1",
+                    "x": 311,
+                    "y": 577,
+                    "list": [
+                        {
+                            "prefabId": "c7a6a49e-e3f2-4786-88c3-4a93b572a86e",
+                            "id": "ca1a35b8-6ec2-41d1-87f5-5e325740f489",
+                            "unlock": [
+                                "horizVelocity",
+                                "minX",
+                                "maxX"
+                            ],
+                            "label": "horizontalMoveScript_2",
+                            "horizVelocity": 100,
+                            "minX": 310,
+                            "maxX": 924
+                        }
+                    ]
+                },
+                {
+                    "type": "Image",
+                    "id": "0e1252e1-fe70-45f4-bb5a-e79a00f6f711",
+                    "label": "p4",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground Additional 03.png"
+                    },
+                    "x": 128,
+                    "y": 768
+                },
+                {
+                    "type": "Image",
+                    "id": "53ca02c0-160d-4c94-b9fa-cf50ea2df825",
+                    "label": "p3",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground 12.png"
+                    },
+                    "x": 256,
+                    "y": 640
+                },
+                {
+                    "type": "Image",
+                    "id": "ff41a00a-ec3b-4c48-bc1d-23c95798a3ca",
+                    "label": "p2",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground 11.png"
+                    },
+                    "x": 128,
+                    "y": 640
+                },
+                {
+                    "type": "Image",
+                    "id": "6e8a0811-1e8f-490d-a79e-6cbab798ec4a",
+                    "label": "p1",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground 11.png"
+                    },
+                    "y": 640,
+                    "ArcadeComponent.active": true,
+                    "down": false,
+                    "left": false,
+                    "right": false,
+                    "pushable": false,
+                    "immovable": true,
+                    "body.width": 374,
+                    "body.height": 32,
+                    "body.offset.y": 8
+                },
+                {
+                    "prefabId": "4067c8d7-b512-4e73-897d-f33aa7713a53",
+                    "id": "2c7395e6-f3d3-4900-bc9a-b45f3d4480b7",
+                    "unlock": [
+                        "HorizontalMove.horizVelocity",
+                        "HorizontalMove.minX",
+                        "HorizontalMove.maxX",
+                        "x",
+                        "y"
+                    ],
+                    "label": "movingPlatform3",
+                    "x": 1920,
+                    "y": 0,
+                    "list": [
+                        {
+                            "prefabId": "c7a6a49e-e3f2-4786-88c3-4a93b572a86e",
+                            "id": "5a367c4f-c9e4-4ca8-b420-a549fae9ac55",
+                            "unlock": [
+                                "horizVelocity",
+                                "minX",
+                                "maxX"
+                            ],
+                            "label": "horizontalMoveScript_1",
+                            "horizVelocity": -50,
+                            "minX": 1900,
+                            "maxX": 2224
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "164dfa03-f3fa-4cc3-89ae-164be0665e68",
+                    "id": "d57bc724-d133-422d-8c9c-48962c36dba1",
+                    "unlock": [
+                        "HorizontalMove.minX",
+                        "HorizontalMove.maxX",
+                        "x",
+                        "y"
+                    ],
+                    "label": "movingPlatform4",
+                    "x": 1882,
+                    "y": 590,
+                    "list": [
+                        {
+                            "prefabId": "c7a6a49e-e3f2-4786-88c3-4a93b572a86e",
+                            "id": "644ef492-0c24-49eb-8c3e-1c811b25aa05",
+                            "unlock": [
+                                "minX",
+                                "maxX",
+                                "horizVelocity"
+                            ],
+                            "label": "horizontalMoveScript",
+                            "horizVelocity": 100,
+                            "minX": 1720,
+                            "maxX": 2360
+                        }
+                    ]
+                },
+                {
+                    "type": "Image",
+                    "id": "14939281-2102-4773-899d-26550fde5486",
+                    "label": "p9",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground Additional 03.png"
+                    },
+                    "x": 2880,
+                    "y": 640,
+                    "originX": 0,
+                    "originY": 0
+                },
+                {
+                    "type": "Image",
+                    "id": "00980329-aa9a-43d1-9dac-de7b8bb573a9",
+                    "label": "p8",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground 10.png"
+                    },
+                    "x": 2816,
+                    "y": 640,
+                    "ArcadeComponent.active": true,
+                    "down": false,
+                    "left": false,
+                    "right": false,
+                    "pushable": false,
+                    "immovable": true,
+                    "body.width": 541,
+                    "body.height": 27,
+                    "body.offset.x": 10,
+                    "body.offset.y": 8
+                },
+                {
+                    "type": "Image",
+                    "id": "f8dd3437-118e-4c70-98ee-366f51226378",
+                    "label": "p7",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground 11.png"
+                    },
+                    "x": 2944,
+                    "y": 640
+                },
+                {
+                    "type": "Image",
+                    "id": "897aaca6-9219-4997-8172-ea876b24ccf5",
+                    "label": "p6",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground 11.png"
+                    },
+                    "x": 3073,
+                    "y": 640
+                },
+                {
+                    "type": "Image",
+                    "id": "dd4e39a5-4fd4-4c9e-be90-fc5a135edc48",
+                    "label": "p5",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ground 11.png"
+                    },
+                    "x": 3200,
+                    "y": 640
+                },
+                {
+                    "prefabId": "8f45727a-d419-4d94-8405-95063eb19bdf",
+                    "id": "c019d9a2-4f9e-450f-8d6b-0e3d7ef6a002",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "p12",
+                    "x": 1536,
+                    "y": 384
+                },
+                {
+                    "prefabId": "8f45727a-d419-4d94-8405-95063eb19bdf",
+                    "id": "624380d8-8bb7-4caf-8ed6-056a0fd6ec87",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "p11",
+                    "x": 1536,
+                    "y": -256
+                },
+                {
+                    "prefabId": "8f45727a-d419-4d94-8405-95063eb19bdf",
+                    "id": "9888a1fa-a921-41ae-a372-350e827ba316",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "p10",
+                    "x": 1664,
+                    "y": -256
+                },
+                {
+                    "prefabId": "8f45727a-d419-4d94-8405-95063eb19bdf",
+                    "id": "8ea8b5e1-982b-4e8d-8e16-20df0882ee73",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "p13",
+                    "x": 1792,
+                    "y": -256
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "8f6fecee-fb04-42f9-ad25-f44d84558243",
+            "label": "platformTopItemsLayer",
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "781ea1f4-2c85-4b90-bce3-f4b9af483eba",
+                    "label": "endFlag",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Environment - White Flag.png"
+                    },
+                    "x": 2944,
+                    "y": 526
+                },
+                {
+                    "type": "Image",
+                    "id": "c039c650-a9ff-48a2-8c9c-7b41d8fb6723",
+                    "label": "signpost",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Environment - Signpost 01.png"
+                    },
+                    "x": 131,
+                    "y": 519
+                },
+                {
+                    "type": "Image",
+                    "id": "585e7f68-1856-49be-bea1-459765045702",
+                    "label": "skull1",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Environment - Skull.png"
+                    },
+                    "x": 2093,
+                    "y": -28,
+                    "list": [
+                        {
+                            "prefabId": "87c25255-3a43-404e-b82f-95f8f140ebb9",
+                            "id": "a7655b63-4b99-4680-b4fd-12b5c7f1df58",
+                            "unlock": [
+                                "target"
+                            ],
+                            "label": "followObjectScript_3",
+                            "target": "movingPlatform3"
+                        }
+                    ]
+                },
+                {
+                    "type": "Image",
+                    "id": "9c8a2f73-78cd-4873-b393-0785341fc340",
+                    "label": "lava2",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Environment - Lava 02.png"
+                    },
+                    "x": 1059,
+                    "y": 250,
+                    "list": [
+                        {
+                            "prefabId": "87c25255-3a43-404e-b82f-95f8f140ebb9",
+                            "id": "3111fbe5-c34a-42e5-988d-a71b35102cfa",
+                            "unlock": [
+                                "target"
+                            ],
+                            "label": "followObjectScript_2",
+                            "target": "movingPlatform2"
+                        }
+                    ]
+                },
+                {
+                    "type": "Image",
+                    "id": "e7d3a67c-8bd2-433a-8825-fb8438091297",
+                    "label": "lava1",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Environment - Lava 02.png"
+                    },
+                    "x": 599,
+                    "y": 576,
+                    "list": [
+                        {
+                            "prefabId": "87c25255-3a43-404e-b82f-95f8f140ebb9",
+                            "id": "fad26d41-feee-4e43-a8ff-da645175b655",
+                            "unlock": [
+                                "target"
+                            ],
+                            "label": "followObjectScript_1",
+                            "target": "movingPlatform1"
+                        }
+                    ]
+                },
+                {
+                    "type": "Image",
+                    "id": "414e109e-b482-4247-86a8-a440481c6921",
+                    "label": "lava3",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Environment - Lava 02.png"
+                    },
+                    "x": 233,
+                    "y": 571
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "aa56a103-221e-4202-821f-3ebb65545aab",
+            "label": "laddersLayer",
+            "list": [
+                {
+                    "prefabId": "37217272-2539-426e-97ba-49812099c17b",
+                    "id": "eb135191-9d47-4d9f-8096-be3e377ec373",
+                    "unlock": [
+                        "texture",
+                        "x",
+                        "y"
+                    ],
+                    "label": "ladder5",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ladder.png"
+                    },
+                    "x": 1468,
+                    "y": -150
+                },
+                {
+                    "prefabId": "37217272-2539-426e-97ba-49812099c17b",
+                    "id": "42bdc130-272a-45b3-9c7a-a052443621ab",
+                    "unlock": [
+                        "texture",
+                        "x",
+                        "y"
+                    ],
+                    "label": "ladder4",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ladder.png"
+                    },
+                    "x": 1472,
+                    "y": -272
+                },
+                {
+                    "prefabId": "37217272-2539-426e-97ba-49812099c17b",
+                    "id": "fb235205-50ac-468f-ade5-539cb5edba8c",
+                    "unlock": [
+                        "texture",
+                        "x",
+                        "y"
+                    ],
+                    "label": "ladder3",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ladder.png"
+                    },
+                    "x": 1475,
+                    "y": -22
+                },
+                {
+                    "prefabId": "37217272-2539-426e-97ba-49812099c17b",
+                    "id": "2cb2078f-7728-437e-b324-b9de0f16bd3e",
+                    "unlock": [
+                        "texture",
+                        "x",
+                        "y"
+                    ],
+                    "label": "ladder2",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Platformer - Ladder.png"
+                    },
+                    "x": 1467,
+                    "y": 106
+                },
+                {
+                    "prefabId": "37217272-2539-426e-97ba-49812099c17b",
+                    "id": "c859170a-885f-4119-a5c5-136307052483",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "ladder1",
+                    "x": 1475,
+                    "y": 208
+                },
+                {
+                    "prefabId": "37217272-2539-426e-97ba-49812099c17b",
+                    "id": "be5f3ec0-e24e-427c-81af-6aa1ae3c518c",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "ladder6",
+                    "x": 952,
+                    "y": 321,
+                    "list": [
+                        {
+                            "prefabId": "87c25255-3a43-404e-b82f-95f8f140ebb9",
+                            "id": "06216bcf-581b-4c19-9c29-5ac17ec06120",
+                            "unlock": [
+                                "target"
+                            ],
+                            "label": "followObjectScript",
+                            "target": "movingPlatform2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "83cb0edc-5a91-49d5-a5c6-1d30959157b7",
+            "label": "playerLayer",
+            "list": [
+                {
+                    "prefabId": "3168bc06-abd4-4154-bd16-8450e14d1012",
+                    "id": "0d352aa8-1ae3-4782-bfbf-af0624ebd153",
+                    "unlock": [
+                        "platforms",
+                        "foodItems",
+                        "x",
+                        "y",
+                        "texture"
+                    ],
+                    "label": "player",
+                    "scope": "CLASS",
+                    "platforms": "platforms",
+                    "foodItems": "foodItems",
+                    "texture": {
+                        "key": "player",
+                        "frame": "Idle_001"
+                    },
+                    "x": 104,
+                    "y": 482
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "953cadd4-437f-49e9-b336-30fd1152733d",
+            "label": "pickItemsLayer",
+            "list": [
+                {
+                    "prefabId": "ad30b4e1-19b5-4a8c-8b9b-bdecec788df1",
+                    "id": "28638276-4a66-4285-8b1f-668693e9e0cd",
+                    "unlock": [
+                        "texture",
+                        "x",
+                        "y"
+                    ],
+                    "label": "meet3",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Collectable Object - Meat.png"
+                    },
+                    "x": 1232,
+                    "y": 33
+                },
+                {
+                    "prefabId": "ad30b4e1-19b5-4a8c-8b9b-bdecec788df1",
+                    "id": "0e384eb5-66c1-4b78-9f82-8dabcc1b2a6e",
+                    "unlock": [
+                        "texture",
+                        "x",
+                        "y"
+                    ],
+                    "label": "meet2",
+                    "texture": {
+                        "key": "volcano",
+                        "frame": "Volcano Level Set_Collectable Object - Meat.png"
+                    },
+                    "x": 2250,
+                    "y": 278
+                },
+                {
+                    "prefabId": "ad30b4e1-19b5-4a8c-8b9b-bdecec788df1",
+                    "id": "bbc96a49-fb18-40d8-a80d-6420718a20cf",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "meet1",
+                    "x": 747,
+                    "y": 386
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "1a876ef2-f9f0-41a1-8bbb-820105bbc04e",
+            "label": "controlsLayer",
+            "list": [
+                {
+                    "prefabId": "f7d3ed5d-93cf-46d1-ab9e-d4c10ddc94e5",
+                    "id": "5f678cee-6229-4ac2-88fa-0ae7ccf2965a",
+                    "unlock": [
+                        "texture",
+                        "PlayerController.getPlayer",
+                        "PlayerController.direction",
+                        "PlayerController.property1",
+                        "PlayerController.player",
+                        "x",
+                        "y"
+                    ],
+                    "label": "btn_left",
+                    "texture": {
+                        "key": "ui",
+                        "frame": "btn-left"
+                    },
+                    "x": 880,
+                    "y": 640,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "d14cbf36-7962-447c-aa00-b73866fcdb6c",
+                            "id": "793eff99-56f6-4df4-b5a6-c7b3ed026bbe",
+                            "unlock": [
+                                "player",
+                                "direction"
+                            ],
+                            "label": "playerControllerScript",
+                            "player": "player",
+                            "direction": "left"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "f7d3ed5d-93cf-46d1-ab9e-d4c10ddc94e5",
+                    "id": "d535bab5-3e4f-4d6b-a614-a345e7fafcc9",
+                    "unlock": [
+                        "texture",
+                        "PlayerController.getPlayer",
+                        "PlayerController.direction",
+                        "PlayerController.player",
+                        "x",
+                        "y"
+                    ],
+                    "label": "btn_right",
+                    "texture": {
+                        "key": "ui",
+                        "frame": "btn-right"
+                    },
+                    "x": 1080,
+                    "y": 640,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "d14cbf36-7962-447c-aa00-b73866fcdb6c",
+                            "id": "1346a010-2668-4bef-bd26-dd3159b40192",
+                            "unlock": [
+                                "player",
+                                "direction"
+                            ],
+                            "label": "playerControllerScript",
+                            "player": "player",
+                            "direction": "right"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "f7d3ed5d-93cf-46d1-ab9e-d4c10ddc94e5",
+                    "id": "68ee6607-d531-4aa1-a062-55fe2d7078e6",
+                    "unlock": [
+                        "PlayerController.getPlayer",
+                        "PlayerController.direction",
+                        "PlayerController.player",
+                        "x",
+                        "y"
+                    ],
+                    "label": "btn_up",
+                    "x": 126,
+                    "y": 640,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "d14cbf36-7962-447c-aa00-b73866fcdb6c",
+                            "id": "820d0d75-75b6-4112-8d81-b8d33a11c81e",
+                            "unlock": [
+                                "player",
+                                "direction"
+                            ],
+                            "label": "playerControllerScript",
+                            "player": "player",
+                            "direction": "up"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Layer",
+            "id": "a1228d0a-4239-4d26-814e-4de26353bdb2",
+            "label": "debugLayer"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    },
+    "lists": [
+        {
+            "id": "5db52bf2-6ca8-4a62-b987-55e09571ab3d",
+            "label": "platforms",
+            "objectIds": [
+                "6e8a0811-1e8f-490d-a79e-6cbab798ec4a",
+                "4f07f26e-c670-4f6f-8323-5f9bde8b1eb5",
+                "666dc2f5-48fd-4c36-b383-f9a9247f26ca",
+                "2c7395e6-f3d3-4900-bc9a-b45f3d4480b7",
+                "d57bc724-d133-422d-8c9c-48962c36dba1",
+                "00980329-aa9a-43d1-9dac-de7b8bb573a9",
+                "c019d9a2-4f9e-450f-8d6b-0e3d7ef6a002",
+                "8ea8b5e1-982b-4e8d-8e16-20df0882ee73",
+                "9888a1fa-a921-41ae-a372-350e827ba316",
+                "624380d8-8bb7-4caf-8ed6-056a0fd6ec87",
+                "c859170a-885f-4119-a5c5-136307052483",
+                "2cb2078f-7728-437e-b324-b9de0f16bd3e",
+                "fb235205-50ac-468f-ade5-539cb5edba8c",
+                "eb135191-9d47-4d9f-8096-be3e377ec373",
+                "42bdc130-272a-45b3-9c7a-a052443621ab",
+                "be5f3ec0-e24e-427c-81af-6aa1ae3c518c"
+            ],
+            "scope": "METHOD"
+        },
+        {
+            "id": "76cb5068-6ea9-4ba7-a8e3-e330580a16de",
+            "label": "foodItems",
+            "objectIds": [
+                "bbc96a49-fb18-40d8-a80d-6420718a20cf",
+                "28638276-4a66-4285-8b1f-668693e9e0cd",
+                "0e384eb5-66c1-4b78-9f82-8dabcc1b2a6e"
+            ],
+            "scope": "METHOD"
+        }
+    ]
+}

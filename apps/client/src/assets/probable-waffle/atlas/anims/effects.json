@@ -1,0 +1,2130 @@
+{
+    "anims": [
+        {
+            "key": "blood_splatter_small_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_9.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/1/1_28.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "blood_splatter_small_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_9.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/2/1_28.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "blood_splatter_small_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_9.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/3/1_28.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "blood_splatter_small_4",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_9.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/4/1_28.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "blood_splatter_small_5",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_9.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "blood-splatter-small/5/1_28.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_0",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/1/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/1/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/1/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/1/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/10/54.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/10/55.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/10/56.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/10/57.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/10/58.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/10/59.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/10/60.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/11/61.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/11/62.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/11/63.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/11/64.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/11/65.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/11/66.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/11/67.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/12/68.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/12/69.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/12/70.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/12/71.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/12/72.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/12/73.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/12/74.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_4",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/13/75.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/13/76.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/13/77.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/13/78.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/13/79.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/13/80.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/13/81.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_5",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/14/82.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/14/83.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/14/84.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/14/85.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/14/86.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/14/87.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/14/88.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_6",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/89.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/90.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/91.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/92.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/93.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/94.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/95.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/15/96.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_7",
+            "type": "frame",
+            "frames": [
+              {
+                "key": "effects_1",
+                "frame": "impact/1/16/97.png",
+                "duration": 0,
+                "keyframe": false
+              },
+              {
+                "key": "effects_1",
+                "frame": "impact/1/16/98.png",
+                "duration": 0,
+                "keyframe": false
+              },
+              {
+                "key": "effects_1",
+                "frame": "impact/1/16/99.png",
+                "duration": 0,
+                "keyframe": false
+              },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/16/100.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/16/101.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/16/102.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/16/103.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/16/104.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_8",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/105.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/106.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/107.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/108.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/109.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/110.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/111.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/17/112.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_9",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/113.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/114.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/115.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/116.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/117.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/118.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/119.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/18/120.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_10",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/121.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/122.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/123.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/124.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/125.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/126.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/127.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/19/128.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_11",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/2/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/2/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/2/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/2/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/2/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_12",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/129.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/130.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/131.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/132.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/133.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/134.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/135.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/20/136.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_13",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/137.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/138.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/139.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/140.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/141.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/142.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/143.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/21/144.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_14",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/145.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/146.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/147.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/148.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/149.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/150.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/151.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/22/152.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_15",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/153.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/154.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/155.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/156.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/157.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/158.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/159.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/23/160.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_16",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/161.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/162.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/163.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/164.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/165.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/166.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/167.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/24/168.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_17",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/3/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/3/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/3/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/3/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/3/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/3/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_18",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/4/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/4/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/4/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/4/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/4/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/4/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_19",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/5/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/5/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/5/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/5/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/5/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/5/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_20",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/6/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/6/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/6/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/6/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/6/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/6/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+          "skipMissedFrames": true
+        },
+        {
+            "key": "impact_21",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/7/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/7/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/7/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/7/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/7/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/7/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/7/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_22",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/8/40.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/8/41.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/8/42.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/8/43.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/8/44.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/8/45.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/8/46.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "impact_23",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/9/47.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/9/48.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/9/49.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/9/50.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/9/51.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/9/52.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "effects_1",
+                    "frame": "impact/1/9/53.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
+    }
+}

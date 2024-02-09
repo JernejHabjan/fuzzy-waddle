@@ -1,0 +1,82 @@
+<div class="matchmaking">
+  <div class="matchmaking-tooltip">Please select your preferences then press the Search button to find a Match</div>
+  <div class="general-title">Number of players</div>
+  <div class="text-center">
+    @for (nr of nrOfPlayersOptions;track nr) {
+    <input
+      (change)="nrOfPlayersChanged(nr)"
+      [disabled]="searching"
+      [checked]="nr === matchmakingOptions.nrOfPlayers"
+      name="nrOfPlayers"
+      type="radio"
+      value="{{ nr }}"
+    />&nbsp;{{ nr }}
+    }
+  </div>
+  <div>
+    <div class="general-title">Faction</div>
+    <div class="text-center">
+      <select
+        [(ngModel)]="matchmakingOptions.factionType"
+        class="form-select"
+        [disabled]="searching"
+        (change)="factionChanged()"
+      >
+        <option [ngValue]="null">Random</option>
+        <option *ngFor="let factionType of FactionDefinitions.factions" [ngValue]="factionType.value.factionType">
+          {{ factionType.value.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div>
+    <div class="general-title">Map Pool</div>
+    <div class="text-center grid-container" style="max-height: 300px; overflow-y: auto">
+      <ng-container *ngFor="let level of matchmakingOptions.levels">
+        <input
+          (change)="checkedChanged(level)"
+          [disabled]="searching || !level.enabled"
+          [checked]="level.checked"
+          name="map"
+          type="checkbox"
+          value="{{ level.name }}"
+        />
+        <img [src]="level.imagePath" class="m-auto" style="max-height: 50px; width: 50px" />
+        <span>{{ level.name }}</span>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="w-100 mt-4" style="text-align: right">
+    @if(gameFound) {
+    <div class="navigating-text">
+      {{ navigatingText }}
+    </div>
+    }@else{
+
+    <button
+      *ngIf="searching"
+      (click)="cancelSearching()"
+      class="btn btn-danger me-2"
+      type="button"
+      style="min-width: 100px"
+    >
+      Cancel
+    </button>
+    <button
+      (click)="startSearching()"
+      [disabled]="searching || !selectedLevels.length"
+      class="btn btn-primary"
+      type="button"
+      style="min-width: 150px"
+    >
+      @if(searching){ Searching... } @else { Search }
+    </button>
+    }
+  </div>
+
+  <div class="matchmaking-tooltip mt-4">
+    There are currently {{ roomsService.playersSearchingForMatchmakingGame() }} players waiting for a Match and
+    {{ roomsService.matchmakingGamesInProgress() }} Matchmaking Games in progress
+  </div>
+</div>

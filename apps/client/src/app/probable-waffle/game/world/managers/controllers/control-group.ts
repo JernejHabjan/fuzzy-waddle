@@ -1,4 +1,4 @@
-import { Actor } from '../../../entity/actor/actor';
+import { Actor } from "../../../entity/actor/actor";
 
 export class ControlGroup {
   actors: Actor[] = [];

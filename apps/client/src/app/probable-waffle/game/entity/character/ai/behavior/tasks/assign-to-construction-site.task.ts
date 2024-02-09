@@ -1,5 +1,5 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { BuilderComponent } from '../../../../actor/components/builder-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { BuilderComponent } from "../../../../actor/components/builder-component";
 
 export class AssignToConstructionSiteTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
@@ -8,7 +8,7 @@ export class AssignToConstructionSiteTask implements ITask {
       return TaskResultType.Failure;
     }
 
-    const constructionSite = taskData.blackboard.targetActor;
+    const constructionSite = taskData.blackboard.targetGameObject;
     if (!constructionSite) {
       return TaskResultType.Failure;
     }

@@ -1,0 +1,39 @@
+{
+    "id": "f09568ca-4e05-4ddd-ba4f-3ad6c515d28b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 184,
+        "borderHeight": 184
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "6fa3b318-5e1b-484d-aedb-62be0a74f353",
+            "label": "foliage_trees_resources_tree11_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "3.784376857318719 27.45468445486062 20.869663472802703 17.062602905236346 48.523168613328316 11.073945741046074 91.1483166643296 21.289890315252997 88.15398808223446 46.12520384910084 57.33001738419635 60.04002490707233 59.795935040039396 89.80717375260627 35.66516940786099 90.5117216542757 30.733334096174897 84.52306449008546 40.24473076871237 63.73890139083691 29.32423829283601 46.301340824518206 7.307116365665934 36.43767020114601",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/tree11.png"
+            },
+            "x": 92,
+            "y": 169,
+            "scaleX": 2,
+            "scaleY": 2,
+            "originY": 0.917368042051417
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

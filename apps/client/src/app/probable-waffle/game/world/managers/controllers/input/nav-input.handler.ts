@@ -1,12 +1,12 @@
-import { Pathfinder } from '../../../map/pathfinder';
-import { MapSizeInfo } from '../../../const/map-size.info';
-import { TilePlacementWorldWithProperties } from '../../../map/tile/manual-tiles/manual-tiles.helper';
-import { Vector2Simple } from '../../../../library/math/intersection';
-import { MapNavHelper } from '../../../map/map-nav-helper';
-import { CharacterMovementComponent } from '../../../../entity/actor/components/character-movement-component';
-import { RepresentableActor } from '../../../../entity/actor/representable-actor';
-import { Scene } from 'phaser';
-import { TransformComponent } from '../../../../entity/actor/components/transformable-component';
+import { Pathfinder } from "../../../map/pathfinder";
+import { MapSizeInfo } from "../../../const/map-size.info";
+import { TilePlacementWorldWithProperties } from "../../../map/tile/manual-tiles/manual-tiles.helper";
+import { MapNavHelper } from "../../../map/map-nav-helper";
+import { CharacterMovementComponent } from "../../../../entity/actor/components/character-movement-component";
+import { RepresentableActor } from "../../../../entity/actor/representable-actor";
+import { Scene } from "phaser";
+import { TransformComponent } from "../../../../entity/actor/components/transformable-component";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class NavInputHandler {
   constructor(

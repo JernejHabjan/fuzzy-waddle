@@ -1,18 +1,25 @@
-import { Component } from '@angular/core';
-import { faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
+import { Component, inject } from "@angular/core";
+import { faWindowMaximize, faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
+import { ChatService } from "../../../data-access/chat/chat.service";
+import { CommonModule } from "@angular/common";
+import { ChatComponent } from "../../../shared/components/chat/chat.component";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({
-  selector: 'fuzzy-waddle-chat-float',
-  templateUrl: './chat-float.component.html',
-  styleUrls: ['./chat-float.component.scss']
+  selector: "fuzzy-waddle-chat-float",
+  templateUrl: "./chat-float.component.html",
+  styleUrls: ["./chat-float.component.scss"],
+  standalone: true,
+  imports: [CommonModule, ChatComponent, FaIconComponent]
 })
 export class ChatFloatComponent {
-  faWindowMinimize = faWindowMinimize;
-  faWindowMaximize = faWindowMaximize;
+  protected readonly faWindowMinimize = faWindowMinimize;
+  protected readonly faWindowMaximize = faWindowMaximize;
+  protected readonly chatService = inject(ChatService);
 
-  maximized = false;
+  protected maximized = false;
 
-  toggleChatVisibility() {
+  protected toggleChatVisibility() {
     this.maximized = !this.maximized;
   }
 }

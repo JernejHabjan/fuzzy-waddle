@@ -1,20 +1,24 @@
 <fuzzy-waddle-profile-nav />
-<div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
-  <div style="max-width: 500px">
-    <h2>Profile info:</h2>
+<div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center p-3">
+  <div class="mx-auto" style="max-width: 500px">
+    <h2 class="text-center">Profile Info</h2>
 
-    <div>
-      <h3 class="achievement-header">Email:</h3>
-      {{ authService.session?.user?.email }}
+    @if(identityData){
+    <div class="my-3 text-center">
+      <img class="rounded-circle" src="{{ identityData.avatar_url }}" alt="avatar" width="100" height="100" />
+      <p>{{ identityData.full_name }}</p>
     </div>
-    <div>
-      <h3 class="achievement-header">Joined:</h3>
-      {{ authService.session?.user?.created_at | date : 'medium' }}
+    }
+    <div class="my-3">
+      <h3 class="user-item-header">Joined:</h3>
+      <p>{{ authService.session?.user?.created_at | date: "medium" }}</p>
     </div>
 
-    <div>
-      <h3 class="achievement-header">Preferred games:</h3>
-      {{ userInstanceService.getPreferredGames() }}
+    @if(userInstanceService.getPreferredGame()){
+    <div class="my-3">
+      <h3 class="user-item-header">Preferred Game:</h3>
+      <p>{{ userInstanceService.getPreferredGame() }}</p>
     </div>
+    }
   </div>
 </div>

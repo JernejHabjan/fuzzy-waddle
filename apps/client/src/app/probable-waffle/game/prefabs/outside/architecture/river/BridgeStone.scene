@@ -1,0 +1,37 @@
+{
+    "id": "ec58b20e-e04f-4bd4-840e-856ffe433f36",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 320,
+        "borderHeight": 192
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "ace2e4c8-00bf-48a5-9998-87089175a12d",
+            "label": "architecture_river_bridge_stone_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "76.20450677413014 103.3684282381837 188.70588473344927 47.26014606606756 224.59240023439665 46.97533245098068 269.5929514181243 71.4693033484527 89.3059330681268 171.15406862886206 35.19134620161887 145.5208432710425",
+            "texture": {
+                "key": "outside",
+                "frame": "architecture/river/bridge_stone.png"
+            },
+            "x": 160,
+            "y": 96
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

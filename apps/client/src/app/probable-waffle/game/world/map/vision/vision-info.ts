@@ -1,5 +1,5 @@
-import { VisionStateEnum } from './vision-state-enum';
-import { Actor } from '../../../entity/actor/actor';
+import { VisionStateEnum } from "./vision-state-enum";
+import { Actor } from "../../../entity/actor/actor";
 
 export class VisionInfo {
   visibleTiles: Phaser.Math.Vector3[] = [];

@@ -1,41 +1,28 @@
-import { Building, BuildingInfoDefinition } from './building';
-import { ProductionComponent } from '../../building/production/production-component';
-import { Warrior, WarriorDefinition } from '../characters/warrior';
-import { Worker } from '../characters/worker';
-import { CostData } from '../../building/production/production-cost-component';
-import { PaymentType } from '../../building/payment-type';
-import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { ContainerComponent } from '../../building/container-component';
+import { Building, BuildingInfoDefinition } from "./building";
+import { ProductionComponent } from "../../building/production/production-component";
+import { PaymentType } from "../../building/payment-type";
+import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import Tree1 from "../../../prefabs/outside/foliage/trees/resources/Tree1";
 
 export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
-    textureName: 'warrior',
+    textureName: "warrior",
     spriteSheet: {
-      name: 'warrior',
+      name: "barracks",
+      path: "general/barracks/",
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64
       }
     }
   },
-  cost: new CostData(
-    PaymentType.PayOverTime,
-    100,
-    new Map<ResourceType, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
-    0.5
-  ),
+  cost: null,
   healthDefinition: {
     maxHealth: 400
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceType, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
+    constructionCosts: {},
     checkCollision: true,
     constructionCostType: PaymentType.PayOverTime,
     constructionTime: 100,
@@ -47,7 +34,7 @@ export const BarracksDefinition: BuildingInfoDefinition = {
     refundFactor: 0.5,
     startImmediately: false,
     gridWidthAndHeight: { width: 2, height: 2 },
-    finishedSound: 'building-finished' // todo
+    finishedSound: "building-finished" // todo
   }
 };
 
@@ -58,16 +45,16 @@ export class Barracks extends Building {
   override initComponents() {
     super.initComponents();
 
-    this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
-    this.components.addComponent(new ContainerComponent(10));
+    // this.productionComponent = this.components.addComponent(new ProductionComponent(this, [Warrior, Worker], 2, 3));
+    // this.components.addComponent(new ContainerComponent(10));
   }
 
   override postStart() {
     super.postStart();
 
     setTimeout(() => {
-      this.productionComponent.startProduction({ actorClass: Warrior, costData: WarriorDefinition.cost as CostData });
-      console.log('started production of 1 warrior');
+      this.productionComponent.startProduction({ gameObjectClass: Tree1.name, costData: null as any });
+      console.log("started production of 1 warrior");
     }, 1000);
   }
 }

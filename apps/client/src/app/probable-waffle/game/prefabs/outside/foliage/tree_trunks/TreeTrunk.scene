@@ -1,0 +1,40 @@
+{
+    "id": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "af7c0382-2ff2-45cc-bc35-50b81668a6b7",
+            "label": "foliage_tree_trunks_tree_trunk_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 24,
+            "hitArea.y": 6,
+            "hitArea.width": 16,
+            "hitArea.height": 16,
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tree_trunks/tree_trunk.png"
+            },
+            "x": 32,
+            "y": 16
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

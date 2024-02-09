@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { IAuthService } from './auth.service.interface';
-import { AuthUser } from '@supabase/supabase-js';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AuthService } from "./auth.service";
+import { IAuthService } from "./auth.service.interface";
+import { AuthUser } from "@supabase/supabase-js";
 
 export const authUserStub: AuthUser = {
   user_metadata: undefined,
@@ -22,9 +22,9 @@ export const authServiceStub = {
   validateTest(): Promise<boolean> {
     return Promise.resolve(true);
   }
-} as IAuthService;
+} satisfies IAuthService;
 
-describe('AuthService', () => {
+describe("AuthService", () => {
   let service: AuthService;
 
   beforeEach(async () => {
@@ -35,7 +35,7 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

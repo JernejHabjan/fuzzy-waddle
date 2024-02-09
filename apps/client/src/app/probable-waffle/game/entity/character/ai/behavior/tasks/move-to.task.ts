@@ -1,23 +1,23 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { TransformComponent } from '../../../../actor/components/transformable-component';
-import { PawnAiControllerComponent } from '../../../../../world/managers/controllers/pawn-ai-controller-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { TransformComponent } from "../../../../actor/components/transformable-component";
+import { PawnAiControllerComponent } from "../../../../../world/managers/controllers/pawn-ai-controller-component";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { getActorComponent } from "../../../../../data/actor-component";
 
 export class MoveToTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
-    const targetActor = taskData.blackboard.targetActor;
+    const targetActor = taskData.blackboard.targetGameObject;
     let targetLocation = taskData.blackboard.targetLocation;
     if (targetActor) {
-      const targetActorTransformComponent = targetActor.components.findComponentOrNull(TransformComponent);
-      if (targetActorTransformComponent) {
-        targetLocation = targetActorTransformComponent.tilePlacementData;
-      }
+      const transform = targetActor as unknown as Phaser.GameObjects.Components.Transform;
+      targetLocation = { x: transform.x, y: transform.y, z: transform.z } satisfies Vector3Simple;
     }
     if (!targetLocation) {
       return TaskResultType.Failure;
     }
 
     // issue move order
-    const pawnAiControllerComponent = taskData.owner.components.findComponentOrNull(PawnAiControllerComponent);
+    const pawnAiControllerComponent = getActorComponent(taskData.owner, PawnAiControllerComponent);
     if (!pawnAiControllerComponent) {
       return TaskResultType.Failure;
     }

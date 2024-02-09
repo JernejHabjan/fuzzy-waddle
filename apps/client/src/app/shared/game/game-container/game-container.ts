@@ -1,1 +1,1 @@
-export const GameContainerElement = 'gameCanvas';
+export const GameContainerElement = "gameCanvas";

@@ -1,7 +1,3 @@
-export interface Message {
-  message: string;
-}
-
 export interface ChatMessage {
   text: string;
   userId: string;
@@ -10,5 +6,5 @@ export interface ChatMessage {
 }
 
 export enum GatewayChatEvent {
-  CHAT_MESSAGE = 'chat-message'
+  CHAT_MESSAGE = "chat-message"
 }

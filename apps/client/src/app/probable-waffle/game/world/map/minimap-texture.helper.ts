@@ -1,5 +1,5 @@
-import { Cameras, Scene } from 'phaser';
-import { MapSizeInfo } from '../const/map-size.info';
+import { Cameras, Scene } from "phaser";
+import { MapSizeInfo } from "../const/map-size.info";
 
 export class MinimapTextureHelper {
   private scene: Scene;
@@ -52,7 +52,7 @@ export class MinimapTextureHelper {
     const worldWidthInPx = MapSizeInfo.info.tileWidth * mapWidth;
     const worldHeightInPx = MapSizeInfo.info.tileHeight * mapHeight;
 
-    this.minimap = cameras.add(200, 10, minimapWidthInPx, minimapHeightInPx).setName('mini');
+    this.minimap = cameras.add(200, 10, minimapWidthInPx, minimapHeightInPx).setName("mini");
 
     // set minimap zoom, so whole world fits in
     const zoom = Math.min(minimapWidthInPx / worldWidthInPx, minimapHeightInPx / worldHeightInPx);

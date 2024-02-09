@@ -1,0 +1,39 @@
+{
+    "id": "ec58b20e-e04f-4bd3-840e-856ffe433f30",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "snapHeight": 8,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "ef9cff95-27a3-4d0a-923b-66db3096ce27",
+            "label": "buildings_tivara_wall_wall_top_left_bottom_left_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "0.034404166381317935 22.50844255997221 8.151537521589503 18.057111365180624 15.919546861519919 22.421161556152768 23.687556201450338 18.49351638427784 24.123961220547553 12.122003105458504 32.764780598672395 7.496109903028028 40.009103915686154 11.860160094000179 40.53278993860282 24.428624643999953 47.602551247977686 28.007145800597115 48.21351827471379 24.079500628722187 56.330651629921974 19.628169433930594 64 24 64.16598891149339 79.59085566461826 31.8464296683797 96 0.23253715668976938 79.30858876945356",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/wall/wall_top_left_bottom_left.png"
+            },
+            "x": 32,
+            "y": 79.90347312746019,
+            "originY": 0.8323278450777103
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

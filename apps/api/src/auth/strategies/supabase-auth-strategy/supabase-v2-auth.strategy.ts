@@ -1,9 +1,9 @@
-import { JwtFromRequestFunction } from 'passport-jwt';
-import { Strategy } from 'passport-strategy';
-import { AuthUser, SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_AUTH, UNAUTHORIZED } from './constants';
-import { SupabaseAuthStrategyOptions } from './options.interface';
-import { UserAuthCacheService } from '../../../core/cache/user-auth-cache.service.ts/user-auth-cache.service';
+import { JwtFromRequestFunction } from "passport-jwt";
+import { Strategy } from "passport-strategy";
+import { AuthUser, SupabaseClient } from "@supabase/supabase-js";
+import { SUPABASE_AUTH, UNAUTHORIZED } from "./constants";
+import { SupabaseAuthStrategyOptions } from "./options.interface";
+import { UserAuthCacheService } from "../../../core/cache/user-auth-cache.service.ts/user-auth-cache.service";
 
 // fixes https://github.com/hiro1107/nestjs-supabase-auth/issues/7
 // uses node-cache to cache users for 1 hour
@@ -12,7 +12,7 @@ export class SupabaseV2AuthStrategy extends Strategy {
   private extractor: JwtFromRequestFunction;
   success: (user: any, info: any) => void;
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  fail: Strategy['fail'];
+  fail: Strategy["fail"];
   private readonly userAuthCacheService: UserAuthCacheService;
   private supabaseClient: SupabaseClient;
 
@@ -22,7 +22,7 @@ export class SupabaseV2AuthStrategy extends Strategy {
     this.supabaseClient = options.supabaseClient;
     if (!options.extractor) {
       throw new Error(
-        '\n Extractor is not a function. You should provide an extractor. \n Read the docs: https://github.com/tfarras/nestjs-firebase-auth#readme'
+        "\n Extractor is not a function. You should provide an extractor. \n Read the docs: https://github.com/tfarras/nestjs-firebase-auth#readme"
       );
     }
     this.extractor = options.extractor;

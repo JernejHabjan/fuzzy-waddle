@@ -1,10 +1,10 @@
-import { PlayerController } from './player-controller';
-import { Scale } from 'phaser';
-import { Building } from '../../../entity/assets/buildings/building';
-import { BuildingCursor } from './building-cursor';
-import { Actor } from '../../../entity/actor/actor';
-import { TilePlacementData } from './input/tilemap/tilemap-input.handler';
-import { ControlGroup } from './control-group';
+import { PlayerController } from "./player-controller";
+import { Scale } from "phaser";
+import { Building } from "../../../entity/assets/buildings/building";
+import { BuildingCursor } from "./building-cursor";
+import { Actor } from "../../../entity/actor/actor";
+import { TilePlacementData } from "./input/tilemap/tilemap-input.handler";
+import { ControlGroup } from "./control-group";
 
 export class HumanPlayerController extends PlayerController {
   scaleManager!: Scale.ScaleManager;
@@ -19,7 +19,7 @@ export class HumanPlayerController extends PlayerController {
   buildingCursor?: BuildingCursor;
 
   cancelBuildingPlacement() {
-    throw new Error('Not implemented');
+    throw new Error("Not implemented");
   }
 
   confirmBuildingPlacement() {
@@ -29,6 +29,6 @@ export class HumanPlayerController extends PlayerController {
 
   beginBuildingPlacement() {
     // spawn preview building with BuildingCursor
-    throw new Error('Not implemented');
+    throw new Error("Not implemented");
   }
 }

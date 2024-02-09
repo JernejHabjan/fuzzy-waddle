@@ -1,0 +1,38 @@
+{
+    "id": "ec58b20e-e04f-4bd4-140e-856ffe432f37",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "b73a5d03-8cd1-4a34-9494-8ac28ba1b807",
+            "label": "nature_ramp_stone_bottom_right_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "18.348241305171484 24.09039123800768 41.62321824692961 17.337774470954393 57.57088763294907 16.475738287926315 64.17983170283101 20.498573808724018 63.892486308488316 48.37107705996524 32.71551102230613 63.313037565785265 -0.6165547214462492 46.93435008825177",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/ramp/stone/bottom_right.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

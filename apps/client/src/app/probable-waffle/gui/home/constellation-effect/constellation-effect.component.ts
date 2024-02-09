@@ -1,12 +1,15 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { ConstellationParticle } from './constellation-particle';
+import { AfterViewInit, Component, OnDestroy } from "@angular/core";
+import { ConstellationParticle } from "./constellation-particle";
+import { CommonModule } from "@angular/common";
 
 type MousePosition = { x?: number; y?: number };
 
 @Component({
-  selector: 'fuzzy-waddle-constellation-effect',
-  templateUrl: './constellation-effect.component.html',
-  styleUrls: ['./constellation-effect.component.scss']
+  selector: "probable-waffle-constellation-effect",
+  templateUrl: "./constellation-effect.component.html",
+  styleUrls: ["./constellation-effect.component.scss"],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
   private clickListener?: (e: MouseEvent) => void;
@@ -25,23 +28,23 @@ export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
   };
 
   ngAfterViewInit(): void {
-    this.canvas = document.getElementById('canvas1') as HTMLCanvasElement;
-    this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    this.canvas = document.getElementById("canvas1") as HTMLCanvasElement;
+    this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
     this.particles = [];
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       if (!this.canvas) return;
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
     });
 
     this.clickListener = (e: MouseEvent) => this.handleMouseEvent(e);
-    this.canvas.addEventListener('click', this.clickListener);
+    this.canvas.addEventListener("click", this.clickListener);
 
     this.mouseMoveListener = (e: MouseEvent) => this.handleMouseEvent(e);
-    this.canvas.addEventListener('mousemove', this.mouseMoveListener);
+    this.canvas.addEventListener("mousemove", this.mouseMoveListener);
 
     this.timer = window.setInterval(this.placeRandomParticle, 50);
 
@@ -53,12 +56,12 @@ export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
       window.clearInterval(this.timer);
     }
     if (this.clickListener) {
-      const canvas = (document.getElementById('canvas1') as HTMLCanvasElement) || undefined;
-      canvas?.removeEventListener('click', this.clickListener);
+      const canvas = (document.getElementById("canvas1") as HTMLCanvasElement) || undefined;
+      canvas?.removeEventListener("click", this.clickListener);
     }
     if (this.mouseMoveListener) {
-      const canvas = (document.getElementById('canvas1') as HTMLCanvasElement) || undefined;
-      canvas?.removeEventListener('mousemove', this.mouseMoveListener);
+      const canvas = (document.getElementById("canvas1") as HTMLCanvasElement) || undefined;
+      canvas?.removeEventListener("mousemove", this.mouseMoveListener);
     }
     this.destroyed = true;
   }

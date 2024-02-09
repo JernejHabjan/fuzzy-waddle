@@ -1,0 +1,50 @@
+<button
+  routerLink="/fly-squasher"
+  class="btn btn-danger m-1 position-absolute"
+  style="left: 20px; top: 20px"
+  type="button"
+>
+  Leave
+</button>
+
+<div class="card-container">
+  <div class="general-title">High score:</div>
+
+  <ng-container *ngIf="highScores?.length; else noHighScoresBlock">
+    <ng-container *ngFor="let level of getUniqueLevels(highScores)">
+      <div class="card p-2 m-1">
+        <h3>{{ level.name }}</h3>
+        <ol>
+          <li *ngFor="let score of getTopScoresForLevel(highScores, level.id)">
+            {{ score.userName }} - {{ score.score }}
+          </li>
+        </ol>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #noHighScoresBlock>
+    <div class="text-center">
+      <!-- check if loading -->
+      <div *ngIf="loading; else noScoresBlock">
+        <fa-icon [icon]="faSpinner" animation="spin" />
+      </div>
+      <!-- no scores -->
+      <ng-template #noScoresBlock>
+        <div *ngIf="this.serverHealthService.serverAvailable; else serverUnavailableBlock">
+          <div>No scores yet</div>
+
+          <div>Be the first to play!</div>
+          <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+        </div>
+        <ng-template #serverUnavailableBlock>
+          <div>Server unavailable</div>
+          <div>Try again later</div>
+          <ng-container *ngIf="!this.serverHealthService.serverAvailable">
+            <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
+          </ng-container>
+        </ng-template>
+      </ng-template>
+    </div>
+  </ng-template>
+</div>

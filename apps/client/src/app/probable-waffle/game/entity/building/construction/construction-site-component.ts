@@ -1,15 +1,15 @@
-import { IComponent } from '../../../core/component.service';
-import { PaymentType } from '../payment-type';
-import { ResourceType } from '../../economy/resource/resource-type';
-import { Actor } from '../../actor/actor';
-import { OwnerComponent } from '../../actor/components/owner-component';
-import { PlayerResourcesComponent } from '../../../world/managers/controllers/player-resources-component';
-import { ConstructionStateEnum } from './construction-state-enum';
-import HealthComponent from '../../combat/components/health-component';
-import { EventEmitter } from '@angular/core';
+import { PaymentType } from "../payment-type";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ConstructionStateEnum } from "./construction-state-enum";
+import { HealthComponent } from "../../combat/components/health-component";
+import { EventEmitter } from "@angular/core";
+import { getActorComponent } from "../../../data/actor-component";
+import { OwnerComponent } from "../../actor/components/owner-component";
+import { getPlayerController } from "../../../data/scene-data";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
-  constructionCosts: Map<ResourceType, number>;
+  constructionCosts: Partial<Record<ResourceType, number>>;
   // Whether to check collision for each grid cell
   checkCollision: boolean;
   constructionCostType: PaymentType;
@@ -27,18 +27,20 @@ export type ConstructionSiteDefinition = {
   finishedSound?: string;
 };
 
-export class ConstructionSiteComponent implements IComponent {
+export class ConstructionSiteComponent {
   public constructionStarted: EventEmitter<number> = new EventEmitter<number>();
   public constructionProgressChanged: EventEmitter<number> = new EventEmitter<number>();
   private remainingConstructionTime = 0;
   private state: ConstructionStateEnum = ConstructionStateEnum.NotStarted;
-  private assignedBuilders: Actor[] = [];
-  private onConstructionFinished: EventEmitter<Actor> = new EventEmitter<Actor>();
+  private assignedBuilders: GameObject[] = [];
+  private onConstructionFinished: EventEmitter<GameObject> = new EventEmitter<GameObject>();
 
-  constructor(private owner: Actor, private constructionSiteDefinition: ConstructionSiteDefinition) {}
-
-  init(): void {
-    // pass
+  constructor(
+    private readonly gameObject: GameObject,
+    private readonly constructionSiteDefinition: ConstructionSiteDefinition
+  ) {
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
   }
 
   update(time: number, delta: number): void {
@@ -48,18 +50,21 @@ export class ConstructionSiteComponent implements IComponent {
       return;
     }
 
-    const SpeedBoostFactor = 1.0;
+    const SpeedBoostFgameObject = 1.0;
     // float ConstructionProgress =
-    //   (DeltaTime * ProgressMadeAutomatically * SpeedBoostFactor) +
-    //   (DeltaTime * ProgressMadePerBuilder * AssignedBuilders.Num() * SpeedBoostFactor);
+    //   (DeltaTime * ProgressMadeAutomatically * SpeedBoostFgameObject) +
+    //   (DeltaTime * ProgressMadePerBuilder * AssignedBuilders.Num() * SpeedBoostFgameObject);
     const constructionProgress =
-      delta * this.constructionSiteDefinition.progressMadeAutomatically * SpeedBoostFactor +
-      delta * this.constructionSiteDefinition.progressMadePerBuilder * this.assignedBuilders.length * SpeedBoostFactor;
+      delta * this.constructionSiteDefinition.progressMadeAutomatically * SpeedBoostFgameObject +
+      delta *
+        this.constructionSiteDefinition.progressMadePerBuilder *
+        this.assignedBuilders.length *
+        SpeedBoostFgameObject;
 
     // todo other logic here
 
     this.remainingConstructionTime -= constructionProgress;
-    const healthComponent = this.owner.components.findComponentOrNull(HealthComponent);
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
       const currentHealth = healthComponent.getCurrentHealth();
       const maxHealth = healthComponent.healthDefinition.maxHealth;
@@ -80,18 +85,19 @@ export class ConstructionSiteComponent implements IComponent {
 
   startConstruction() {
     if (this.state !== ConstructionStateEnum.NotStarted) {
-      throw new Error('ConstructionSiteComponent can only be started once');
+      throw new Error("ConstructionSiteComponent can only be started once");
     }
     if (this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately) {
-      const ownerComponent = this.owner.components.findComponent(OwnerComponent);
-      if (!ownerComponent.playerController) throw new Error('PlayerController not found');
-      const playerResourcesComponent =
-        ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
-      const canAfford = playerResourcesComponent.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
+      const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+      const owner = ownerComponent?.getOwner();
+      if (!owner) throw new Error("Owner not found");
+      const playerController = getPlayerController(this.gameObject.scene, owner);
+      if (!playerController) throw new Error("PlayerController not found");
+      const canAfford = playerController.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
       if (canAfford) {
-        playerResourcesComponent.payAllResources(this.constructionSiteDefinition.constructionCosts);
+        playerController.payAllResources(this.constructionSiteDefinition.constructionCosts);
       } else {
-        throw new Error('Cannot afford building costs');
+        throw new Error("Cannot afford building costs");
       }
     }
 
@@ -100,7 +106,7 @@ export class ConstructionSiteComponent implements IComponent {
     this.state = ConstructionStateEnum.Constructing;
 
     // set initial health
-    const healthComponent = this.owner.components.findComponentOrNull(HealthComponent);
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
       healthComponent.setCurrentHealth(
         healthComponent.healthDefinition.maxHealth * this.constructionSiteDefinition.initialHealthPercentage
@@ -116,9 +122,11 @@ export class ConstructionSiteComponent implements IComponent {
     }
     // refund resources
 
-    const ownerComponent = this.owner.components.findComponent(OwnerComponent);
-    if (!ownerComponent.playerController) throw new Error('PlayerController not found');
-    const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
+    if (!owner) throw new Error("Owner not found");
+    const playerController = getPlayerController(this.gameObject.scene, owner);
+    if (!playerController) throw new Error("PlayerController not found");
 
     const TimeRefundFactor =
       this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately
@@ -127,15 +135,15 @@ export class ConstructionSiteComponent implements IComponent {
     const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
 
     // refund costs
-    const refundCosts = new Map<ResourceType, number>();
-    this.constructionSiteDefinition.constructionCosts.forEach((value, key) => {
-      refundCosts.set(key, value * actualRefundFactor);
+    const refundCosts: Partial<Record<ResourceType, number>> = {};
+    Object.entries(this.constructionSiteDefinition.constructionCosts).forEach(([key, value]) => {
+      refundCosts[key as ResourceType] = value * actualRefundFactor;
     });
 
-    playerResourcesComponent.addResources(refundCosts);
+    playerController.addResources(refundCosts);
 
     // destroy building
-    this.owner.kill();
+    this.gameObject.destroy();
   }
 
   isFinished() {
@@ -146,12 +154,12 @@ export class ConstructionSiteComponent implements IComponent {
     return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders;
   }
 
-  assignBuilder(actor: Actor) {
-    this.assignedBuilders.push(actor);
+  assignBuilder(gameObject: GameObject) {
+    this.assignedBuilders.push(gameObject);
   }
 
-  unAssignBuilder(actor: Actor) {
-    const index = this.assignedBuilders.indexOf(actor);
+  unAssignBuilder(gameObject: GameObject) {
+    const index = this.assignedBuilders.indexOf(gameObject);
     if (index >= 0) {
       this.assignedBuilders.splice(index, 1);
     }
@@ -169,10 +177,15 @@ export class ConstructionSiteComponent implements IComponent {
     }
 
     // todo spawn finished building
-    this.onConstructionFinished.emit(this.owner);
+    this.onConstructionFinished.emit(this.gameObject);
   }
 
   private getProgressPercentage() {
     return 1 - this.remainingConstructionTime / this.constructionSiteDefinition.constructionTime;
+  }
+
+  private onDestroy() {
+    this.cancelConstruction();
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 }

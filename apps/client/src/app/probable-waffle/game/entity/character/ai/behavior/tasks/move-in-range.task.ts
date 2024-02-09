@@ -1,4 +1,4 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
 
 export class MoveInRangeTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {

@@ -1,19 +1,19 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GameInstanceService } from './game-instance.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GameInstanceService } from "./game-instance.service";
 import {
   GameInstanceDataDto,
   LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
   LittleMuncherGameInstanceData,
-  Room,
+  LittleMuncherRoom,
+  LittleMuncherRoomEvent,
+  LittleMuncherSpectatorEvent,
   RoomAction,
-  RoomEvent,
-  SpectatorAction,
-  SpectatorEvent
-} from '@fuzzy-waddle/api-interfaces';
-import { GameInstanceServiceInterface } from './game-instance.service.interface';
-import { User } from '../../../users/users.service';
-import { GameInstanceGateway, GameInstanceGatewayStub } from './game-instance.gateway';
+  SpectatorAction
+} from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { User } from "../../../users/users.service";
+import { GameInstanceGateway, GameInstanceGatewayStub } from "./game-instance.gateway";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {
@@ -25,16 +25,16 @@ export const GameInstanceServiceStub = {
   stopGame(body: GameInstanceDataDto, user: User) {
     //
   },
-  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): Room {
+  getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
     return undefined;
   },
-  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): RoomEvent {
+  getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): LittleMuncherRoomEvent {
     return undefined;
   },
-  getSpectatorEvent(user: User, room: Room, action: SpectatorAction): SpectatorEvent {
+  getSpectatorEvent(user: User, room: LittleMuncherRoom, action: SpectatorAction): LittleMuncherSpectatorEvent {
     return undefined;
   },
-  getSpectatorRooms(user: User): Promise<Room[]> {
+  getSpectatorRooms(user: User): Promise<LittleMuncherRoom[]> {
     return undefined;
   },
   spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData> {
@@ -49,9 +49,9 @@ export const GameInstanceServiceStub = {
   stopLevel(body: GameInstanceDataDto, user: User) {
     //
   }
-} as GameInstanceServiceInterface;
+} satisfies GameInstanceServiceInterface;
 
-describe('GameInstanceService', () => {
+describe("GameInstanceService", () => {
   let service: GameInstanceService;
 
   beforeEach(async () => {
@@ -68,7 +68,7 @@ describe('GameInstanceService', () => {
     service = module.get<GameInstanceService>(GameInstanceService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

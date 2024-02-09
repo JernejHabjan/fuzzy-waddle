@@ -1,0 +1,115 @@
+{
+    "anims": [
+        {
+            "key": "skaduwee-buildings-infantry-inn-entrance",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.5,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "skaduwee-buildings-owlery-owl",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 0.1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "skaduwee-buildings-owlery-owl-flap",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 3,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "frost_forge_flame",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "factions",
+                    "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true
+    }
+}

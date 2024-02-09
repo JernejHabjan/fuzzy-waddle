@@ -1,0 +1,11 @@
+<div class="px-2 w-100 d-flex" style="margin-bottom: 50px; font-size: 2rem; min-width: 300px">
+  <button (click)="leaveClick()" class="btn btn-outline-primary btn-lg ms-auto me-auto" type="button">Leave</button>
+  <button
+    (click)="start()"
+    [disabled]="!mapSelected || !atLeastTwoPlayersAndDifferentTeamsSelected"
+    class="btn btn-primary btn-lg ms-auto me-auto"
+    type="button"
+  >
+    Start
+  </button>
+</div>

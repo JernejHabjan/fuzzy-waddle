@@ -1,19 +1,19 @@
-import { Types } from 'phaser';
-import { environment } from '../../../../environments/environment';
-import LittleMuncherScene from '../little-muncher-scene';
-import { baseGameConfig } from '../../../shared/game/base-game.config';
+import { Types } from "phaser";
+import { LittleMuncherScene } from "../little-muncher-scene";
+import { baseGameConfig } from "../../../shared/game/base-game.config";
+import { LittleMuncherUiScene } from "../little-muncher-ui-scene";
 
 export const littleMuncherGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
-  scene: [LittleMuncherScene],
+  scene: [LittleMuncherScene, LittleMuncherUiScene],
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       fps: 60,
       gravity: { y: 0 }
-      // todo debug: !environment.production
+      // debug: !environment.production
     }
   },
   pixelArt: true,
-  backgroundColor: '#8bc34a'
+  backgroundColor: "#8bc34a"
 };

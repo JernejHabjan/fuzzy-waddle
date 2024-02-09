@@ -1,8 +1,11 @@
-import { MapSizeInfo } from '../../const/map-size.info';
-import { Vector2Simple } from '../../../library/math/intersection';
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { MapSizeInfo } from "../../const/map-size.info";
 
 export class IsoHelper {
-  static isometricWorldToTileXY(worldX: number, worldY: number, snapToFloor: boolean): Vector2Simple {
+  /**
+   * @deprecated USE RATHER Phaser.Tilemaps.Components.IsometricWorldToTileXY
+   */
+  static DEPRECATED_isometricWorldToTileXY(worldX: number, worldY: number, snapToFloor: boolean): Vector2Simple {
     const tileWidthHalf = MapSizeInfo.info.tileWidthHalf;
     const tileHeightHalf = MapSizeInfo.info.tileHeightHalf;
 

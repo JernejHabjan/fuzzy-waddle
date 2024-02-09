@@ -2,12 +2,13 @@ export type Constructor<T extends Record<string, any> = object> = new (...args: 
 
 export interface IComponent {
   init?: () => void;
+  // on start, you can access other components
   start?: () => void;
   update?: (time: number, delta: number) => void;
   destroy?: () => void;
 }
 
-export default class ComponentService {
+export class ComponentService {
   private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObjectName
 
   constructor(private gameObjectName: string) {}
@@ -23,7 +24,7 @@ export default class ComponentService {
     list.push(component);
 
     // call lifecycle hooks
-    return component as T;
+    return component satisfies T;
   }
 
   init() {
@@ -33,6 +34,14 @@ export default class ComponentService {
         if (component.init) {
           component.init();
         }
+      }
+    }
+  }
+
+  start() {
+    const entries = this.componentsByGameObject.entries();
+    for (const [, value] of entries) {
+      for (const component of value) {
         if (component.start) {
           component.start();
         }

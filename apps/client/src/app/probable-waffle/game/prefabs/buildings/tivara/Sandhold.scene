@@ -1,0 +1,55 @@
+{
+    "id": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 320,
+        "borderHeight": 320
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "75d98e32-5bb9-40eb-b3dc-40dff0670310",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22",
+            "x": 160,
+            "y": 240,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "c2521bdc-2237-48fc-a234-e24d31a901db",
+                    "label": "sandhold_building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/sandhold/sandhold.png"
+                    },
+                    "y": -80
+                },
+                {
+                    "type": "Image",
+                    "id": "a459f271-db15-401d-a2aa-969756c1fbdd",
+                    "label": "hover_crystal",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/sandhold/sandhold-crystal.png"
+                    },
+                    "y": -192
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

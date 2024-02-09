@@ -1,26 +1,36 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { LittleMuncherGameCreate, LittleMuncherHill } from '@fuzzy-waddle/api-interfaces';
-import { ServerHealthService } from '../../shared/services/server-health.service';
-import { AuthService } from '../../auth/auth.service';
+import { Component, EventEmitter, inject, Output } from "@angular/core";
+import {
+  HillData,
+  LittleMuncherGameCreate,
+  LittleMuncherHillEnum,
+  LittleMuncherHills
+} from "@fuzzy-waddle/api-interfaces";
+import { ServerHealthService } from "../../shared/services/server-health.service";
+import { AuthService } from "../../auth/auth.service";
+import { CommonModule } from "@angular/common";
+import { SpectateComponent } from "./spectate/spectate.component";
+import { LoaderComponent } from "../../shared/loader/loader.component";
+import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'little-muncher-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: "little-muncher-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.scss"],
+  standalone: true,
+  imports: [CommonModule, SpectateComponent, LoaderComponent, RouterLink]
 })
 export class HomeComponent {
-  protected readonly LittleMuncherHill = LittleMuncherHill;
+  protected readonly LittleMuncherHills = LittleMuncherHills;
   @Output() startLevel: EventEmitter<LittleMuncherGameCreate> = new EventEmitter<LittleMuncherGameCreate>();
+  protected readonly serverHealthService = inject(ServerHealthService);
+  private readonly authService = inject(AuthService);
 
-  constructor(
-    protected readonly serverHealthService: ServerHealthService,
-    protected readonly authService: AuthService
-  ) {}
-
-  climbOn(hill: LittleMuncherHill) {
+  climbOn(hillKey: unknown) {
     this.startLevel.next({
-      level: { hill },
+      level: { hill: hillKey as LittleMuncherHillEnum },
       player_ids: [this.authService.userId as string]
     });
   }
+
+  getHillName = (hill: HillData) => hill.name + " " + hill.height + "m";
 }

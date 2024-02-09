@@ -1,7 +1,7 @@
-import { TilePlacementData } from '../../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { SpriteHelper, SpriteWorldPlacementInfo } from '../sprite-helper';
-import { IComponent } from '../../../core/component.service';
-import { EventEmitter } from '@angular/core';
+import { TilePlacementData } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { SpriteHelper, SpriteWorldPlacementInfo } from "../sprite-helper";
+import { IComponent } from "../../../core/component.service";
+import { EventEmitter } from "@angular/core";
 
 export type TransformChange = [TilePlacementData, SpriteWorldPlacementInfo];
 

@@ -1,4 +1,4 @@
-@import '../../../styles/_variables.scss';
+@import "../../../styles/_variables.scss";
 
 :host {
   display: flex;
@@ -32,7 +32,9 @@
     align-items: baseline;
     font-family: $app-font-bold;
     font-size: 1.4em;
-    transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+    transition:
+      background-color 0.1s ease-in-out,
+      color 0.1s ease-in-out;
 
     &:hover {
       background-color: $primary;
@@ -57,7 +59,9 @@
     border-radius: 10px;
     transform: translate(0, 0);
     width: 300px;
-    transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+    transition:
+      box-shadow 0.1s ease-in-out,
+      transform 0.1s ease-in-out;
     @media (max-width: 520px) {
       width: 100%;
     }
@@ -84,6 +88,18 @@
     .game-description {
       margin-top: 10px;
       margin-bottom: 10px;
+    }
+
+    .in-development {
+      background-color: $primary;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      font-family: $app-font-bold;
+      font-size: 0.8em;
+      position: absolute;
+      top: 10px;
+      right: 10px;
     }
   }
 }

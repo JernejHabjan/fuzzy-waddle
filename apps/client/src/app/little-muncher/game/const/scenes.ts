@@ -1,3 +1,5 @@
 export enum Scenes {
-  'MainScene' = 'MainScene'
+  "PreloadScene" = "PreloadScene",
+  "MainScene" = "MainScene",
+  "UiScene" = "UiScene"
 }

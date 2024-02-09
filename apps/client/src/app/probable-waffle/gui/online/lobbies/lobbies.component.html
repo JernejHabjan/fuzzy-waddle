@@ -1,58 +1,87 @@
 <div class="lobbies">
-  <div>Open Lobbies</div>
-  <p>Browse currently open game lobbies to join</p>
+  <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate</div>
+
+  @if (roomsService.rooms().length === 0) {
+  <div class="text-center">No open lobbies</div>
+  <div class="text-center">
+    <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">Create lobby</button>
+  </div>
+  }@else{
 
   <div class="d-flex">
     <div>
       <div>
-        Filter:
-        <div *ngFor="let map of Maps.maps">
-          <input
-            (change)="filter($event)"
-            id="{{ map.id }}"
-            name="{{ map.name }}"
-            type="checkbox"
-            value="{{ map.id }}"
-          />
-          <label for="{{ map.id }}">{{ map.name }}</label>
-        </div>
+        <button (click)="toggleFilterPopup()" class="btn btn-secondary" type="button">
+          <fa-icon [icon]="faFilter" />
+        </button>
+        <probable-waffle-map-filter *ngIf="isFilterPopupOpen" (filter)="filter($event)" />
       </div>
-      <table class="table table-striped">
+      <table class="table table-striped" style="min-width: 300px">
         <thead>
           <tr>
+            <th scope="col">Name</th>
             <th scope="col">Map</th>
-            <th scope="col">Host</th>
             <th scope="col">Players</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            (click)="select(lobby)"
-            *ngFor="let lobby of lobbies"
-            class="cursor-pointer {{ lobby === selectedLobby ? 'bg-primary' : '' }}"
+            (click)="select(room)"
+            *ngFor="let room of roomsService.rooms()"
+            class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
           >
-            <td>{{ lobby.map }}</td>
-            <td>{{ lobby.host }}</td>
-            <td>{{ lobby.players.length }}</td>
+            <td>{{ room.gameInstanceMetadataData.name }}</td>
+            <td>
+              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
+                {{ mapInfoOfMap(room.gameModeData.map)?.name }}
+              }</td>
+            <td>
+              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
+              {{
+                ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length +
+                  "/" +
+                  (mapInfoOfMap(room.gameModeData.map)?.mapInfo!.startPositionsOnTile.length)
+              }}
+              }
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div>
+    @if (selectedRoom) {
+    <div class="card-container">
       <div>
-        <div>Map Preview</div>
-        <img alt="map preview" src="https://via.placeholder.com/300x300" />
-        <div>Map Description</div>
+        <img alt="map preview" [src]="mapInfo!.presentation.imagePath" />
+        <div style="font-size: 0.8em">{{ mapInfo!.presentation.description }}</div>
       </div>
       <div>
-        <div>Joined players</div>
-        <div>Player 1</div>
-        <div>Player 2</div>
+        <div class="text-primary">Joined players</div>
+        @for (player of ProbableWaffleRoomHelper.getActivatedPlayersInRoom(selectedRoom);track player) {
+        <div>{{ player.controllerData.playerDefinition!.player.playerName }}</div>
+        }
       </div>
+      @if(selectedRoom.spectators.length){
+      <div>
+        <div class="text-primary">Joined spectators</div>
+        <div>{{ selectedRoom.spectators.length }}</div>
+      </div>
+      }
     </div>
+    }
   </div>
 
   <div>
-    <button (click)="join()" [disabled]="!selectedLobby" class="btn btn-primary" type="button">Join</button>
+    <button (click)="addSelfAsPlayer()" [disabled]="!canAddSelfAsPlayer()" class="btn btn-primary" type="button">
+      Join
+    </button>
+    <button
+      (click)="addSelfAsSpectator()"
+      [disabled]="!canAddSelfAsSpectator()"
+      class="ms-2 btn btn-primary"
+      type="button"
+    >
+      Spectate
+    </button>
   </div>
+  }
 </div>

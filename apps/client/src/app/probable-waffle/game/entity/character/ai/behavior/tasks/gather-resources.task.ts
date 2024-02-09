@@ -1,5 +1,5 @@
-import { ITask, TaskData, TaskResultType } from './task.interface';
-import { GathererComponent } from '../../../../actor/components/gatherer-component';
+import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { GathererComponent } from "../../../../actor/components/gatherer-component";
 
 export class GatherResourcesTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
@@ -7,7 +7,7 @@ export class GatherResourcesTask implements ITask {
     if (!gathererComponent) {
       return TaskResultType.Failure;
     }
-    const targetResource = taskData.blackboard.targetActor;
+    const targetResource = taskData.blackboard.targetGameObject;
     if (!targetResource) {
       return TaskResultType.Failure;
     }

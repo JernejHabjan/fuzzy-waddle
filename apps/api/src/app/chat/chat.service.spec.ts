@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ChatService } from './chat.service';
-import { IChatService } from './chat.service.interface';
-import { AuthUser } from '@supabase/supabase-js';
-import { SupabaseProviderService } from '../../core/supabase-provider/supabase-provider.service';
-import { supabaseProviderServiceStub } from '../../core/supabase-provider/supabase-provider.service.spec';
-import { TextSanitizationService } from '../../core/content-filters/text-sanitization.service';
-import { textSanitizationServiceStub } from '../../core/content-filters/text-sanitization.service.spec';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ChatService } from "./chat.service";
+import { IChatService } from "./chat.service.interface";
+import { AuthUser } from "@supabase/supabase-js";
+import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
+import { supabaseProviderServiceStub } from "../../core/supabase-provider/supabase-provider.service.spec";
+import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
+import { textSanitizationServiceStub } from "../../core/content-filters/text-sanitization.service.spec";
 
 // noinspection JSUnusedLocalSymbols
 export const chatServiceStub = {
@@ -13,9 +13,9 @@ export const chatServiceStub = {
   postMessage(text: string, user: AuthUser): Promise<string> {
     return Promise.resolve(text);
   }
-} as IChatService;
+} satisfies IChatService;
 
-describe('ChatService', () => {
+describe("ChatService", () => {
   let service: ChatService;
 
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('ChatService', () => {
     service = module.get<ChatService>(ChatService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

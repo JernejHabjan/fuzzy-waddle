@@ -1,8 +1,8 @@
-import { Actor } from './actor';
-import { SpriteRepresentationComponent } from './components/sprite-representable-component';
-import { TransformComponent } from './components/transformable-component';
-import { TilePlacementData } from '../../world/managers/controllers/input/tilemap/tilemap-input.handler';
-import { Scene, Scenes } from 'phaser';
+import { Actor } from "./actor";
+import { SpriteRepresentationComponent } from "./components/sprite-representable-component";
+import { TransformComponent } from "./components/transformable-component";
+import { TilePlacementData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { Scene } from "phaser";
 
 export type RepresentableActorDefinition = {
   textureMapDefinition: TextureMapDefinition;
@@ -12,6 +12,7 @@ export type TextureMapDefinition = {
   textureName: string;
   spriteSheet: {
     name: string;
+    path: string;
     frameConfig: {
       frameWidth: number;
       frameHeight: number;
@@ -26,7 +27,10 @@ export abstract class RepresentableActor extends Actor {
   private transformComponent!: TransformComponent;
   abstract representableActorDefinition: RepresentableActorDefinition;
 
-  protected constructor(private scene: Scene, private tilePlacementData: TilePlacementData) {
+  protected constructor(
+    private scene: Scene,
+    private tilePlacementData: TilePlacementData
+  ) {
     super();
   }
 

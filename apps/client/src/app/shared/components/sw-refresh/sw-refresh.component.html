@@ -1,0 +1,13 @@
+<ngb-alert *ngIf="showNewVersion" type="info" [dismissible]="false">
+  <div><strong>Update Available</strong></div>
+  <div>
+    <button class="btn btn-sm btn-outline-primary me-2" [disabled]="true" *ngIf="!showVersionReady; else versionReady">
+      <fa-icon [icon]="faSpinner" animation="spin" />
+      Downloading...
+    </button>
+    <ng-template #versionReady>
+      <button class="btn btn-sm btn-outline-primary me-2" (click)="onVersionRefreshClick()">Update</button>
+    </ng-template>
+    <button class="btn btn-sm btn-outline-warning" (click)="this.showNewVersion = false">Dismiss</button>
+  </div>
+</ngb-alert>

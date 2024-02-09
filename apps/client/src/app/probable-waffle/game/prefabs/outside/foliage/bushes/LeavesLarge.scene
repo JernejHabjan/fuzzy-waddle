@@ -1,0 +1,40 @@
+{
+    "id": "ec58b20e-e04f-4bd4-8401-856ffe433f29",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "d2e6490c-affa-4f4d-bdfa-49d21e852494",
+            "label": "foliage_bushes_leaves_large_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 16,
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/bushes/leaves_large.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

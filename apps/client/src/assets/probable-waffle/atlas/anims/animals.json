@@ -1,0 +1,401 @@
+{
+    "anims": [
+        {
+            "key": "hedgehog_idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_idle_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_idle_top",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_walk_top",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_ball_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "hedgehog_ball_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "hedgehog_ball_top",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "hedgehog_idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "hedgehog_ball_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true
+        },
+        {
+            "key": "hedgehog_walk_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "hedgehog/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_down.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_left.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_right.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_up",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheep_up.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_down_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_down.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_left_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_left.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_right_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_right.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        },
+        {
+            "key": "sheep_idle_up_sheared",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/sheared/sheep_up.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true,
+        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/prefabs/animals/anims"
+    }
+}

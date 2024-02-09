@@ -1,0 +1,39 @@
+{
+    "id": "ec58b20e-e04f-4bd3-840e-856ffe433f28",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "snapHeight": 8,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "0a7a383c-1b12-496b-b1c8-888f11b8d7c1",
+            "label": "buildings_tivara_wall_wall_bottom_right_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-0.08773680073041845 40.12188671501689 32.49020235140491 23.549630711539358 47.92931264524296 31.056721037900978 48.21259907265283 25.815922130818336 55.86133261271939 21.28333929226038 63.934995793900754 25.249349275998597 63.943493321894906 80.0709025042004 31.790483050169087 96 -0.07923927273626674 80.63747535902016",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/wall/wall_bottom_right.png"
+            },
+            "x": 32,
+            "y": 80.10288150619456,
+            "originY": 0.8344050156895267
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

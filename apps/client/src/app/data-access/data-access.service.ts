@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../environments/environment';
+import { Injectable } from "@angular/core";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { environment } from "../../environments/environment";
+import { DataAccessServiceInterface } from "./data-access.service.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
-export class DataAccessService {
+export class DataAccessService implements DataAccessServiceInterface {
   constructor() {
     this.createSupabaseClient();
   }

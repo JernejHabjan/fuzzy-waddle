@@ -1,9 +1,5 @@
-import { Geom } from 'phaser';
-
-export interface Vector2Simple {
-  x: number;
-  y: number;
-}
+import { Geom } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class Intersection {
   static intersectsWithRectangle = (M: Vector2Simple, rectangleForIntersection: Geom.Polygon) => {

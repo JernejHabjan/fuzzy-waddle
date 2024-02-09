@@ -12,6 +12,7 @@ node_modules
 /.idea/*
 !/.idea/dataSources.xml
 !/.idea/sqldialects.xml
+!/.idea/icon.svg
 .project
 .classpath
 .c9/
@@ -51,3 +52,5 @@ migrations.json
 .env.local
 # migration to pnpm
 package-lock.json
+
+.nx/cache

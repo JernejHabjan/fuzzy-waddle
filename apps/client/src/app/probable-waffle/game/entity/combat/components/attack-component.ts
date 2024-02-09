@@ -1,26 +1,32 @@
-import { IComponent } from '../../../core/component.service';
-import { Actor } from '../../actor/actor';
-import { AttackData } from '../attack-data';
-import { EventEmitter } from '@angular/core';
-import HealthComponent from './health-component';
-import { RepresentableActor } from '../../actor/representable-actor';
-import { SpriteRepresentationComponent } from '../../actor/components/sprite-representable-component';
+import { AttackData } from "../attack-data";
+import { EventEmitter } from "@angular/core";
+import { HealthComponent } from "./health-component";
+import { getActorComponent } from "../../../data/actor-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
-export class AttackComponent implements IComponent {
+export type AttackDefinition = {
+  attacks: AttackData[];
+};
+
+export class AttackComponent {
   // when cooldown has expired
-  onCooldownReady: EventEmitter<Actor> = new EventEmitter<Actor>();
-  // actor used an attack
+  onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
+  // gameObject used an attack
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
-  private spriteRepresentationComponent!: SpriteRepresentationComponent;
 
-  constructor(private owner: RepresentableActor, private attacks: AttackData[]) {}
-
-  init(): void {
-    this.spriteRepresentationComponent = this.owner.components.findComponent(SpriteRepresentationComponent);
+  constructor(
+    private readonly owner: GameObject,
+    private readonly attackDefinition: AttackDefinition
+  ) {
+    owner.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    owner.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
   }
 
-  update(time: number, delta: number): void {
+  private destroy() {
+    this.owner.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+  }
+  private update(time: number, delta: number): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
@@ -30,27 +36,30 @@ export class AttackComponent implements IComponent {
     }
   }
 
-  useAttack(attackIndex: number, enemy: Actor) {
+  useAttack(attackIndex: number, enemy: GameObject) {
     if (this.remainingCooldown > 0) {
       return;
     }
-    if (attackIndex >= this.attacks.length) {
-      throw new Error('Invalid attack index');
+    if (attackIndex >= this.attackDefinition.attacks.length) {
+      throw new Error("Invalid attack index");
     }
 
-    const attack = this.attacks[attackIndex];
+    const attack = this.attackDefinition.attacks[attackIndex];
 
-    if (attack.projectileClass) {
-      const projectile = new attack.projectileClass(this.spriteRepresentationComponent.scene, this.owner); // todo here it should be getWorld.SpawnActor<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
-      projectile.registerGameObject(); // todo should be called by registration engine
-      projectile.fireAtActor(enemy);
+    if (attack.projectileType) {
+      // todo   const projectile = new attack.projectileClass(this.owner.scene, this.owner); // todo here it should be getWorld.SpawnGameObject<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
+      // todo   projectile.registerGameObject(); // todo should be called by registration engine
+      // todo   projectile.fireAtGameObject(enemy);
     } else {
-      const enemyHealthComponent = enemy.components.findComponent(HealthComponent);
+      const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
+      if (!enemyHealthComponent) {
+        throw new Error("Enemy does not have HealthComponent");
+      }
       enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
     }
   }
 
-  // actor will automatically select and attack targets
+  // gameObject will automatically select and attack targets
   getAcquisitionRadius(): number {
     // todo
     return 0;
@@ -63,7 +72,7 @@ export class AttackComponent implements IComponent {
 
   // Different attacks might be used at different ranges, or against different types of targets
   getAttacks(): AttackData[] {
-    return this.attacks;
+    return this.attackDefinition.attacks;
   }
 
   // time till next attack

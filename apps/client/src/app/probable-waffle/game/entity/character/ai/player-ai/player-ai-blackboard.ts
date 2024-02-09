@@ -1,3 +1,3 @@
-import { Blackboard } from '../blackboard';
+import { Blackboard } from "../blackboard";
 
 export class PlayerAiBlackboard extends Blackboard {}

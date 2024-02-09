@@ -1,42 +1,29 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { GameContainerComponent } from './game-container.component';
-import { Component, Input } from '@angular/core';
-import { BaseGameData } from '../phaser/game/base-game-data';
-import { CommunicatorService } from '../../../little-muncher/game/communicator.service';
-import { LittleMuncherGameInstance, LittleMuncherUserInfo } from '@fuzzy-waddle/api-interfaces';
+import { GameContainerComponent } from "./game-container.component";
+import { Component, Input } from "@angular/core";
+import { BaseGameData } from "../phaser/game/base-game-data";
+import { LittleMuncherGameInstance, LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherCommunicatorService } from "../../../little-muncher/main/communicators/little-muncher-communicator.service";
+import { CommonModule } from "@angular/common";
 
-jest.mock('phaser', () => {
-  return {
-    Game: class Game {
-      constructor() {
-        //
-      }
-
-      destroy() {
-        //
-      }
-    }
-  };
-});
-
-@Component({ selector: 'fuzzy-waddle-game-container', template: '' })
+@Component({ selector: "fuzzy-waddle-game-container", template: "", standalone: true, imports: [CommonModule] })
 export class GameContainerTestingComponent {
   @Input({ required: true }) gameConfig!: Phaser.Types.Core.GameConfig;
   @Input({ required: true }) gameData!: BaseGameData<
-    CommunicatorService,
+    LittleMuncherCommunicatorService,
     LittleMuncherGameInstance,
     LittleMuncherUserInfo
   >;
 }
 
-describe('GameContainerComponent', () => {
+describe("GameContainerComponent", () => {
   let component: GameContainerComponent;
   let fixture: ComponentFixture<GameContainerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GameContainerComponent]
+      imports: [GameContainerComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GameContainerComponent);
@@ -44,7 +31,7 @@ describe('GameContainerComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

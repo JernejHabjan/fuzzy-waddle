@@ -1,8 +1,19 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
+import { environment } from "../../../../../environments/environment";
+import { CommonModule } from "@angular/common";
+import { HomeNavComponent } from "../../../../shared/components/home-nav/home-nav.component";
+import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'fuzzy-waddle-home-page-nav',
-  templateUrl: './home-page-nav.component.html',
-  styleUrls: ['./home-page-nav.component.scss']
+  selector: "probable-waffle-home-page-nav",
+  templateUrl: "./home-page-nav.component.html",
+  styleUrls: ["./home-page-nav.component.scss"],
+  standalone: true,
+  imports: [CommonModule, HomeNavComponent, RouterLink]
 })
-export class HomePageNavComponent {}
+export class HomePageNavComponent {
+  protected readonly enabledInstantDemoGame = !environment.production;
+  protected readonly enabledCampaign = !environment.production; // todo
+  protected readonly enabledProgress = !environment.production; // todo
+  protected readonly enabledOptions: boolean = !environment.production; // todo
+}

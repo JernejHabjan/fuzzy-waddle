@@ -1,0 +1,230 @@
+{
+  "textures": [
+    {
+      "image": "fly-squasher-spritesheet.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 128,
+        "h": 256
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "blood-splatter/2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 125,
+            "h": 111
+          },
+          "spriteSourceSize": {
+            "x": 7,
+            "y": 7,
+            "w": 108,
+            "h": 97
+          },
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 108,
+            "h": 97
+          }
+        },
+        {
+          "filename": "fly/leg-front",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 17,
+            "h": 35
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 1,
+            "w": 16,
+            "h": 34
+          },
+          "frame": {
+            "x": 109,
+            "y": 0,
+            "w": 16,
+            "h": 34
+          }
+        },
+        {
+          "filename": "fly/suckler",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 7,
+            "h": 9
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 1,
+            "w": 6,
+            "h": 8
+          },
+          "frame": {
+            "x": 109,
+            "y": 35,
+            "w": 6,
+            "h": 8
+          }
+        },
+        {
+          "filename": "blood-splatter/1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 125,
+            "h": 111
+          },
+          "spriteSourceSize": {
+            "x": 15,
+            "y": 7,
+            "w": 89,
+            "h": 90
+          },
+          "frame": {
+            "x": 0,
+            "y": 98,
+            "w": 89,
+            "h": 90
+          }
+        },
+        {
+          "filename": "fly/body",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 40,
+            "h": 82
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 1,
+            "w": 38,
+            "h": 80
+          },
+          "frame": {
+            "x": 90,
+            "y": 98,
+            "w": 38,
+            "h": 80
+          }
+        },
+        {
+          "filename": "fly/wing",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 38,
+            "h": 78
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 0,
+            "w": 37,
+            "h": 77
+          },
+          "frame": {
+            "x": 90,
+            "y": 179,
+            "w": 37,
+            "h": 77
+          }
+        },
+        {
+          "filename": "fly/leg-back",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 28,
+            "h": 46
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 0,
+            "w": 27,
+            "h": 46
+          },
+          "frame": {
+            "x": 0,
+            "y": 189,
+            "w": 27,
+            "h": 46
+          }
+        },
+        {
+          "filename": "fly/head",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 36,
+            "h": 21
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 1,
+            "w": 34,
+            "h": 20
+          },
+          "frame": {
+            "x": 0,
+            "y": 236,
+            "w": 34,
+            "h": 20
+          }
+        },
+        {
+          "filename": "blood-splatter/0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 125,
+            "h": 111
+          },
+          "spriteSourceSize": {
+            "x": 39,
+            "y": 43,
+            "w": 48,
+            "h": 40
+          },
+          "frame": {
+            "x": 28,
+            "y": 189,
+            "w": 48,
+            "h": 40
+          }
+        },
+        {
+          "filename": "fly/leg-middle",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 45,
+            "h": 20
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 0,
+            "w": 43,
+            "h": 19
+          },
+          "frame": {
+            "x": 35,
+            "y": 230,
+            "w": 43,
+            "h": 19
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "https://www.codeandweb.com/texturepacker",
+    "version": "3.0",
+    "smartupdate": "$TexturePacker:SmartUpdate:439f74e932aaccb6bd4d9445abec470e:3f2df032aea0d866483e8e09776aaaed:961a868c5ea4829259058255565d0d64$"
+  }
+}

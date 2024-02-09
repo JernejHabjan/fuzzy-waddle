@@ -9,13 +9,13 @@ import {
   TOP as EasyStar_TOP,
   TOP_LEFT as EasyStar_TOP_LEFT,
   TOP_RIGHT as EasyStar_TOP_RIGHT
-} from 'easystarjs';
-import { TilemapHelper } from './tile/tilemap.helper';
-import { Vector2Simple } from '../../library/math/intersection';
-import { TilePlacementWorldWithProperties } from './tile/manual-tiles/manual-tiles.helper';
-import { MapSizeInfo, TileDefinitions } from '../const/map-size.info';
-import { SlopeDirection } from './tile/types/tile-types';
-import { Scene } from 'phaser';
+} from "easystarjs";
+import { TilemapHelper } from "./tile/tilemap.helper";
+import { TilePlacementWorldWithProperties } from "./tile/manual-tiles/manual-tiles.helper";
+import { MapSizeInfo, TileDefinitions } from "../const/map-size.info";
+import { SlopeDirection } from "./tile/types/tile-types";
+import { Scene } from "phaser";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class Pathfinder {
   private readonly enableDiagonals = true;
@@ -23,10 +23,18 @@ export class Pathfinder {
 
   constructor(private readonly scene: Scene) {}
 
-  private static getTileWorldCenterByPath(path: Vector2Simple): Vector2Simple {
-    return TilemapHelper.getTileWorldCenterByTilemapTileXY(path, {
+  public static DEPRECATED_getTileWorldCenterByPath(vector: Vector2Simple): Vector2Simple {
+    return TilemapHelper.getTileWorldCenterByTilemapTileXY(vector, {
       centerOfTile: true
     });
+  }
+
+  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, vector: Vector2Simple): Vector2Simple | null {
+    const tileAtStart = tilemap.getTileAt(vector.x, vector.y);
+    if (!tileAtStart) return null;
+    const centerX = tileAtStart.getCenterX();
+    const centerY = tileAtStart.getCenterY();
+    return { x: centerX, y: centerY };
   }
 
   find(
@@ -60,8 +68,8 @@ export class Pathfinder {
       }
       easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
         if (!path) {
-          console.log('Path was not found.');
-          reject('Path was not found.');
+          console.log("Path was not found.");
+          reject("Path was not found.");
         } else {
           if (path.length === 0) {
             resolve([]);
@@ -71,9 +79,9 @@ export class Pathfinder {
           let graphics = this.scene.add.graphics();
           graphics.lineStyle(2, 0xff0000, 1);
           graphics.beginPath();
-          let tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
+          let tileCenter = Pathfinder.DEPRECATED_getTileWorldCenterByPath(path[0]);
           graphics.moveTo(tileCenter.x, tileCenter.y);
-          tileCenter = Pathfinder.getTileWorldCenterByPath(path[path.length - 1]);
+          tileCenter = Pathfinder.DEPRECATED_getTileWorldCenterByPath(path[path.length - 1]);
           graphics.lineTo(tileCenter.x, tileCenter.y);
           graphics.strokePath();
 
@@ -81,10 +89,12 @@ export class Pathfinder {
           graphics = this.scene.add.graphics();
           graphics.lineStyle(2, 0xffffff, 1);
           graphics.beginPath();
-          tileCenter = Pathfinder.getTileWorldCenterByPath(path[0]);
+          tileCenter = Pathfinder.DEPRECATED_getTileWorldCenterByPath(path[0]);
           graphics.moveTo(tileCenter.x, tileCenter.y);
 
-          const allTileWorldXYCentersWithoutFirst = path.map((path) => Pathfinder.getTileWorldCenterByPath(path));
+          const allTileWorldXYCentersWithoutFirst = path.map((path) =>
+            Pathfinder.DEPRECATED_getTileWorldCenterByPath(path)
+          );
           allTileWorldXYCentersWithoutFirst.shift();
 
           for (let i = 0; i < path.length - 1; i++) {

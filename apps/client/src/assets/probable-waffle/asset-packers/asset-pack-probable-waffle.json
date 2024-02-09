@@ -1,0 +1,802 @@
+{
+    "section1": {
+        "files": [
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/animals.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "animals"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/anims/animals.json",
+                "type": "animation",
+                "key": "animals_1"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
+                "path": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
+                "type": "animation",
+                "key": "buildings"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/anims/tivara/buildings.json",
+                "path": "assets/probable-waffle/atlas/anims/tivara/buildings.json",
+                "type": "animation",
+                "key": "buildings_1"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/anims/effects.json",
+                "type": "animation",
+                "key": "effects"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/effects.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "effects_1"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/factions.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "factions"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_anims.json",
+                "type": "animation",
+                "key": "maceman_male_anims"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "maceman_male_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "maceman_male_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_islash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_islash.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "maceman_male_islash"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_large_slash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_large_slash.png",
+                "frameConfig": {
+                    "frameWidth": 192,
+                    "frameHeight": 192,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "maceman_male_large_slash"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "maceman_male_walk"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_anim.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_anim.json",
+                "type": "animation",
+                "key": "magician_female_anim"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_cast.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_cast.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "magician_female_cast"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "magician_female_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "magician_female_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_large_thrust.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_large_thrust.png",
+                "frameConfig": {
+                    "frameWidth": 192,
+                    "frameHeight": 192,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "magician_female_large_thrust"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "magician_female_walk"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/outside.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "outside"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_anim.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_anim.json",
+                "type": "animation",
+                "key": "ranged_female_anim"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "ranged_female_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "ranged_female_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_shoot.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_shoot.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "ranged_female_shoot"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "ranged_female_walk"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_anims.json",
+                "type": "animation",
+                "key": "slingshot_female_anims"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "slingshot_female_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "slingshot_female_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_shoot.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_shoot.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "slingshot_female_shoot"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "slingshot_female_walk"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/units.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "units"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/anims/units.json",
+                "type": "animation",
+                "key": "units_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",
+                "path": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_anim.json",
+                "type": "animation",
+                "key": "warrior_anim"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_anims.json",
+                "type": "animation",
+                "key": "warrior_male_anims"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_male_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_male_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_islash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_islash.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_male_islash"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_large_smash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_large_smash.png",
+                "frameConfig": {
+                    "frameWidth": 192,
+                    "frameHeight": 192,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_male_large_smash"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_slash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_slash.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_male_slash"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_male_walk"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_thrust.png",
+                "path": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_thrust.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_thrust"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/general/warrior/warrior_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "warrior_walk"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_anims.json",
+                "type": "animation",
+                "key": "worker_female_anims"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_anims.json",
+                "type": "animation",
+                "key": "worker_female_anims_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_hurt_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_idle_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_slash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_slash.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_slash"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_slash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_slash.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_slash_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_thrust.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_thrust.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_thrust"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_thrust.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_thrust.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_thrust_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_walk"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_female_walk_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_anims.json",
+                "type": "animation",
+                "key": "worker_male_anims"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_anims.json",
+                "type": "animation",
+                "key": "worker_male_anims_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_hurt"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_hurt.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_hurt.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_hurt_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_idle"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_idle.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_idle.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_idle_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_slash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_slash.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_slash"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_slash.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_slash.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_slash_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_thrust.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_thrust.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_thrust"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_thrust.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_thrust.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_thrust_1"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_walk"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_walk.png",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_walk.png",
+                "frameConfig": {
+                    "frameWidth": 64,
+                    "frameHeight": 64,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "worker_male_walk_1"
+            }
+        ]
+    },
+    "meta": {
+        "app": "Phaser Editor 2D - Asset Pack Editor",
+        "contentType": "phasereditor2d.pack.core.AssetContentType",
+        "url": "https://phasereditor2d.com",
+        "version": 2,
+        "showAllFilesInBlocks": false
+    }
+}

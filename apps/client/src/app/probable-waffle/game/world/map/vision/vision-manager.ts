@@ -1,5 +1,5 @@
-import { VisionInfo } from './vision-info';
-import { Actor } from '../../../entity/actor/actor';
+import { VisionInfo } from "./vision-info";
+import { Actor } from "../../../entity/actor/actor";
 
 export class VisionManager {
   private visionInfo?: VisionInfo;

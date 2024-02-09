@@ -1,41 +1,27 @@
-import { ContainerComponent } from '../../building/container-component';
-import { Resources, ResourceType } from '../../economy/resource/resource-type';
-import { ResourceDrainComponent } from '../../economy/resource/resource-drain-component';
-import { PlacementRestrictionComponent } from '../../building/placement-restriction-component';
-import { Minerals } from '../resources/minerals';
-import { Building, BuildingInfoDefinition } from './building';
-import { CostData } from '../../building/production/production-cost-component';
-import { PaymentType } from '../../building/payment-type';
+import { PlacementRestrictionComponent } from "../../building/placement-restriction-component";
+import { Building, BuildingInfoDefinition } from "./building";
+import { PaymentType } from "../../building/payment-type";
+import Tree1 from "../../../prefabs/outside/foliage/trees/resources/Tree1";
 
 export const MineDefinitions: BuildingInfoDefinition = {
   textureMapDefinition: {
-    textureName: 'warrior',
+    textureName: "warrior",
     spriteSheet: {
-      name: 'warrior',
+      name: "mine",
+      path: "general/mine/",
       frameConfig: {
         frameWidth: 64,
         frameHeight: 64
       }
     }
   },
-  cost: new CostData(
-    PaymentType.PayOverTime,
-    100,
-    new Map<ResourceType, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
-    0.5
-  ),
+  cost: null,
   healthDefinition: {
     maxHealth: 400
   },
   soundDefinition: {},
   constructionSiteDefinition: {
-    constructionCosts: new Map<ResourceType, number>([
-      [Resources.wood, 100],
-      [Resources.stone, 100]
-    ]),
+    constructionCosts: {},
     checkCollision: true,
     constructionCostType: PaymentType.PayOverTime,
     constructionTime: 100,
@@ -47,7 +33,7 @@ export const MineDefinitions: BuildingInfoDefinition = {
     refundFactor: 0.5,
     startImmediately: false,
     gridWidthAndHeight: { width: 2, height: 2 },
-    finishedSound: 'building-finished' // todo
+    finishedSound: "building-finished" // todo
   }
 };
 
@@ -57,8 +43,9 @@ export class Mine extends Building {
   override initComponents() {
     super.initComponents();
 
-    this.components.addComponent(new ContainerComponent(2));
-    this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
-    this.components.addComponent(new PlacementRestrictionComponent(this, [Minerals]));
+    // this.components.addComponent(new ContainerComponent(2));
+    // this.components.addComponent(new ResourceDrainComponent(this, [Resources.minerals]));
+    // this.components.addComponent(new PlacementRestrictionComponent(this as any, [Tree1.name]));
+    new PlacementRestrictionComponent(this as any, [Tree1.name]);
   }
 }
