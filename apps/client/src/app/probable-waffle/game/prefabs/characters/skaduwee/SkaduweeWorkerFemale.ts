@@ -27,6 +27,7 @@ import FrostForge from "../../buildings/skaduwee/FrostForge";
 import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import Owlery from "../../buildings/skaduwee/Owlery";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -46,6 +47,14 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Skaduwee Female Worker",
+          description: "A worker",
+          smallImage: {
+            key: "factions",
+            frame: "character_icons/skaduwee/worker_female.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

@@ -24,6 +24,7 @@ import { PaymentType } from "../../../entity/building/payment-type";
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import Owlery from "../../buildings/skaduwee/Owlery";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -48,6 +49,14 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Skaduwee Owl",
+          description: "A flying unit",
+          smallImage: {
+            key: "factions",
+            frame: "character_icons/skaduwee/owl.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

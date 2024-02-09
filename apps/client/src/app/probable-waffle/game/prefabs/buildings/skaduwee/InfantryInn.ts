@@ -22,6 +22,8 @@ import SkaduweeRangedFemale from "../../characters/skaduwee/SkaduweeRangedFemale
 import SkaduweeWarriorMale from "../../characters/skaduwee/SkaduweeWarriorMale";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN } from "../../gui/icon-animations";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -66,6 +68,18 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Infantry Inn",
+          description: "Trains infantry units",
+          portraitAnimation: {
+            idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN,
+            action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN
+          },
+          smallImage: {
+            key: "factions",
+            frame: "building_icons/skaduwee/infantry_inn.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

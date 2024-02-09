@@ -28,6 +28,7 @@ import AnkGuard from "../../buildings/tivara/AnkGuard";
 import Olival from "../../buildings/tivara/Olival";
 import Temple from "../../buildings/tivara/Temple";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
@@ -47,6 +48,14 @@ export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Tivara Male Worker",
+          description: "A worker",
+          smallImage: {
+            key: "factions",
+            frame: "character_icons/tivara/worker_male.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

@@ -26,6 +26,11 @@ import {
 import { PaymentType } from "../../../entity/building/payment-type";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import {
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
+} from "../../gui/icon-animations";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -54,6 +59,18 @@ export default class Sandhold extends Phaser.GameObjects.Container {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Sandhold",
+          description: "Main building of the Tivara faction. It is used to produce workers and store resources.",
+          portraitAnimation: {
+            idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE,
+            action: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION
+          },
+          smallImage: {
+            key: "factions",
+            frame: "building_icons/tivara/sandhold.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100,

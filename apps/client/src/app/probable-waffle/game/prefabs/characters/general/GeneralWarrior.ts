@@ -21,6 +21,7 @@ import { AttackData } from "../../../entity/combat/attack-data";
 import { PaymentType } from "../../../entity/building/payment-type";
 import { ContainableComponent } from "../../../entity/actor/components/containable-component";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -40,6 +41,14 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Warrior",
+          description: "A warrior",
+          smallImage: {
+            key: "factions",
+            frame: "character_icons/general/warrior.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

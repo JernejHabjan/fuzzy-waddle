@@ -20,6 +20,7 @@ import { RequirementsComponent, RequirementsDefinition } from "../../../entity/a
 import Sandhold from "./Sandhold";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -55,6 +56,14 @@ export default class Olival extends Phaser.GameObjects.Container {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Olival",
+          description: "Creates a suitable surface for Tivara units and buildings",
+          smallImage: {
+            key: "factions",
+            frame: "buildings/tivara/olival/olival.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

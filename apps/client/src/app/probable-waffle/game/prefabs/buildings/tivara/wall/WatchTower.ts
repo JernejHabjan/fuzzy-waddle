@@ -17,6 +17,8 @@ import { PaymentType } from "../../../../entity/building/payment-type";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { VisionComponent, VisionDefinition } from "../../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../../entity/actor/components/info-component";
+import { ContainerComponent, ContainerDefinition } from "../../../../entity/building/container-component";
 /* END-USER-IMPORTS */
 
 export default class WatchTower extends Phaser.GameObjects.Image {
@@ -37,9 +39,17 @@ export default class WatchTower extends Phaser.GameObjects.Image {
       [
         new OwnerComponent(this),
         new VisionComponent(this, {
-          range: 5
+          range: 8
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Watch Tower",
+          description: "Main defense building",
+          smallImage: {
+            key: "factions",
+            frame: "buildings/tivara/watchtower.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
@@ -53,6 +63,9 @@ export default class WatchTower extends Phaser.GameObjects.Image {
           productionTime: 1000,
           costType: PaymentType.PayImmediately
         } satisfies ProductionCostDefinition),
+        new ContainerComponent(this, {
+          capacity: 2
+        } satisfies ContainerDefinition),
         new ColliderComponent()
       ],
       []

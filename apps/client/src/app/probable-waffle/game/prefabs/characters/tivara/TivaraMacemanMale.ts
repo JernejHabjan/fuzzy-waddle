@@ -23,6 +23,7 @@ import { ContainableComponent } from "../../../entity/actor/components/containab
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import AnkGuard from "../../buildings/tivara/AnkGuard";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */
 
 export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
@@ -45,6 +46,14 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Tivara Maceman",
+          description: "A maceman",
+          smallImage: {
+            key: "factions",
+            frame: "character_icons/tivara/maceman_male.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

@@ -22,6 +22,11 @@ import AnkGuard from "./AnkGuard";
 import TivaraSlingshotFemale from "../../characters/tivara/TivaraSlingshotFemale";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import {
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
+} from "../../gui/icon-animations";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -62,6 +67,22 @@ export default class Temple extends Phaser.GameObjects.Container {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
+        new IdComponent(),
+        new InfoComponent({
+          name: "Temple",
+          description: "Produces Tivara Sling shooters",
+          portraitAnimation: {
+            idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
+            action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
+          },
+          smallImage: {
+            key: "factions",
+            frame: "building_icons/tivara/temple.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
