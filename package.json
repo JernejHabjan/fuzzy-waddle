@@ -116,7 +116,7 @@
     "@nx/linter": "17.2.8",
     "@nx/nest": "17.2.8",
     "@nx/node": "17.2.8",
-    "@nx/webpack": "17.2.8",
+    "@nx/webpack": "18.0.3",
     "@nx/workspace": "17.2.8",
     "@types/jest": "29.5.11",
     "@types/node": "20.11.8",
