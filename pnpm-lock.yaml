@@ -12,6 +12,7 @@ overrides:
   '@adobe/css-tools@<4.3.2': '>=4.3.2'
   semver@<5.7.2: '>=5.7.2'
   follow-redirects@<1.15.4: '>=1.15.4'
+  '@supabase/gotrue-js': 2.61.0
 
 importers:
 
@@ -162,8 +163,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       phaser:
-        specifier: ^3.70.0
-        version: 3.70.0
+        specifier: ^3.80.0-beta.2
+        version: 3.80.0-beta.2
       phaser3-rex-plugins:
         specifier: ^1.60.10
         version: 1.60.10
@@ -5204,8 +5205,8 @@ packages:
       '@supabase/node-fetch': 2.6.14
     dev: false
 
-  /@supabase/gotrue-js@2.57.0:
-    resolution: {integrity: sha512-/CcAW40aPKgp9/w9WgXVUQFg1AOdvFR687ONOMjASPBuC6FsNbKlcXp4pc+rwKNtxyxDkBbR+x7zj/8g00r/Og==}
+  /@supabase/gotrue-js@2.61.0:
+    resolution: {integrity: sha512-kaSoSUXm5LV6z5as9vRughSfEHs9Ru66ZISrSDf7u+U2Viv56+sR2QhfaPLhhSsJh0y3GlpzNDUfapKgHwYv9A==}
     dependencies:
       '@supabase/node-fetch': 2.6.14
     dev: false
@@ -5245,7 +5246,7 @@ packages:
     resolution: {integrity: sha512-NoltJSaJNKDJNutO5sJPAAi5RIWrn1z2XH+ig1+cHDojT6BTN7TvZPNa3Kq3gFQWfO5H1N9El/bCTZJ3iFW2kQ==}
     dependencies:
       '@supabase/functions-js': 2.1.5
-      '@supabase/gotrue-js': 2.57.0
+      '@supabase/gotrue-js': 2.61.0
       '@supabase/node-fetch': 2.6.14
       '@supabase/postgrest-js': 1.9.2
       '@supabase/realtime-js': 2.9.3
@@ -10989,8 +10990,8 @@ packages:
       - encoding
     dev: false
 
-  /phaser@3.70.0:
-    resolution: {integrity: sha512-2g+gh+Jp9f/Ho9FOXOYbIJMGf3UZXyMbW2iLScFaLQw11e/LqVyxj/YmaBauWbHabeTnZjiWkPklDnxhesMH0g==}
+  /phaser@3.80.0-beta.2:
+    resolution: {integrity: sha512-W2NDQlPV8nFTpYF6wJ6zwqFAKEygih1G0J6IdA2gGF61wYy2CYtTN25o6i6E52p7hRc3amX/uDS5eIT+dMrN5g==}
     dependencies:
       eventemitter3: 5.0.1
     dev: false

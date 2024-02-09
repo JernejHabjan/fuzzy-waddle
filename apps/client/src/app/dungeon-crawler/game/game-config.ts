@@ -10,7 +10,6 @@ export const dungeonCrawlerGameConfig: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 0 },
       debug: false
     }
   },

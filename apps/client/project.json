@@ -20,7 +20,15 @@
         "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
         "serviceWorker": true,
         "ngswConfigPath": "apps/client/ngsw-config.json",
-        "allowedCommonJsDependencies": ["phaser", "websocket", "cross-fetch"]
+        "allowedCommonJsDependencies": [
+          "phaser",
+          "websocket",
+          "cross-fetch",
+          "easystarjs",
+          "ws",
+          "@supabase/node-fetch",
+          "eventemitter3"
+        ]
       },
       "configurations": {
         "production": {

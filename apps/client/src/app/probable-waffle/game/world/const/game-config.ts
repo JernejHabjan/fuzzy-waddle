@@ -16,7 +16,6 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
     default: "arcade",
     arcade: {
       fps: 60,
-      gravity: { y: 0 },
       debug: !environment.production
     }
   },

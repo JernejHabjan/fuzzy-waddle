@@ -89,7 +89,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "passport-strategy": "^1.0.0",
-    "phaser": "^3.70.0",
+    "phaser": "^3.80.0-beta.2",
     "phaser3-rex-plugins": "^1.60.10",
     "profanity-cleaner": "^0.0.3",
     "reflect-metadata": "^0.2.1",
@@ -152,7 +152,8 @@
       "tough-cookie@<4.1.3": ">=4.1.3",
       "@adobe/css-tools@<4.3.2": ">=4.3.2",
       "semver@<5.7.2": ">=5.7.2",
-      "follow-redirects@<1.15.4": ">=1.15.4"
+      "follow-redirects@<1.15.4": ">=1.15.4",
+      "@supabase/gotrue-js": "2.61.0"
     }
   }
 }

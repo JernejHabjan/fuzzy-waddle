@@ -9,8 +9,7 @@ export const littleMuncherGameConfig: Types.Core.GameConfig = {
   physics: {
     default: "arcade",
     arcade: {
-      fps: 60,
-      gravity: { y: 0 }
+      fps: 60
       // debug: !environment.production
     }
   },
