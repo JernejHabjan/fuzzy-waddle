@@ -24,6 +24,7 @@ import { RequirementsComponent, RequirementsDefinition } from "../../../entity/a
 import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { MovementSystem } from "../../../entity/systems/movement.system";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -82,7 +83,7 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
           actors: [InfantryInn.name]
         } satisfies RequirementsDefinition)
       ],
-      []
+      [new MovementSystem(this)]
     );
 
     this.skaduwee_magician_female_idle_down = skaduwee_magician_female_idle_down;

@@ -25,6 +25,7 @@ import { RequirementsComponent, RequirementsDefinition } from "../../../entity/a
 import Owlery from "../../buildings/skaduwee/Owlery";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { MovementSystem } from "../../../entity/systems/movement.system";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -84,7 +85,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
           actors: [Owlery.name]
         } satisfies RequirementsDefinition)
       ],
-      []
+      [new MovementSystem(this)]
     );
 
     /* END-USER-CTR-CODE */

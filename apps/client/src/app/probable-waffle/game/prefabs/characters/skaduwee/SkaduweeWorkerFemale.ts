@@ -28,6 +28,7 @@ import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import Owlery from "../../buildings/skaduwee/Owlery";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { MovementSystem } from "../../../entity/systems/movement.system";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -97,7 +98,7 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
           ]
         } satisfies GathererDefinition)
       ],
-      []
+      [new MovementSystem(this)]
     );
 
     this.on("pointerdown", () => {

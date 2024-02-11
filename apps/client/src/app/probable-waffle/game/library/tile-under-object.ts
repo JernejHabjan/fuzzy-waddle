@@ -6,7 +6,7 @@ import { drawDebugPoint } from "../debug/debug-point";
 import { getActorComponent } from "../data/actor-component";
 import { ColliderComponent } from "../entity/actor/components/collider-component";
 
-export function getTileIndexesUnderObject(
+export function getTileCoordsUnderObject(
   tilemap: Phaser.Tilemaps.Tilemap,
   gameObject: Phaser.GameObjects.GameObject
 ): Vector2Simple[] {
@@ -40,4 +40,27 @@ export function getTileIndexesUnderObject(
     }
   }
   return tileIndexes1;
+}
+
+export function getCenterTileCoordUnderObject(
+  tilemap: Phaser.Tilemaps.Tilemap,
+  gameObject: Phaser.GameObjects.GameObject
+): Vector2Simple | undefined {
+  const coords = getTileCoordsUnderObject(tilemap, gameObject);
+  if (coords.length === 0) return;
+
+  if (coords.length === 0) return; // No tiles found
+
+  // Calculate average x and y coordinates
+  let totalX = 0;
+  let totalY = 0;
+  for (const coord of coords) {
+    totalX += coord.x;
+    totalY += coord.y;
+  }
+
+  const middleX = Math.floor(totalX / coords.length);
+  const middleY = Math.floor(totalY / coords.length);
+
+  return { x: middleX, y: middleY };
 }

@@ -22,6 +22,7 @@ import { PaymentType } from "../../../entity/building/payment-type";
 import { ContainableComponent } from "../../../entity/actor/components/containable-component";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { MovementSystem } from "../../../entity/systems/movement.system";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -74,7 +75,7 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
         } satisfies ProductionCostDefinition),
         new ContainableComponent(this)
       ],
-      []
+      [new MovementSystem(this)]
     );
 
     this.on("pointerdown", () => {

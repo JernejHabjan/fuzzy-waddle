@@ -29,6 +29,7 @@ import Olival from "../../buildings/tivara/Olival";
 import Temple from "../../buildings/tivara/Temple";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { MovementSystem } from "../../../entity/systems/movement.system";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
@@ -98,7 +99,7 @@ export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
           ]
         } satisfies GathererDefinition)
       ],
-      []
+      [new MovementSystem(this)]
     );
 
     this.on("pointerdown", () => {
