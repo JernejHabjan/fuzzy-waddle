@@ -83,6 +83,7 @@ export class MovementSystem {
       : undefined;
 
     return new Promise<void>((resolve, reject) => {
+      this.onMovementStart();
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
@@ -137,6 +138,7 @@ export class MovementSystem {
         return;
       }
 
+      this.onMovementStart();
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
@@ -157,6 +159,10 @@ export class MovementSystem {
         }
       });
     });
+  }
+
+  private onMovementStart() {
+    // play sound // todo
   }
 }
 

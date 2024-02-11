@@ -126,6 +126,7 @@ export class MultiSelectionHandler {
       emitterUserId: this.hudScene.userId,
       type,
       data: {
+        button: "left",
         selectedArea: {
           x: this.selectionRect.x,
           y: this.selectionRect.y,
