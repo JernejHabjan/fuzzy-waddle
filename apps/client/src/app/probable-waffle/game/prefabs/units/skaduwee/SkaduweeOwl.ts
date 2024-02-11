@@ -4,8 +4,6 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { DepthHelper } from "../../../world/map/depth.helper";
-import { throttle } from "../../../library/throttle";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
@@ -25,6 +23,14 @@ import { RequirementsComponent, RequirementsDefinition } from "../../../entity/a
 import Owlery from "../../buildings/skaduwee/Owlery";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import {
+  moveGameObjectToRandomTileInNavigableRadius,
+  MovementSystem,
+  PathMoveConfig
+} from "../../../entity/systems/movement.system";
+import { onScenePostCreate } from "../../../data/game-object-helper";
+import { getActorSystem } from "../../../data/actor-system";
+import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -84,20 +90,21 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
           actors: [Owlery.name]
         } satisfies RequirementsDefinition)
       ],
-      []
+      [new MovementSystem(this)]
     );
-
+    onScenePostCreate(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 
   private owl: Phaser.GameObjects.Sprite;
-  private delayedCaller?: Phaser.Time.TimerEvent;
 
   /* START-USER-CODE */
+  private readonly actionDelay = 5000;
+  private readonly movementSpeed = 2000;
+  private readonly radius = 5;
+  private currentDelay: Phaser.Time.TimerEvent | null = null;
 
-  override addedToScene() {
-    super.addedToScene();
-
+  private postSceneCreate() {
     this.drawFlyingUnitVerticalLine();
     this.moveOwl();
   }
@@ -124,41 +131,40 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   /**
    * move owl around randomly. After 3-5 seconds, move to a new random location.
    */
-  private moveOwl(): void {
+  private async moveOwl(): Promise<void> {
     if (!this.active) return;
-    const startX = this.x;
-    const startY = this.y;
 
-    const targetX = startX + Phaser.Math.Between(-200, 200);
-    const targetY = startY + Phaser.Math.Between(-100, 100);
+    try {
+      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
+        usePathfinding: false,
+        duration: this.movementSpeed
+      } satisfies PathMoveConfig);
+    } catch (e) {
+      console.error(e);
+    }
 
-    const duration = Phaser.Math.Between(3000, 5000);
-
-    const throttledSetActorDepth = throttle(this.setActorDepth, 360);
-    this.scene.tweens.add({
-      targets: this,
-      x: targetX,
-      y: targetY,
-      duration,
-      ease: "Sine.easeInOut",
-      yoyo: false,
-      repeat: 0,
-      onUpdate: () => {
-        throttledSetActorDepth();
-      }
-    });
-
-    // after 3-5 seconds, move to a new random location
-    this.delayedCaller = this.scene.time.delayedCall(duration, this.moveOwl, [], this);
+    this.moveAfterDelay();
   }
 
-  private setActorDepth = () => {
-    DepthHelper.setActorDepth(this);
-  };
+  private moveAfterDelay() {
+    this.removeDelay();
+    this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.moveOwl, [], this);
+  }
+
+  cancelMovement() {
+    const movementSystem = getActorSystem<MovementSystem>(this, MovementSystem);
+    if (movementSystem) movementSystem.cancelMovement();
+  }
+
+  private removeDelay() {
+    this.currentDelay?.remove(false);
+    this.currentDelay = null;
+  }
 
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
-    this.delayedCaller?.destroy();
+    this.cancelMovement();
+    this.removeDelay();
   }
 
   /* END-USER-CODE */

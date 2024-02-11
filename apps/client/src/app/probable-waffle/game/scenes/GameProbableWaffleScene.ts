@@ -12,12 +12,16 @@ import { ProbableWaffleGameData } from "./probable-waffle-game-data";
 import { SaveGame } from "../data/save-game";
 import { SceneActorCreator } from "./components/scene-actor-creator";
 import { NavigationService } from "./services/navigation.service";
+import { BehaviorSubject } from "rxjs";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
   systems: any[]; // todo use
   components: any[]; // todo use
   services: any[]; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
+  initializers: {
+    postCreate: BehaviorSubject<boolean>;
+  };
 }
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
@@ -31,7 +35,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     baseGameData: this.baseGameData,
     systems: [], // todo use
     components: [],
-    services: [] // todo use
+    services: [], // todo use
+    initializers: {
+      postCreate: new BehaviorSubject<boolean>(false)
+    }
   } satisfies GameProbableWaffleSceneData;
 
   init() {
@@ -53,5 +60,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SaveGame(this);
     new SceneActorCreator(this);
     this.sceneGameData.services.push(new NavigationService(this, this.tilemap));
+    this.sceneGameData.initializers.postCreate.next(true);
   }
 }

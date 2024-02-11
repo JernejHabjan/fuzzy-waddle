@@ -4,7 +4,7 @@ import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
 import { WalkableComponent } from "../../entity/actor/components/walkable-component";
 import { ColliderComponent } from "../../entity/actor/components/collider-component";
-import { getTileIndexesUnderObject } from "../../library/tile-under-object";
+import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
 import { Pathfinder } from "../../world/map/pathfinder";
 import { drawDebugPoint } from "../../debug/debug-point";
@@ -14,6 +14,7 @@ export class NavigationService {
   private grid: number[][] = [];
   private tilemapGrid: number[][] = [];
   private readonly DEBUG = false;
+  private readonly DEBUG_DEMO = false;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -26,7 +27,7 @@ export class NavigationService {
 
     this.updateNavigation();
 
-    if (this.DEBUG) {
+    if (this.DEBUG_DEMO) {
       try {
         this.find({ x: 33, y: 33 }, { x: 5, y: 10 });
         this.debugNavigableRadius();
@@ -34,6 +35,10 @@ export class NavigationService {
         console.error("debug navigation", e);
       }
     }
+  }
+
+  drawDebugPath(path: Vector2Simple[]) {
+    drawDebugPath(this.scene, this.tilemap, path);
   }
 
   private async debugNavigableRadius() {
@@ -50,6 +55,10 @@ export class NavigationService {
     }
   }
 
+  getTileWorldCenter(tile: Vector2Simple): Vector2Simple | undefined {
+    return Pathfinder.getTileWorldCenter(this.tilemap, tile);
+  }
+
   private setup() {
     const objectsGrid = this.extractGridFromObjects();
     this.grid = this.tilemapGrid.map((row, i) =>
@@ -63,11 +72,11 @@ export class NavigationService {
     this.setupNavigation();
   }
 
-  private async find(from: Vector2Simple, to: Vector2Simple): Promise<Vector2Simple[]> {
+  private async find(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[]> {
     return new Promise((resolve, reject) => {
-      this.easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
+      this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
         if (!path) {
-          console.log("Path was not found.");
+          // console.log("Path was not found.");
           reject("Path was not found.");
         } else {
           if (path.length === 0) {
@@ -76,7 +85,7 @@ export class NavigationService {
           }
 
           if (this.DEBUG) {
-            drawDebugPath(this.scene, this.tilemap, path);
+            this.drawDebugPath(path);
           }
           resolve(path);
         }
@@ -137,7 +146,7 @@ export class NavigationService {
     this.scene.children.each((child) => {
       const colliderComponent = getActorComponent(child, ColliderComponent);
       if (!colliderComponent) return;
-      const tilesUnderObject = getTileIndexesUnderObject(this.tilemap, child);
+      const tilesUnderObject = getTileCoordsUnderObject(this.tilemap, child);
       colliders.push(...tilesUnderObject);
     });
     return colliders;
@@ -151,7 +160,7 @@ export class NavigationService {
     this.scene.children.each((child) => {
       const walkableComponent = getActorComponent(child, WalkableComponent);
       if (!walkableComponent) return;
-      const tilesUnderObject: Vector2Simple[] = getTileIndexesUnderObject(this.tilemap, child);
+      const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(this.tilemap, child);
       const { shrinkX, shrinkY } = WalkableComponent.handleWalkable(child);
 
       const minX = Math.min(...tilesUnderObject.map((tile) => tile.x));
@@ -187,24 +196,13 @@ export class NavigationService {
   public async randomTileInNavigableRadius(
     currentTile: Vector2Simple,
     radiusTiles: number
-  ): Promise<Vector2Simple | null> {
+  ): Promise<Vector2Simple | undefined> {
     // 1. Get a list of valid tile coordinates within the radius
-    const validTiles: Vector2Simple[] = [];
-    for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
-      for (let x = currentTile.x - radiusTiles; x <= currentTile.x + radiusTiles; x++) {
-        // Ensure coordinates are within grid bounds
-        if (0 <= x && x < this.grid[0].length && 0 <= y && y < this.grid.length) {
-          // Check if tile is navigable (value 0 in the grid)
-          if (this.grid[y][x] === 0) {
-            validTiles.push({ x, y });
-          }
-        }
-      }
-    }
+    const validTiles = this.validTilesInRadius(currentTile, radiusTiles);
 
     // 2. Ensure there are valid tiles within the radius
     if (validTiles.length === 0) {
-      return null;
+      return;
     }
 
     // 3. Randomly pick tiles until a reachable one within the radius is found
@@ -215,7 +213,12 @@ export class NavigationService {
       const tile = validTiles[randomIndex];
 
       // Check path to the random tile
-      const path = await this.find(currentTile, tile);
+      let path: Vector2Simple[] = [];
+      try {
+        path = await this.find(currentTile, tile);
+      } catch (e) {
+        //
+      }
 
       // Calculate path length based on XY distances:
       const sumPathLengthByXY = path.reduce((sum, node, index) => {
@@ -237,6 +240,49 @@ export class NavigationService {
     }
 
     // all attempts failed
-    return null;
+    return;
+  }
+
+  public randomTileInRadius(currentTile: Vector2Simple, radiusTiles: number): Vector2Simple | undefined {
+    // 1. Get a list of valid tile coordinates within the radius
+    const validTiles = this.validTilesInRadius(currentTile, radiusTiles);
+
+    // 2. Ensure there are valid tiles within the radius
+    if (validTiles.length === 0) {
+      return;
+    }
+
+    // 3. Randomly pick tiles until a reachable one within the radius is found
+    const randomIndex = Math.floor(Math.random() * validTiles.length);
+    return validTiles[randomIndex];
+  }
+
+  private validTilesInRadius(currentTile: Vector2Simple, radiusTiles: number): Vector2Simple[] {
+    // 1. Get a list of valid tile coordinates within the radius
+    const validTiles: Vector2Simple[] = [];
+    for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
+      for (let x = currentTile.x - radiusTiles; x <= currentTile.x + radiusTiles; x++) {
+        // Ensure coordinates are within grid bounds
+        if (0 <= x && x < this.grid[0].length && 0 <= y && y < this.grid.length) {
+          validTiles.push({ x, y });
+        }
+      }
+    }
+
+    return validTiles;
+  }
+
+  getPath(gameObject: Phaser.GameObjects.GameObject, toTileXY: Vector2Simple): Promise<Vector2Simple[]> {
+    const currentTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!currentTile) return Promise.resolve([]);
+    try {
+      return this.find(currentTile, toTileXY);
+    } catch (e) {
+      return Promise.resolve([]);
+    }
+  }
+
+  getCenterTileCoordUnderObject(gameObject: Phaser.GameObjects.GameObject): Vector2Simple | undefined {
+    return getCenterTileCoordUnderObject(this.tilemap, gameObject);
   }
 }

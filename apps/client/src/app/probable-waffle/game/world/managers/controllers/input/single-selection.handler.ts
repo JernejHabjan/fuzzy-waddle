@@ -34,6 +34,21 @@ export class SingleSelectionHandler {
         const isLeftClick = pointer.leftButtonReleased();
         const isShiftDown = pointer.event.shiftKey; // shift removes from selection
         const isCtrlDown = pointer.event.ctrlKey; // ctrl adds to selection
+
+        // offset pointer by camera position
+        const pointerX = pointer.x + this.scene.cameras.main.scrollX;
+        const pointerY = pointer.y + this.scene.cameras.main.scrollY + this.tilemap.tileHeight;
+
+        const clickedTileXY = new Phaser.Math.Vector2();
+        Phaser.Tilemaps.Components.IsometricWorldToTileXY(
+          pointerX,
+          pointerY,
+          true,
+          clickedTileXY,
+          this.scene.cameras.main,
+          this.tilemap.layer
+        );
+
         if (isLeftClick && gameObjectsUnderCursor.length > 0) {
           // An interactive object was clicked
           const objectIds = gameObjectsUnderCursor
@@ -43,59 +58,51 @@ export class SingleSelectionHandler {
           // if we clicked on top of terrain object, then emit terrain selection
           const clickedOnTopOfTerrain = false; // TODO
           if (clickedOnTopOfTerrain) {
-            this.sendTerrainSelection(0, 0, 0); // todo?
+            this.sendTerrainSelection("left", 0, 0, 0, isShiftDown, isCtrlDown);
           } else {
-            this.sendSelection(objectIds, isShiftDown, isCtrlDown);
+            this.sendSelection("left", objectIds, isShiftDown, isCtrlDown);
           }
         } else {
-          if (isLeftClick) {
-            // No interactive object was clicked, handle tilemap click
-
-            // offset pointer by camera position
-            const pointerX = pointer.x + this.scene.cameras.main.scrollX;
-            const pointerY = pointer.y + this.scene.cameras.main.scrollY + this.tilemap.tileHeight;
-
-            const clickedTileXY = new Phaser.Math.Vector2();
-            Phaser.Tilemaps.Components.IsometricWorldToTileXY(
-              pointerX,
-              pointerY,
-              true,
-              clickedTileXY,
-              this.scene.cameras.main,
-              this.tilemap.layer
-            );
-
-            const maxTileX = this.tilemap.width;
-            const maxTileY = this.tilemap.height;
-            const minTileX = 0;
-            const minTileY = 0;
-            if (
-              clickedTileXY.x < minTileX ||
-              clickedTileXY.x > maxTileX ||
-              clickedTileXY.y < minTileY ||
-              clickedTileXY.y > maxTileY
-            ) {
-              this.sendDeselect();
-              return;
-            }
-            console.log("clicked on tile", clickedTileXY.x, clickedTileXY.y);
-
-            this.sendTerrainSelection(clickedTileXY.x, clickedTileXY.y, 0);
-          } else {
-            console.log("right click on nothing - issue move command?"); // todo
+          // No interactive object was clicked, handle tilemap click
+          const maxTileX = this.tilemap.width;
+          const maxTileY = this.tilemap.height;
+          const minTileX = 0;
+          const minTileY = 0;
+          if (
+            clickedTileXY.x < minTileX ||
+            clickedTileXY.x > maxTileX ||
+            clickedTileXY.y < minTileY ||
+            clickedTileXY.y > maxTileY
+          ) {
+            this.sendDeselect();
+            return;
           }
+          this.sendTerrainSelection(
+            isLeftClick ? "left" : "right",
+            clickedTileXY.x,
+            clickedTileXY.y,
+            0,
+            isShiftDown,
+            isCtrlDown
+          );
         }
       },
       this
     );
   }
 
-  private sendSelection(selected: string[], shiftKey: boolean = false, ctrlKey: boolean = false) {
+  private sendSelection(
+    button: "left" | "right",
+    selected: string[],
+    shiftKey: boolean = false,
+    ctrlKey: boolean = false
+  ) {
     this.scene.communicator.selection!.sendLocally({
       gameInstanceId: this.scene.gameInstanceId,
       emitterUserId: this.scene.userId,
       type: "singleSelect",
       data: {
+        button,
         selected,
         shiftKey,
         ctrlKey
@@ -111,12 +118,20 @@ export class SingleSelectionHandler {
     });
   }
 
-  private sendTerrainSelection(x: number, y: number, z: number, shiftKey: boolean = false, ctrlKey: boolean = false) {
+  private sendTerrainSelection(
+    button: "left" | "right",
+    x: number,
+    y: number,
+    z: number,
+    shiftKey: boolean = false,
+    ctrlKey: boolean = false
+  ) {
     this.scene.communicator.selection!.sendLocally({
       gameInstanceId: this.scene.gameInstanceId,
       emitterUserId: this.scene.userId,
       type: "terrainSelect",
       data: {
+        button,
         terrainSelected: {
           x,
           y,

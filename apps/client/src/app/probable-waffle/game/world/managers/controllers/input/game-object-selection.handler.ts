@@ -9,6 +9,9 @@ import { AttackComponent } from "../../../../entity/combat/components/attack-com
 import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { getActorSystem } from "../../../../data/actor-system";
+import { MovementSystem } from "../../../../entity/systems/movement.system";
 
 export class GameObjectSelectionHandler {
   private sub!: Subscription;
@@ -46,7 +49,11 @@ export class GameObjectSelectionHandler {
           break;
         case "terrainSelect":
           console.log("terrainSelect", selection.data!.terrainSelected);
-          this.deselectActorsForPlayer();
+          if (selection.data!.button === "left") {
+            this.deselectActorsForPlayer();
+          } else {
+            this.issueMoveCommandToSelectedActors(selection.data!.terrainSelected!);
+          }
           break;
         case "multiSelect":
           const area = selection.data!.selectedArea!;
@@ -71,9 +78,11 @@ export class GameObjectSelectionHandler {
     });
   }
 
-  private getActorsByIds(ids: string[]) {
+  private getActorsByIds(ids: string[]): GameObject[] {
     const selectableChildren = this.getSelectableChildren();
-    return ids.map((id) => selectableChildren.find((actor) => getActorComponent(actor, IdComponent)!.id === id));
+    return ids
+      .map((id) => selectableChildren.find((actor) => getActorComponent(actor, IdComponent)!.id === id))
+      .filter((actor) => !!actor) as GameObject[];
   }
 
   private selectActorsByIds(ids: string[]) {
@@ -185,6 +194,24 @@ export class GameObjectSelectionHandler {
       .filter((group) => group.priority === highestPriority)
       .map((group) => group.actors)
       .flat();
+  }
+
+  private issueMoveCommandToSelectedActors(vec3: Vector3Simple) {
+    console.log("issue move command to selected actors");
+    const playerController = getPlayerController(this.scene);
+    if (!playerController) return;
+    // get actors that are selected
+    const selectedActors = playerController.getSelection();
+    if (selectedActors.length === 0) return;
+    const selectedActorsGameObjects = this.getActorsByIds(selectedActors);
+    const movableActors = selectedActorsGameObjects.filter((actor) => !!getActorSystem(actor, MovementSystem));
+    movableActors.forEach((actor) => {
+      // issue move command to each actor
+      const movementSystem = getActorSystem(actor, MovementSystem)!;
+      movementSystem.moveToLocation(vec3, {
+        duration: 500
+      });
+    });
   }
 
   private destroy() {

@@ -24,6 +24,7 @@ import { RequirementsComponent, RequirementsDefinition } from "../../../entity/a
 import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { MovementSystem } from "../../../entity/systems/movement.system";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
@@ -79,7 +80,7 @@ export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
           actors: [InfantryInn.name]
         } satisfies RequirementsDefinition)
       ],
-      []
+      [new MovementSystem(this)]
     );
 
     this.on("pointerdown", () => {

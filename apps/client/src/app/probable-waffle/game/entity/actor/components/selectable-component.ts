@@ -1,12 +1,28 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
+import { getActorSystem } from "../../../data/actor-system";
+import { MovementSystem } from "../../systems/movement.system";
+import { Subscription } from "rxjs";
+import Phaser from "phaser";
 
 export class SelectableComponent {
   private selected: boolean = false;
-  private selectionCircle!: any;
+  private selectionCircle!: Phaser.GameObjects.Graphics;
+  private actorMovedSubscription?: Subscription;
   constructor(private readonly gameObject: GameObject) {
     this.createSelectionCircle();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init);
+  }
+
+  private init = () => {
+    this.subscribeActorMove();
+  };
+
+  private subscribeActorMove() {
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return;
+    this.actorMovedSubscription = movementSystem.actorMoved.subscribe(this.update);
   }
 
   private createSelectionCircle() {
@@ -32,11 +48,10 @@ export class SelectableComponent {
     return this.selected;
   }
 
-  update() {
-    // todo use
+  private update = () => {
     this.setPosition();
     this.setDepth();
-  }
+  };
 
   private setPosition() {
     const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
@@ -51,5 +66,6 @@ export class SelectableComponent {
 
   private destroy = () => {
     this.selectionCircle.destroy();
+    this.actorMovedSubscription?.unsubscribe();
   };
 }
