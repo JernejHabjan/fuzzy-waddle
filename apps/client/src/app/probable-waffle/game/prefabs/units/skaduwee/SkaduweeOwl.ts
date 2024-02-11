@@ -26,6 +26,9 @@ import Owlery from "../../buildings/skaduwee/Owlery";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
+import { onScenePostCreate } from "../../../data/game-object-helper";
+import { getSceneInitializers } from "../../../scenes/components/scene-component-helpers";
+import { filter, first } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -87,7 +90,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       ],
       [new MovementSystem(this)]
     );
-
+    onScenePostCreate(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 
@@ -96,9 +99,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
 
-  override addedToScene() {
-    super.addedToScene();
-
+  private postSceneCreate() {
     this.drawFlyingUnitVerticalLine();
     this.moveOwl();
   }

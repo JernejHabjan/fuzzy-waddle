@@ -19,11 +19,15 @@ import {
   ANIM_HEDGEHOG_WALK_TOP
 } from "./anims/animals";
 import { setActorData } from "../../data/actor-data";
-import { MovementSystem, PathMoveConfig } from "../../entity/systems/movement.system";
+import {
+  getGameObjectDirection,
+  moveGameObjectToRandomTileInNavigableRadius,
+  MovementSystem,
+  PathMoveConfig
+} from "../../entity/systems/movement.system";
 import { getActorSystem } from "../../data/actor-system";
-import { getSceneService } from "../../scenes/components/scene-component-helpers";
-import { NavigationService } from "../../scenes/services/navigation.service";
-import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { getGameObjectCurrentTile, onScenePostCreate } from "../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -35,101 +39,79 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     setActorData(this, [], [new MovementSystem(this)]);
+    onScenePostCreate(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   private readonly actionDelay = 5000;
   private readonly movementSpeed = 2000;
+  private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
 
-  override addedToScene() {
-    super.addedToScene();
-
+  private postSceneCreate() {
     this.moveHedgehog();
     this.handleClick();
   }
 
   private handleClick() {
-    this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, async () => {
-      // Cancel the current delay if it exists
-      if (this.currentDelay) {
-        this.currentDelay.remove(false);
-        this.currentDelay = null;
-      }
-
-      // Stop the current tween if it exists
-      this.cancelMovement();
-
-      // get appropriate ball animation
-      const currentTile = this.getCurrentTile();
-      if (!currentTile) return;
-      const anim = await this.getAnim(currentTile);
-      if (!anim) return;
-      const { ballAnim } = anim;
-
-      this.play(ballAnim);
+    this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+      this.playAnimation("ball");
       this.moveHedgehogAfterDelay();
     });
   }
+
   async moveHedgehog() {
-    if (!this.active) return;
-
-    const newTile = await this.getNewTile();
-
-    if (!newTile) {
-      this.moveHedgehogAfterDelay();
-      return;
-    }
-
-    const anim = await this.getAnim(newTile);
-    if (!anim) return;
-    const { ballAnim, idleAnim } = anim;
-
     // Randomly decide if the hedgehog should pause and play an idle animation
     if (Phaser.Math.Between(0, 10) < 3) {
-      this.play(idleAnim);
-      this.moveHedgehogAfterDelay();
+      this.playAnimation("idle");
     } else {
-      const movementSystem = getActorSystem<MovementSystem>(this, MovementSystem);
-      if (!movementSystem) return;
-      try {
-        await movementSystem.moveToLocation(
-          {
-            x: newTile.x,
-            y: newTile.y,
-            z: 0
-          } satisfies Vector3Simple,
-          {
-            duration: this.movementSpeed,
-            onPathUpdate: async (newTileXY) => {
-              if (!this.active) return;
-              const anim = await this.getAnim(newTileXY);
-              if (!anim) return;
-              this.play(anim.walkAnim);
-            }
-          } satisfies PathMoveConfig
-        );
-      } catch (e) {
-        console.error(e);
-        this.moveHedgehogAfterDelay();
-        return;
-      }
+      await this.startMovement();
+      this.playAnimation("ball");
+    }
+    this.moveHedgehogAfterDelay();
+  }
 
-      if (!this.active) return;
-      this.play(ballAnim);
+  private playAnimation(animType: "walk" | "ball" | "idle", tile?: Vector2Simple) {
+    if (!this.active) return;
+    this.removeDelay();
+    this.cancelMovement();
+
+    const currentTile = tile ?? getGameObjectCurrentTile(this);
+    if (!currentTile) return;
+    const anim = this.getAnim(currentTile);
+    if (!anim) return;
+
+    const { walkAnim, ballAnim, idleAnim } = anim;
+    const animToPlay = animType === "walk" ? walkAnim : animType === "ball" ? ballAnim : idleAnim;
+    this.play(animToPlay);
+  }
+
+  private async startMovement() {
+    if (!this.active) return;
+
+    try {
+      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
+        duration: this.movementSpeed,
+        onPathUpdate: (newTileXY) => {
+          this.playAnimation("walk", newTileXY);
+        }
+      } satisfies PathMoveConfig);
+    } catch (e) {
+      console.error(e);
       this.moveHedgehogAfterDelay();
+      return;
     }
   }
 
   private moveHedgehogAfterDelay() {
+    this.removeDelay();
     this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.moveHedgehog, [], this);
   }
 
-  override destroy(fromScene?: boolean) {
-    super.destroy(fromScene);
+  private removeDelay() {
     this.currentDelay?.remove(false);
-    this.cancelMovement();
+    this.currentDelay = null;
   }
 
   private cancelMovement = () => {
@@ -137,69 +119,49 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     if (movementSystem) movementSystem.cancelMovement();
   };
 
-  private async getNewTile(): Promise<Vector2Simple | undefined> {
-    const navigationService = getSceneService(this.scene, NavigationService);
-    if (!navigationService) return;
-
-    const currentTile = this.getCurrentTile();
-    if (!currentTile) return;
-    return await navigationService.randomTileInNavigableRadius(currentTile, 5);
-  }
-
-  private getCurrentTile(): Vector2Simple | undefined {
-    const navigationService = getSceneService(this.scene, NavigationService);
-    if (!navigationService) return;
-
-    return navigationService.getCenterTileCoordUnderObject(this);
-  }
-
-  private async getAnim(newTile: Vector2Simple): Promise<
-    | {
-        walkAnim: string;
-        ballAnim: string;
-        idleAnim: string;
-      }
-    | undefined
-  > {
-    const currentTile = this.getCurrentTile();
-    if (!currentTile) return;
-
-    const navigationService = getSceneService(this.scene, NavigationService);
-    if (!navigationService) return;
-
-    const currentTileWorldXY = navigationService.getTileWorldCenter(currentTile)!;
-    const newTileWorldXY = navigationService.getTileWorldCenter(newTile)!;
-
-    // here we're comparing world coordinates to determine the direction. Iso tile coordinates produce different results
-    const directionX = newTileWorldXY.x - currentTileWorldXY.x;
-    const directionY = newTileWorldXY.y - currentTileWorldXY.y;
+  private getAnim(newTile: Vector2Simple): { walkAnim: string; ballAnim: string; idleAnim: string } | undefined {
+    const direction = getGameObjectDirection(this, newTile);
 
     let walkAnim: string;
     let ballAnim: string;
     let idleAnim: string;
 
-    if (Math.abs(directionX) > Math.abs(directionY)) {
-      if (directionX > 0) {
-        walkAnim = ANIM_HEDGEHOG_WALK_RIGHT;
-        ballAnim = ANIM_HEDGEHOG_BALL_RIGHT;
-        idleAnim = ANIM_HEDGEHOG_IDLE_RIGHT;
-      } else {
-        walkAnim = ANIM_HEDGEHOG_WALK_LEFT;
-        ballAnim = ANIM_HEDGEHOG_BALL_LEFT;
-        idleAnim = ANIM_HEDGEHOG_IDLE_LEFT;
-      }
-    } else {
-      if (directionY > 0) {
-        walkAnim = ANIM_HEDGEHOG_WALK_DOWN;
-        ballAnim = ANIM_HEDGEHOG_BALL_DOWN;
-        idleAnim = ANIM_HEDGEHOG_IDLE_DOWN;
-      } else {
+    switch (direction) {
+      case "north":
         walkAnim = ANIM_HEDGEHOG_WALK_TOP;
         ballAnim = ANIM_HEDGEHOG_BALL_TOP;
         idleAnim = ANIM_HEDGEHOG_IDLE_TOP;
-      }
+        break;
+      case "south":
+        walkAnim = ANIM_HEDGEHOG_WALK_DOWN;
+        ballAnim = ANIM_HEDGEHOG_BALL_DOWN;
+        idleAnim = ANIM_HEDGEHOG_IDLE_DOWN;
+        break;
+      case "east":
+      case "northeast":
+      case "southeast":
+        walkAnim = ANIM_HEDGEHOG_WALK_RIGHT;
+        ballAnim = ANIM_HEDGEHOG_BALL_RIGHT;
+        idleAnim = ANIM_HEDGEHOG_IDLE_RIGHT;
+        break;
+
+      case "west":
+      case "northwest":
+      case "southwest":
+        walkAnim = ANIM_HEDGEHOG_WALK_LEFT;
+        ballAnim = ANIM_HEDGEHOG_BALL_LEFT;
+        idleAnim = ANIM_HEDGEHOG_IDLE_LEFT;
+        break;
+      default:
+        return;
     }
     return { walkAnim, ballAnim, idleAnim };
+  }
+
+  override destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.removeDelay();
+    this.cancelMovement();
   }
 
   /* END-USER-CODE */

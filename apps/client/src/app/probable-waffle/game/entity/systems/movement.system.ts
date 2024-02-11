@@ -3,6 +3,8 @@ import { getSceneService } from "../../scenes/components/scene-component-helpers
 import { NavigationService } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { DepthHelper } from "../../world/map/depth.helper";
+import { getActorSystem } from "../../data/actor-system";
+import { getGameObjectCurrentTile, getGameObjectTileInNavigableRadius } from "../../data/game-object-helper";
 import Tween = Phaser.Tweens.Tween;
 
 export interface PathMoveConfig {
@@ -38,7 +40,7 @@ export class MovementSystem {
     const path = await this.navigationService.getPath(this.gameObject, vec3);
     if (!path) return false;
 
-    console.log(`Moving to tile ${vec3.x}, ${vec3.y}`);
+    if (this.DEBUG) console.log(`Moving to tile ${vec3.x}, ${vec3.y}`);
 
     if (this.DEBUG) this.navigationService.drawDebugPath(path);
 
@@ -48,7 +50,7 @@ export class MovementSystem {
       path.shift();
       await this.moveAlongPath(path, pathMoveConfig);
     } catch (e) {
-      console.error("Error moving along path", e);
+      // console.error("Error moving along path", e);
       return false;
     }
 
@@ -74,9 +76,14 @@ export class MovementSystem {
         y: tileWorldXY.y,
         duration: config?.duration ?? 1000,
         onComplete: async () => {
-          await this.moveAlongPath(path, config);
-          config?.onComplete?.();
-          resolve();
+          try {
+            await this.moveAlongPath(path, config);
+            config?.onComplete?.();
+            resolve();
+          } catch (e) {
+            // console.error("Error moving along path", e);
+            reject(e);
+          }
         },
         onStop: () => {
           reject("Movement stopped");
@@ -93,7 +100,6 @@ export class MovementSystem {
 
   private tweenUpdate = () => {
     DepthHelper.setActorDepth(this.gameObject);
-    console.log("Tween update");
   };
 
   private throttledTweenUpdate = throttle(this.tweenUpdate, 360);
@@ -131,5 +137,83 @@ export class MovementSystem {
         }
       });
     });
+  }
+}
+
+export async function moveGameObjectToRandomTileInNavigableRadius(
+  gameObject: Phaser.GameObjects.GameObject,
+  radius: number,
+  pathMoveConfig?: PathMoveConfig
+): Promise<void> {
+  const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
+  if (!movementSystem) return Promise.reject("No movement system found");
+  const newTile = await getGameObjectTileInNavigableRadius(gameObject, radius);
+  if (!newTile) {
+    return Promise.reject("No new tile found");
+  }
+  await movementSystem.moveToLocation(
+    {
+      x: newTile.x,
+      y: newTile.y,
+      z: 0
+    } satisfies Vector3Simple,
+    pathMoveConfig
+  );
+}
+
+export function getGameObjectDirection(
+  gameObject: Phaser.GameObjects.GameObject,
+  newTile: Vector2Simple
+): "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest" | undefined {
+  const currentTile = getGameObjectCurrentTile(gameObject);
+  if (!currentTile) return;
+
+  const navigationService = getSceneService(gameObject.scene, NavigationService);
+  if (!navigationService) return;
+
+  const currentTileWorldXY = navigationService.getTileWorldCenter(currentTile);
+  const newTileWorldXY = navigationService.getTileWorldCenter(newTile);
+  if (!newTileWorldXY) return;
+  if (!currentTileWorldXY) return;
+
+  // here we're comparing world coordinates to determine the direction. Iso tile coordinates produce different results
+  const directionX = newTileWorldXY.x - currentTileWorldXY.x;
+  const directionY = newTileWorldXY.y - currentTileWorldXY.y;
+
+  return getDirectionFromDirectionVector(directionX, directionY);
+}
+
+export function getDirectionFromDirectionVector(
+  directionX: number,
+  directionY: number
+): "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest" | undefined {
+  if (directionX === 0 && directionY === 0) return "south"; // default to south if no direction
+
+  const absX = Math.abs(directionX);
+  const absY = Math.abs(directionY);
+
+  if (absX > absY) {
+    if (directionX > 0) {
+      return "east";
+    } else {
+      return "west";
+    }
+  } else if (absX < absY) {
+    if (directionY > 0) {
+      return "south";
+    } else {
+      return "north";
+    }
+  } else {
+    // absX === absY (diagonal)
+    if (directionX > 0 && directionY > 0) {
+      return "southeast";
+    } else if (directionX < 0 && directionY > 0) {
+      return "southwest";
+    } else if (directionX > 0 && directionY < 0) {
+      return "northeast";
+    } else {
+      return "northwest";
+    }
   }
 }
