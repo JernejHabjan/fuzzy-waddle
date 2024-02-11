@@ -162,7 +162,7 @@ export class MovementSystem {
   }
 
   private onMovementStart() {
-    // play sound // todo
+    this.gameObject.scene.sound.playAudioSprite("character", "footstep");
   }
 }
 

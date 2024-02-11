@@ -25,6 +25,14 @@
                 "key": "buildings_1"
             },
             {
+                "jsonURL": "assets/sfx/character.json",
+                "audioURL": [
+                    "assets/sfx/character.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "character"
+            },
+            {
                 "url": "assets/probable-waffle/atlas/anims/effects.json",
                 "type": "animation",
                 "key": "effects"
