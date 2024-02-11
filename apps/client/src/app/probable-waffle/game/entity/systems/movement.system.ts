@@ -4,7 +4,13 @@ import { NavigationService } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { DepthHelper } from "../../world/map/depth.helper";
 import { getActorSystem } from "../../data/actor-system";
-import { getGameObjectCurrentTile, getGameObjectTileInNavigableRadius } from "../../data/game-object-helper";
+import {
+  getGameObjectCurrentTile,
+  getGameObjectTileInNavigableRadius,
+  getGameObjectTileInRadius,
+  getGameObjectTransform
+} from "../../data/game-object-helper";
+import { Observable, Subject } from "rxjs";
 import Tween = Phaser.Tweens.Tween;
 
 export interface PathMoveConfig {
@@ -22,8 +28,13 @@ export class MovementSystem {
   private _navigationService?: NavigationService;
   private _currentTween?: Tween;
   private readonly DEBUG = false;
+  private _actorMoved: Subject<Vector3Simple> = new Subject<Vector3Simple>();
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {}
+
+  get actorMoved(): Observable<Vector3Simple> {
+    return this._actorMoved.asObservable();
+  }
 
   private get navigationService(): NavigationService | undefined {
     this._navigationService = this._navigationService ?? getSceneService(this.gameObject.scene, NavigationService);
@@ -32,13 +43,15 @@ export class MovementSystem {
 
   async moveToLocation(vec3: Vector3Simple, pathMoveConfig?: PathMoveConfig): Promise<boolean> {
     if (pathMoveConfig?.usePathfinding === false) {
-      return this.moveDirectlyToLocation(vec3, pathMoveConfig).then(() => true);
+      return this.moveDirectlyToLocation(vec3, pathMoveConfig)
+        .then(() => true)
+        .catch(() => false);
     }
 
     if (!this.navigationService) return false;
 
     const path = await this.navigationService.getPath(this.gameObject, vec3);
-    if (!path) return false;
+    if (!path.length) return false;
 
     if (this.DEBUG) console.log(`Moving to tile ${vec3.x}, ${vec3.y}`);
 
@@ -90,7 +103,7 @@ export class MovementSystem {
           config?.onStop?.();
         },
         onUpdate: () => {
-          this.throttledTweenUpdate();
+          this.tweenUpdate();
           throttledTweenUpdate?.();
           config?.onUpdate?.();
         }
@@ -100,9 +113,10 @@ export class MovementSystem {
 
   private tweenUpdate = () => {
     DepthHelper.setActorDepth(this.gameObject);
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!transform) return;
+    this._actorMoved.next(transform);
   };
-
-  private throttledTweenUpdate = throttle(this.tweenUpdate, 360);
 
   cancelMovement() {
     this._currentTween?.stop();
@@ -117,10 +131,16 @@ export class MovementSystem {
       : undefined;
 
     return new Promise<void>((resolve, reject) => {
+      const tileWorldXY = this.navigationService?.getTileWorldCenter(vec3);
+      if (!tileWorldXY) {
+        reject("No tile world xy to move to");
+        return;
+      }
+
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
-        x: vec3.x,
-        y: vec3.y,
+        x: tileWorldXY.x,
+        y: tileWorldXY.y,
         duration: pathMoveConfig?.duration ?? 1000,
         onComplete: async () => {
           pathMoveConfig?.onComplete?.();
@@ -131,7 +151,7 @@ export class MovementSystem {
           reject("Movement stopped");
         },
         onUpdate: () => {
-          this.throttledTweenUpdate();
+          this.tweenUpdate();
           throttledTweenUpdate?.();
           pathMoveConfig?.onUpdate?.();
         }
@@ -147,7 +167,10 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
 ): Promise<void> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const newTile = await getGameObjectTileInNavigableRadius(gameObject, radius);
+  const newTile =
+    pathMoveConfig?.usePathfinding === false
+      ? getGameObjectTileInRadius(gameObject, radius)
+      : await getGameObjectTileInNavigableRadius(gameObject, radius);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }

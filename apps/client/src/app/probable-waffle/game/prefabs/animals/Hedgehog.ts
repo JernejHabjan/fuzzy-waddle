@@ -99,8 +99,6 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
       } satisfies PathMoveConfig);
     } catch (e) {
       console.error(e);
-      this.moveHedgehogAfterDelay();
-      return;
     }
   }
 

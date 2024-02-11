@@ -3,6 +3,8 @@ import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
+import { MovementSystem } from "../../systems/movement.system";
+import { getActorSystem } from "../../../data/actor-system";
 
 export class HealthUiComponent {
   private healthComponent?: HealthComponent;
@@ -15,6 +17,7 @@ export class HealthUiComponent {
   private orangeThreshold = 0.5;
   private yellowThreshold = 0.7;
   private changedSubscription?: Subscription;
+  private actorMovedSubscription?: Subscription;
 
   private readonly healthColors = {
     red: 0xff0000,
@@ -50,6 +53,7 @@ export class HealthUiComponent {
         this.changedSubscription = this.healthComponent.armorChanged.subscribe(() => this.draw());
         break;
     }
+    this.subscribeActorMove();
 
     //bar width should be 50% of gameObject width or min 25px
     const bounds = getGameObjectBounds(this.gameObject);
@@ -58,6 +62,14 @@ export class HealthUiComponent {
     }
 
     this.draw();
+  }
+
+  private subscribeActorMove() {
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return;
+    this.actorMovedSubscription = movementSystem.actorMoved.subscribe(() => {
+      this.draw();
+    });
   }
 
   private get percentage() {
@@ -86,24 +98,17 @@ export class HealthUiComponent {
     return [x, y];
   }
 
-  private get barDepth() {
-    // set depth to be above player
-    return (getGameObjectDepth(this.gameObject) ?? 0) + 1;
-  }
-
   /**
-   * move bar with player
-   * todo - listen to some event instead of updating every frame
+   * set depth to be above player
    */
-  update() {
-    this.bar.depth = this.barDepth;
-    const [x, y] = this.barXY;
-    this.bar.setPosition(x, y);
+  private get barDepth() {
+    return (getGameObjectDepth(this.gameObject) ?? 0) + 1;
   }
 
   destroy() {
     this.bar.destroy();
     this.changedSubscription?.unsubscribe();
+    this.actorMovedSubscription?.unsubscribe();
   }
 
   private draw() {
@@ -148,6 +153,11 @@ export class HealthUiComponent {
     const barFilledWidth = Math.floor((this.barWidth - 2 * this.barBorder) * this.percentage);
 
     this.bar.fillRect(x + this.barBorder, y + this.barBorder, barFilledWidth, this.barHeight - 2 * this.barBorder);
+    this.setBarDepth();
+  }
+
+  private setBarDepth() {
+    this.bar.depth = this.barDepth;
   }
 
   setVisibility(visibility: boolean) {

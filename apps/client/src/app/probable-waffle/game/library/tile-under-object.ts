@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectBounds } from "../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectTransform } from "../data/game-object-helper";
 import { environment } from "../../../../environments/environment";
 import { drawDebugPoint } from "../debug/debug-point";
 import { getActorComponent } from "../data/actor-component";
@@ -14,12 +14,14 @@ export function getTileCoordsUnderObject(
 
   const bounds = getGameObjectBounds(gameObject);
   if (!bounds) return [];
+  const transform = getGameObjectTransform(gameObject);
+  if (!transform) return [];
 
   const reduction = getActorComponent(gameObject, ColliderComponent)?.colliderDefinition?.colliderFactorReduction ?? 0;
 
   const origin = {
     x: bounds.left + bounds.width / 2,
-    y: bounds.top + bounds.height - bounds.width / 4 + (bounds.width / 8) * reduction
+    y: transform.y
   };
 
   if (DEBUG) drawDebugPoint(gameObject.scene, origin, 0x00ff00);

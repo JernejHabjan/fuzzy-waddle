@@ -43,9 +43,7 @@ export class HealthComponent {
   }
 
   setCurrentHealth(newHealth: number, damageInitiator?: Phaser.GameObjects.GameObject) {
-    if (this.currentHealth <= 0) {
-      return;
-    }
+    if (this.currentHealth <= 0) return;
     this.currentHealth = newHealth;
     this.healthChanged.emit(this.currentHealth);
     if (this.currentHealth <= 0) {

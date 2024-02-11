@@ -97,7 +97,6 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
       } satisfies PathMoveConfig);
     } catch (e) {
       console.error(e);
-      return;
     }
     this.nextTile = undefined;
     this.moveSheepAfterDelay();
