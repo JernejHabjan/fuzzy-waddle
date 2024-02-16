@@ -14,311 +14,309 @@ overrides:
   follow-redirects@<1.15.4: '>=1.15.4'
   '@supabase/gotrue-js': 2.61.0
 
-importers:
+dependencies:
+  '@angular/animations':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/core@17.1.1)
+  '@angular/common':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/core@17.1.1)(rxjs@7.8.1)
+  '@angular/compiler':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/core@17.1.1)
+  '@angular/core':
+    specifier: 17.1.1
+    version: 17.1.1(rxjs@7.8.1)(zone.js@0.14.3)
+  '@angular/forms':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)(rxjs@7.8.1)
+  '@angular/localize':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/compiler-cli@17.1.1)(@angular/compiler@17.1.1)
+  '@angular/platform-browser':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/animations@17.1.1)(@angular/common@17.1.1)(@angular/core@17.1.1)
+  '@angular/platform-browser-dynamic':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/common@17.1.1)(@angular/compiler@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)
+  '@angular/pwa':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/cli@17.1.1)
+  '@angular/router':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)(rxjs@7.8.1)
+  '@angular/service-worker':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/common@17.1.1)(@angular/core@17.1.1)
+  '@dicebear/core':
+    specifier: ^7.0.4
+    version: 7.0.4
+  '@dicebear/pixel-art':
+    specifier: ^7.0.4
+    version: 7.0.4(@dicebear/core@7.0.4)
+  '@fortawesome/angular-fontawesome':
+    specifier: ^0.14.1
+    version: 0.14.1(@angular/core@17.1.1)(@fortawesome/fontawesome-svg-core@6.5.1)
+  '@fortawesome/fontawesome-svg-core':
+    specifier: ^6.5.1
+    version: 6.5.1
+  '@fortawesome/free-brands-svg-icons':
+    specifier: ^6.5.1
+    version: 6.5.1
+  '@fortawesome/free-regular-svg-icons':
+    specifier: ^6.5.1
+    version: 6.5.1
+  '@fortawesome/free-solid-svg-icons':
+    specifier: ^6.5.1
+    version: 6.5.1
+  '@nestjs/common':
+    specifier: 10.3.1
+    version: 10.3.1(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+  '@nestjs/config':
+    specifier: ^3.1.1
+    version: 3.1.1(@nestjs/common@10.3.1)(reflect-metadata@0.2.1)
+  '@nestjs/core':
+    specifier: 10.3.1
+    version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/platform-express@10.3.1)(@nestjs/websockets@10.3.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+  '@nestjs/graphql':
+    specifier: ^12.0.11
+    version: 12.0.11(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(class-transformer@0.5.1)(class-validator@0.14.1)(graphql@16.8.1)(reflect-metadata@0.2.1)
+  '@nestjs/jwt':
+    specifier: ^10.2.0
+    version: 10.2.0(@nestjs/common@10.3.1)
+  '@nestjs/passport':
+    specifier: ^10.0.3
+    version: 10.0.3(@nestjs/common@10.3.1)(passport@0.7.0)
+  '@nestjs/platform-express':
+    specifier: 10.3.1
+    version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)
+  '@nestjs/platform-socket.io':
+    specifier: ^10.3.1
+    version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/websockets@10.3.1)(rxjs@7.8.1)
+  '@nestjs/schedule':
+    specifier: ^4.0.0
+    version: 4.0.0(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(reflect-metadata@0.2.1)
+  '@nestjs/throttler':
+    specifier: ^5.1.1
+    version: 5.1.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(reflect-metadata@0.2.1)
+  '@nestjs/websockets':
+    specifier: ^10.3.1
+    version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(@nestjs/platform-socket.io@10.3.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
+  '@ng-bootstrap/ng-bootstrap':
+    specifier: ^16.0.0
+    version: 16.0.0(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/forms@17.1.1)(@angular/localize@17.1.1)(@popperjs/core@2.11.8)(rxjs@7.8.1)
+  '@nx/angular':
+    specifier: 18.0.4
+    version: 18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.2.0)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3)
+  '@popperjs/core':
+    specifier: ^2.11.8
+    version: 2.11.8
+  '@schematics/angular':
+    specifier: 17.2.0
+    version: 17.2.0
+  '@supabase/supabase-js':
+    specifier: ^2.39.3
+    version: 2.39.3
+  '@types/cron':
+    specifier: ^2.0.1
+    version: 2.0.1
+  bootstrap:
+    specifier: ^5.3.2
+    version: 5.3.2(@popperjs/core@2.11.8)
+  chart.js:
+    specifier: ^4.4.1
+    version: 4.4.1
+  class-transformer:
+    specifier: ^0.5.1
+    version: 0.5.1
+  class-validator:
+    specifier: ^0.14.1
+    version: 0.14.1
+  easystarjs:
+    specifier: ^0.4.4
+    version: 0.4.4
+  helmet:
+    specifier: ^7.1.0
+    version: 7.1.0
+  ng2-charts:
+    specifier: ^5.0.4
+    version: 5.0.4(@angular/cdk@17.0.4)(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)(chart.js@4.4.1)(rxjs@7.8.1)
+  ngx-socket-io:
+    specifier: ^4.6.1
+    version: 4.6.1(@angular/common@17.1.1)(@angular/core@17.1.1)(rxjs@7.8.1)
+  node-cache:
+    specifier: ^5.1.2
+    version: 5.1.2
+  passport:
+    specifier: ^0.7.0
+    version: 0.7.0
+  passport-jwt:
+    specifier: ^4.0.1
+    version: 4.0.1
+  passport-local:
+    specifier: ^1.0.0
+    version: 1.0.0
+  passport-strategy:
+    specifier: ^1.0.0
+    version: 1.0.0
+  phaser:
+    specifier: ^3.80.0-beta.2
+    version: 3.80.0-beta.2
+  phaser3-rex-plugins:
+    specifier: ^1.60.10
+    version: 1.60.10
+  profanity-cleaner:
+    specifier: ^0.0.3
+    version: 0.0.3
+  reflect-metadata:
+    specifier: ^0.2.1
+    version: 0.2.1
+  rxjs:
+    specifier: ^7.8.1
+    version: 7.8.1
+  socket.io:
+    specifier: ^4.7.4
+    version: 4.7.4
+  tslib:
+    specifier: ^2.6.2
+    version: 2.6.2
+  zone.js:
+    specifier: 0.14.3
+    version: 0.14.3
 
-  .:
-    dependencies:
-      '@angular/animations':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/core@17.1.1)
-      '@angular/common':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/core@17.1.1)(rxjs@7.8.1)
-      '@angular/compiler':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/core@17.1.1)
-      '@angular/core':
-        specifier: 17.1.1
-        version: 17.1.1(rxjs@7.8.1)(zone.js@0.14.3)
-      '@angular/forms':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)(rxjs@7.8.1)
-      '@angular/localize':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/compiler-cli@17.1.1)(@angular/compiler@17.1.1)
-      '@angular/platform-browser':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/animations@17.1.1)(@angular/common@17.1.1)(@angular/core@17.1.1)
-      '@angular/platform-browser-dynamic':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/common@17.1.1)(@angular/compiler@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)
-      '@angular/pwa':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/cli@17.1.1)
-      '@angular/router':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)(rxjs@7.8.1)
-      '@angular/service-worker':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/common@17.1.1)(@angular/core@17.1.1)
-      '@dicebear/core':
-        specifier: ^7.0.4
-        version: 7.0.4
-      '@dicebear/pixel-art':
-        specifier: ^7.0.4
-        version: 7.0.4(@dicebear/core@7.0.4)
-      '@fortawesome/angular-fontawesome':
-        specifier: ^0.14.1
-        version: 0.14.1(@angular/core@17.1.1)(@fortawesome/fontawesome-svg-core@6.5.1)
-      '@fortawesome/fontawesome-svg-core':
-        specifier: ^6.5.1
-        version: 6.5.1
-      '@fortawesome/free-brands-svg-icons':
-        specifier: ^6.5.1
-        version: 6.5.1
-      '@fortawesome/free-regular-svg-icons':
-        specifier: ^6.5.1
-        version: 6.5.1
-      '@fortawesome/free-solid-svg-icons':
-        specifier: ^6.5.1
-        version: 6.5.1
-      '@nestjs/common':
-        specifier: 10.3.1
-        version: 10.3.1(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      '@nestjs/config':
-        specifier: ^3.1.1
-        version: 3.1.1(@nestjs/common@10.3.1)(reflect-metadata@0.2.1)
-      '@nestjs/core':
-        specifier: 10.3.1
-        version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/platform-express@10.3.1)(@nestjs/websockets@10.3.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      '@nestjs/graphql':
-        specifier: ^12.0.11
-        version: 12.0.11(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(class-transformer@0.5.1)(class-validator@0.14.1)(graphql@16.8.1)(reflect-metadata@0.2.1)
-      '@nestjs/jwt':
-        specifier: ^10.2.0
-        version: 10.2.0(@nestjs/common@10.3.1)
-      '@nestjs/passport':
-        specifier: ^10.0.3
-        version: 10.0.3(@nestjs/common@10.3.1)(passport@0.7.0)
-      '@nestjs/platform-express':
-        specifier: 10.3.1
-        version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)
-      '@nestjs/platform-socket.io':
-        specifier: ^10.3.1
-        version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/websockets@10.3.1)(rxjs@7.8.1)
-      '@nestjs/schedule':
-        specifier: ^4.0.0
-        version: 4.0.0(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(reflect-metadata@0.2.1)
-      '@nestjs/throttler':
-        specifier: ^5.1.1
-        version: 5.1.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(reflect-metadata@0.2.1)
-      '@nestjs/websockets':
-        specifier: ^10.3.1
-        version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(@nestjs/platform-socket.io@10.3.1)(reflect-metadata@0.2.1)(rxjs@7.8.1)
-      '@ng-bootstrap/ng-bootstrap':
-        specifier: ^16.0.0
-        version: 16.0.0(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/forms@17.1.1)(@angular/localize@17.1.1)(@popperjs/core@2.11.8)(rxjs@7.8.1)
-      '@nx/angular':
-        specifier: 18.0.4
-        version: 18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.1.1)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3)
-      '@popperjs/core':
-        specifier: ^2.11.8
-        version: 2.11.8
-      '@schematics/angular':
-        specifier: 17.1.1
-        version: 17.1.1
-      '@supabase/supabase-js':
-        specifier: ^2.39.3
-        version: 2.39.3
-      '@types/cron':
-        specifier: ^2.0.1
-        version: 2.0.1
-      bootstrap:
-        specifier: ^5.3.2
-        version: 5.3.2(@popperjs/core@2.11.8)
-      chart.js:
-        specifier: ^4.4.1
-        version: 4.4.1
-      class-transformer:
-        specifier: ^0.5.1
-        version: 0.5.1
-      class-validator:
-        specifier: ^0.14.1
-        version: 0.14.1
-      easystarjs:
-        specifier: ^0.4.4
-        version: 0.4.4
-      helmet:
-        specifier: ^7.1.0
-        version: 7.1.0
-      ng2-charts:
-        specifier: ^5.0.4
-        version: 5.0.4(@angular/cdk@17.0.4)(@angular/common@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser@17.1.1)(chart.js@4.4.1)(rxjs@7.8.1)
-      ngx-socket-io:
-        specifier: ^4.6.1
-        version: 4.6.1(@angular/common@17.1.1)(@angular/core@17.1.1)(rxjs@7.8.1)
-      node-cache:
-        specifier: ^5.1.2
-        version: 5.1.2
-      passport:
-        specifier: ^0.7.0
-        version: 0.7.0
-      passport-jwt:
-        specifier: ^4.0.1
-        version: 4.0.1
-      passport-local:
-        specifier: ^1.0.0
-        version: 1.0.0
-      passport-strategy:
-        specifier: ^1.0.0
-        version: 1.0.0
-      phaser:
-        specifier: ^3.80.0-beta.2
-        version: 3.80.0-beta.2
-      phaser3-rex-plugins:
-        specifier: ^1.60.10
-        version: 1.60.10
-      profanity-cleaner:
-        specifier: ^0.0.3
-        version: 0.0.3
-      reflect-metadata:
-        specifier: ^0.2.1
-        version: 0.2.1
-      rxjs:
-        specifier: ^7.8.1
-        version: 7.8.1
-      socket.io:
-        specifier: ^4.7.4
-        version: 4.7.4
-      tslib:
-        specifier: ^2.6.2
-        version: 2.6.2
-      zone.js:
-        specifier: 0.14.3
-        version: 0.14.3
-    devDependencies:
-      '@angular-devkit/build-angular':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/compiler-cli@17.1.1)(@angular/localize@17.1.1)(@angular/service-worker@17.1.1)(@types/node@18.19.17)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(stylus@0.59.0)(typescript@5.3.3)
-      '@angular-eslint/eslint-plugin':
-        specifier: 17.2.1
-        version: 17.2.1(eslint@8.56.0)(typescript@5.3.3)
-      '@angular-eslint/eslint-plugin-template':
-        specifier: 17.2.1
-        version: 17.2.1(eslint@8.56.0)(typescript@5.3.3)
-      '@angular-eslint/template-parser':
-        specifier: 17.2.1
-        version: 17.2.1(eslint@8.56.0)(typescript@5.3.3)
-      '@angular/cli':
-        specifier: ~17.1.0
-        version: 17.1.1
-      '@angular/compiler-cli':
-        specifier: 17.1.1
-        version: 17.1.1(@angular/compiler@17.1.1)(typescript@5.3.3)
-      '@angular/language-service':
-        specifier: 17.1.1
-        version: 17.1.1
-      '@nestjs/schematics':
-        specifier: 10.1.0
-        version: 10.1.0(typescript@5.3.3)
-      '@nestjs/swagger':
-        specifier: 7.2.0
-        version: 7.2.0(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.1)
-      '@nestjs/testing':
-        specifier: 10.3.1
-        version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(@nestjs/platform-express@10.3.1)
-      '@nx/cypress':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(cypress@13.6.3)(nx@18.0.4)(typescript@5.3.3)
-      '@nx/eslint-plugin':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(@typescript-eslint/parser@6.13.2)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(nx@18.0.4)(typescript@5.3.3)
-      '@nx/jest':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(ts-node@10.9.2)(typescript@5.3.3)
-      '@nx/js':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(typescript@5.3.3)
-      '@nx/linter':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)
-      '@nx/nest':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(ts-node@10.9.2)(typescript@5.3.3)
-      '@nx/node':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(ts-node@10.9.2)(typescript@5.3.3)
-      '@nx/webpack':
-        specifier: 18.0.4
-        version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(typescript@5.3.3)
-      '@nx/workspace':
-        specifier: 18.0.4
-        version: 18.0.4
-      '@types/jest':
-        specifier: 29.5.11
-        version: 29.5.11
-      '@types/node':
-        specifier: ^18.16.9
-        version: 18.19.17
-      '@types/passport-jwt':
-        specifier: ^4.0.1
-        version: 4.0.1
-      '@types/passport-local':
-        specifier: ^1.0.38
-        version: 1.0.38
-      '@typescript-eslint/eslint-plugin':
-        specifier: 6.13.2
-        version: 6.13.2(@typescript-eslint/parser@6.13.2)(eslint@8.56.0)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: 6.13.2
-        version: 6.13.2(eslint@8.56.0)(typescript@5.3.3)
-      cypress:
-        specifier: 13.6.3
-        version: 13.6.3
-      eslint:
-        specifier: 8.56.0
-        version: 8.56.0
-      eslint-config-prettier:
-        specifier: 9.1.0
-        version: 9.1.0(eslint@8.56.0)
-      eslint-plugin-cypress:
-        specifier: 2.15.1
-        version: 2.15.1(eslint@8.56.0)
-      jest:
-        specifier: 29.7.0
-        version: 29.7.0(@types/node@18.19.17)(ts-node@10.9.2)
-      jest-canvas-mock:
-        specifier: ^2.5.2
-        version: 2.5.2
-      jest-environment-jsdom:
-        specifier: 29.7.0
-        version: 29.7.0
-      jest-environment-node:
-        specifier: ^29.7.0
-        version: 29.7.0
-      jest-fail-on-console:
-        specifier: ^3.1.2
-        version: 3.1.2
-      jest-preset-angular:
-        specifier: 14.0.0
-        version: 14.0.0(@angular-devkit/build-angular@17.1.1)(@angular/compiler-cli@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser-dynamic@17.1.1)(@babel/core@7.23.7)(jest@29.7.0)(typescript@5.3.3)
-      nx:
-        specifier: 18.0.4
-        version: 18.0.4
-      nx-cloud:
-        specifier: 18.0.0
-        version: 18.0.0
-      phaser-asset-pack-hashing:
-        specifier: ^1.0.6
-        version: 1.0.6
-      phasereditor2d-launcher:
-        specifier: ^3.66.0
-        version: 3.66.0
-      prettier:
-        specifier: ^3.2.4
-        version: 3.2.4
-      source-map-explorer:
-        specifier: ^2.5.3
-        version: 2.5.3
-      ts-jest:
-        specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.23.7)(esbuild@0.19.11)(jest@29.7.0)(typescript@5.3.3)
-      ts-node:
-        specifier: 10.9.2
-        version: 10.9.2(@types/node@18.19.17)(typescript@5.3.3)
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
+devDependencies:
+  '@angular-devkit/build-angular':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/compiler-cli@17.1.1)(@angular/localize@17.1.1)(@angular/service-worker@17.1.1)(@types/node@18.19.17)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(stylus@0.59.0)(typescript@5.3.3)
+  '@angular-eslint/eslint-plugin':
+    specifier: 17.2.1
+    version: 17.2.1(eslint@8.56.0)(typescript@5.3.3)
+  '@angular-eslint/eslint-plugin-template':
+    specifier: 17.2.1
+    version: 17.2.1(eslint@8.56.0)(typescript@5.3.3)
+  '@angular-eslint/template-parser':
+    specifier: 17.2.1
+    version: 17.2.1(eslint@8.56.0)(typescript@5.3.3)
+  '@angular/cli':
+    specifier: ~17.1.0
+    version: 17.1.1
+  '@angular/compiler-cli':
+    specifier: 17.1.1
+    version: 17.1.1(@angular/compiler@17.1.1)(typescript@5.3.3)
+  '@angular/language-service':
+    specifier: 17.1.1
+    version: 17.1.1
+  '@nestjs/schematics':
+    specifier: 10.1.0
+    version: 10.1.0(typescript@5.3.3)
+  '@nestjs/swagger':
+    specifier: 7.2.0
+    version: 7.2.0(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.1)
+  '@nestjs/testing':
+    specifier: 10.3.1
+    version: 10.3.1(@nestjs/common@10.3.1)(@nestjs/core@10.3.1)(@nestjs/platform-express@10.3.1)
+  '@nx/cypress':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(cypress@13.6.3)(nx@18.0.4)(typescript@5.3.3)
+  '@nx/eslint-plugin':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(@typescript-eslint/parser@6.13.2)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(nx@18.0.4)(typescript@5.3.3)
+  '@nx/jest':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(ts-node@10.9.2)(typescript@5.3.3)
+  '@nx/js':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(typescript@5.3.3)
+  '@nx/linter':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)
+  '@nx/nest':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(ts-node@10.9.2)(typescript@5.3.3)
+  '@nx/node':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(ts-node@10.9.2)(typescript@5.3.3)
+  '@nx/webpack':
+    specifier: 18.0.4
+    version: 18.0.4(@types/node@18.19.17)(nx@18.0.4)(typescript@5.3.3)
+  '@nx/workspace':
+    specifier: 18.0.4
+    version: 18.0.4
+  '@types/jest':
+    specifier: 29.5.11
+    version: 29.5.11
+  '@types/node':
+    specifier: ^18.16.9
+    version: 18.19.17
+  '@types/passport-jwt':
+    specifier: ^4.0.1
+    version: 4.0.1
+  '@types/passport-local':
+    specifier: ^1.0.38
+    version: 1.0.38
+  '@typescript-eslint/eslint-plugin':
+    specifier: 6.13.2
+    version: 6.13.2(@typescript-eslint/parser@6.13.2)(eslint@8.56.0)(typescript@5.3.3)
+  '@typescript-eslint/parser':
+    specifier: 6.13.2
+    version: 6.13.2(eslint@8.56.0)(typescript@5.3.3)
+  cypress:
+    specifier: 13.6.3
+    version: 13.6.3
+  eslint:
+    specifier: 8.56.0
+    version: 8.56.0
+  eslint-config-prettier:
+    specifier: 9.1.0
+    version: 9.1.0(eslint@8.56.0)
+  eslint-plugin-cypress:
+    specifier: 2.15.1
+    version: 2.15.1(eslint@8.56.0)
+  jest:
+    specifier: 29.7.0
+    version: 29.7.0(@types/node@18.19.17)(ts-node@10.9.2)
+  jest-canvas-mock:
+    specifier: ^2.5.2
+    version: 2.5.2
+  jest-environment-jsdom:
+    specifier: 29.7.0
+    version: 29.7.0
+  jest-environment-node:
+    specifier: ^29.7.0
+    version: 29.7.0
+  jest-fail-on-console:
+    specifier: ^3.1.2
+    version: 3.1.2
+  jest-preset-angular:
+    specifier: 14.0.0
+    version: 14.0.0(@angular-devkit/build-angular@17.1.1)(@angular/compiler-cli@17.1.1)(@angular/core@17.1.1)(@angular/platform-browser-dynamic@17.1.1)(@babel/core@7.23.7)(jest@29.7.0)(typescript@5.3.3)
+  nx:
+    specifier: 18.0.4
+    version: 18.0.4
+  nx-cloud:
+    specifier: 18.0.0
+    version: 18.0.0
+  phaser-asset-pack-hashing:
+    specifier: ^1.0.6
+    version: 1.0.6
+  phasereditor2d-launcher:
+    specifier: ^3.66.0
+    version: 3.66.0
+  prettier:
+    specifier: ^3.2.4
+    version: 3.2.4
+  source-map-explorer:
+    specifier: ^2.5.3
+    version: 2.5.3
+  ts-jest:
+    specifier: 29.1.2
+    version: 29.1.2(@babel/core@7.23.7)(esbuild@0.19.11)(jest@29.7.0)(typescript@5.3.3)
+  ts-node:
+    specifier: 10.9.2
+    version: 10.9.2(@types/node@18.19.17)(typescript@5.3.3)
+  typescript:
+    specifier: 5.3.3
+    version: 5.3.3
 
 packages:
 
@@ -540,6 +538,23 @@ packages:
       rxjs: 7.8.1
       source-map: 0.7.4
 
+  /@angular-devkit/core@17.2.0:
+    resolution: {integrity: sha512-GIOYHChtDqSOvSiEefJ6hAledEl55J5Pxw8JuKXrM4IJBbviI3c40FAc0Lu5NCj2lYoELOhrLy/UP36sLy+DGA==}
+    engines: {node: ^18.13.0 || >=20.9.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
+    peerDependencies:
+      chokidar: ^3.5.2
+    peerDependenciesMeta:
+      chokidar:
+        optional: true
+    dependencies:
+      ajv: 8.12.0
+      ajv-formats: 2.1.1(ajv@8.12.0)
+      jsonc-parser: 3.2.1
+      picomatch: 4.0.1
+      rxjs: 7.8.1
+      source-map: 0.7.4
+    dev: false
+
   /@angular-devkit/schematics@15.2.4:
     resolution: {integrity: sha512-/W7/vvn59PAVLzhcvD4/N/E8RDhub8ny1A7I96LTRjC5o+yvVV16YJ4YJzolrRrIEN01KmLVQJ9A58VCaweMgw==}
     engines: {node: ^14.20.0 || ^16.13.0 || >=18.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
@@ -577,6 +592,19 @@ packages:
       rxjs: 7.8.1
     transitivePeerDependencies:
       - chokidar
+
+  /@angular-devkit/schematics@17.2.0:
+    resolution: {integrity: sha512-gGyUVYRKTeRODW9S0MohfBlryoUHrbxqN27olhktrM/fZavyUVnZpyfb8okp6tTUz9HWmGac8ULE6IU+YW16gw==}
+    engines: {node: ^18.13.0 || >=20.9.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
+    dependencies:
+      '@angular-devkit/core': 17.2.0
+      jsonc-parser: 3.2.1
+      magic-string: 0.30.7
+      ora: 5.4.1
+      rxjs: 7.8.1
+    transitivePeerDependencies:
+      - chokidar
+    dev: false
 
   /@angular-eslint/bundled-angular-compiler@17.2.1:
     resolution: {integrity: sha512-puC0itsZv2QlrDOCcWtq1KZH+DvfrpV+mV78HHhi6+h25R5iIhr8ARKcl3EQxFjvrFq34jhG8pSupxKvFbHVfA==}
@@ -3319,10 +3347,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@nrwl/angular@18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.1.1)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3):
+  /@nrwl/angular@18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.2.0)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3):
     resolution: {integrity: sha512-bcwFDzX2f34LZz+RVCp3pbwVQAHzgpWfwCp6I40A3cjDjDpUhPAfZvaQxf5MjpPATlBJVhrh7bJPOJv/Kxat7g==}
     dependencies:
-      '@nx/angular': 18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.1.1)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3)
+      '@nx/angular': 18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.2.0)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3)
       tslib: 2.6.2
     transitivePeerDependencies:
       - '@angular-devkit/build-angular'
@@ -3573,7 +3601,7 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@nx/angular@18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.1.1)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3):
+  /@nx/angular@18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.2.0)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3):
     resolution: {integrity: sha512-3Mr4/+U/qV7dXrL+68W8bVU+sB4i7eH2GsX4ixNMm5d6qY0/rJdV7OYOSsuL7zVfD5q0Eu2HvgZeA61ADpUx+w==}
     peerDependencies:
       '@angular-devkit/build-angular': '>= 15.0.0 < 18.0.0'
@@ -3589,7 +3617,7 @@ packages:
       '@angular-devkit/build-angular': 17.1.1(@angular/compiler-cli@17.1.1)(@angular/localize@17.1.1)(@angular/service-worker@17.1.1)(@types/node@18.19.17)(jest-environment-jsdom@29.7.0)(jest@29.7.0)(stylus@0.59.0)(typescript@5.3.3)
       '@angular-devkit/core': 17.1.1
       '@angular-devkit/schematics': 17.1.1
-      '@nrwl/angular': 18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.1.1)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3)
+      '@nrwl/angular': 18.0.4(@angular-devkit/build-angular@17.1.1)(@angular-devkit/core@17.1.1)(@angular-devkit/schematics@17.1.1)(@schematics/angular@17.2.0)(@types/node@18.19.17)(cypress@13.6.3)(eslint@8.56.0)(nx@18.0.4)(rxjs@7.8.1)(ts-node@10.9.2)(typescript@5.3.3)
       '@nx/cypress': 18.0.4(@types/node@18.19.17)(cypress@13.6.3)(nx@18.0.4)(typescript@5.3.3)
       '@nx/devkit': 18.0.4(nx@18.0.4)
       '@nx/eslint': 18.0.4(@types/node@18.19.17)(nx@18.0.4)
@@ -3599,7 +3627,7 @@ packages:
       '@nx/webpack': 18.0.4(@types/node@18.19.17)(nx@18.0.4)(typescript@5.3.3)
       '@nx/workspace': 18.0.4
       '@phenomnomnominal/tsquery': 5.0.1(typescript@5.3.3)
-      '@schematics/angular': 17.1.1
+      '@schematics/angular': 17.2.0
       '@typescript-eslint/type-utils': 6.19.1(eslint@8.56.0)(typescript@5.3.3)
       chalk: 4.1.2
       find-cache-dir: 3.3.2
@@ -4205,6 +4233,17 @@ packages:
       jsonc-parser: 3.2.0
     transitivePeerDependencies:
       - chokidar
+
+  /@schematics/angular@17.2.0:
+    resolution: {integrity: sha512-k5SisAPTRXxP2WVjWHgQl2sQkaAkUiOZJrHhTmUghTowULN2eIiW+1SSdNBFCbv+qkl276NfavOi22j+C7uaKQ==}
+    engines: {node: ^18.13.0 || >=20.9.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
+    dependencies:
+      '@angular-devkit/core': 17.2.0
+      '@angular-devkit/schematics': 17.2.0
+      jsonc-parser: 3.2.1
+    transitivePeerDependencies:
+      - chokidar
+    dev: false
 
   /@sigstore/bundle@2.1.0:
     resolution: {integrity: sha512-89uOo6yh/oxaU8AeOUnVrTdVMcGk9Q1hJa7Hkvalc6G3Z3CupWk4Xe9djSgJm9fMkH69s0P0cVHUoKSOemLdng==}
@@ -8665,6 +8704,10 @@ packages:
   /jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
 
+  /jsonc-parser@3.2.1:
+    resolution: {integrity: sha512-AilxAyFOAcK5wA1+LeaySVBrHsGQvUFCDWXKpZjzaL0PqW+xfBOttn8GNtWKFWqneyMZj41MWF9Kl6iPWLwgOA==}
+    dev: false
+
   /jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
     dependencies:
@@ -8841,8 +8884,6 @@ packages:
     peerDependenciesMeta:
       webpack:
         optional: true
-      webpack-sources:
-        optional: true
     dependencies:
       webpack: 5.89.0(esbuild@0.19.11)
       webpack-sources: 3.2.3
@@ -9009,6 +9050,13 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  /magic-string@0.30.7:
+    resolution: {integrity: sha512-8vBuFF/I/+OSLRmdf2wwFCJCz+nSn0m6DPvGH1fS/KiQoSaR+sETbov0eIk9KhEKy8CYqIkIAnbohxT/4H0kuA==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.15
+    dev: false
 
   /make-dir@2.1.0:
     resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
@@ -9978,6 +10026,11 @@ packages:
   /picomatch@3.0.1:
     resolution: {integrity: sha512-I3EurrIQMlRc9IaAZnqRR044Phh2DXY+55o7uJ0V+hYZAcQYSuFWsc9q5PvyDHUSCe1Qxn/iBz+78s86zWnGag==}
     engines: {node: '>=10'}
+
+  /picomatch@4.0.1:
+    resolution: {integrity: sha512-xUXwsxNjwTQ8K3GnT4pCJm+xq3RUPQbmkYJTP5aFIfNIvbcc/4MUxgBaaRSZJ6yGJZiGSyYlM6MzwTsRk8SYCg==}
+    engines: {node: '>=12'}
+    dev: false
 
   /pify@2.3.0:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}

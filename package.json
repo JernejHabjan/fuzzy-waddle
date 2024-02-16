@@ -75,7 +75,7 @@
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@nx/angular": "18.0.4",
     "@popperjs/core": "^2.11.8",
-    "@schematics/angular": "17.1.1",
+    "@schematics/angular": "17.2.0",
     "@supabase/supabase-js": "^2.39.3",
     "@types/cron": "^2.0.1",
     "bootstrap": "^5.3.2",
