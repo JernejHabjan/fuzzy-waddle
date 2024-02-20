@@ -54,6 +54,8 @@ export class MovementSystem {
             break;
         }
       });
+
+    todo this needs to be removed from here, and add this to the pawn ai controller which will then accordingly to blackboard issue MovementSystem.moveToLocation
   }
 
   get actorMoved(): Observable<Vector3Simple> {
@@ -217,6 +219,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
     } satisfies Vector3Simple,
     pathMoveConfig
   );
+  todo this movementSystem.moveToLocation should be called from the pawn ai controller. Here we should only get the new tile
 }
 
 export function getGameObjectDirection(
