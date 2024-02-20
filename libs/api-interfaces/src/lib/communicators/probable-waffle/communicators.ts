@@ -28,8 +28,8 @@ export type RecursiveKeyOf<TObj extends object> = {
   [TKey in keyof TObj & (string | number)]: TObj[TKey] extends any[]
     ? `${TKey}`
     : TObj[TKey] extends object
-    ? `${TKey}` | `${TKey}.${RecursiveKeyOf<TObj[TKey]>}`
-    : `${TKey}`;
+      ? `${TKey}` | `${TKey}.${RecursiveKeyOf<TObj[TKey]>}`
+      : `${TKey}`;
 }[keyof TObj &
   (string | number) &
   Exclude<keyof TObj, keyof Date> &
@@ -63,7 +63,12 @@ export type ProbableWafflePlayerDataChangeEventProperty =
   | ProbableWaffleDataChangeEventProperty<ProbableWafflePlayer>
   | "joined"
   | "left"
-  | "joinedFromNetwork";
+  | "joinedFromNetwork"
+  | "selection.added"
+  | "selection.removed"
+  | "selection.set"
+  | "selection.cleared"
+  | "command.issued.move";
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {
   property: ProbableWafflePlayerDataChangeEventProperty;
   data: ProbableWafflePlayerDataChangeEventPayload;

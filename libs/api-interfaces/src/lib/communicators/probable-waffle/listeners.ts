@@ -145,6 +145,50 @@ export class ProbableWaffleListeners {
           );
           break;
 
+        case "selection.added" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          payload.data.playerStateData!.selection!.forEach((id) => player!.setSelectedActor(id));
+          console.log(
+            "selection added",
+            payload.data.playerStateData!.selection!.length,
+            "for player",
+            player.playerNumber
+          );
+          break;
+
+        case "selection.removed" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          payload.data.playerStateData!.selection!.forEach((id) => player!.removeSelectedActor(id));
+          console.log(
+            "selection removed",
+            payload.data.playerStateData!.selection!.length,
+            "for player",
+            player.playerNumber
+          );
+          break;
+
+        case "selection.set" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!)!;
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.clearSelection();
+          payload.data.playerStateData!.selection!.forEach((id) => player!.setSelectedActor(id));
+          console.log(
+            "selection set",
+            payload.data.playerStateData!.selection!.length,
+            "for player",
+            player.playerNumber
+          );
+          break;
+
+        case "selection.cleared" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.clearSelection();
+          console.log("selection cleared for player", player.playerNumber);
+          break;
+
         default:
           throw new Error("Unknown communicator for playerDataChange: " + payload.property);
       }

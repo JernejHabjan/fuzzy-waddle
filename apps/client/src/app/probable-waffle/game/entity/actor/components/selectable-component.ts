@@ -4,15 +4,20 @@ import { getActorSystem } from "../../../data/actor-system";
 import { MovementSystem } from "../../systems/movement.system";
 import { Subscription } from "rxjs";
 import Phaser from "phaser";
+import { getCommunicator } from "../../../data/scene-data";
+import { getActorComponent } from "../../../data/actor-component";
+import { IdComponent } from "./id-component";
 
 export class SelectableComponent {
   private selected: boolean = false;
   private selectionCircle!: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
+  private playerChangedSubscription?: Subscription;
   constructor(private readonly gameObject: GameObject) {
     this.createSelectionCircle();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init);
+    this.listenToSelectionEvents();
   }
 
   private init = () => {
@@ -64,8 +69,36 @@ export class SelectableComponent {
     if (gameObjectDepth !== null) this.selectionCircle.depth = gameObjectDepth - 1;
   }
 
+  private listenToSelectionEvents() {
+    this.playerChangedSubscription = getCommunicator(this.gameObject.scene).playerChanged?.on.subscribe((payload) => {
+      const gameObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!gameObjectId) return;
+      switch (payload.property) {
+        case "selection.added":
+          const selection = payload.data.playerStateData!.selection!;
+          if (selection.includes(gameObjectId)) this.setSelected(true);
+          break;
+        case "selection.removed":
+          const removed = payload.data.playerStateData!.selection!;
+          if (removed.includes(gameObjectId)) this.setSelected(false);
+          break;
+        case "selection.set":
+          const set = payload.data.playerStateData!.selection!;
+          this.setSelected(set.includes(gameObjectId));
+          break;
+        case "selection.cleared":
+          this.setSelected(false);
+          break;
+        case "command.issued.move":
+          // todo this.issueMoveCommandToSelectedActors(payload.data.location!);
+          break;
+      }
+    });
+  }
+
   private destroy = () => {
     this.selectionCircle.destroy();
     this.actorMovedSubscription?.unsubscribe();
+    this.playerChangedSubscription?.unsubscribe();
   };
 }

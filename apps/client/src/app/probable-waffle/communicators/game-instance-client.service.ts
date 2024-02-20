@@ -123,9 +123,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  /**
-   * todo just for test
-   */
   listenToSaveGameEvents(): void {
     this.communicatorSubscriptions.push(
       this.probableWaffleCommunicatorService.utilityEvents
