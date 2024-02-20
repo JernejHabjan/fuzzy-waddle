@@ -12,13 +12,14 @@ export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerController
 > {
   setSelectedActor(guid: string) {
-    if (!this.playerState.data.selection.includes(guid)) {
-      this.playerState.data.selection.push(guid);
-    }
+    if (this.playerState.data.selection.includes(guid)) return;
+    this.playerState.data.selection.push(guid);
   }
 
   removeSelectedActor(guid: string) {
-    this.playerState.data.selection = this.playerState.data.selection.filter((id) => id !== guid);
+    const newSelection = this.playerState.data.selection.filter((id) => id !== guid);
+    if (newSelection.length === this.playerState.data.selection.length) return;
+    this.playerState.data.selection = newSelection;
   }
 
   getSelection() {
@@ -26,6 +27,7 @@ export class ProbableWafflePlayer extends BasePlayer<
   }
 
   clearSelection() {
+    if (this.playerState.data.selection.length === 0) return;
     this.playerState.data.selection = [];
   }
 
