@@ -12,14 +12,13 @@ import {
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 
 export class SaveGame {
-  static SaveGameEvent = "SaveGameEvent";
   private saveSubscription: Subscription;
 
   constructor(private scene: GameProbableWaffleScene) {
     scene.onPostCreate.subscribe(() => this.postCreate());
     // only ones that have name: SaveGame.SaveGameEvent
     this.saveSubscription = scene.communicator.allScenes
-      .pipe(filter((scene) => scene.name === SaveGame.SaveGameEvent))
+      .pipe(filter((scene) => scene.name === "save-game"))
       .subscribe(() => this.onSaveGame());
     scene.onDestroy.subscribe(() => this.destroy());
   }
@@ -81,13 +80,10 @@ export class SaveGame {
   }
 
   private destroy() {
-    this.scene.events.off(SaveGame.SaveGameEvent);
     this.saveSubscription.unsubscribe();
   }
 
   private onSaveGame() {
     this.scene.events.emit(SceneActorSaveCommunicator);
-    this.scene.communicator.saveGame.emit();
-    console.log("Saved game");
   }
 }

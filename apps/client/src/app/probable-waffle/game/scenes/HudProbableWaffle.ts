@@ -110,7 +110,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private handleSaveGame() {
     this.saveGameSubscription = this.buttonSave.clicked.subscribe(() => {
-      this.communicator.allScenes.emit({ name: SaveGame.SaveGameEvent });
+      this.communicator.allScenes.emit({ name: "save-game" });
     });
   }
 

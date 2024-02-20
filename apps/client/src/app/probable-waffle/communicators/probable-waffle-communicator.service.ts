@@ -34,8 +34,14 @@ export class ProbableWaffleCommunicatorService
   // game events
   selection?: TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>;
 
-  saveGame = new EventEmitter<void>(); // todo just for test
-  allScenes = new EventEmitter<{ name: string; data?: any }>();
+  /**
+   * utility events that are broadcast to game instance and other angular services - for example save game
+   */
+  utilityEvents = new EventEmitter<{ name: "save-game"; data?: any }>();
+  /**
+   * cross scene events - internal phaser events that are not related to game instance and are broadcast to all scenes
+   */
+  allScenes = new EventEmitter<{ name: "save-game"; data?: any }>();
 
   startCommunication(gameInstanceId: string, socket?: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<

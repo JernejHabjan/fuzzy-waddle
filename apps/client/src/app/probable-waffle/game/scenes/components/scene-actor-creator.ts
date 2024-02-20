@@ -27,6 +27,7 @@ export class SceneActorCreator {
         gameScene.baseGameData.gameInstance.gameState!.data.actors.push(actorDefinition);
       }
     });
+    this.scene.communicator.utilityEvents.emit({ name: "save-game" });
   }
 
   private destroy() {

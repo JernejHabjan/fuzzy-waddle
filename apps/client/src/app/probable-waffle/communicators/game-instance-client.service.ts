@@ -128,9 +128,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
    */
   listenToSaveGameEvents(): void {
     this.communicatorSubscriptions.push(
-      this.probableWaffleCommunicatorService.saveGame.subscribe(async () => {
-        await this.saveGameInstance("test" + Math.random());
-      })
+      this.probableWaffleCommunicatorService.utilityEvents
+        .pipe(filter((config) => config.name === "save-game"))
+        .subscribe(async () => {
+          await this.saveGameInstance("test" + Math.random());
+        })
     );
   }
 
@@ -474,6 +476,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       created: Date.now(),
       gameInstanceData: this.gameInstance!.data
     });
+    console.log("Saved game");
   }
 
   /**
