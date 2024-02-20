@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { VolumeSettings } from "../../../fly-squasher/shared/volumeSettings";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
+import { VolumeSettings } from "../../game/core/volumeSettings";
 
 @Component({
   templateUrl: "./options.component.html",
