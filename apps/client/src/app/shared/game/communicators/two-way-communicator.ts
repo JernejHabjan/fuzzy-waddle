@@ -1,4 +1,4 @@
-import { Observable, Subject, Subscription, take } from "rxjs";
+import { filter, Observable, Subject, Subscription, take } from "rxjs";
 import { Socket } from "ngx-socket-io";
 import { CommunicatorEvent } from "@fuzzy-waddle/api-interfaces";
 
@@ -23,6 +23,10 @@ export class TwoWayCommunicator<T, K> {
 
   get on(): Observable<T> {
     return this.onSubject.asObservable();
+  }
+
+  onWithFilter(inFilter: (event: T) => boolean): Observable<T> {
+    return this.onSubject.pipe(filter(inFilter));
   }
 
   get once(): Observable<T> {

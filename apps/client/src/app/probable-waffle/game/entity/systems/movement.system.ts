@@ -10,9 +10,12 @@ import {
   getGameObjectTileInRadius,
   getGameObjectTransform
 } from "../../data/game-object-helper";
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject, Subscription } from "rxjs";
 import { getSfxVolumeNormalized } from "../../scenes/services/audio.service";
 import Tween = Phaser.Tweens.Tween;
+import { getCommunicator } from "../../data/scene-data";
+import { SelectableComponent } from "../actor/components/selectable-component";
+import { getActorComponent } from "../../data/actor-component";
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -30,8 +33,28 @@ export class MovementSystem {
   private _currentTween?: Tween;
   private readonly DEBUG = false;
   private _actorMoved: Subject<Vector3Simple> = new Subject<Vector3Simple>();
+  private playerChangedSubscription?: Subscription;
 
-  constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {}
+  constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
+    this.listenToSelectionEvents();
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+  }
+
+  private listenToSelectionEvents() {
+    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
+      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move")
+      .subscribe((payload) => {
+        switch (payload.property) {
+          case "command.issued.move":
+            const target = payload.data.data!["vec3"] as Vector3Simple;
+            const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
+            if (isSelected) {
+              this.moveToLocation(target); // todo later on, read this from the blackboard and PawnAiController
+            }
+            break;
+        }
+      });
+  }
 
   get actorMoved(): Observable<Vector3Simple> {
     return this._actorMoved.asObservable();
@@ -165,6 +188,10 @@ export class MovementSystem {
   private onMovementStart() {
     const volume = getSfxVolumeNormalized(this.gameObject.scene);
     this.gameObject.scene.sound.playAudioSprite("character", "footstep", { volume });
+  }
+
+  private destroy() {
+    this.playerChangedSubscription?.unsubscribe();
   }
 }
 

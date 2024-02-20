@@ -70,30 +70,29 @@ export class SelectableComponent {
   }
 
   private listenToSelectionEvents() {
-    this.playerChangedSubscription = getCommunicator(this.gameObject.scene).playerChanged?.on.subscribe((payload) => {
-      const gameObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
-      if (!gameObjectId) return;
-      switch (payload.property) {
-        case "selection.added":
-          const selection = payload.data.playerStateData!.selection!;
-          if (selection.includes(gameObjectId)) this.setSelected(true);
-          break;
-        case "selection.removed":
-          const removed = payload.data.playerStateData!.selection!;
-          if (removed.includes(gameObjectId)) this.setSelected(false);
-          break;
-        case "selection.set":
-          const set = payload.data.playerStateData!.selection!;
-          this.setSelected(set.includes(gameObjectId));
-          break;
-        case "selection.cleared":
-          this.setSelected(false);
-          break;
-        case "command.issued.move":
-          // todo this.issueMoveCommandToSelectedActors(payload.data.location!);
-          break;
-      }
-    });
+    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
+      .playerChanged?.onWithFilter((p) => p.property.startsWith("selection"))
+      .subscribe((payload) => {
+        const gameObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
+        if (!gameObjectId) return;
+        switch (payload.property) {
+          case "selection.added":
+            const selection = payload.data.playerStateData!.selection!;
+            if (selection.includes(gameObjectId)) this.setSelected(true);
+            break;
+          case "selection.removed":
+            const removed = payload.data.playerStateData!.selection!;
+            if (removed.includes(gameObjectId)) this.setSelected(false);
+            break;
+          case "selection.set":
+            const set = payload.data.playerStateData!.selection!;
+            this.setSelected(set.includes(gameObjectId));
+            break;
+          case "selection.cleared":
+            this.setSelected(false);
+            break;
+        }
+      });
   }
 
   private destroy = () => {

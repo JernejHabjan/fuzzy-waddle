@@ -99,13 +99,17 @@ export class GameObjectSelectionHandler {
   }
 
   private emitEventIssueMoveCommandToSelectedActors(vec3: Vector3Simple) {
-    // todo this.scene.communicator.playerChanged!.send({
-    // todo   property: "command.issued.move",
-    // todo   data: {
-    // todo     playerStateData
-    // todo   }
-    // todo });
-    this.issueMoveCommandToSelectedActors(vec3); // todo
+    this.scene.communicator.playerChanged!.send({
+      property: "command.issued.move",
+      data: {
+        playerNumber: getPlayerController(this.scene)?.playerNumber,
+        data: {
+          vec3
+        }
+      },
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: this.scene.userId
+    });
   }
   private getActorsByIds(ids: string[]): GameObject[] {
     const selectableChildren = this.getSelectableChildren();
@@ -199,17 +203,6 @@ export class GameObjectSelectionHandler {
     // noinspection UnnecessaryLocalVariableJS
     const movableActors = selectedActorsGameObjects.filter((actor) => !!getActorSystem(actor, MovementSystem));
     return movableActors;
-  }
-
-  private issueMoveCommandToSelectedActors(vec3: Vector3Simple) {
-    console.log("issue move command to selected actors");
-    this.getSelectedMovableActors().forEach((actor) => {
-      // issue move command to each actor
-      const movementSystem = getActorSystem(actor, MovementSystem)!;
-      movementSystem.moveToLocation(vec3, {
-        duration: 500
-      });
-    });
   }
 
   private destroy() {

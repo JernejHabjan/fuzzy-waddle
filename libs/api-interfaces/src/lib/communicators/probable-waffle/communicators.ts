@@ -57,6 +57,7 @@ export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
   playerNumber?: number;
   playerStateData: Partial<ProbableWafflePlayerStateData>;
   playerControllerData: Partial<ProbableWafflePlayerControllerData>;
+  data: Record<string, any>;
 }>;
 
 export type ProbableWafflePlayerDataChangeEventProperty =

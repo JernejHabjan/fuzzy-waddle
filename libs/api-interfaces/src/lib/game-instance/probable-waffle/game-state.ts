@@ -23,5 +23,12 @@ export interface ProbableWaffleGameStateData extends BaseData {
 }
 
 export interface ActorDefinition extends Record<string, any> {
-  name: string;
+  // Constructor name - used to create actor
+  name?: string;
+
+  // IdComponent
+  id?: string;
+
+  // BlackboardComponent
+  blackboard?: Record<string, any>;
 }

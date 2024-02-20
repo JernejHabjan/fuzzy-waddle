@@ -13,6 +13,7 @@ export class SceneActorCreator {
   }
 
   private createActorFromDefinition(actorDefinition: ActorDefinition) {
+    if (!actorDefinition.name) return;
     const actor = ActorManager.createActor(this.scene, actorDefinition.name, actorDefinition);
     this.scene.add.existing(actor);
   }

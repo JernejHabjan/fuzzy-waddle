@@ -189,6 +189,23 @@ export class ProbableWaffleListeners {
           console.log("selection cleared for player", player.playerNumber);
           break;
 
+        case "command.issued.move" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          const vec3 = payload.data.data!["vec3"];
+
+          // get selected actors and issue move command to them
+          const selectedActors = player.getSelection();
+          // find actors in game state by id
+          const actors = gameInstance.gameState!.data.actors.filter(
+            (a) => a.id && selectedActors.includes(a.id) && !!a.blackboard
+          );
+          actors.forEach((actor) => {
+            actor.blackboard!["command"] = "move";
+            actor.blackboard!["target"] = vec3;
+          });
+          break;
+
         default:
           throw new Error("Unknown communicator for playerDataChange: " + payload.property);
       }
