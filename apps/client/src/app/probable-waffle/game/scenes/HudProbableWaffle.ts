@@ -79,6 +79,31 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.handleQuit();
     this.handleSaveGame();
     this.handleButtonVisibility();
+
+    this.createIsometricMinimap();
+  }
+
+  /**
+   * create isometric minimap.
+   * draw a diamond shape of the minimap.
+   * Tiles are for now of green color
+   * objects are of red color
+   */
+  private createIsometricMinimap() {
+    const minimap = this.add.graphics();
+    minimap.fillStyle(0x00ff00, 1);
+    // make a diamond shape
+    minimap.fillPoints([
+      { x: 0, y: 100 },
+      { x: 50, y: 75 },
+      { x: 100, y: 100 },
+      { x: 50, y: 125 }
+    ]);
+    minimap.fillStyle(0xff0000, 1);
+    minimap.fillCircle(50, 100, 10);
+
+    minimap.x = 20;
+    minimap.y = 20;
   }
 
   private resize(gameSize: { height: number; width: number }) {
