@@ -11,6 +11,7 @@ import {
   getGameObjectTransform
 } from "../../data/game-object-helper";
 import { Observable, Subject } from "rxjs";
+import { getSfxVolumeNormalized } from "../../scenes/services/audio.service";
 import Tween = Phaser.Tweens.Tween;
 
 export interface PathMoveConfig {
@@ -162,7 +163,8 @@ export class MovementSystem {
   }
 
   private onMovementStart() {
-    this.gameObject.scene.sound.playAudioSprite("character", "footstep");
+    const volume = getSfxVolumeNormalized(this.gameObject.scene);
+    this.gameObject.scene.sound.playAudioSprite("character", "footstep", { volume });
   }
 }
 
