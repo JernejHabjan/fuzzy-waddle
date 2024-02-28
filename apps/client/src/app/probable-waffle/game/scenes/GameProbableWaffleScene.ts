@@ -14,6 +14,7 @@ import { SceneActorCreator } from "./components/scene-actor-creator";
 import { NavigationService } from "./services/navigation.service";
 import { BehaviorSubject } from "rxjs";
 import { AudioService } from "./services/audio.service";
+import { TilemapComponent } from "./components/tilemap.component";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -50,6 +51,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     super.create();
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle");
     hud.scene.start();
+    hud.initializeWithParentScene(this);
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     new CameraMovementHandler(this);
@@ -60,6 +62,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
     new SceneActorCreator(this);
+    this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
     this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService());
     this.sceneGameData.initializers.postCreate.next(true);
   }

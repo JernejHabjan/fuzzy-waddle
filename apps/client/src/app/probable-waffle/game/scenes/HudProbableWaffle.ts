@@ -12,6 +12,9 @@ import { MultiSelectionHandler } from "../world/managers/controllers/input/multi
 import { Subscription } from "rxjs";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 import { SaveGame } from "../data/save-game";
+import { onScenePostCreate } from "../data/game-object-helper";
+import { getSceneComponent } from "./components/scene-component-helpers";
+import { TilemapComponent } from "./components/tilemap.component";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -61,6 +64,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   /* START-USER-CODE */
   private quitButtonSubscription?: Subscription;
   private saveGameSubscription?: Subscription;
+  private parentScene?: ProbableWaffleScene;
+  private readonly isometricMinimapDepth = 1000;
   preload() {
     this.load.pack("asset-pack-gui", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle-gui.json");
   }
@@ -79,8 +84,20 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.handleQuit();
     this.handleSaveGame();
     this.handleButtonVisibility();
+  }
 
-    this.createIsometricMinimap(600, 10, 0, 0);
+  initializeWithParentScene(parentScene: ProbableWaffleScene) {
+    this.parentScene = parentScene;
+    onScenePostCreate(parentScene, this.postSceneCreate, this);
+  }
+
+  private postSceneCreate() {
+    if (!this.parentScene) return;
+    const tileMapComponent = getSceneComponent(this.parentScene, TilemapComponent);
+    if (tileMapComponent) {
+      const tiles = tileMapComponent.tilemap.width;
+      this.createIsometricMinimap(600, tiles, 0, 0);
+    }
   }
 
   /**
@@ -120,6 +137,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         diamond.on("pointerdown", () => {
           console.log("clicked on diamond");
         });
+        diamond.depth = this.isometricMinimapDepth;
       }
     }
   }
