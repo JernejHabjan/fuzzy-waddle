@@ -96,7 +96,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const tileMapComponent = getSceneComponent(this.parentScene, TilemapComponent);
     if (tileMapComponent) {
       const tiles = tileMapComponent.tilemap.width;
-      this.createIsometricMinimap(600, tiles, 0, 0);
+      const widthInPixels = 400;
+      const y = this.scale.height - widthInPixels / 2;
+      this.createIsometricMinimap(widthInPixels, tiles, 0, y);
     }
   }
 
