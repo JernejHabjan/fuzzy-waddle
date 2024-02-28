@@ -80,7 +80,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.handleSaveGame();
     this.handleButtonVisibility();
 
-    this.createIsometricMinimap(600, 50);
+    this.createIsometricMinimap(600, 50, 0, 0);
   }
 
   /**
@@ -89,22 +89,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
    * Tiles are for now of green color
    * objects are of red color
    */
-  private createIsometricMinimap(widthInPixels: number, widthInTiles: number) {
-    const minimap = this.add.graphics();
-    minimap.fillStyle(0x00ff00, 1);
-    // make a diamond shape
-
+  private createIsometricMinimap(widthInPixels: number, widthInTiles: number, x: number, y: number) {
     const height = widthInPixels / 2;
     const pixelWidth = widthInPixels / widthInTiles;
     const pixelHeight = height / widthInTiles;
-
-    minimap.fillPoints([
-      { x: 0, y: height / 2 },
-      { x: widthInPixels / 2, y: 0 },
-      { x: widthInPixels, y: height / 2 },
-      { x: widthInPixels / 2, y: height }
-    ]);
-    minimap.fillStyle(0xff0000, 1);
 
     // Calculate the center of the minimap
     const centerX = widthInPixels / 2;
@@ -118,20 +106,23 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         const isoX = offsetX + (i - j) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
         // create diamond shape
-        // choose random color
-        const color = Phaser.Display.Color.RandomRGB(100, 255);
-        minimap.fillStyle(color.color, 1);
-        minimap.fillPoints([
+        const diamondPoints = [
           { x: isoX, y: isoY + pixelHeight / 2 },
           { x: isoX + pixelWidth / 2, y: isoY },
           { x: isoX + pixelWidth, y: isoY + pixelHeight / 2 },
           { x: isoX + pixelWidth / 2, y: isoY + pixelHeight }
-        ]);
+        ];
+        // create polygon, add it to minimap and make it interactive
+        // color it with random color
+        const color = Phaser.Display.Color.RandomRGB();
+        const diamond = this.add.polygon(x + pixelWidth / 2, y + pixelHeight / 2, diamondPoints, color.color);
+        diamond.setInteractive();
+        diamond.on("pointerdown", () => {
+          console.log("clicked on diamond");
+          diamond.alpha = 0;
+        });
       }
     }
-
-    minimap.x = 0;
-    minimap.y = 0;
   }
 
   private resize(gameSize: { height: number; width: number }) {
