@@ -80,7 +80,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.handleSaveGame();
     this.handleButtonVisibility();
 
-    this.createIsometricMinimap(600, 50, 0, 0);
+    this.createIsometricMinimap(600, 10, 0, 0);
   }
 
   /**
@@ -116,10 +116,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         // color it with random color
         const color = Phaser.Display.Color.RandomRGB();
         const diamond = this.add.polygon(x + pixelWidth / 2, y + pixelHeight / 2, diamondPoints, color.color);
-        diamond.setInteractive();
+        diamond.setInteractive(new Phaser.Geom.Polygon(diamondPoints), Phaser.Geom.Polygon.Contains);
         diamond.on("pointerdown", () => {
           console.log("clicked on diamond");
-          diamond.alpha = 0;
         });
       }
     }
