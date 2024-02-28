@@ -80,7 +80,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.handleSaveGame();
     this.handleButtonVisibility();
 
-    this.createIsometricMinimap();
+    this.createIsometricMinimap(600, 50);
   }
 
   /**
@@ -89,21 +89,49 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
    * Tiles are for now of green color
    * objects are of red color
    */
-  private createIsometricMinimap() {
+  private createIsometricMinimap(widthInPixels: number, widthInTiles: number) {
     const minimap = this.add.graphics();
     minimap.fillStyle(0x00ff00, 1);
     // make a diamond shape
+
+    const height = widthInPixels / 2;
+    const pixelWidth = widthInPixels / widthInTiles;
+    const pixelHeight = height / widthInTiles;
+
     minimap.fillPoints([
-      { x: 0, y: 100 },
-      { x: 50, y: 75 },
-      { x: 100, y: 100 },
-      { x: 50, y: 125 }
+      { x: 0, y: height / 2 },
+      { x: widthInPixels / 2, y: 0 },
+      { x: widthInPixels, y: height / 2 },
+      { x: widthInPixels / 2, y: height }
     ]);
     minimap.fillStyle(0xff0000, 1);
-    minimap.fillCircle(50, 100, 10);
 
-    minimap.x = 20;
-    minimap.y = 20;
+    // Calculate the center of the minimap
+    const centerX = widthInPixels / 2;
+
+    // Offset to start drawing from the center
+    const offsetX = centerX - pixelWidth / 2;
+
+    // fill first 5 tiles with red color
+    for (let i = 0; i < widthInTiles; i++) {
+      for (let j = 0; j < widthInTiles; j++) {
+        const isoX = offsetX + (i - j) * (pixelWidth / 2);
+        const isoY = (i + j) * (pixelHeight / 2);
+        // create diamond shape
+        // choose random color
+        const color = Phaser.Display.Color.RandomRGB(100, 255);
+        minimap.fillStyle(color.color, 1);
+        minimap.fillPoints([
+          { x: isoX, y: isoY + pixelHeight / 2 },
+          { x: isoX + pixelWidth / 2, y: isoY },
+          { x: isoX + pixelWidth, y: isoY + pixelHeight / 2 },
+          { x: isoX + pixelWidth / 2, y: isoY + pixelHeight }
+        ]);
+      }
+    }
+
+    minimap.x = 0;
+    minimap.y = 0;
   }
 
   private resize(gameSize: { height: number; width: number }) {
