@@ -84,7 +84,7 @@
     "class-validator": "^0.14.1",
     "easystarjs": "^0.4.4",
     "helmet": "^7.1.0",
-    "ng2-charts": "^5.0.4",
+    "ng2-charts": "^6.0.0",
     "ngx-socket-io": "^4.6.1",
     "node-cache": "^5.1.2",
     "passport": "^0.7.0",
