@@ -62,18 +62,6 @@
             "y": 1264
         },
         {
-            "type": "Image",
-            "id": "72371380-06d8-4654-a5fa-edb6ea1308a1",
-            "label": "nature_grass_grass_0_png",
-            "texture": {
-                "key": "outside",
-                "frame": "nature/grass/grass_0.png"
-            },
-            "x": -80,
-            "y": 1248,
-            "originY": 0.75
-        },
-        {
             "prefabId": "fdf8e2c2-f0e4-45f6-98b5-25a0be5ecb93",
             "id": "8adadf79-08c8-4964-bbec-83e2af597a89",
             "unlock": [
@@ -94,18 +82,6 @@
             "label": "hedgehog",
             "x": 96,
             "y": 1360
-        },
-        {
-            "type": "Image",
-            "id": "cc89c32e-7f83-4a80-9e65-f5f8ad0e2787",
-            "label": "foliage_tall_grass_tall_grass_7_png",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/tall_grass/tall_grass_7.png"
-            },
-            "x": -256,
-            "y": 1248,
-            "originY": 0.75
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -263,6 +239,17 @@
             "y": 704
         },
         {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+            "id": "a3ffc5bf-398c-484e-a144-079139b8e14b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_7",
+            "x": -144,
+            "y": 832
+        },
+        {
             "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
             "id": "d6017f59-c654-46b9-9f2d-a2de4490f9a7",
             "unlock": [
@@ -283,18 +270,6 @@
             "label": "tivaraWorkerMale",
             "x": 320,
             "y": 720
-        },
-        {
-            "type": "Image",
-            "id": "5fc1a945-a4e3-44f4-af67-cd9e929d3935",
-            "label": "foliage_tall_grass_tall_grass_8_png",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/tall_grass/tall_grass_8.png"
-            },
-            "x": -160,
-            "y": 1296,
-            "originY": 0.75
         },
         {
             "prefabId": "54836fe4-5089-4b7e-9db4-b71382bcb55f",
@@ -1259,6 +1234,380 @@
             "label": "fenceBottom",
             "x": -160,
             "y": 1312
+        },
+        {
+            "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+            "id": "30bf40cc-01ce-4142-8bae-42ec7c629843",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stonePile",
+            "x": -592,
+            "y": 784
+        },
+        {
+            "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+            "id": "f198d779-db5e-4487-b9de-56133e3364aa",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stonePile_1",
+            "x": -624,
+            "y": 800
+        },
+        {
+            "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+            "id": "ef68a7a2-10fd-4b85-9df0-c8e101bdbfa2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stonePile_2",
+            "x": -560,
+            "y": 800
+        },
+        {
+            "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+            "id": "94053293-3b9e-493d-896e-fe7435658372",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stonePile_3",
+            "x": -592,
+            "y": 816
+        },
+        {
+            "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+            "id": "bc88ed03-c99d-4e67-842e-4d3114066eab",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stonePile_4",
+            "x": -656,
+            "y": 784
+        },
+        {
+            "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+            "id": "a33471da-ec9e-4511-a0cc-dc7b937c60e4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stonePile_5",
+            "x": -656,
+            "y": 816
+        },
+        {
+            "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+            "id": "68dc3874-2366-4bfa-a940-6d6953f0a148",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minerals",
+            "x": -240,
+            "y": 240
+        },
+        {
+            "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+            "id": "65475115-0775-421f-bd6e-40709731da5a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minerals_1",
+            "x": -208,
+            "y": 224
+        },
+        {
+            "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+            "id": "3343a4ae-5eee-4448-b561-934e72dd4852",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minerals_2",
+            "x": -208,
+            "y": 256
+        },
+        {
+            "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+            "id": "c61de4ce-6f02-40d7-b5a3-a977e4980041",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minerals_3",
+            "x": -176,
+            "y": 272
+        },
+        {
+            "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+            "id": "959edc9d-acb3-4843-ad4b-13c265e02c2c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minerals_4",
+            "x": -272,
+            "y": 256
+        },
+        {
+            "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+            "id": "72a4ac4a-5d05-496e-830b-731ce7631fe2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minerals_5",
+            "x": -240,
+            "y": 272
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
+            "id": "448ad274-3223-40d2-b281-674c341dbe4f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_5",
+            "x": -400,
+            "y": 800
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b25d5",
+            "id": "8667d532-e6ae-4ac1-99a3-efbdf9e7a15d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass7",
+            "x": -352,
+            "y": 816
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b25d5",
+            "id": "b6d9676d-b478-4dad-91b1-831a63b09cbb",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass",
+            "x": -320,
+            "y": 832
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b25d5",
+            "id": "be5412f3-e208-4283-9996-6e06fb68f0ec",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_1",
+            "x": -224,
+            "y": 848
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+            "id": "d1c9199d-ab90-4ffb-8f67-fd3def2722f6",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass1",
+            "x": -288,
+            "y": 784
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+            "id": "dee39032-06de-41a2-bde2-a6ec483807bc",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_2",
+            "x": -320,
+            "y": 768
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+            "id": "e87629f2-fe8e-40fc-8f3c-ebaba40a7b9b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_3",
+            "x": -176,
+            "y": 816
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d7",
+            "id": "57f38112-1814-4812-90e0-d8e188465d9e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass2",
+            "x": -240,
+            "y": 800
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+            "id": "5f70b2fc-f094-441a-930e-462bd01e463a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_4",
+            "x": -208,
+            "y": 800
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f47b15d5",
+            "id": "aed559b6-2a99-4b32-a0bd-43f957ec2018",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass6",
+            "x": -288,
+            "y": 848
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37115d5",
+            "id": "b442134a-25de-4b1a-9047-9da13f20b15a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass4",
+            "x": -256,
+            "y": 864
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
+            "id": "48091642-e287-4605-9a67-fc4864443d08",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass3",
+            "x": -352,
+            "y": 752
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+            "id": "5912fad9-8c85-48bf-b0df-6c2ee71aabfa",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_8",
+            "x": -16,
+            "y": 896
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d6",
+            "id": "8ca01f1a-a602-4014-a08e-19d949fc0e4f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass0",
+            "x": 16,
+            "y": 912
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15c5",
+            "id": "d19d265e-7e06-4072-9290-0506404996c0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass5",
+            "x": -96,
+            "y": 912
+        },
+        {
+            "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
+            "id": "925f0046-afb8-4a87-8241-c20a48567732",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tallGrass_6",
+            "x": -48,
+            "y": 880
+        },
+        {
+            "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+            "id": "6fe28ad8-8ff8-4786-84ce-a269e00f2369",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "reeds1",
+            "x": -352,
+            "y": 800
+        },
+        {
+            "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+            "id": "0d3381a9-233d-41a3-bd63-628bc2be5b4a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "reeds",
+            "x": -288,
+            "y": 832
+        },
+        {
+            "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+            "id": "9d40a52e-aec1-4b09-beff-de87226cdc91",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "reeds_1",
+            "x": -256,
+            "y": 784
+        },
+        {
+            "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+            "id": "99c30919-46fd-4202-8d0a-31d6ffa77cec",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "reeds_2",
+            "x": -160,
+            "y": 800
+        },
+        {
+            "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+            "id": "a90f4cf7-e638-49d1-8eda-c726b0ac6c68",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "reeds_3",
+            "x": -16,
+            "y": 880
+        },
+        {
+            "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+            "id": "f11a2b26-a110-4ddf-a1e5-3a441b570b48",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "reeds_4",
+            "x": -224,
+            "y": 832
         }
     ],
     "plainObjects": [
