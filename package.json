@@ -136,7 +136,7 @@
     "jest-environment-node": "^29.7.0",
     "jest-fail-on-console": "^3.1.2",
     "jest-preset-angular": "14.0.3",
-    "nx": "18.0.4",
+    "nx": "18.2.1",
     "nx-cloud": "18.0.0",
     "phaser-asset-pack-hashing": "^1.0.6",
     "phasereditor2d-launcher": "^3.66.0",
