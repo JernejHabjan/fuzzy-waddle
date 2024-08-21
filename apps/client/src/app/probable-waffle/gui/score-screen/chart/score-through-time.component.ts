@@ -7,13 +7,13 @@ import {
   ProbableWafflePlayer
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { NgChartsModule } from "ng2-charts";
 import { ChartConfiguration, ChartData, ChartTypeRegistry, DefaultDataPoint } from "chart.js";
+import { BaseChartDirective } from "ng2-charts";
 
 @Component({
   selector: "probable-waffle-score-through-time",
   standalone: true,
-  imports: [NgChartsModule],
+  imports: [BaseChartDirective],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]
 })
