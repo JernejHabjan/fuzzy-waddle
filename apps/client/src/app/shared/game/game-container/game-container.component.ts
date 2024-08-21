@@ -3,14 +3,13 @@ import { BaseGame } from "../phaser/game/base-game";
 import { Types } from "phaser";
 import { BaseGameData } from "../phaser/game/base-game-data";
 import { GameContainerElement } from "./game-container";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "fuzzy-waddle-game-container",
   templateUrl: "./game-container.component.html",
   styleUrls: ["./game-container.component.scss"],
   standalone: true,
-  imports: [CommonModule]
+  imports: []
 })
 export class GameContainerComponent implements OnDestroy {
   protected readonly GameContainerElement = GameContainerElement;

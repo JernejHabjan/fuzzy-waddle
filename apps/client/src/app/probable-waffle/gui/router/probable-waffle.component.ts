@@ -2,14 +2,13 @@ import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/cor
 import { DEPRECATED_gameInstanceService } from "../../communicators/DEPRECATED_game-instance.service";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { UserInstanceService } from "../../../home/profile/user-instance.service";
-import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
 
 @Component({
   templateUrl: "./probable-waffle.component.html",
   styleUrls: ["./probable-waffle.component.scss"],
   standalone: true,
-  imports: [CommonModule, RouterOutlet]
+  imports: [RouterOutlet]
 })
 export class ProbableWaffleComponent implements OnInit, OnDestroy {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);

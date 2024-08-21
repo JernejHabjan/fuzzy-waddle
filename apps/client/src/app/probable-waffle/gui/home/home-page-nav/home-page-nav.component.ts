@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { environment } from "../../../../../environments/environment";
-import { CommonModule } from "@angular/common";
+
 import { HomeNavComponent } from "../../../../shared/components/home-nav/home-nav.component";
 import { RouterLink } from "@angular/router";
 
@@ -9,7 +9,7 @@ import { RouterLink } from "@angular/router";
   templateUrl: "./home-page-nav.component.html",
   styleUrls: ["./home-page-nav.component.scss"],
   standalone: true,
-  imports: [CommonModule, HomeNavComponent, RouterLink]
+  imports: [HomeNavComponent, RouterLink]
 })
 export class HomePageNavComponent {
   protected readonly enabledInstantDemoGame = !environment.production;

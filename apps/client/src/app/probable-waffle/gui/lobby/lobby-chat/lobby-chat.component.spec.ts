@@ -7,9 +7,8 @@ import { AuthService } from "../../../../auth/auth.service";
 import { authServiceStub } from "../../../../auth/auth.service.spec";
 import { Component } from "@angular/core";
 import { probableWaffleCommunicatorServiceStub } from "../../../communicators/probable-waffle-communicator.service.spec";
-import { CommonModule } from "@angular/common";
 
-@Component({ selector: "probable-waffle-lobby-chat", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "probable-waffle-lobby-chat", template: "", standalone: true, imports: [] })
 export class LobbyChatTestingComponent {}
 
 describe("LobbyChatComponent", () => {

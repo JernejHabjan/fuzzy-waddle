@@ -14,9 +14,8 @@ import { MapDefinitionComponent } from "./map-definition/map-definition.componen
 import { GameModeDefinitionComponent } from "./game-mode-definition/game-mode-definition.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
 import { LobbyChatComponent } from "./lobby-chat/lobby-chat.component";
-import { CommonModule } from "@angular/common";
 
-@Component({ selector: "probable-waffle-lobby", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "probable-waffle-lobby", template: "", standalone: true, imports: [] })
 export class LobbyTestingComponent {}
 
 describe("ProbableWaffleLobbyLobbyComponent", () => {

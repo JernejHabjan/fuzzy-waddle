@@ -67,7 +67,6 @@ import FenceBottom from "../prefabs/outside/architecture/obstruction/FenceBottom
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -77,14 +76,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
 
     // christmasTree
     const christmasTree = new ChristmasTree(this, -288, 1184);
@@ -111,7 +109,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(hedgehog);
 
     // foliage_tall_grass_tall_grass_7_png
-    const foliage_tall_grass_tall_grass_7_png = this.add.image(-256, 1248, "outside", "foliage/tall_grass/tall_grass_7.png");
+    const foliage_tall_grass_tall_grass_7_png = this.add.image(
+      -256,
+      1248,
+      "outside",
+      "foliage/tall_grass/tall_grass_7.png"
+    );
     foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
 
     // tree_12
@@ -179,7 +182,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraWorkerMale);
 
     // foliage_tall_grass_tall_grass_8_png
-    const foliage_tall_grass_tall_grass_8_png = this.add.image(-160, 1296, "outside", "foliage/tall_grass/tall_grass_8.png");
+    const foliage_tall_grass_tall_grass_8_png = this.add.image(
+      -160,
+      1296,
+      "outside",
+      "foliage/tall_grass/tall_grass_8.png"
+    );
     foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
     // tivaraMacemanMale

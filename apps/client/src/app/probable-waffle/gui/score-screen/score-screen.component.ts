@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { RouterLink } from "@angular/router";
 import { ScoreTableComponent } from "./table/score-table.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
@@ -7,7 +7,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 
 @Component({
   standalone: true,
-  imports: [CommonModule, RouterLink, ScoreTableComponent, ScoreThroughTimeComponent],
+  imports: [RouterLink, ScoreTableComponent, ScoreThroughTimeComponent],
   templateUrl: "./score-screen.component.html",
   styleUrls: ["./score-screen.component.scss"]
 })

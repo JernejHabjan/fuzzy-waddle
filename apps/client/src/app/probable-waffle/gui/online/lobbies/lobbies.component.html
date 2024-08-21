@@ -2,86 +2,86 @@
   <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate</div>
 
   @if (roomsService.rooms().length === 0) {
-  <div class="text-center">No open lobbies</div>
-  <div class="text-center">
-    <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">Create lobby</button>
-  </div>
-  }@else{
-
-  <div class="d-flex">
-    <div>
-      <div>
-        <button (click)="toggleFilterPopup()" class="btn btn-secondary" type="button">
-          <fa-icon [icon]="faFilter" />
-        </button>
-        <probable-waffle-map-filter *ngIf="isFilterPopupOpen" (filter)="filter($event)" />
-      </div>
-      <table class="table table-striped" style="min-width: 300px">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Map</th>
-            <th scope="col">Players</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            (click)="select(room)"
-            *ngFor="let room of roomsService.rooms()"
-            class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}"
-          >
-            <td>{{ room.gameInstanceMetadataData.name }}</td>
-            <td>
-              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
-                {{ mapInfoOfMap(room.gameModeData.map)?.name }}
-              }</td>
-            <td>
-              @if(room.gameModeData && mapInfoOfMap(room.gameModeData.map)){
-              {{
-                ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length +
-                  "/" +
-                  (mapInfoOfMap(room.gameModeData.map)?.mapInfo!.startPositionsOnTile.length)
-              }}
-              }
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="text-center">No open lobbies</div>
+    <div class="text-center">
+      <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">Create lobby</button>
     </div>
-    @if (selectedRoom) {
-    <div class="card-container">
+  } @else {
+    <div class="d-flex">
       <div>
-        <img alt="map preview" [src]="mapInfo!.presentation.imagePath" />
-        <div style="font-size: 0.8em">{{ mapInfo!.presentation.description }}</div>
+        <div>
+          <button (click)="toggleFilterPopup()" class="btn btn-secondary" type="button">
+            <fa-icon [icon]="faFilter" />
+          </button>
+          @if (isFilterPopupOpen) {
+            <probable-waffle-map-filter (filter)="filter($event)" />
+          }
+        </div>
+        <table class="table table-striped" style="min-width: 300px">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Map</th>
+              <th scope="col">Players</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (room of roomsService.rooms(); track room) {
+              <tr (click)="select(room)" class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}">
+                <td>{{ room.gameInstanceMetadataData.name }}</td>
+                <td>
+                  @if (room.gameModeData && mapInfoOfMap(room.gameModeData.map)) {
+                    {{ mapInfoOfMap(room.gameModeData.map)?.name }}
+                  }
+                </td>
+                <td>
+                  @if (room.gameModeData && mapInfoOfMap(room.gameModeData.map)) {
+                    {{
+                      ProbableWaffleRoomHelper.getActivatedPlayersInRoom(room).length +
+                        "/" +
+                        (mapInfoOfMap(room.gameModeData.map)?.mapInfo)!.startPositionsOnTile.length
+                    }}
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-      <div>
-        <div class="text-primary">Joined players</div>
-        @for (player of ProbableWaffleRoomHelper.getActivatedPlayersInRoom(selectedRoom);track player) {
-        <div>{{ player.controllerData.playerDefinition!.player.playerName }}</div>
-        }
-      </div>
-      @if(selectedRoom.spectators.length){
-      <div>
-        <div class="text-primary">Joined spectators</div>
-        <div>{{ selectedRoom.spectators.length }}</div>
-      </div>
+      @if (selectedRoom) {
+        <div class="card-container">
+          <div>
+            <img alt="map preview" [src]="mapInfo!.presentation.imagePath" />
+            <div style="font-size: 0.8em">{{ mapInfo!.presentation.description }}</div>
+          </div>
+          <div>
+            <div class="text-primary">Joined players</div>
+            @for (player of ProbableWaffleRoomHelper.getActivatedPlayersInRoom(selectedRoom); track player) {
+              <div>{{ player.controllerData.playerDefinition!.player.playerName }}</div>
+            }
+          </div>
+          @if (selectedRoom.spectators.length) {
+            <div>
+              <div class="text-primary">Joined spectators</div>
+              <div>{{ selectedRoom.spectators.length }}</div>
+            </div>
+          }
+        </div>
       }
     </div>
-    }
-  </div>
 
-  <div>
-    <button (click)="addSelfAsPlayer()" [disabled]="!canAddSelfAsPlayer()" class="btn btn-primary" type="button">
-      Join
-    </button>
-    <button
-      (click)="addSelfAsSpectator()"
-      [disabled]="!canAddSelfAsSpectator()"
-      class="ms-2 btn btn-primary"
-      type="button"
-    >
-      Spectate
-    </button>
-  </div>
+    <div>
+      <button (click)="addSelfAsPlayer()" [disabled]="!canAddSelfAsPlayer()" class="btn btn-primary" type="button">
+        Join
+      </button>
+      <button
+        (click)="addSelfAsSpectator()"
+        [disabled]="!canAddSelfAsSpectator()"
+        class="ms-2 btn btn-primary"
+        type="button"
+      >
+        Spectate
+      </button>
+    </div>
   }
 </div>

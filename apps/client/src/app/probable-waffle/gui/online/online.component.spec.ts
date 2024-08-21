@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { OnlineComponent } from "./online.component";
 import { provideRouter } from "@angular/router";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";

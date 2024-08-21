@@ -10,41 +10,40 @@
 <div class="card-container">
   <div class="general-title">High score:</div>
 
-  <ng-container *ngIf="highScores?.length; else noHighScoresBlock">
-    <ng-container *ngFor="let level of getUniqueLevels(highScores)">
+  @if (highScores?.length) {
+    @for (level of getUniqueLevels(highScores); track level) {
       <div class="card p-2 m-1">
         <h3>{{ level.name }}</h3>
         <ol>
-          <li *ngFor="let score of getTopScoresForLevel(highScores, level.id)">
-            {{ score.userName }} - {{ score.score }}
-          </li>
+          @for (score of getTopScoresForLevel(highScores, level.id); track score) {
+            <li>{{ score.userName }} - {{ score.score }}</li>
+          }
         </ol>
       </div>
-    </ng-container>
-  </ng-container>
-
-  <ng-template #noHighScoresBlock>
+    }
+  } @else {
     <div class="text-center">
       <!-- check if loading -->
-      <div *ngIf="loading; else noScoresBlock">
-        <fa-icon [icon]="faSpinner" animation="spin" />
-      </div>
-      <!-- no scores -->
-      <ng-template #noScoresBlock>
-        <div *ngIf="this.serverHealthService.serverAvailable; else serverUnavailableBlock">
-          <div>No scores yet</div>
-
-          <div>Be the first to play!</div>
-          <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+      @if (loading) {
+        <div>
+          <fa-icon [icon]="faSpinner" animation="spin" />
         </div>
-        <ng-template #serverUnavailableBlock>
+      } @else {
+        @if (this.serverHealthService.serverAvailable) {
+          <div>
+            <div>No scores yet</div>
+            <div>Be the first to play!</div>
+            <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+          </div>
+        } @else {
           <div>Server unavailable</div>
           <div>Try again later</div>
-          <ng-container *ngIf="!this.serverHealthService.serverAvailable">
+          @if (!this.serverHealthService.serverAvailable) {
             <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
-          </ng-container>
-        </ng-template>
-      </ng-template>
+          }
+        }
+      }
+      <!-- no scores -->
     </div>
-  </ng-template>
+  }
 </div>

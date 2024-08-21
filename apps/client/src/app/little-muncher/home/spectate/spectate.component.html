@@ -1,9 +1,13 @@
-<div class="card-container" *ngIf="serverHealthService.serverAvailable && spectateService.rooms.length">
-  <div class="general-title">Spectate current games:</div>
-  <div>
-    <div *ngFor="let room of spectateService.rooms" class="d-flex justify-content-between p-2">
-      <div>Room id: {{ room.gameInstanceMetadataData.gameInstanceId }}</div>
-      <button (click)="spectate(room)" class="btn btn-primary ms-2" type="button">Spectate</button>
+@if (serverHealthService.serverAvailable && spectateService.rooms.length) {
+  <div class="card-container">
+    <div class="general-title">Spectate current games:</div>
+    <div>
+      @for (room of spectateService.rooms; track room) {
+        <div class="d-flex justify-content-between p-2">
+          <div>Room id: {{ room.gameInstanceMetadataData.gameInstanceId }}</div>
+          <button (click)="spectate(room)" class="btn btn-primary ms-2" type="button">Spectate</button>
+        </div>
+      }
     </div>
   </div>
-</div>
+}

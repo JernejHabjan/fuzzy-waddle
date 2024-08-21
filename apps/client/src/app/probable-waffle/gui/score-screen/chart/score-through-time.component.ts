@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import {
   GameSetupHelpers,
   PlayerStateAction,
@@ -13,7 +13,7 @@ import { ChartConfiguration, ChartData, ChartTypeRegistry, DefaultDataPoint } fr
 @Component({
   selector: "probable-waffle-score-through-time",
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [NgChartsModule],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]
 })

@@ -12,7 +12,7 @@ import {
 import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
 import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
 import { Observable, Subscription } from "rxjs";
-import { CommonModule } from "@angular/common";
+
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "../../../auth/auth.service";
 
@@ -21,7 +21,7 @@ import { AuthService } from "../../../auth/auth.service";
   templateUrl: "./chat.component.html",
   styleUrls: ["./chat.component.scss"],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild("chatBody") chatBody!: ElementRef;

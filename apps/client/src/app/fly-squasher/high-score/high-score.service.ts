@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { FlySquasherLevelEnum, ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../environments/environment";
@@ -10,11 +10,9 @@ import { AuthService } from "../../auth/auth.service";
   providedIn: "root"
 })
 export class HighScoreService {
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly authService: AuthService,
-    private readonly serverHealthService: ServerHealthService
-  ) {}
+  private readonly httpClient = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  private readonly serverHealthService = inject(ServerHealthService);
 
   async postScore(score: number, level: FlySquasherLevelEnum): Promise<void> {
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {

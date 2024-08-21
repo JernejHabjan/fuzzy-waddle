@@ -10,7 +10,7 @@ import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
-import { CommonModule } from "@angular/common";
+
 import { FormsModule } from "@angular/forms";
 
 export type MatchmakingLevel = {
@@ -31,7 +31,7 @@ export type MatchmakingOptions = {
   templateUrl: "./matchmaking.component.html",
   styleUrls: ["./matchmaking.component.scss"],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {
   protected readonly FactionDefinitions = FactionDefinitions;

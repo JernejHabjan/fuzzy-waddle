@@ -1,14 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { ConstellationEffectComponent } from "./constellation-effect.component";
 import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "probable-waffle-constellation-effect",
   template: "",
   standalone: true,
-  imports: [CommonModule]
+  imports: []
 })
 export class ConstellationEffectTestComponent {}
 
