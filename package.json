@@ -15,6 +15,7 @@
     "build-gh-pages": "nx run build -- --base-href=/fuzzy-waddle/",
     "test": "nx run-many --all --target=test",
     "lint": "nx run-many --all --target=lint",
+    "lint-staged": "nx run-many --all --target=lint --with-deps",
     "e2e": "nx run client-e2e:e2e",
     "nx": "nx",
     "nx-build-client": "nx build client",
@@ -36,7 +37,8 @@
     "workspace-schematic": "nx workspace-schematic",
     "sme": "nx build client --source-map=true --named-chunks=true && source-map-explorer dist/apps/client/**/*.js",
     "install-audiosprite-globally": "pnpm install -g audiosprite-ffmpeg",
-    "probable-waffle-audio-sprites": "pnpm run install-audiosprite-globally && audiosprite apps/client/src/metadata/sfx/character/**/*.mp3 -o apps/client/src/assets/sfx/character -e mp3 -r 8000"
+    "probable-waffle-audio-sprites": "pnpm run install-audiosprite-globally && audiosprite apps/client/src/metadata/sfx/character/**/*.mp3 -o apps/client/src/assets/sfx/character -e mp3 -r 8000",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=22.7.0",
@@ -102,9 +104,9 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "18.2.1",
-    "@angular-eslint/eslint-plugin": "18.3.0",
-    "@angular-eslint/eslint-plugin-template": "18.3.0",
-    "@angular-eslint/template-parser": "18.3.0",
+    "@angular-eslint/eslint-plugin": "18.0.1",
+    "@angular-eslint/eslint-plugin-template": "18.0.1",
+    "@angular-eslint/template-parser": "18.0.1",
     "@angular/cli": "~18.2.1",
     "@angular/compiler-cli": "18.2.0",
     "@angular/language-service": "18.2.0",
@@ -124,19 +126,21 @@
     "@types/node": "^22.5.0",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
-    "@typescript-eslint/eslint-plugin": "8.2.0",
-    "@typescript-eslint/parser": "8.2.0",
-    "@typescript-eslint/utils": "^8.2.0",
+    "@typescript-eslint/eslint-plugin": "7.16.0",
+    "@typescript-eslint/parser": "7.16.0",
+    "@typescript-eslint/utils": "^7.16.0",
     "cypress": "13.13.3",
-    "eslint": "9.9.0",
+    "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-cypress": "3.5.0",
+    "eslint-plugin-cypress": "2.15.1",
+    "husky": "^9.1.5",
     "jest": "29.7.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "29.7.0",
     "jest-environment-node": "^29.7.0",
     "jest-fail-on-console": "^3.3.0",
     "jest-preset-angular": "14.2.2",
+    "lint-staged": "^15.2.9",
     "nx": "19.6.1",
     "nx-cloud": "19.0.0",
     "phaser-asset-pack-hashing": "^1.0.6",
@@ -158,5 +162,8 @@
       "follow-redirects@<1.15.4": ">=1.15.4",
       "@supabase/gotrue-js": "2.61.0"
     }
+  },
+  "lint-staged": {
+    "*.{ts,js,json,css,scss,md}": "nx affected:lint"
   }
 }
