@@ -10,7 +10,7 @@
 <div class="card-container">
   <div class="general-title">High score:</div>
 
-  @if (highScores?.length) {
+  @if (highScores.length) {
     @for (level of getUniqueLevels(highScores); track level) {
       <div class="card p-2 m-1">
         <h3>{{ level.name }}</h3>

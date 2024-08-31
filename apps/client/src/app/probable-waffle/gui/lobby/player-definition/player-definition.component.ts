@@ -68,7 +68,7 @@ export class PlayerDefinitionComponent {
   get allowOpenSlotForMp(): boolean {
     return (
       this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data.type ===
-        ProbableWaffleGameInstanceType.SelfHosted ?? false
+      ProbableWaffleGameInstanceType.SelfHosted
     );
   }
 
