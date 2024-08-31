@@ -13,6 +13,7 @@ import { SaveGame } from "../data/save-game";
 import { SceneActorCreator } from "./components/scene-actor-creator";
 import { NavigationService } from "./services/navigation.service";
 import { BehaviorSubject } from "rxjs";
+import { AudioService } from "./services/audio.service";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -59,7 +60,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
     new SceneActorCreator(this);
-    this.sceneGameData.services.push(new NavigationService(this, this.tilemap));
+    this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService());
     this.sceneGameData.initializers.postCreate.next(true);
   }
 }
