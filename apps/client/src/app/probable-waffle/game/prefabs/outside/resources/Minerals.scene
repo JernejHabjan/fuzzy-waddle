@@ -1,0 +1,41 @@
+{
+    "id": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "snapWidth": 64,
+        "snapHeight": 64,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "87fb1388-2617-42a6-a8f5-aa1c3cbfdf1b",
+            "label": "nature_resources_minerals_pile_1_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "17.073814436779283 25.3026667577094 33.18736938562811 23.619161016784897 49.78192597474108 26.505170858369762 60.60446288068432 33.72019546233192 59.16145795989189 50.07425123131282 34.63037430642054 63.06129551844471 2.4032644087228867 46.46673892933174",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/resources/minerals_pile_1.png"
+            },
+            "x": 32,
+            "y": 47.65448335874778,
+            "originY": 0.7446013024804341
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

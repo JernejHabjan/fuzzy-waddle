@@ -1,30 +1,39 @@
 <fuzzy-waddle-home-nav />
 
-@if(!authService.isAuthenticated){
-<div class="server-health">
-  <p>Not authenticated. Please Login to continue</p>
-</div>
-} @else{ @if (serverHealthService.serverChecking) {
-<div class="server-health">
-  <p>Checking server health...</p>
-</div>
-} @else if (serverHealthService.serverAvailable) {
-<ul class="nav-tabs">
-  <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'" routerLink="/join">Join</a></li>
-  <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'" routerLink="/host">Host</a></li>
-  <li (click)="selectTab('matchmaking')">
-    <a [class.active]="selectedTab === 'matchmaking'" routerLink="/matchmaking">Matchmaking</a>
-  </li>
-</ul>
-
-<div [ngSwitch]="selectedTab">
-  <probable-waffle-lobbies *ngSwitchCase="'join'" (requestNavigateToHostLobby)="selectedTab = 'host'" />
-  <probable-waffle-host *ngSwitchCase="'host'" />
-  <probable-waffle-matchmaking *ngSwitchCase="'matchmaking'" />
-</div>
-
+@if (!authService.isAuthenticated) {
+  <div class="server-health">
+    <p>Not authenticated. Please Login to continue</p>
+  </div>
 } @else {
-<div class="server-health">
-  <p>Server is not available</p>
-</div>
-} }
+  @if (serverHealthService.serverChecking) {
+    <div class="server-health">
+      <p>Checking server health...</p>
+    </div>
+  } @else if (serverHealthService.serverAvailable) {
+    <ul class="nav-tabs">
+      <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'" routerLink="/join">Join</a></li>
+      <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'" routerLink="/host">Host</a></li>
+      <li (click)="selectTab('matchmaking')">
+        <a [class.active]="selectedTab === 'matchmaking'" routerLink="/matchmaking">Matchmaking</a>
+      </li>
+    </ul>
+
+    <div>
+      @switch (selectedTab) {
+        @case ("join") {
+          <probable-waffle-lobbies (requestNavigateToHostLobby)="selectedTab = 'host'" />
+        }
+        @case ("host") {
+          <probable-waffle-host />
+        }
+        @case ("matchmaking") {
+          <probable-waffle-matchmaking />
+        }
+      }
+    </div>
+  } @else {
+    <div class="server-health">
+      <p>Server is not available</p>
+    </div>
+  }
+}

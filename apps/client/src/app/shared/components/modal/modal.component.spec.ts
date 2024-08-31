@@ -2,9 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ModalComponent } from "./modal.component";
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
 
-@Component({ selector: "fuzzy-waddle-modal", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "fuzzy-waddle-modal", template: "", standalone: true, imports: [] })
 export class ModalTestComponent {
   @Input({ required: true }) modalConfig: unknown;
 }

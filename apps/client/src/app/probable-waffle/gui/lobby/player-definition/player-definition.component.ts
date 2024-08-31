@@ -13,7 +13,7 @@ import {
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { CommonModule } from "@angular/common";
+
 import { FormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
@@ -43,7 +43,7 @@ export class DifficultyDefinitions {
   templateUrl: "./player-definition.component.html",
   styleUrls: ["./player-definition.component.scss"],
   standalone: true,
-  imports: [CommonModule, FormsModule, FaIconComponent]
+  imports: [FormsModule, FaIconComponent]
 })
 export class PlayerDefinitionComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
@@ -67,8 +67,8 @@ export class PlayerDefinitionComponent {
 
   get allowOpenSlotForMp(): boolean {
     return (
-      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.type ===
-        ProbableWaffleGameInstanceType.SelfHosted ?? false
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data.type ===
+      ProbableWaffleGameInstanceType.SelfHosted
     );
   }
 

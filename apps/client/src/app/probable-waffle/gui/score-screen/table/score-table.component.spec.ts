@@ -64,6 +64,7 @@ describe("ScoreTableComponent", () => {
     // noinspection UnnecessaryLocalVariableJS
     const mockPlayers = [
       {
+        playerNumber: 1,
         name: "Player 1",
         unit_produced: 10,
         unit_killed: 5,

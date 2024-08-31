@@ -21,7 +21,6 @@ import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends GameProbableWaffleScene {
-
   constructor() {
     super("MapEmberEnclave");
 
@@ -31,14 +30,13 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
 
     // blockObsidianLava5
     const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
   GameSessionState,
@@ -12,7 +12,7 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
 @Component({
   selector: "fuzzy-waddle-instant-game",
   standalone: true,
-  imports: [CommonModule, LoaderComponent],
+  imports: [LoaderComponent],
   template: `<fuzzy-waddle-loader />`
 })
 export class InstantGameComponent implements OnInit {

@@ -1,14 +1,13 @@
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "probable-waffle-trigger",
   templateUrl: "./trigger.component.html",
   styleUrls: ["./trigger.component.scss"],
   standalone: true,
-  imports: [CommonModule]
+  imports: []
 })
 export class TriggerComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);

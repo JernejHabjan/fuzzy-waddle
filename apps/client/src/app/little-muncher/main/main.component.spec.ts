@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { MainComponent } from "./main.component";
 import { GameContainerTestingComponent } from "../../shared/game/game-container/game-container.component.spec";
 import { AuthService } from "../../auth/auth.service";
@@ -10,13 +9,12 @@ import { gameInstanceClientServiceStub } from "./communicators/game-instance-cli
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { GameInterfaceComponent } from "./game-interface/game-interface.component";
 import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
 
 jest.mock("../game/const/game-config", () => ({
   littleMuncherGameConfig: {}
 }));
 
-@Component({ selector: "little-muncher-main", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "little-muncher-main", template: "", standalone: true, imports: [] })
 export class MainTestingComponent {}
 
 describe("MainComponent", () => {

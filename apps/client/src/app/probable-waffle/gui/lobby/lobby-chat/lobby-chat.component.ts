@@ -1,5 +1,4 @@
 import { Component, inject, OnDestroy, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";
@@ -10,7 +9,7 @@ import { ChatComponent } from "../../../../shared/components/chat/chat.component
 @Component({
   selector: "probable-waffle-lobby-chat",
   standalone: true,
-  imports: [CommonModule, ChatComponent],
+  imports: [ChatComponent],
   templateUrl: "./lobby-chat.component.html",
   styleUrls: ["./lobby-chat.component.scss"]
 })

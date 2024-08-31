@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
@@ -6,10 +6,8 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
   providedIn: "root"
 })
 export class GameInstanceGuard implements CanActivate {
-  constructor(
-    private readonly router: Router,
-    private readonly gameInstanceClientService: GameInstanceClientService
-  ) {}
+  private readonly router = inject(Router);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const gameInstance = this.gameInstanceClientService.gameInstance;

@@ -1,0 +1,39 @@
+{
+    "id": "28fbd043-faa7-45c4-a8d9-fd89f37b15d6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "d9cbd5fb-4319-4a87-b5c8-c19f985e4a12",
+            "label": "foliage_tall_grass_tall_grass_0_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "0.1261623050864351 31.528073306065085 30.760418287578194 15.077304473964055 64.03923785424274 31.579198473963004 63.764206287576094 49.731281873961855 32.41060768757809 64.30795490729426 -0.04311717908651502 48.35612404062861",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tall_grass/tall_grass_0.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

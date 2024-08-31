@@ -4,9 +4,8 @@ import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testi
 import { provideRouter } from "@angular/router";
 import { Component } from "@angular/core";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
-import { CommonModule } from "@angular/common";
 
-@Component({ selector: "probable-waffle-home-page-nav", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "probable-waffle-home-page-nav", template: "", standalone: true, imports: [] })
 export class HomePageNavTestingComponent {}
 
 describe("HomePageNavComponent", () => {

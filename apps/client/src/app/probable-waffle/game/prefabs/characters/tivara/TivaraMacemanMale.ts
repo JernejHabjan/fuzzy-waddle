@@ -8,7 +8,6 @@ import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
-
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 import { AttackComponent, AttackDefinition } from "../../../entity/combat/components/attack-component";
 import { AttackData } from "../../../entity/combat/attack-data";

@@ -20,6 +20,7 @@ import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagic
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/SkaduweeWarriorMale";
 import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
+import TallGrass1 from "../prefabs/outside/foliage/tall_grass/TallGrass1";
 import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
@@ -63,6 +64,17 @@ import FenceLeft from "../prefabs/outside/architecture/obstruction/FenceLeft";
 import FenceBottomLeft from "../prefabs/outside/architecture/obstruction/FenceBottomLeft";
 import FenceBottomRight from "../prefabs/outside/architecture/obstruction/FenceBottomRight";
 import FenceBottom from "../prefabs/outside/architecture/obstruction/FenceBottom";
+import StonePile from "../prefabs/outside/resources/StonePile";
+import Minerals from "../prefabs/outside/resources/Minerals";
+import TallGrass3 from "../prefabs/outside/foliage/tall_grass/TallGrass3";
+import TallGrass7 from "../prefabs/outside/foliage/tall_grass/TallGrass7";
+import TallGrass2 from "../prefabs/outside/foliage/tall_grass/TallGrass2";
+import TallGrass6 from "../prefabs/outside/foliage/tall_grass/TallGrass6";
+import TallGrass4 from "../prefabs/outside/foliage/tall_grass/TallGrass4";
+import TallGrass0 from "../prefabs/outside/foliage/tall_grass/TallGrass0";
+import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
+import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
+import SkaduweeOwlFurball from "../prefabs/units/skaduwee/SkaduweeOwlFurball";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -98,10 +110,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const sheep_2 = new Sheep(this, -144, 1264);
     this.add.existing(sheep_2);
 
-    // nature_grass_grass_0_png
-    const nature_grass_grass_0_png = this.add.image(-80, 1248, "outside", "nature/grass/grass_0.png");
-    nature_grass_grass_0_png.setOrigin(0.5, 0.75);
-
     // fenceRight
     const fenceRight = new FenceRight(this, -48, 1248);
     this.add.existing(fenceRight);
@@ -109,10 +117,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // hedgehog
     const hedgehog = new Hedgehog(this, 96, 1360);
     this.add.existing(hedgehog);
-
-    // foliage_tall_grass_tall_grass_7_png
-    const foliage_tall_grass_tall_grass_7_png = this.add.image(-256, 1248, "outside", "foliage/tall_grass/tall_grass_7.png");
-    foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
 
     // tree_12
     const tree_12 = new Tree7(this, -32, 1376);
@@ -170,6 +174,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 160, 704);
     this.add.existing(tivaraSlingshotFemale);
 
+    // tallGrass_7
+    const tallGrass_7 = new TallGrass1(this, -144, 832);
+    this.add.existing(tallGrass_7);
+
     // tivaraWorkerFemale
     const tivaraWorkerFemale = new TivaraWorkerFemale(this, 288, 640);
     this.add.existing(tivaraWorkerFemale);
@@ -177,10 +185,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraWorkerMale
     const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 720);
     this.add.existing(tivaraWorkerMale);
-
-    // foliage_tall_grass_tall_grass_8_png
-    const foliage_tall_grass_tall_grass_8_png = this.add.image(-160, 1296, "outside", "foliage/tall_grass/tall_grass_8.png");
-    foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
 
     // tivaraMacemanMale
     const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
@@ -525,6 +529,146 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // fenceBottom
     const fenceBottom = new FenceBottom(this, -160, 1312);
     this.add.existing(fenceBottom);
+
+    // stonePile
+    const stonePile = new StonePile(this, -592, 784);
+    this.add.existing(stonePile);
+
+    // stonePile_1
+    const stonePile_1 = new StonePile(this, -624, 800);
+    this.add.existing(stonePile_1);
+
+    // stonePile_2
+    const stonePile_2 = new StonePile(this, -560, 800);
+    this.add.existing(stonePile_2);
+
+    // stonePile_3
+    const stonePile_3 = new StonePile(this, -592, 816);
+    this.add.existing(stonePile_3);
+
+    // stonePile_4
+    const stonePile_4 = new StonePile(this, -656, 784);
+    this.add.existing(stonePile_4);
+
+    // stonePile_5
+    const stonePile_5 = new StonePile(this, -656, 816);
+    this.add.existing(stonePile_5);
+
+    // minerals
+    const minerals = new Minerals(this, -240, 240);
+    this.add.existing(minerals);
+
+    // minerals_1
+    const minerals_1 = new Minerals(this, -208, 224);
+    this.add.existing(minerals_1);
+
+    // minerals_2
+    const minerals_2 = new Minerals(this, -208, 256);
+    this.add.existing(minerals_2);
+
+    // minerals_3
+    const minerals_3 = new Minerals(this, -176, 272);
+    this.add.existing(minerals_3);
+
+    // minerals_4
+    const minerals_4 = new Minerals(this, -272, 256);
+    this.add.existing(minerals_4);
+
+    // minerals_5
+    const minerals_5 = new Minerals(this, -240, 272);
+    this.add.existing(minerals_5);
+
+    // tallGrass_5
+    const tallGrass_5 = new TallGrass3(this, -400, 800);
+    this.add.existing(tallGrass_5);
+
+    // tallGrass7
+    const tallGrass7 = new TallGrass7(this, -352, 816);
+    this.add.existing(tallGrass7);
+
+    // tallGrass
+    const tallGrass = new TallGrass7(this, -320, 832);
+    this.add.existing(tallGrass);
+
+    // tallGrass_1
+    const tallGrass_1 = new TallGrass7(this, -224, 848);
+    this.add.existing(tallGrass_1);
+
+    // tallGrass1
+    const tallGrass1 = new TallGrass1(this, -288, 784);
+    this.add.existing(tallGrass1);
+
+    // tallGrass_2
+    const tallGrass_2 = new TallGrass1(this, -320, 768);
+    this.add.existing(tallGrass_2);
+
+    // tallGrass_3
+    const tallGrass_3 = new TallGrass1(this, -176, 816);
+    this.add.existing(tallGrass_3);
+
+    // tallGrass2
+    const tallGrass2 = new TallGrass2(this, -240, 800);
+    this.add.existing(tallGrass2);
+
+    // tallGrass_4
+    const tallGrass_4 = new TallGrass1(this, -208, 800);
+    this.add.existing(tallGrass_4);
+
+    // tallGrass6
+    const tallGrass6 = new TallGrass6(this, -288, 848);
+    this.add.existing(tallGrass6);
+
+    // tallGrass4
+    const tallGrass4 = new TallGrass4(this, -256, 864);
+    this.add.existing(tallGrass4);
+
+    // tallGrass3
+    const tallGrass3 = new TallGrass3(this, -352, 752);
+    this.add.existing(tallGrass3);
+
+    // tallGrass_8
+    const tallGrass_8 = new TallGrass1(this, -16, 896);
+    this.add.existing(tallGrass_8);
+
+    // tallGrass0
+    const tallGrass0 = new TallGrass0(this, 16, 912);
+    this.add.existing(tallGrass0);
+
+    // tallGrass5
+    const tallGrass5 = new TallGrass5(this, -96, 912);
+    this.add.existing(tallGrass5);
+
+    // tallGrass_6
+    const tallGrass_6 = new TallGrass3(this, -48, 880);
+    this.add.existing(tallGrass_6);
+
+    // reeds1
+    const reeds1 = new Reeds1(this, -352, 800);
+    this.add.existing(reeds1);
+
+    // reeds
+    const reeds = new Reeds1(this, -288, 832);
+    this.add.existing(reeds);
+
+    // reeds_1
+    const reeds_1 = new Reeds1(this, -256, 784);
+    this.add.existing(reeds_1);
+
+    // reeds_2
+    const reeds_2 = new Reeds1(this, -160, 800);
+    this.add.existing(reeds_2);
+
+    // reeds_3
+    const reeds_3 = new Reeds1(this, -16, 880);
+    this.add.existing(reeds_3);
+
+    // reeds_4
+    const reeds_4 = new Reeds1(this, -224, 832);
+    this.add.existing(reeds_4);
+
+    // skaduweeOwlFurball
+    const skaduweeOwlFurball = new SkaduweeOwlFurball(this, 1008, 752);
+    this.add.existing(skaduweeOwlFurball);
 
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;

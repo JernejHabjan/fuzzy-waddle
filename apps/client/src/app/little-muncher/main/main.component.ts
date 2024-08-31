@@ -5,7 +5,7 @@ import { AuthService } from "../../auth/auth.service";
 import { LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { LittleMuncherCommunicatorService } from "./communicators/little-muncher-communicator.service";
 import { GameInstanceClientService } from "./communicators/game-instance-client.service";
-import { CommonModule } from "@angular/common";
+
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { GameInterfaceComponent } from "./game-interface/game-interface.component";
 
@@ -14,7 +14,7 @@ import { GameInterfaceComponent } from "./game-interface/game-interface.componen
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
   standalone: true,
-  imports: [CommonModule, GameContainerComponent, GameInterfaceComponent]
+  imports: [GameContainerComponent, GameInterfaceComponent]
 })
 export class MainComponent implements OnInit {
   protected readonly littleMuncherGameConfig = littleMuncherGameConfig;

@@ -23,7 +23,6 @@ import {
 } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { CommonModule } from "@angular/common";
 import { MapSelectorComponent } from "../map-selector/map-selector.component";
 import { TriggerComponent } from "../trigger/trigger.component";
 
@@ -52,7 +51,7 @@ interface DisplayRect {
   templateUrl: "./map-definition.component.html",
   styleUrls: ["./map-definition.component.scss"],
   standalone: true,
-  imports: [CommonModule, MapSelectorComponent, TriggerComponent]
+  imports: [MapSelectorComponent, TriggerComponent]
 })
 export class MapDefinitionComponent implements OnInit, OnDestroy {
   private readonly preferredCanvasWidth = 400;
