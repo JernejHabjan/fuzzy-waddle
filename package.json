@@ -39,7 +39,8 @@
     "probable-waffle-audio-sprites": "pnpm run install-audiosprite-globally && audiosprite apps/client/src/metadata/sfx/character/**/*.mp3 -o apps/client/src/assets/sfx/character -e mp3 -r 8000"
   },
   "engines": {
-    "node": ">=16.16.0"
+    "node": ">=20.12.0",
+    "pnpm": ">=8"
   },
   "private": true,
   "dependencies": {
