@@ -1608,6 +1608,17 @@
             "label": "reeds_4",
             "x": -224,
             "y": 832
+        },
+        {
+            "prefabId": "0ebe068f-8727-4f17-8312-71db0e8cd7a9",
+            "id": "e7a9b643-577d-4e1e-96d3-cec87f6ea507",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeOwlFurball",
+            "x": 1008,
+            "y": 752
         }
     ],
     "plainObjects": [

@@ -74,10 +74,12 @@ import TallGrass4 from "../prefabs/outside/foliage/tall_grass/TallGrass4";
 import TallGrass0 from "../prefabs/outside/foliage/tall_grass/TallGrass0";
 import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
 import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
+import SkaduweeOwlFurball from "../prefabs/units/skaduwee/SkaduweeOwlFurball";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -87,13 +89,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
     // christmasTree
     const christmasTree = new ChristmasTree(this, -288, 1184);
@@ -662,6 +665,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // reeds_4
     const reeds_4 = new Reeds1(this, -224, 832);
     this.add.existing(reeds_4);
+
+    // skaduweeOwlFurball
+    const skaduweeOwlFurball = new SkaduweeOwlFurball(this, 1008, 752);
+    this.add.existing(skaduweeOwlFurball);
 
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;
