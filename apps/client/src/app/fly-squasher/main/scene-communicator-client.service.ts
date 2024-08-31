@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { FlySquasherCommunicatorService } from "../game/fly-squasher-communicator.service";
 import { HighScoreService } from "../high-score/high-score.service";
 import { Subscription } from "rxjs";
@@ -7,12 +7,10 @@ import { Subscription } from "rxjs";
   providedIn: "root"
 })
 export class SceneCommunicatorClientService {
-  private scoreSubscription?: Subscription;
+  private readonly highScoreService = inject(HighScoreService);
+  private readonly communicatorService = inject(FlySquasherCommunicatorService);
 
-  constructor(
-    private readonly highScoreService: HighScoreService,
-    private readonly communicatorService: FlySquasherCommunicatorService
-  ) {}
+  private scoreSubscription?: Subscription;
 
   startCommunication() {
     this.communicatorService.startCommunication();

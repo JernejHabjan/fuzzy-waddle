@@ -15,13 +15,13 @@ import {
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
-import { NgChartsModule } from "ng2-charts";
+import { BaseChartDirective } from "ng2-charts";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
   selector: "probable-waffle-score-through-time",
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]
 })
@@ -58,20 +58,27 @@ describe("ScoreThroughTimeComponent", () => {
 
     await gameInstanceService.addAiPlayer();
     await gameInstanceService.addAiPlayer();
-    const gameInstance = gameInstanceClientServiceStub.gameInstance!;
-    const playerDefinition = {
+    const players = gameInstanceService.gameInstance!.players!;
+    players[0].playerController.data.playerDefinition = {
       player: {
-        playerNumber: gameInstance.players.length,
-        playerName: "Player " + (gameInstance.players.length + 1),
-        playerPosition: gameInstance.players.length,
+        playerNumber: 1,
+        playerName: "Player 1",
+        playerPosition: 1,
         joined: true
       } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
-    const players = gameInstanceService.gameInstance!.players!;
-    players[0].playerController.data.playerDefinition = playerDefinition;
-    players[1].playerController.data.playerDefinition = playerDefinition;
+    players[1].playerController.data.playerDefinition = {
+      player: {
+        playerNumber: 2,
+        playerName: "Player 2",
+        playerPosition: 2,
+        joined: true
+      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      factionType: FactionType.Skaduwee,
+      playerType: ProbableWafflePlayerType.AI
+    } satisfies PositionPlayerDefinition;
 
     players[0].playerState.data.summary.push(
       {

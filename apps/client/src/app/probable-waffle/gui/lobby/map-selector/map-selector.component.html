@@ -3,17 +3,11 @@
     Select a map
   </button>
   <ul class="dropdown-menu menu-border">
-    <li
-      (click)="selectMap(level.id)"
-      *ngFor="let level of levels"
-      class="cursor-pointer p-2"
-    >
-      <img
-        [alt]="level.name"
-        [src]="level.presentation.imagePath"
-        class="map-preview"
-      />
-      <span style="margin-left: 10px">{{ level.name }}</span>
-    </li>
+    @for (level of levels; track level) {
+      <li (click)="selectMap(level.id)" class="cursor-pointer p-2">
+        <img [alt]="level.name" [src]="level.presentation.imagePath" class="map-preview" />
+        <span style="margin-left: 10px">{{ level.name }}</span>
+      </li>
+    }
   </ul>
 </div>

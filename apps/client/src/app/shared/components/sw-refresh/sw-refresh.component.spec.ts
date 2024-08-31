@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { SwRefreshComponent } from "./sw-refresh.component";
 import { Component } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
-import { CommonModule } from "@angular/common";
 
-@Component({ selector: "fuzzy-waddle-sw-refresh", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "fuzzy-waddle-sw-refresh", template: "", standalone: true, imports: [] })
 export class SwRefreshTestingComponent {}
 
 describe("SwRefreshComponent", () => {

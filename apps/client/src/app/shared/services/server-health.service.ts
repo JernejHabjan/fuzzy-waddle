@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { firstValueFrom } from "rxjs";
@@ -14,6 +14,8 @@ export enum ServerState {
   providedIn: "root"
 })
 export class ServerHealthService implements ServerHealthServiceInterface {
+  private readonly httpClient = inject(HttpClient);
+
   private serverState: ServerState = ServerState.checking;
   private checkHealthPromise: Promise<void> | null = null;
 
@@ -28,8 +30,6 @@ export class ServerHealthService implements ServerHealthServiceInterface {
   get serverChecking(): boolean {
     return this.serverState === ServerState.checking;
   }
-
-  constructor(private readonly httpClient: HttpClient) {}
 
   async checkHealth() {
     if (!this.checkHealthPromise) {

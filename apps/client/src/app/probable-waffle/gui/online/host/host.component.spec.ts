@@ -6,10 +6,10 @@ import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
+
 import { LobbyComponent } from "../../lobby/lobby.component";
 
-@Component({ selector: "probable-waffle-host", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "probable-waffle-host", template: "", standalone: true, imports: [] })
 export class HostTestingComponent {}
 
 describe("HostComponent", () => {

@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing";
-
 import { AvatarProviderService } from "./avatar-provider.service";
 import { IAvatarProviderService } from "./avatar-provider.service.interface";
 

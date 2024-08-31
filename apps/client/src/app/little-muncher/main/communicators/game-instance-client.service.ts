@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import {
@@ -19,14 +19,12 @@ import { environment } from "../../../../environments/environment";
   providedIn: "root"
 })
 export class GameInstanceClientService implements GameInstanceClientServiceInterface {
-  gameInstance?: LittleMuncherGameInstance;
+  private readonly authService = inject(AuthService);
+  private readonly httpClient = inject(HttpClient);
+  private readonly serverHealthService = inject(ServerHealthService);
+  private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly httpClient: HttpClient,
-    private readonly serverHealthService: ServerHealthService,
-    private readonly sceneCommunicatorClientService: SceneCommunicatorClientService
-  ) {}
+  gameInstance?: LittleMuncherGameInstance;
 
   async startGame(): Promise<void> {
     this.gameInstance = new LittleMuncherGameInstance({

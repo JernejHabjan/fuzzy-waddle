@@ -6,23 +6,25 @@
     <ng-content />
   </div>
   <div class="modal-footer">
-    <button
-      (click)="dismiss()"
-      *ngIf="modalConfig.hideDismissButton === undefined || !modalConfig.hideDismissButton()"
-      [disabled]="modalConfig.disableDismissButton !== undefined && modalConfig.disableDismissButton()"
-      class="btn btn-outline-secondary"
-      type="button"
-    >
-      {{ modalConfig.dismissButtonLabel }}
-    </button>
-    <button
-      (click)="close()"
-      *ngIf="modalConfig.hideCloseButton === undefined || !modalConfig.hideCloseButton()"
-      [disabled]="modalConfig.disableCloseButton !== undefined && modalConfig.disableCloseButton()"
-      class="btn btn-outline-primary"
-      type="button"
-    >
-      {{ modalConfig.closeButtonLabel }}
-    </button>
+    @if (modalConfig.hideDismissButton === undefined || !modalConfig.hideDismissButton()) {
+      <button
+        (click)="dismiss()"
+        [disabled]="modalConfig.disableDismissButton !== undefined && modalConfig.disableDismissButton()"
+        class="btn btn-outline-secondary"
+        type="button"
+      >
+        {{ modalConfig.dismissButtonLabel }}
+      </button>
+    }
+    @if (modalConfig.hideCloseButton === undefined || !modalConfig.hideCloseButton()) {
+      <button
+        (click)="close()"
+        [disabled]="modalConfig.disableCloseButton !== undefined && modalConfig.disableCloseButton()"
+        class="btn btn-outline-primary"
+        type="button"
+      >
+        {{ modalConfig.closeButtonLabel }}
+      </button>
+    }
   </div>
 </ng-template>

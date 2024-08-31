@@ -9,6 +9,6 @@ import { IAvatarProviderService } from "./avatar-provider.service.interface";
 export class AvatarProviderService implements IAvatarProviderService {
   getAvatar(seed: string) {
     const avatar = createAvatar(pixelArt, { seed });
-    return avatar.toDataUriSync();
+    return avatar.toDataUri();
   }
 }

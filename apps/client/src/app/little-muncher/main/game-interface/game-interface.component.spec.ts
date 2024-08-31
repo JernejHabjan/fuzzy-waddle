@@ -9,10 +9,10 @@ import { authServiceStub } from "../../../auth/auth.service.spec";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../communicators/game-instance-client.service.spec";
 import { ModalComponent } from "../../../shared/components/modal/modal.component";
-import { CommonModule } from "@angular/common";
+
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
 
-@Component({ selector: "little-muncher-game-interface", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "little-muncher-game-interface", template: "", standalone: true, imports: [] })
 export class GameInterfaceTestingComponent {}
 
 describe("GameInterfaceComponent", () => {

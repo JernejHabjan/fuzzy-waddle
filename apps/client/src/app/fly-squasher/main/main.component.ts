@@ -9,14 +9,14 @@ import { Router } from "@angular/router";
 import { PreventNavigateBack } from "../../shared/handlers/prevent-navigate-back";
 import { ModalConfig } from "../../shared/components/modal/modal-config";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
-import { CommonModule } from "@angular/common";
+
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 
 @Component({
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
   standalone: true,
-  imports: [CommonModule, ModalComponent, GameContainerComponent]
+  imports: [ModalComponent, GameContainerComponent]
 })
 export class MainComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);

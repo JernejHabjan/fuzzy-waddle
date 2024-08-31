@@ -5,9 +5,8 @@ import { Component, Input } from "@angular/core";
 import { BaseGameData } from "../phaser/game/base-game-data";
 import { LittleMuncherGameInstance, LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { LittleMuncherCommunicatorService } from "../../../little-muncher/main/communicators/little-muncher-communicator.service";
-import { CommonModule } from "@angular/common";
 
-@Component({ selector: "fuzzy-waddle-game-container", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "fuzzy-waddle-game-container", template: "", standalone: true, imports: [] })
 export class GameContainerTestingComponent {
   @Input({ required: true }) gameConfig!: Phaser.Types.Core.GameConfig;
   @Input({ required: true }) gameData!: BaseGameData<

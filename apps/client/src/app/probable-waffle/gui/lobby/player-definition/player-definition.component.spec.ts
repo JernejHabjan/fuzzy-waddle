@@ -1,14 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { PlayerDefinitionComponent } from "./player-definition.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 
-@Component({ selector: "probable-waffle-player-definition", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "probable-waffle-player-definition", template: "", standalone: true, imports: [] })
 export class PlayerDefinitionTestingComponent {}
 
 describe("PlayerDefinitionComponent", () => {

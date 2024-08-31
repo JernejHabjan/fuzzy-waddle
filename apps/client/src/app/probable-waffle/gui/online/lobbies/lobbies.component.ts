@@ -12,7 +12,6 @@ import { ServerHealthService } from "../../../../shared/services/server-health.s
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { Router } from "@angular/router";
-import { CommonModule } from "@angular/common";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { MapFilterComponent } from "./map-filter/map-filter.component";
 
@@ -21,7 +20,7 @@ import { MapFilterComponent } from "./map-filter/map-filter.component";
   templateUrl: "./lobbies.component.html",
   styleUrls: ["./lobbies.component.scss"],
   standalone: true,
-  imports: [CommonModule, FaIconComponent, MapFilterComponent]
+  imports: [FaIconComponent, MapFilterComponent]
 })
 export class LobbiesComponent implements OnInit, OnDestroy {
   protected readonly ProbableWaffleRoomHelper = ProbableWaffleRoomHelper;

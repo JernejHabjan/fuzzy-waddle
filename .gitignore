@@ -54,3 +54,4 @@ migrations.json
 package-lock.json
 
 .nx/cache
+.nx/workspace-data

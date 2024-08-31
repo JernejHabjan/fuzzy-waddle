@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
@@ -20,17 +20,15 @@ import { GameInstanceClientService } from "../../main/communicators/game-instanc
   providedIn: "root"
 })
 export class SpectateService implements SpectateServiceInterface {
+  private readonly authService = inject(AuthService);
+  private readonly httpClient = inject(HttpClient);
+  private readonly serverHealthService = inject(ServerHealthService);
+  private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
+
   private spectateRoomsSubscription?: Subscription;
   rooms: LittleMuncherRoom[] = [];
   spectatorDisconnected: Subject<void> = new Subject<void>();
-
-  constructor(
-    private readonly authService: AuthService,
-    private readonly httpClient: HttpClient,
-    private readonly serverHealthService: ServerHealthService,
-    private readonly authenticatedSocketService: AuthenticatedSocketService,
-    private readonly gameInstanceClientService: GameInstanceClientService
-  ) {}
 
   /**
    * we need to listen to room events, so we know if we're spectating a room that is removed
