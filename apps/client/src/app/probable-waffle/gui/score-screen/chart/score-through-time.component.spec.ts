@@ -58,20 +58,27 @@ describe("ScoreThroughTimeComponent", () => {
 
     await gameInstanceService.addAiPlayer();
     await gameInstanceService.addAiPlayer();
-    const gameInstance = gameInstanceClientServiceStub.gameInstance!;
-    const playerDefinition = {
+    const players = gameInstanceService.gameInstance!.players!;
+    players[0].playerController.data.playerDefinition = {
       player: {
-        playerNumber: gameInstance.players.length,
-        playerName: "Player " + (gameInstance.players.length + 1),
-        playerPosition: gameInstance.players.length,
+        playerNumber: 1,
+        playerName: "Player 1",
+        playerPosition: 1,
         joined: true
       } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
-    const players = gameInstanceService.gameInstance!.players!;
-    players[0].playerController.data.playerDefinition = playerDefinition;
-    players[1].playerController.data.playerDefinition = playerDefinition;
+    players[1].playerController.data.playerDefinition = {
+      player: {
+        playerNumber: 2,
+        playerName: "Player 2",
+        playerPosition: 2,
+        joined: true
+      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      factionType: FactionType.Skaduwee,
+      playerType: ProbableWafflePlayerType.AI
+    } satisfies PositionPlayerDefinition;
 
     players[0].playerState.data.summary.push(
       {
