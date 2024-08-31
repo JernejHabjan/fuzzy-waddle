@@ -1,0 +1,39 @@
+{
+    "id": "e208af37-5101-4cbf-adca-93d59373fc09",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "c8449391-14df-4d96-ae4a-0c43ceb1117c",
+            "label": "nature_resources_stone_pile_1_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "5.025616438265331 39.13261986381158 32.15891862605808 25.16299893544304 60.36680703910994 35.10292151908988 63.590565714887305 49.072542447458424 34.03944452026154 63.57945648845653 0.45862498091407744 47.72930966588453",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/resources/stone_pile_1.png"
+            },
+            "x": 32,
+            "y": 47.223497563360624,
+            "originY": 0.7378671494275097
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
