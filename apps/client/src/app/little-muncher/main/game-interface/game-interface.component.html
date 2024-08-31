@@ -5,15 +5,16 @@
   <div>Are you sure you wish to leave?</div>
 </fuzzy-waddle-modal>
 
-<button
-  *ngIf="isPlayer"
-  (click)="pauseToggle()"
-  class="btn btn-danger m-1 position-absolute"
-  style="right: 20px; top: 20px"
-  type="button"
->
-  <fa-icon [icon]="paused ? faPlay : faPause"></fa-icon>
-</button>
+@if (isPlayer) {
+  <button
+    (click)="pauseToggle()"
+    class="btn btn-danger m-1 position-absolute"
+    style="right: 20px; top: 20px"
+    type="button"
+  >
+    <fa-icon [icon]="paused ? faPlay : faPause"></fa-icon>
+  </button>
+}
 
 <div class="position-absolute text-white" style="text-align: right; right: 20px; top: 70px">
   <div style="right: 20px; top: 70px">Score: {{ score | wrap: 1 }}</div>

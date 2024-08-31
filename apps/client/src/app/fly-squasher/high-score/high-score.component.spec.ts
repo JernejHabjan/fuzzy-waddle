@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { HighScoreComponent } from "./high-score.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";

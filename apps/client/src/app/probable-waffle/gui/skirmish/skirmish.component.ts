@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
@@ -7,7 +6,7 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
 @Component({
   template: `<fuzzy-waddle-loader />`,
   standalone: true,
-  imports: [CommonModule, LoaderComponent]
+  imports: [LoaderComponent]
 })
 export class SkirmishComponent implements OnInit {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);

@@ -2,14 +2,13 @@ import { Component, inject, OnInit } from "@angular/core";
 import { SpectateService } from "./spectate.service";
 import { LittleMuncherRoom } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "little-muncher-spectate",
   templateUrl: "./spectate.component.html",
   styleUrls: ["./spectate.component.scss"],
   standalone: true,
-  imports: [CommonModule]
+  imports: []
 })
 export class SpectateComponent implements OnInit {
   protected readonly spectateService = inject(SpectateService);

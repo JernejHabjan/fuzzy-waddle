@@ -1,7 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 import { AuthService } from "../../../auth/auth.service";
-import { CommonModule } from "@angular/common";
 import { MatchmakingComponent } from "./matchmaking/matchmaking.component";
 import { HostComponent } from "./host/host.component";
 import { LobbiesComponent } from "./lobbies/lobbies.component";
@@ -12,7 +11,7 @@ import { RouterLink } from "@angular/router";
   templateUrl: "./online.component.html",
   styleUrls: ["./online.component.scss"],
   standalone: true,
-  imports: [CommonModule, MatchmakingComponent, HostComponent, LobbiesComponent, HomeNavComponent, RouterLink]
+  imports: [MatchmakingComponent, HostComponent, LobbiesComponent, HomeNavComponent, RouterLink]
 })
 export class OnlineComponent {
   protected selectedTab: string = "join";

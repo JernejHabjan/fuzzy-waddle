@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing";
-
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { HighScoreService } from "../high-score/high-score.service";
 import { highScoreServiceStub } from "../high-score/high-score.service.spec";

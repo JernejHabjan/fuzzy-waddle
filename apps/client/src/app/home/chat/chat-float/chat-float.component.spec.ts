@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { ChatFloatComponent } from "./chat-float.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 

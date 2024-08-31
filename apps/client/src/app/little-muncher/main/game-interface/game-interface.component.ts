@@ -9,7 +9,7 @@ import { PreventNavigateBack } from "../../../shared/handlers/prevent-navigate-b
 import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 import { LittleMuncherCommunicatorService } from "../communicators/little-muncher-communicator.service";
-import { CommonModule } from "@angular/common";
+
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
 
@@ -18,7 +18,7 @@ import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
   templateUrl: "./game-interface.component.html",
   styleUrls: ["./game-interface.component.scss"],
   standalone: true,
-  imports: [CommonModule, ModalComponent, FaIconComponent, WrapPipe]
+  imports: [ModalComponent, FaIconComponent, WrapPipe]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);

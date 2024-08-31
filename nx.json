@@ -1,9 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "fuzzy-waddle",
-  "affected": {
-    "defaultBase": "develop"
-  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx-cloud",
@@ -67,5 +64,6 @@
       "style": "scss"
     }
   },
-  "defaultProject": "client"
+  "defaultProject": "client",
+  "defaultBase": "develop"
 }

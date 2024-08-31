@@ -11,15 +11,17 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let player of players">
-      <td>{{ player.name }}</td>
-      <td>{{ player.unit_produced }}</td>
-      <td>{{ player.unit_killed }}</td>
-      <td>{{ player.building_constructed }}</td>
-      <td>{{ player.building_destroyed }}</td>
-      <td>{{ player.resource_collected }}</td>
-      <td>{{ player.resource_spent }}</td>
-    </tr>
+    @for (player of players; track player.playerNumber) {
+      <tr>
+        <td>{{ player.name }}</td>
+        <td>{{ player.unit_produced }}</td>
+        <td>{{ player.unit_killed }}</td>
+        <td>{{ player.building_constructed }}</td>
+        <td>{{ player.building_destroyed }}</td>
+        <td>{{ player.resource_collected }}</td>
+        <td>{{ player.resource_spent }}</td>
+      </tr>
+    }
   </tbody>
   <tfoot>
     <tr>

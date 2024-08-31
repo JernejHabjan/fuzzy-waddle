@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
@@ -9,11 +8,12 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 import { GameLengthPipe } from "../../../shared/pipes/game-length.pipe";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "probable-waffle-replay",
   standalone: true,
-  imports: [CommonModule, RouterLink, GameLengthPipe],
+  imports: [RouterLink, GameLengthPipe, DatePipe],
   templateUrl: "./replay.component.html",
   styleUrls: ["./replay.component.scss"]
 })

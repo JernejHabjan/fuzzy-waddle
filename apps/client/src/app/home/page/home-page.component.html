@@ -9,21 +9,31 @@
 </a>
 
 <div class="all-games">
-  <a *ngFor="let game of displayGames" class="tile-game nav-link card-container" routerLink="{{ game.route }}">
-    <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
-    <div class="game-title">
-      <h2>{{ game.name }}</h2>
-      <div *ngIf="game.inDevelopment" class="in-development">In Development</div>
-    </div>
-    <div class="game-description">
-      <p>{{ game.description }}</p>
-    </div>
-  </a>
+  @for (game of displayGames; track game) {
+    <a class="tile-game nav-link card-container" routerLink="{{ game.route }}">
+      <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
+      <div class="game-title">
+        <h2>{{ game.name }}</h2>
+        @if (game.inDevelopment) {
+          <div class="in-development">In Development</div>
+        }
+      </div>
+      <div class="game-description">
+        <p>{{ game.description }}</p>
+      </div>
+    </a>
+  }
 </div>
-<fuzzy-waddle-chat-float *ngIf="serverHealthService.serverAvailable && authService.isAuthenticated" />
-<div *ngIf="authService.isAuthenticated && !environment.production">
-  <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.add()">Add Test</button>
-  <button class="btn btn-outline-primary ms-1" (click)="addViaMw()">Add Test via MW</button>
-  <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.get()">Get Test</button>
-  <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.getStorageEntry()">Get Storage Entry</button>
-</div>
+@if (serverHealthService.serverAvailable && authService.isAuthenticated) {
+  <fuzzy-waddle-chat-float />
+}
+@if (authService.isAuthenticated && !environment.production) {
+  <div>
+    <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.add()">Add Test</button>
+    <button class="btn btn-outline-primary ms-1" (click)="addViaMw()">Add Test via MW</button>
+    <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.get()">Get Test</button>
+    <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.getStorageEntry()">
+      Get Storage Entry
+    </button>
+  </div>
+}

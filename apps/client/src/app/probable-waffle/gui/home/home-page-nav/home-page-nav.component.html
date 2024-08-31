@@ -1,8 +1,10 @@
 <fuzzy-waddle-home-nav>
   <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-    <li class="nav-item" *ngIf="enabledCampaign">
-      <a class="nav-link active" routerLink="campaign">Campaign</a>
-    </li>
+    @if (enabledCampaign) {
+      <li class="nav-item">
+        <a class="nav-link active" routerLink="campaign">Campaign</a>
+      </li>
+    }
     <li class="nav-item">
       <a class="nav-link active" routerLink="online">Online</a>
     </li>
@@ -15,16 +17,22 @@
     <li class="nav-item">
       <a class="nav-link active" routerLink="replay">Replay</a>
     </li>
-    <li class="nav-item" *ngIf="enabledInstantDemoGame">
-      <a class="nav-link active" routerLink="instant-game">Instant</a>
-    </li>
+    @if (enabledInstantDemoGame) {
+      <li class="nav-item">
+        <a class="nav-link active" routerLink="instant-game">Instant</a>
+      </li>
+    }
   </ul>
   <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-    <li class="nav-item" *ngIf="enabledProgress">
-      <a class="nav-link active" routerLink="progress">Progress</a>
-    </li>
-    <li class="nav-item" *ngIf="enabledOptions">
-      <a class="nav-link active" routerLink="options">Options</a>
-    </li>
+    @if (enabledProgress) {
+      <li class="nav-item">
+        <a class="nav-link active" routerLink="progress">Progress</a>
+      </li>
+    }
+    @if (enabledOptions) {
+      <li class="nav-item">
+        <a class="nav-link active" routerLink="options">Options</a>
+      </li>
+    }
   </ul>
 </fuzzy-waddle-home-nav>

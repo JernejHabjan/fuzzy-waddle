@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { HomeComponent } from "./home.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
@@ -8,9 +7,8 @@ import { authServiceStub } from "../../auth/auth.service.spec";
 import { SpectateTestComponent } from "./spectate/spectate.component.spec";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SpectateComponent } from "./spectate/spectate.component";
-import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-@Component({ selector: "little-muncher-home", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "little-muncher-home", template: "", standalone: true, imports: [] })
 export class HomeTestingComponent {}
 
 describe("HomeComponent", () => {
