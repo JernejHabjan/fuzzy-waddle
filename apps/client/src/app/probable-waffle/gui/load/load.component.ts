@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import {
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceSaveData,
@@ -8,11 +8,12 @@ import {
 import { RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "fuzzy-waddle-load",
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink, DatePipe],
   templateUrl: "./load.component.html",
   styleUrls: ["./load.component.scss"]
 })

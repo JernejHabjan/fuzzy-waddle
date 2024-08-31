@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import { PlayerDefinitionComponent } from "./player-definition/player-definition.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
@@ -12,7 +11,6 @@ import { LobbyChatComponent } from "./lobby-chat/lobby-chat.component";
   styleUrls: ["./lobby.component.scss"],
   standalone: true,
   imports: [
-    CommonModule,
     MapDefinitionComponent,
     PlayerDefinitionComponent,
     SpectatorsGridComponent,

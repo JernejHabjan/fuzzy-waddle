@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnDestroy } from "@angular/core";
 import { ConstellationParticle } from "./constellation-particle";
-import { CommonModule } from "@angular/common";
 
 type MousePosition = { x?: number; y?: number };
 
@@ -9,7 +8,7 @@ type MousePosition = { x?: number; y?: number };
   templateUrl: "./constellation-effect.component.html",
   styleUrls: ["./constellation-effect.component.scss"],
   standalone: true,
-  imports: [CommonModule]
+  imports: []
 })
 export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
   private clickListener?: (e: MouseEvent) => void;

@@ -1,4 +1,4 @@
-<ng-container *ngIf="gameData">
+@if (gameData) {
   <fuzzy-waddle-game-container [gameConfig]="littleMuncherGameConfig" [gameData]="gameData" />
   <little-muncher-game-interface />
-</ng-container>
+}

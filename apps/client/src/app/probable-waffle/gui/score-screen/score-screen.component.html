@@ -20,18 +20,26 @@
     </ul>
 
     <div>
-      <div *ngIf="activeTab === 'scoreTable'">
-        <probable-waffle-score-table />
-      </div>
-      <div *ngIf="activeTab === 'units'">
-        <probable-waffle-score-through-time summaryType="units" />
-      </div>
-      <div *ngIf="activeTab === 'buildings'">
-        <probable-waffle-score-through-time summaryType="buildings" />
-      </div>
-      <div *ngIf="activeTab === 'resources'">
-        <probable-waffle-score-through-time summaryType="resources" />
-      </div>
+      @if (activeTab === "scoreTable") {
+        <div>
+          <probable-waffle-score-table />
+        </div>
+      }
+      @if (activeTab === "units") {
+        <div>
+          <probable-waffle-score-through-time summaryType="units" />
+        </div>
+      }
+      @if (activeTab === "buildings") {
+        <div>
+          <probable-waffle-score-through-time summaryType="buildings" />
+        </div>
+      }
+      @if (activeTab === "resources") {
+        <div>
+          <probable-waffle-score-through-time summaryType="resources" />
+        </div>
+      }
     </div>
 
     <div class="container mt-4">

@@ -8,12 +8,19 @@ import { getCommunicator } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "./id-component";
 
+export type SelectableDefinition = {
+  offsetY?: number;
+};
+
 export class SelectableComponent {
   private selected: boolean = false;
   private selectionCircle!: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
   private playerChangedSubscription?: Subscription;
-  constructor(private readonly gameObject: GameObject) {
+  constructor(
+    private readonly gameObject: GameObject,
+    private readonly selectableDefinition?: SelectableDefinition
+  ) {
     this.createSelectionCircle();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init);
@@ -34,6 +41,7 @@ export class SelectableComponent {
     const bounds = getGameObjectBounds(this.gameObject);
     if (!bounds) return;
     const ellipse = new Phaser.Geom.Ellipse(0, 0, bounds.width, bounds.width / 2);
+    ellipse.y = this.selectableDefinition?.offsetY ?? 0;
     const graphics = this.gameObject.scene.add.graphics();
     graphics.lineStyle(2, 0xffffff); // todo color from player
     graphics.strokeEllipseShape(ellipse);

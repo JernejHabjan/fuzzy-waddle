@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { LobbiesComponent } from "./lobbies.component";
 import { Component } from "@angular/core";
 import { roomsServiceStub } from "../../../communicators/rooms/rooms.service.spec";
@@ -9,9 +8,8 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
-import { CommonModule } from "@angular/common";
 
-@Component({ selector: "probable-waffle-lobbies", template: "", standalone: true, imports: [CommonModule] })
+@Component({ selector: "probable-waffle-lobbies", template: "", standalone: true, imports: [] })
 export class LobbiesTestingComponent {}
 
 describe("LobbiesComponent", () => {

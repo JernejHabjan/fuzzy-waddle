@@ -359,8 +359,13 @@
             <key type="filename">../sprites/outside/nature/block_obsidian_lava/3.png</key>
             <key type="filename">../sprites/outside/nature/block_obsidian_lava/4.png</key>
             <key type="filename">../sprites/outside/nature/block_obsidian_lava/5.png</key>
+            <key type="filename">../sprites/outside/nature/grass/reeds_1.png</key>
             <key type="filename">../sprites/outside/nature/ramp/stone/top_left.png</key>
             <key type="filename">../sprites/outside/nature/ramp/stone/top_right.png</key>
+            <key type="filename">../sprites/outside/nature/resources/minerals_pile_1.png</key>
+            <key type="filename">../sprites/outside/nature/resources/minerals_pile_2.png</key>
+            <key type="filename">../sprites/outside/nature/resources/stone_pile_1.png</key>
+            <key type="filename">../sprites/outside/nature/resources/stone_pile_2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

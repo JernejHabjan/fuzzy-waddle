@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing";
-
 import { GameInstanceClientService } from "./game-instance-client.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";

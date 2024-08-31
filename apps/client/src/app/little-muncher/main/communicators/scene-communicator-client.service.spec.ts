@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing";
-
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";

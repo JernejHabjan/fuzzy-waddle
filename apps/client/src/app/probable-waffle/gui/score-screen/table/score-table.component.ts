@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { PlayerStateActionType, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 export type PlayerSummary = {
+  playerNumber: number;
   name: string;
   unit_produced: number;
   unit_killed: number;
@@ -16,7 +16,7 @@ export type PlayerSummary = {
 @Component({
   selector: "probable-waffle-score-table",
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: "./score-table.component.html",
   styleUrls: ["./score-table.component.scss"]
 })
@@ -29,6 +29,7 @@ export class ScoreTableComponent implements OnInit {
     const players = this.gameInstanceClientService.gameInstance.players;
     this.players = players.map((p) => {
       return {
+        playerNumber: p.playerController.data.playerDefinition!.player.playerNumber,
         name: p.playerController.data.playerDefinition!.player.playerName!,
         unit_produced: this.getTotalForPlayer(p, "unit_produced"),
         unit_killed: this.getTotalForPlayer(p, "unit_killed"),
