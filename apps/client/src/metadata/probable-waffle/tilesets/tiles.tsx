@@ -104,7 +104,7 @@
  </tile>
  <tile id="22">
   <properties>
-   <property name="color" type="color" value="#ff756958"/>
+   <property name="color" type="color" value="#ffddc6a6"/>
   </properties>
  </tile>
  <tile id="23">
