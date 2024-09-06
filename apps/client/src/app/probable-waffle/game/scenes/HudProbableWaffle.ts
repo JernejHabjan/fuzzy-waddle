@@ -26,6 +26,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly minimapWidth = 400;
   private readonly smallMinimapWidth = 200;
   private readonly minimapBreakpoint = 800;
+  private readonly minimapMargin = 20;
   constructor() {
     super("HudProbableWaffle");
 
@@ -112,8 +113,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const widthInPixels = sceneWidth > this.minimapBreakpoint ? this.minimapWidth : this.smallMinimapWidth;
     const y = this.scale.height - widthInPixels / 2;
     const data = tileMapComponent.data;
-    this.createIsometricMinimap(widthInPixels, width, 0, y, data);
-    this.fillMinimapWithActors(widthInPixels, width, 0, y); // todo? subscribe to actor added/removed/moved
+    this.createIsometricMinimap(widthInPixels, width, this.minimapMargin, y - this.minimapMargin, data);
+    this.fillMinimapWithActors(widthInPixels, width, this.minimapMargin, y - this.minimapMargin); // todo? subscribe to actor added/removed/moved
   }
 
   private createDiamondShape(
