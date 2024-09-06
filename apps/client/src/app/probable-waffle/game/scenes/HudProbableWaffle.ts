@@ -159,7 +159,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         const isoX = offsetX + (j - i) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
         const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
-        diamond.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+        diamond.on("pointerover", (pointer: Phaser.Input.Pointer) => {
           if (pointer.rightButtonDown()) {
             this.assignActorActionToTileCoordinates({ x: i, y: j });
             // Handle right-click logic here
