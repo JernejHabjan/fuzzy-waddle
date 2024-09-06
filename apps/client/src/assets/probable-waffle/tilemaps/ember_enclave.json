@@ -89,6 +89,195 @@
          "tileheight":32,
          "tiles":[
                 {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad7a8"
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffbcd780"
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":19,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":20,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":21,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":22,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffddc6a6"
+                        }]
+                }, 
+                {
                  "animation":[
                         {
                          "duration":1300,
@@ -105,10 +294,105 @@
                  "id":23,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }]
+                }, 
+                {
+                 "id":24,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":25,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":26,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":27,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":28,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fffad29f"
+                        }]
+                }, 
+                {
+                 "id":29,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":30,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":31,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":32,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":33,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
                         }]
                 }, 
                 {
@@ -127,6 +411,11 @@
                         }],
                  "id":34,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -151,15 +440,10 @@
                  "id":35,
                  "properties":[
                         {
-                         "name":"navigationRestriction",
-                         "propertytype":"navigationRestriction",
-                         "type":"string",
-                         "value":"north,west,east,south"
-                        }]
-                }, 
-                {
-                 "id":47,
-                 "properties":[
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -168,8 +452,335 @@
                         }]
                 }, 
                 {
+                 "id":36,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":37,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":38,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":39,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":40,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":41,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":42,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":43,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":44,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":45,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":46,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":47,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
+                         "name":"navigationRestriction",
+                         "propertytype":"navigationRestriction",
+                         "type":"string",
+                         "value":"north,west,east,south"
+                        }]
+                }, 
+                {
+                 "id":48,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":50,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":51,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":52,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                },
+            
+                {
+                 "id":53,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":54,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":55,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":56,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":57,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":58,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":59,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe2e8f5"
+                        }]
+                }, 
+                {
+                 "id":60,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":61,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":62,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":63,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":64,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdac09f"
+                        }]
+                }, 
+                {
+                 "id":65,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":66,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":67,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":68,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":69,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":70,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":71,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffc3d5f2"
+                        }]
+                }, 
+                {
                  "id":72,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -181,6 +792,11 @@
                  "id":73,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -190,6 +806,11 @@
                 {
                  "id":74,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -201,6 +822,11 @@
                  "id":75,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -211,6 +837,11 @@
                  "id":76,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -218,8 +849,67 @@
                         }]
                 }, 
                 {
+                 "id":77,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":78,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":79,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":80,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":81,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":82,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
                  "id":84,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -241,6 +931,11 @@
                  "id":86,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -250,6 +945,11 @@
                 {
                  "id":87,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -261,6 +961,11 @@
                  "id":88,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -268,8 +973,67 @@
                         }]
                 }, 
                 {
+                 "id":89,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":90,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":91,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":92,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":93,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":94,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
                  "id":96,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -281,6 +1045,11 @@
                  "id":97,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -290,6 +1059,11 @@
                 {
                  "id":98,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -301,6 +1075,11 @@
                  "id":99,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -311,6 +1090,11 @@
                  "id":100,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -318,8 +1102,68 @@
                         }]
                 }, 
                 {
+                 "id":101,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":102,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":103,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":104,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                },
+            
+                {
+                 "id":105,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
+                 "id":106,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffe8cba5"
+                        }]
+                }, 
+                {
                  "id":108,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -331,6 +1175,11 @@
                  "id":109,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -340,6 +1189,11 @@
                 {
                  "id":110,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -351,6 +1205,11 @@
                  "id":111,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -360,6 +1219,11 @@
                 {
                  "id":112,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -371,6 +1235,11 @@
                  "id":113,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -380,6 +1249,11 @@
                 {
                  "id":114,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -391,6 +1265,11 @@
                  "id":115,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -400,6 +1279,11 @@
                 {
                  "id":116,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -411,6 +1295,11 @@
                  "id":117,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -421,6 +1310,11 @@
                  "id":118,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -430,6 +1324,11 @@
                 {
                  "id":120,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -451,6 +1350,11 @@
                  "id":122,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -460,6 +1364,11 @@
                 {
                  "id":123,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -471,6 +1380,11 @@
                  "id":124,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -480,6 +1394,11 @@
                 {
                  "id":125,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -491,6 +1410,11 @@
                  "id":126,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -500,6 +1424,11 @@
                 {
                  "id":127,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -511,6 +1440,11 @@
                  "id":128,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -520,6 +1454,11 @@
                 {
                  "id":129,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -531,6 +1470,11 @@
                  "id":130,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -540,6 +1484,11 @@
                 {
                  "id":132,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -551,6 +1500,11 @@
                  "id":133,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -560,6 +1514,11 @@
                 {
                  "id":134,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -571,6 +1530,11 @@
                  "id":135,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -580,6 +1544,11 @@
                 {
                  "id":136,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -591,6 +1560,11 @@
                  "id":137,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -600,6 +1574,11 @@
                 {
                  "id":138,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -611,6 +1590,11 @@
                  "id":139,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -621,16 +1605,25 @@
                  "id":140,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
                         }]
-                },
-            
+                }, 
                 {
                  "id":141,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -642,6 +1635,11 @@
                  "id":142,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -649,8 +1647,58 @@
                         }]
                 }, 
                 {
+                 "id":144,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":145,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":146,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":147,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":148,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
                  "id":149,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -662,6 +1710,11 @@
                  "id":150,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -671,6 +1724,11 @@
                 {
                  "id":151,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -682,6 +1740,11 @@
                  "id":152,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -691,6 +1754,11 @@
                 {
                  "id":153,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -702,6 +1770,11 @@
                  "id":154,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -709,8 +1782,50 @@
                         }]
                 }, 
                 {
+                 "id":156,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":158,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":159,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":160,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                },
+            
+                {
                  "id":161,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -722,6 +1837,11 @@
                  "id":162,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -731,6 +1851,11 @@
                 {
                  "id":163,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -742,6 +1867,11 @@
                  "id":164,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -751,6 +1881,11 @@
                 {
                  "id":165,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -762,6 +1897,11 @@
                  "id":166,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -769,8 +1909,58 @@
                         }]
                 }, 
                 {
+                 "id":168,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":169,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":170,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":171,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
+                 "id":172,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffdbd894"
+                        }]
+                }, 
+                {
                  "id":173,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -782,6 +1972,11 @@
                  "id":174,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -791,6 +1986,11 @@
                 {
                  "id":175,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -802,6 +2002,11 @@
                  "id":176,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -811,6 +2016,11 @@
                 {
                  "id":177,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -822,6 +2032,11 @@
                  "id":178,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -831,6 +2046,11 @@
                 {
                  "id":180,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -842,6 +2062,11 @@
                  "id":181,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -851,6 +2076,11 @@
                 {
                  "id":182,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -862,6 +2092,11 @@
                  "id":183,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -871,6 +2106,11 @@
                 {
                  "id":184,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -882,6 +2122,11 @@
                  "id":185,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -891,6 +2136,11 @@
                 {
                  "id":186,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -902,6 +2152,11 @@
                  "id":187,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -911,6 +2166,11 @@
                 {
                  "id":188,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -922,6 +2182,11 @@
                  "id":189,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -932,6 +2197,11 @@
                  "id":190,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -941,6 +2211,11 @@
                 {
                  "id":192,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -962,6 +2237,11 @@
                  "id":194,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -971,6 +2251,11 @@
                 {
                  "id":195,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -982,6 +2267,11 @@
                  "id":196,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -991,6 +2281,11 @@
                 {
                  "id":197,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1002,6 +2297,11 @@
                  "id":198,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1011,6 +2311,11 @@
                 {
                  "id":199,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1022,6 +2327,11 @@
                  "id":200,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1031,6 +2341,11 @@
                 {
                  "id":201,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1042,6 +2357,11 @@
                  "id":202,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1051,6 +2371,11 @@
                 {
                  "id":204,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1062,6 +2387,11 @@
                  "id":205,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1071,6 +2401,11 @@
                 {
                  "id":206,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1082,6 +2417,11 @@
                  "id":207,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1091,6 +2431,11 @@
                 {
                  "id":208,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1102,6 +2447,11 @@
                  "id":209,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1111,6 +2461,11 @@
                 {
                  "id":210,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1122,16 +2477,25 @@
                  "id":211,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
                         }]
-                },
-            
+                }, 
                 {
                  "id":212,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1143,6 +2507,11 @@
                  "id":213,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1153,15 +2522,71 @@
                  "id":214,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
                         }]
+                },
+            
+                {
+                 "id":216,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":217,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":218,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":219,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":220,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
                 }, 
                 {
                  "id":221,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1173,6 +2598,11 @@
                  "id":222,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1182,6 +2612,11 @@
                 {
                  "id":223,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1193,6 +2628,11 @@
                  "id":224,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1202,6 +2642,11 @@
                 {
                  "id":225,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1213,6 +2658,11 @@
                  "id":226,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1220,8 +2670,49 @@
                         }]
                 }, 
                 {
+                 "id":228,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":230,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":231,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":232,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
                  "id":233,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1233,6 +2724,11 @@
                  "id":234,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1242,6 +2738,11 @@
                 {
                  "id":235,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1253,6 +2754,11 @@
                  "id":236,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1262,6 +2768,11 @@
                 {
                  "id":237,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1273,6 +2784,11 @@
                  "id":238,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1280,8 +2796,58 @@
                         }]
                 }, 
                 {
+                 "id":240,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":241,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":242,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":243,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
+                 "id":244,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd4dff3"
+                        }]
+                }, 
+                {
                  "id":245,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1293,6 +2859,11 @@
                  "id":246,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1302,6 +2873,11 @@
                 {
                  "id":247,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1313,6 +2889,11 @@
                  "id":248,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1322,6 +2903,11 @@
                 {
                  "id":249,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1333,6 +2919,11 @@
                  "id":250,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a8ed6"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1342,6 +2933,11 @@
                 {
                  "id":252,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1353,6 +2949,11 @@
                  "id":253,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1362,6 +2963,11 @@
                 {
                  "id":254,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1373,6 +2979,11 @@
                  "id":255,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1382,6 +2993,11 @@
                 {
                  "id":256,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1393,6 +3009,11 @@
                  "id":264,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1400,18 +3021,13 @@
                         }]
                 }, 
                 {
-                 "id":265,
-                 "properties":[
-                        {
-                         "name":"navigationRestriction",
-                         "propertytype":"navigationRestriction",
-                         "type":"string",
-                         "value":""
-                        }]
-                }, 
-                {
                  "id":266,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1423,6 +3039,11 @@
                  "id":267,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1432,6 +3053,11 @@
                 {
                  "id":268,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1443,6 +3069,11 @@
                  "id":276,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1452,6 +3083,11 @@
                 {
                  "id":277,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -1463,6 +3099,11 @@
                  "id":278,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1473,6 +3114,11 @@
                  "id":279,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -1482,6 +3128,11 @@
                 {
                  "id":280,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87b4e5"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -2530,8 +4181,67 @@
          "tileheight":32,
          "tiles":[
                 {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff97a286"
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff97a286"
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff97a286"
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff87685b"
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff93725d"
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff93725d"
+                        }]
+                }, 
+                {
                  "id":6,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa06b0e"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -2543,6 +4253,11 @@
                  "id":7,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa06b0e"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -2552,6 +4267,11 @@
                 {
                  "id":8,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa06b0e"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -2563,6 +4283,11 @@
                  "id":9,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa06b0e"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -2572,6 +4297,11 @@
                 {
                  "id":10,
                  "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa06b0e"
+                        }, 
                         {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
@@ -2583,6 +4313,11 @@
                  "id":11,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa06b0e"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
@@ -2593,10 +4328,96 @@
                  "id":12,
                  "properties":[
                         {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa06b0e"
+                        }, 
+                        {
                          "name":"navigationRestriction",
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a382f"
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff3a382f"
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff413e35"
+                        }]
+                }, 
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff423b2d"
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff4e4b40"
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff378a0b"
+                        }]
+                }, 
+                {
+                 "id":19,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff6ba847"
+                        }]
+                }, 
+                {
+                 "id":20,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffa4933c"
+                        }]
+                }, 
+                {
+                 "id":21,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff8d8164"
                         }]
                 }],
          "tilewidth":64
