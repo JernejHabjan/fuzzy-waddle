@@ -131,7 +131,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       for (let j = 0; j < widthInTiles; j++) {
         const tile = layerData[i][j];
         const color = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
-        const isoX = offsetX + (i - j) * (pixelWidth / 2);
+        const isoX = offsetX + (j - i) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
         // create diamond shape
         const diamondPoints = [
