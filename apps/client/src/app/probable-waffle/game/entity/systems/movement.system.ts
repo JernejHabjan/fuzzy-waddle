@@ -36,11 +36,11 @@ export class MovementSystem {
   private playerChangedSubscription?: Subscription;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
-    this.listenToSelectionEvents();
+    this.listenToMoveEvents();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
   }
 
-  private listenToSelectionEvents() {
+  private listenToMoveEvents() {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.move")
       .subscribe((payload) => {

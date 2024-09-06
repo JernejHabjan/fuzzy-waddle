@@ -1,6 +1,12 @@
 import { BaseGameState } from "../game-state";
 import { BaseData } from "../data";
 
+export interface ProbableWaffleGameCommand {
+  command: string;
+  target: any;
+  issuedAt: Date;
+}
+
 export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameStateData> {
   constructor(data?: ProbableWaffleGameStateData) {
     super(data as ProbableWaffleGameStateData);
@@ -30,5 +36,6 @@ export interface ActorDefinition extends Record<string, any> {
   id?: string;
 
   // BlackboardComponent
-  blackboard?: Record<string, any>;
+  blackboardCurrentCommand?: ProbableWaffleGameCommand; // todo this should be filled and used by PawnAiController
+  blackboardCommands?: ProbableWaffleGameCommand[];
 }

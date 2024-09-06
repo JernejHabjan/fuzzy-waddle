@@ -198,13 +198,21 @@ export class ProbableWaffleListeners {
           // get selected actors and issue move command to them
           const selectedActors = player.getSelection();
           // find actors in game state by id
-          const actors = gameInstance.gameState!.data.actors.filter(
-            (a) => a.id && selectedActors.includes(a.id) && !!a.blackboard
-          );
+          const actors = gameInstance.gameState!.data.actors.filter((a) => a.id && selectedActors.includes(a.id));
           actors.forEach((actor) => {
-            actor.blackboard!["command"] = "move";
-            actor.blackboard!["target"] = vec3;
+            if (!actor.blackboardCommands) actor.blackboardCommands = [];
+            actor.blackboardCommands.push(actor.blackboardCurrentCommand!);
+            console.log(
+              "move command issued for player",
+              player!.playerNumber + " to actor " + actor.id + " at " + vec3
+            );
           });
+
+          if (!gameInstance.gameState!.data.actors?.length) {
+            console.error(
+              "No actors found in game state. TODO - for now, click saveGame first as no actual actors are assigned to gameState"
+            ); // todo fix this
+          }
           break;
 
         default:

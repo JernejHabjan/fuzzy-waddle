@@ -18,7 +18,10 @@ export class SceneActorCreator {
     this.scene.add.existing(actor);
   }
 
-  private saveAllKnownActorsToSaveGame() {
+  /**
+   * todo this should be automatically done by the game state
+   */
+  private saveAllKnownActorsToGameState() {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
     gameScene.baseGameData.gameInstance.gameState!.data.actors = [];
@@ -28,6 +31,11 @@ export class SceneActorCreator {
         gameScene.baseGameData.gameInstance.gameState!.data.actors.push(actorDefinition);
       }
     });
+  }
+
+  private saveAllKnownActorsToSaveGame() {
+    if (!(this.scene instanceof GameProbableWaffleScene)) return;
+    this.saveAllKnownActorsToGameState();
     this.scene.communicator.utilityEvents.emit({ name: "save-game" });
   }
 
