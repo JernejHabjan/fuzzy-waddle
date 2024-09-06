@@ -8,6 +8,8 @@ import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../l
 import { drawDebugPath } from "../../debug/debug-path";
 import { Pathfinder } from "../../world/map/pathfinder";
 import { drawDebugPoint } from "../../debug/debug-point";
+import { getSceneComponent } from "../components/scene-component-helpers";
+import { TilemapComponent } from "../components/tilemap.component";
 
 export class NavigationService {
   private easyStar: EasyStar;
@@ -95,7 +97,9 @@ export class NavigationService {
   }
 
   private extractTilemapGrid() {
-    const data = this.tilemap.layers[0].data;
+    const tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
+    if (!tileMapComponent) throw new Error("TilemapComponent not found");
+    const data = tileMapComponent.data;
     const grid: number[][] = [];
     data.forEach((row) => {
       const newRow: number[] = [];

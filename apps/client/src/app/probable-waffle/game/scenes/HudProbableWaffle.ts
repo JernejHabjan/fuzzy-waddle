@@ -95,10 +95,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (!this.parentScene) return;
     const tileMapComponent = getSceneComponent(this.parentScene, TilemapComponent);
     if (tileMapComponent) {
-      const tiles = tileMapComponent.tilemap.width;
+      const width = tileMapComponent.tilemap.width;
       const widthInPixels = 400;
       const y = this.scale.height - widthInPixels / 2;
-      this.createIsometricMinimap(widthInPixels, tiles, 0, y);
+      const data = tileMapComponent.data;
+      this.createIsometricMinimap(widthInPixels, width, data, 0, y);
     }
   }
 
@@ -108,7 +109,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
    * Tiles are for now of green color
    * objects are of red color
    */
-  private createIsometricMinimap(widthInPixels: number, widthInTiles: number, x: number, y: number) {
+  private createIsometricMinimap(
+    widthInPixels: number,
+    widthInTiles: number,
+    layerData: Phaser.Tilemaps.Tile[][],
+    x: number,
+    y: number
+  ) {
     const height = widthInPixels / 2;
     const pixelWidth = widthInPixels / widthInTiles;
     const pixelHeight = height / widthInTiles;
@@ -122,6 +129,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // fill first 5 tiles with red color
     for (let i = 0; i < widthInTiles; i++) {
       for (let j = 0; j < widthInTiles; j++) {
+        const tile = layerData[i][j];
+        const color = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
         const isoX = offsetX + (i - j) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
         // create diamond shape
@@ -132,16 +141,23 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
           { x: isoX + pixelWidth / 2, y: isoY + pixelHeight }
         ];
         // create polygon, add it to minimap and make it interactive
-        // color it with random color
-        const color = Phaser.Display.Color.RandomRGB();
         const diamond = this.add.polygon(x + pixelWidth / 2, y + pixelHeight / 2, diamondPoints, color.color);
         diamond.setInteractive(new Phaser.Geom.Polygon(diamondPoints), Phaser.Geom.Polygon.Contains);
         diamond.on("pointerdown", () => {
-          console.log("clicked on diamond");
+          console.log("clicked on minimap on tile", i, j);
         });
         diamond.depth = this.isometricMinimapDepth;
       }
     }
+  }
+
+  private getColorFromTiledProperty(tile: Phaser.Tilemaps.Tile): Phaser.Display.Color | null {
+    const color = tile.properties["color"];
+    if (color) {
+      // removes leading "#" and "ff"
+      return Phaser.Display.Color.HexStringToColor(color.substring(3));
+    }
+    return null;
   }
 
   private resize(gameSize: { height: number; width: number }) {
