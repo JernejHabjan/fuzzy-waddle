@@ -55,6 +55,18 @@ export function getGameObjectCurrentTile(gameObject: Phaser.GameObjects.GameObje
 }
 
 /**
+ * gets emitted before onPostSceneInitialized event
+ */
+export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, scope: any) {
+  getSceneInitializers(scene)
+    .sceneInitialized.pipe(
+      filter((created) => created),
+      first()
+    )
+    .subscribe(() => callback.call(scope));
+}
+
+/**
  * gets emitted before postCreate event
  */
 export function onPostSceneInitialized(scene: Phaser.Scene, callback: () => void, scope: any) {

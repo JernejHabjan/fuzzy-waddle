@@ -35,6 +35,8 @@ export interface ActorDefinition extends Record<string, any> {
   // IdComponent
   id?: string;
 
+  // TODO OTHERS FOR EXAMPLE PRODUCTION COMPONENT ETC???
+
   // BlackboardComponent
   blackboardCurrentCommand?: ProbableWaffleGameCommand; // todo this should be filled and used by PawnAiController
   blackboardCommands?: ProbableWaffleGameCommand[];

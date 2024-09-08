@@ -22,6 +22,8 @@ export interface GameProbableWaffleSceneData {
   components: any[]; // todo use
   services: any[]; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
   initializers: {
+    // used before postSceneInitialized
+    sceneInitialized: BehaviorSubject<boolean>;
     // used when scene is fully created and initialized - is sent before postCreate event
     postSceneInitialized: BehaviorSubject<boolean>;
   };
@@ -40,7 +42,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     components: [],
     services: [], // todo use
     initializers: {
-      // used when scene is fully created and initialized
+      sceneInitialized: new BehaviorSubject<boolean>(false),
       postSceneInitialized: new BehaviorSubject<boolean>(false)
     }
   } satisfies GameProbableWaffleSceneData;
@@ -63,9 +65,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SingleSelectionHandler(this, hud, this.tilemap);
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
-    new SceneActorCreator(this);
+    const creator = new SceneActorCreator(this);
+    creator.initActors();
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
     this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService());
+
+    this.sceneGameData.initializers.sceneInitialized.next(true);
     this.sceneGameData.initializers.postSceneInitialized.next(true);
   }
 }

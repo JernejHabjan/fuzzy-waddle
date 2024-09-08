@@ -53,6 +53,8 @@ export class SaveGame {
   }
 
   private demoPostNewActors() {
+    if (this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
+
     const actors = [
       {
         name: TivaraMacemanMale.name,

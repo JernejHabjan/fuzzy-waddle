@@ -206,12 +206,6 @@ export class ProbableWaffleListeners {
               `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${vec3.x} y: ${vec3.y} z: ${vec3.z}`
             );
           });
-
-          if (!gameInstance.gameState!.data.actors?.length) {
-            console.error(
-              "No actors found in game state. TODO - for now, click saveGame first as no actual actors are assigned to gameState"
-            ); // todo fix this
-          }
           break;
 
         default:

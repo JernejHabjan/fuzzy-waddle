@@ -1,6 +1,8 @@
 import { DamageType } from "../damage-type";
 import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
+import { onSceneInitialized } from "../../../data/game-object-helper";
+import { PositionPlayerDefinition } from "@fuzzy-waddle/api-interfaces";
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -28,6 +30,11 @@ export class HealthComponent {
     if (healthDefinition.maxArmor) {
       this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
     }
+    onSceneInitialized(this.gameObject.scene, this.sceneInitialized, this);
+  }
+
+  private sceneInitialized() {
+    // todo start listening to gameState and update health/armor and emit events if this health/armor changes
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {

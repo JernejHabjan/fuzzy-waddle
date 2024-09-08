@@ -2,12 +2,10 @@ import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import { SceneActorCreatorCommunicator, SceneActorSaveCommunicator } from "./scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../GameProbableWaffleScene";
-import { onPostSceneInitialized } from "../../data/game-object-helper";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
     // NOTE: as this class uses ActorManager to create actors, it must not be accessed in components that are included in the actor definition (circular dependency)
-    onPostSceneInitialized(this.scene, this.postSceneInitialized, this);
     this.scene.events.on(SceneActorCreatorCommunicator, this.createActorFromDefinition, this);
     this.scene.events.on(SceneActorSaveCommunicator, this.saveAllKnownActorsToSaveGame, this);
 
@@ -18,7 +16,7 @@ export class SceneActorCreator {
    * After scene is created, store every actor in the game state.
    * All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
    */
-  private postSceneInitialized() {
+  public initActors() {
     this.saveAllKnownActorsToGameState();
   }
 
