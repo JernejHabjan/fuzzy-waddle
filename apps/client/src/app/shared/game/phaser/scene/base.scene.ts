@@ -146,6 +146,10 @@ export class BaseScene<
     return this.baseGameData.gameInstance.gameMode as TGameMode;
   }
 
+  get players(): TPlayer[] {
+    return this.baseGameData.gameInstance.players as TPlayer[];
+  }
+
   get playerOrNull(): TPlayer | null {
     const player = this.baseGameData.gameInstance.players.find(
       (player) => player.playerController.data.userId === this.baseGameData.user.userId

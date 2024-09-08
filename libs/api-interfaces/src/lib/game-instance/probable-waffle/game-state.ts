@@ -33,10 +33,20 @@ export interface ActorDefinition extends Record<string, any> {
   // Constructor name - used to create actor
   name?: string;
 
+  x?: number;
+  y?: number;
+  z?: number;
+
+  // OwnerComponent
+  owner?: number;
+
   // IdComponent
   id?: string;
 
   health?: Partial<HealthComponentData>;
+
+  // todo remove?
+  selectable?: boolean;
 
   // TODO OTHERS FOR EXAMPLE PRODUCTION COMPONENT ETC???
 

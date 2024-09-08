@@ -29,6 +29,51 @@
             ]
         },
         {
+            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+            "id": "b9308898-4c1e-4969-8610-21207b1ffb79",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "spawn_2",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": -176,
+            "y": 1264
+        },
+        {
+            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+            "id": "1246bced-a902-4512-bfa9-9d101b0e53be",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "spawn_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 464,
+            "y": 848
+        },
+        {
+            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+            "id": "8f62e5ec-f233-46f5-a38a-4ab83da26e02",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "spawn",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
+            "x": -848,
+            "y": 592
+        },
+        {
             "prefabId": "ec58b20e-e03e-4bd4-140e-156ffe433f29",
             "id": "5f2a21e3-1bc1-4f9b-9aa8-f4f1c035ff36",
             "unlock": [
@@ -133,7 +178,7 @@
             ],
             "EditorOwner.owner_id": "1",
             "x": 480,
-            "y": 880
+            "y": 656
         },
         {
             "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
@@ -146,9 +191,9 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "2",
-            "x": -864,
-            "y": 592
+            "EditorOwner.owner_id": "0",
+            "x": -576,
+            "y": 448
         },
         {
             "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
@@ -161,9 +206,9 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "2",
-            "x": -608,
-            "y": 880
+            "EditorOwner.owner_id": "0",
+            "x": -1168,
+            "y": 688
         },
         {
             "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
@@ -177,8 +222,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 448,
-            "y": 1088
+            "x": 672,
+            "y": 880
         },
         {
             "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
@@ -191,7 +236,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "2",
+            "EditorOwner.owner_id": "0",
             "x": -992,
             "y": 720
         },
@@ -206,7 +251,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "2",
+            "EditorOwner.owner_id": "0",
             "x": -576,
             "y": 688
         },
@@ -221,7 +266,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "2",
+            "EditorOwner.owner_id": "0",
             "x": -128,
             "y": 736
         },
@@ -239,6 +284,51 @@
             "EditorOwner.owner_id": "1",
             "x": 192,
             "y": 704
+        },
+        {
+            "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
+            "id": "ee91f69b-8950-4608-8509-5caae0b5de76",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeMagicianFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": 48,
+            "y": 1328
+        },
+        {
+            "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
+            "id": "1c6dcc57-107f-44e7-86c8-347d7dbbc939",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": -368,
+            "y": 1328
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "b2684970-131c-4a23-85b1-f61bc2abc2fb",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill_2",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "3",
+            "x": -80,
+            "y": 864
         }
     ],
     "plainObjects": [

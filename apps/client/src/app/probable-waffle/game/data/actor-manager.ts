@@ -148,15 +148,15 @@ export class ActorManager {
       name: actorName
     };
     const transform = actor as any as Transform;
-    if (transform.x !== undefined) actorDefinition["x"] = transform.x;
-    if (transform.y !== undefined) actorDefinition["y"] = transform.y;
-    if (transform.z !== undefined) actorDefinition["z"] = transform.z;
+    if (transform.x !== undefined) actorDefinition.x = transform.x;
+    if (transform.y !== undefined) actorDefinition.y = transform.y;
+    if (transform.z !== undefined) actorDefinition.z = transform.z;
     const ownerComponent = getActorComponent(actor, OwnerComponent);
-    if (ownerComponent) actorDefinition["owner"] = ownerComponent.getOwner();
+    if (ownerComponent) actorDefinition.owner = ownerComponent.getOwner();
     const selectableComponent = getActorComponent(actor, SelectableComponent);
-    if (selectableComponent) actorDefinition["selectable"] = selectableComponent.getSelected();
+    if (selectableComponent) actorDefinition.selectable = selectableComponent.getSelected();
     const idComponent = getActorComponent(actor, IdComponent);
-    if (idComponent) actorDefinition["id"] = idComponent.id;
+    if (idComponent) actorDefinition.id = idComponent.id;
 
     // todo blackboard - create a blackboard component that can be added to actors
 

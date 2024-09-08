@@ -4,6 +4,7 @@ import { BasePlayerController, BasePlayerControllerData } from "../player/player
 import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
+import { Vector3Simple } from "../../game/vector";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -131,11 +132,13 @@ export interface PlayerLobbyDefinition {
 }
 
 export enum FactionType {
-  Tivara,
-  Skaduwee
+  Tivara = 1,
+  Skaduwee = 2
 }
 
 export interface PositionPlayerDefinition {
+  // assigned only after entering the game in world space coordinates
+  initialWorldSpawnPosition?: Vector3Simple;
   player: PlayerLobbyDefinition;
   team?: number;
   factionType?: FactionType;

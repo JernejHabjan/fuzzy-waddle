@@ -20,7 +20,8 @@ export class ScaleHandler {
     this.cameras = scene.cameras;
     this.mainCamera = this.cameras.main;
     this.scaleManager = scene.scale;
-    this.setupBounds(true); // todo now center for dev
+    // center by default
+    this.setupBounds(true);
     this.setupResizeListener();
   }
 
@@ -52,6 +53,6 @@ export class ScaleHandler {
    */
   private resize(gameSize: Structs.Size): void {
     this.cameras.resize(gameSize.width, gameSize.height);
-    this.setupBounds(true); // todo now center for dev
+    this.setupBounds(false);
   }
 }

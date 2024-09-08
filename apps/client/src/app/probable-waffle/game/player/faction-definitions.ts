@@ -7,7 +7,10 @@ export class FactionDefinitions {
     FactionType.Tivara,
     "Tivara",
     new TechTreeComponent(),
-    [],
+    [
+      "Sandhold", // Sandhold.name,
+      "TivaraMacemanMale" // TivaraMacemanMale.name
+    ],
     [
       { x: 0, y: 0, z: 0 },
       { x: 1, y: 0, z: 0 },
@@ -21,7 +24,10 @@ export class FactionDefinitions {
     FactionType.Skaduwee,
     "Skaduwee",
     new TechTreeComponent(),
-    [],
+    [
+      "FrostForge", // FrostForge.name,
+      "SkaduweeMagicianFemale" // SkaduweeMagicianFemale.name
+    ],
     [
       { x: 0, y: 0, z: 0 },
       { x: 1, y: 0, z: 0 },

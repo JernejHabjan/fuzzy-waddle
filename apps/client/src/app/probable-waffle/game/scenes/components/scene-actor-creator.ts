@@ -1,8 +1,16 @@
-import { ActorDefinition, ProbableWaffleGameStateDataPayload } from "@fuzzy-waddle/api-interfaces";
+import {
+  ActorDefinition,
+  FactionType,
+  ProbableWaffleGameStateDataPayload,
+  Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import { SceneActorCreatorCommunicator, SceneActorSaveCommunicator } from "./scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../GameProbableWaffleScene";
 import { getCommunicator } from "../../data/scene-data";
+import Spawn from "../../prefabs/buildings/misc/Spawn";
+import EditorOwner from "../../editor-components/EditorOwner";
+import { FactionDefinitions } from "../../player/faction-definitions";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
@@ -18,7 +26,18 @@ export class SceneActorCreator {
    * All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
    */
   public initActors() {
+    this.spawnFromSpawnList();
     this.saveAllKnownActorsToGameState();
+  }
+
+  private spawnFromSpawnList() {
+    this.scene.children
+      .getChildren()
+      .filter((c) => c instanceof Spawn)
+      .forEach((spawn: Spawn) => {
+        this.spawnActorsFromSpawnList(spawn);
+        spawn.destroy();
+      });
   }
 
   private createActorFromDefinition(actorDefinition: ActorDefinition) {
@@ -73,5 +92,53 @@ export class SceneActorCreator {
   private destroy() {
     this.scene.events.off(SceneActorCreatorCommunicator, this.createActorFromDefinition, this);
     this.scene.events.off(SceneActorSaveCommunicator, this.saveAllKnownActorsToSaveGame, this);
+  }
+
+  private spawnActorsFromSpawnList(spawn: Spawn) {
+    if (!(this.scene instanceof GameProbableWaffleScene)) return;
+    const gameScene = this.scene as GameProbableWaffleScene;
+    const vec3 = {
+      x: spawn.x,
+      y: spawn.y,
+      z: spawn.z
+    } satisfies Vector3Simple;
+
+    const owner_id = parseInt(EditorOwner.getComponent(spawn).owner_id);
+    if (isNaN(owner_id) && owner_id <= 0) return;
+
+    const player = gameScene.players.find(
+      (p) => p.playerController.data.playerDefinition?.player.playerNumber === owner_id
+    );
+    if (!player) return;
+    player.playerController.data.playerDefinition!.initialWorldSpawnPosition = vec3;
+
+    const faction = player.playerController.data.playerDefinition!.factionType;
+    if (!faction) return;
+    switch (faction) {
+      case FactionType.Skaduwee:
+        FactionDefinitions.skaduwee.initialActors.forEach((actorName, index) => {
+          this.createInitialActors(actorName, vec3, owner_id, index);
+        });
+        break;
+
+      case FactionType.Tivara:
+        FactionDefinitions.tivara.initialActors.forEach((actorName, index) => {
+          this.createInitialActors(actorName, vec3, owner_id, index);
+        });
+        break;
+      default:
+        throw new Error("Faction not found");
+    }
+  }
+
+  private createInitialActors(actorName: string, vec3: Vector3Simple, owner_id: number, index: number) {
+    const actorDefinition = {
+      name: actorName,
+      x: vec3.x + index * 180,
+      y: vec3.y,
+      z: vec3.z,
+      owner: owner_id
+    } as ActorDefinition;
+    this.createActorFromDefinition(actorDefinition);
   }
 }

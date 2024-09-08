@@ -43,8 +43,8 @@ export interface GameInstanceClientServiceInterface {
   stopRequestGameSearchForMatchmaking(): Promise<void>;
   navigateToLobbyOrDirectlyToGame(): Promise<void>;
   getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null>;
-  addAiPlayer(): Promise<void>;
-  addSelfAsPlayer(): Promise<void>;
+  addAiPlayer(): Promise<PositionPlayerDefinition>;
+  addSelfAsPlayer(): Promise<PositionPlayerDefinition>;
   loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
   saveGameInstance(saveName: string): Promise<void>;
   startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;

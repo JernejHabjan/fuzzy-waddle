@@ -308,7 +308,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     console.log("joined game instance as player");
   }
 
-  async addSelfAsPlayer(): Promise<void> {
+  async addSelfAsPlayer(): Promise<PositionPlayerDefinition> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found in addSelfAsPlayer in GameInstanceClientService");
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
@@ -325,9 +325,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);
+    return playerDefinition;
   }
 
-  async addAiPlayer(position?: number): Promise<void> {
+  async addAiPlayer(position?: number): Promise<PositionPlayerDefinition> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found in addAiPlayer in GameInstanceClientService");
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
@@ -345,6 +346,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);
+
+    return playerDefinition;
   }
 
   async joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void> {

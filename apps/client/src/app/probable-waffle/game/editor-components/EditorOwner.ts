@@ -9,6 +9,7 @@ import { OwnerComponent } from "../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class EditorOwner {
+
   constructor(gameObject: Phaser.GameObjects.GameObject) {
     this.gameObject = gameObject;
     (gameObject as any)["__EditorOwner"] = this;
@@ -23,7 +24,7 @@ export default class EditorOwner {
   }
 
   private gameObject: Phaser.GameObjects.GameObject;
-  public owner_id: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "-1" = "-1";
+  public owner_id: "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"-1" = "-1";
 
   /* START-USER-CODE */
   private awake() {
