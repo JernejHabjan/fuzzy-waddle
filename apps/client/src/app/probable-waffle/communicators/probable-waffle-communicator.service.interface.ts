@@ -4,6 +4,7 @@ import {
   ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
+  ProbableWaffleGameStateDataChangeEvent,
   ProbableWafflePlayerDataChangeEvent,
   ProbableWaffleSpectatorDataChangeEvent
 } from "@fuzzy-waddle/api-interfaces";
@@ -17,6 +18,7 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   gameModeChanged?: TwoWayCommunicator<ProbableWaffleGameModeDataChangeEvent, ProbableWaffleCommunicatorType>;
   playerChanged?: TwoWayCommunicator<ProbableWafflePlayerDataChangeEvent, ProbableWaffleCommunicatorType>;
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
+  gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
 
   startCommunication(gameInstanceId: string, socket: Socket): void;

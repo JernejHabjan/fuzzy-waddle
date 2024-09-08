@@ -2,6 +2,7 @@ import { ProbableWaffleGameInstance } from "../../game-instance/probable-waffle/
 import {
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
+  ProbableWaffleGameStateDataChangeEvent,
   ProbableWafflePlayerDataChangeEvent,
   ProbableWafflePlayerDataChangeEventProperty,
   ProbableWaffleSpectatorDataChangeEvent
@@ -15,6 +16,7 @@ import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle
 import { ProbableWaffleGameMode, ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
 import { GameSessionState } from "../../game-instance/session";
 import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
+import { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
 
 export class ProbableWaffleListeners {
   static gameInstanceMetadataChanged(
@@ -231,4 +233,60 @@ export class ProbableWaffleListeners {
         throw new Error("Unknown communicator for spectatorDataChange: " + payload.property);
     }
   }
+
+  static gameStateDataChanged(
+    gameInstance: ProbableWaffleGameInstance,
+    gameStateData: ProbableWaffleGameStateDataChangeEvent
+  ) {
+    switch (gameStateData.property) {
+      case "health":
+        const actor = this.getActorById(gameStateData.data.actorDefinition!.id!, gameInstance);
+        if (!actor) throw new Error("Actor not found with id " + gameStateData.data.actorDefinition!.id);
+        applyPropertiesIfNotExist(actor.health, gameStateData.data.actorDefinition?.health);
+        console.log(
+          "health changed for actor",
+          actor.id,
+          "to health:",
+          actor.health?.health + " armor:",
+          actor.health?.armor
+        );
+        break;
+
+      case "health.health":
+        const actorHealth = this.getActorById(gameStateData.data.actorDefinition!.id!, gameInstance)?.health;
+        if (!actorHealth) throw new Error("Actor health not found with id " + gameStateData.data.actorDefinition!.id);
+        actorHealth.health = gameStateData.data.actorDefinition?.health?.health;
+        console.log(
+          "health changed for actor",
+          gameStateData.data.actorDefinition!.id!,
+          "to health:",
+          actorHealth.health
+        );
+        break;
+
+      case "health.armor":
+        const actorArmor = this.getActorById(gameStateData.data.actorDefinition!.id!, gameInstance)?.health;
+        if (!actorArmor) throw new Error("Actor health not found with id " + gameStateData.data.actorDefinition!.id);
+        actorArmor.armor = gameStateData.data.actorDefinition?.health?.armor;
+        console.log("armor changed for actor", gameStateData.data.actorDefinition!.id!, "to armor:", actorArmor.armor);
+        break;
+
+      default:
+        throw new Error("Unknown communicator for gameStateDataChange: " + gameStateData.property);
+    }
+  }
+
+  private static getActorById(id: string, gameInstance: ProbableWaffleGameInstance): ActorDefinition | undefined {
+    return gameInstance.gameState!.data.actors.find((a) => a.id === id);
+  }
+}
+
+function applyPropertiesIfNotExist(target: Record<string, any> | any, source: Record<string, any> | undefined) {
+  if (!source) return;
+  for (const key in source) {
+    if (source[key] !== undefined && target[key] === undefined) {
+      target[key] = source[key];
+    }
+  }
+  return target;
 }

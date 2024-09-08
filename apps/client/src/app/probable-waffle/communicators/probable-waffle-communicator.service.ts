@@ -4,6 +4,7 @@ import {
   ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
+  ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
   ProbableWafflePlayerDataChangeEvent,
@@ -28,6 +29,7 @@ export class ProbableWaffleCommunicatorService
   gameModeChanged?: TwoWayCommunicator<ProbableWaffleGameModeDataChangeEvent, ProbableWaffleCommunicatorType>;
   playerChanged?: TwoWayCommunicator<ProbableWafflePlayerDataChangeEvent, ProbableWaffleCommunicatorType>;
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
+  gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
 
   /**
@@ -71,6 +73,11 @@ export class ProbableWaffleCommunicatorService
       ProbableWaffleCommunicatorType
     >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "spectatorDataChange", gameInstanceId, socket);
 
+    this.gameStateChanged = new TwoWayCommunicator<
+      ProbableWaffleGameStateDataChangeEvent,
+      ProbableWaffleCommunicatorType
+    >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "gameStateDataChange", gameInstanceId, socket);
+
     this.message = new TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>(
       ProbableWaffleGatewayEvent.ProbableWaffleMessage,
       "message",
@@ -101,6 +108,7 @@ export class ProbableWaffleCommunicatorService
     this.gameModeChanged?.destroy();
     this.playerChanged?.destroy();
     this.spectatorChanged?.destroy();
+    this.gameStateChanged?.destroy();
     this.message?.destroy();
   }
 }
