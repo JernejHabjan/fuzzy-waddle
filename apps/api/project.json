@@ -7,6 +7,7 @@
     "build": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
       "options": {
         "target": "node",
         "compiler": "tsc",
@@ -33,8 +34,10 @@
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
+      "dependsOn": ["build"],
       "options": {
-        "buildTarget": "api:build"
+        "buildTarget": "api:build",
+        "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
@@ -46,11 +49,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/api/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -59,6 +58,5 @@
         "jestConfig": "apps/api/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }
