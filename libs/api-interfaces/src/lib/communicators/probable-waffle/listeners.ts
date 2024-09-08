@@ -241,31 +241,25 @@ export class ProbableWaffleListeners {
         console.log("game state changed to", gameInstance.gameState!.data);
         break;
       }
-      case "health":
-        const actor = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
-        if (!actor) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
-        applyPropertiesIfNotExist(actor.health, event.data.actorDefinition?.health);
+      case "health.health":
+        const actorHealth = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
+        if (!actorHealth) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
+        if (!actorHealth.health) actorHealth.health = {};
+        actorHealth.health.health = event.data.actorDefinition?.health!.health;
         console.log(
           "health changed for actor",
-          actor.id,
+          event.data.actorDefinition!.id!,
           "to health:",
-          actor.health?.health + " armor:",
-          actor.health?.armor
+          actorHealth.health.health
         );
         break;
 
-      case "health.health":
-        const actorHealth = this.getActorById(event.data.actorDefinition!.id!, gameInstance)?.health;
-        if (!actorHealth) throw new Error("Actor health not found with id " + event.data.actorDefinition!.id);
-        actorHealth.health = event.data.actorDefinition?.health?.health;
-        console.log("health changed for actor", event.data.actorDefinition!.id!, "to health:", actorHealth.health);
-        break;
-
       case "health.armor":
-        const actorArmor = this.getActorById(event.data.actorDefinition!.id!, gameInstance)?.health;
-        if (!actorArmor) throw new Error("Actor health not found with id " + event.data.actorDefinition!.id);
-        actorArmor.armor = event.data.actorDefinition?.health?.armor;
-        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.armor);
+        const actorArmor = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
+        if (!actorArmor) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
+        if (!actorArmor.health) actorArmor.health = {};
+        actorArmor.health.armor = event.data.actorDefinition?.health!.armor;
+        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.health.armor);
         break;
 
       default:

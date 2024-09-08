@@ -69,13 +69,6 @@ export class HealthComponent {
 
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy.bind(this));
-
-    // TODO FOR TEST
-
-    setTimeout(() => {
-      this.healthComponentData.health = 50;
-      console.warn("for test reduce health");
-    }, 1000);
   }
 
   private init() {

@@ -25,6 +25,7 @@ import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
+import { getActorComponent } from "../../../data/actor-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -98,6 +99,15 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
         skaduwee_magician_female_idle_down.play("skaduwee_magician_female_idle_down", true);
       });
     });
+
+    // TODO FOR TEST
+
+    setTimeout(() => {
+      getActorComponent(this, HealthComponent)!.takeDamage(10, DamageType.Magical); // todo
+      console.log("take dameage for", getActorComponent(this, IdComponent)?.id);
+
+      console.warn("for test reduce health");
+    }, 1000);
     /* END-USER-CTR-CODE */
   }
 

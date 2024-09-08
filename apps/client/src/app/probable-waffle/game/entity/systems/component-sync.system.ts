@@ -36,6 +36,17 @@ function createComponentProxy<T extends object>(
   });
 }
 
+function setNestedProperty(target: any, path: string[], value: any) {
+  if (path.length === 1) {
+    target[path[0]] = value;
+  } else {
+    if (!target[path[0]]) {
+      target[path[0]] = {};
+    }
+    setNestedProperty(target[path[0]], path.slice(1), value);
+  }
+}
+
 export type SyncOptions<T> = {
   eventPrefix: string;
   propertyMap: { [K in keyof T]: string };
@@ -70,8 +81,14 @@ export class ComponentSyncSystem {
 
         // Only emit event if custom hook logic allows
         if (value !== previousValue) {
-          sendActorEvent(gameObject, `${options.eventPrefix}.${options.propertyMap[property]}`, {
-            actorDefinition: { [options.propertyMap[property]]: value }
+          // Construct the nested property path for actorDefinition
+          const nestedPath = [options.eventPrefix];
+          nestedPath.push(...(options.propertyMap[property]?.split(".") || []));
+          const actorDefinition: any = {};
+          setNestedProperty(actorDefinition, nestedPath, value);
+
+          sendActorEvent(gameObject, `${nestedPath.join(".")}`, {
+            actorDefinition
           });
         }
       }
@@ -80,9 +97,15 @@ export class ComponentSyncSystem {
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, () => {
       // Listen to external events and update the component's properties
       const subscription = listenToActorEvents(gameObject, options.eventPrefix)?.subscribe((payload) => {
-        const property = options.propertyMap[payload.property.split(".").pop() as keyof T];
-        if (property && payload.data.actorDefinition![property] !== undefined) {
-          (proxiedData as any)[property] = payload.data.actorDefinition![property];
+        // Extract property from payload and update the proxiedData
+        const property = Object.keys(options.propertyMap).find((key) =>
+          payload.property.endsWith(options.propertyMap[key as keyof T])
+        );
+        if (property) {
+          const path = options.propertyMap[property as keyof T].split(".");
+          if (path.length) {
+            setNestedProperty(proxiedData, path, payload.data.actorDefinition![path.join(".")]);
+          }
         }
       });
 
