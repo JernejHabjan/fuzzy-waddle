@@ -76,9 +76,9 @@ export class HealthUiComponent {
     if (!this.healthComponent) return 0;
     switch (this.type) {
       case "health":
-        return this.healthComponent.getCurrentHealth() / this.healthComponent.healthDefinition.maxHealth;
+        return this.healthComponent.healthComponentData.health / this.healthComponent.healthDefinition.maxHealth;
       case "armor":
-        return this.healthComponent.getCurrentArmor() / this.healthComponent.healthDefinition.maxArmor!;
+        return this.healthComponent.healthComponentData.armor / this.healthComponent.healthDefinition.maxArmor!;
     }
   }
 

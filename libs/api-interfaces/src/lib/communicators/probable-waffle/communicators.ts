@@ -8,7 +8,7 @@ import {
   ProbableWafflePlayerStateData
 } from "../../game-instance/probable-waffle/player";
 import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
-import { ActorDefinition, ProbableWaffleGameState } from "../../game-instance/probable-waffle/game-state";
+import { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
 
 export type ProbableWaffleGameCommunicatorType = "selection";
 
@@ -87,7 +87,7 @@ export interface ProbableWaffleSpectatorDataChangeEvent extends ProbableWaffleCo
 }
 
 export type ProbableWaffleGameStateDataChangeEventProperty =
-  | ProbableWaffleDataChangeEventProperty<ProbableWaffleGameState>
+  | ProbableWaffleDataChangeEventProperty<ProbableWaffleGameStateData>
   | RecursiveKeyOf<ActorDefinition>;
 
 export type ProbableWaffleGameStateDataPayload = Partial<{
@@ -96,7 +96,7 @@ export type ProbableWaffleGameStateDataPayload = Partial<{
       id: string;
     } & Partial<ActorDefinition>
   >;
-  gameState: Partial<ProbableWaffleGameState>;
+  gameState: Partial<ProbableWaffleGameStateData>;
 }>;
 
 export interface ProbableWaffleGameStateDataChangeEvent extends ProbableWaffleCommunicatorEvent {

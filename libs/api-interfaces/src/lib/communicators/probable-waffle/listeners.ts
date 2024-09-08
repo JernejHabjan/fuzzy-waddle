@@ -234,15 +234,17 @@ export class ProbableWaffleListeners {
     }
   }
 
-  static gameStateDataChanged(
-    gameInstance: ProbableWaffleGameInstance,
-    gameStateData: ProbableWaffleGameStateDataChangeEvent
-  ) {
-    switch (gameStateData.property) {
+  static gameStateDataChanged(gameInstance: ProbableWaffleGameInstance, event: ProbableWaffleGameStateDataChangeEvent) {
+    switch (event.property) {
+      case "all": {
+        gameInstance.gameState!.data = event.data.gameState as any;
+        console.log("game state changed to", gameInstance.gameState!.data);
+        break;
+      }
       case "health":
-        const actor = this.getActorById(gameStateData.data.actorDefinition!.id!, gameInstance);
-        if (!actor) throw new Error("Actor not found with id " + gameStateData.data.actorDefinition!.id);
-        applyPropertiesIfNotExist(actor.health, gameStateData.data.actorDefinition?.health);
+        const actor = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
+        if (!actor) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
+        applyPropertiesIfNotExist(actor.health, event.data.actorDefinition?.health);
         console.log(
           "health changed for actor",
           actor.id,
@@ -253,26 +255,21 @@ export class ProbableWaffleListeners {
         break;
 
       case "health.health":
-        const actorHealth = this.getActorById(gameStateData.data.actorDefinition!.id!, gameInstance)?.health;
-        if (!actorHealth) throw new Error("Actor health not found with id " + gameStateData.data.actorDefinition!.id);
-        actorHealth.health = gameStateData.data.actorDefinition?.health?.health;
-        console.log(
-          "health changed for actor",
-          gameStateData.data.actorDefinition!.id!,
-          "to health:",
-          actorHealth.health
-        );
+        const actorHealth = this.getActorById(event.data.actorDefinition!.id!, gameInstance)?.health;
+        if (!actorHealth) throw new Error("Actor health not found with id " + event.data.actorDefinition!.id);
+        actorHealth.health = event.data.actorDefinition?.health?.health;
+        console.log("health changed for actor", event.data.actorDefinition!.id!, "to health:", actorHealth.health);
         break;
 
       case "health.armor":
-        const actorArmor = this.getActorById(gameStateData.data.actorDefinition!.id!, gameInstance)?.health;
-        if (!actorArmor) throw new Error("Actor health not found with id " + gameStateData.data.actorDefinition!.id);
-        actorArmor.armor = gameStateData.data.actorDefinition?.health?.armor;
-        console.log("armor changed for actor", gameStateData.data.actorDefinition!.id!, "to armor:", actorArmor.armor);
+        const actorArmor = this.getActorById(event.data.actorDefinition!.id!, gameInstance)?.health;
+        if (!actorArmor) throw new Error("Actor health not found with id " + event.data.actorDefinition!.id);
+        actorArmor.armor = event.data.actorDefinition?.health?.armor;
+        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.armor);
         break;
 
       default:
-        throw new Error("Unknown communicator for gameStateDataChange: " + gameStateData.property);
+        throw new Error("Unknown communicator for gameStateDataChange: " + event.property);
     }
   }
 

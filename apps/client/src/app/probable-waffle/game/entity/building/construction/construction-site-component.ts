@@ -66,11 +66,11 @@ export class ConstructionSiteComponent {
     this.remainingConstructionTime -= constructionProgress;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
-      const currentHealth = healthComponent.getCurrentHealth();
+      const currentHealth = healthComponent.healthComponentData.health;
       const maxHealth = healthComponent.healthDefinition.maxHealth;
       const healthIncrement =
         ((maxHealth - currentHealth) / this.constructionSiteDefinition.constructionTime) * constructionProgress;
-      healthComponent.setCurrentHealth(currentHealth + healthIncrement);
+      healthComponent.healthComponentData.health += healthIncrement;
     }
 
     this.constructionProgressChanged.emit(
@@ -108,7 +108,7 @@ export class ConstructionSiteComponent {
     // set initial health
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
-      healthComponent.setCurrentHealth(
+      healthComponent.healthComponentData.health = Math.floor(
         healthComponent.healthDefinition.maxHealth * this.constructionSiteDefinition.initialHealthPercentage
       );
     }

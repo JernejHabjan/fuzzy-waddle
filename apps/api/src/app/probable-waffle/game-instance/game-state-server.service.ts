@@ -20,7 +20,7 @@ export class GameStateServerService {
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
     if (!gameInstance) {
-      console.log("game instance not found");
+      console.log("game instance not found in updateGameState in GameStateServerService");
       return false;
     }
 

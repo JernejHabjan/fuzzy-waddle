@@ -1,47 +1,80 @@
 import { DamageType } from "../damage-type";
 import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
-import { listenToActorEvents, sendActorEvent } from "../../../data/scene-data";
+import { listenToActorEvents } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
 import { HealthComponentData } from "@fuzzy-waddle/api-interfaces";
-import Phaser from "phaser";
+import { ComponentSyncSystem, SyncOptions } from "../../systems/component-sync.system";
 
 export type HealthDefinition = {
   maxHealth: number;
   maxArmor?: number;
   regenerateHealthRate?: number;
-
-  // todo maybe armor type..
 };
 
 export class HealthComponent {
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
   armorChanged: EventEmitter<number> = new EventEmitter<number>();
-  private healthComponentData: HealthComponentData = {
-    health: 0,
-    armor: 0
-  };
+
+  healthComponentData: HealthComponentData;
   private healthUiComponent!: HealthUiComponent;
   private armorUiComponent?: HealthUiComponent;
   private playerChangedSubscription?: Subscription;
+
+  private syncConfig = {
+    eventPrefix: "health",
+    propertyMap: {
+      health: "health",
+      armor: "armor"
+    },
+    eventEmitters: {
+      health: this.healthChanged,
+      armor: this.armorChanged
+    },
+    hooks: {
+      health: (value: number, previousValue: number) => {
+        if (value <= 0) {
+          this.killActor(); // Custom logic when health reaches zero
+        }
+      },
+      armor: (value: number, previousValue: number) => {
+        // Example of custom logic when armor changes
+        console.log(`Armor changed from ${previousValue} to ${value}`);
+      }
+    }
+  } satisfies SyncOptions<HealthComponentData>;
+
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly healthDefinition: HealthDefinition
   ) {
-    this.healthComponentData = {
+    // Initial health and armor data
+    const initialData: HealthComponentData = {
       health: healthDefinition.maxHealth,
       armor: healthDefinition.maxArmor ?? 0
-    } satisfies HealthComponentData;
+    };
+
+    // Sync health and armor with external events, using hooks for custom logic
+    this.healthComponentData = new ComponentSyncSystem().syncComponent<HealthComponentData>(
+      gameObject,
+      initialData,
+      this.syncConfig
+    );
+
+    // Initialize UI components for health and armor
     this.healthUiComponent = new HealthUiComponent(this.gameObject, "health");
-    if (healthDefinition.maxArmor) {
+    if (this.healthComponentData.armor > 0) {
       this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
     }
+
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
-    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy.bind(this));
+
+    // TODO FOR TEST
 
     setTimeout(() => {
-      // todo for test reduce health of actor
-      this.setCurrentHealth(50);
+      this.healthComponentData.health = 50;
+      console.warn("for test reduce health");
     }, 1000);
   }
 
@@ -50,29 +83,26 @@ export class HealthComponent {
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
-    this.setCurrentHealth(this.healthComponentData.health - damage, damageInitiator);
+    if (this.healthComponentData.armor > 0) {
+      this.healthComponentData.armor = Math.max(this.healthComponentData.armor - damage, 0);
+    } else {
+      this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
+    }
   }
 
   killActor() {
-    this.setCurrentHealth(0);
+    this.healthComponentData.health = 0;
     this.healthUiComponent.destroy();
     this.armorUiComponent?.destroy();
-    this.gameObject.destroy(); // todo kill?
-    // todo something else as well
+    this.gameObject.destroy();
   }
 
-  setCurrentHealth(newHealth: number, damageInitiator?: Phaser.GameObjects.GameObject) {
-    if (this.healthComponentData.health <= 0) return;
-    if (newHealth < 0) newHealth = 0;
-    const previousHealth = this.healthComponentData.health;
-    if (previousHealth === newHealth) return;
-    this.healthComponentData.health = newHealth;
+  resetHealth() {
+    this.healthComponentData.health = this.healthDefinition.maxHealth;
+  }
 
-    this.broadcastHealthChange();
-
-    if (this.healthComponentData.health <= 0) {
-      this.killActor();
-    }
+  resetArmor() {
+    this.healthComponentData.armor = this.healthDefinition.maxArmor ?? 0;
   }
 
   setVisibilityUiComponent(visibility: boolean) {
@@ -80,57 +110,17 @@ export class HealthComponent {
     this.armorUiComponent?.setVisibility(visibility);
   }
 
-  getCurrentHealth() {
-    return this.healthComponentData.health;
-  }
-
-  isAlive() {
-    return this.healthComponentData.health > 0;
-  }
-
-  resetHealth() {
-    this.setCurrentHealth(this.healthDefinition.maxHealth);
-  }
-
-  getCurrentArmor() {
-    return this.healthComponentData.armor;
-  }
-
-  resetArmor() {
-    this.setCurrentArmor(this.healthDefinition.maxArmor ?? 0);
-  }
-
-  setCurrentArmor(newArmor: number) {
-    if (newArmor < 0) newArmor = 0;
-    const previousArmor = this.healthComponentData.armor;
-    if (previousArmor === newArmor) return;
-    this.healthComponentData.armor = newArmor;
-    this.broadcastArmorChange();
-  }
-
   private listenToHealthEvents() {
     this.playerChangedSubscription = listenToActorEvents(this.gameObject, "health")?.subscribe((payload) => {
       switch (payload.property) {
         case "health.health":
-          this.setCurrentHealth(payload.data.actorDefinition!.health!.health!);
+          this.healthComponentData.health = payload.data.actorDefinition!.health!.health!;
           break;
         case "health.armor":
-          this.setCurrentArmor(payload.data.actorDefinition!.health!.armor!);
+          this.healthComponentData.armor = payload.data.actorDefinition!.health!.armor!;
           break;
       }
     });
-  }
-
-  private broadcastHealthChange() {
-    const health = this.getCurrentHealth();
-    this.healthChanged.emit(health);
-    sendActorEvent(this.gameObject, "health.health", { actorDefinition: { health: { health } } });
-  }
-
-  private broadcastArmorChange() {
-    const armor = this.getCurrentArmor();
-    this.armorChanged.emit(armor);
-    sendActorEvent(this.gameObject, "health.armor", { actorDefinition: { health: { armor } } });
   }
 
   private destroy() {

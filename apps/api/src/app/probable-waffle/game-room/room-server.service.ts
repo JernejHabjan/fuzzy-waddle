@@ -61,7 +61,7 @@ export class RoomServerService implements RoomServerServiceInterface {
   emitCertainGameInstanceEventsToAllUsers(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User) {
     const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId);
     if (!gameInstance) {
-      console.log("game instance not found");
+      console.log("game instance not found in emitCertainGameInstanceEventsToAllUsers in RoomServerService");
       return false;
     }
     switch (body.communicator) {

@@ -1,7 +1,8 @@
-import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
+import { ActorDefinition, ProbableWaffleGameStateDataPayload } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import { SceneActorCreatorCommunicator, SceneActorSaveCommunicator } from "./scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../GameProbableWaffleScene";
+import { getCommunicator } from "../../data/scene-data";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
@@ -33,6 +34,17 @@ export class SceneActorCreator {
     gameScene.baseGameData.gameInstance.gameState!.data.actors = [];
     gameScene.children.each((child) => {
       this.saveActorToGameState(child);
+    });
+
+    const communicator = getCommunicator(gameScene);
+    const data: ProbableWaffleGameStateDataPayload = {
+      gameState: gameScene.baseGameData.gameInstance.gameState!.data
+    };
+    communicator.gameStateChanged?.send({
+      property: "all",
+      data,
+      gameInstanceId: gameScene.gameInstanceId,
+      emitterUserId: gameScene.userId
     });
   }
 
