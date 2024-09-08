@@ -10,12 +10,13 @@ import {
   SceneActorSaveCommunicator
 } from "../scenes/components/scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import { onPostSceneInitialized } from "./game-object-helper";
 
 export class SaveGame {
   private saveSubscription: Subscription;
 
   constructor(private scene: GameProbableWaffleScene) {
-    scene.onPostCreate.subscribe(() => this.postCreate());
+    onPostSceneInitialized(scene, this.postSceneInitialized, this);
     // only ones that have name: SaveGame.SaveGameEvent
     this.saveSubscription = scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "save-game"))
@@ -23,7 +24,7 @@ export class SaveGame {
     scene.onDestroy.subscribe(() => this.destroy());
   }
 
-  private postCreate() {
+  private postSceneInitialized() {
     this.loadActorsFromSaveGame();
     this.demoPostNewActors();
   }

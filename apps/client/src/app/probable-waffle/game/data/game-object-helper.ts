@@ -54,9 +54,12 @@ export function getGameObjectCurrentTile(gameObject: Phaser.GameObjects.GameObje
   return navigationService.getCenterTileCoordUnderObject(gameObject);
 }
 
-export function onScenePostCreate(scene: Phaser.Scene, callback: () => void, scope: any) {
+/**
+ * gets emitted before postCreate event
+ */
+export function onPostSceneInitialized(scene: Phaser.Scene, callback: () => void, scope: any) {
   getSceneInitializers(scene)
-    .postCreate.pipe(
+    .postSceneInitialized.pipe(
       filter((created) => created),
       first()
     )

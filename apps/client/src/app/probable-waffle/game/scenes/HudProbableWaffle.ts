@@ -11,8 +11,6 @@ import { CursorHandler } from "../world/managers/controllers/input/cursor.handle
 import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
 import { Subscription } from "rxjs";
 import { GameSessionState, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { SaveGame } from "../data/save-game";
-import { onScenePostCreate } from "../data/game-object-helper";
 import { getSceneComponent } from "./components/scene-component-helpers";
 import { TilemapComponent } from "./components/tilemap.component";
 import { getActorComponent } from "../data/actor-component";
@@ -97,12 +95,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   initializeWithParentScene(parentScene: ProbableWaffleScene) {
     this.parentScene = parentScene;
-    onScenePostCreate(parentScene, this.postSceneCreate, this);
+    this.parentScene.onPostCreate.subscribe(this.postSceneCreate);
   }
 
-  private postSceneCreate() {
+  private postSceneCreate = () => {
     this.redrawMinimap();
-  }
+  };
 
   private redrawMinimap() {
     if (!this.parentScene) return;

@@ -28,7 +28,7 @@ import {
   MovementSystem,
   PathMoveConfig
 } from "../../../entity/systems/movement.system";
-import { onScenePostCreate } from "../../../data/game-object-helper";
+import { onPostSceneInitialized } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 /* END-USER-IMPORTS */
@@ -92,7 +92,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       ],
       [new MovementSystem(this)]
     );
-    onScenePostCreate(scene, this.postSceneCreate, this);
+    onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 
