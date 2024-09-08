@@ -203,8 +203,7 @@ export class ProbableWaffleListeners {
             if (!actor.blackboardCommands) actor.blackboardCommands = [];
             actor.blackboardCommands.push(actor.blackboardCurrentCommand!);
             console.log(
-              "move command issued for player",
-              player!.playerNumber + " to actor " + actor.id + " at " + vec3
+              `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${vec3.x} y: ${vec3.y} z: ${vec3.z}`
             );
           });
 
