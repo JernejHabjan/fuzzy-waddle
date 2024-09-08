@@ -113,6 +113,10 @@
                 "y"
             ],
             "label": "sandhold",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 32,
             "y": 608
         },
@@ -124,6 +128,10 @@
                 "y"
             ],
             "label": "owlery",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1024,
             "y": 912
         },
@@ -136,6 +144,10 @@
                 "z"
             ],
             "label": "infantryInn",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1376,
             "y": 800
         },
@@ -147,6 +159,10 @@
                 "y"
             ],
             "label": "ankGuard",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 480,
             "y": 608
         },
@@ -158,6 +174,10 @@
                 "y"
             ],
             "label": "temple",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -192,
             "y": 464
         },
@@ -169,6 +189,10 @@
                 "y"
             ],
             "label": "skaduweeWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1472,
             "y": 816
         },
@@ -180,6 +204,10 @@
                 "y"
             ],
             "label": "skaduweeWorkerFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1088,
             "y": 944
         },
@@ -191,8 +219,12 @@
                 "y"
             ],
             "label": "skaduweeRangedFemale",
-            "x": 1280,
-            "y": 720
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": 1344,
+            "y": 704
         },
         {
             "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
@@ -202,6 +234,10 @@
                 "y"
             ],
             "label": "skaduweeMagicianFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1344,
             "y": 848
         },
@@ -213,6 +249,10 @@
                 "y"
             ],
             "label": "skaduweeWarriorMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1408,
             "y": 848
         },
@@ -235,6 +275,10 @@
                 "y"
             ],
             "label": "tivaraSlingshotFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 160,
             "y": 704
         },
@@ -257,6 +301,10 @@
                 "y"
             ],
             "label": "tivaraWorkerFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 288,
             "y": 640
         },
@@ -268,6 +316,10 @@
                 "y"
             ],
             "label": "tivaraWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 320,
             "y": 720
         },
@@ -279,6 +331,10 @@
                 "y"
             ],
             "label": "tivaraMacemanMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 544,
             "y": 704
         },
@@ -301,6 +357,10 @@
                 "y"
             ],
             "label": "wallTopLeftTopRight",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -480,
             "y": 256
         },
@@ -312,6 +372,10 @@
                 "y"
             ],
             "label": "wallTopRight",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -448,
             "y": 272
         },
@@ -323,6 +387,10 @@
                 "y"
             ],
             "label": "watchTower",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -400,
             "y": 288
         },
@@ -1023,7 +1091,11 @@
                 "y"
             ],
             "label": "frostForge",
-            "x": 1184,
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": 1168,
             "y": 848
         },
         {
@@ -1034,6 +1106,10 @@
                 "y"
             ],
             "label": "skaduweeOwl",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1056,
             "y": 784
         },
@@ -1617,6 +1693,10 @@
                 "y"
             ],
             "label": "skaduweeOwlFurball",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1008,
             "y": 752
         }
@@ -1641,8 +1721,8 @@
         }
     ],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

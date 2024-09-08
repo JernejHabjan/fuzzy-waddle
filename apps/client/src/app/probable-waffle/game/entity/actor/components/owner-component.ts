@@ -7,7 +7,7 @@ export class OwnerComponent {
 
   setOwner(playerNumber: number) {
     this.owner = playerNumber;
-    console.warn(`Owner set to ${playerNumber} for ${this.gameObject.constructor.name}`);
+    console.log(`Owner set to ${playerNumber} for ${this.gameObject.constructor.name}`);
   }
 
   clearOwner() {

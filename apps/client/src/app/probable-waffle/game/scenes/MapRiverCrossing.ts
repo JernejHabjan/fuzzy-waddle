@@ -9,6 +9,7 @@ import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
 import Hedgehog from "../prefabs/animals/Hedgehog";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
+import EditorOwner from "../editor-components/EditorOwner";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
@@ -155,7 +156,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerFemale);
 
     // skaduweeRangedFemale
-    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1280, 720);
+    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1344, 704);
     this.add.existing(skaduweeRangedFemale);
 
     // skaduweeMagicianFemale
@@ -451,7 +452,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree5);
 
     // frostForge
-    const frostForge = new FrostForge(this, 1184, 848);
+    const frostForge = new FrostForge(this, 1168, 848);
     this.add.existing(frostForge);
 
     // skaduweeOwl
@@ -670,6 +671,74 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const skaduweeOwlFurball = new SkaduweeOwlFurball(this, 1008, 752);
     this.add.existing(skaduweeOwlFurball);
 
+    // sandhold (components)
+    const sandholdEditorOwner = new EditorOwner(sandhold);
+    sandholdEditorOwner.owner_id = "1";
+
+    // owlery (components)
+    const owleryEditorOwner = new EditorOwner(owlery);
+    owleryEditorOwner.owner_id = "2";
+
+    // infantryInn (components)
+    const infantryInnEditorOwner = new EditorOwner(infantryInn);
+    infantryInnEditorOwner.owner_id = "2";
+
+    // ankGuard (components)
+    const ankGuardEditorOwner = new EditorOwner(ankGuard);
+    ankGuardEditorOwner.owner_id = "1";
+
+    // temple (components)
+    const templeEditorOwner = new EditorOwner(temple);
+    templeEditorOwner.owner_id = "1";
+
+    // skaduweeWorkerMale (components)
+    const skaduweeWorkerMaleEditorOwner = new EditorOwner(skaduweeWorkerMale);
+    skaduweeWorkerMaleEditorOwner.owner_id = "2";
+
+    // skaduweeWorkerFemale (components)
+    const skaduweeWorkerFemaleEditorOwner = new EditorOwner(skaduweeWorkerFemale);
+    skaduweeWorkerFemaleEditorOwner.owner_id = "2";
+
+    // skaduweeRangedFemale (components)
+    const skaduweeRangedFemaleEditorOwner = new EditorOwner(skaduweeRangedFemale);
+    skaduweeRangedFemaleEditorOwner.owner_id = "2";
+
+    // skaduweeMagicianFemale (components)
+    const skaduweeMagicianFemaleEditorOwner = new EditorOwner(skaduweeMagicianFemale);
+    skaduweeMagicianFemaleEditorOwner.owner_id = "2";
+
+    // skaduweeWarriorMale (components)
+    const skaduweeWarriorMaleEditorOwner = new EditorOwner(skaduweeWarriorMale);
+    skaduweeWarriorMaleEditorOwner.owner_id = "2";
+
+    // tivaraSlingshotFemale (components)
+    const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
+    tivaraSlingshotFemaleEditorOwner.owner_id = "1";
+
+    // tivaraWorkerFemale (components)
+    const tivaraWorkerFemaleEditorOwner = new EditorOwner(tivaraWorkerFemale);
+    tivaraWorkerFemaleEditorOwner.owner_id = "1";
+
+    // tivaraWorkerMale (components)
+    const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
+    tivaraWorkerMaleEditorOwner.owner_id = "1";
+
+    // tivaraMacemanMale (components)
+    const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
+    tivaraMacemanMaleEditorOwner.owner_id = "1";
+
+    // wallTopLeftTopRight (components)
+    const wallTopLeftTopRightEditorOwner = new EditorOwner(wallTopLeftTopRight);
+    wallTopLeftTopRightEditorOwner.owner_id = "1";
+
+    // wallTopRight (components)
+    const wallTopRightEditorOwner = new EditorOwner(wallTopRight);
+    wallTopRightEditorOwner.owner_id = "1";
+
+    // watchTower (components)
+    const watchTowerEditorOwner = new EditorOwner(watchTower);
+    watchTowerEditorOwner.owner_id = "1";
+
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;
 
@@ -693,6 +762,18 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // blockStoneWater4 (prefab fields)
     blockStoneWater4.z = 32;
+
+    // frostForge (components)
+    const frostForgeEditorOwner = new EditorOwner(frostForge);
+    frostForgeEditorOwner.owner_id = "2";
+
+    // skaduweeOwl (components)
+    const skaduweeOwlEditorOwner = new EditorOwner(skaduweeOwl);
+    skaduweeOwlEditorOwner.owner_id = "2";
+
+    // skaduweeOwlFurball (components)
+    const skaduweeOwlFurballEditorOwner = new EditorOwner(skaduweeOwlFurball);
+    skaduweeOwlFurballEditorOwner.owner_id = "2";
 
     this.tilemap = tilemap;
 

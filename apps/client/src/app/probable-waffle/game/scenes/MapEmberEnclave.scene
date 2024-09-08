@@ -113,6 +113,10 @@
                 "y"
             ],
             "label": "ankGuard",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 704,
             "y": 752
         },
@@ -124,6 +128,10 @@
                 "y"
             ],
             "label": "sandhold",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 480,
             "y": 880
         },
@@ -135,6 +143,10 @@
                 "y"
             ],
             "label": "sandhold_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": -864,
             "y": 592
         },
@@ -146,6 +158,10 @@
                 "y"
             ],
             "label": "temple",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": -608,
             "y": 880
         },
@@ -157,6 +173,10 @@
                 "y"
             ],
             "label": "tivaraSlingshotFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 448,
             "y": 1088
         },
@@ -168,6 +188,10 @@
                 "y"
             ],
             "label": "tivaraWorkerFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": -992,
             "y": 720
         },
@@ -179,6 +203,10 @@
                 "y"
             ],
             "label": "tivaraWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": -576,
             "y": 688
         },
@@ -190,6 +218,10 @@
                 "y"
             ],
             "label": "workMill",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": -128,
             "y": 736
         },
@@ -201,6 +233,10 @@
                 "y"
             ],
             "label": "workMill_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 192,
             "y": 704
         }
@@ -225,8 +261,8 @@
         }
     ],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

@@ -11,6 +11,7 @@ import BushUpwardsLarge from "../prefabs/outside/foliage/bushes/BushUpwardsLarge
 import BushDownwardsSmall from "../prefabs/outside/foliage/bushes/BushDownwardsSmall";
 import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
+import EditorOwner from "../editor-components/EditorOwner";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Temple from "../prefabs/buildings/tivara/Temple";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
@@ -21,6 +22,7 @@ import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends GameProbableWaffleScene {
+
   constructor() {
     super("MapEmberEnclave");
 
@@ -30,13 +32,14 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
 
     // blockObsidianLava5
     const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);
@@ -101,6 +104,42 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     // workMill_1
     const workMill_1 = new WorkMill(this, 192, 704);
     this.add.existing(workMill_1);
+
+    // ankGuard (components)
+    const ankGuardEditorOwner = new EditorOwner(ankGuard);
+    ankGuardEditorOwner.owner_id = "1";
+
+    // sandhold (components)
+    const sandholdEditorOwner = new EditorOwner(sandhold);
+    sandholdEditorOwner.owner_id = "1";
+
+    // sandhold_1 (components)
+    const sandhold_1EditorOwner = new EditorOwner(sandhold_1);
+    sandhold_1EditorOwner.owner_id = "2";
+
+    // temple (components)
+    const templeEditorOwner = new EditorOwner(temple);
+    templeEditorOwner.owner_id = "2";
+
+    // tivaraSlingshotFemale (components)
+    const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
+    tivaraSlingshotFemaleEditorOwner.owner_id = "1";
+
+    // tivaraWorkerFemale (components)
+    const tivaraWorkerFemaleEditorOwner = new EditorOwner(tivaraWorkerFemale);
+    tivaraWorkerFemaleEditorOwner.owner_id = "2";
+
+    // tivaraWorkerMale (components)
+    const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
+    tivaraWorkerMaleEditorOwner.owner_id = "2";
+
+    // workMill (components)
+    const workMillEditorOwner = new EditorOwner(workMill);
+    workMillEditorOwner.owner_id = "2";
+
+    // workMill_1 (components)
+    const workMill_1EditorOwner = new EditorOwner(workMill_1);
+    workMill_1EditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 
