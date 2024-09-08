@@ -187,6 +187,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
+  listenToGameStateChangedEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.gameStateObservable.subscribe((payload) => {
+        console.log("game state changed on client", payload);
+      })
+    );
+  }
+
   private startListeningToGameInstanceEvents() {
     if (!this.currentGameInstanceId)
       throw new Error("Game instance not found in startListeningToGameInstanceEvents in GameInstanceClientService");
@@ -195,6 +204,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToGameModeDataEvents();
     this.listenToPlayerEvents();
     this.listenToSpectatorEvents();
+    this.listenToGameStateChangedEvents();
     this.listenToSaveGameEvents();
   }
 

@@ -47,6 +47,10 @@ function setNestedProperty(target: any, path: string[], value: any) {
   }
 }
 
+function getNestedValue(target: any, path: string[]): any {
+  return path.reduce((obj, key) => obj && obj[key], target);
+}
+
 export type SyncOptions<T> = {
   eventPrefix: string;
   propertyMap: { [K in keyof T]: string };
@@ -82,12 +86,11 @@ export class ComponentSyncSystem {
         // Only emit event if custom hook logic allows
         if (value !== previousValue) {
           // Construct the nested property path for actorDefinition
-          const nestedPath = [options.eventPrefix];
-          nestedPath.push(...(options.propertyMap[property]?.split(".") || []));
+          const key = this.getKey(property, options);
           const actorDefinition: any = {};
-          setNestedProperty(actorDefinition, nestedPath, value);
+          setNestedProperty(actorDefinition, key, value);
 
-          sendActorEvent(gameObject, `${nestedPath.join(".")}`, {
+          sendActorEvent(gameObject, key.join("."), {
             actorDefinition
           });
         }
@@ -100,11 +103,17 @@ export class ComponentSyncSystem {
         // Extract property from payload and update the proxiedData
         const property = Object.keys(options.propertyMap).find((key) =>
           payload.property.endsWith(options.propertyMap[key as keyof T])
-        );
+        ) as keyof T;
+
         if (property) {
-          const path = options.propertyMap[property as keyof T].split(".");
-          if (path.length) {
-            setNestedProperty(proxiedData, path, payload.data.actorDefinition![path.join(".")]);
+          const key = this.getKey(property, options);
+          if (key.length) {
+            const value = getNestedValue(payload.data.actorDefinition, key);
+            if (value !== undefined) {
+              setNestedProperty(proxiedData, [property as string], value);
+
+              console.log(`Property ${property as string} updated to ${value}`);
+            }
           }
         }
       });
@@ -115,6 +124,12 @@ export class ComponentSyncSystem {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.cleanup, this);
 
     return proxiedData;
+  }
+
+  private getKey<T>(property: keyof T, options: SyncOptions<T>): string[] {
+    const nestedPath = [options.eventPrefix];
+    nestedPath.push(...(options.propertyMap[property]?.split(".") || []));
+    return nestedPath;
   }
 
   /**

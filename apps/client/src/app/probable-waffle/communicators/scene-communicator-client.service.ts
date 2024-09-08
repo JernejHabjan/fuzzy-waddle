@@ -6,6 +6,7 @@ import { Observable, Subscription } from "rxjs";
 import {
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
+  ProbableWaffleGameStateDataChangeEvent,
   ProbableWafflePlayerDataChangeEvent,
   ProbableWaffleSpectatorDataChangeEvent
 } from "@fuzzy-waddle/api-interfaces";
@@ -15,6 +16,7 @@ export type ProbableWaffleCommunicators = {
   gameModeObservable: Observable<ProbableWaffleGameModeDataChangeEvent>;
   playerObservable: Observable<ProbableWafflePlayerDataChangeEvent>;
   spectatorObservable: Observable<ProbableWaffleSpectatorDataChangeEvent>;
+  gameStateObservable: Observable<ProbableWaffleGameStateDataChangeEvent>;
 } | null;
 
 @Injectable({
@@ -33,14 +35,16 @@ export class SceneCommunicatorClientService implements SceneCommunicatorClientSe
       !this.communicator.gameInstanceMetadataChanged ||
       !this.communicator.gameModeChanged ||
       !this.communicator.playerChanged ||
-      !this.communicator.spectatorChanged
+      !this.communicator.spectatorChanged ||
+      !this.communicator.gameStateChanged
     )
       return null;
     return {
       gameInstanceObservable: this.communicator.gameInstanceMetadataChanged!.on,
       gameModeObservable: this.communicator.gameModeChanged!.on,
       playerObservable: this.communicator.playerChanged!.on,
-      spectatorObservable: this.communicator.spectatorChanged!.on
+      spectatorObservable: this.communicator.spectatorChanged!.on,
+      gameStateObservable: this.communicator.gameStateChanged!.on
     };
   }
 

@@ -1,7 +1,6 @@
 import { DamageType } from "../damage-type";
 import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
-import { listenToActorEvents } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
 import { HealthComponentData } from "@fuzzy-waddle/api-interfaces";
 import { ComponentSyncSystem, SyncOptions } from "../../systems/component-sync.system";
@@ -67,12 +66,7 @@ export class HealthComponent {
       this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
     }
 
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy.bind(this));
-  }
-
-  private init() {
-    this.listenToHealthEvents();
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
@@ -101,19 +95,6 @@ export class HealthComponent {
   setVisibilityUiComponent(visibility: boolean) {
     this.healthUiComponent.setVisibility(visibility);
     this.armorUiComponent?.setVisibility(visibility);
-  }
-
-  private listenToHealthEvents() {
-    this.playerChangedSubscription = listenToActorEvents(this.gameObject, "health")?.subscribe((payload) => {
-      switch (payload.property) {
-        case "health.health":
-          this.healthComponentData.health = payload.data.actorDefinition!.health!.health!;
-          break;
-        case "health.armor":
-          this.healthComponentData.armor = payload.data.actorDefinition!.health!.armor!;
-          break;
-      }
-    });
   }
 
   private destroy() {

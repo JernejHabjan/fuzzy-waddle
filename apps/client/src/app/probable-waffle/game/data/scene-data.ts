@@ -35,7 +35,7 @@ export function listenToActorEvents(
   if (!actorId) throw new Error("actorId is not defined");
 
   return getCommunicator(gameObject.scene).gameStateChanged?.onWithFilter(
-    (p) => p.data.actorDefinition?.id === actorId && (property ? p.property === property : true)
+    (p) => p.data.actorDefinition?.id === actorId && (property ? p.property.includes(property) : true)
   );
 }
 
