@@ -112,7 +112,7 @@ export class ComponentSyncSystem {
             if (value !== undefined) {
               setNestedProperty(proxiedData, [property as string], value);
 
-              console.log(`Property ${property as string} updated to ${value}`);
+              console.log(`Property ${property as string} updated to ${value} on ${gameObject.constructor.name}`);
             }
           }
         }

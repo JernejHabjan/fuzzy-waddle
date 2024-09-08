@@ -100,13 +100,9 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
       });
     });
 
-    // TODO FOR TEST
-
     setTimeout(() => {
+      console.warn("Warning - triggering automatic damage for test:");
       getActorComponent(this, HealthComponent)!.takeDamage(10, DamageType.Magical); // todo
-      console.log("take dameage for", getActorComponent(this, IdComponent)?.id);
-
-      console.warn("for test reduce health");
     }, 1000);
     /* END-USER-CTR-CODE */
   }
