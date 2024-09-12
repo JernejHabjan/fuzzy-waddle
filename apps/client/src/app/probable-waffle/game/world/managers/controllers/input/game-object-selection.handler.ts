@@ -1,5 +1,5 @@
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
-import { Subscription } from "rxjs";
+import { filter, Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { getGameObjectBounds } from "../../../../data/game-object-helper";
@@ -9,7 +9,7 @@ import { AttackComponent } from "../../../../entity/combat/components/attack-com
 import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
 
@@ -25,100 +25,97 @@ export class GameObjectSelectionHandler {
    * ctrl + click adds to selection
    */
   private bindSelectionInput() {
-    this.sub = this.scene.communicator.selection!.on.subscribe((selection) => {
-      switch (selection.type) {
-        case "deselect":
-          console.log("deselect");
-          this.deselectActorsForPlayer();
-          break;
-        case "singleSelect":
-          console.log("singleSelect", selection.data!.selected);
-          const isShiftDown = selection.data!.shiftKey;
-          const isCtrlDown = selection.data!.ctrlKey;
+    this.sub = this.scene.communicator
+      .allScenes!.pipe(filter((selection) => selection.name.startsWith("selection.")))
+      .subscribe((selection) => {
+        const data = selection.data as ProbableWaffleSelectionData;
+        switch (selection.name) {
+          case "selection.deselect":
+            console.log("deselect");
+            this.emitEventSelection("selection.cleared");
+            break;
+          case "selection.singleSelect":
+            console.log("singleSelect", data.selected);
+            const isShiftDown = data.shiftKey;
+            const isCtrlDown = data.ctrlKey;
 
-          if (isShiftDown) {
-            console.log("removeFromSelection", selection.data!.selected);
-            this.deselectActorsByIds(selection.data!.selected!);
-          } else if (isCtrlDown) {
-            console.log("additionalSelect", selection.data!.selected);
-            this.selectActorsByIds(selection.data!.selected!);
-          } else {
-            this.deselectActorsForPlayer();
-            this.selectActorsByIds(selection.data!.selected!);
-          }
-          break;
-        case "terrainSelect":
-          console.log("terrainSelect", selection.data!.terrainSelected);
-          if (selection.data!.button === "left") {
-            this.deselectActorsForPlayer();
-          } else {
-            this.issueMoveCommandToSelectedActors(selection.data!.terrainSelected!);
-          }
-          break;
-        case "multiSelect":
-          const area = selection.data!.selectedArea!;
-          // console.log("multiSelect", area);
-          const actorsUnderArea = this.getSelectableComponentsUnderSelectedArea(area);
-          const actorsWithHighestPriority = this.getChildrenWithHighestPriority(actorsUnderArea);
-          if (selection.data!.shiftKey) {
-            actorsUnderArea.forEach((actor) => this.deselectActor(actor));
-          } else if (selection.data!.ctrlKey) {
-            actorsWithHighestPriority.forEach((actor) => this.selectActor(actor));
-          } else {
-            this.deselectActorsForPlayer();
-            actorsWithHighestPriority.forEach((actor) => this.selectActor(actor));
-          }
-          break;
-        case "multiSelectPreview":
-          // not logging as it's too many log events console.log("multiSelectPreview");
-          break;
-        default:
-          throw new Error("unknown selection type");
-      }
+            if (isShiftDown) {
+              console.log("removeFromSelection", data.selected);
+              this.emitEventSelection("selection.removed", data.selected!);
+            } else if (isCtrlDown) {
+              console.log("additionalSelect", data.selected);
+              this.emitEventSelection("selection.added", data.selected!);
+            } else {
+              this.emitEventSelection("selection.set", data.selected!);
+            }
+            break;
+          case "selection.terrainSelect":
+            console.log("terrainSelect", data.terrainSelected);
+            if (data.button === "left") {
+              this.emitEventSelection("selection.cleared");
+            } else {
+              this.emitEventIssueMoveCommandToSelectedActors(data.terrainSelected!);
+            }
+            break;
+          case "selection.multiSelect":
+            const area = data.selectedArea!;
+            // console.log("multiSelect", area);
+            const actorsUnderArea = this.getSelectableComponentsUnderSelectedArea(area);
+            const actorsWithHighestPriority = this.getChildrenWithHighestPriority(actorsUnderArea);
+            const actorsWithHighestPriorityIds = actorsWithHighestPriority.map(
+              (actor) => getActorComponent(actor, IdComponent)!.id
+            );
+            if (data.shiftKey) {
+              this.emitEventSelection("selection.removed", actorsWithHighestPriorityIds);
+            } else if (data.ctrlKey) {
+              this.emitEventSelection("selection.added", actorsWithHighestPriorityIds);
+            } else {
+              this.emitEventSelection("selection.set", actorsWithHighestPriorityIds);
+            }
+            break;
+          case "selection.multiSelectPreview":
+            // not logging as it's too many log events console.log("multiSelectPreview");
+            break;
+        }
+      });
+  }
+
+  private emitEventSelection(
+    property: "selection.set" | "selection.added" | "selection.removed" | "selection.cleared",
+    actorIds?: string[]
+  ) {
+    const player = getPlayerController(this.scene);
+    this.scene.communicator.playerChanged!.send({
+      property,
+      data: {
+        playerNumber: player?.playerNumber,
+        playerStateData: {
+          selection: actorIds
+        }
+      },
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: this.scene.userId
     });
   }
 
+  private emitEventIssueMoveCommandToSelectedActors(vec3: Vector3Simple) {
+    this.scene.communicator.playerChanged!.send({
+      property: "command.issued.move",
+      data: {
+        playerNumber: getPlayerController(this.scene)?.playerNumber,
+        data: {
+          vec3
+        }
+      },
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: this.scene.userId
+    });
+  }
   private getActorsByIds(ids: string[]): GameObject[] {
     const selectableChildren = this.getSelectableChildren();
     return ids
       .map((id) => selectableChildren.find((actor) => getActorComponent(actor, IdComponent)!.id === id))
       .filter((actor) => !!actor) as GameObject[];
-  }
-
-  private selectActorsByIds(ids: string[]) {
-    this.getActorsByIds(ids).forEach((actor) => actor && this.selectActor(actor));
-  }
-
-  private deselectActorsByIds(ids: string[]) {
-    this.getActorsByIds(ids).forEach(
-      (actor) => actor && getActorComponent(actor, SelectableComponent)!.setSelected(false)
-    );
-  }
-
-  selectActor(actor: Phaser.GameObjects.GameObject) {
-    getActorComponent(actor, SelectableComponent)!.setSelected(true);
-    const playerController = getPlayerController(this.scene);
-    if (!playerController) return;
-    playerController.setSelectedActor(getActorComponent(actor, IdComponent)!.id);
-  }
-
-  private deselectActor(actor: Phaser.GameObjects.GameObject) {
-    getActorComponent(actor, SelectableComponent)!.setSelected(false);
-    const playerController = getPlayerController(this.scene);
-    if (!playerController) return;
-    playerController.removeSelectedActor(getActorComponent(actor, IdComponent)!.id);
-  }
-
-  private deselectActorsForPlayer() {
-    const playerController = getPlayerController(this.scene);
-    if (!playerController) return;
-    const selection: string[] = playerController.getSelection();
-    const selectableChildren = this.getSelectableChildren();
-    selection.forEach((id) => {
-      const actor = selectableChildren.find((actor) => getActorComponent(actor, IdComponent)!.id === id);
-      if (actor) getActorComponent(actor, SelectableComponent)!.setSelected(false);
-    });
-    playerController.clearSelection();
   }
 
   private getSelectableChildren() {
@@ -196,22 +193,16 @@ export class GameObjectSelectionHandler {
       .flat();
   }
 
-  private issueMoveCommandToSelectedActors(vec3: Vector3Simple) {
-    console.log("issue move command to selected actors");
+  private getSelectedMovableActors() {
     const playerController = getPlayerController(this.scene);
-    if (!playerController) return;
+    if (!playerController) return [];
     // get actors that are selected
     const selectedActors = playerController.getSelection();
-    if (selectedActors.length === 0) return;
+    if (selectedActors.length === 0) return [];
     const selectedActorsGameObjects = this.getActorsByIds(selectedActors);
+    // noinspection UnnecessaryLocalVariableJS
     const movableActors = selectedActorsGameObjects.filter((actor) => !!getActorSystem(actor, MovementSystem));
-    movableActors.forEach((actor) => {
-      // issue move command to each actor
-      const movementSystem = getActorSystem(actor, MovementSystem)!;
-      movementSystem.moveToLocation(vec3, {
-        duration: 500
-      });
-    });
+    return movableActors;
   }
 
   private destroy() {

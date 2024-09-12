@@ -10,21 +10,21 @@ import {
   SceneActorSaveCommunicator
 } from "../scenes/components/scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import { onPostSceneInitialized } from "./game-object-helper";
 
 export class SaveGame {
-  static SaveGameEvent = "SaveGameEvent";
   private saveSubscription: Subscription;
 
   constructor(private scene: GameProbableWaffleScene) {
-    scene.onPostCreate.subscribe(() => this.postCreate());
+    onPostSceneInitialized(scene, this.postSceneInitialized, this);
     // only ones that have name: SaveGame.SaveGameEvent
     this.saveSubscription = scene.communicator.allScenes
-      .pipe(filter((scene) => scene.name === SaveGame.SaveGameEvent))
+      .pipe(filter((scene) => scene.name === "save-game"))
       .subscribe(() => this.onSaveGame());
     scene.onDestroy.subscribe(() => this.destroy());
   }
 
-  private postCreate() {
+  private postSceneInitialized() {
     this.loadActorsFromSaveGame();
     this.demoPostNewActors();
   }
@@ -53,6 +53,8 @@ export class SaveGame {
   }
 
   private demoPostNewActors() {
+    if (this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
+
     const actors = [
       {
         name: TivaraMacemanMale.name,
@@ -81,13 +83,10 @@ export class SaveGame {
   }
 
   private destroy() {
-    this.scene.events.off(SaveGame.SaveGameEvent);
     this.saveSubscription.unsubscribe();
   }
 
   private onSaveGame() {
     this.scene.events.emit(SceneActorSaveCommunicator);
-    this.scene.communicator.saveGame.emit();
-    console.log("Saved game");
   }
 }

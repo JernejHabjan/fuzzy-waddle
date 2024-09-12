@@ -3,6 +3,8 @@
 /* START OF COMPILED CODE */
 
 import GameProbableWaffleScene from "./GameProbableWaffleScene";
+import Spawn from "../prefabs/buildings/misc/Spawn";
+import EditorOwner from "../editor-components/EditorOwner";
 import BlockObsidianLava5 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
 import BlockObsidianLava4 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava4";
@@ -17,10 +19,13 @@ import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotF
 import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
+import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
+import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends GameProbableWaffleScene {
+
   constructor() {
     super("MapEmberEnclave");
 
@@ -30,13 +35,26 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
+
+    // spawn_2
+    const spawn_2 = new Spawn(this, -176, 1264);
+    this.add.existing(spawn_2);
+
+    // spawn_1
+    const spawn_1 = new Spawn(this, 464, 848);
+    this.add.existing(spawn_1);
+
+    // spawn
+    const spawn = new Spawn(this, -848, 592);
+    this.add.existing(spawn);
 
     // blockObsidianLava5
     const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);
@@ -71,19 +89,19 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     this.add.existing(ankGuard);
 
     // sandhold
-    const sandhold = new Sandhold(this, 480, 880);
+    const sandhold = new Sandhold(this, 480, 656);
     this.add.existing(sandhold);
 
     // sandhold_1
-    const sandhold_1 = new Sandhold(this, -864, 592);
+    const sandhold_1 = new Sandhold(this, -576, 448);
     this.add.existing(sandhold_1);
 
     // temple
-    const temple = new Temple(this, -608, 880);
+    const temple = new Temple(this, -1168, 688);
     this.add.existing(temple);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 448, 1088);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 672, 880);
     this.add.existing(tivaraSlingshotFemale);
 
     // tivaraWorkerFemale
@@ -101,6 +119,78 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     // workMill_1
     const workMill_1 = new WorkMill(this, 192, 704);
     this.add.existing(workMill_1);
+
+    // skaduweeMagicianFemale
+    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 48, 1328);
+    this.add.existing(skaduweeMagicianFemale);
+
+    // skaduweeWorkerMale
+    const skaduweeWorkerMale = new SkaduweeWorkerMale(this, -368, 1328);
+    this.add.existing(skaduweeWorkerMale);
+
+    // workMill_2
+    const workMill_2 = new WorkMill(this, -80, 864);
+    this.add.existing(workMill_2);
+
+    // spawn_2 (components)
+    const spawn_2EditorOwner = new EditorOwner(spawn_2);
+    spawn_2EditorOwner.owner_id = "2";
+
+    // spawn_1 (components)
+    const spawn_1EditorOwner = new EditorOwner(spawn_1);
+    spawn_1EditorOwner.owner_id = "1";
+
+    // spawn (components)
+    const spawnEditorOwner = new EditorOwner(spawn);
+    spawnEditorOwner.owner_id = "0";
+
+    // ankGuard (components)
+    const ankGuardEditorOwner = new EditorOwner(ankGuard);
+    ankGuardEditorOwner.owner_id = "1";
+
+    // sandhold (components)
+    const sandholdEditorOwner = new EditorOwner(sandhold);
+    sandholdEditorOwner.owner_id = "1";
+
+    // sandhold_1 (components)
+    const sandhold_1EditorOwner = new EditorOwner(sandhold_1);
+    sandhold_1EditorOwner.owner_id = "0";
+
+    // temple (components)
+    const templeEditorOwner = new EditorOwner(temple);
+    templeEditorOwner.owner_id = "0";
+
+    // tivaraSlingshotFemale (components)
+    const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
+    tivaraSlingshotFemaleEditorOwner.owner_id = "1";
+
+    // tivaraWorkerFemale (components)
+    const tivaraWorkerFemaleEditorOwner = new EditorOwner(tivaraWorkerFemale);
+    tivaraWorkerFemaleEditorOwner.owner_id = "0";
+
+    // tivaraWorkerMale (components)
+    const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
+    tivaraWorkerMaleEditorOwner.owner_id = "0";
+
+    // workMill (components)
+    const workMillEditorOwner = new EditorOwner(workMill);
+    workMillEditorOwner.owner_id = "0";
+
+    // workMill_1 (components)
+    const workMill_1EditorOwner = new EditorOwner(workMill_1);
+    workMill_1EditorOwner.owner_id = "1";
+
+    // skaduweeMagicianFemale (components)
+    const skaduweeMagicianFemaleEditorOwner = new EditorOwner(skaduweeMagicianFemale);
+    skaduweeMagicianFemaleEditorOwner.owner_id = "2";
+
+    // skaduweeWorkerMale (components)
+    const skaduweeWorkerMaleEditorOwner = new EditorOwner(skaduweeWorkerMale);
+    skaduweeWorkerMaleEditorOwner.owner_id = "2";
+
+    // workMill_2 (components)
+    const workMill_2EditorOwner = new EditorOwner(workMill_2);
+    workMill_2EditorOwner.owner_id = "3";
 
     this.tilemap = tilemap;
 

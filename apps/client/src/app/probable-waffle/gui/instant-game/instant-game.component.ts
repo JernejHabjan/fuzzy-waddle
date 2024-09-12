@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from "@angular/core";
 
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
+  FactionType,
   GameSessionState,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
@@ -24,8 +25,11 @@ export class InstantGameComponent implements OnInit {
       ProbableWaffleGameInstanceVisibility.Private,
       ProbableWaffleGameInstanceType.InstantGame
     );
-    await this.gameInstanceClientService.addSelfAsPlayer();
-    await this.gameInstanceClientService.addAiPlayer();
+    const currentPlayer = await this.gameInstanceClientService.addSelfAsPlayer();
+    const aiPlayer = await this.gameInstanceClientService.addAiPlayer();
+
+    currentPlayer.factionType = FactionType.Tivara;
+    aiPlayer.factionType = FactionType.Skaduwee;
 
     // const allMaps = Object.values(ProbableWaffleLevels);
     // const map = allMaps[Math.floor(Math.random() * allMaps.length)].id;

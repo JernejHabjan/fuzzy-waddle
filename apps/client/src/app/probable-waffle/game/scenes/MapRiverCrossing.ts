@@ -3,12 +3,13 @@
 /* START OF COMPILED CODE */
 
 import GameProbableWaffleScene from "./GameProbableWaffleScene";
+import Spawn from "../prefabs/buildings/misc/Spawn";
+import EditorOwner from "../editor-components/EditorOwner";
 import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
 import Sheep from "../prefabs/animals/Sheep";
 import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
 import Hedgehog from "../prefabs/animals/Hedgehog";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
-import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
@@ -16,14 +17,10 @@ import Temple from "../prefabs/buildings/tivara/Temple";
 import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
 import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/SkaduweeWorkerFemale";
 import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/SkaduweeRangedFemale";
-import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/SkaduweeWarriorMale";
 import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
 import TallGrass1 from "../prefabs/outside/foliage/tall_grass/TallGrass1";
-import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
-import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
-import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
 import Olival from "../prefabs/buildings/tivara/Olival";
 import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
 import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
@@ -52,7 +49,6 @@ import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 import BlockStoneWater1 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater1";
 import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
 import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
-import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
 import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
@@ -98,9 +94,17 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
+    // spawn
+    const spawn = new Spawn(this, 240, 672);
+    this.add.existing(spawn);
+
     // christmasTree
     const christmasTree = new ChristmasTree(this, -288, 1184);
     this.add.existing(christmasTree);
+
+    // spawn_1
+    const spawn_1 = new Spawn(this, 1152, 832);
+    this.add.existing(spawn_1);
 
     // christmasTree_1
     const christmasTree_1 = new ChristmasTree(this, -128, 1168);
@@ -126,10 +130,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree_11 = new Tree7(this, 160, 1328);
     this.add.existing(tree_11);
 
-    // sandhold
-    const sandhold = new Sandhold(this, 32, 608);
-    this.add.existing(sandhold);
-
     // owlery
     const owlery = new Owlery(this, 1024, 912);
     this.add.existing(owlery);
@@ -139,7 +139,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(infantryInn);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, 480, 608);
+    const ankGuard = new AnkGuard(this, 528, 624);
     this.add.existing(ankGuard);
 
     // temple
@@ -155,12 +155,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerFemale);
 
     // skaduweeRangedFemale
-    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1280, 720);
+    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1344, 704);
     this.add.existing(skaduweeRangedFemale);
-
-    // skaduweeMagicianFemale
-    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1344, 848);
-    this.add.existing(skaduweeMagicianFemale);
 
     // skaduweeWarriorMale
     const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1408, 848);
@@ -171,24 +167,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(generalWarrior);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 160, 704);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 288, 864);
     this.add.existing(tivaraSlingshotFemale);
 
     // tallGrass_7
     const tallGrass_7 = new TallGrass1(this, -144, 832);
     this.add.existing(tallGrass_7);
-
-    // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 288, 640);
-    this.add.existing(tivaraWorkerFemale);
-
-    // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 720);
-    this.add.existing(tivaraWorkerMale);
-
-    // tivaraMacemanMale
-    const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
-    this.add.existing(tivaraMacemanMale);
 
     // olival
     const olival = new Olival(this, 128, 784);
@@ -450,10 +434,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree5 = new Tree5(this, -800, 480);
     this.add.existing(tree5);
 
-    // frostForge
-    const frostForge = new FrostForge(this, 1184, 848);
-    this.add.existing(frostForge);
-
     // skaduweeOwl
     const skaduweeOwl = new SkaduweeOwl(this, 1056, 784);
     this.add.existing(skaduweeOwl);
@@ -670,6 +650,62 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const skaduweeOwlFurball = new SkaduweeOwlFurball(this, 1008, 752);
     this.add.existing(skaduweeOwlFurball);
 
+    // spawn (components)
+    const spawnEditorOwner = new EditorOwner(spawn);
+    spawnEditorOwner.owner_id = "0";
+
+    // spawn_1 (components)
+    const spawn_1EditorOwner = new EditorOwner(spawn_1);
+    spawn_1EditorOwner.owner_id = "1";
+
+    // owlery (components)
+    const owleryEditorOwner = new EditorOwner(owlery);
+    owleryEditorOwner.owner_id = "1";
+
+    // infantryInn (components)
+    const infantryInnEditorOwner = new EditorOwner(infantryInn);
+    infantryInnEditorOwner.owner_id = "1";
+
+    // ankGuard (components)
+    const ankGuardEditorOwner = new EditorOwner(ankGuard);
+    ankGuardEditorOwner.owner_id = "0";
+
+    // temple (components)
+    const templeEditorOwner = new EditorOwner(temple);
+    templeEditorOwner.owner_id = "0";
+
+    // skaduweeWorkerMale (components)
+    const skaduweeWorkerMaleEditorOwner = new EditorOwner(skaduweeWorkerMale);
+    skaduweeWorkerMaleEditorOwner.owner_id = "1";
+
+    // skaduweeWorkerFemale (components)
+    const skaduweeWorkerFemaleEditorOwner = new EditorOwner(skaduweeWorkerFemale);
+    skaduweeWorkerFemaleEditorOwner.owner_id = "1";
+
+    // skaduweeRangedFemale (components)
+    const skaduweeRangedFemaleEditorOwner = new EditorOwner(skaduweeRangedFemale);
+    skaduweeRangedFemaleEditorOwner.owner_id = "1";
+
+    // skaduweeWarriorMale (components)
+    const skaduweeWarriorMaleEditorOwner = new EditorOwner(skaduweeWarriorMale);
+    skaduweeWarriorMaleEditorOwner.owner_id = "1";
+
+    // tivaraSlingshotFemale (components)
+    const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
+    tivaraSlingshotFemaleEditorOwner.owner_id = "0";
+
+    // wallTopLeftTopRight (components)
+    const wallTopLeftTopRightEditorOwner = new EditorOwner(wallTopLeftTopRight);
+    wallTopLeftTopRightEditorOwner.owner_id = "0";
+
+    // wallTopRight (components)
+    const wallTopRightEditorOwner = new EditorOwner(wallTopRight);
+    wallTopRightEditorOwner.owner_id = "0";
+
+    // watchTower (components)
+    const watchTowerEditorOwner = new EditorOwner(watchTower);
+    watchTowerEditorOwner.owner_id = "0";
+
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;
 
@@ -688,11 +724,23 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // blockStone_11 (prefab fields)
     blockStone_11.z = 128;
 
+    // workMill (components)
+    const workMillEditorOwner = new EditorOwner(workMill);
+    workMillEditorOwner.owner_id = "0";
+
     // blockStoneWater1 (prefab fields)
     blockStoneWater1.z = 16;
 
     // blockStoneWater4 (prefab fields)
     blockStoneWater4.z = 32;
+
+    // skaduweeOwl (components)
+    const skaduweeOwlEditorOwner = new EditorOwner(skaduweeOwl);
+    skaduweeOwlEditorOwner.owner_id = "2";
+
+    // skaduweeOwlFurball (components)
+    const skaduweeOwlFurballEditorOwner = new EditorOwner(skaduweeOwlFurball);
+    skaduweeOwlFurballEditorOwner.owner_id = "2";
 
     this.tilemap = tilemap;
 

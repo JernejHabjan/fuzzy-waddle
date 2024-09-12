@@ -29,6 +29,21 @@
             ]
         },
         {
+            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+            "id": "88aa0a36-cef4-4314-8225-c215a3ba8515",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "spawn",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
+            "x": 240,
+            "y": 672
+        },
+        {
             "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
             "id": "7a27448b-9ab5-4257-9039-8c64c006968e",
             "unlock": [
@@ -38,6 +53,21 @@
             "label": "christmasTree",
             "x": -288,
             "y": 1184
+        },
+        {
+            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+            "id": "ee384ffa-22f3-450f-85d2-86ad7fa5cd86",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "spawn_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 1152,
+            "y": 832
         },
         {
             "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
@@ -106,17 +136,6 @@
             "y": 1328
         },
         {
-            "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
-            "id": "05c36924-96a6-4963-8188-94545aeddb09",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "sandhold",
-            "x": 32,
-            "y": 608
-        },
-        {
             "prefabId": "3e9f68eb-dfb2-48a6-9297-29d66e962fa4",
             "id": "57cc06f3-2a81-4e7f-a859-f6fed682accd",
             "unlock": [
@@ -124,6 +143,10 @@
                 "y"
             ],
             "label": "owlery",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 1024,
             "y": 912
         },
@@ -136,6 +159,10 @@
                 "z"
             ],
             "label": "infantryInn",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 1376,
             "y": 800
         },
@@ -147,8 +174,12 @@
                 "y"
             ],
             "label": "ankGuard",
-            "x": 480,
-            "y": 608
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
+            "x": 528,
+            "y": 624
         },
         {
             "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
@@ -158,6 +189,10 @@
                 "y"
             ],
             "label": "temple",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
             "x": -192,
             "y": 464
         },
@@ -169,6 +204,10 @@
                 "y"
             ],
             "label": "skaduweeWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 1472,
             "y": 816
         },
@@ -180,6 +219,10 @@
                 "y"
             ],
             "label": "skaduweeWorkerFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 1088,
             "y": 944
         },
@@ -191,19 +234,12 @@
                 "y"
             ],
             "label": "skaduweeRangedFemale",
-            "x": 1280,
-            "y": 720
-        },
-        {
-            "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
-            "id": "42375fdb-141c-411a-8455-995eea79deec",
-            "unlock": [
-                "x",
-                "y"
+            "components": [
+                "EditorOwner"
             ],
-            "label": "skaduweeMagicianFemale",
+            "EditorOwner.owner_id": "1",
             "x": 1344,
-            "y": 848
+            "y": 704
         },
         {
             "prefabId": "6b5df2a7-6f41-4fc7-a3bb-96dc39de0188",
@@ -213,6 +249,10 @@
                 "y"
             ],
             "label": "skaduweeWarriorMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 1408,
             "y": 848
         },
@@ -235,8 +275,12 @@
                 "y"
             ],
             "label": "tivaraSlingshotFemale",
-            "x": 160,
-            "y": 704
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
+            "x": 288,
+            "y": 864
         },
         {
             "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
@@ -248,39 +292,6 @@
             "label": "tallGrass_7",
             "x": -144,
             "y": 832
-        },
-        {
-            "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
-            "id": "d6017f59-c654-46b9-9f2d-a2de4490f9a7",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tivaraWorkerFemale",
-            "x": 288,
-            "y": 640
-        },
-        {
-            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
-            "id": "eb554ade-cbf6-43b4-9dac-53bb8e92863b",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tivaraWorkerMale",
-            "x": 320,
-            "y": 720
-        },
-        {
-            "prefabId": "54836fe4-5089-4b7e-9db4-b71382bcb55f",
-            "id": "7b69f7f9-2bcc-4ccd-8a59-07e0ae53e6a3",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tivaraMacemanMale",
-            "x": 544,
-            "y": 704
         },
         {
             "prefabId": "562e6de3-f2af-48c3-b297-7d67a34dfe90",
@@ -301,6 +312,10 @@
                 "y"
             ],
             "label": "wallTopLeftTopRight",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
             "x": -480,
             "y": 256
         },
@@ -312,6 +327,10 @@
                 "y"
             ],
             "label": "wallTopRight",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
             "x": -448,
             "y": 272
         },
@@ -323,6 +342,10 @@
                 "y"
             ],
             "label": "watchTower",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
             "x": -400,
             "y": 288
         },
@@ -865,6 +888,10 @@
                 "y"
             ],
             "label": "workMill",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "0",
             "x": -560,
             "y": 512
         },
@@ -1016,17 +1043,6 @@
             "y": 480
         },
         {
-            "prefabId": "56d62d59-15b0-4017-b986-1f24c1040cb6",
-            "id": "91881092-74df-4d32-be1d-608a71ca46db",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "frostForge",
-            "x": 1184,
-            "y": 848
-        },
-        {
             "prefabId": "c06632b7-0afd-49c5-8129-a5051bf0f87d",
             "id": "00c01700-2b3a-48e9-becf-a6d7a18b9508",
             "unlock": [
@@ -1034,6 +1050,10 @@
                 "y"
             ],
             "label": "skaduweeOwl",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1056,
             "y": 784
         },
@@ -1617,6 +1637,10 @@
                 "y"
             ],
             "label": "skaduweeOwlFurball",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
             "x": 1008,
             "y": 752
         }
@@ -1641,8 +1665,8 @@
         }
     ],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

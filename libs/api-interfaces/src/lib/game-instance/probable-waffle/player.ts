@@ -4,6 +4,7 @@ import { BasePlayerController, BasePlayerControllerData } from "../player/player
 import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
+import { Vector3Simple } from "../../game/vector";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -12,13 +13,14 @@ export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerController
 > {
   setSelectedActor(guid: string) {
-    if (!this.playerState.data.selection.includes(guid)) {
-      this.playerState.data.selection.push(guid);
-    }
+    if (this.playerState.data.selection.includes(guid)) return;
+    this.playerState.data.selection.push(guid);
   }
 
   removeSelectedActor(guid: string) {
-    this.playerState.data.selection = this.playerState.data.selection.filter((id) => id !== guid);
+    const newSelection = this.playerState.data.selection.filter((id) => id !== guid);
+    if (newSelection.length === this.playerState.data.selection.length) return;
+    this.playerState.data.selection = newSelection;
   }
 
   getSelection() {
@@ -26,6 +28,7 @@ export class ProbableWafflePlayer extends BasePlayer<
   }
 
   clearSelection() {
+    if (this.playerState.data.selection.length === 0) return;
     this.playerState.data.selection = [];
   }
 
@@ -129,11 +132,13 @@ export interface PlayerLobbyDefinition {
 }
 
 export enum FactionType {
-  Tivara,
-  Skaduwee
+  Tivara = 1,
+  Skaduwee = 2
 }
 
 export interface PositionPlayerDefinition {
+  // assigned only after entering the game in world space coordinates
+  initialWorldSpawnPosition?: Vector3Simple;
   player: PlayerLobbyDefinition;
   team?: number;
   factionType?: FactionType;

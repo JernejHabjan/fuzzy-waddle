@@ -10,9 +10,12 @@ import {
   getGameObjectTileInRadius,
   getGameObjectTransform
 } from "../../data/game-object-helper";
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject, Subscription } from "rxjs";
 import { getSfxVolumeNormalized } from "../../scenes/services/audio.service";
 import Tween = Phaser.Tweens.Tween;
+import { getCommunicator } from "../../data/scene-data";
+import { SelectableComponent } from "../actor/components/selectable-component";
+import { getActorComponent } from "../../data/actor-component";
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -30,8 +33,41 @@ export class MovementSystem {
   private _currentTween?: Tween;
   private readonly DEBUG = false;
   private _actorMoved: Subject<Vector3Simple> = new Subject<Vector3Simple>();
+  private playerChangedSubscription?: Subscription;
 
-  constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {}
+  constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
+    this.listenToMoveEvents();
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+  }
+
+  private listenToMoveEvents() {
+    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
+      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move")
+      .subscribe((payload) => {
+        switch (payload.property) {
+          case "command.issued.move":
+            const target = payload.data.data!["vec3"] as Vector3Simple;
+            const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
+            if (isSelected) {
+              this.moveToLocation(target); // todo later on, read this from the blackboard and PawnAiController
+            }
+            break;
+        }
+      });
+
+    // todo this needs to be removed from here, and add this to the pawn ai controller which will then accordingly to blackboard issue MovementSystem.moveToLocation
+  }
+
+  // todo this should maybe later move to component like ActorTransform which will also broadcast event for transform to game and update actors depth
+  instantlyMoveToWorldCoordinates(vec3: Partial<Vector3Simple>): void {
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!transform) return;
+
+    if (vec3.x) transform.x = vec3.x;
+    if (vec3.y) transform.y = vec3.y;
+    if (vec3.z) transform.z = vec3.z;
+    this.tweenUpdate();
+  }
 
   get actorMoved(): Observable<Vector3Simple> {
     return this._actorMoved.asObservable();
@@ -166,6 +202,10 @@ export class MovementSystem {
     const volume = getSfxVolumeNormalized(this.gameObject.scene);
     this.gameObject.scene.sound.playAudioSprite("character", "footstep", { volume });
   }
+
+  private destroy() {
+    this.playerChangedSubscription?.unsubscribe();
+  }
 }
 
 export async function moveGameObjectToRandomTileInNavigableRadius(
@@ -190,6 +230,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
     } satisfies Vector3Simple,
     pathMoveConfig
   );
+  // todo todo this movementSystem.moveToLocation should be called from the pawn ai controller. Here we should only get the new tile
 }
 
 export function getGameObjectDirection(

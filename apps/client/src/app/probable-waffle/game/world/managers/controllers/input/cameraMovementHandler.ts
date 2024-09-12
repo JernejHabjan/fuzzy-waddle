@@ -1,8 +1,9 @@
 import { Cameras, Geom, Input, Types } from "phaser";
+import GameProbableWaffleScene from "../../../../scenes/GameProbableWaffleScene";
 
 export class CameraMovementHandler {
   private readonly enabledMouseCornerMovement = false;
-  private readonly lockToScreen = false; // todo could be enabled later
+  private readonly lockToScreen = false; // todo could be enabled later - need to move cursor manually in phaser
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private cursorOverGameInstance = false;
@@ -29,8 +30,9 @@ export class CameraMovementHandler {
     this.zoomListener();
     this.screenEdgeListener();
     this.lockCursorToScreen();
-    this.scene.events.on("update", this.update, this);
-    this.scene.events.on("shutdown", this.destroy, this);
+    this.scene.events.on(Phaser.Scenes.Events.CREATE, this.create, this);
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   /**
@@ -221,6 +223,23 @@ export class CameraMovementHandler {
           this.input.mouse.releasePointerLock();
         }
       });
+    }
+  }
+
+  private create() {
+    this.centerCamera();
+  }
+
+  private centerCamera() {
+    // try to find current player
+    if (!(this.scene instanceof GameProbableWaffleScene)) return;
+    const gameScene = this.scene as GameProbableWaffleScene;
+    const initialWorldSpawnPosition =
+      gameScene.player.playerController.data.playerDefinition?.initialWorldSpawnPosition;
+    if (initialWorldSpawnPosition) {
+      this.mainCamera.scrollX = initialWorldSpawnPosition.x;
+      this.mainCamera.scrollY = initialWorldSpawnPosition.y;
+      console.error("Todo not working fully because of some weird offset -.-");
     }
   }
 }

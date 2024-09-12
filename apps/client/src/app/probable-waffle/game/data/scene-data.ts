@@ -1,14 +1,67 @@
-import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import {
+  ProbableWaffleGameStateDataChangeEvent,
+  ProbableWaffleGameStateDataChangeEventProperty,
+  ProbableWaffleGameStateDataPayload,
+  ProbableWafflePlayer
+} from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
+import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
+import { getActorComponent } from "./actor-component";
+import { IdComponent } from "../entity/actor/components/id-component";
+import { Observable } from "rxjs";
+import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 
 export function getPlayerController(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   // if not instanceof BaseScene then throw error
-  if (!(scene instanceof ProbableWaffleScene)) {
-    throw new Error("scene is not instanceof BaseScene");
-  }
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("scene is not instanceof BaseScene");
   if (playerNumber === undefined) {
     playerNumber = scene.baseGameData.user.playerNumber!;
   }
   return scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
+}
+
+export function getCommunicator(scene: Scene): ProbableWaffleCommunicatorService {
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("scene is not instanceof BaseScene");
+
+  return scene.baseGameData.communicator;
+}
+
+export function listenToActorEvents(
+  gameObject: Phaser.GameObjects.GameObject,
+  property: ProbableWaffleGameStateDataChangeEventProperty | null = null
+): Observable<ProbableWaffleGameStateDataChangeEvent> | undefined {
+  const actorId = getActorComponent(gameObject, IdComponent)?.id;
+  if (!actorId) throw new Error("actorId is not defined");
+
+  return getCommunicator(gameObject.scene).gameStateChanged?.onWithFilter(
+    (p) => p.data.actorDefinition?.id === actorId && (property ? p.property.includes(property) : true)
+  );
+}
+
+export function sendActorEvent(
+  gameObject: Phaser.GameObjects.GameObject,
+  property: ProbableWaffleGameStateDataChangeEventProperty,
+  payloadIn: ProbableWaffleGameStateDataPayload
+): void {
+  const id = getActorComponent(gameObject, IdComponent)?.id;
+  if (!id) throw new Error("actorId is not defined");
+  if (!(gameObject.scene instanceof GameProbableWaffleScene))
+    throw new Error("Scene is not of type GameProbableWaffleSceneData");
+
+  const communicator = getCommunicator(gameObject.scene);
+  const data: ProbableWaffleGameStateDataPayload = {
+    actorDefinition: {
+      id,
+      ...payloadIn.actorDefinition
+    },
+    gameState: payloadIn.gameState
+  };
+
+  communicator.gameStateChanged?.send({
+    property,
+    data,
+    gameInstanceId: gameObject.scene.gameInstanceId,
+    emitterUserId: gameObject.scene.userId
+  });
 }

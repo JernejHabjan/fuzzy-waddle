@@ -4,6 +4,7 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
+import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
 
 export class SingleSelectionHandler {
   private multiSelecting: boolean = false;
@@ -97,24 +98,21 @@ export class SingleSelectionHandler {
     shiftKey: boolean = false,
     ctrlKey: boolean = false
   ) {
-    this.scene.communicator.selection!.sendLocally({
-      gameInstanceId: this.scene.gameInstanceId,
-      emitterUserId: this.scene.userId,
-      type: "singleSelect",
+    this.scene.communicator.allScenes!.emit({
+      name: "selection.singleSelect",
+
       data: {
         button,
         selected,
         shiftKey,
         ctrlKey
-      }
+      } satisfies ProbableWaffleSelectionData
     });
   }
 
   private sendDeselect() {
-    this.scene.communicator.selection!.sendLocally({
-      gameInstanceId: this.scene.gameInstanceId,
-      emitterUserId: this.scene.userId,
-      type: "deselect"
+    this.scene.communicator.allScenes!.emit({
+      name: "selection.deselect"
     });
   }
 
@@ -126,10 +124,8 @@ export class SingleSelectionHandler {
     shiftKey: boolean = false,
     ctrlKey: boolean = false
   ) {
-    this.scene.communicator.selection!.sendLocally({
-      gameInstanceId: this.scene.gameInstanceId,
-      emitterUserId: this.scene.userId,
-      type: "terrainSelect",
+    this.scene.communicator.allScenes!.emit({
+      name: "selection.terrainSelect",
       data: {
         button,
         terrainSelected: {
@@ -139,7 +135,7 @@ export class SingleSelectionHandler {
         },
         shiftKey,
         ctrlKey
-      }
+      } satisfies ProbableWaffleSelectionData
     });
   }
 

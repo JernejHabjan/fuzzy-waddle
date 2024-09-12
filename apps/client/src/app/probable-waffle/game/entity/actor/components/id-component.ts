@@ -1,5 +1,9 @@
 import { Guid } from "@fuzzy-waddle/api-interfaces";
 
 export class IdComponent {
-  readonly id = new Guid().value;
+  id = new Guid().value;
+
+  setId(id: string) {
+    this.id = id;
+  }
 }

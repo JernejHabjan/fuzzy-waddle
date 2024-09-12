@@ -27,7 +27,7 @@ import {
 } from "../../entity/systems/movement.system";
 import { getActorSystem } from "../../data/actor-system";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectCurrentTile, onScenePostCreate } from "../../data/game-object-helper";
+import { getGameObjectCurrentTile, onPostSceneInitialized } from "../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -39,7 +39,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     setActorData(this, [], [new MovementSystem(this)]);
-    onScenePostCreate(scene, this.postSceneCreate, this);
+    onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 

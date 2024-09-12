@@ -3,7 +3,8 @@ import { NavigationService } from "../scenes/services/navigation.service";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
 
-export function getGameObjectBounds(gameObject: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
+export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
+  if (!gameObject) return null;
   const boundsComponent = gameObject as unknown as Phaser.GameObjects.Components.GetBounds;
   if (boundsComponent.getBounds === undefined) return null;
   return boundsComponent.getBounds();
@@ -16,8 +17,9 @@ export function getGameObjectDepth(gameObject: Phaser.GameObjects.GameObject): n
 }
 
 export function getGameObjectTransform(
-  gameObject: Phaser.GameObjects.GameObject
+  gameObject?: Phaser.GameObjects.GameObject
 ): Phaser.GameObjects.Components.Transform | null {
+  if (!gameObject) return null;
   const transformComponent = gameObject as unknown as Phaser.GameObjects.Components.Transform;
   if (transformComponent.x === undefined || transformComponent.y === undefined) return null;
   return transformComponent;
@@ -54,9 +56,24 @@ export function getGameObjectCurrentTile(gameObject: Phaser.GameObjects.GameObje
   return navigationService.getCenterTileCoordUnderObject(gameObject);
 }
 
-export function onScenePostCreate(scene: Phaser.Scene, callback: () => void, scope: any) {
+/**
+ * gets emitted before onPostSceneInitialized event
+ */
+export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, scope: any) {
   getSceneInitializers(scene)
-    .postCreate.pipe(
+    .sceneInitialized.pipe(
+      filter((created) => created),
+      first()
+    )
+    .subscribe(() => callback.call(scope));
+}
+
+/**
+ * gets emitted before postCreate event
+ */
+export function onPostSceneInitialized(scene: Phaser.Scene, callback: () => void, scope: any) {
+  getSceneInitializers(scene)
+    .postSceneInitialized.pipe(
       filter((created) => created),
       first()
     )
