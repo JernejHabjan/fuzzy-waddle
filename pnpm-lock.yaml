@@ -163,8 +163,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       phaser:
-        specifier: ^3.85.0-beta.2
-        version: 3.85.0-beta.2
+        specifier: ^3.85.1
+        version: 3.85.1
       phaser3-rex-plugins:
         specifier: ^1.80.6
         version: 1.80.6(encoding@0.1.13)
@@ -6913,8 +6913,8 @@ packages:
   phaser3-rex-plugins@1.80.6:
     resolution: {integrity: sha512-p03OGkuM8RTO5wCAuG8wIT8h/T79lxH18/LApm1JMJarR0qgSNLla/MHKT4Tv0UiMyuGLyOnw0TZ4LkeMQdX0Q==}
 
-  phaser@3.85.0-beta.2:
-    resolution: {integrity: sha512-1x19QUcDVRHhySydypIIjLnRdKybeUZAOkB7GNRJj1++5EMSn3pTlSCfvwBeJydbHoSZWAj1PJMkCDeHRIwE6g==}
+  phaser@3.85.1:
+    resolution: {integrity: sha512-SQdlYRciRUeh/5p7ErfE4lHcoZnLahBpOB2oXkqJEeBy3k33hqsQGi+SYEO1XPqDSd+X69Hniv82Qr/ybEKyMg==}
 
   phasereditor2d-launcher@3.67.0:
     resolution: {integrity: sha512-3urX8KX19kIgyP8VpbTeeyfU8TISsBAopYY6BMLbEd7Y3aES3vfvUdwEo4CHwIvfR5iD+9ZNZ4tQdxy/300UYA==}
@@ -17136,7 +17136,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  phaser@3.85.0-beta.2:
+  phaser@3.85.1:
     dependencies:
       eventemitter3: 5.0.1
 
