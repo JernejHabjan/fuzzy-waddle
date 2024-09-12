@@ -58,6 +58,17 @@ export class MovementSystem {
     // todo this needs to be removed from here, and add this to the pawn ai controller which will then accordingly to blackboard issue MovementSystem.moveToLocation
   }
 
+  // todo this should maybe later move to component like ActorTransform which will also broadcast event for transform to game and update actors depth
+  instantlyMoveToWorldCoordinates(vec3: Partial<Vector3Simple>): void {
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!transform) return;
+
+    if (vec3.x) transform.x = vec3.x;
+    if (vec3.y) transform.y = vec3.y;
+    if (vec3.z) transform.z = vec3.z;
+    this.tweenUpdate();
+  }
+
   get actorMoved(): Observable<Vector3Simple> {
     return this._actorMoved.asObservable();
   }

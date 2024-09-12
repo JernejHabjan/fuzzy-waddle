@@ -11,6 +11,9 @@ import { getCommunicator } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../../editor-components/EditorOwner";
 import { FactionDefinitions } from "../../player/faction-definitions";
+import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-object-helper";
+import { getActorSystem } from "../../data/actor-system";
+import { MovementSystem } from "../../entity/systems/movement.system";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
@@ -40,11 +43,12 @@ export class SceneActorCreator {
       });
   }
 
-  private createActorFromDefinition(actorDefinition: ActorDefinition) {
-    if (!actorDefinition.name) return;
+  private createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
+    if (!actorDefinition.name) return undefined;
     const actor = ActorManager.createActor(this.scene, actorDefinition.name, actorDefinition);
-    this.scene.add.existing(actor);
+    const gameObject = this.scene.add.existing(actor);
     this.saveActorToGameState(actor);
+    return gameObject;
   }
 
   private saveAllKnownActorsToGameState() {
@@ -67,7 +71,8 @@ export class SceneActorCreator {
     });
   }
 
-  private saveActorToGameState(actor: Phaser.GameObjects.GameObject) {
+  private saveActorToGameState(actor?: Phaser.GameObjects.GameObject) {
+    if (!actor) return;
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
     const actorDefinition = ActorManager.getActorDefinitionFromActor(actor);
@@ -77,7 +82,12 @@ export class SceneActorCreator {
         (actor) => actor.id === actorDefinition.id
       );
 
-      if (!existingActor) {
+      if (existingActor) {
+        const index = gameScene.baseGameData.gameInstance.gameState!.data.actors.findIndex(
+          (actor) => actor.id === actorDefinition.id
+        );
+        gameScene.baseGameData.gameInstance.gameState!.data.actors[index] = actorDefinition;
+      } else {
         gameScene.baseGameData.gameInstance.gameState!.data.actors.push(actorDefinition);
       }
     }
@@ -114,16 +124,17 @@ export class SceneActorCreator {
 
     const faction = player.playerController.data.playerDefinition!.factionType;
     if (!faction) return;
+    let actor: Phaser.GameObjects.GameObject | undefined = undefined;
     switch (faction) {
       case FactionType.Skaduwee:
         FactionDefinitions.skaduwee.initialActors.forEach((actorName, index) => {
-          this.createInitialActors(actorName, vec3, owner_id, index);
+          actor = this.createInitialActors(actorName, vec3, owner_id, index, actor);
         });
         break;
 
       case FactionType.Tivara:
         FactionDefinitions.tivara.initialActors.forEach((actorName, index) => {
-          this.createInitialActors(actorName, vec3, owner_id, index);
+          actor = this.createInitialActors(actorName, vec3, owner_id, index, actor);
         });
         break;
       default:
@@ -131,14 +142,40 @@ export class SceneActorCreator {
     }
   }
 
-  private createInitialActors(actorName: string, vec3: Vector3Simple, owner_id: number, index: number) {
+  private createInitialActors(
+    actorName: string,
+    vec3: Vector3Simple,
+    owner_id: number,
+    index: number,
+    previouslyCreatedActor: Phaser.GameObjects.GameObject | undefined
+  ): Phaser.GameObjects.GameObject | undefined {
+    const previouslyCreatedActorBounds = getGameObjectBounds(previouslyCreatedActor);
+    let newX = vec3.x + index * 160;
+    if (previouslyCreatedActorBounds) {
+      newX = vec3.x + previouslyCreatedActorBounds.width / 2;
+    }
+    // padding between actors
+    newX += 20;
     const actorDefinition = {
       name: actorName,
-      x: vec3.x + index * 180,
+      x: newX,
       y: vec3.y,
       z: vec3.z,
       owner: owner_id
     } as ActorDefinition;
-    this.createActorFromDefinition(actorDefinition);
+
+    const newActor = this.createActorFromDefinition(actorDefinition);
+    if (!newActor) return newActor;
+    const newActorBounds = getGameObjectBounds(newActor);
+    const newActorTransform = getGameObjectTransform(newActor);
+    const movementSystem = getActorSystem(newActor, MovementSystem);
+    if (previouslyCreatedActor && newActorBounds && newActorTransform && movementSystem) {
+      // adjust the actor position by its width
+      newActorTransform.x += newActorBounds.width / 2;
+      // todo later this should move to some other actor component like ActorTransform or something like that which then emits the transform change event across the game
+      movementSystem.instantlyMoveToWorldCoordinates(newActorTransform);
+      this.saveActorToGameState(newActor);
+    }
+    return newActor;
   }
 }
