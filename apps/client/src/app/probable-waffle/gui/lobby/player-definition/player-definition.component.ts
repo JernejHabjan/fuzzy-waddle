@@ -95,7 +95,7 @@ export class PlayerDefinitionComponent {
   }
 
   getColorForPlayer(player: ProbableWafflePlayer): string {
-    return GameSetupHelpers.getColorForPlayer(
+    return GameSetupHelpers.getStringColorForPlayer(
       player.playerNumber!,
       this.mapDetails!.mapInfo!.startPositionsOnTile.length
     );

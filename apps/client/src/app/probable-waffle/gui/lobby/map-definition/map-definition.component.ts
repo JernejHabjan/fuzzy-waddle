@@ -251,7 +251,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
         const isoCoordinate = isoCoordinates[playerPosition];
         const maxPlayers = this.mapData.mapInfo.startPositionsOnTile.length;
         const playerNumber = definition!.player.playerNumber;
-        const color = GameSetupHelpers.getColorForPlayer(playerNumber, maxPlayers);
+        const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers);
         this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, color);
       }
     }

@@ -5,7 +5,7 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
@@ -41,7 +41,14 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x000000,
+              epsilon: 0
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
           range: 5
         } satisfies VisionDefinition),
