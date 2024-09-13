@@ -51,7 +51,7 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     this.add.existing(spawn_1);
 
     // spawn
-    const spawn = new Spawn(this, -848, 592);
+    const spawn = new Spawn(this, -848, 576);
     this.add.existing(spawn);
 
     // blockObsidianLava5
@@ -140,7 +140,7 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
-    spawnEditorOwner.owner_id = "2";
+    spawnEditorOwner.owner_id = "1";
 
     // ankGuard (components)
     const ankGuardEditorOwner = new EditorOwner(ankGuard);
