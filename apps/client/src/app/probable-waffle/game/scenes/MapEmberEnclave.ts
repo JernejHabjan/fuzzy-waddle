@@ -199,12 +199,87 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
 
   /* START-USER-CODE */
 
-  // Write your code here
-
   create() {
     this.editorCreate();
 
     super.create();
+
+    this.applySmokeTint();
+    this.spawnClouds();
+  }
+
+  private applySmokeTint() {
+    const tint = 0xcccccc;
+    this.children.each(function (child: any) {
+      // if tilemap, then skip
+      if (child instanceof Phaser.Tilemaps.TilemapLayer) {
+        return;
+      }
+
+      if (child.setTint) {
+        child.setTint(tint); // Apply a dark tint
+      }
+      if (child instanceof Phaser.GameObjects.Container) {
+        child.list.forEach((child: any) => {
+          if (child.setTint) {
+            child.setTint(tint); // Apply a dark tint
+          }
+        });
+      }
+    });
+    console.log("tinted for effect");
+  }
+
+  private spawnClouds() {
+    // Get tilemap dimensions
+    const tilemapWidth = this.tilemap.widthInPixels;
+    const tilemapHeight = this.tilemap.heightInPixels;
+
+    // Function to spawn a single cloud
+    const spawnSingleCloud = (startOffScreen: boolean = true) => {
+      const cloud = this.add.image(0, 0, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
+
+      // Rotate cloud to be horizontal
+      cloud.setAngle(90);
+      cloud.setAlpha(0.05 + Math.random() * 0.05);
+      cloud.setOrigin(0, 0);
+      cloud.setDepth(1000000);
+
+      // Randomize cloud position within the tilemap area
+      const randomY = Phaser.Math.Between(-tilemapHeight / 4, tilemapHeight);
+
+      // If starting off-screen, position clouds left of the map
+      let randomX;
+      if (startOffScreen) {
+        randomX = -Phaser.Math.Between(0, tilemapWidth); // Starts off-screen
+      } else {
+        randomX = Phaser.Math.Between(0, tilemapWidth); // Starts somewhere on-screen
+      }
+
+      cloud.setPosition(randomX, randomY);
+      const scale = Phaser.Math.Between(4, 20);
+      cloud.setScale(scale);
+
+      // Tween cloud to move across the map
+      this.tweens.add({
+        targets: cloud,
+        x: tilemapWidth + 200, // Moves beyond the right edge of the map
+        duration: 20000 + scale * 3000, // Larger clouds move slower
+        repeat: -1,
+
+        onComplete: () => {
+          // Reset cloud position after completing the tween
+          cloud.setPosition(randomX, randomY);
+        }
+      });
+    };
+
+    // Spawn multiple clouds
+    const numClouds = 100; // Adjust the number of clouds as needed
+    for (let i = 0; i < numClouds; i++) {
+      const startOffScreen = i < numClouds / 2; // Half of the clouds start on-screen
+      spawnSingleCloud(startOffScreen); // Randomize spawn time
+    }
   }
 
   /* END-USER-CODE */
