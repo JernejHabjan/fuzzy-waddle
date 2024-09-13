@@ -5,6 +5,10 @@
 import Phaser from "phaser";
 import { setActorData } from "../../../../data/actor-data";
 import { WalkableComponent, WalkableDefinition } from "../../../../entity/actor/components/walkable-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -20,7 +24,16 @@ export default class BridgeStone extends Phaser.GameObjects.Image {
     );
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new WalkableComponent(this, { shrinkPathToRight: 4 } satisfies WalkableDefinition)], []);
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0x97a09e
+        } satisfies ObjectDescriptorDefinition),
+        new WalkableComponent(this, { shrinkPathToRight: 4 } satisfies WalkableDefinition)
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

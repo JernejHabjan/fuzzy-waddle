@@ -31,6 +31,10 @@ import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
 } from "../../gui/icon-animations";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -54,6 +58,9 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0xc2a080
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {

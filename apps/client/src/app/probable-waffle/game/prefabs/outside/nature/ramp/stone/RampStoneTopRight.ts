@@ -5,6 +5,10 @@
 import Phaser from "phaser";
 import { setActorData } from "../../../../../data/actor-data";
 import { ColliderComponent } from "../../../../../entity/actor/components/collider-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../../entity/actor/components/object-descriptor-component";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -20,7 +24,16 @@ export default class RampStoneTopRight extends Phaser.GameObjects.Image {
     );
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new ColliderComponent()], []);
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0x95a083
+        } satisfies ObjectDescriptorDefinition),
+        new ColliderComponent()
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

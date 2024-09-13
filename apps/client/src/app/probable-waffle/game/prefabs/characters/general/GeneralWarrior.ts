@@ -23,6 +23,10 @@ import { ContainableComponent } from "../../../entity/actor/components/containab
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -37,6 +41,9 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0x75502d
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {

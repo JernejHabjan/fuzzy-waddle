@@ -14,8 +14,9 @@ import { GameSessionState, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "./components/scene-component-helpers";
 import { TilemapComponent } from "./components/tilemap.component";
 import { getActorComponent } from "../data/actor-component";
-import { ColliderComponent } from "../entity/actor/components/collider-component";
 import { getTileCoordsUnderObject } from "../library/tile-under-object";
+import { OwnerComponent } from "../entity/actor/components/owner-component";
+import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -220,17 +221,26 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds = [];
     this.parentScene.scene.scene.children.each((child) => {
-      const colliderComponent = getActorComponent(child, ColliderComponent);
-      if (!colliderComponent) return;
+      // const colliderComponent = getActorComponent(child, ColliderComponent);
+      // if (!colliderComponent) return;
 
       const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(tileMapComponent.tilemap, child);
-      const color = Phaser.Display.Color.RandomRGB();
+      const ownerColor = getActorComponent(child, OwnerComponent)?.ownerColor;
+      // example of default color is 13025801 which is 0xc6c209
+      const defaultColor = getActorComponent(child, ObjectDescriptorComponent)?.objectDescriptorDefinition?.color;
 
-      for (const tile of tilesUnderObject) {
-        const isoX = offsetX + (tile.x - tile.y) * (pixelWidth / 2);
-        const isoY = (tile.x + tile.y) * (pixelHeight / 2);
-        const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
-        this.actorDiamonds.push(diamond);
+      const black = new Phaser.Display.Color(0, 0, 0);
+      const fallbackColor =
+        defaultColor === null ? null : defaultColor ? Phaser.Display.Color.IntegerToColor(defaultColor) : black;
+      const color = ownerColor ?? fallbackColor;
+
+      if (color) {
+        for (const tile of tilesUnderObject) {
+          const isoX = offsetX + (tile.x - tile.y) * (pixelWidth / 2);
+          const isoY = (tile.x + tile.y) * (pixelHeight / 2);
+          const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+          this.actorDiamonds.push(diamond);
+        }
       }
     });
   }

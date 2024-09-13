@@ -15,6 +15,10 @@ import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectCurrentTile, onPostSceneInitialized } from "../../data/game-object-helper";
 import { ANIM_SHEEP_IDLE_DOWN, ANIM_SHEEP_IDLE_LEFT, ANIM_SHEEP_IDLE_RIGHT, ANIM_SHEEP_IDLE_UP } from "./anims/animals";
 import { getActorSystem } from "../../data/actor-system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
@@ -27,7 +31,15 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.play("sheep_idle_down");
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [], [new MovementSystem(this)]);
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition)
+      ],
+      [new MovementSystem(this)]
+    );
     onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }

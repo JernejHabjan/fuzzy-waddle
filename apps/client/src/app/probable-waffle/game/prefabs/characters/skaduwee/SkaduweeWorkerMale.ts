@@ -29,6 +29,10 @@ import Owlery from "../../buildings/skaduwee/Owlery";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
@@ -43,6 +47,9 @@ export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {

@@ -31,6 +31,10 @@ import {
 import { onPostSceneInitialized } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -50,6 +54,9 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0xe9ecf2
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {

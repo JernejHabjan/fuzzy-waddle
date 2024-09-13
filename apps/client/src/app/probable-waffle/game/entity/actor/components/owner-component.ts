@@ -11,7 +11,7 @@ export type OwnerDefinition = {
 
 export class OwnerComponent {
   private owner?: number;
-  private ownerColor?: number;
+  ownerColor?: Phaser.Display.Color;
   private readonly colorReplacePipelinePlugin: ColorReplacePipelinePlugin;
   private colorPipelineInstances: Phaser.Renderer.WebGL.Pipelines.PostFXPipeline[] = [];
   constructor(
@@ -67,7 +67,7 @@ export class OwnerComponent {
       saturationNormalized: saturation / 100,
       lightnessNormalized: lightness / 100
     };
-    this.ownerColor = Phaser.Display.Color.HSLToColor(hueNormalized, saturationNormalized, lightnessNormalized).color;
+    this.ownerColor = Phaser.Display.Color.HSLToColor(hueNormalized, saturationNormalized, lightnessNormalized);
   }
 
   private setOwnerColorToActor() {
@@ -78,7 +78,7 @@ export class OwnerComponent {
       const instance = this.colorReplacePipelinePlugin.add(this.gameObject, {
         originalColor: color.originalColor,
         epsilon: color.epsilon,
-        newColor: ownerColor,
+        newColor: ownerColor.color,
         name: new Guid().value
       });
       this.colorPipelineInstances.push(instance);

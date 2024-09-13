@@ -24,6 +24,10 @@ import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
@@ -41,6 +45,9 @@ export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {
