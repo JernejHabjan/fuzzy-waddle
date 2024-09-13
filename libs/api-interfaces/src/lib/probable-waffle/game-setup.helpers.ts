@@ -1,11 +1,23 @@
 import { ProbableWafflePlayer, ProbableWafflePlayerType } from "../game-instance/probable-waffle/player";
 
 export class GameSetupHelpers {
-  public static getColorForPlayer(playerNumber: number, totalPlayers: number = 8): string {
+  public static getStringColorForPlayer(playerNumber: number, totalPlayers: number = 8): string {
+    const { hue, saturation, lightness } = this.getHslColorForPlayer(playerNumber, totalPlayers);
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  }
+
+  public static getHslColorForPlayer(
+    playerNumber: number,
+    totalPlayers: number = 8
+  ): {
+    hue: number;
+    saturation: number;
+    lightness: number;
+  } {
     const hue = (playerNumber / totalPlayers) * 360;
     const saturation = 100;
     const lightness = 50;
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    return { hue, saturation, lightness };
   }
 
   public static getFirstFreePosition(players: ProbableWafflePlayer[]) {
@@ -21,13 +33,13 @@ export class GameSetupHelpers {
 
   public static getFirstFreePlayerNumber(players: ProbableWafflePlayer[]) {
     const playerNumbers = players.map((p) => p.playerNumber);
-    // iterate from 0 to players.length and find first number that doesn't exist in playerPositions
-    for (let i = 0; i < players.length; i++) {
+    // iterate from 1 to players.length+1 and find first number that doesn't exist in playerPositions
+    for (let i = 1; i < players.length + 1; i++) {
       if (!playerNumbers.includes(i)) {
         return i;
       }
     }
-    return players.length;
+    return players.length + 1;
   }
 
   static getFirstNetworkOpenPlayer(players: ProbableWafflePlayer[]): ProbableWafflePlayer | null {

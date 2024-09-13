@@ -5,8 +5,9 @@ import MapRiverCrossing from "../../scenes/MapRiverCrossing";
 import PreloadProbableWaffle from "../../scenes/PreloadProbableWaffle";
 import { Boot } from "../../scenes/Boot";
 import MapEmberEnclave from "../../scenes/MapEmberEnclave";
-import { HudGameState } from "../../hud/hud-game-state";
 import HudProbableWaffle from "../../scenes/HudProbableWaffle";
+import ColorReplacePipelinePlugin from "phaser3-rex-plugins/plugins/colorreplacepipeline-plugin";
+import { Plugins } from "./Plugins";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
@@ -20,5 +21,14 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
     }
   },
   pixelArt: true,
-  backgroundColor: "#222"
+  backgroundColor: "#222",
+  plugins: {
+    global: [
+      {
+        key: Plugins.RexColorReplacePipeline,
+        plugin: ColorReplacePipelinePlugin,
+        start: true
+      }
+    ]
+  }
 };

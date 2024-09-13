@@ -6,7 +6,7 @@ import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
 import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
 
@@ -93,7 +93,14 @@ export default class AnkGuard extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x800080,
+              epsilon: 0
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
           range: 5
         } satisfies VisionDefinition),

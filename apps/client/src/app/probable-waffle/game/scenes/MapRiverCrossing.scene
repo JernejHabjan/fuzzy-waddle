@@ -39,7 +39,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": 240,
             "y": 672
         },
@@ -65,7 +65,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
+            "EditorOwner.owner_id": "2",
             "x": 1152,
             "y": 832
         },
@@ -146,7 +146,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
+            "EditorOwner.owner_id": "2",
             "x": 1024,
             "y": 912
         },
@@ -162,7 +162,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
+            "EditorOwner.owner_id": "2",
             "x": 1376,
             "y": 800
         },
@@ -177,7 +177,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": 528,
             "y": 624
         },
@@ -192,7 +192,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": -192,
             "y": 464
         },
@@ -207,7 +207,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
+            "EditorOwner.owner_id": "2",
             "x": 1472,
             "y": 816
         },
@@ -222,7 +222,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
+            "EditorOwner.owner_id": "2",
             "x": 1088,
             "y": 944
         },
@@ -237,7 +237,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
+            "EditorOwner.owner_id": "2",
             "x": 1344,
             "y": 704
         },
@@ -252,7 +252,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
+            "EditorOwner.owner_id": "2",
             "x": 1408,
             "y": 848
         },
@@ -278,7 +278,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": 288,
             "y": 864
         },
@@ -301,6 +301,10 @@
                 "y"
             ],
             "label": "olival",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 128,
             "y": 784
         },
@@ -315,7 +319,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": -480,
             "y": 256
         },
@@ -330,7 +334,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": -448,
             "y": 272
         },
@@ -345,7 +349,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": -400,
             "y": 288
         },
@@ -891,7 +895,7 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "0",
+            "EditorOwner.owner_id": "1",
             "x": -560,
             "y": 512
         },
@@ -1640,9 +1644,54 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "2",
+            "EditorOwner.owner_id": "3",
             "x": 1008,
             "y": 752
+        },
+        {
+            "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
+            "id": "e694ffe5-8a18-41f0-99aa-ebf0ed5d3926",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 208,
+            "y": 832
+        },
+        {
+            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
+            "id": "04c949d3-3f8b-4eac-93b5-b0d0e3fa6819",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 437,
+            "y": 852
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "a8c775de-fc95-4b4c-a075-17b7530c4f25",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": 608,
+            "y": 1184
         }
     ],
     "plainObjects": [

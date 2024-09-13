@@ -71,6 +71,8 @@ import TallGrass0 from "../prefabs/outside/foliage/tall_grass/TallGrass0";
 import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
 import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
 import SkaduweeOwlFurball from "../prefabs/units/skaduwee/SkaduweeOwlFurball";
+import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
+import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -650,61 +652,77 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const skaduweeOwlFurball = new SkaduweeOwlFurball(this, 1008, 752);
     this.add.existing(skaduweeOwlFurball);
 
+    // tivaraWorkerFemale
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 208, 832);
+    this.add.existing(tivaraWorkerFemale);
+
+    // tivaraWorkerMale
+    const tivaraWorkerMale = new TivaraWorkerMale(this, 437, 852);
+    this.add.existing(tivaraWorkerMale);
+
+    // workMill_1
+    const workMill_1 = new WorkMill(this, 608, 1184);
+    this.add.existing(workMill_1);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
-    spawnEditorOwner.owner_id = "0";
+    spawnEditorOwner.owner_id = "1";
 
     // spawn_1 (components)
     const spawn_1EditorOwner = new EditorOwner(spawn_1);
-    spawn_1EditorOwner.owner_id = "1";
+    spawn_1EditorOwner.owner_id = "2";
 
     // owlery (components)
     const owleryEditorOwner = new EditorOwner(owlery);
-    owleryEditorOwner.owner_id = "1";
+    owleryEditorOwner.owner_id = "2";
 
     // infantryInn (components)
     const infantryInnEditorOwner = new EditorOwner(infantryInn);
-    infantryInnEditorOwner.owner_id = "1";
+    infantryInnEditorOwner.owner_id = "2";
 
     // ankGuard (components)
     const ankGuardEditorOwner = new EditorOwner(ankGuard);
-    ankGuardEditorOwner.owner_id = "0";
+    ankGuardEditorOwner.owner_id = "1";
 
     // temple (components)
     const templeEditorOwner = new EditorOwner(temple);
-    templeEditorOwner.owner_id = "0";
+    templeEditorOwner.owner_id = "1";
 
     // skaduweeWorkerMale (components)
     const skaduweeWorkerMaleEditorOwner = new EditorOwner(skaduweeWorkerMale);
-    skaduweeWorkerMaleEditorOwner.owner_id = "1";
+    skaduweeWorkerMaleEditorOwner.owner_id = "2";
 
     // skaduweeWorkerFemale (components)
     const skaduweeWorkerFemaleEditorOwner = new EditorOwner(skaduweeWorkerFemale);
-    skaduweeWorkerFemaleEditorOwner.owner_id = "1";
+    skaduweeWorkerFemaleEditorOwner.owner_id = "2";
 
     // skaduweeRangedFemale (components)
     const skaduweeRangedFemaleEditorOwner = new EditorOwner(skaduweeRangedFemale);
-    skaduweeRangedFemaleEditorOwner.owner_id = "1";
+    skaduweeRangedFemaleEditorOwner.owner_id = "2";
 
     // skaduweeWarriorMale (components)
     const skaduweeWarriorMaleEditorOwner = new EditorOwner(skaduweeWarriorMale);
-    skaduweeWarriorMaleEditorOwner.owner_id = "1";
+    skaduweeWarriorMaleEditorOwner.owner_id = "2";
 
     // tivaraSlingshotFemale (components)
     const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
-    tivaraSlingshotFemaleEditorOwner.owner_id = "0";
+    tivaraSlingshotFemaleEditorOwner.owner_id = "1";
+
+    // olival (components)
+    const olivalEditorOwner = new EditorOwner(olival);
+    olivalEditorOwner.owner_id = "1";
 
     // wallTopLeftTopRight (components)
     const wallTopLeftTopRightEditorOwner = new EditorOwner(wallTopLeftTopRight);
-    wallTopLeftTopRightEditorOwner.owner_id = "0";
+    wallTopLeftTopRightEditorOwner.owner_id = "1";
 
     // wallTopRight (components)
     const wallTopRightEditorOwner = new EditorOwner(wallTopRight);
-    wallTopRightEditorOwner.owner_id = "0";
+    wallTopRightEditorOwner.owner_id = "1";
 
     // watchTower (components)
     const watchTowerEditorOwner = new EditorOwner(watchTower);
-    watchTowerEditorOwner.owner_id = "0";
+    watchTowerEditorOwner.owner_id = "1";
 
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;
@@ -726,7 +744,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // workMill (components)
     const workMillEditorOwner = new EditorOwner(workMill);
-    workMillEditorOwner.owner_id = "0";
+    workMillEditorOwner.owner_id = "1";
 
     // blockStoneWater1 (prefab fields)
     blockStoneWater1.z = 16;
@@ -740,7 +758,19 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // skaduweeOwlFurball (components)
     const skaduweeOwlFurballEditorOwner = new EditorOwner(skaduweeOwlFurball);
-    skaduweeOwlFurballEditorOwner.owner_id = "2";
+    skaduweeOwlFurballEditorOwner.owner_id = "3";
+
+    // tivaraWorkerFemale (components)
+    const tivaraWorkerFemaleEditorOwner = new EditorOwner(tivaraWorkerFemale);
+    tivaraWorkerFemaleEditorOwner.owner_id = "1";
+
+    // tivaraWorkerMale (components)
+    const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
+    tivaraWorkerMaleEditorOwner.owner_id = "1";
+
+    // workMill_1 (components)
+    const workMill_1EditorOwner = new EditorOwner(workMill_1);
+    workMill_1EditorOwner.owner_id = "2";
 
     this.tilemap = tilemap;
 

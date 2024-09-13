@@ -87,7 +87,7 @@ export class ScoreThroughTimeComponent implements OnInit {
         label: playerName,
         data: buildingProduced,
         fill: false,
-        borderColor: GameSetupHelpers.getColorForPlayer(player.playerNumber!, players.length)
+        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length)
       });
     });
     this.ready = true;
