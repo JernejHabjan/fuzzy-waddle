@@ -46,8 +46,16 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
-              epsilon: 0
+              originalColor: 0x9fbbcb,
+              epsilon: 0.15
+            },
+            {
+              originalColor: 0xc6eefd,
+              epsilon: 0.15
+            },
+            {
+              originalColor: 0xffffff,
+              epsilon: 0.05
             }
           ]
         } satisfies OwnerDefinition),

@@ -25,7 +25,6 @@ import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMal
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends GameProbableWaffleScene {
-
   constructor() {
     super("MapEmberEnclave");
 
@@ -35,14 +34,13 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
 
     // spawn_2
     const spawn_2 = new Spawn(this, -176, 1264);
@@ -134,59 +132,59 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
 
     // spawn_2 (components)
     const spawn_2EditorOwner = new EditorOwner(spawn_2);
-    spawn_2EditorOwner.owner_id = "2";
+    spawn_2EditorOwner.owner_id = "3";
 
     // spawn_1 (components)
     const spawn_1EditorOwner = new EditorOwner(spawn_1);
-    spawn_1EditorOwner.owner_id = "1";
+    spawn_1EditorOwner.owner_id = "2";
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
-    spawnEditorOwner.owner_id = "0";
+    spawnEditorOwner.owner_id = "2";
 
     // ankGuard (components)
     const ankGuardEditorOwner = new EditorOwner(ankGuard);
-    ankGuardEditorOwner.owner_id = "1";
+    ankGuardEditorOwner.owner_id = "2";
 
     // sandhold (components)
     const sandholdEditorOwner = new EditorOwner(sandhold);
-    sandholdEditorOwner.owner_id = "1";
+    sandholdEditorOwner.owner_id = "2";
 
     // sandhold_1 (components)
     const sandhold_1EditorOwner = new EditorOwner(sandhold_1);
-    sandhold_1EditorOwner.owner_id = "0";
+    sandhold_1EditorOwner.owner_id = "1";
 
     // temple (components)
     const templeEditorOwner = new EditorOwner(temple);
-    templeEditorOwner.owner_id = "0";
+    templeEditorOwner.owner_id = "1";
 
     // tivaraSlingshotFemale (components)
     const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
-    tivaraSlingshotFemaleEditorOwner.owner_id = "1";
+    tivaraSlingshotFemaleEditorOwner.owner_id = "2";
 
     // tivaraWorkerFemale (components)
     const tivaraWorkerFemaleEditorOwner = new EditorOwner(tivaraWorkerFemale);
-    tivaraWorkerFemaleEditorOwner.owner_id = "0";
+    tivaraWorkerFemaleEditorOwner.owner_id = "1";
 
     // tivaraWorkerMale (components)
     const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
-    tivaraWorkerMaleEditorOwner.owner_id = "0";
+    tivaraWorkerMaleEditorOwner.owner_id = "1";
 
     // workMill (components)
     const workMillEditorOwner = new EditorOwner(workMill);
-    workMillEditorOwner.owner_id = "0";
+    workMillEditorOwner.owner_id = "1";
 
     // workMill_1 (components)
     const workMill_1EditorOwner = new EditorOwner(workMill_1);
-    workMill_1EditorOwner.owner_id = "1";
+    workMill_1EditorOwner.owner_id = "2";
 
     // skaduweeMagicianFemale (components)
     const skaduweeMagicianFemaleEditorOwner = new EditorOwner(skaduweeMagicianFemale);
-    skaduweeMagicianFemaleEditorOwner.owner_id = "2";
+    skaduweeMagicianFemaleEditorOwner.owner_id = "3";
 
     // skaduweeWorkerMale (components)
     const skaduweeWorkerMaleEditorOwner = new EditorOwner(skaduweeWorkerMale);
-    skaduweeWorkerMaleEditorOwner.owner_id = "2";
+    skaduweeWorkerMaleEditorOwner.owner_id = "3";
 
     // workMill_2 (components)
     const workMill_2EditorOwner = new EditorOwner(workMill_2);

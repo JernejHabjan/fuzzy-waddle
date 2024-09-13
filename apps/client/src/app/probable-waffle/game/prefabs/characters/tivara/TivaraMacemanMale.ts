@@ -44,8 +44,8 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
-              epsilon: 0
+              originalColor: 0x31770f,
+              epsilon: 0.25
             }
           ]
         } satisfies OwnerDefinition),

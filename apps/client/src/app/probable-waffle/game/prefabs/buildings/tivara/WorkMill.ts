@@ -52,7 +52,7 @@ export default class WorkMill extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
+              originalColor: 0x825e39,
               epsilon: 0
             }
           ]

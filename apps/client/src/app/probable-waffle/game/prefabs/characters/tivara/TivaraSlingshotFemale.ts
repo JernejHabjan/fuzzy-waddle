@@ -41,8 +41,8 @@ export default class TivaraSlingshotFemale extends Phaser.GameObjects.Sprite {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
-              epsilon: 0
+              originalColor: 0x31770f,
+              epsilon: 0.25
             }
           ]
         } satisfies OwnerDefinition),

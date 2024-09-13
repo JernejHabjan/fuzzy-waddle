@@ -66,7 +66,7 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
+              originalColor: 0x7d9cdb,
               epsilon: 0
             }
           ]

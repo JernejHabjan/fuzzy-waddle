@@ -44,8 +44,8 @@ export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
-              epsilon: 0
+              originalColor: 0x867e7f,
+              epsilon: 0.2
             }
           ]
         } satisfies OwnerDefinition),

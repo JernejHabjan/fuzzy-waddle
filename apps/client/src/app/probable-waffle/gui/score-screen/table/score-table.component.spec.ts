@@ -45,7 +45,7 @@ describe("ScoreTableComponent", () => {
     const gameInstance = gameInstanceClientServiceStub.gameInstance!;
     const playerDefinition = {
       player: {
-        playerNumber: gameInstance.players.length,
+        playerNumber: gameInstance.players.length + 1,
         playerName: "Player " + (gameInstance.players.length + 1),
         playerPosition: gameInstance.players.length,
         joined: true

@@ -62,7 +62,7 @@ export default class Owlery extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
+              originalColor: 0xf4f5f7,
               epsilon: 0
             }
           ]

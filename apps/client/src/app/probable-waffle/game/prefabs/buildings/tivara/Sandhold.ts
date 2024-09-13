@@ -57,8 +57,8 @@ export default class Sandhold extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0xf5deb3,
-              epsilon: 0
+              originalColor: 0x4dbd33,
+              epsilon: 0.1
             }
           ]
         } satisfies OwnerDefinition),

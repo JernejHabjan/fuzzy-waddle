@@ -125,6 +125,7 @@ export enum ProbableWaffleAiDifficulty {
 }
 
 export interface PlayerLobbyDefinition {
+  // 1 - 8
   playerNumber: number;
   playerName?: string;
   playerPosition?: number;

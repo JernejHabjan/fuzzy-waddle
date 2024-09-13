@@ -96,7 +96,7 @@ export default class AnkGuard extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
+              originalColor: 0x800080,
               epsilon: 0
             }
           ]

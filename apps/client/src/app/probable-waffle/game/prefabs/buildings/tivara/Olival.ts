@@ -54,8 +54,8 @@ export default class Olival extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
-              epsilon: 0
+              originalColor: 0x265b17,
+              epsilon: 0.1
             }
           ]
         } satisfies OwnerDefinition),

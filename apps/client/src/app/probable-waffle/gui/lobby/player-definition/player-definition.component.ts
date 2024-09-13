@@ -177,7 +177,7 @@ export class PlayerDefinitionComponent {
     const playerNumber = player.playerNumber!;
     const isCurrentPlayer = this.getPlayerIsCurrentPlayer(player);
     // noinspection UnnecessaryLocalVariableJS
-    const name = isCurrentPlayer ? "You" : `Player ${playerNumber + 1}`;
+    const name = isCurrentPlayer ? "You" : `Player ${playerNumber}`;
     return name;
   }
 

@@ -41,8 +41,8 @@ export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
-              epsilon: 0
+              originalColor: 0x9fbbcb,
+              epsilon: 0.1
             }
           ]
         } satisfies OwnerDefinition),

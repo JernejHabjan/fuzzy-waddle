@@ -173,7 +173,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
     const playerDefinition = {
       player: {
-        playerNumber: gameInstance.players.length,
+        playerNumber: gameInstance.players.length + 1,
         playerName: "Player " + (gameInstance.players.length + 1),
         playerPosition: gameInstance.players.length,
         joined: true

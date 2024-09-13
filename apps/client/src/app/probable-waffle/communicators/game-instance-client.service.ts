@@ -317,7 +317,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       // todo move this to single place
       player: {
         playerNumber: firstFreePlayerNumber,
-        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerName: "Player " + firstFreePlayerNumber,
         playerPosition: firstFreePosition,
         joined: true
       } satisfies PlayerLobbyDefinition,
@@ -337,7 +337,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       // todo move this to single place
       player: {
         playerNumber: firstFreePlayerNumber,
-        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerName: "Player " + firstFreePlayerNumber,
         playerPosition: position ?? firstFreePosition,
         joined: true
       } satisfies PlayerLobbyDefinition,
@@ -408,7 +408,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         playerDefinition: {
           player: {
             playerNumber: firstFreePlayerNumber,
-            playerName: "Player " + (firstFreePlayerNumber + 1),
+            playerName: "Player " + firstFreePlayerNumber,
             playerPosition: firstFreePosition,
             joined: false
           } satisfies PlayerLobbyDefinition,

@@ -64,7 +64,7 @@ export default class Temple extends Phaser.GameObjects.Container {
         new OwnerComponent(this, {
           color: [
             {
-              originalColor: 0x000000,
+              originalColor: 0x5c9999,
               epsilon: 0
             }
           ]

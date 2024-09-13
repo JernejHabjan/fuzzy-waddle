@@ -33,13 +33,13 @@ export class GameSetupHelpers {
 
   public static getFirstFreePlayerNumber(players: ProbableWafflePlayer[]) {
     const playerNumbers = players.map((p) => p.playerNumber);
-    // iterate from 0 to players.length and find first number that doesn't exist in playerPositions
-    for (let i = 0; i < players.length; i++) {
+    // iterate from 1 to players.length+1 and find first number that doesn't exist in playerPositions
+    for (let i = 1; i < players.length + 1; i++) {
       if (!playerNumbers.includes(i)) {
         return i;
       }
     }
-    return players.length;
+    return players.length + 1;
   }
 
   static getFirstNetworkOpenPlayer(players: ProbableWafflePlayer[]): ProbableWafflePlayer | null {
