@@ -81,11 +81,13 @@ export const gameInstanceClientServiceStub = {
   async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
     return Promise.resolve(null);
   },
-  async addAiPlayer(): Promise<void> {
+  async addAiPlayer(): Promise<PositionPlayerDefinition> {
     this.gameInstance?.addPlayer(this.gameInstance?.initPlayer({} as any));
+    return Promise.resolve({} as PositionPlayerDefinition);
   },
-  async addSelfAsPlayer(): Promise<void> {
-    return Promise.resolve();
+  async addSelfAsPlayer(): Promise<PositionPlayerDefinition> {
+    this.gameInstance?.addPlayer(this.gameInstance?.initPlayer({} as any));
+    return Promise.resolve({} as PositionPlayerDefinition);
   },
   async gameInstanceMetadataChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>,
