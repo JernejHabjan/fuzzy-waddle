@@ -167,6 +167,8 @@
             "scope": "CLASS",
             "x": 1276,
             "y": 4,
+            "scaleX": 2,
+            "scaleY": 2,
             "list": [
                 {
                     "type": "NineSlice",
@@ -194,6 +196,12 @@
                     "id": "feab9f61-2916-4fcd-8940-2ffee1cb074c",
                     "label": "game_action_quit",
                     "displayName": "Quit",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
                     "x": -26.453369211907784,
                     "y": 18,
                     "list": [
@@ -227,52 +235,113 @@
                             "scaleX": 0.31509307156922584,
                             "scaleY": 0.31509307156922584,
                             "originY": 0.7
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "c05a5a8a-ed43-4801-9707-4ce97c83c29a",
+                            "label": "onPointerDownScript_quit",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "3547d26d-7427-4e85-bde3-a3c03a444fdf",
+                                    "label": "quit_click"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "5bbfc519-834e-4ccb-89eb-6616db380d55",
+                            "label": "onPointerUpScript_quit",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "d41ea2cb-5b13-4bdf-aac8-634e888fe460",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventQuitAction",
+                                    "eventName": "game-quit"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "21a54ef2-86ed-4b4c-9be1-261cd687f6cf",
+                    "label": "game_action_save",
+                    "displayName": "Save",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -67,
+                    "y": 18,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "cf12d736-118f-4035-9614-4efbf3ade9e4",
+                            "label": "game_actions_quit_bg_1",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.0762647352357817,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 20,
+                            "height": 20
+                        },
+                        {
+                            "type": "Image",
+                            "id": "8552feaf-0d92-4d59-88b4-c2b39022b7ca",
+                            "label": "game_actions_quit_icon_1",
+                            "displayName": "Icon",
+                            "texture": {
+                                "key": "factions",
+                                "frame": "character_icons/general/warrior.png"
+                            },
+                            "scaleX": 0.31509307156922584,
+                            "scaleY": 0.31509307156922584,
+                            "originY": 0.7
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "ba3260c3-b524-411b-814a-e8b1a7ca4cc2",
+                            "label": "onPointerDownScript_save",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "b2b28baf-8920-4ce8-8895-67968b6634ad",
+                                    "label": "save_click"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "84d50b09-32b2-41ee-bc5d-7beffb12a236",
+                            "label": "onPointerUpScript_save",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "c9003b89-2786-4914-ba7c-aa03757c0cb4",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventSaveAction",
+                                    "eventName": "game-save"
+                                }
+                            ]
                         }
                     ]
                 }
             ]
-        },
-        {
-            "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
-            "id": "b042eaac-6d53-49e6-bfea-e1192a74a0b0",
-            "unlock": [
-                "x",
-                "y",
-                "text",
-                "w",
-                "h",
-                "fontSize"
-            ],
-            "label": "buttonSave",
-            "scope": "CLASS",
-            "text": "S",
-            "w": 45,
-            "h": 45,
-            "fontSize": 30,
-            "x": 484,
-            "y": 236
-        },
-        {
-            "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
-            "id": "2b326e5b-e387-4267-a772-69d81569abd3",
-            "unlock": [
-                "x",
-                "y",
-                "text",
-                "w",
-                "h",
-                "fontSize",
-                "buttonImage"
-            ],
-            "label": "buttonQuit",
-            "scope": "CLASS",
-            "text": "Q",
-            "w": 45,
-            "h": 45,
-            "fontSize": 30,
-            "buttonImage": "",
-            "x": 602,
-            "y": 239
         },
         {
             "type": "Container",
@@ -282,6 +351,8 @@
             "scope": "CLASS",
             "x": 46,
             "y": 3,
+            "scaleX": 2,
+            "scaleY": 2,
             "list": [
                 {
                     "type": "NineSlice",

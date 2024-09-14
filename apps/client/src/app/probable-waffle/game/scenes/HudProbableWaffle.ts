@@ -2,14 +2,16 @@
 
 /* START OF COMPILED CODE */
 
-import ButtonSmall from "../prefabs/gui/buttons/ButtonSmall";
+import OnPointerDownScript from "../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
+import PushActionScript from "../../../shared/game/phaser/script-nodes/PushActionScript";
+import OnPointerUpScript from "../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
+import EmitEventActionScript from "../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
 import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
-import { Subscription } from "rxjs";
 import { GameSessionState, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "./components/scene-component-helpers";
 import { TilemapComponent } from "./components/tilemap.component";
@@ -134,6 +136,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // game_actions_container
     const game_actions_container = this.add.container(1276, 4);
+    game_actions_container.scaleX = 2;
+    game_actions_container.scaleY = 2;
 
     // game_actions_bg
     const game_actions_bg = this.add.nineslice(
@@ -155,6 +159,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // game_action_quit
     const game_action_quit = this.add.container(-26.453369211907784, 18);
+    game_action_quit.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
     game_actions_container.add(game_action_quit);
 
     // game_actions_quit_bg
@@ -181,16 +189,66 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     game_actions_quit_icon.setOrigin(0.5, 0.7);
     game_action_quit.add(game_actions_quit_icon);
 
-    // buttonSave
-    const buttonSave = new ButtonSmall(this, 484, 236);
-    this.add.existing(buttonSave);
+    // onPointerDownScript_quit
+    const onPointerDownScript_quit = new OnPointerDownScript(game_action_quit);
 
-    // buttonQuit
-    const buttonQuit = new ButtonSmall(this, 602, 239);
-    this.add.existing(buttonQuit);
+    // quit_click
+    new PushActionScript(onPointerDownScript_quit);
+
+    // onPointerUpScript_quit
+    const onPointerUpScript_quit = new OnPointerUpScript(game_action_quit);
+
+    // emitEventQuitAction
+    const emitEventQuitAction = new EmitEventActionScript(onPointerUpScript_quit);
+
+    // game_action_save
+    const game_action_save = this.add.container(-67, 18);
+    game_action_save.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    game_actions_container.add(game_action_save);
+
+    // game_actions_quit_bg_1
+    const game_actions_quit_bg_1 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_1.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_1.scaleY = 1.5492262688240692;
+    game_action_save.add(game_actions_quit_bg_1);
+
+    // game_actions_quit_icon_1
+    const game_actions_quit_icon_1 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_1.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_1.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_1.setOrigin(0.5, 0.7);
+    game_action_save.add(game_actions_quit_icon_1);
+
+    // onPointerDownScript_save
+    const onPointerDownScript_save = new OnPointerDownScript(game_action_save);
+
+    // save_click
+    new PushActionScript(onPointerDownScript_save);
+
+    // onPointerUpScript_save
+    const onPointerUpScript_save = new OnPointerUpScript(game_action_save);
+
+    // emitEventSaveAction
+    const emitEventSaveAction = new EmitEventActionScript(onPointerUpScript_save);
 
     // resources_container
     const resources_container = this.add.container(46, 3);
+    resources_container.scaleX = 2;
+    resources_container.scaleY = 2;
 
     // resources_bg
     const resources_bg = this.add.nineslice(
@@ -213,25 +271,18 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // lists
     const hudElements: Array<any> = [];
 
-    // buttonSave (prefab fields)
-    buttonSave.text = "S";
-    buttonSave.w = 45;
-    buttonSave.h = 45;
-    buttonSave.fontSize = 30;
+    // emitEventQuitAction (prefab fields)
+    emitEventQuitAction.eventName = "game-quit";
 
-    // buttonQuit (prefab fields)
-    buttonQuit.text = "Q";
-    buttonQuit.w = 45;
-    buttonQuit.h = 45;
-    buttonQuit.fontSize = 30;
-    buttonQuit.buttonImage;
+    // emitEventSaveAction (prefab fields)
+    emitEventSaveAction.eventName = "game-save";
 
     this.actor_actions_container = actor_actions_container;
     this.actor_info_container = actor_info_container;
     this.minimap_container = minimap_container;
+    this.game_action_quit = game_action_quit;
+    this.game_action_save = game_action_save;
     this.game_actions_container = game_actions_container;
-    this.buttonSave = buttonSave;
-    this.buttonQuit = buttonQuit;
     this.resources_container = resources_container;
     this.hudElements = hudElements;
 
@@ -241,9 +292,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private actor_actions_container!: Phaser.GameObjects.Container;
   private actor_info_container!: Phaser.GameObjects.Container;
   private minimap_container!: Phaser.GameObjects.Container;
+  private game_action_quit!: Phaser.GameObjects.Container;
+  private game_action_save!: Phaser.GameObjects.Container;
   private game_actions_container!: Phaser.GameObjects.Container;
-  private buttonSave!: ButtonSmall;
-  private buttonQuit!: ButtonSmall;
   private resources_container!: Phaser.GameObjects.Container;
   private hudElements!: Array<any>;
 
@@ -254,8 +305,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly smallMinimapWidth = 200;
   private readonly minimapBreakpoint = 800;
   private readonly minimapMargin = 20;
-  private quitButtonSubscription?: Subscription;
-  private saveGameSubscription?: Subscription;
   private parentScene?: ProbableWaffleScene;
   private readonly isometricMinimapDepth = 1000;
   preload() {
@@ -447,22 +496,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   private updatePositionOfUiElements() {
-    // push button to top right (margin 40px)
-    this.buttonQuit.x = this.scale.width - this.buttonQuit.w - 40;
-    this.buttonQuit.y = 40;
-
-    // set save button to the left of quit button by 20px
-    this.buttonSave.x = this.buttonQuit.x - this.buttonSave.w - 40;
-    this.buttonSave.y = this.buttonQuit.y;
-
-    // set todo
     // set resources top left
-    this.resources_container.x = 20;
-    this.resources_container.y = 20;
+    this.resources_container.x = 10;
+    this.resources_container.y = 10;
 
     // set game actions to top right
-    this.game_actions_container.x = this.scale.width - 20;
-    this.game_actions_container.y = 20;
+    this.game_actions_container.x = this.scale.width - 10;
+    this.game_actions_container.y = 10;
 
     // set minimap to bottom left
     this.minimap_container.x = 0;
@@ -482,7 +522,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   private handleQuit() {
-    this.quitButtonSubscription = this.buttonQuit.clicked.subscribe(() => {
+    this.game_action_quit.once("game-quit", () => {
       // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
       this.communicator.gameInstanceMetadataChanged?.send({
         property: "sessionState",
@@ -494,14 +534,23 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   private handleSaveGame() {
-    this.saveGameSubscription = this.buttonSave.clicked.subscribe(() => {
-      this.communicator.allScenes.emit({ name: "save-game" });
-    });
+    this.game_action_save.on("game-save", this.onSaveGame, this);
   }
 
+  private onSaveGame = () => {
+    this.communicator.allScenes.emit({ name: "save-game" });
+    const text = this.add.text(this.scale.width / 2, this.scale.height / 2, "Game saved", {
+      fontSize: "32px",
+      color: "#ffffff",
+      backgroundColor: "#000000",
+      padding: { x: 20, y: 10 }
+    });
+    text.setOrigin(0.5);
+    this.time.delayedCall(500, () => text.destroy());
+  };
+
   destroy() {
-    this.quitButtonSubscription?.unsubscribe();
-    this.saveGameSubscription?.unsubscribe();
+    this.game_action_save.off("game-save", this.onSaveGame, this);
     super.destroy();
   }
   get isVisibleSaveButton() {
@@ -509,8 +558,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   private handleButtonVisibility() {
-    const saveButtonVisibile = this.isVisibleSaveButton;
-    this.buttonSave.visible = saveButtonVisibile;
+    this.game_action_quit.visible = this.isVisibleSaveButton;
   }
 
   /* END-USER-CODE */
