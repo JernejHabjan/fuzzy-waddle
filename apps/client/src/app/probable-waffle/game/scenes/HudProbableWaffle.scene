@@ -179,23 +179,24 @@
                         "key": "gui",
                         "frame": "cryos_mini_gui/surfaces/surface_dark.png"
                     },
-                    "x": -96.45336921190778,
-                    "scaleX": 4.828097307342491,
-                    "scaleY": 3.667072752288261,
+                    "x": -52,
+                    "y": -1,
+                    "scaleX": 5.028254553915996,
+                    "scaleY": 3.858978666894958,
                     "originX": 0,
                     "originY": 0,
                     "leftWidth": 1,
                     "rightWidth": 1,
                     "topHeight": 1,
                     "bottomHeight": 1,
-                    "width": 20,
+                    "width": 10,
                     "height": 10
                 },
                 {
                     "type": "Container",
                     "id": "feab9f61-2916-4fcd-8940-2ffee1cb074c",
-                    "label": "game_action_quit",
-                    "displayName": "Quit",
+                    "label": "game_action_menu",
+                    "displayName": "Menu",
                     "scope": "CLASS",
                     "hitArea.shape": "RECTANGLE",
                     "hitArea.x": -17,
@@ -239,19 +240,19 @@
                         {
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
                             "id": "c05a5a8a-ed43-4801-9707-4ce97c83c29a",
-                            "label": "onPointerDownScript_quit",
+                            "label": "onPointerDownScript_menu",
                             "list": [
                                 {
                                     "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
                                     "id": "3547d26d-7427-4e85-bde3-a3c03a444fdf",
-                                    "label": "quit_click"
+                                    "label": "menu_click"
                                 }
                             ]
                         },
                         {
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
                             "id": "5bbfc519-834e-4ccb-89eb-6616db380d55",
-                            "label": "onPointerUpScript_quit",
+                            "label": "onPointerUpScript_menu",
                             "list": [
                                 {
                                     "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
@@ -260,82 +261,7 @@
                                         "eventName"
                                     ],
                                     "label": "emitEventQuitAction",
-                                    "eventName": "game-quit"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "type": "Container",
-                    "id": "21a54ef2-86ed-4b4c-9be1-261cd687f6cf",
-                    "label": "game_action_save",
-                    "displayName": "Save",
-                    "scope": "CLASS",
-                    "hitArea.shape": "RECTANGLE",
-                    "hitArea.x": -17,
-                    "hitArea.y": -13,
-                    "hitArea.width": 34.60550202698232,
-                    "hitArea.height": 25.429332302435576,
-                    "x": -67,
-                    "y": 18,
-                    "list": [
-                        {
-                            "type": "NineSlice",
-                            "id": "cf12d736-118f-4035-9614-4efbf3ade9e4",
-                            "label": "game_actions_quit_bg_1",
-                            "displayName": "Background",
-                            "texture": {
-                                "key": "gui",
-                                "frame": "cryos_mini_gui/buttons/button_small.png"
-                            },
-                            "scaleX": 2.0762647352357817,
-                            "scaleY": 1.5492262688240692,
-                            "leftWidth": 3,
-                            "rightWidth": 3,
-                            "topHeight": 3,
-                            "bottomHeight": 3,
-                            "width": 20,
-                            "height": 20
-                        },
-                        {
-                            "type": "Image",
-                            "id": "8552feaf-0d92-4d59-88b4-c2b39022b7ca",
-                            "label": "game_actions_quit_icon_1",
-                            "displayName": "Icon",
-                            "texture": {
-                                "key": "factions",
-                                "frame": "character_icons/general/warrior.png"
-                            },
-                            "scaleX": 0.31509307156922584,
-                            "scaleY": 0.31509307156922584,
-                            "originY": 0.7
-                        },
-                        {
-                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
-                            "id": "ba3260c3-b524-411b-814a-e8b1a7ca4cc2",
-                            "label": "onPointerDownScript_save",
-                            "list": [
-                                {
-                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
-                                    "id": "b2b28baf-8920-4ce8-8895-67968b6634ad",
-                                    "label": "save_click"
-                                }
-                            ]
-                        },
-                        {
-                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
-                            "id": "84d50b09-32b2-41ee-bc5d-7beffb12a236",
-                            "label": "onPointerUpScript_save",
-                            "list": [
-                                {
-                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
-                                    "id": "c9003b89-2786-4914-ba7c-aa03757c0cb4",
-                                    "unlock": [
-                                        "eventName"
-                                    ],
-                                    "label": "emitEventSaveAction",
-                                    "eventName": "game-save"
+                                    "eventName": "menu-open"
                                 }
                             ]
                         }

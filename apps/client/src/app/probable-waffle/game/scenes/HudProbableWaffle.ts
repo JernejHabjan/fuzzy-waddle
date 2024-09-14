@@ -12,7 +12,7 @@ import { HudGameState } from "../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
 import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
-import { GameSessionState, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "./components/scene-component-helpers";
 import { TilemapComponent } from "./components/tilemap.component";
 import { getActorComponent } from "../data/actor-component";
@@ -20,6 +20,8 @@ import { getTileCoordsUnderObject } from "../library/tile-under-object";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
 import { getGameObjectBounds } from "../data/game-object-helper";
+import GameActionsLayer from "./GameActionsLayer";
+import { filter, Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -141,29 +143,29 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // game_actions_bg
     const game_actions_bg = this.add.nineslice(
-      -96.45336921190778,
-      0,
+      -52,
+      -1,
       "gui",
       "cryos_mini_gui/surfaces/surface_dark.png",
-      20,
+      10,
       10,
       1,
       1,
       1,
       1
     );
-    game_actions_bg.scaleX = 4.828097307342491;
-    game_actions_bg.scaleY = 3.667072752288261;
+    game_actions_bg.scaleX = 5.028254553915996;
+    game_actions_bg.scaleY = 3.858978666894958;
     game_actions_bg.setOrigin(0, 0);
     game_actions_container.add(game_actions_bg);
 
-    // game_action_quit
-    const game_action_quit = this.add.container(-26.453369211907784, 18);
-    game_action_quit.setInteractive(
+    // game_action_menu
+    const game_action_menu = this.add.container(-26.453369211907784, 18);
+    game_action_menu.setInteractive(
       new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
     );
-    game_actions_container.add(game_action_quit);
+    game_actions_container.add(game_action_menu);
 
     // game_actions_quit_bg
     const game_actions_quit_bg = this.add.nineslice(
@@ -180,70 +182,26 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     );
     game_actions_quit_bg.scaleX = 2.0762647352357817;
     game_actions_quit_bg.scaleY = 1.5492262688240692;
-    game_action_quit.add(game_actions_quit_bg);
+    game_action_menu.add(game_actions_quit_bg);
 
     // game_actions_quit_icon
     const game_actions_quit_icon = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
     game_actions_quit_icon.scaleX = 0.31509307156922584;
     game_actions_quit_icon.scaleY = 0.31509307156922584;
     game_actions_quit_icon.setOrigin(0.5, 0.7);
-    game_action_quit.add(game_actions_quit_icon);
+    game_action_menu.add(game_actions_quit_icon);
 
-    // onPointerDownScript_quit
-    const onPointerDownScript_quit = new OnPointerDownScript(game_action_quit);
+    // onPointerDownScript_menu
+    const onPointerDownScript_menu = new OnPointerDownScript(game_action_menu);
 
-    // quit_click
-    new PushActionScript(onPointerDownScript_quit);
+    // menu_click
+    new PushActionScript(onPointerDownScript_menu);
 
-    // onPointerUpScript_quit
-    const onPointerUpScript_quit = new OnPointerUpScript(game_action_quit);
+    // onPointerUpScript_menu
+    const onPointerUpScript_menu = new OnPointerUpScript(game_action_menu);
 
     // emitEventQuitAction
-    const emitEventQuitAction = new EmitEventActionScript(onPointerUpScript_quit);
-
-    // game_action_save
-    const game_action_save = this.add.container(-67, 18);
-    game_action_save.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
-      Phaser.Geom.Rectangle.Contains
-    );
-    game_actions_container.add(game_action_save);
-
-    // game_actions_quit_bg_1
-    const game_actions_quit_bg_1 = this.add.nineslice(
-      0,
-      0,
-      "gui",
-      "cryos_mini_gui/buttons/button_small.png",
-      20,
-      20,
-      3,
-      3,
-      3,
-      3
-    );
-    game_actions_quit_bg_1.scaleX = 2.0762647352357817;
-    game_actions_quit_bg_1.scaleY = 1.5492262688240692;
-    game_action_save.add(game_actions_quit_bg_1);
-
-    // game_actions_quit_icon_1
-    const game_actions_quit_icon_1 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
-    game_actions_quit_icon_1.scaleX = 0.31509307156922584;
-    game_actions_quit_icon_1.scaleY = 0.31509307156922584;
-    game_actions_quit_icon_1.setOrigin(0.5, 0.7);
-    game_action_save.add(game_actions_quit_icon_1);
-
-    // onPointerDownScript_save
-    const onPointerDownScript_save = new OnPointerDownScript(game_action_save);
-
-    // save_click
-    new PushActionScript(onPointerDownScript_save);
-
-    // onPointerUpScript_save
-    const onPointerUpScript_save = new OnPointerUpScript(game_action_save);
-
-    // emitEventSaveAction
-    const emitEventSaveAction = new EmitEventActionScript(onPointerUpScript_save);
+    const emitEventQuitAction = new EmitEventActionScript(onPointerUpScript_menu);
 
     // resources_container
     const resources_container = this.add.container(46, 3);
@@ -272,16 +230,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const hudElements: Array<any> = [];
 
     // emitEventQuitAction (prefab fields)
-    emitEventQuitAction.eventName = "game-quit";
-
-    // emitEventSaveAction (prefab fields)
-    emitEventSaveAction.eventName = "game-save";
+    emitEventQuitAction.eventName = "menu-open";
 
     this.actor_actions_container = actor_actions_container;
     this.actor_info_container = actor_info_container;
     this.minimap_container = minimap_container;
-    this.game_action_quit = game_action_quit;
-    this.game_action_save = game_action_save;
+    this.game_action_menu = game_action_menu;
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
     this.hudElements = hudElements;
@@ -292,13 +246,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private actor_actions_container!: Phaser.GameObjects.Container;
   private actor_info_container!: Phaser.GameObjects.Container;
   private minimap_container!: Phaser.GameObjects.Container;
-  private game_action_quit!: Phaser.GameObjects.Container;
-  private game_action_save!: Phaser.GameObjects.Container;
+  private game_action_menu!: Phaser.GameObjects.Container;
   private game_actions_container!: Phaser.GameObjects.Container;
   private resources_container!: Phaser.GameObjects.Container;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
+  private saveGameSubscription?: Subscription;
   private minimapDiamonds: Phaser.GameObjects.Polygon[] = [];
   private actorDiamonds: Phaser.GameObjects.Polygon[] = [];
   private readonly minimapWidth = 400;
@@ -322,14 +276,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new HudGameState(this);
     new HudElementVisibilityHandler(this, this.hudElements);
     new MultiSelectionHandler(this);
-    this.handleQuit();
-    this.handleSaveGame();
-    this.handleButtonVisibility();
+    this.handleGameAction();
   }
 
   initializeWithParentScene(parentScene: ProbableWaffleScene) {
     this.parentScene = parentScene;
     this.parentScene.onPostCreate.subscribe(this.postSceneCreate);
+    this.bindSaveGameEvent();
   }
 
   private postSceneCreate = () => {
@@ -521,46 +474,38 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.redrawMinimap();
   }
 
-  private handleQuit() {
-    this.game_action_quit.once("game-quit", () => {
-      // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
-      this.communicator.gameInstanceMetadataChanged?.send({
-        property: "sessionState",
-        gameInstanceId: this.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
-        data: { sessionState: GameSessionState.ToScoreScreen },
-        emitterUserId: this.baseGameData.user.userId
-      });
-    });
+  private handleGameAction() {
+    this.game_action_menu.on("menu-open", this.createGameActionsLayer);
   }
 
-  private handleSaveGame() {
-    this.game_action_save.on("game-save", this.onSaveGame, this);
-  }
-
-  private onSaveGame = () => {
-    this.communicator.allScenes.emit({ name: "save-game" });
-    const text = this.add.text(this.scale.width / 2, this.scale.height / 2, "Game saved", {
-      fontSize: "32px",
-      color: "#ffffff",
-      backgroundColor: "#000000",
-      padding: { x: 20, y: 10 }
-    });
-    text.setOrigin(0.5);
-    this.time.delayedCall(500, () => text.destroy());
+  private createGameActionsLayer = () => {
+    const layer = this.scene.get<GameActionsLayer>("GameActionsLayer") as GameActionsLayer;
+    layer.scene.start();
+    layer.initializeWithParentScene(this.parentScene!);
   };
 
+  private bindSaveGameEvent() {
+    if (!this.parentScene) return;
+
+    this.saveGameSubscription = this.parentScene.communicator.allScenes
+      .pipe(filter((value) => value.name === "save-game"))
+      .subscribe(() => {
+        const text = this.add.text(this.scale.width / 2, this.scale.height / 2, "Game saved", {
+          fontSize: "32px",
+          color: "#ffffff",
+          backgroundColor: "#000000",
+          padding: { x: 20, y: 10 }
+        });
+        text.setOrigin(0.5);
+        this.time.delayedCall(500, () => text.destroy());
+      });
+  }
+
   destroy() {
-    this.game_action_save.off("game-save", this.onSaveGame, this);
+    this.game_action_menu.off("menu-open", this.createGameActionsLayer);
+    this.saveGameSubscription?.unsubscribe();
     super.destroy();
   }
-  get isVisibleSaveButton() {
-    return !this.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
-  }
-
-  private handleButtonVisibility() {
-    this.game_action_quit.visible = this.isVisibleSaveButton;
-  }
-
   /* END-USER-CODE */
 }
 

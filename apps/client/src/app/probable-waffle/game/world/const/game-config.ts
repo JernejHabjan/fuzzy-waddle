@@ -7,12 +7,13 @@ import { Boot } from "../../scenes/Boot";
 import MapEmberEnclave from "../../scenes/MapEmberEnclave";
 import HudProbableWaffle from "../../scenes/HudProbableWaffle";
 import ColorReplacePipelinePlugin from "phaser3-rex-plugins/plugins/colorreplacepipeline-plugin";
+import GameActionsLayer from "../../scenes/GameActionsLayer";
 import { Plugins } from "./Plugins";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
   // scene: [GrasslandScene, PlaygroundScene],
-  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing, MapEmberEnclave, HudProbableWaffle],
+  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing, MapEmberEnclave, HudProbableWaffle, GameActionsLayer],
   physics: {
     default: "arcade",
     arcade: {
