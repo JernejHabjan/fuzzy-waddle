@@ -22,7 +22,6 @@ import {
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
-  private nextTile?: Vector2Simple;
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32, y ?? 49.42203448546586, texture || "animals", frame ?? "sheep/sheep_down.png");
 
@@ -44,12 +43,12 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     /* END-USER-CTR-CODE */
   }
 
+  /* START-USER-CODE */
   private postSceneCreate() {
     this.handleWoolParticles(this.scene);
     this.startMovement();
   }
-
-  /* START-USER-CODE */
+  private nextTile?: Vector2Simple;
   private readonly actionDelay = 5000;
   private readonly movementSpeed = 2000;
   private readonly radius = 5;

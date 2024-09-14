@@ -30,12 +30,12 @@
                     },
                     "x": 6,
                     "y": 1,
-                    "width": 20,
-                    "height": 20,
                     "leftWidth": 3,
                     "rightWidth": 3,
                     "topHeight": 3,
-                    "bottomHeight": 3
+                    "bottomHeight": 3,
+                    "width": 20,
+                    "height": 20
                 },
                 {
                     "type": "Text",
@@ -47,14 +47,25 @@
                     "originX": 0.5,
                     "originY": 0.5,
                     "align": "center"
+                },
+                {
+                    "type": "Image",
+                    "id": "3d18ebdf-2fe5-42e9-8941-9b3c994c830c",
+                    "label": "image_1",
+                    "scope": "CLASS",
+                    "texture": {},
+                    "x": 6,
+                    "y": 1,
+                    "scaleX": 0.2,
+                    "scaleY": 0.2
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     },
@@ -97,6 +108,16 @@
             "customDefinition": false,
             "type": {
                 "id": "number"
+            }
+        },
+        {
+            "name": "buttonImage",
+            "label": "Button Image",
+            "tooltip": "",
+            "defValue": "",
+            "customDefinition": false,
+            "type": {
+                "id": "texture-config"
             }
         }
     ]

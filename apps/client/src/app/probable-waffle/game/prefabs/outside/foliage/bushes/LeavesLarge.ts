@@ -3,12 +3,12 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
+/* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../../entity/actor/components/object-descriptor-component";
-/* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class LeavesLarge extends Phaser.GameObjects.Image {

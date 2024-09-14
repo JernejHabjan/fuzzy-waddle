@@ -17,6 +17,222 @@
     },
     "displayList": [
         {
+            "type": "Container",
+            "id": "28f74cf5-a06a-4cdb-b95a-8a1324e9fe6f",
+            "label": "actor_actions_container",
+            "displayName": "Actor actions",
+            "scope": "CLASS",
+            "x": 1280,
+            "y": 720,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "dfb90ec7-8822-4b4b-869a-194fd6ef1b96",
+                    "label": "actor_actions_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "x": -128,
+                    "y": -129,
+                    "scaleX": 7.344280364470656,
+                    "scaleY": 7.344280364470656,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 32,
+                    "height": 32
+                },
+                {
+                    "type": "NineSlice",
+                    "id": "cac1bfcb-ea60-4bdb-884c-eaf899a3b3a7",
+                    "label": "actor_actions_border",
+                    "displayName": "Border",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/borders/border_wood.png"
+                    },
+                    "x": -256.27445735861966,
+                    "y": -256.04333996601065,
+                    "scaleX": 2.7822944266514025,
+                    "scaleY": 2.7822944266514025,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 4,
+                    "rightWidth": 4,
+                    "topHeight": 4,
+                    "bottomHeight": 4,
+                    "width": 92,
+                    "height": 92
+                }
+            ]
+        },
+        {
+            "type": "Container",
+            "id": "a13c1205-7c11-42f0-9869-366af4690cf4",
+            "label": "actor_info_container",
+            "displayName": "Actor info",
+            "scope": "CLASS",
+            "x": 1024,
+            "y": 720,
+            "scaleX": 2.046615132804262,
+            "scaleY": -2.2016637475156924,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "6d16ecf1-89c9-4a25-83e7-e2182eed12a2",
+                    "label": "actor_info_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "x": -214.7589702691498,
+                    "y": -0.0028799829059096282,
+                    "scaleX": 6.711135518221706,
+                    "scaleY": 5.076854073573915,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 32,
+                    "height": 16
+                }
+            ]
+        },
+        {
+            "type": "Container",
+            "id": "b249fb29-409d-453c-bf16-b6bab734f665",
+            "label": "minimap_container",
+            "displayName": "Minimap",
+            "scope": "CLASS",
+            "y": 720,
+            "scaleX": 1.0265358293529236,
+            "scaleY": 0.9537232846001076,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "10f19ecf-da5d-4257-ab96-b586f49ec836",
+                    "label": "minimap_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "x": 13,
+                    "y": -243.1329473309309,
+                    "scaleX": 12.692302266339293,
+                    "scaleY": 7.211497012087156,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 32,
+                    "height": 32
+                },
+                {
+                    "type": "NineSlice",
+                    "id": "10845189-d4c1-4a84-b902-5748292d1246",
+                    "label": "minimap_border",
+                    "displayName": "Border",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/borders/border_wood.png"
+                    },
+                    "y": -255.17628729694155,
+                    "scaleX": 3.367102972114097,
+                    "scaleY": 2.7741914555176357,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 4,
+                    "rightWidth": 4,
+                    "topHeight": 4,
+                    "bottomHeight": 4,
+                    "width": 128,
+                    "height": 92
+                }
+            ]
+        },
+        {
+            "type": "Container",
+            "id": "5ee3c30d-7721-4357-848f-df1e7e9178c1",
+            "label": "game_actions_container",
+            "displayName": "Game actions",
+            "scope": "CLASS",
+            "x": 1276,
+            "y": 4,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "88e591e4-4414-41b0-b02a-3bcce72df319",
+                    "label": "game_actions_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "x": -96.45336921190778,
+                    "scaleX": 4.828097307342491,
+                    "scaleY": 3.667072752288261,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 1,
+                    "rightWidth": 1,
+                    "topHeight": 1,
+                    "bottomHeight": 1,
+                    "width": 20,
+                    "height": 10
+                },
+                {
+                    "type": "Container",
+                    "id": "feab9f61-2916-4fcd-8940-2ffee1cb074c",
+                    "label": "game_action_quit",
+                    "displayName": "Quit",
+                    "x": -26.453369211907784,
+                    "y": 18,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "42d516e0-f1a5-4f01-9561-9a9a8c03c9b0",
+                            "label": "game_actions_quit_bg",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.0762647352357817,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 20,
+                            "height": 20
+                        },
+                        {
+                            "type": "Image",
+                            "id": "fd0f2d38-51ba-41a9-9972-b59f312f65d6",
+                            "label": "game_actions_quit_icon",
+                            "displayName": "Icon",
+                            "texture": {
+                                "key": "factions",
+                                "frame": "character_icons/general/warrior.png"
+                            },
+                            "scaleX": 0.31509307156922584,
+                            "scaleY": 0.31509307156922584,
+                            "originY": 0.7
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
             "id": "b042eaac-6d53-49e6-bfea-e1192a74a0b0",
             "unlock": [
@@ -33,8 +249,8 @@
             "w": 45,
             "h": 45,
             "fontSize": 30,
-            "x": 1180,
-            "y": 38
+            "x": 484,
+            "y": 236
         },
         {
             "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
@@ -45,7 +261,8 @@
                 "text",
                 "w",
                 "h",
-                "fontSize"
+                "fontSize",
+                "buttonImage"
             ],
             "label": "buttonQuit",
             "scope": "CLASS",
@@ -53,14 +270,46 @@
             "w": 45,
             "h": 45,
             "fontSize": 30,
-            "x": 1201,
-            "y": 38
+            "buttonImage": "",
+            "x": 602,
+            "y": 239
+        },
+        {
+            "type": "Container",
+            "id": "ad51c987-a01d-49ce-b222-50b394771c8e",
+            "label": "resources_container",
+            "displayName": "Resources",
+            "scope": "CLASS",
+            "x": 46,
+            "y": 3,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "327b4dd5-4ab7-4803-8803-ef653f97fe14",
+                    "label": "resources_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "scaleX": 5.410556416757487,
+                    "scaleY": 3.4298532548462535,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 1,
+                    "rightWidth": 1,
+                    "topHeight": 1,
+                    "bottomHeight": 1,
+                    "width": 40,
+                    "height": 10
+                }
+            ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     },

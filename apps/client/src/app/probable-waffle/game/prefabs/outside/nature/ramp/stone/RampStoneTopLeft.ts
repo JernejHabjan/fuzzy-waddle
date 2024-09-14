@@ -3,13 +3,13 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
+/* START-USER-IMPORTS */
 import { setActorData } from "../../../../../data/actor-data";
 import { ColliderComponent } from "../../../../../entity/actor/components/collider-component";
 import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../../../entity/actor/components/object-descriptor-component";
-/* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class RampStoneTopLeft extends Phaser.GameObjects.Image {

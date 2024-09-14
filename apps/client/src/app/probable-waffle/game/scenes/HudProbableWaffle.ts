@@ -17,15 +17,10 @@ import { getActorComponent } from "../data/actor-component";
 import { getTileCoordsUnderObject } from "../library/tile-under-object";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
+import { getGameObjectBounds } from "../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-  private minimapDiamonds: Phaser.GameObjects.Polygon[] = [];
-  private actorDiamonds: Phaser.GameObjects.Polygon[] = [];
-  private readonly minimapWidth = 400;
-  private readonly smallMinimapWidth = 200;
-  private readonly minimapBreakpoint = 800;
-  private readonly minimapMargin = 20;
   constructor() {
     super("HudProbableWaffle");
 
@@ -35,13 +30,185 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
+    // actor_actions_container
+    const actor_actions_container = this.add.container(1280, 720);
+
+    // actor_actions_bg
+    const actor_actions_bg = this.add.nineslice(
+      -128,
+      -129,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      32,
+      32,
+      3,
+      3,
+      3,
+      3
+    );
+    actor_actions_bg.scaleX = 7.344280364470656;
+    actor_actions_bg.scaleY = 7.344280364470656;
+    actor_actions_container.add(actor_actions_bg);
+
+    // actor_actions_border
+    const actor_actions_border = this.add.nineslice(
+      -256.27445735861966,
+      -256.04333996601065,
+      "gui",
+      "cryos_mini_gui/borders/border_wood.png",
+      92,
+      92,
+      4,
+      4,
+      4,
+      4
+    );
+    actor_actions_border.scaleX = 2.7822944266514025;
+    actor_actions_border.scaleY = 2.7822944266514025;
+    actor_actions_border.setOrigin(0, 0);
+    actor_actions_container.add(actor_actions_border);
+
+    // actor_info_container
+    const actor_info_container = this.add.container(1024, 720);
+    actor_info_container.scaleX = 2.046615132804262;
+    actor_info_container.scaleY = -2.2016637475156924;
+
+    // actor_info_bg
+    const actor_info_bg = this.add.nineslice(
+      -214.7589702691498,
+      -0.0028799829059096282,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      32,
+      16,
+      3,
+      3,
+      3,
+      3
+    );
+    actor_info_bg.scaleX = 6.711135518221706;
+    actor_info_bg.scaleY = 5.076854073573915;
+    actor_info_bg.setOrigin(0, 0);
+    actor_info_container.add(actor_info_bg);
+
+    // minimap_container
+    const minimap_container = this.add.container(0, 720);
+    minimap_container.scaleX = 1.0265358293529236;
+    minimap_container.scaleY = 0.9537232846001076;
+
+    // minimap_bg
+    const minimap_bg = this.add.nineslice(
+      13,
+      -243.1329473309309,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      32,
+      32,
+      3,
+      3,
+      3,
+      3
+    );
+    minimap_bg.scaleX = 12.692302266339293;
+    minimap_bg.scaleY = 7.211497012087156;
+    minimap_bg.setOrigin(0, 0);
+    minimap_container.add(minimap_bg);
+
+    // minimap_border
+    const minimap_border = this.add.nineslice(
+      0,
+      -255.17628729694155,
+      "gui",
+      "cryos_mini_gui/borders/border_wood.png",
+      128,
+      92,
+      4,
+      4,
+      4,
+      4
+    );
+    minimap_border.scaleX = 3.367102972114097;
+    minimap_border.scaleY = 2.7741914555176357;
+    minimap_border.setOrigin(0, 0);
+    minimap_container.add(minimap_border);
+
+    // game_actions_container
+    const game_actions_container = this.add.container(1276, 4);
+
+    // game_actions_bg
+    const game_actions_bg = this.add.nineslice(
+      -96.45336921190778,
+      0,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      20,
+      10,
+      1,
+      1,
+      1,
+      1
+    );
+    game_actions_bg.scaleX = 4.828097307342491;
+    game_actions_bg.scaleY = 3.667072752288261;
+    game_actions_bg.setOrigin(0, 0);
+    game_actions_container.add(game_actions_bg);
+
+    // game_action_quit
+    const game_action_quit = this.add.container(-26.453369211907784, 18);
+    game_actions_container.add(game_action_quit);
+
+    // game_actions_quit_bg
+    const game_actions_quit_bg = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg.scaleX = 2.0762647352357817;
+    game_actions_quit_bg.scaleY = 1.5492262688240692;
+    game_action_quit.add(game_actions_quit_bg);
+
+    // game_actions_quit_icon
+    const game_actions_quit_icon = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon.scaleX = 0.31509307156922584;
+    game_actions_quit_icon.scaleY = 0.31509307156922584;
+    game_actions_quit_icon.setOrigin(0.5, 0.7);
+    game_action_quit.add(game_actions_quit_icon);
+
     // buttonSave
-    const buttonSave = new ButtonSmall(this, 1180, 38);
+    const buttonSave = new ButtonSmall(this, 484, 236);
     this.add.existing(buttonSave);
 
     // buttonQuit
-    const buttonQuit = new ButtonSmall(this, 1201, 38);
+    const buttonQuit = new ButtonSmall(this, 602, 239);
     this.add.existing(buttonQuit);
+
+    // resources_container
+    const resources_container = this.add.container(46, 3);
+
+    // resources_bg
+    const resources_bg = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      40,
+      10,
+      1,
+      1,
+      1,
+      1
+    );
+    resources_bg.scaleX = 5.410556416757487;
+    resources_bg.scaleY = 3.4298532548462535;
+    resources_bg.setOrigin(0, 0);
+    resources_container.add(resources_bg);
 
     // lists
     const hudElements: Array<any> = [];
@@ -57,19 +224,36 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     buttonQuit.w = 45;
     buttonQuit.h = 45;
     buttonQuit.fontSize = 30;
+    buttonQuit.buttonImage;
 
+    this.actor_actions_container = actor_actions_container;
+    this.actor_info_container = actor_info_container;
+    this.minimap_container = minimap_container;
+    this.game_actions_container = game_actions_container;
     this.buttonSave = buttonSave;
     this.buttonQuit = buttonQuit;
+    this.resources_container = resources_container;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
   }
 
+  private actor_actions_container!: Phaser.GameObjects.Container;
+  private actor_info_container!: Phaser.GameObjects.Container;
+  private minimap_container!: Phaser.GameObjects.Container;
+  private game_actions_container!: Phaser.GameObjects.Container;
   private buttonSave!: ButtonSmall;
   private buttonQuit!: ButtonSmall;
+  private resources_container!: Phaser.GameObjects.Container;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
+  private minimapDiamonds: Phaser.GameObjects.Polygon[] = [];
+  private actorDiamonds: Phaser.GameObjects.Polygon[] = [];
+  private readonly minimapWidth = 400;
+  private readonly smallMinimapWidth = 200;
+  private readonly minimapBreakpoint = 800;
+  private readonly minimapMargin = 20;
   private quitButtonSubscription?: Subscription;
   private saveGameSubscription?: Subscription;
   private parentScene?: ProbableWaffleScene;
@@ -221,13 +405,16 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds = [];
     this.parentScene.scene.scene.children.each((child) => {
+      const objectDescriptor = getActorComponent(child, ObjectDescriptorComponent);
+      if (!objectDescriptor) return;
+
       // const colliderComponent = getActorComponent(child, ColliderComponent);
       // if (!colliderComponent) return;
 
       const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(tileMapComponent.tilemap, child);
       const ownerColor = getActorComponent(child, OwnerComponent)?.ownerColor;
       // example of default color is 13025801 which is 0xc6c209
-      const defaultColor = getActorComponent(child, ObjectDescriptorComponent)?.objectDescriptorDefinition?.color;
+      const defaultColor = objectDescriptor.objectDescriptorDefinition?.color;
 
       const black = new Phaser.Display.Color(0, 0, 0);
       const fallbackColor =
@@ -267,6 +454,28 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // set save button to the left of quit button by 20px
     this.buttonSave.x = this.buttonQuit.x - this.buttonSave.w - 40;
     this.buttonSave.y = this.buttonQuit.y;
+
+    // set todo
+    // set resources top left
+    this.resources_container.x = 20;
+    this.resources_container.y = 20;
+
+    // set game actions to top right
+    this.game_actions_container.x = this.scale.width - 20;
+    this.game_actions_container.y = 20;
+
+    // set minimap to bottom left
+    this.minimap_container.x = 0;
+    this.minimap_container.y = this.scale.height;
+
+    // set actor actions to bottom right
+    this.actor_actions_container.x = this.scale.width;
+    this.actor_actions_container.y = this.scale.height;
+
+    // set actor info to bottom center (just left of actor actions)
+    const actorActionsWidth = getGameObjectBounds(this.actor_actions_container)!.width;
+    this.actor_info_container.x = this.scale.width - actorActionsWidth;
+    this.actor_info_container.y = this.scale.height;
 
     // redraw minimap
     this.redrawMinimap();

@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 /* END-USER-IMPORTS */
@@ -27,9 +26,6 @@ export default class PreloadProbableWaffle extends ProbableWaffleScene {
     progressBar.setOrigin(0, 0);
     progressBar.isFilled = true;
     progressBar.fillColor = 14737632;
-
-    // preloadUpdater
-    new PreloadBarUpdaterScript(progressBar);
 
     // progressBarBg
     const progressBarBg = this.add.rectangle(553.0120849609375, 361, 256, 20);
