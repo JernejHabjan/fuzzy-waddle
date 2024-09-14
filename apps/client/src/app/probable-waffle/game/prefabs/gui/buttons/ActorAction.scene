@@ -1,0 +1,109 @@
+{
+    "id": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "51fd3d34-57b2-44fa-8aa4-afed4a82204c",
+            "label": "actor_action_9",
+            "displayName": "Actor action",
+            "scope": "CLASS",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": -17,
+            "hitArea.y": -13,
+            "hitArea.width": 34.60550202698232,
+            "hitArea.height": 25.429332302435576,
+            "x": 41,
+            "y": 31,
+            "scaleX": 2,
+            "scaleY": 2,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "9df73648-ed40-4696-b07c-2968ec6a2818",
+                    "label": "game_action_bg",
+                    "displayName": "Background",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/buttons/button_small.png"
+                    },
+                    "scaleX": 2.0762647352357817,
+                    "scaleY": 1.5492262688240692,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 20,
+                    "height": 20
+                },
+                {
+                    "type": "Image",
+                    "id": "dacade0f-98de-4dee-8c9f-2de9b34aacd0",
+                    "label": "game_action_icon",
+                    "displayName": "Icon",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "character_icons/general/warrior.png"
+                    },
+                    "scaleX": 0.31509307156922584,
+                    "scaleY": 0.31509307156922584,
+                    "originY": 0.7
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                    "id": "ebc59023-34c8-43cc-b61c-8a0180bdbb45",
+                    "label": "onPointerDownScript",
+                    "displayName": "Pointer down",
+                    "list": [
+                        {
+                            "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                            "id": "6f238e93-8364-422b-9637-41213d96f36f",
+                            "label": "actor_action_click",
+                            "displayName": "Push action",
+                            "scope": "CLASS"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                    "id": "185235c5-2f94-417c-b271-1b03baf22568",
+                    "label": "onPointerUpScript_menu_9",
+                    "displayName": "Pointer up",
+                    "list": [
+                        {
+                            "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                            "id": "24a8b414-0065-4fbf-b929-066e8caeeac1",
+                            "unlock": [
+                                "eventName"
+                            ],
+                            "label": "emitActorAction",
+                            "displayName": "Emit \"actor-action\"",
+                            "eventName": "actor-action"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

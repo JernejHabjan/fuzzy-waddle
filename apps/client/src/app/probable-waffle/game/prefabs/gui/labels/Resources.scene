@@ -1,0 +1,108 @@
+{
+    "id": "f443a788-75a0-44bb-9f41-d24bf969c9b8",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 198,
+        "borderHeight": 56
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "b8c63731-733d-4be6-b1e1-e609bf241a12",
+            "label": "container_1",
+            "list": [
+                {
+                    "type": "Container",
+                    "id": "ef3eb96c-01a0-447b-9baf-8715e77ecc9b",
+                    "label": "resources_container",
+                    "displayName": "Resources",
+                    "scope": "CLASS",
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "49f87d32-87e0-4f8d-b6c8-947377d7cf8b",
+                            "label": "resources_bg_1",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                            },
+                            "scaleX": 2.4760291594973083,
+                            "scaleY": 2.8023638778148445,
+                            "originX": 0,
+                            "originY": 0,
+                            "leftWidth": 1,
+                            "rightWidth": 1,
+                            "topHeight": 1,
+                            "bottomHeight": 1,
+                            "width": 40,
+                            "height": 10
+                        },
+                        {
+                            "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
+                            "id": "7fb01c45-7b7a-4af4-83d1-330de09262f7",
+                            "unlock": [
+                                "x",
+                                "y",
+                                "scaleX",
+                                "scaleY"
+                            ],
+                            "label": "resource_3",
+                            "x": 105,
+                            "y": 21,
+                            "scaleX": 0.5,
+                            "scaleY": 0.5
+                        },
+                        {
+                            "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
+                            "id": "6015a713-fb00-48e4-a53a-91fd8a8c8f2f",
+                            "unlock": [
+                                "x",
+                                "y",
+                                "scaleX",
+                                "scaleY"
+                            ],
+                            "label": "resource_4",
+                            "x": 74,
+                            "y": 21,
+                            "scaleX": 0.5,
+                            "scaleY": 0.5
+                        },
+                        {
+                            "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
+                            "id": "6f5a525b-2bda-4da3-96d8-6f933b7db7a2",
+                            "unlock": [
+                                "x",
+                                "y",
+                                "scaleX",
+                                "scaleY"
+                            ],
+                            "label": "resource_5",
+                            "x": 42,
+                            "y": 21,
+                            "scaleX": 0.5,
+                            "scaleY": 0.5
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

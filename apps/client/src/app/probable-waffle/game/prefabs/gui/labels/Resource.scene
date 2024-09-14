@@ -1,0 +1,57 @@
+{
+    "id": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 75,
+        "borderHeight": 36
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "05751660-d87c-4f00-becc-dfe3399dba5b",
+            "label": "container_1",
+            "x": 71.80414581298828,
+            "y": 32.202178808720916,
+            "list": [
+                {
+                    "type": "Text",
+                    "id": "492c2ea5-f46e-42bb-b023-db53b98e7f15",
+                    "label": "resource_text",
+                    "displayName": "Text",
+                    "x": -39,
+                    "y": -20,
+                    "text": "0"
+                },
+                {
+                    "type": "Image",
+                    "id": "a8db547c-2d98-4566-9764-46cedcab42e6",
+                    "label": "resource_icon",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "character_icons/general/warrior.png"
+                    },
+                    "x": -56,
+                    "y": -4,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "originY": 0.9
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

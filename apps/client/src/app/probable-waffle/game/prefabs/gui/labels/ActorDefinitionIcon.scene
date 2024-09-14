@@ -1,0 +1,60 @@
+{
+    "id": "0027e301-c7f8-4a26-9d63-e4e0921787c9",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 80,
+        "borderHeight": 22
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "c0ca8c76-fdd7-4633-a852-b743906dc358",
+            "label": "container_1",
+            "x": -0.2614598925078324,
+            "y": -0.08298458904027939,
+            "list": [
+                {
+                    "type": "Text",
+                    "id": "9a014a76-922f-42ed-ba56-5cfafbcc09f9",
+                    "label": "text_1",
+                    "scope": "PUBLIC",
+                    "x": 21.261459892507833,
+                    "y": 11.082984589831902,
+                    "originY": 0.5,
+                    "text": "New text",
+                    "fontSize": "12px"
+                },
+                {
+                    "type": "Image",
+                    "id": "d20f8cde-cae7-4c3d-a9ab-6a995015782e",
+                    "label": "character_icons_general_warrior_png",
+                    "scope": "PUBLIC",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "character_icons/general/warrior.png"
+                    },
+                    "x": 11.261459892507833,
+                    "y": 20.082984589831902,
+                    "scaleX": 0.35151337898441726,
+                    "scaleY": 0.35151337898441726,
+                    "originY": 0.9
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
