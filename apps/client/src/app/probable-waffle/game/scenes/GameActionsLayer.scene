@@ -96,11 +96,13 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
                             "id": "d58bf95e-610f-4761-98d9-445659d77e49",
                             "label": "onPointerDownScript_quit",
+                            "displayName": "Pointer down",
                             "list": [
                                 {
                                     "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
                                     "id": "2d322640-ac49-4f5a-816f-adce2f0053a0",
-                                    "label": "quit_click"
+                                    "label": "quit_click",
+                                    "displayName": "Push action"
                                 }
                             ]
                         },
@@ -108,6 +110,7 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
                             "id": "6ffe83b2-10f7-48ac-b7b3-dd8b1f7a5483",
                             "label": "onPointerUpScript_quit",
+                            "displayName": "Pointer up",
                             "list": [
                                 {
                                     "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
@@ -173,11 +176,13 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
                             "id": "887b8fab-3f69-45aa-9b27-41efa9889d16",
                             "label": "onPointerDownScript_save",
+                            "displayName": "Pointer down",
                             "list": [
                                 {
                                     "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
                                     "id": "13a40d3e-232e-4c25-8cb7-ee9f2e9d6a1d",
-                                    "label": "save_click"
+                                    "label": "save_click",
+                                    "displayName": "Push action"
                                 }
                             ]
                         },
@@ -185,6 +190,7 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
                             "id": "8992660f-b583-49ea-8f77-706d82dd42af",
                             "label": "onPointerUpScript_save",
+                            "displayName": "Pointer up",
                             "list": [
                                 {
                                     "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
@@ -193,6 +199,7 @@
                                         "eventName"
                                     ],
                                     "label": "emitEventSaveAction",
+                                    "displayName": "Emit \"game-save\"",
                                     "eventName": "game-save"
                                 }
                             ]
@@ -250,11 +257,13 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
                             "id": "6b86d8b4-4084-4407-ada9-8a615a8230a0",
                             "label": "onPointerDownScript_continue",
+                            "displayName": "Pointer down",
                             "list": [
                                 {
                                     "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
                                     "id": "02a0e668-0373-49ee-9c4c-7a126bbb8b1f",
-                                    "label": "continue_click"
+                                    "label": "continue_click",
+                                    "displayName": "Push action"
                                 }
                             ]
                         },
@@ -262,6 +271,7 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
                             "id": "c1f1e619-eace-4529-b69d-3dd29eb273af",
                             "label": "onPointerUpScript_continue",
+                            "displayName": "Pointer up",
                             "list": [
                                 {
                                     "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
@@ -270,6 +280,7 @@
                                         "eventName"
                                     ],
                                     "label": "emitEventContinueAction",
+                                    "displayName": "Emit \"game-continue\"",
                                     "eventName": "game-continue"
                                 }
                             ]

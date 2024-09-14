@@ -241,11 +241,13 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
                             "id": "c05a5a8a-ed43-4801-9707-4ce97c83c29a",
                             "label": "onPointerDownScript_menu",
+                            "displayName": "Pointer down",
                             "list": [
                                 {
                                     "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
                                     "id": "3547d26d-7427-4e85-bde3-a3c03a444fdf",
-                                    "label": "menu_click"
+                                    "label": "menu_click",
+                                    "displayName": "Push action"
                                 }
                             ]
                         },
@@ -253,6 +255,7 @@
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
                             "id": "5bbfc519-834e-4ccb-89eb-6616db380d55",
                             "label": "onPointerUpScript_menu",
+                            "displayName": "Pointer up",
                             "list": [
                                 {
                                     "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
@@ -261,6 +264,7 @@
                                         "eventName"
                                     ],
                                     "label": "emitEventQuitAction",
+                                    "displayName": "Emit \"menu-open\"",
                                     "eventName": "menu-open"
                                 }
                             ]
