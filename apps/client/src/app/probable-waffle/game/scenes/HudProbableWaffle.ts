@@ -40,7 +40,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // actor_actions_bg
     const actor_actions_bg = this.add.nineslice(
       -128,
-      -129,
+      -99,
       "gui",
       "cryos_mini_gui/surfaces/surface_parchment.png",
       32,
@@ -51,13 +51,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       3
     );
     actor_actions_bg.scaleX = 7.344280364470656;
-    actor_actions_bg.scaleY = 7.344280364470656;
+    actor_actions_bg.scaleY = 5.861319993557232;
     actor_actions_container.add(actor_actions_bg);
 
     // actor_actions_border
     const actor_actions_border = this.add.nineslice(
-      -256.27445735861966,
-      -256.04333996601065,
+      -256,
+      -197,
       "gui",
       "cryos_mini_gui/borders/border_wood.png",
       92,
@@ -68,9 +68,423 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       4
     );
     actor_actions_border.scaleX = 2.7822944266514025;
-    actor_actions_border.scaleY = 2.7822944266514025;
+    actor_actions_border.scaleY = 2.138649387365639;
     actor_actions_border.setOrigin(0, 0);
     actor_actions_container.add(actor_actions_border);
+
+    // actor_action_1
+    const actor_action_1 = this.add.container(-205, -158);
+    actor_action_1.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_1.scaleX = 2;
+    actor_action_1.scaleY = 2;
+    actor_actions_container.add(actor_action_1);
+
+    // game_actions_quit_bg_1
+    const game_actions_quit_bg_1 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_1.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_1.scaleY = 1.5492262688240692;
+    actor_action_1.add(game_actions_quit_bg_1);
+
+    // game_actions_quit_icon_1
+    const game_actions_quit_icon_1 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_1.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_1.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_1.setOrigin(0.5, 0.7);
+    actor_action_1.add(game_actions_quit_icon_1);
+
+    // onPointerDownScript_menu_1
+    const onPointerDownScript_menu_1 = new OnPointerDownScript(actor_action_1);
+
+    // menu_click_1
+    new PushActionScript(onPointerDownScript_menu_1);
+
+    // onPointerUpScript_menu_1
+    const onPointerUpScript_menu_1 = new OnPointerUpScript(actor_action_1);
+
+    // emitEventQuitAction_1
+    const emitEventQuitAction_1 = new EmitEventActionScript(onPointerUpScript_menu_1);
+
+    // actor_action_2
+    const actor_action_2 = this.add.container(-128, -158);
+    actor_action_2.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_2.scaleX = 2;
+    actor_action_2.scaleY = 2;
+    actor_actions_container.add(actor_action_2);
+
+    // game_actions_quit_bg_2
+    const game_actions_quit_bg_2 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_2.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_2.scaleY = 1.5492262688240692;
+    actor_action_2.add(game_actions_quit_bg_2);
+
+    // game_actions_quit_icon_2
+    const game_actions_quit_icon_2 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_2.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_2.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_2.setOrigin(0.5, 0.7);
+    actor_action_2.add(game_actions_quit_icon_2);
+
+    // onPointerDownScript_menu_2
+    const onPointerDownScript_menu_2 = new OnPointerDownScript(actor_action_2);
+
+    // menu_click_2
+    new PushActionScript(onPointerDownScript_menu_2);
+
+    // onPointerUpScript_menu_2
+    const onPointerUpScript_menu_2 = new OnPointerUpScript(actor_action_2);
+
+    // emitEventQuitAction_2
+    const emitEventQuitAction_2 = new EmitEventActionScript(onPointerUpScript_menu_2);
+
+    // actor_action_3
+    const actor_action_3 = this.add.container(-51, -158);
+    actor_action_3.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_3.scaleX = 2;
+    actor_action_3.scaleY = 2;
+    actor_actions_container.add(actor_action_3);
+
+    // game_actions_quit_bg_3
+    const game_actions_quit_bg_3 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_3.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_3.scaleY = 1.5492262688240692;
+    actor_action_3.add(game_actions_quit_bg_3);
+
+    // game_actions_quit_icon_3
+    const game_actions_quit_icon_3 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_3.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_3.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_3.setOrigin(0.5, 0.7);
+    actor_action_3.add(game_actions_quit_icon_3);
+
+    // onPointerDownScript_menu_3
+    const onPointerDownScript_menu_3 = new OnPointerDownScript(actor_action_3);
+
+    // menu_click_3
+    new PushActionScript(onPointerDownScript_menu_3);
+
+    // onPointerUpScript_menu_3
+    const onPointerUpScript_menu_3 = new OnPointerUpScript(actor_action_3);
+
+    // emitEventQuitAction_3
+    const emitEventQuitAction_3 = new EmitEventActionScript(onPointerUpScript_menu_3);
+
+    // actor_action_4
+    const actor_action_4 = this.add.container(-205, -100);
+    actor_action_4.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_4.scaleX = 2;
+    actor_action_4.scaleY = 2;
+    actor_actions_container.add(actor_action_4);
+
+    // game_actions_quit_bg_4
+    const game_actions_quit_bg_4 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_4.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_4.scaleY = 1.5492262688240692;
+    actor_action_4.add(game_actions_quit_bg_4);
+
+    // game_actions_quit_icon_4
+    const game_actions_quit_icon_4 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_4.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_4.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_4.setOrigin(0.5, 0.7);
+    actor_action_4.add(game_actions_quit_icon_4);
+
+    // onPointerDownScript_menu_4
+    const onPointerDownScript_menu_4 = new OnPointerDownScript(actor_action_4);
+
+    // menu_click_4
+    new PushActionScript(onPointerDownScript_menu_4);
+
+    // onPointerUpScript_menu_4
+    const onPointerUpScript_menu_4 = new OnPointerUpScript(actor_action_4);
+
+    // emitEventQuitAction_4
+    const emitEventQuitAction_4 = new EmitEventActionScript(onPointerUpScript_menu_4);
+
+    // actor_action_5
+    const actor_action_5 = this.add.container(-128, -101);
+    actor_action_5.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_5.scaleX = 2;
+    actor_action_5.scaleY = 2;
+    actor_actions_container.add(actor_action_5);
+
+    // game_actions_quit_bg_5
+    const game_actions_quit_bg_5 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_5.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_5.scaleY = 1.5492262688240692;
+    actor_action_5.add(game_actions_quit_bg_5);
+
+    // game_actions_quit_icon_5
+    const game_actions_quit_icon_5 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_5.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_5.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_5.setOrigin(0.5, 0.7);
+    actor_action_5.add(game_actions_quit_icon_5);
+
+    // onPointerDownScript_menu_5
+    const onPointerDownScript_menu_5 = new OnPointerDownScript(actor_action_5);
+
+    // menu_click_5
+    new PushActionScript(onPointerDownScript_menu_5);
+
+    // onPointerUpScript_menu_5
+    const onPointerUpScript_menu_5 = new OnPointerUpScript(actor_action_5);
+
+    // emitEventQuitAction_5
+    const emitEventQuitAction_5 = new EmitEventActionScript(onPointerUpScript_menu_5);
+
+    // actor_action_6
+    const actor_action_6 = this.add.container(-51, -101);
+    actor_action_6.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_6.scaleX = 2;
+    actor_action_6.scaleY = 2;
+    actor_actions_container.add(actor_action_6);
+
+    // game_actions_quit_bg_6
+    const game_actions_quit_bg_6 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_6.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_6.scaleY = 1.5492262688240692;
+    actor_action_6.add(game_actions_quit_bg_6);
+
+    // game_actions_quit_icon_6
+    const game_actions_quit_icon_6 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_6.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_6.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_6.setOrigin(0.5, 0.7);
+    actor_action_6.add(game_actions_quit_icon_6);
+
+    // onPointerDownScript_menu_6
+    const onPointerDownScript_menu_6 = new OnPointerDownScript(actor_action_6);
+
+    // menu_click_6
+    new PushActionScript(onPointerDownScript_menu_6);
+
+    // onPointerUpScript_menu_6
+    const onPointerUpScript_menu_6 = new OnPointerUpScript(actor_action_6);
+
+    // emitEventQuitAction_6
+    const emitEventQuitAction_6 = new EmitEventActionScript(onPointerUpScript_menu_6);
+
+    // actor_action_7
+    const actor_action_7 = this.add.container(-205, -43);
+    actor_action_7.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_7.scaleX = 2;
+    actor_action_7.scaleY = 2;
+    actor_actions_container.add(actor_action_7);
+
+    // game_actions_quit_bg_7
+    const game_actions_quit_bg_7 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_7.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_7.scaleY = 1.5492262688240692;
+    actor_action_7.add(game_actions_quit_bg_7);
+
+    // game_actions_quit_icon_7
+    const game_actions_quit_icon_7 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_7.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_7.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_7.setOrigin(0.5, 0.7);
+    actor_action_7.add(game_actions_quit_icon_7);
+
+    // onPointerDownScript_menu_7
+    const onPointerDownScript_menu_7 = new OnPointerDownScript(actor_action_7);
+
+    // menu_click_7
+    new PushActionScript(onPointerDownScript_menu_7);
+
+    // onPointerUpScript_menu_7
+    const onPointerUpScript_menu_7 = new OnPointerUpScript(actor_action_7);
+
+    // emitEventQuitAction_7
+    const emitEventQuitAction_7 = new EmitEventActionScript(onPointerUpScript_menu_7);
+
+    // actor_action_8
+    const actor_action_8 = this.add.container(-128, -43);
+    actor_action_8.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_8.scaleX = 2;
+    actor_action_8.scaleY = 2;
+    actor_actions_container.add(actor_action_8);
+
+    // game_actions_quit_bg_8
+    const game_actions_quit_bg_8 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_8.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_8.scaleY = 1.5492262688240692;
+    actor_action_8.add(game_actions_quit_bg_8);
+
+    // game_actions_quit_icon_8
+    const game_actions_quit_icon_8 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_8.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_8.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_8.setOrigin(0.5, 0.7);
+    actor_action_8.add(game_actions_quit_icon_8);
+
+    // onPointerDownScript_menu_8
+    const onPointerDownScript_menu_8 = new OnPointerDownScript(actor_action_8);
+
+    // menu_click_8
+    new PushActionScript(onPointerDownScript_menu_8);
+
+    // onPointerUpScript_menu_8
+    const onPointerUpScript_menu_8 = new OnPointerUpScript(actor_action_8);
+
+    // emitEventQuitAction_8
+    const emitEventQuitAction_8 = new EmitEventActionScript(onPointerUpScript_menu_8);
+
+    // actor_action_9
+    const actor_action_9 = this.add.container(-51, -42);
+    actor_action_9.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    actor_action_9.scaleX = 2;
+    actor_action_9.scaleY = 2;
+    actor_actions_container.add(actor_action_9);
+
+    // game_actions_quit_bg_9
+    const game_actions_quit_bg_9 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg_9.scaleX = 2.0762647352357817;
+    game_actions_quit_bg_9.scaleY = 1.5492262688240692;
+    actor_action_9.add(game_actions_quit_bg_9);
+
+    // game_actions_quit_icon_9
+    const game_actions_quit_icon_9 = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
+    game_actions_quit_icon_9.scaleX = 0.31509307156922584;
+    game_actions_quit_icon_9.scaleY = 0.31509307156922584;
+    game_actions_quit_icon_9.setOrigin(0.5, 0.7);
+    actor_action_9.add(game_actions_quit_icon_9);
+
+    // onPointerDownScript_menu_9
+    const onPointerDownScript_menu_9 = new OnPointerDownScript(actor_action_9);
+
+    // menu_click_9
+    new PushActionScript(onPointerDownScript_menu_9);
+
+    // onPointerUpScript_menu_9
+    const onPointerUpScript_menu_9 = new OnPointerUpScript(actor_action_9);
+
+    // emitEventQuitAction_9
+    const emitEventQuitAction_9 = new EmitEventActionScript(onPointerUpScript_menu_9);
 
     // actor_info_container
     const actor_info_container = this.add.container(1024, 720);
@@ -229,9 +643,45 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // lists
     const hudElements: Array<any> = [];
 
+    // emitEventQuitAction_1 (prefab fields)
+    emitEventQuitAction_1.eventName = "actor-action";
+
+    // emitEventQuitAction_2 (prefab fields)
+    emitEventQuitAction_2.eventName = "actor-action";
+
+    // emitEventQuitAction_3 (prefab fields)
+    emitEventQuitAction_3.eventName = "actor-action";
+
+    // emitEventQuitAction_4 (prefab fields)
+    emitEventQuitAction_4.eventName = "actor-action";
+
+    // emitEventQuitAction_5 (prefab fields)
+    emitEventQuitAction_5.eventName = "actor-action";
+
+    // emitEventQuitAction_6 (prefab fields)
+    emitEventQuitAction_6.eventName = "actor-action";
+
+    // emitEventQuitAction_7 (prefab fields)
+    emitEventQuitAction_7.eventName = "actor-action";
+
+    // emitEventQuitAction_8 (prefab fields)
+    emitEventQuitAction_8.eventName = "actor-action";
+
+    // emitEventQuitAction_9 (prefab fields)
+    emitEventQuitAction_9.eventName = "actor-action";
+
     // emitEventQuitAction (prefab fields)
     emitEventQuitAction.eventName = "menu-open";
 
+    this.actor_action_1 = actor_action_1;
+    this.actor_action_2 = actor_action_2;
+    this.actor_action_3 = actor_action_3;
+    this.actor_action_4 = actor_action_4;
+    this.actor_action_5 = actor_action_5;
+    this.actor_action_6 = actor_action_6;
+    this.actor_action_7 = actor_action_7;
+    this.actor_action_8 = actor_action_8;
+    this.actor_action_9 = actor_action_9;
     this.actor_actions_container = actor_actions_container;
     this.actor_info_container = actor_info_container;
     this.minimap_container = minimap_container;
@@ -243,6 +693,15 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.events.emit("scene-awake");
   }
 
+  private actor_action_1!: Phaser.GameObjects.Container;
+  private actor_action_2!: Phaser.GameObjects.Container;
+  private actor_action_3!: Phaser.GameObjects.Container;
+  private actor_action_4!: Phaser.GameObjects.Container;
+  private actor_action_5!: Phaser.GameObjects.Container;
+  private actor_action_6!: Phaser.GameObjects.Container;
+  private actor_action_7!: Phaser.GameObjects.Container;
+  private actor_action_8!: Phaser.GameObjects.Container;
+  private actor_action_9!: Phaser.GameObjects.Container;
   private actor_actions_container!: Phaser.GameObjects.Container;
   private actor_info_container!: Phaser.GameObjects.Container;
   private minimap_container!: Phaser.GameObjects.Container;
@@ -276,13 +735,15 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new HudGameState(this);
     new HudElementVisibilityHandler(this, this.hudElements);
     new MultiSelectionHandler(this);
-    this.handleGameAction();
+    this.subscribeToGameAction();
+    this.subscribeToActorActionsEvents();
+    this.handleActorActionButtonVisibility();
   }
 
   initializeWithParentScene(parentScene: ProbableWaffleScene) {
     this.parentScene = parentScene;
     this.parentScene.onPostCreate.subscribe(this.postSceneCreate);
-    this.bindSaveGameEvent();
+    this.subscribeToSaveGameEvent();
   }
 
   private postSceneCreate = () => {
@@ -474,7 +935,23 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.redrawMinimap();
   }
 
-  private handleGameAction() {
+  private subscribeToActorActionsEvents() {
+    this.actor_action_1.on("actor-action", this.actorActionClicked.bind(this, 1));
+    this.actor_action_2.on("actor-action", this.actorActionClicked.bind(this, 2));
+    this.actor_action_3.on("actor-action", this.actorActionClicked.bind(this, 3));
+    this.actor_action_4.on("actor-action", this.actorActionClicked.bind(this, 4));
+    this.actor_action_5.on("actor-action", this.actorActionClicked.bind(this, 5));
+    this.actor_action_6.on("actor-action", this.actorActionClicked.bind(this, 6));
+    this.actor_action_7.on("actor-action", this.actorActionClicked.bind(this, 7));
+    this.actor_action_8.on("actor-action", this.actorActionClicked.bind(this, 8));
+    this.actor_action_9.on("actor-action", this.actorActionClicked.bind(this, 9));
+  }
+
+  private actorActionClicked = (action_button: number) => {
+    console.log("Actor action clicked", action_button);
+  };
+
+  private subscribeToGameAction() {
     this.game_action_menu.on("menu-open", this.createGameActionsLayer);
   }
 
@@ -484,7 +961,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     layer.initializeWithParentScene(this.parentScene!);
   };
 
-  private bindSaveGameEvent() {
+  private subscribeToSaveGameEvent() {
     if (!this.parentScene) return;
 
     this.saveGameSubscription = this.parentScene.communicator.allScenes
@@ -501,9 +978,31 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       });
   }
 
+  private handleActorActionButtonVisibility() {
+    this.actor_action_1.visible = true;
+    this.actor_action_2.visible = true;
+    this.actor_action_3.visible = true;
+    this.actor_action_4.visible = true;
+    this.actor_action_5.visible = true;
+    this.actor_action_6.visible = true;
+    this.actor_action_7.visible = true; // todo for test
+    this.actor_action_8.visible = false; // todo for test
+    this.actor_action_9.visible = false; // todo for test
+  }
+
   destroy() {
     this.game_action_menu.off("menu-open", this.createGameActionsLayer);
     this.saveGameSubscription?.unsubscribe();
+    // unsubscribe from actor actions
+    this.actor_action_1.off("actor-action");
+    this.actor_action_2.off("actor-action");
+    this.actor_action_3.off("actor-action");
+    this.actor_action_4.off("actor-action");
+    this.actor_action_5.off("actor-action");
+    this.actor_action_6.off("actor-action");
+    this.actor_action_7.off("actor-action");
+    this.actor_action_8.off("actor-action");
+    this.actor_action_9.off("actor-action");
     super.destroy();
   }
   /* END-USER-CODE */

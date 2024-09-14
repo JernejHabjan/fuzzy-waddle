@@ -119,6 +119,7 @@
                                         "eventName"
                                     ],
                                     "label": "emitEventQuitAction",
+                                    "displayName": "Emit \"game-quit\"",
                                     "eventName": "game-quit"
                                 }
                             ]
