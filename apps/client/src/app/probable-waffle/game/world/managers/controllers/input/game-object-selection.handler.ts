@@ -4,14 +4,14 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { getGameObjectBounds } from "../../../../data/game-object-helper";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
-import { getPlayer } from "../../../../data/scene-data";
+import { emitEventIssueMoveCommandToSelectedActors, emitEventSelection, getPlayer } from "../../../../data/scene-data";
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
 import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
-import GameObject = Phaser.GameObjects.GameObject;
-import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameObjectSelectionHandler {
   private sub!: Subscription;
@@ -32,7 +32,7 @@ export class GameObjectSelectionHandler {
         switch (selection.name) {
           case "selection.deselect":
             console.log("deselect");
-            this.emitEventSelection("selection.cleared");
+            emitEventSelection(this.scene, "selection.cleared");
             break;
           case "selection.singleSelect":
             console.log("singleSelect", data.selected);
@@ -41,20 +41,20 @@ export class GameObjectSelectionHandler {
 
             if (isShiftDown) {
               console.log("removeFromSelection", data.selected);
-              this.emitEventSelection("selection.removed", data.selected!);
+              emitEventSelection(this.scene, "selection.removed", data.selected!);
             } else if (isCtrlDown) {
               console.log("additionalSelect", data.selected);
-              this.emitEventSelection("selection.added", data.selected!);
+              emitEventSelection(this.scene, "selection.added", data.selected!);
             } else {
-              this.emitEventSelection("selection.set", data.selected!);
+              emitEventSelection(this.scene, "selection.set", data.selected!);
             }
             break;
           case "selection.terrainSelect":
             console.log("terrainSelect", data.terrainSelected);
             if (data.button === "left") {
-              this.emitEventSelection("selection.cleared");
+              emitEventSelection(this.scene, "selection.cleared");
             } else {
-              this.emitEventIssueMoveCommandToSelectedActors(data.terrainSelected!);
+              emitEventIssueMoveCommandToSelectedActors(this.scene, data.terrainSelected!);
             }
             break;
           case "selection.multiSelect":
@@ -66,11 +66,11 @@ export class GameObjectSelectionHandler {
               (actor) => getActorComponent(actor, IdComponent)!.id
             );
             if (data.shiftKey) {
-              this.emitEventSelection("selection.removed", actorsWithHighestPriorityIds);
+              emitEventSelection(this.scene, "selection.removed", actorsWithHighestPriorityIds);
             } else if (data.ctrlKey) {
-              this.emitEventSelection("selection.added", actorsWithHighestPriorityIds);
+              emitEventSelection(this.scene, "selection.added", actorsWithHighestPriorityIds);
             } else {
-              this.emitEventSelection("selection.set", actorsWithHighestPriorityIds);
+              emitEventSelection(this.scene, "selection.set", actorsWithHighestPriorityIds);
             }
             break;
           case "selection.multiSelectPreview":
@@ -80,37 +80,6 @@ export class GameObjectSelectionHandler {
       });
   }
 
-  private emitEventSelection(
-    property: "selection.set" | "selection.added" | "selection.removed" | "selection.cleared",
-    actorIds?: string[]
-  ) {
-    const player = getPlayer(this.scene);
-    this.scene.communicator.playerChanged!.send({
-      property,
-      data: {
-        playerNumber: player?.playerNumber,
-        playerStateData: {
-          selection: actorIds
-        }
-      },
-      gameInstanceId: this.scene.gameInstanceId,
-      emitterUserId: this.scene.userId
-    });
-  }
-
-  private emitEventIssueMoveCommandToSelectedActors(vec3: Vector3Simple) {
-    this.scene.communicator.playerChanged!.send({
-      property: "command.issued.move",
-      data: {
-        playerNumber: getPlayer(this.scene)?.playerNumber,
-        data: {
-          vec3
-        }
-      },
-      gameInstanceId: this.scene.gameInstanceId,
-      emitterUserId: this.scene.userId
-    });
-  }
   private getActorsByIds(ids: string[]): GameObject[] {
     const selectableChildren = this.getSelectableChildren();
     return ids

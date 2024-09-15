@@ -4,7 +4,8 @@ import {
   ProbableWaffleGameStateDataPayload,
   ProbableWafflePlayer,
   ProbableWafflePlayerDataChangeEventPayload,
-  ProbableWafflePlayerDataChangeEventProperty
+  ProbableWafflePlayerDataChangeEventProperty,
+  Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
@@ -94,6 +95,41 @@ export function sendPlayerStateEvent(
   communicator.playerChanged?.send({
     property,
     data,
+    gameInstanceId: scene.gameInstanceId,
+    emitterUserId: scene.userId
+  });
+}
+
+export function emitEventSelection(
+  scene: Phaser.Scene,
+  property: "selection.set" | "selection.added" | "selection.removed" | "selection.cleared",
+  actorIds?: string[]
+) {
+  if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+  const player = getPlayer(scene);
+  scene.communicator.playerChanged!.send({
+    property,
+    data: {
+      playerNumber: player?.playerNumber,
+      playerStateData: {
+        selection: actorIds
+      }
+    },
+    gameInstanceId: scene.gameInstanceId,
+    emitterUserId: scene.userId
+  });
+}
+
+export function emitEventIssueMoveCommandToSelectedActors(scene: Phaser.Scene, vec3: Vector3Simple) {
+  if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+  scene.communicator.playerChanged!.send({
+    property: "command.issued.move",
+    data: {
+      playerNumber: getPlayer(scene)?.playerNumber,
+      data: {
+        vec3
+      }
+    },
     gameInstanceId: scene.gameInstanceId,
     emitterUserId: scene.userId
   });
