@@ -1,10 +1,13 @@
 import {
+  PlayerStateResources,
   ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleGameStateDataChangeEventProperty,
   ProbableWaffleGameStateDataPayload,
   ProbableWafflePlayer,
+  ProbableWafflePlayerDataChangeEvent,
   ProbableWafflePlayerDataChangeEventPayload,
   ProbableWafflePlayerDataChangeEventProperty,
+  ResourceType,
   Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
@@ -105,7 +108,7 @@ export function emitEventSelection(
   property: "selection.set" | "selection.added" | "selection.removed" | "selection.cleared",
   actorIds?: string[]
 ) {
-  if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   const player = getPlayer(scene);
   scene.communicator.playerChanged!.send({
     property,
@@ -120,8 +123,36 @@ export function emitEventSelection(
   });
 }
 
+export function listenToResourceChanged(scene: Scene) {
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
+  const player = getPlayer(scene);
+  return scene.communicator.playerChanged?.onWithFilter(
+    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("resource.")
+  );
+}
+
+export function emitResource(
+  scene: Scene,
+  action: "resource.added" | "resource.removed",
+  resources: Partial<PlayerStateResources>
+) {
+  sendPlayerStateEvent(scene, action, {
+    playerStateData: {
+      resources: resources as PlayerStateResources
+    }
+  });
+}
+
+export function listenToSelectionEvents(scene: Scene): Observable<ProbableWafflePlayerDataChangeEvent> | undefined {
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
+  const player = getPlayer(scene);
+  return scene.communicator.playerChanged?.onWithFilter(
+    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("selection.")
+  );
+}
+
 export function emitEventIssueMoveCommandToSelectedActors(scene: Phaser.Scene, vec3: Vector3Simple) {
-  if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({
     property: "command.issued.move",
     data: {

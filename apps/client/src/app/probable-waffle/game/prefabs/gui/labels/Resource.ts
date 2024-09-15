@@ -4,8 +4,7 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { getCommunicator, getCurrentPlayerNumber, getPlayer, sendPlayerStateEvent } from "../../../data/scene-data";
-import { ProbableWaffleCommunicatorService } from "../../../../communicators/probable-waffle-communicator.service";
+import { emitResource, getCurrentPlayerNumber, getPlayer, listenToResourceChanged } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
 import { PlayerStateResources, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
@@ -30,7 +29,6 @@ export default class Resource extends Phaser.GameObjects.Container {
     this.resource_icon = resource_icon;
 
     /* START-USER-CTR-CODE */
-    this.communicator = getCommunicator(scene);
     this.player = getPlayer(scene, getCurrentPlayerNumber(scene));
     this.listenToResourceChanged();
     this.scene.events.once(Phaser.Scenes.Events.CREATE, this.init);
@@ -43,7 +41,6 @@ export default class Resource extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   private readonly player: ProbableWafflePlayer | undefined;
-  private readonly communicator: ProbableWaffleCommunicatorService;
   private resourceChangedSubscription?: Subscription;
 
   private init = () => {
@@ -52,20 +49,14 @@ export default class Resource extends Phaser.GameObjects.Container {
   };
 
   private listenToResourceChanged() {
-    this.resourceChangedSubscription = this.communicator.playerChanged
-      ?.onWithFilter((p) => p.property.startsWith("resource."))
-      .subscribe(this.assignResourceText);
+    this.resourceChangedSubscription = listenToResourceChanged(this.scene)?.subscribe(this.assignResourceText);
   }
 
   private testEmitResource() {
     setTimeout(() => {
-      sendPlayerStateEvent(this.scene, "resource.added", {
-        playerStateData: {
-          resources: {
-            [ResourceType.Wood]: 100
-          } satisfies Partial<PlayerStateResources> as PlayerStateResources
-        }
-      });
+      emitResource(this.scene, "resource.added", {
+        [ResourceType.Wood]: 100
+      } satisfies Partial<PlayerStateResources>);
       console.log("resources added for test");
     }, 1000);
   }
