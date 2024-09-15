@@ -19,6 +19,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
@@ -35,7 +36,8 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
       [
         new ObjectDescriptorComponent({
           color: 0xf2f7fa
-        } satisfies ObjectDescriptorDefinition)
+        } satisfies ObjectDescriptorDefinition),
+        new ActorTranslateComponent(this)
       ],
       [new MovementSystem(this)]
     );

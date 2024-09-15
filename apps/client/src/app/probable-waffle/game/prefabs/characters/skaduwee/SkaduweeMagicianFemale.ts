@@ -30,6 +30,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -104,7 +105,8 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
         new ContainableComponent(this),
         new RequirementsComponent(this, {
           actors: [InfantryInn.name]
-        } satisfies RequirementsDefinition)
+        } satisfies RequirementsDefinition),
+        new ActorTranslateComponent(this)
       ],
       [new MovementSystem(this)]
     );

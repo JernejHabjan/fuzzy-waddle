@@ -3,9 +3,8 @@ import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
-import { MovementSystem } from "../../systems/movement.system";
-import { getActorSystem } from "../../../data/actor-system";
 import { OwnerComponent } from "../../actor/components/owner-component";
+import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 
 export class HealthUiComponent {
   static ZIndex = 1;
@@ -67,9 +66,9 @@ export class HealthUiComponent {
   }
 
   private subscribeActorMove() {
-    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-    if (!movementSystem) return;
-    this.actorMovedSubscription = movementSystem.actorMoved.subscribe(() => {
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    if (!actorTranslateComponent) return;
+    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(() => {
       this.draw();
     });
   }

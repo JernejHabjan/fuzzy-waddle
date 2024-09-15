@@ -6,9 +6,8 @@ import { GameSetupHelpers, Guid } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getGameObjectDepth } from "../../../data/game-object-helper";
-import { getActorSystem } from "../../../data/actor-system";
-import { MovementSystem } from "../../systems/movement.system";
 import { Subscription } from "rxjs";
+import { ActorTranslateComponent } from "./actor-translate-component";
 
 export type OwnerDefinition = {
   color: { originalColor: number; epsilon: number }[];
@@ -143,9 +142,9 @@ export class OwnerComponent {
   }
 
   private subscribeActorMove() {
-    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-    if (!movementSystem) return;
-    this.actorMovedSubscription = movementSystem.actorMoved.subscribe(() => {
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    if (!actorTranslateComponent) return;
+    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(() => {
       this.updateOwnerUiElementPosition();
     });
   }

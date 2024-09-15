@@ -10,12 +10,13 @@ import {
   getGameObjectTileInRadius,
   getGameObjectTransform
 } from "../../data/game-object-helper";
-import { Observable, Subject, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { getSfxVolumeNormalized } from "../../scenes/services/audio.service";
-import Tween = Phaser.Tweens.Tween;
 import { getCommunicator } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
+import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
+import Tween = Phaser.Tweens.Tween;
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -32,12 +33,17 @@ export class MovementSystem {
   private _navigationService?: NavigationService;
   private _currentTween?: Tween;
   private readonly DEBUG = false;
-  private _actorMoved: Subject<Vector3Simple> = new Subject<Vector3Simple>();
   private playerChangedSubscription?: Subscription;
+  private actorTranslateComponent?: ActorTranslateComponent;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+  }
+
+  private init() {
+    this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
   }
 
   private listenToMoveEvents() {
@@ -67,10 +73,6 @@ export class MovementSystem {
     if (vec3.y) transform.y = vec3.y;
     if (vec3.z) transform.z = vec3.z;
     this.tweenUpdate();
-  }
-
-  get actorMoved(): Observable<Vector3Simple> {
-    return this._actorMoved.asObservable();
   }
 
   private get navigationService(): NavigationService | undefined {
@@ -153,7 +155,8 @@ export class MovementSystem {
     DepthHelper.setActorDepth(this.gameObject);
     const transform = getGameObjectTransform(this.gameObject);
     if (!transform) return;
-    this._actorMoved.next(transform);
+    if (!this.actorTranslateComponent) return;
+    this.actorTranslateComponent.moveActorToPosition(transform);
   };
 
   cancelMovement() {

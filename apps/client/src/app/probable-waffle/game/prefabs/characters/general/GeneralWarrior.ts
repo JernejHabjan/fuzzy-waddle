@@ -27,6 +27,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -87,7 +88,8 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
           productionTime: 1000,
           costType: PaymentType.PayImmediately
         } satisfies ProductionCostDefinition),
-        new ContainableComponent(this)
+        new ContainableComponent(this),
+        new ActorTranslateComponent(this)
       ],
       [new MovementSystem(this)]
     );

@@ -35,6 +35,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -102,7 +103,8 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
         } satisfies ProductionCostDefinition),
         new RequirementsComponent(this, {
           actors: [Owlery.name]
-        } satisfies RequirementsDefinition)
+        } satisfies RequirementsDefinition),
+        new ActorTranslateComponent(this)
       ],
       [new MovementSystem(this)]
     );

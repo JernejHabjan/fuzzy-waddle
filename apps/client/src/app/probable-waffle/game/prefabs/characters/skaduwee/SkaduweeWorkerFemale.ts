@@ -32,6 +32,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -109,7 +110,8 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
             ResourceType.Minerals,
             ResourceType.Stone
           ]
-        } satisfies GathererDefinition)
+        } satisfies GathererDefinition),
+        new ActorTranslateComponent(this)
       ],
       [new MovementSystem(this)]
     );

@@ -1,12 +1,11 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
-import { getActorSystem } from "../../../data/actor-system";
-import { MovementSystem } from "../../systems/movement.system";
 import { Subscription } from "rxjs";
 import Phaser from "phaser";
 import { getCommunicator } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "./id-component";
+import { ActorTranslateComponent } from "./actor-translate-component";
 
 export type SelectableDefinition = {
   offsetY?: number;
@@ -32,9 +31,9 @@ export class SelectableComponent {
   };
 
   private subscribeActorMove() {
-    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-    if (!movementSystem) return;
-    this.actorMovedSubscription = movementSystem.actorMoved.subscribe(this.update);
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    if (!actorTranslateComponent) return;
+    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(this.update);
   }
 
   private createSelectionCircle() {
