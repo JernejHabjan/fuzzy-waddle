@@ -83,6 +83,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private pointerIn: boolean = false;
   private tooltip?: ActorDefinitionTooltip;
   private tooltipInfo?: InfoDefinition;
+  private action: (() => void) | undefined;
   setup(setup: ActorActionSetup) {
     if (setup.icon) {
       this.setIcon(setup.icon.key, setup.icon.frame, setup.icon.origin);
@@ -90,6 +91,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.setDisabled(setup.disabled ?? false);
     this.setVisible(setup.visible);
     this.tooltipInfo = setup.tooltipInfo;
+    this.action = setup.action;
   }
 
   private setIcon(key: string, frame: string, origin?: { x: number; y: number }) {
@@ -140,7 +142,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 
   private onAction = () => {
     if (this.disabled) return;
-    console.log("Actor action");
+    this.action?.();
   };
 
   private destroyCore = () => {

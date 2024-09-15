@@ -5,6 +5,15 @@
 import Phaser from "phaser";
 import ActorAction from "./ActorAction";
 /* START-USER-IMPORTS */
+import { getPlayer, getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
+import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import { Subscription } from "rxjs";
+import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { getActorComponent } from "../../../data/actor-component";
+import { AttackComponent } from "../../../entity/combat/components/attack-component";
+import { ProductionComponent } from "../../../entity/building/production/production-component";
+import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -46,115 +55,194 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     actor_actions_border.setOrigin(0, 0);
     this.add(actor_actions_border);
 
-    // actorAction
-    const actorAction = new ActorAction(scene, -205, -156);
-    this.add(actorAction);
+    // actor_action_9
+    const actor_action_9 = new ActorAction(scene, -51, -40);
+    actor_action_9.name = "actor_action_9";
+    this.add(actor_action_9);
 
-    // actorAction_1
-    const actorAction_1 = new ActorAction(scene, -128, -156);
-    this.add(actorAction_1);
+    // actor_action_8
+    const actor_action_8 = new ActorAction(scene, -128, -40);
+    actor_action_8.name = "actor_action_8";
+    this.add(actor_action_8);
 
-    // actorAction_2
-    const actorAction_2 = new ActorAction(scene, -51, -156);
-    this.add(actorAction_2);
+    // actor_action_7
+    const actor_action_7 = new ActorAction(scene, -205, -40);
+    actor_action_7.name = "actor_action_7";
+    this.add(actor_action_7);
 
-    // actorAction_3
-    const actorAction_3 = new ActorAction(scene, -205, -98);
-    this.add(actorAction_3);
+    // actor_action_6
+    const actor_action_6 = new ActorAction(scene, -51, -98);
+    actor_action_6.name = "actor_action_6";
+    this.add(actor_action_6);
 
-    // actorAction_4
-    const actorAction_4 = new ActorAction(scene, -128, -98);
-    this.add(actorAction_4);
+    // actor_action_5
+    const actor_action_5 = new ActorAction(scene, -128, -98);
+    actor_action_5.name = "actor_action_5";
+    this.add(actor_action_5);
 
-    // actorAction_5
-    const actorAction_5 = new ActorAction(scene, -51, -98);
-    this.add(actorAction_5);
+    // actor_action_4
+    const actor_action_4 = new ActorAction(scene, -205, -98);
+    actor_action_4.name = "actor_action_4";
+    this.add(actor_action_4);
 
-    // actorAction_6
-    const actorAction_6 = new ActorAction(scene, -205, -40);
-    this.add(actorAction_6);
+    // actor_action_3
+    const actor_action_3 = new ActorAction(scene, -51, -156);
+    actor_action_3.name = "actor_action_3";
+    this.add(actor_action_3);
 
-    // actorAction_7
-    const actorAction_7 = new ActorAction(scene, -128, -40);
-    this.add(actorAction_7);
+    // actor_action_2
+    const actor_action_2 = new ActorAction(scene, -128, -156);
+    actor_action_2.name = "actor_action_2";
+    this.add(actor_action_2);
 
-    // actorAction_8
-    const actorAction_8 = new ActorAction(scene, -51, -40);
-    this.add(actorAction_8);
+    // actor_action_1
+    const actor_action_1 = new ActorAction(scene, -205, -156);
+    actor_action_1.name = "actor_action_1";
+    this.add(actor_action_1);
 
-    this.actorAction = actorAction;
-    this.actorAction_1 = actorAction_1;
-    this.actorAction_2 = actorAction_2;
-    this.actorAction_3 = actorAction_3;
-    this.actorAction_4 = actorAction_4;
-    this.actorAction_5 = actorAction_5;
-    this.actorAction_6 = actorAction_6;
-    this.actorAction_7 = actorAction_7;
-    this.actorAction_8 = actorAction_8;
+    // lists
+    const actor_actions = [
+      actor_action_1,
+      actor_action_2,
+      actor_action_3,
+      actor_action_4,
+      actor_action_5,
+      actor_action_6,
+      actor_action_7,
+      actor_action_8,
+      actor_action_9
+    ];
+
+    this.actor_actions = actor_actions;
 
     /* START-USER-CTR-CODE */
-    this.testSetIcons();
+    this.mainSceneWithActors = (scene as HudProbableWaffle).parentScene!;
+    this.subscribeToPlayerSelection();
+    this.hideAllActions();
     /* END-USER-CTR-CODE */
   }
 
-  private actorAction: ActorAction;
-  private actorAction_1: ActorAction;
-  private actorAction_2: ActorAction;
-  private actorAction_3: ActorAction;
-  private actorAction_4: ActorAction;
-  private actorAction_5: ActorAction;
-  private actorAction_6: ActorAction;
-  private actorAction_7: ActorAction;
-  private actorAction_8: ActorAction;
+  private actor_actions: ActorAction[];
 
   /* START-USER-CODE */
+  private selectionChangedSubscription?: Subscription;
+  private mainSceneWithActors: ProbableWaffleScene;
+  private subscribeToPlayerSelection() {
+    this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
+      const selectedActors = getSelectedActors(this.mainSceneWithActors);
+      if (selectedActors.length === 0) {
+        this.hideAllActions();
+        return;
+      } else {
+        const actorsByPriority = sortActorsByPriority(selectedActors);
+        const actor = actorsByPriority[0];
+        this.showActorActions(actor);
+      }
+    });
+  }
 
-  private testSetIcons() {
-    this.actorAction.setup({
-      icon: {
-        key: "factions",
-        frame: "character_icons/tivara/archer_female.png",
-        origin: { x: 0.5, y: 0.7 }
-      },
-      visible: true,
-      action: () => {
-        console.log("Action 1");
-      },
-      disabled: true
+  private hideAllActions() {
+    this.actor_actions.forEach((action) => {
+      action.setup({ visible: false });
     });
-    this.actorAction_1.setup({
-      icon: {
-        key: "factions",
-        frame: "character_icons/tivara/slingshot_female.png",
-        origin: { x: 0.5, y: 0.7 }
-      },
-      visible: true,
-      action: () => {
-        console.log("Action 1");
-      },
-      tooltipInfo: {
-        name: "Slingshot", // todo source this from actor definition
-        description: "A ranged unit" // todo source this from actor definition
-      }
-    });
-    this.actorAction_2.setup({
-      icon: {
-        key: "gui",
-        frame: "action_icons/hand.png",
-        origin: { x: 0.5, y: 0.7 }
-      },
-      visible: true,
-      action: () => {
-        console.log("Stop action");
-      },
-      tooltipInfo: {
-        name: "Stop",
-        description: "Stops a current command"
-      }
-    });
-    this.actorAction_8.setup({
-      visible: false
-    });
+  }
+
+  private readonly attackAction = {
+    icon: {
+      key: "gui",
+      frame: "actor_info_icons/sword.png",
+      origin: { x: 0.5, y: 0.5 }
+    },
+    visible: true,
+    action: () => {
+      console.log("Attack");
+    },
+    tooltipInfo: {
+      name: "Attack",
+      description: "Attack an enemy"
+    }
+  };
+
+  private readonly stopAction = {
+    icon: {
+      key: "gui",
+      frame: "action_icons/hand.png",
+      origin: { x: 0.5, y: 0.5 }
+    },
+    visible: true,
+    action: () => {
+      console.log("Stop");
+    },
+    tooltipInfo: {
+      name: "Stop",
+      description: "Stop current action"
+    }
+  };
+
+  private readonly moveAction = {
+    icon: {
+      key: "gui",
+      frame: "action_icons/arrow.png",
+      origin: { x: 0.5, y: 0.5 }
+    },
+    visible: true,
+    action: () => {
+      console.log("Move");
+    },
+    tooltipInfo: {
+      name: "Move",
+      description: "Move to a location"
+    }
+  };
+
+  private showActorActions(actor: Phaser.GameObjects.GameObject) {
+    let index = 0;
+    const attackComponent = getActorComponent(actor, AttackComponent);
+    if (attackComponent) {
+      this.actor_actions[index].setup(this.attackAction);
+      index++;
+    }
+
+    const actorTranslateComponent = getActorComponent(actor, ActorTranslateComponent);
+    if (actorTranslateComponent) {
+      this.actor_actions[index].setup(this.moveAction);
+      index++;
+      this.actor_actions[index].setup(this.stopAction);
+      index++;
+    }
+
+    const productionComponent = getActorComponent(actor, ProductionComponent);
+    if (productionComponent) {
+      const availableToProduce: string[] = productionComponent.productionDefinition.availableProductGameObjectClasses; // todo
+      availableToProduce.forEach((product) => {
+        this.actor_actions[index].setup({
+          icon: {
+            key: "factions",
+            frame: "character_icons/skaduwee/worker_female.png", // todo
+            origin: { x: 0.5, y: 0.7 }
+          },
+          disabled: true, // todo
+          visible: true,
+          action: () => {
+            console.log("Produce", product); // todo
+          },
+          tooltipInfo: {
+            name: "Produce " + product,
+            description: "Produce " + product // todo
+          }
+        });
+        index++;
+      });
+    }
+    // hide all remaining
+    for (let i = index; i < this.actor_actions.length; i++) {
+      this.actor_actions[i].setup({ visible: false });
+    }
+  }
+
+  destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.selectionChangedSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */

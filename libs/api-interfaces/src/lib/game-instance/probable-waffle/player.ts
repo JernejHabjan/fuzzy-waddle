@@ -79,7 +79,10 @@ export class ProbableWafflePlayer extends BasePlayer<
 export interface ProbableWafflePlayerStateData extends BaseData {
   resources: PlayerStateResources;
   summary: PlayerStateAction[];
-  selection: string[]; // guid from idComponent
+  /**
+   * contains GUID from actors' IdComponent
+   */
+  selection: string[];
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {

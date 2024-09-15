@@ -67,86 +67,14 @@
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "31eb8e45-3be5-4695-bf57-70d97e227647",
+                    "id": "31eb95a9-c8a5-4536-a80a-1c3db5793661",
                     "unlock": [
                         "x",
                         "y"
                     ],
-                    "label": "actorAction",
-                    "scope": "CLASS",
-                    "x": -205,
-                    "y": -156
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "53db575a-8799-4de4-9835-b6d5d1edcddd",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_1",
-                    "scope": "CLASS",
-                    "x": -128,
-                    "y": -156
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "73adb2e3-9103-438e-91f0-55175e393613",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_2",
-                    "scope": "CLASS",
+                    "label": "actor_action_9",
+                    "useGameObjectName": true,
                     "x": -51,
-                    "y": -156
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "ef8e5a9c-b2b3-4d52-8459-f465821ad1ec",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_3",
-                    "scope": "CLASS",
-                    "x": -205,
-                    "y": -98
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "6d1145b5-0550-431e-8a3e-b90e2c464922",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_4",
-                    "scope": "CLASS",
-                    "x": -128,
-                    "y": -98
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "edaf18df-bcc8-40a8-9ae6-8263565f696e",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_5",
-                    "scope": "CLASS",
-                    "x": -51,
-                    "y": -98
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "89a8452b-287d-4da4-96ca-da142f19d01e",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_6",
-                    "scope": "CLASS",
-                    "x": -205,
                     "y": -40
                 },
                 {
@@ -156,22 +84,94 @@
                         "x",
                         "y"
                     ],
-                    "label": "actorAction_7",
-                    "scope": "CLASS",
+                    "label": "actor_action_8",
+                    "useGameObjectName": true,
                     "x": -128,
                     "y": -40
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "31eb95a9-c8a5-4536-a80a-1c3db5793661",
+                    "id": "89a8452b-287d-4da4-96ca-da142f19d01e",
                     "unlock": [
                         "x",
                         "y"
                     ],
-                    "label": "actorAction_8",
-                    "scope": "CLASS",
-                    "x": -51,
+                    "label": "actor_action_7",
+                    "useGameObjectName": true,
+                    "x": -205,
                     "y": -40
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "edaf18df-bcc8-40a8-9ae6-8263565f696e",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actor_action_6",
+                    "useGameObjectName": true,
+                    "x": -51,
+                    "y": -98
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "6d1145b5-0550-431e-8a3e-b90e2c464922",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actor_action_5",
+                    "useGameObjectName": true,
+                    "x": -128,
+                    "y": -98
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "ef8e5a9c-b2b3-4d52-8459-f465821ad1ec",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actor_action_4",
+                    "useGameObjectName": true,
+                    "x": -205,
+                    "y": -98
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "73adb2e3-9103-438e-91f0-55175e393613",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actor_action_3",
+                    "useGameObjectName": true,
+                    "x": -51,
+                    "y": -156
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "53db575a-8799-4de4-9835-b6d5d1edcddd",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actor_action_2",
+                    "useGameObjectName": true,
+                    "x": -128,
+                    "y": -156
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "31eb8e45-3be5-4695-bf57-70d97e227647",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actor_action_1",
+                    "useGameObjectName": true,
+                    "x": -205,
+                    "y": -156
                 }
             ]
         }
@@ -182,5 +182,22 @@
         "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
-    }
+    },
+    "lists": [
+        {
+            "id": "a4e92627-4072-4921-bd09-7fbee8539743",
+            "label": "actor_actions",
+            "objectIds": [
+                "31eb8e45-3be5-4695-bf57-70d97e227647",
+                "53db575a-8799-4de4-9835-b6d5d1edcddd",
+                "73adb2e3-9103-438e-91f0-55175e393613",
+                "ef8e5a9c-b2b3-4d52-8459-f465821ad1ec",
+                "6d1145b5-0550-431e-8a3e-b90e2c464922",
+                "edaf18df-bcc8-40a8-9ae6-8263565f696e",
+                "89a8452b-287d-4da4-96ca-da142f19d01e",
+                "92774fff-0573-4757-bf81-26a46dc8375f",
+                "31eb95a9-c8a5-4536-a80a-1c3db5793661"
+            ]
+        }
+    ]
 }

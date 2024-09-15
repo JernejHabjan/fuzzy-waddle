@@ -30,6 +30,22 @@
             "y": 720
         },
         {
+            "prefabId": "c590ce74-b1ec-473e-be60-f65b706cad9d",
+            "id": "f4a4f957-1a84-44e6-b92d-fdc15d0254d0",
+            "unlock": [
+                "x",
+                "y",
+                "scaleX",
+                "scaleY"
+            ],
+            "label": "actor_info_container",
+            "scope": "CLASS",
+            "x": 1024,
+            "y": 720,
+            "scaleX": 2.2,
+            "scaleY": 2.2
+        },
+        {
             "type": "Container",
             "id": "b249fb29-409d-453c-bf16-b6bab734f665",
             "label": "minimap_container",
@@ -109,19 +125,6 @@
             "scope": "CLASS",
             "x": 16,
             "y": 17
-        },
-        {
-            "prefabId": "8e1deff9-7e66-4693-abff-e35fb328aca1",
-            "id": "fa98d05c-0a6f-4967-be81-57d01fc8099d",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "actor_info_container",
-            "displayName": "Actor info",
-            "scope": "CLASS",
-            "x": 1024,
-            "y": 720
         }
     ],
     "plainObjects": [],

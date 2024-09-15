@@ -3,9 +3,9 @@
 /* START OF COMPILED CODE */
 
 import ActorActions from "../prefabs/gui/buttons/ActorActions";
+import ActorInfoContainer from "../prefabs/gui/labels/ActorInfoContainer";
 import GameActions from "../prefabs/gui/buttons/GameActions";
 import Resources from "../prefabs/gui/labels/Resources";
-import ActorInfo from "../prefabs/gui/labels/ActorInfo";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
@@ -24,6 +24,7 @@ import { filter, Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
+
   constructor() {
     super("HudProbableWaffle");
 
@@ -33,9 +34,16 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
     this.add.existing(actor_actions_container);
+
+    // actor_info_container
+    const actor_info_container = new ActorInfoContainer(this, 1024, 720);
+    this.add.existing(actor_info_container);
+    actor_info_container.scaleX = 2.2;
+    actor_info_container.scaleY = 2.2;
 
     // minimap_container
     const minimap_container = this.add.container(0, 720);
@@ -43,36 +51,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     minimap_container.scaleY = 0.9537232846001076;
 
     // minimap_bg
-    const minimap_bg = this.add.nineslice(
-      13,
-      -243.1329473309309,
-      "gui",
-      "cryos_mini_gui/surfaces/surface_parchment.png",
-      32,
-      32,
-      3,
-      3,
-      3,
-      3
-    );
+    const minimap_bg = this.add.nineslice(13, -243.1329473309309, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 32, 3, 3, 3, 3);
     minimap_bg.scaleX = 12.692302266339293;
     minimap_bg.scaleY = 7.211497012087156;
     minimap_bg.setOrigin(0, 0);
     minimap_container.add(minimap_bg);
 
     // minimap_border
-    const minimap_border = this.add.nineslice(
-      0,
-      -255.17628729694155,
-      "gui",
-      "cryos_mini_gui/borders/border_wood.png",
-      128,
-      92,
-      4,
-      4,
-      4,
-      4
-    );
+    const minimap_border = this.add.nineslice(0, -255.17628729694155, "gui", "cryos_mini_gui/borders/border_wood.png", 128, 92, 4, 4, 4, 4);
     minimap_border.scaleX = 3.367102972114097;
     minimap_border.scaleY = 2.7741914555176357;
     minimap_border.setOrigin(0, 0);
@@ -86,28 +72,24 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const resources_container = new Resources(this, 16, 17);
     this.add.existing(resources_container);
 
-    // actor_info_container
-    const actor_info_container = new ActorInfo(this, 1024, 720);
-    this.add.existing(actor_info_container);
-
     // lists
     const hudElements: Array<any> = [];
 
     this.actor_actions_container = actor_actions_container;
+    this.actor_info_container = actor_info_container;
     this.minimap_container = minimap_container;
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
-    this.actor_info_container = actor_info_container;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
   }
 
   private actor_actions_container!: ActorActions;
+  private actor_info_container!: ActorInfoContainer;
   private minimap_container!: Phaser.GameObjects.Container;
   private game_actions_container!: GameActions;
   private resources_container!: Resources;
-  private actor_info_container!: ActorInfo;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */

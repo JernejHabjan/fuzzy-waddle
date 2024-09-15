@@ -1,0 +1,56 @@
+{
+    "id": "994196d3-0550-4418-9691-f87cab9f5129",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "385dc9d4-f3af-4cc4-aa65-3b162f0625f7",
+            "label": "container_1",
+            "x": 16,
+            "y": 11,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "83bf6e95-db78-43b8-8533-b3d869edbf1b",
+                    "label": "actor_info_icons_sword_png",
+                    "scope": "NESTED_PREFAB",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "actor_info_icons/sword.png"
+                    },
+                    "y": 5
+                },
+                {
+                    "type": "Text",
+                    "id": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                    "label": "text_1",
+                    "scope": "NESTED_PREFAB",
+                    "x": 19,
+                    "y": 5,
+                    "originY": 0.5,
+                    "text": "New text",
+                    "color": "#000000ff"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

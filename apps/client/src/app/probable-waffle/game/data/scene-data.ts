@@ -7,7 +7,6 @@ import {
   ProbableWafflePlayerDataChangeEvent,
   ProbableWafflePlayerDataChangeEventPayload,
   ProbableWafflePlayerDataChangeEventProperty,
-  ResourceType,
   Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
@@ -18,6 +17,9 @@ import { IdComponent } from "../entity/actor/components/id-component";
 import { Observable } from "rxjs";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { AttackComponent } from "../entity/combat/components/attack-component";
+import { ProductionComponent } from "../entity/building/production/production-component";
+import { GathererComponent } from "../entity/actor/components/gatherer-component";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
@@ -163,5 +165,35 @@ export function emitEventIssueMoveCommandToSelectedActors(scene: Phaser.Scene, v
     },
     gameInstanceId: scene.gameInstanceId,
     emitterUserId: scene.userId
+  });
+}
+
+export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
+  if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleScene");
+  const selectionGuids = getPlayer(scene)?.getSelection();
+  if (!selectionGuids) return [];
+  return scene.children
+    .getChildren()
+    .filter(
+      (child) =>
+        getActorComponent(child, IdComponent)?.id && selectionGuids.includes(getActorComponent(child, IdComponent)!.id)
+    );
+}
+
+/**
+ * Priority list:
+ * - Attack
+ * - Production
+ * - Gatherer
+ */
+export function sortActorsByPriority(actors: Phaser.GameObjects.GameObject[]): Phaser.GameObjects.GameObject[] {
+  return actors.sort((a, b) => {
+    const attackComponent = getActorComponent(a, AttackComponent);
+    if (attackComponent) return -1;
+    const productionComponent = getActorComponent(a, ProductionComponent);
+    if (productionComponent) return -1;
+    const gathererComponent = getActorComponent(a, GathererComponent);
+    if (gathererComponent) return -1;
+    return 1;
   });
 }

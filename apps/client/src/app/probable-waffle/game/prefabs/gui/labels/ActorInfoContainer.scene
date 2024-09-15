@@ -1,0 +1,83 @@
+{
+    "id": "c590ce74-b1ec-473e-be60-f65b706cad9d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 216,
+        "borderHeight": 80
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "5955c766-f0da-4914-9a23-524ee7e9ae14",
+            "label": "container_1",
+            "x": 214.40086535603183,
+            "y": 81.33939079440076,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "5f5c84f2-8baa-41a9-8814-9f54b244d98d",
+                    "label": "actor_info_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "x": -214.40086535603183,
+                    "y": -81.33939079440076,
+                    "scaleX": 6.711135518221706,
+                    "scaleY": 5.076854073573915,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 32,
+                    "height": 16
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "92caee41-f3b1-42f4-bd28-7aa5efc581e2",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel",
+                    "scope": "CLASS",
+                    "x": -196,
+                    "y": -62,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "aba15c0c-9445-4c16-9a3d-afc1fd4a1749",
+                            "unlock": [
+                                "text"
+                            ],
+                            "label": "text_1",
+                            "text": "test123"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

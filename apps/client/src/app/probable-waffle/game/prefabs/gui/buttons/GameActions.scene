@@ -80,19 +80,6 @@
                             "height": 20
                         },
                         {
-                            "type": "Image",
-                            "id": "65855f45-433c-45b1-be1c-9fc1935cc4a2",
-                            "label": "game_actions_quit_icon",
-                            "displayName": "Icon",
-                            "texture": {
-                                "key": "factions",
-                                "frame": "character_icons/general/warrior.png"
-                            },
-                            "scaleX": 0.31509307156922584,
-                            "scaleY": 0.31509307156922584,
-                            "originY": 0.7
-                        },
-                        {
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
                             "id": "33b0c749-f21e-4085-8bee-cc5dff48eb80",
                             "label": "onPointerDownScript_menu",
@@ -125,6 +112,19 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "type": "Text",
+                    "id": "b7969186-c003-4a55-9733-4f7e35e7284f",
+                    "label": "text_1",
+                    "x": -26,
+                    "y": 17,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Menu",
+                    "align": "center",
+                    "fontSize": "12px",
+                    "color": "#000000ff"
                 }
             ]
         }
