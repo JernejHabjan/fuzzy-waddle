@@ -18,9 +18,9 @@ import { TilemapComponent } from "./components/tilemap.component";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
-  systems: any[]; // todo use
-  components: any[]; // todo use
-  services: any[]; // todo use - for example navigation service, audioService... which you can access from anywhere where scene is passed to
+  systems: any[];
+  components: any[];
+  services: any[];
   initializers: {
     // used before postSceneInitialized
     sceneInitialized: BehaviorSubject<boolean>;
@@ -38,9 +38,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
 
   private sceneGameData: GameProbableWaffleSceneData = {
     baseGameData: this.baseGameData,
-    systems: [], // todo use
+    systems: [],
     components: [],
-    services: [], // todo use
+    services: [],
     initializers: {
       sceneInitialized: new BehaviorSubject<boolean>(false),
       postSceneInitialized: new BehaviorSubject<boolean>(false)

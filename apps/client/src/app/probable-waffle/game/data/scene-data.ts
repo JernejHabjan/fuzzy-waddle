@@ -2,7 +2,9 @@ import {
   ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleGameStateDataChangeEventProperty,
   ProbableWaffleGameStateDataPayload,
-  ProbableWafflePlayer
+  ProbableWafflePlayer,
+  ProbableWafflePlayerDataChangeEventPayload,
+  ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
@@ -11,18 +13,28 @@ import { getActorComponent } from "./actor-component";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { Observable } from "rxjs";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 
-export function getPlayerController(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
-  // if not instanceof BaseScene then throw error
-  if (!(scene instanceof ProbableWaffleScene)) throw new Error("scene is not instanceof BaseScene");
+export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
+  if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   if (playerNumber === undefined) {
     playerNumber = scene.baseGameData.user.playerNumber!;
   }
   return scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
 }
 
+/**
+ * Returns the current player number of the human player
+ * @param scene
+ * @returns {number | undefined}
+ */
+export function getCurrentPlayerNumber(scene: Scene): number | undefined {
+  if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
+  return scene.player.playerNumber;
+}
+
 export function getCommunicator(scene: Scene): ProbableWaffleCommunicatorService {
-  if (!(scene instanceof ProbableWaffleScene)) throw new Error("scene is not instanceof BaseScene");
+  if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
 
   return scene.baseGameData.communicator;
 }
@@ -63,5 +75,26 @@ export function sendActorEvent(
     data,
     gameInstanceId: gameObject.scene.gameInstanceId,
     emitterUserId: gameObject.scene.userId
+  });
+}
+
+export function sendPlayerStateEvent(
+  scene: Scene,
+  property: ProbableWafflePlayerDataChangeEventProperty,
+  payloadIn: ProbableWafflePlayerDataChangeEventPayload
+): void {
+  if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+
+  const communicator = getCommunicator(scene);
+  const data = {
+    playerNumber: scene.player.playerNumber!,
+    ...payloadIn
+  } satisfies ProbableWafflePlayerDataChangeEventPayload;
+
+  communicator.playerChanged?.send({
+    property,
+    data,
+    gameInstanceId: scene.gameInstanceId,
+    emitterUserId: scene.userId
   });
 }

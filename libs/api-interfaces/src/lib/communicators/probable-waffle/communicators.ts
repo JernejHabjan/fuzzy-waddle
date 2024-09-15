@@ -71,7 +71,9 @@ export type ProbableWafflePlayerDataChangeEventProperty =
   | "selection.removed"
   | "selection.set"
   | "selection.cleared"
-  | "command.issued.move";
+  | "resource.added"
+  | "resource.removed"
+  | "command.issued.move"; // todo this command needs to be removed from here as it belongs to actor event
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {
   property: ProbableWafflePlayerDataChangeEventProperty;
   data: ProbableWafflePlayerDataChangeEventPayload;

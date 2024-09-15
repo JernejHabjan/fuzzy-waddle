@@ -21,13 +21,13 @@ export default class Resources extends Phaser.GameObjects.Container {
 
     // resources_bg_1
     const resources_bg_1 = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 40, 10, 1, 1, 1, 1);
-    resources_bg_1.scaleX = 2.606305390950719;
+    resources_bg_1.scaleX = 3.2166350536822605;
     resources_bg_1.scaleY = 2.8023638778148445;
     resources_bg_1.setOrigin(0, 0);
     resources_container.add(resources_bg_1);
 
     // minerals
-    const minerals = new Resource(scene, 105, 21);
+    const minerals = new Resource(scene, 119, 21);
     minerals.scaleX = 0.5;
     minerals.scaleY = 0.5;
     resources_container.add(minerals);
@@ -36,7 +36,7 @@ export default class Resources extends Phaser.GameObjects.Container {
     minerals.resource_icon.scaleY = 1;
 
     // stone
-    const stone = new Resource(scene, 74, 21);
+    const stone = new Resource(scene, 80, 21);
     stone.scaleX = 0.5;
     stone.scaleY = 0.5;
     resources_container.add(stone);
@@ -52,6 +52,15 @@ export default class Resources extends Phaser.GameObjects.Container {
     wood.resource_icon.setTexture("gui", "resource_icons/wood.png");
     wood.resource_icon.scaleX = 1;
     wood.resource_icon.scaleY = 1;
+
+    // minerals (prefab fields)
+    minerals.type = "minerals";
+
+    // stone (prefab fields)
+    stone.type = "stone";
+
+    // wood (prefab fields)
+    wood.type = "wood";
 
     this.resources_container = resources_container;
 

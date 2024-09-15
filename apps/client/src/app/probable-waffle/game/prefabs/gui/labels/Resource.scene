@@ -26,6 +26,7 @@
                     "id": "492c2ea5-f46e-42bb-b023-db53b98e7f15",
                     "label": "resource_text",
                     "displayName": "Text",
+                    "scope": "CLASS",
                     "x": -39,
                     "y": -20,
                     "text": "0"
@@ -54,5 +55,23 @@
         "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
-    }
+    },
+    "prefabProperties": [
+        {
+            "name": "type",
+            "label": "Type",
+            "tooltip": "",
+            "defValue": "",
+            "customDefinition": false,
+            "type": {
+                "id": "option",
+                "options": [
+                    "wood",
+                    "stone",
+                    "minerals",
+                    ""
+                ]
+            }
+        }
+    ]
 }

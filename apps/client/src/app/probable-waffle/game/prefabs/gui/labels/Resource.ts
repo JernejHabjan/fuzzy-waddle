@@ -1,14 +1,16 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { getCommunicator, getCurrentPlayerNumber, getPlayer, sendPlayerStateEvent } from "../../../data/scene-data";
+import { ProbableWaffleCommunicatorService } from "../../../../communicators/probable-waffle-communicator.service";
+import { Subscription } from "rxjs";
+import { PlayerStateResources, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class Resource extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 71.80414581298828, y ?? 32.202178808720916);
 
@@ -24,18 +26,73 @@ export default class Resource extends Phaser.GameObjects.Container {
     resource_icon.setOrigin(0.5, 0.9);
     this.add(resource_icon);
 
+    this.resource_text = resource_text;
     this.resource_icon = resource_icon;
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    this.communicator = getCommunicator(scene);
+    this.player = getPlayer(scene, getCurrentPlayerNumber(scene));
+    this.listenToResourceChanged();
+    this.scene.events.once(Phaser.Scenes.Events.CREATE, this.init);
     /* END-USER-CTR-CODE */
   }
 
+  private resource_text: Phaser.GameObjects.Text;
   public resource_icon: Phaser.GameObjects.Image;
+  public type: "wood" | "stone" | "minerals" | "" = "";
 
   /* START-USER-CODE */
+  private readonly player: ProbableWafflePlayer | undefined;
+  private readonly communicator: ProbableWaffleCommunicatorService;
+  private resourceChangedSubscription?: Subscription;
 
-  // Write your code here.
+  private init = () => {
+    this.assignResourceText();
+    this.testEmitResource();
+  };
+
+  private listenToResourceChanged() {
+    this.resourceChangedSubscription = this.communicator.playerChanged
+      ?.onWithFilter((p) => p.property.startsWith("resource."))
+      .subscribe(this.assignResourceText);
+  }
+
+  private testEmitResource() {
+    setTimeout(() => {
+      sendPlayerStateEvent(this.scene, "resource.added", {
+        playerStateData: {
+          resources: {
+            [ResourceType.Wood]: 100
+          } satisfies Partial<PlayerStateResources> as PlayerStateResources
+        }
+      });
+      console.log("resources added for test");
+    }, 1000);
+  }
+
+  private getPlayerResource(): number {
+    if (!this.player) return 0;
+    const resources = this.player.playerState.data.resources;
+    switch (this.type) {
+      case "wood":
+        return resources.wood;
+      case "stone":
+        return resources.stone;
+      case "minerals":
+        return resources.minerals;
+      default:
+        return 0;
+    }
+  }
+
+  private assignResourceText = () => {
+    this.resource_text.text = this.getPlayerResource().toString();
+  };
+
+  destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.resourceChangedSubscription?.unsubscribe();
+  }
 
   /* END-USER-CODE */
 }

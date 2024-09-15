@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 210,
+        "borderWidth": 256,
         "borderHeight": 56
     },
     "displayList": [
@@ -37,7 +37,7 @@
                                 "key": "gui",
                                 "frame": "cryos_mini_gui/surfaces/surface_dark.png"
                             },
-                            "scaleX": 2.606305390950719,
+                            "scaleX": 3.2166350536822605,
                             "scaleY": 2.8023638778148445,
                             "originX": 0,
                             "originY": 0,
@@ -55,10 +55,12 @@
                                 "x",
                                 "y",
                                 "scaleX",
-                                "scaleY"
+                                "scaleY",
+                                "type"
                             ],
                             "label": "minerals",
-                            "x": 105,
+                            "type": "minerals",
+                            "x": 119,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -88,10 +90,12 @@
                                 "x",
                                 "y",
                                 "scaleX",
-                                "scaleY"
+                                "scaleY",
+                                "type"
                             ],
                             "label": "stone",
-                            "x": 74,
+                            "type": "stone",
+                            "x": 80,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -121,9 +125,11 @@
                                 "x",
                                 "y",
                                 "scaleX",
-                                "scaleY"
+                                "scaleY",
+                                "type"
                             ],
                             "label": "wood",
+                            "type": "wood",
                             "x": 42,
                             "y": 21,
                             "scaleX": 0.5,

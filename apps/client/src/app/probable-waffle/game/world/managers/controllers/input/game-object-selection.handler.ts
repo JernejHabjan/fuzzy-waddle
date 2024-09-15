@@ -4,7 +4,7 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { getGameObjectBounds } from "../../../../data/game-object-helper";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
-import { getPlayerController } from "../../../../data/scene-data";
+import { getPlayer } from "../../../../data/scene-data";
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
 import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
@@ -84,7 +84,7 @@ export class GameObjectSelectionHandler {
     property: "selection.set" | "selection.added" | "selection.removed" | "selection.cleared",
     actorIds?: string[]
   ) {
-    const player = getPlayerController(this.scene);
+    const player = getPlayer(this.scene);
     this.scene.communicator.playerChanged!.send({
       property,
       data: {
@@ -102,7 +102,7 @@ export class GameObjectSelectionHandler {
     this.scene.communicator.playerChanged!.send({
       property: "command.issued.move",
       data: {
-        playerNumber: getPlayerController(this.scene)?.playerNumber,
+        playerNumber: getPlayer(this.scene)?.playerNumber,
         data: {
           vec3
         }
@@ -194,10 +194,10 @@ export class GameObjectSelectionHandler {
   }
 
   private getSelectedMovableActors() {
-    const playerController = getPlayerController(this.scene);
-    if (!playerController) return [];
+    const player = getPlayer(this.scene);
+    if (!player) return [];
     // get actors that are selected
-    const selectedActors = playerController.getSelection();
+    const selectedActors = player.getSelection();
     if (selectedActors.length === 0) return [];
     const selectedActorsGameObjects = this.getActorsByIds(selectedActors);
     // noinspection UnnecessaryLocalVariableJS
