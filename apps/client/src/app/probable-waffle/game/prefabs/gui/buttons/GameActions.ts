@@ -7,8 +7,8 @@ import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
-import GameActionsLayer from "../../../scenes/GameActionsLayer";
 /* START-USER-IMPORTS */
+import GameActionsLayer from "../../../scenes/GameActionsLayer";
 /* END-USER-IMPORTS */
 
 export default class GameActions extends Phaser.GameObjects.Container {

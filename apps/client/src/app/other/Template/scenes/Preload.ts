@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
+import PreloadBarUpdaterScript from "../../../shared/game/phaser/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -26,6 +27,9 @@ export default class Preload extends Phaser.Scene {
     progressBar.setOrigin(0, 0);
     progressBar.isFilled = true;
     progressBar.fillColor = 14737632;
+
+    // preloadUpdater
+    new PreloadBarUpdaterScript(progressBar);
 
     // progressBarBg
     const progressBarBg = this.add.rectangle(553.0120849609375, 361, 256, 20);

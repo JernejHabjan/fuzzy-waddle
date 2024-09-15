@@ -7,9 +7,9 @@ import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
+/* START-USER-IMPORTS */
 import { InfoDefinition } from "../../../entity/actor/components/info-component";
 import ActorDefinitionTooltip from "../labels/ActorDefinitionTooltip";
-/* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
