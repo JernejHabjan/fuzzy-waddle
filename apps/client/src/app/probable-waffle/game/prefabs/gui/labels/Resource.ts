@@ -24,10 +24,14 @@ export default class Resource extends Phaser.GameObjects.Container {
     resource_icon.setOrigin(0.5, 0.9);
     this.add(resource_icon);
 
+    this.resource_icon = resource_icon;
+
     /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
   }
+
+  public resource_icon: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
 

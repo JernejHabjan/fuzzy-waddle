@@ -2,12 +2,10 @@
 
 /* START OF COMPILED CODE */
 
-import ActorAction from "../prefabs/gui/buttons/ActorAction";
-import OnPointerDownScript from "../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
-import PushActionScript from "../../../shared/game/phaser/script-nodes/PushActionScript";
-import OnPointerUpScript from "../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
-import EmitEventActionScript from "../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
+import ActorActions from "../prefabs/gui/buttons/ActorActions";
+import GameActions from "../prefabs/gui/buttons/GameActions";
 import Resources from "../prefabs/gui/labels/Resources";
+import ActorInfo from "../prefabs/gui/labels/ActorInfo";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
@@ -22,12 +20,10 @@ import { getTileCoordsUnderObject } from "../library/tile-under-object";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
 import { getGameObjectBounds } from "../data/game-object-helper";
-import GameActionsLayer from "./GameActionsLayer";
 import { filter, Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-
   constructor() {
     super("HudProbableWaffle");
 
@@ -37,70 +33,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // actor_actions_container
-    const actor_actions_container = this.add.container(1280, 720);
-
-    // actor_actions_bg
-    const actor_actions_bg = this.add.nineslice(-128, -99, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 32, 3, 3, 3, 3);
-    actor_actions_bg.scaleX = 7.344280364470656;
-    actor_actions_bg.scaleY = 5.861319993557232;
-    actor_actions_container.add(actor_actions_bg);
-
-    // actor_actions_border
-    const actor_actions_border = this.add.nineslice(-256, -197, "gui", "cryos_mini_gui/borders/border_wood.png", 92, 92, 4, 4, 4, 4);
-    actor_actions_border.scaleX = 2.7822944266514025;
-    actor_actions_border.scaleY = 2.138649387365639;
-    actor_actions_border.setOrigin(0, 0);
-    actor_actions_container.add(actor_actions_border);
-
-    // actorAction
-    const actorAction = new ActorAction(this, -205, -156);
-    actor_actions_container.add(actorAction);
-
-    // actorAction_1
-    const actorAction_1 = new ActorAction(this, -128, -156);
-    actor_actions_container.add(actorAction_1);
-
-    // actorAction_2
-    const actorAction_2 = new ActorAction(this, -51, -156);
-    actor_actions_container.add(actorAction_2);
-
-    // actorAction_3
-    const actorAction_3 = new ActorAction(this, -205, -98);
-    actor_actions_container.add(actorAction_3);
-
-    // actorAction_4
-    const actorAction_4 = new ActorAction(this, -128, -98);
-    actor_actions_container.add(actorAction_4);
-
-    // actorAction_5
-    const actorAction_5 = new ActorAction(this, -51, -98);
-    actor_actions_container.add(actorAction_5);
-
-    // actorAction_6
-    const actorAction_6 = new ActorAction(this, -205, -40);
-    actor_actions_container.add(actorAction_6);
-
-    // actorAction_7
-    const actorAction_7 = new ActorAction(this, -128, -40);
-    actor_actions_container.add(actorAction_7);
-
-    // actorAction_8
-    const actorAction_8 = new ActorAction(this, -51, -40);
-    actor_actions_container.add(actorAction_8);
-
-    // actor_info_container
-    const actor_info_container = this.add.container(1024, 720);
-    actor_info_container.scaleX = 2.046615132804262;
-    actor_info_container.scaleY = -2.2016637475156924;
-
-    // actor_info_bg
-    const actor_info_bg = this.add.nineslice(-214.7589702691498, -0.0028799829059096282, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 16, 3, 3, 3, 3);
-    actor_info_bg.scaleX = 6.711135518221706;
-    actor_info_bg.scaleY = 5.076854073573915;
-    actor_info_bg.setOrigin(0, 0);
-    actor_info_container.add(actor_info_bg);
+    const actor_actions_container = new ActorActions(this, 1280, 720);
+    this.add.existing(actor_actions_container);
 
     // minimap_container
     const minimap_container = this.add.container(0, 720);
@@ -108,106 +43,71 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     minimap_container.scaleY = 0.9537232846001076;
 
     // minimap_bg
-    const minimap_bg = this.add.nineslice(13, -243.1329473309309, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 32, 3, 3, 3, 3);
+    const minimap_bg = this.add.nineslice(
+      13,
+      -243.1329473309309,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      32,
+      32,
+      3,
+      3,
+      3,
+      3
+    );
     minimap_bg.scaleX = 12.692302266339293;
     minimap_bg.scaleY = 7.211497012087156;
     minimap_bg.setOrigin(0, 0);
     minimap_container.add(minimap_bg);
 
     // minimap_border
-    const minimap_border = this.add.nineslice(0, -255.17628729694155, "gui", "cryos_mini_gui/borders/border_wood.png", 128, 92, 4, 4, 4, 4);
+    const minimap_border = this.add.nineslice(
+      0,
+      -255.17628729694155,
+      "gui",
+      "cryos_mini_gui/borders/border_wood.png",
+      128,
+      92,
+      4,
+      4,
+      4,
+      4
+    );
     minimap_border.scaleX = 3.367102972114097;
     minimap_border.scaleY = 2.7741914555176357;
     minimap_border.setOrigin(0, 0);
     minimap_container.add(minimap_border);
 
     // game_actions_container
-    const game_actions_container = this.add.container(1276, 4);
-    game_actions_container.scaleX = 2;
-    game_actions_container.scaleY = 2;
-
-    // game_actions_bg
-    const game_actions_bg = this.add.nineslice(-52, -1, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 10, 10, 1, 1, 1, 1);
-    game_actions_bg.scaleX = 5.028254553915996;
-    game_actions_bg.scaleY = 3.858978666894958;
-    game_actions_bg.setOrigin(0, 0);
-    game_actions_container.add(game_actions_bg);
-
-    // game_action_menu
-    const game_action_menu = this.add.container(-26.453369211907784, 18);
-    game_action_menu.setInteractive(new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
-    game_actions_container.add(game_action_menu);
-
-    // game_actions_quit_bg
-    const game_actions_quit_bg = this.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
-    game_actions_quit_bg.scaleX = 2.0762647352357817;
-    game_actions_quit_bg.scaleY = 1.5492262688240692;
-    game_action_menu.add(game_actions_quit_bg);
-
-    // game_actions_quit_icon
-    const game_actions_quit_icon = this.add.image(0, 0, "factions", "character_icons/general/warrior.png");
-    game_actions_quit_icon.scaleX = 0.31509307156922584;
-    game_actions_quit_icon.scaleY = 0.31509307156922584;
-    game_actions_quit_icon.setOrigin(0.5, 0.7);
-    game_action_menu.add(game_actions_quit_icon);
-
-    // onPointerDownScript_menu
-    const onPointerDownScript_menu = new OnPointerDownScript(game_action_menu);
-
-    // menu_click
-    new PushActionScript(onPointerDownScript_menu);
-
-    // onPointerUpScript_menu
-    const onPointerUpScript_menu = new OnPointerUpScript(game_action_menu);
-
-    // emitEventQuitAction
-    const emitEventQuitAction = new EmitEventActionScript(onPointerUpScript_menu);
+    const game_actions_container = new GameActions(this, 1280, 2);
+    this.add.existing(game_actions_container);
 
     // resources_container
     const resources_container = new Resources(this, 16, 17);
     this.add.existing(resources_container);
 
+    // actor_info_container
+    const actor_info_container = new ActorInfo(this, 1024, 720);
+    this.add.existing(actor_info_container);
+
     // lists
     const hudElements: Array<any> = [];
 
-    // emitEventQuitAction (prefab fields)
-    emitEventQuitAction.eventName = "menu-open";
-
-    this.actorAction = actorAction;
-    this.actorAction_1 = actorAction_1;
-    this.actorAction_2 = actorAction_2;
-    this.actorAction_3 = actorAction_3;
-    this.actorAction_4 = actorAction_4;
-    this.actorAction_5 = actorAction_5;
-    this.actorAction_6 = actorAction_6;
-    this.actorAction_7 = actorAction_7;
-    this.actorAction_8 = actorAction_8;
     this.actor_actions_container = actor_actions_container;
-    this.actor_info_container = actor_info_container;
     this.minimap_container = minimap_container;
-    this.game_action_menu = game_action_menu;
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
+    this.actor_info_container = actor_info_container;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
   }
 
-  private actorAction!: ActorAction;
-  private actorAction_1!: ActorAction;
-  private actorAction_2!: ActorAction;
-  private actorAction_3!: ActorAction;
-  private actorAction_4!: ActorAction;
-  private actorAction_5!: ActorAction;
-  private actorAction_6!: ActorAction;
-  private actorAction_7!: ActorAction;
-  private actorAction_8!: ActorAction;
-  private actor_actions_container!: Phaser.GameObjects.Container;
-  private actor_info_container!: Phaser.GameObjects.Container;
+  private actor_actions_container!: ActorActions;
   private minimap_container!: Phaser.GameObjects.Container;
-  private game_action_menu!: Phaser.GameObjects.Container;
-  private game_actions_container!: Phaser.GameObjects.Container;
+  private game_actions_container!: GameActions;
   private resources_container!: Resources;
+  private actor_info_container!: ActorInfo;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -218,7 +118,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly smallMinimapWidth = 200;
   private readonly minimapBreakpoint = 800;
   private readonly minimapMargin = 20;
-  private parentScene?: ProbableWaffleScene;
+  parentScene?: ProbableWaffleScene;
   private readonly isometricMinimapDepth = 1000;
   preload() {
     this.load.pack("asset-pack-gui", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle-gui.json");
@@ -235,8 +135,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new HudGameState(this);
     new HudElementVisibilityHandler(this, this.hudElements);
     new MultiSelectionHandler(this);
-    this.subscribeToGameAction();
-    this.testSetIcons();
   }
 
   initializeWithParentScene(parentScene: ProbableWaffleScene) {
@@ -434,16 +332,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.redrawMinimap();
   }
 
-  private subscribeToGameAction() {
-    this.game_action_menu.on("menu-open", this.createGameActionsLayer);
-  }
-
-  private createGameActionsLayer = () => {
-    const layer = this.scene.get<GameActionsLayer>("GameActionsLayer") as GameActionsLayer;
-    layer.scene.start();
-    layer.initializeWithParentScene(this.parentScene!);
-  };
-
   private subscribeToSaveGameEvent() {
     if (!this.parentScene) return;
 
@@ -461,41 +349,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       });
   }
 
-  private testSetIcons() {
-    this.actorAction.setup({
-      icon: {
-        key: "factions",
-        frame: "character_icons/tivara/archer_female.png",
-        origin: { x: 0.5, y: 0.7 }
-      },
-      visible: true,
-      action: () => {
-        console.log("Action 1");
-      },
-      disabled: true
-    });
-    this.actorAction_1.setup({
-      icon: {
-        key: "factions",
-        frame: "character_icons/tivara/slingshot_female.png",
-        origin: { x: 0.5, y: 0.7 }
-      },
-      visible: true,
-      action: () => {
-        console.log("Action 1");
-      },
-      tooltipInfo: {
-        name: "Slingshot", // todo source this from actor definition
-        description: "A ranged unit" // todo source this from actor definition
-      }
-    });
-    this.actorAction_8.setup({
-      visible: false
-    });
-  }
-
   destroy() {
-    this.game_action_menu.off("menu-open", this.createGameActionsLayer);
     this.saveGameSubscription?.unsubscribe();
     super.destroy();
   }

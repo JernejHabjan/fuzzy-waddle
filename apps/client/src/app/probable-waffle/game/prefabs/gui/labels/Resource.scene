@@ -34,6 +34,7 @@
                     "type": "Image",
                     "id": "a8db547c-2d98-4566-9764-46cedcab42e6",
                     "label": "resource_icon",
+                    "scope": "NESTED_PREFAB",
                     "texture": {
                         "key": "factions",
                         "frame": "character_icons/general/warrior.png"

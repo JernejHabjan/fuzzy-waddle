@@ -17,200 +17,17 @@
     },
     "displayList": [
         {
-            "type": "Container",
-            "id": "28f74cf5-a06a-4cdb-b95a-8a1324e9fe6f",
+            "prefabId": "32009169-5920-4763-9cb8-7472adc35410",
+            "id": "ef95f034-07f1-4b52-ba9a-5a6c151354b1",
+            "unlock": [
+                "x",
+                "y"
+            ],
             "label": "actor_actions_container",
             "displayName": "Actor actions",
             "scope": "CLASS",
             "x": 1280,
-            "y": 720,
-            "list": [
-                {
-                    "type": "NineSlice",
-                    "id": "dfb90ec7-8822-4b4b-869a-194fd6ef1b96",
-                    "label": "actor_actions_bg",
-                    "displayName": "Background",
-                    "texture": {
-                        "key": "gui",
-                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
-                    },
-                    "x": -128,
-                    "y": -99,
-                    "scaleX": 7.344280364470656,
-                    "scaleY": 5.861319993557232,
-                    "leftWidth": 3,
-                    "rightWidth": 3,
-                    "topHeight": 3,
-                    "bottomHeight": 3,
-                    "width": 32,
-                    "height": 32
-                },
-                {
-                    "type": "NineSlice",
-                    "id": "cac1bfcb-ea60-4bdb-884c-eaf899a3b3a7",
-                    "label": "actor_actions_border",
-                    "displayName": "Border",
-                    "texture": {
-                        "key": "gui",
-                        "frame": "cryos_mini_gui/borders/border_wood.png"
-                    },
-                    "x": -256,
-                    "y": -197,
-                    "scaleX": 2.7822944266514025,
-                    "scaleY": 2.138649387365639,
-                    "originX": 0,
-                    "originY": 0,
-                    "leftWidth": 4,
-                    "rightWidth": 4,
-                    "topHeight": 4,
-                    "bottomHeight": 4,
-                    "width": 92,
-                    "height": 92
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "b4ea5367-2ab9-4f86-ad8b-d367a880cc39",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction",
-                    "scope": "CLASS",
-                    "x": -205,
-                    "y": -156
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "747e4aa4-970f-483e-a2fd-c98dd5eb94d1",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_1",
-                    "scope": "CLASS",
-                    "x": -128,
-                    "y": -156
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "018f97e7-fdf9-4cd7-98dc-4be87cb6d262",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_2",
-                    "scope": "CLASS",
-                    "x": -51,
-                    "y": -156
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "d2fb873f-1eaa-44b4-8625-2a4ed6f8f77d",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_3",
-                    "scope": "CLASS",
-                    "x": -205,
-                    "y": -98
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "f96553c7-2c8f-4911-82b3-c400a7e81854",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_4",
-                    "scope": "CLASS",
-                    "x": -128,
-                    "y": -98
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "7ae6698d-e73e-48eb-b4c0-f9e13033fcd8",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_5",
-                    "scope": "CLASS",
-                    "x": -51,
-                    "y": -98
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "866e483a-ff07-4420-ba6f-d274e8a6b188",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_6",
-                    "scope": "CLASS",
-                    "x": -205,
-                    "y": -40
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "deb02ec7-c29f-4043-9d11-4fff2e626709",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_7",
-                    "scope": "CLASS",
-                    "x": -128,
-                    "y": -40
-                },
-                {
-                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
-                    "id": "da8b4672-a7cf-4a22-aa6b-9ecb9bf037dc",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorAction_8",
-                    "scope": "CLASS",
-                    "x": -51,
-                    "y": -40
-                }
-            ]
-        },
-        {
-            "type": "Container",
-            "id": "a13c1205-7c11-42f0-9869-366af4690cf4",
-            "label": "actor_info_container",
-            "displayName": "Actor info",
-            "scope": "CLASS",
-            "x": 1024,
-            "y": 720,
-            "scaleX": 2.046615132804262,
-            "scaleY": -2.2016637475156924,
-            "list": [
-                {
-                    "type": "NineSlice",
-                    "id": "6d16ecf1-89c9-4a25-83e7-e2182eed12a2",
-                    "label": "actor_info_bg",
-                    "displayName": "Background",
-                    "texture": {
-                        "key": "gui",
-                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
-                    },
-                    "x": -214.7589702691498,
-                    "y": -0.0028799829059096282,
-                    "scaleX": 6.711135518221706,
-                    "scaleY": 5.076854073573915,
-                    "originX": 0,
-                    "originY": 0,
-                    "leftWidth": 3,
-                    "rightWidth": 3,
-                    "topHeight": 3,
-                    "bottomHeight": 3,
-                    "width": 32,
-                    "height": 16
-                }
-            ]
+            "y": 720
         },
         {
             "type": "Container",
@@ -268,118 +85,17 @@
             ]
         },
         {
-            "type": "Container",
-            "id": "5ee3c30d-7721-4357-848f-df1e7e9178c1",
+            "prefabId": "8d138ace-33b5-46f9-a5f9-3f67e0b81b18",
+            "id": "c13694b4-d838-48d9-a1f4-b283a7f59a66",
+            "unlock": [
+                "x",
+                "y"
+            ],
             "label": "game_actions_container",
-            "displayName": "Game actions",
+            "displayName": "Game Actions",
             "scope": "CLASS",
-            "x": 1276,
-            "y": 4,
-            "scaleX": 2,
-            "scaleY": 2,
-            "list": [
-                {
-                    "type": "NineSlice",
-                    "id": "88e591e4-4414-41b0-b02a-3bcce72df319",
-                    "label": "game_actions_bg",
-                    "displayName": "Background",
-                    "texture": {
-                        "key": "gui",
-                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
-                    },
-                    "x": -52,
-                    "y": -1,
-                    "scaleX": 5.028254553915996,
-                    "scaleY": 3.858978666894958,
-                    "originX": 0,
-                    "originY": 0,
-                    "leftWidth": 1,
-                    "rightWidth": 1,
-                    "topHeight": 1,
-                    "bottomHeight": 1,
-                    "width": 10,
-                    "height": 10
-                },
-                {
-                    "type": "Container",
-                    "id": "feab9f61-2916-4fcd-8940-2ffee1cb074c",
-                    "label": "game_action_menu",
-                    "displayName": "Menu",
-                    "scope": "CLASS",
-                    "hitArea.shape": "RECTANGLE",
-                    "hitArea.x": -17,
-                    "hitArea.y": -13,
-                    "hitArea.width": 34.60550202698232,
-                    "hitArea.height": 25.429332302435576,
-                    "x": -26.453369211907784,
-                    "y": 18,
-                    "list": [
-                        {
-                            "type": "NineSlice",
-                            "id": "42d516e0-f1a5-4f01-9561-9a9a8c03c9b0",
-                            "label": "game_actions_quit_bg",
-                            "displayName": "Background",
-                            "texture": {
-                                "key": "gui",
-                                "frame": "cryos_mini_gui/buttons/button_small.png"
-                            },
-                            "scaleX": 2.0762647352357817,
-                            "scaleY": 1.5492262688240692,
-                            "leftWidth": 3,
-                            "rightWidth": 3,
-                            "topHeight": 3,
-                            "bottomHeight": 3,
-                            "width": 20,
-                            "height": 20
-                        },
-                        {
-                            "type": "Image",
-                            "id": "fd0f2d38-51ba-41a9-9972-b59f312f65d6",
-                            "label": "game_actions_quit_icon",
-                            "displayName": "Icon",
-                            "texture": {
-                                "key": "factions",
-                                "frame": "character_icons/general/warrior.png"
-                            },
-                            "scaleX": 0.31509307156922584,
-                            "scaleY": 0.31509307156922584,
-                            "originY": 0.7
-                        },
-                        {
-                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
-                            "id": "c05a5a8a-ed43-4801-9707-4ce97c83c29a",
-                            "label": "onPointerDownScript_menu",
-                            "displayName": "Pointer down",
-                            "list": [
-                                {
-                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
-                                    "id": "3547d26d-7427-4e85-bde3-a3c03a444fdf",
-                                    "label": "menu_click",
-                                    "displayName": "Push action"
-                                }
-                            ]
-                        },
-                        {
-                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
-                            "id": "5bbfc519-834e-4ccb-89eb-6616db380d55",
-                            "label": "onPointerUpScript_menu",
-                            "displayName": "Pointer up",
-                            "list": [
-                                {
-                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
-                                    "id": "d41ea2cb-5b13-4bdf-aac8-634e888fe460",
-                                    "unlock": [
-                                        "eventName"
-                                    ],
-                                    "label": "emitEventQuitAction",
-                                    "displayName": "Emit \"menu-open\"",
-                                    "eventName": "menu-open"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            "x": 1280,
+            "y": 2
         },
         {
             "prefabId": "f443a788-75a0-44bb-9f41-d24bf969c9b8",
@@ -389,9 +105,23 @@
                 "y"
             ],
             "label": "resources_container",
+            "displayName": "Resources",
             "scope": "CLASS",
             "x": 16,
             "y": 17
+        },
+        {
+            "prefabId": "8e1deff9-7e66-4693-abff-e35fb328aca1",
+            "id": "fa98d05c-0a6f-4967-be81-57d01fc8099d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "actor_info_container",
+            "displayName": "Actor info",
+            "scope": "CLASS",
+            "x": 1024,
+            "y": 720
         }
     ],
     "plainObjects": [],

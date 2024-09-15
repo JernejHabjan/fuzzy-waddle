@@ -4,11 +4,263 @@
 			"image": "gui.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 32,
-				"h": 61
+				"w": 64,
+				"h": 213
 			},
 			"scale": 1,
 			"frames": [
+				{
+					"filename": "actor_info_icons/element.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 32,
+						"h": 31
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 32,
+						"h": 31
+					}
+				},
+				{
+					"filename": "actor_info_icons/bow.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 31,
+						"h": 31
+					},
+					"frame": {
+						"x": 1,
+						"y": 34,
+						"w": 31,
+						"h": 31
+					}
+				},
+				{
+					"filename": "actor_info_icons/sword.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 30,
+						"h": 30
+					},
+					"frame": {
+						"x": 1,
+						"y": 67,
+						"w": 30,
+						"h": 30
+					}
+				},
+				{
+					"filename": "resource_icons/minerals.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 30,
+						"h": 30
+					},
+					"frame": {
+						"x": 33,
+						"y": 67,
+						"w": 30,
+						"h": 30
+					}
+				},
+				{
+					"filename": "resource_icons/stone.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 3,
+						"w": 32,
+						"h": 27
+					},
+					"frame": {
+						"x": 1,
+						"y": 99,
+						"w": 32,
+						"h": 27
+					}
+				},
+				{
+					"filename": "actor_info_icons/heart.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 2,
+						"w": 30,
+						"h": 28
+					},
+					"frame": {
+						"x": 1,
+						"y": 128,
+						"w": 30,
+						"h": 28
+					}
+				},
+				{
+					"filename": "actor_info_icons/speed_attack.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 2,
+						"w": 30,
+						"h": 28
+					},
+					"frame": {
+						"x": 1,
+						"y": 158,
+						"w": 30,
+						"h": 28
+					}
+				},
+				{
+					"filename": "action_icons/hand.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 1,
+						"w": 24,
+						"h": 31
+					},
+					"frame": {
+						"x": 34,
+						"y": 34,
+						"w": 24,
+						"h": 31
+					}
+				},
+				{
+					"filename": "actor_info_icons/shield.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 1,
+						"w": 26,
+						"h": 29
+					},
+					"frame": {
+						"x": 35,
+						"y": 1,
+						"w": 26,
+						"h": 29
+					}
+				},
+				{
+					"filename": "actor_info_icons/boot.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 3,
+						"w": 30,
+						"h": 26
+					},
+					"frame": {
+						"x": 33,
+						"y": 128,
+						"w": 30,
+						"h": 26
+					}
+				},
+				{
+					"filename": "resource_icons/wood.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 6,
+						"w": 30,
+						"h": 20
+					},
+					"frame": {
+						"x": 33,
+						"y": 156,
+						"w": 30,
+						"h": 20
+					}
+				},
+				{
+					"filename": "action_icons/arrow.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 27,
+						"h": 24
+					},
+					"frame": {
+						"x": 1,
+						"y": 188,
+						"w": 27,
+						"h": 24
+					}
+				},
 				{
 					"filename": "cryos_mini_gui/surfaces/surface_parchment.png",
 					"rotated": false,
@@ -24,8 +276,8 @@
 						"h": 24
 					},
 					"frame": {
-						"x": 1,
-						"y": 1,
+						"x": 35,
+						"y": 99,
 						"w": 24,
 						"h": 24
 					}
@@ -45,8 +297,8 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 1,
-						"y": 27,
+						"x": 33,
+						"y": 178,
 						"w": 16,
 						"h": 16
 					}
@@ -66,8 +318,8 @@
 						"h": 12
 					},
 					"frame": {
-						"x": 19,
-						"y": 27,
+						"x": 51,
+						"y": 178,
 						"w": 12,
 						"h": 12
 					}
@@ -87,8 +339,8 @@
 						"h": 15
 					},
 					"frame": {
-						"x": 1,
-						"y": 45,
+						"x": 30,
+						"y": 196,
 						"w": 16,
 						"h": 15
 					}
@@ -108,8 +360,8 @@
 						"h": 8
 					},
 					"frame": {
-						"x": 19,
-						"y": 41,
+						"x": 51,
+						"y": 192,
 						"w": 8,
 						"h": 8
 					}
@@ -129,8 +381,8 @@
 						"h": 8
 					},
 					"frame": {
-						"x": 19,
-						"y": 51,
+						"x": 48,
+						"y": 202,
 						"w": 8,
 						"h": 8
 					}
@@ -141,6 +393,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:c98be47b1af7d86376ba7c18386b3f92:d39a72ccda7a7f25046cca4558fa85e0:788b34ed4e778d63c84b2c3df4d44949$"
+		"smartupdate": "$TexturePacker:SmartUpdate:3bbb57daf7ca4e9b5627e6e47ff0ffcd:831f9421486430681f1bb504ab52e553:788b34ed4e778d63c84b2c3df4d44949$"
 	}
 }

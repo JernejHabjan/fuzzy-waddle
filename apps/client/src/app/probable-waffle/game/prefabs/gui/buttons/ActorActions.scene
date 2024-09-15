@@ -1,0 +1,186 @@
+{
+    "id": "32009169-5920-4763-9cb8-7472adc35410",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 255,
+        "borderHeight": 196
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "4492d67d-f45e-4e23-845a-8fcd09b2e1bc",
+            "label": "actor_actions_container",
+            "displayName": "Actor actions",
+            "scope": "CLASS",
+            "x": 256,
+            "y": 197,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "aa55261c-50ad-4ffb-b71a-a139c83360db",
+                    "label": "actor_actions_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "x": -128,
+                    "y": -99,
+                    "scaleX": 7.344280364470656,
+                    "scaleY": 5.861319993557232,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 32,
+                    "height": 32
+                },
+                {
+                    "type": "NineSlice",
+                    "id": "6d2b242b-e770-498d-9271-da181cf69450",
+                    "label": "actor_actions_border",
+                    "displayName": "Border",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/borders/border_wood.png"
+                    },
+                    "x": -256,
+                    "y": -197,
+                    "scaleX": 2.7822944266514025,
+                    "scaleY": 2.138649387365639,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 4,
+                    "rightWidth": 4,
+                    "topHeight": 4,
+                    "bottomHeight": 4,
+                    "width": 92,
+                    "height": 92
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "31eb8e45-3be5-4695-bf57-70d97e227647",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction",
+                    "scope": "CLASS",
+                    "x": -205,
+                    "y": -156
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "53db575a-8799-4de4-9835-b6d5d1edcddd",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_1",
+                    "scope": "CLASS",
+                    "x": -128,
+                    "y": -156
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "73adb2e3-9103-438e-91f0-55175e393613",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_2",
+                    "scope": "CLASS",
+                    "x": -51,
+                    "y": -156
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "ef8e5a9c-b2b3-4d52-8459-f465821ad1ec",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_3",
+                    "scope": "CLASS",
+                    "x": -205,
+                    "y": -98
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "6d1145b5-0550-431e-8a3e-b90e2c464922",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_4",
+                    "scope": "CLASS",
+                    "x": -128,
+                    "y": -98
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "edaf18df-bcc8-40a8-9ae6-8263565f696e",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_5",
+                    "scope": "CLASS",
+                    "x": -51,
+                    "y": -98
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "89a8452b-287d-4da4-96ca-da142f19d01e",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_6",
+                    "scope": "CLASS",
+                    "x": -205,
+                    "y": -40
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "92774fff-0573-4757-bf81-26a46dc8375f",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_7",
+                    "scope": "CLASS",
+                    "x": -128,
+                    "y": -40
+                },
+                {
+                    "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
+                    "id": "31eb95a9-c8a5-4536-a80a-1c3db5793661",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorAction_8",
+                    "scope": "CLASS",
+                    "x": -51,
+                    "y": -40
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

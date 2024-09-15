@@ -1,0 +1,60 @@
+{
+    "id": "8e1deff9-7e66-4693-abff-e35fb328aca1",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 440,
+        "borderHeight": 179
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "d35cb4cc-c503-4940-b76d-8ce411b8d28c",
+            "label": "actor_info_container",
+            "displayName": "Actor info",
+            "scope": "CLASS",
+            "x": 439,
+            "y": 179,
+            "scaleX": 2.046615132804262,
+            "scaleY": -2.2016637475156924,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "c5d79d28-2b49-4b52-9ea4-bc155d463f2e",
+                    "label": "actor_info_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "x": -214.7589702691498,
+                    "y": -0.0028799829059096282,
+                    "scaleX": 6.711135518221706,
+                    "scaleY": 5.076854073573915,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 32,
+                    "height": 16
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
