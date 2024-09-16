@@ -23,6 +23,7 @@ export class ScaleHandler {
     // center by default
     this.setupBounds(true);
     this.setupResizeListener();
+    scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   setupResizeListener() {
