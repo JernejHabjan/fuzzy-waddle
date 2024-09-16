@@ -52,6 +52,14 @@ const probableWaffleRoutes = [
             canActivate: [() => !environment.production]
           },
           {
+            path: "instant-network-match",
+            loadComponent: () =>
+              import("./probable-waffle/gui/online/instant-network-match/instant-network-match.component").then(
+                (m) => m.InstantNetworkMatchComponent
+              ),
+            canActivate: [() => !environment.production]
+          },
+          {
             path: "load",
             loadComponent: () => import("./probable-waffle/gui/load/load.component").then((m) => m.LoadComponent)
           },

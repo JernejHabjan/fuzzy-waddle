@@ -11,10 +11,10 @@
     </div>
   } @else if (serverHealthService.serverAvailable) {
     <ul class="nav-tabs">
-      <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'" routerLink="/join">Join</a></li>
-      <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'" routerLink="/host">Host</a></li>
+      <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'">Join</a></li>
+      <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'">Host</a></li>
       <li (click)="selectTab('matchmaking')">
-        <a [class.active]="selectedTab === 'matchmaking'" routerLink="/matchmaking">Matchmaking</a>
+        <a [class.active]="selectedTab === 'matchmaking'">Matchmaking</a>
       </li>
     </ul>
 
