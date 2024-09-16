@@ -105,7 +105,7 @@
                                     ],
                                     "label": "emitEventQuit",
                                     "displayName": "Emit \"game-quit\"",
-                                    "eventName": "game-continue"
+                                    "eventName": "game-quit"
                                 }
                             ]
                         },
@@ -186,7 +186,7 @@
                                     ],
                                     "label": "emitEventLoad",
                                     "displayName": "Emit \"game-load\"",
-                                    "eventName": "game-continue"
+                                    "eventName": "game-load"
                                 }
                             ]
                         },
@@ -267,7 +267,7 @@
                                     ],
                                     "label": "emitEventSaveAction",
                                     "displayName": "Emit \"game-save\"",
-                                    "eventName": "game-continue"
+                                    "eventName": "game-save"
                                 }
                             ]
                         },
@@ -348,7 +348,7 @@
                                     ],
                                     "label": "emitEventSettings",
                                     "displayName": "Emit \"game-settings\"",
-                                    "eventName": "game-continue"
+                                    "eventName": "game-settings"
                                 }
                             ]
                         },
@@ -429,7 +429,7 @@
                                     ],
                                     "label": "emitEventRestart",
                                     "displayName": "Emit \"game-restart\"",
-                                    "eventName": "game-continue"
+                                    "eventName": "game-restart"
                                 }
                             ]
                         },

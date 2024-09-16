@@ -15,6 +15,7 @@ import { NavigationService } from "./services/navigation.service";
 import { BehaviorSubject } from "rxjs";
 import { AudioService } from "./services/audio.service";
 import { TilemapComponent } from "./components/tilemap.component";
+import { RestartGame } from "../data/restart-game";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -65,6 +66,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SingleSelectionHandler(this, hud, this.tilemap);
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
+    new RestartGame(this);
     const creator = new SceneActorCreator(this);
     creator.initActors();
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
@@ -72,5 +74,23 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
 
     this.sceneGameData.initializers.sceneInitialized.next(true);
     this.sceneGameData.initializers.postSceneInitialized.next(true);
+  }
+
+  private cleanup() {
+    this.sceneGameData.components = [];
+    this.sceneGameData.services = [];
+    this.sceneGameData.systems = [];
+    this.sceneGameData.initializers.sceneInitialized.next(false);
+    this.sceneGameData.initializers.postSceneInitialized.next(false);
+  }
+
+  protected shutDown() {
+    super.shutDown();
+    this.cleanup();
+  }
+
+  destroy() {
+    super.destroy();
+    this.cleanup();
   }
 }

@@ -17,7 +17,7 @@ export class MultiSelectionHandler {
 
   constructor(private readonly hudScene: HudProbableWaffle) {
     this.selection = hudScene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5);
-    this.hudScene.onDestroy.subscribe(() => this.destroy());
+    this.hudScene.onShutdown.subscribe(() => this.destroy());
     this.setupEvents();
   }
 

@@ -117,6 +117,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
 
   private moveSheepAfterDelay() {
     this.removeDelay();
+    if (!this.active) return;
     this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.startMovement, [], this);
   }
 

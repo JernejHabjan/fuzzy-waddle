@@ -24,7 +24,6 @@ import { filter, Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-
   constructor() {
     super("HudProbableWaffle");
 
@@ -34,7 +33,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
     this.add.existing(actor_actions_container);
@@ -51,14 +49,36 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     minimap_container.scaleY = 0.9537232846001076;
 
     // minimap_bg
-    const minimap_bg = this.add.nineslice(13, -243.1329473309309, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 32, 3, 3, 3, 3);
-    minimap_bg.scaleX = 12.692302266339293;
-    minimap_bg.scaleY = 7.211497012087156;
+    const minimap_bg = this.add.nineslice(
+      12,
+      -247,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      32,
+      32,
+      3,
+      3,
+      3,
+      3
+    );
+    minimap_bg.scaleX = 12.769367198119731;
+    minimap_bg.scaleY = 7.444257731898887;
     minimap_bg.setOrigin(0, 0);
     minimap_container.add(minimap_bg);
 
     // minimap_border
-    const minimap_border = this.add.nineslice(0, -255.17628729694155, "gui", "cryos_mini_gui/borders/border_wood.png", 128, 92, 4, 4, 4, 4);
+    const minimap_border = this.add.nineslice(
+      0,
+      -255.17628729694155,
+      "gui",
+      "cryos_mini_gui/borders/border_wood.png",
+      128,
+      92,
+      4,
+      4,
+      4,
+      4
+    );
     minimap_border.scaleX = 3.367102972114097;
     minimap_border.scaleY = 2.7741914555176357;
     minimap_border.setOrigin(0, 0);
@@ -98,7 +118,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private actorDiamonds: Phaser.GameObjects.Polygon[] = [];
   private readonly minimapWidth = 400;
   private readonly smallMinimapWidth = 200;
-  private readonly minimapBreakpoint = 800;
+  private readonly minimapSmallScreenBreakpoint = 800;
+  private readonly actorInfoSmallScreenBreakpoint = 1200;
   private readonly minimapMargin = 20;
   parentScene?: ProbableWaffleScene;
   private readonly isometricMinimapDepth = 1000;
@@ -135,7 +156,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (!tileMapComponent) throw new Error("Tilemap component not found on parent scene");
     const width = tileMapComponent.tilemap.width;
     const sceneWidth = this.scale.width;
-    const widthInPixels = sceneWidth > this.minimapBreakpoint ? this.minimapWidth : this.smallMinimapWidth;
+    const widthInPixels = sceneWidth > this.minimapSmallScreenBreakpoint ? this.minimapWidth : this.smallMinimapWidth;
     const y = this.scale.height - widthInPixels / 2;
     const data = tileMapComponent.data;
     this.createIsometricMinimap(widthInPixels, width, this.minimapMargin, y - this.minimapMargin, data);
@@ -289,46 +310,58 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   private updatePositionOfUiElements() {
+    const sceneWidth = this.scale.width;
+
     // set resources top left
     this.resources_container.x = 10;
     this.resources_container.y = 10;
+    this.resources_container.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.9;
 
     // set game actions to top right
     this.game_actions_container.x = this.scale.width - 10;
     this.game_actions_container.y = 10;
+    this.game_actions_container.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 2 : 1.5;
 
     // set minimap to bottom left
     this.minimap_container.x = 0;
     this.minimap_container.y = this.scale.height;
+    // set width of minimap container to match the minimap
+    this.minimap_container.scaleX = sceneWidth > this.minimapSmallScreenBreakpoint ? 1.026 : 0.55;
+    this.minimap_container.scaleY = sceneWidth > this.minimapSmallScreenBreakpoint ? 0.953 : 0.55;
 
     // set actor actions to bottom right
     this.actor_actions_container.x = this.scale.width;
     this.actor_actions_container.y = this.scale.height;
+    this.actor_actions_container.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
 
     // set actor info to bottom center (just left of actor actions)
     const actorActionsWidth = getGameObjectBounds(this.actor_actions_container)!.width;
     this.actor_info_container.x = this.scale.width - actorActionsWidth;
     this.actor_info_container.y = this.scale.height;
+    // hide on small devices
+    this.actor_info_container.visible = sceneWidth > this.actorInfoSmallScreenBreakpoint;
 
     // redraw minimap
     this.redrawMinimap();
   }
 
-  private subscribeToSaveGameEvent() {
+  private subscribeToGameEvent(eventName: string, displayText: string) {
     if (!this.parentScene) return;
 
-    this.saveGameSubscription = this.parentScene.communicator.allScenes
-      .pipe(filter((value) => value.name === "save-game"))
-      .subscribe(() => {
-        const text = this.add.text(this.scale.width / 2, this.scale.height / 2, "Game saved", {
-          fontSize: "32px",
-          color: "#ffffff",
-          backgroundColor: "#000000",
-          padding: { x: 20, y: 10 }
-        });
-        text.setOrigin(0.5);
-        this.time.delayedCall(500, () => text.destroy());
+    return this.parentScene.communicator.allScenes.pipe(filter((value) => value.name === eventName)).subscribe(() => {
+      const text = this.add.text(this.scale.width / 2, this.scale.height / 2, displayText, {
+        fontSize: "32px",
+        color: "#ffffff",
+        backgroundColor: "#000000",
+        padding: { x: 20, y: 10 }
       });
+      text.setOrigin(0.5);
+      this.time.delayedCall(500, () => text.destroy());
+    });
+  }
+
+  private subscribeToSaveGameEvent() {
+    this.saveGameSubscription = this.subscribeToGameEvent("save-game", "Game saved");
   }
 
   destroy() {

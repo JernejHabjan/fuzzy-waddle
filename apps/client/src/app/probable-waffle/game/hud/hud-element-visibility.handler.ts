@@ -7,7 +7,7 @@ export class HudElementVisibilityHandler {
     private readonly scene: ProbableWaffleScene,
     private readonly hudElements: Phaser.GameObjects.Components.Visible[]
   ) {
-    scene.onDestroy.subscribe(() => this.destroy());
+    scene.onShutdown.subscribe(() => this.destroy());
     scene.onPostCreate.subscribe(() => this.handleHudElements());
   }
 

@@ -42,6 +42,7 @@ export class ProbableWaffleCommunicatorService
   allScenes = new EventEmitter<{
     name:
       | "save-game"
+      | "restart-game"
       | "selection.deselect"
       | "selection.singleSelect"
       | "selection.multiSelect"

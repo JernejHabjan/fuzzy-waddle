@@ -17,7 +17,7 @@ export class GameObjectSelectionHandler {
   private sub!: Subscription;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
-    this.scene.onDestroy.subscribe(() => this.destroy());
+    this.scene.onShutdown.subscribe(() => this.destroy());
   }
 
   /**
