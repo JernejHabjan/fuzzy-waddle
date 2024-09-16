@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { FlySquasherComponent } from "./fly-squasher.component";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter } from "@angular/router";
 
 describe("FlySquasherComponent", () => {
   let component: FlySquasherComponent;
@@ -9,7 +8,8 @@ describe("FlySquasherComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FlySquasherComponent, RouterTestingModule]
+      imports: [FlySquasherComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlySquasherComponent);

@@ -4,6 +4,7 @@ import { BasePlayerController, BasePlayerControllerData } from "../player/player
 import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
+import { Vector3Simple } from "../../game/vector";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -12,13 +13,14 @@ export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerController
 > {
   setSelectedActor(guid: string) {
-    if (!this.playerState.data.selection.includes(guid)) {
-      this.playerState.data.selection.push(guid);
-    }
+    if (this.playerState.data.selection.includes(guid)) return;
+    this.playerState.data.selection.push(guid);
   }
 
   removeSelectedActor(guid: string) {
-    this.playerState.data.selection = this.playerState.data.selection.filter((id) => id !== guid);
+    const newSelection = this.playerState.data.selection.filter((id) => id !== guid);
+    if (newSelection.length === this.playerState.data.selection.length) return;
+    this.playerState.data.selection = newSelection;
   }
 
   getSelection() {
@@ -26,6 +28,7 @@ export class ProbableWafflePlayer extends BasePlayer<
   }
 
   clearSelection() {
+    if (this.playerState.data.selection.length === 0) return;
     this.playerState.data.selection = [];
   }
 
@@ -76,7 +79,10 @@ export class ProbableWafflePlayer extends BasePlayer<
 export interface ProbableWafflePlayerStateData extends BaseData {
   resources: PlayerStateResources;
   summary: PlayerStateAction[];
-  selection: string[]; // guid from idComponent
+  /**
+   * contains GUID from actors' IdComponent
+   */
+  selection: string[];
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
@@ -90,8 +96,8 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
       resources: {
         [ResourceType.Ambrosia]: 0,
         [ResourceType.Minerals]: 0,
-        [ResourceType.Stone]: 0,
-        [ResourceType.Wood]: 0
+        [ResourceType.Stone]: 100,
+        [ResourceType.Wood]: 200
       },
       summary: [],
       selection: []
@@ -122,6 +128,7 @@ export enum ProbableWaffleAiDifficulty {
 }
 
 export interface PlayerLobbyDefinition {
+  // 1 - 8
   playerNumber: number;
   playerName?: string;
   playerPosition?: number;
@@ -129,11 +136,13 @@ export interface PlayerLobbyDefinition {
 }
 
 export enum FactionType {
-  Tivara,
-  Skaduwee
+  Tivara = 1,
+  Skaduwee = 2
 }
 
 export interface PositionPlayerDefinition {
+  // assigned only after entering the game in world space coordinates
+  initialWorldSpawnPosition?: Vector3Simple;
   player: PlayerLobbyDefinition;
   team?: number;
   factionType?: FactionType;

@@ -1,13 +1,15 @@
 <div class="filter-popup">
-  <div *ngFor="let map of checkedMaps">
-    <input
-      type="checkbox"
-      [id]="map.id"
-      [name]="map.name"
-      [checked]="map.checked"
-      [value]="map.id"
-      (change)="onLevelChange($event, map.id)"
-    />
-    <label [for]="map.id">{{ map.name }}</label>
-  </div>
+  @for (map of checkedMaps; track map) {
+    <div>
+      <input
+        type="checkbox"
+        [id]="map.id"
+        [name]="map.name"
+        [checked]="map.checked"
+        [value]="map.id"
+        (change)="onLevelChange($event, map.id)"
+      />
+      <label [for]="map.id">{{ map.name }}</label>
+    </div>
+  }
 </div>

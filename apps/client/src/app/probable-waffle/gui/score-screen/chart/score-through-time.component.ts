@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import {
   GameSetupHelpers,
   PlayerStateAction,
@@ -7,13 +7,13 @@ import {
   ProbableWafflePlayer
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { NgChartsModule } from "ng2-charts";
 import { ChartConfiguration, ChartData, ChartTypeRegistry, DefaultDataPoint } from "chart.js";
+import { BaseChartDirective } from "ng2-charts";
 
 @Component({
   selector: "probable-waffle-score-through-time",
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [BaseChartDirective],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]
 })
@@ -87,7 +87,7 @@ export class ScoreThroughTimeComponent implements OnInit {
         label: playerName,
         data: buildingProduced,
         fill: false,
-        borderColor: GameSetupHelpers.getColorForPlayer(player.playerNumber!, players.length)
+        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length)
       });
     });
     this.ready = true;

@@ -17,8 +17,13 @@ export default class PushActionScript extends ScriptNode {
   }
 
   /* START-USER-CODE */
+  private disabled: boolean = false;
+  setDisabled(disabled: boolean) {
+    this.disabled = disabled;
+  }
 
   override execute(args?: any): void {
+    if (this.disabled) return;
     this.scene.add.tween({
       targets: this.gameObject,
       scaleX: "*=0.8",

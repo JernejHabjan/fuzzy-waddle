@@ -1,32 +1,27 @@
-import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
-import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
-import Hedgehog from "../prefabs/animals/Hedgehog";
-import Sheep from "../prefabs/animals/Sheep";
 import { ActorManager } from "./actor-manager";
 import { filter, Subscription } from "rxjs";
-import GameObject = Phaser.GameObjects.GameObject;
 import {
   SceneActorCreatorCommunicator,
   SceneActorSaveCommunicator
 } from "../scenes/components/scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import { onPostSceneInitialized } from "./game-object-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class SaveGame {
-  static SaveGameEvent = "SaveGameEvent";
-  private saveSubscription: Subscription;
+  private saveGameSubscription: Subscription;
 
   constructor(private scene: GameProbableWaffleScene) {
-    scene.onPostCreate.subscribe(() => this.postCreate());
+    onPostSceneInitialized(scene, this.postSceneInitialized, this);
     // only ones that have name: SaveGame.SaveGameEvent
-    this.saveSubscription = scene.communicator.allScenes
-      .pipe(filter((scene) => scene.name === SaveGame.SaveGameEvent))
+    this.saveGameSubscription = scene.communicator.allScenes
+      .pipe(filter((scene) => scene.name === "save-game"))
       .subscribe(() => this.onSaveGame());
-    scene.onDestroy.subscribe(() => this.destroy());
+    scene.onShutdown.subscribe(() => this.destroy());
   }
 
-  private postCreate() {
+  private postSceneInitialized() {
     this.loadActorsFromSaveGame();
-    this.demoPostNewActors();
   }
   private loadActorsFromSaveGame() {
     if (!this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
@@ -52,42 +47,11 @@ export class SaveGame {
     console.log("Loaded game");
   }
 
-  private demoPostNewActors() {
-    const actors = [
-      {
-        name: TivaraMacemanMale.name,
-        x: 544,
-        y: 900,
-        z: 0,
-        owner: 1
-      } as ActorDefinition,
-      // add hedgehog and sheep
-      {
-        name: Hedgehog.name,
-        x: 544,
-        y: 800,
-        z: 0
-      } as ActorDefinition,
-      {
-        name: Sheep.name,
-        x: 544,
-        y: 850,
-        z: 0
-      } as ActorDefinition
-    ];
-    actors.forEach((actorDefinition) => {
-      this.scene.events.emit(SceneActorCreatorCommunicator, actorDefinition);
-    });
-  }
-
   private destroy() {
-    this.scene.events.off(SaveGame.SaveGameEvent);
-    this.saveSubscription.unsubscribe();
+    this.saveGameSubscription.unsubscribe();
   }
 
   private onSaveGame() {
     this.scene.events.emit(SceneActorSaveCommunicator);
-    this.scene.communicator.saveGame.emit();
-    console.log("Saved game");
   }
 }

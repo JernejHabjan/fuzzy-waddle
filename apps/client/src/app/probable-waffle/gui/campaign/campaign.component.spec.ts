@@ -5,7 +5,6 @@ import { provideRouter } from "@angular/router";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
 import { ComingSoonComponent } from "../coming-soon/coming-soon.component";
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
-import { RouterTestingModule } from "@angular/router/testing";
 
 describe("CampaignComponent", () => {
   let component: CampaignComponent;
@@ -13,7 +12,7 @@ describe("CampaignComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CampaignComponent, ComingSoonComponent, RouterTestingModule],
+      imports: [CampaignComponent, ComingSoonComponent],
       providers: [provideRouter([])]
     })
       .overrideComponent(CampaignComponent, {

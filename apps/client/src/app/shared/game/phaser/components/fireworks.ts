@@ -33,7 +33,7 @@ export class Fireworks {
     this.subscriptions = [
       ...(autoStart ? [] : [this.scene.onCreate.subscribe(this.create)]),
       this.scene.onUpdate.subscribe(this.update),
-      this.scene.onDestroy.subscribe(this.destroy),
+      this.scene.onShutdown.subscribe(this.destroy),
       this.scene.onResize.subscribe(this.resize)
     ];
   }

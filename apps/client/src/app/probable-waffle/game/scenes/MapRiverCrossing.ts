@@ -3,12 +3,13 @@
 /* START OF COMPILED CODE */
 
 import GameProbableWaffleScene from "./GameProbableWaffleScene";
+import Spawn from "../prefabs/buildings/misc/Spawn";
+import EditorOwner from "../editor-components/EditorOwner";
 import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
 import Sheep from "../prefabs/animals/Sheep";
 import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
 import Hedgehog from "../prefabs/animals/Hedgehog";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
-import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
@@ -16,13 +17,10 @@ import Temple from "../prefabs/buildings/tivara/Temple";
 import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
 import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/SkaduweeWorkerFemale";
 import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/SkaduweeRangedFemale";
-import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/SkaduweeWarriorMale";
 import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
-import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
-import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
-import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
+import TallGrass1 from "../prefabs/outside/foliage/tall_grass/TallGrass1";
 import Olival from "../prefabs/buildings/tivara/Olival";
 import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
 import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
@@ -51,7 +49,6 @@ import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 import BlockStoneWater1 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater1";
 import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
 import BlockStoneWater3 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
-import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
 import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
@@ -63,6 +60,19 @@ import FenceLeft from "../prefabs/outside/architecture/obstruction/FenceLeft";
 import FenceBottomLeft from "../prefabs/outside/architecture/obstruction/FenceBottomLeft";
 import FenceBottomRight from "../prefabs/outside/architecture/obstruction/FenceBottomRight";
 import FenceBottom from "../prefabs/outside/architecture/obstruction/FenceBottom";
+import StonePile from "../prefabs/outside/resources/StonePile";
+import Minerals from "../prefabs/outside/resources/Minerals";
+import TallGrass3 from "../prefabs/outside/foliage/tall_grass/TallGrass3";
+import TallGrass7 from "../prefabs/outside/foliage/tall_grass/TallGrass7";
+import TallGrass2 from "../prefabs/outside/foliage/tall_grass/TallGrass2";
+import TallGrass6 from "../prefabs/outside/foliage/tall_grass/TallGrass6";
+import TallGrass4 from "../prefabs/outside/foliage/tall_grass/TallGrass4";
+import TallGrass0 from "../prefabs/outside/foliage/tall_grass/TallGrass0";
+import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
+import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
+import SkaduweeOwlFurball from "../prefabs/units/skaduwee/SkaduweeOwlFurball";
+import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
+import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -86,9 +96,17 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
+    // spawn
+    const spawn = new Spawn(this, 240, 672);
+    this.add.existing(spawn);
+
     // christmasTree
     const christmasTree = new ChristmasTree(this, -288, 1184);
     this.add.existing(christmasTree);
+
+    // spawn_1
+    const spawn_1 = new Spawn(this, 1152, 832);
+    this.add.existing(spawn_1);
 
     // christmasTree_1
     const christmasTree_1 = new ChristmasTree(this, -128, 1168);
@@ -98,10 +116,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const sheep_2 = new Sheep(this, -144, 1264);
     this.add.existing(sheep_2);
 
-    // nature_grass_grass_0_png
-    const nature_grass_grass_0_png = this.add.image(-80, 1248, "outside", "nature/grass/grass_0.png");
-    nature_grass_grass_0_png.setOrigin(0.5, 0.75);
-
     // fenceRight
     const fenceRight = new FenceRight(this, -48, 1248);
     this.add.existing(fenceRight);
@@ -110,10 +124,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const hedgehog = new Hedgehog(this, 96, 1360);
     this.add.existing(hedgehog);
 
-    // foliage_tall_grass_tall_grass_7_png
-    const foliage_tall_grass_tall_grass_7_png = this.add.image(-256, 1248, "outside", "foliage/tall_grass/tall_grass_7.png");
-    foliage_tall_grass_tall_grass_7_png.setOrigin(0.5, 0.75);
-
     // tree_12
     const tree_12 = new Tree7(this, -32, 1376);
     this.add.existing(tree_12);
@@ -121,10 +131,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tree_11
     const tree_11 = new Tree7(this, 160, 1328);
     this.add.existing(tree_11);
-
-    // sandhold
-    const sandhold = new Sandhold(this, 32, 608);
-    this.add.existing(sandhold);
 
     // owlery
     const owlery = new Owlery(this, 1024, 912);
@@ -135,7 +141,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(infantryInn);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, 480, 608);
+    const ankGuard = new AnkGuard(this, 528, 624);
     this.add.existing(ankGuard);
 
     // temple
@@ -151,15 +157,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerFemale);
 
     // skaduweeRangedFemale
-    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1280, 720);
+    const skaduweeRangedFemale = new SkaduweeRangedFemale(this, 1344, 704);
     this.add.existing(skaduweeRangedFemale);
 
-    // skaduweeMagicianFemale
-    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, 1344, 848);
-    this.add.existing(skaduweeMagicianFemale);
-
     // skaduweeWarriorMale
-    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1408, 848);
+    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1504, 816);
     this.add.existing(skaduweeWarriorMale);
 
     // generalWarrior
@@ -167,24 +169,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(generalWarrior);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 160, 704);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 288, 864);
     this.add.existing(tivaraSlingshotFemale);
 
-    // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 288, 640);
-    this.add.existing(tivaraWorkerFemale);
-
-    // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, 320, 720);
-    this.add.existing(tivaraWorkerMale);
-
-    // foliage_tall_grass_tall_grass_8_png
-    const foliage_tall_grass_tall_grass_8_png = this.add.image(-160, 1296, "outside", "foliage/tall_grass/tall_grass_8.png");
-    foliage_tall_grass_tall_grass_8_png.setOrigin(0.5, 0.75);
-
-    // tivaraMacemanMale
-    const tivaraMacemanMale = new TivaraMacemanMale(this, 544, 704);
-    this.add.existing(tivaraMacemanMale);
+    // tallGrass_7
+    const tallGrass_7 = new TallGrass1(this, -144, 832);
+    this.add.existing(tallGrass_7);
 
     // olival
     const olival = new Olival(this, 128, 784);
@@ -446,10 +436,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree5 = new Tree5(this, -800, 480);
     this.add.existing(tree5);
 
-    // frostForge
-    const frostForge = new FrostForge(this, 1184, 848);
-    this.add.existing(frostForge);
-
     // skaduweeOwl
     const skaduweeOwl = new SkaduweeOwl(this, 1056, 784);
     this.add.existing(skaduweeOwl);
@@ -526,6 +512,218 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const fenceBottom = new FenceBottom(this, -160, 1312);
     this.add.existing(fenceBottom);
 
+    // stonePile
+    const stonePile = new StonePile(this, -592, 784);
+    this.add.existing(stonePile);
+
+    // stonePile_1
+    const stonePile_1 = new StonePile(this, -624, 800);
+    this.add.existing(stonePile_1);
+
+    // stonePile_2
+    const stonePile_2 = new StonePile(this, -560, 800);
+    this.add.existing(stonePile_2);
+
+    // stonePile_3
+    const stonePile_3 = new StonePile(this, -592, 816);
+    this.add.existing(stonePile_3);
+
+    // stonePile_4
+    const stonePile_4 = new StonePile(this, -656, 784);
+    this.add.existing(stonePile_4);
+
+    // stonePile_5
+    const stonePile_5 = new StonePile(this, -656, 816);
+    this.add.existing(stonePile_5);
+
+    // minerals
+    const minerals = new Minerals(this, -240, 240);
+    this.add.existing(minerals);
+
+    // minerals_1
+    const minerals_1 = new Minerals(this, -208, 224);
+    this.add.existing(minerals_1);
+
+    // minerals_2
+    const minerals_2 = new Minerals(this, -208, 256);
+    this.add.existing(minerals_2);
+
+    // minerals_3
+    const minerals_3 = new Minerals(this, -176, 272);
+    this.add.existing(minerals_3);
+
+    // minerals_4
+    const minerals_4 = new Minerals(this, -272, 256);
+    this.add.existing(minerals_4);
+
+    // minerals_5
+    const minerals_5 = new Minerals(this, -240, 272);
+    this.add.existing(minerals_5);
+
+    // tallGrass_5
+    const tallGrass_5 = new TallGrass3(this, -400, 800);
+    this.add.existing(tallGrass_5);
+
+    // tallGrass7
+    const tallGrass7 = new TallGrass7(this, -352, 816);
+    this.add.existing(tallGrass7);
+
+    // tallGrass
+    const tallGrass = new TallGrass7(this, -320, 832);
+    this.add.existing(tallGrass);
+
+    // tallGrass_1
+    const tallGrass_1 = new TallGrass7(this, -224, 848);
+    this.add.existing(tallGrass_1);
+
+    // tallGrass1
+    const tallGrass1 = new TallGrass1(this, -288, 784);
+    this.add.existing(tallGrass1);
+
+    // tallGrass_2
+    const tallGrass_2 = new TallGrass1(this, -320, 768);
+    this.add.existing(tallGrass_2);
+
+    // tallGrass_3
+    const tallGrass_3 = new TallGrass1(this, -176, 816);
+    this.add.existing(tallGrass_3);
+
+    // tallGrass2
+    const tallGrass2 = new TallGrass2(this, -240, 800);
+    this.add.existing(tallGrass2);
+
+    // tallGrass_4
+    const tallGrass_4 = new TallGrass1(this, -208, 800);
+    this.add.existing(tallGrass_4);
+
+    // tallGrass6
+    const tallGrass6 = new TallGrass6(this, -288, 848);
+    this.add.existing(tallGrass6);
+
+    // tallGrass4
+    const tallGrass4 = new TallGrass4(this, -256, 864);
+    this.add.existing(tallGrass4);
+
+    // tallGrass3
+    const tallGrass3 = new TallGrass3(this, -352, 752);
+    this.add.existing(tallGrass3);
+
+    // tallGrass_8
+    const tallGrass_8 = new TallGrass1(this, -16, 896);
+    this.add.existing(tallGrass_8);
+
+    // tallGrass0
+    const tallGrass0 = new TallGrass0(this, 16, 912);
+    this.add.existing(tallGrass0);
+
+    // tallGrass5
+    const tallGrass5 = new TallGrass5(this, -96, 912);
+    this.add.existing(tallGrass5);
+
+    // tallGrass_6
+    const tallGrass_6 = new TallGrass3(this, -48, 880);
+    this.add.existing(tallGrass_6);
+
+    // reeds1
+    const reeds1 = new Reeds1(this, -352, 800);
+    this.add.existing(reeds1);
+
+    // reeds
+    const reeds = new Reeds1(this, -288, 832);
+    this.add.existing(reeds);
+
+    // reeds_1
+    const reeds_1 = new Reeds1(this, -256, 784);
+    this.add.existing(reeds_1);
+
+    // reeds_2
+    const reeds_2 = new Reeds1(this, -160, 800);
+    this.add.existing(reeds_2);
+
+    // reeds_3
+    const reeds_3 = new Reeds1(this, -16, 880);
+    this.add.existing(reeds_3);
+
+    // reeds_4
+    const reeds_4 = new Reeds1(this, -224, 832);
+    this.add.existing(reeds_4);
+
+    // skaduweeOwlFurball
+    const skaduweeOwlFurball = new SkaduweeOwlFurball(this, 1008, 752);
+    this.add.existing(skaduweeOwlFurball);
+
+    // tivaraWorkerFemale
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 208, 832);
+    this.add.existing(tivaraWorkerFemale);
+
+    // tivaraWorkerMale
+    const tivaraWorkerMale = new TivaraWorkerMale(this, 437, 852);
+    this.add.existing(tivaraWorkerMale);
+
+    // workMill_1
+    const workMill_1 = new WorkMill(this, 608, 1184);
+    this.add.existing(workMill_1);
+
+    // spawn (components)
+    const spawnEditorOwner = new EditorOwner(spawn);
+    spawnEditorOwner.owner_id = "1";
+
+    // spawn_1 (components)
+    const spawn_1EditorOwner = new EditorOwner(spawn_1);
+    spawn_1EditorOwner.owner_id = "2";
+
+    // owlery (components)
+    const owleryEditorOwner = new EditorOwner(owlery);
+    owleryEditorOwner.owner_id = "2";
+
+    // infantryInn (components)
+    const infantryInnEditorOwner = new EditorOwner(infantryInn);
+    infantryInnEditorOwner.owner_id = "2";
+
+    // ankGuard (components)
+    const ankGuardEditorOwner = new EditorOwner(ankGuard);
+    ankGuardEditorOwner.owner_id = "1";
+
+    // temple (components)
+    const templeEditorOwner = new EditorOwner(temple);
+    templeEditorOwner.owner_id = "1";
+
+    // skaduweeWorkerMale (components)
+    const skaduweeWorkerMaleEditorOwner = new EditorOwner(skaduweeWorkerMale);
+    skaduweeWorkerMaleEditorOwner.owner_id = "2";
+
+    // skaduweeWorkerFemale (components)
+    const skaduweeWorkerFemaleEditorOwner = new EditorOwner(skaduweeWorkerFemale);
+    skaduweeWorkerFemaleEditorOwner.owner_id = "2";
+
+    // skaduweeRangedFemale (components)
+    const skaduweeRangedFemaleEditorOwner = new EditorOwner(skaduweeRangedFemale);
+    skaduweeRangedFemaleEditorOwner.owner_id = "2";
+
+    // skaduweeWarriorMale (components)
+    const skaduweeWarriorMaleEditorOwner = new EditorOwner(skaduweeWarriorMale);
+    skaduweeWarriorMaleEditorOwner.owner_id = "2";
+
+    // tivaraSlingshotFemale (components)
+    const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
+    tivaraSlingshotFemaleEditorOwner.owner_id = "1";
+
+    // olival (components)
+    const olivalEditorOwner = new EditorOwner(olival);
+    olivalEditorOwner.owner_id = "1";
+
+    // wallTopLeftTopRight (components)
+    const wallTopLeftTopRightEditorOwner = new EditorOwner(wallTopLeftTopRight);
+    wallTopLeftTopRightEditorOwner.owner_id = "1";
+
+    // wallTopRight (components)
+    const wallTopRightEditorOwner = new EditorOwner(wallTopRight);
+    wallTopRightEditorOwner.owner_id = "1";
+
+    // watchTower (components)
+    const watchTowerEditorOwner = new EditorOwner(watchTower);
+    watchTowerEditorOwner.owner_id = "1";
+
     // blockStone_5 (prefab fields)
     blockStone_5.z = 32;
 
@@ -544,11 +742,35 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // blockStone_11 (prefab fields)
     blockStone_11.z = 128;
 
+    // workMill (components)
+    const workMillEditorOwner = new EditorOwner(workMill);
+    workMillEditorOwner.owner_id = "1";
+
     // blockStoneWater1 (prefab fields)
     blockStoneWater1.z = 16;
 
     // blockStoneWater4 (prefab fields)
     blockStoneWater4.z = 32;
+
+    // skaduweeOwl (components)
+    const skaduweeOwlEditorOwner = new EditorOwner(skaduweeOwl);
+    skaduweeOwlEditorOwner.owner_id = "2";
+
+    // skaduweeOwlFurball (components)
+    const skaduweeOwlFurballEditorOwner = new EditorOwner(skaduweeOwlFurball);
+    skaduweeOwlFurballEditorOwner.owner_id = "3";
+
+    // tivaraWorkerFemale (components)
+    const tivaraWorkerFemaleEditorOwner = new EditorOwner(tivaraWorkerFemale);
+    tivaraWorkerFemaleEditorOwner.owner_id = "1";
+
+    // tivaraWorkerMale (components)
+    const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
+    tivaraWorkerMaleEditorOwner.owner_id = "1";
+
+    // workMill_1 (components)
+    const workMill_1EditorOwner = new EditorOwner(workMill_1);
+    workMill_1EditorOwner.owner_id = "2";
 
     this.tilemap = tilemap;
 

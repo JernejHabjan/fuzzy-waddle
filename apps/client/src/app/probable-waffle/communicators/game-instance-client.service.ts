@@ -123,14 +123,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  /**
-   * todo just for test
-   */
   listenToSaveGameEvents(): void {
     this.communicatorSubscriptions.push(
-      this.probableWaffleCommunicatorService.saveGame.subscribe(async () => {
-        await this.saveGameInstance("test" + Math.random());
-      })
+      this.probableWaffleCommunicatorService.utilityEvents
+        .pipe(filter((config) => config.name === "save-game"))
+        .subscribe(async () => {
+          await this.saveGameInstance("test" + Math.random());
+        })
     );
   }
 
@@ -188,18 +187,30 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
+  listenToGameStateChangedEvents(): void {
+    if (!this.communicators) return;
+    this.communicatorSubscriptions.push(
+      this.communicators.gameStateObservable.subscribe((payload) => {
+        console.log("game state changed on client", payload);
+      })
+    );
+  }
+
   private startListeningToGameInstanceEvents() {
-    if (!this.currentGameInstanceId) throw new Error("Game instance not found");
+    if (!this.currentGameInstanceId)
+      throw new Error("Game instance not found in startListeningToGameInstanceEvents in GameInstanceClientService");
     this.communicators = this.sceneCommunicatorClientService.createCommunicators(this.currentGameInstanceId);
     this.listenToGameInstanceMetadataEvents();
     this.listenToGameModeDataEvents();
     this.listenToPlayerEvents();
     this.listenToSpectatorEvents();
+    this.listenToGameStateChangedEvents();
     this.listenToSaveGameEvents();
   }
 
   private stopListeningToGameInstanceEvents() {
-    if (!this.currentGameInstanceId) throw new Error("Game instance not found");
+    if (!this.currentGameInstanceId)
+      throw new Error("Game instance not found in stopListeningToGameInstanceEvents in GameInstanceClientService");
     this.sceneCommunicatorClientService.destroyCommunicators(
       this.currentGameInstanceId,
       this.communicatorSubscriptions
@@ -284,7 +295,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       throw new Error("Not authenticated or server not available");
 
     const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
-    if (!gameInstanceData) throw new Error("Game instance not found");
+    if (!gameInstanceData)
+      throw new Error("Game instance not found in joinGameInstanceAsPlayer in GameInstanceClientService");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     this.startListeningToGameInstanceEvents();
 
@@ -296,16 +308,16 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     console.log("joined game instance as player");
   }
 
-  async addSelfAsPlayer(): Promise<void> {
+  async addSelfAsPlayer(): Promise<PositionPlayerDefinition> {
     const gameInstance = this.gameInstance;
-    if (!gameInstance) throw new Error("Game instance not found");
+    if (!gameInstance) throw new Error("Game instance not found in addSelfAsPlayer in GameInstanceClientService");
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
       // todo move this to single place
       player: {
         playerNumber: firstFreePlayerNumber,
-        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerName: "Player " + firstFreePlayerNumber,
         playerPosition: firstFreePosition,
         joined: true
       } satisfies PlayerLobbyDefinition,
@@ -313,18 +325,19 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);
+    return playerDefinition;
   }
 
-  async addAiPlayer(position?: number): Promise<void> {
+  async addAiPlayer(position?: number): Promise<PositionPlayerDefinition> {
     const gameInstance = this.gameInstance;
-    if (!gameInstance) throw new Error("Game instance not found");
+    if (!gameInstance) throw new Error("Game instance not found in addAiPlayer in GameInstanceClientService");
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
       // todo move this to single place
       player: {
         playerNumber: firstFreePlayerNumber,
-        playerName: "Player " + (firstFreePlayerNumber + 1),
+        playerName: "Player " + firstFreePlayerNumber,
         playerPosition: position ?? firstFreePosition,
         joined: true
       } satisfies PlayerLobbyDefinition,
@@ -333,6 +346,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);
+
+    return playerDefinition;
   }
 
   async joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void> {
@@ -341,7 +356,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       throw new Error("Not authenticated or server not available");
 
     const gameInstanceData = await this.getGameInstanceData(gameInstanceId);
-    if (!gameInstanceData) throw new Error("Game instance not found");
+    if (!gameInstanceData)
+      throw new Error("Game instance not found in joinGameInstanceAsSpectator in GameInstanceClientService");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     this.startListeningToGameInstanceEvents();
     await this.addSelfAsSpectator();
@@ -358,7 +374,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async navigateToLobbyOrDirectlyToGame(): Promise<void> {
-    if (!this.gameInstance) throw new Error("Game instance not found");
+    if (!this.gameInstance)
+      throw new Error("Game instance not found in navigateToLobbyOrDirectlyToGame in GameInstanceClientService");
     switch (this.gameInstance.gameInstanceMetadata!.data.type) {
       case ProbableWaffleGameInstanceType.SelfHosted:
         // join lobby
@@ -391,7 +408,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         playerDefinition: {
           player: {
             playerNumber: firstFreePlayerNumber,
-            playerName: "Player " + (firstFreePlayerNumber + 1),
+            playerName: "Player " + firstFreePlayerNumber,
             playerPosition: firstFreePosition,
             joined: false
           } satisfies PlayerLobbyDefinition,
@@ -474,6 +491,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       created: Date.now(),
       gameInstanceData: this.gameInstance!.data
     });
+    console.log("Saved game");
   }
 
   /**

@@ -168,12 +168,20 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   }
 
   private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
-    const allFactions = Object.values(FactionType);
-    const randomFactionType = allFactions[Math.floor(Math.random() * allFactions.length)] as FactionType;
+    const enumValues = Object.values(FactionType).filter((value) => typeof value === "number");
+    const randomIndex = Math.floor(Math.random() * enumValues.length);
+    const randomFactionType = enumValues[randomIndex] as FactionType;
+
+    console.log(
+      "Probable Waffle - New player",
+      gameInstance.players.length + 1,
+      "FactionType",
+      factionType ?? randomFactionType
+    );
 
     const playerDefinition = {
       player: {
-        playerNumber: gameInstance.players.length,
+        playerNumber: gameInstance.players.length + 1,
         playerName: "Player " + (gameInstance.players.length + 1),
         playerPosition: gameInstance.players.length,
         joined: true

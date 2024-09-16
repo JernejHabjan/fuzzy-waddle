@@ -21,8 +21,15 @@ export default class ButtonSmall extends Phaser.GameObjects.Container {
     textEle.setStyle({ align: "center" });
     this.add(textEle);
 
+    // image_1
+    const image_1 = scene.add.image(6, 1, "_MISSING");
+    image_1.scaleX = 0.2;
+    image_1.scaleY = 0.2;
+    this.add(image_1);
+
     this.btnEle = btnEle;
     this.textEle = textEle;
+    this.image_1 = image_1;
 
     /* START-USER-CTR-CODE */
     this.scene = scene;
@@ -34,10 +41,12 @@ export default class ButtonSmall extends Phaser.GameObjects.Container {
 
   private btnEle: Phaser.GameObjects.NineSlice;
   private textEle: Phaser.GameObjects.Text;
+  private image_1: Phaser.GameObjects.Image;
   public text: string = "";
   public w: number = 20;
   public h: number = 20;
   public fontSize: number = 16;
+  public buttonImage!: { key: string; frame?: string | number };
 
   /* START-USER-CODE */
   scene: Phaser.Scene;

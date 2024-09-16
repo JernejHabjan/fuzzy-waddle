@@ -5,7 +5,7 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { HealthComponent, HealthDefinition } from "../../../../entity/combat/components/health-component";
 import {
@@ -17,6 +17,12 @@ import { PaymentType } from "../../../../entity/building/payment-type";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { VisionComponent, VisionDefinition } from "../../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../../entity/actor/components/info-component";
+import { ContainerComponent, ContainerDefinition } from "../../../../entity/building/container-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class WatchTower extends Phaser.GameObjects.Image {
@@ -35,11 +41,29 @@ export default class WatchTower extends Phaser.GameObjects.Image {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new ObjectDescriptorComponent({
+          color: 0x95a083
+        } satisfies ObjectDescriptorDefinition),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x000000,
+              epsilon: 0
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
-          range: 5
+          range: 8
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Watch Tower",
+          description: "Main defense building",
+          smallImage: {
+            key: "factions",
+            frame: "buildings/tivara/watchtower.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
@@ -53,6 +77,9 @@ export default class WatchTower extends Phaser.GameObjects.Image {
           productionTime: 1000,
           costType: PaymentType.PayImmediately
         } satisfies ProductionCostDefinition),
+        new ContainerComponent(this, {
+          capacity: 2
+        } satisfies ContainerDefinition),
         new ColliderComponent()
       ],
       []

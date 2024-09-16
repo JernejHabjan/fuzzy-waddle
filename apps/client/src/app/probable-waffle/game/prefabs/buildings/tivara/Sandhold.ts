@@ -5,7 +5,7 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
 import { setActorData } from "../../../data/actor-data";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
@@ -26,6 +26,15 @@ import {
 import { PaymentType } from "../../../entity/building/payment-type";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import {
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
+} from "../../gui/icon-animations";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -49,11 +58,33 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new ObjectDescriptorComponent({
+          color: 0xc2a080
+        } satisfies ObjectDescriptorDefinition),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x4dbd33,
+              epsilon: 0.1
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Sandhold",
+          description: "Main building of the Tivara faction. It is used to produce workers and store resources.",
+          portraitAnimation: {
+            idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE,
+            action: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION
+          },
+          smallImage: {
+            key: "factions",
+            frame: "building_icons/tivara/sandhold.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100,

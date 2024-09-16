@@ -6,7 +6,7 @@ import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
 
@@ -20,6 +20,11 @@ import { RequirementsComponent, RequirementsDefinition } from "../../../entity/a
 import Sandhold from "./Sandhold";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -50,11 +55,29 @@ export default class Olival extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new ObjectDescriptorComponent({
+          color: 0xc2a080
+        } satisfies ObjectDescriptorDefinition),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x265b17,
+              epsilon: 0.1
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Olival",
+          description: "Creates a suitable surface for Tivara units and buildings",
+          smallImage: {
+            key: "factions",
+            frame: "buildings/tivara/olival/olival.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

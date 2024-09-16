@@ -4,36 +4,11 @@
 			"image": "factions.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 497,
-				"h": 840
+				"w": 1197,
+				"h": 506
 			},
 			"scale": 1,
 			"frames": [
-				{
-					"filename": "buildings/tivara/sandhold/sandhold.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 320,
-						"h": 320
-					},
-					"spriteSourceSize": {
-						"x": 9,
-						"y": 57,
-						"w": 311,
-						"h": 263
-					},
-					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 311,
-						"h": 263
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
 				{
 					"filename": "buildings/skaduwee/frost_forge/frost_forge.png",
 					"rotated": false,
@@ -50,7 +25,7 @@
 					},
 					"frame": {
 						"x": 1,
-						"y": 266,
+						"y": 1,
 						"w": 214,
 						"h": 277
 					},
@@ -75,7 +50,7 @@
 					},
 					"frame": {
 						"x": 1,
-						"y": 545,
+						"y": 280,
 						"w": 227,
 						"h": 197
 					},
@@ -85,1049 +60,24 @@
 					}
 				},
 				{
-					"filename": "buildings/tivara/watchtower.png",
+					"filename": "buildings/skaduwee/infantry_inn/cloud-vertical.png",
 					"rotated": false,
-					"trimmed": true,
+					"trimmed": false,
 					"sourceSize": {
-						"w": 128,
-						"h": 176
+						"w": 12,
+						"h": 24
 					},
 					"spriteSourceSize": {
 						"x": 0,
-						"y": 8,
-						"w": 128,
-						"h": 168
-					},
-					"frame": {
-						"x": 314,
-						"y": 1,
-						"w": 128,
-						"h": 168
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/temple/temple.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 192,
-						"h": 192
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 23,
-						"w": 185,
-						"h": 165
-					},
-					"frame": {
-						"x": 217,
-						"y": 266,
-						"w": 185,
-						"h": 165
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/sandhold/sandhold-crystal.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 5,
-						"w": 52,
-						"h": 59
-					},
-					"frame": {
-						"x": 444,
-						"y": 1,
-						"w": 52,
-						"h": 59
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "character_icons/general/warrior.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 12,
-						"w": 52,
-						"h": 52
-					},
-					"frame": {
-						"x": 444,
-						"y": 62,
-						"w": 52,
-						"h": 52
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_top_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 7,
-						"w": 64,
-						"h": 89
+						"y": 0,
+						"w": 12,
+						"h": 24
 					},
 					"frame": {
 						"x": 1,
-						"y": 744,
-						"w": 64,
-						"h": 89
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_top_right_bottom_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 7,
-						"w": 64,
-						"h": 89
-					},
-					"frame": {
-						"x": 217,
-						"y": 433,
-						"w": 64,
-						"h": 89
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/owlery/owlery.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 192
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 3,
-						"w": 63,
-						"h": 189
-					},
-					"frame": {
-						"x": 230,
-						"y": 524,
-						"w": 63,
-						"h": 189
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_top_right_bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 7,
-						"w": 64,
-						"h": 89
-					},
-					"frame": {
-						"x": 283,
-						"y": 433,
-						"w": 64,
-						"h": 89
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/infantry_inn/infantry_inn.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 128,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 2,
-						"y": 0,
-						"w": 125,
-						"h": 128
-					},
-					"frame": {
-						"x": 295,
-						"y": 524,
-						"w": 125,
-						"h": 128
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/workmill.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 128,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					"frame": {
-						"x": 295,
-						"y": 654,
-						"w": 128,
-						"h": 128
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_top_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 8,
-						"w": 64,
-						"h": 88
-					},
-					"frame": {
-						"x": 314,
-						"y": 171,
-						"w": 64,
-						"h": 88
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_top_left_bottom_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 8,
-						"w": 64,
-						"h": 88
-					},
-					"frame": {
-						"x": 67,
-						"y": 744,
-						"w": 64,
-						"h": 88
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_top_left_bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 8,
-						"w": 64,
-						"h": 88
-					},
-					"frame": {
-						"x": 133,
-						"y": 744,
-						"w": 64,
-						"h": 88
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_top_left_top_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 8,
-						"w": 64,
-						"h": 88
-					},
-					"frame": {
-						"x": 380,
-						"y": 171,
-						"w": 64,
-						"h": 88
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_bottom_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 18,
-						"w": 64,
-						"h": 78
-					},
-					"frame": {
-						"x": 349,
-						"y": 433,
-						"w": 64,
-						"h": 78
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_bottom_left_bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 18,
-						"w": 64,
-						"h": 78
-					},
-					"frame": {
-						"x": 404,
-						"y": 261,
-						"w": 64,
-						"h": 78
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 21,
-						"w": 64,
-						"h": 75
-					},
-					"frame": {
-						"x": 404,
-						"y": 341,
-						"w": 64,
-						"h": 75
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/wall_empty.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 23,
-						"w": 64,
-						"h": 73
-					},
-					"frame": {
-						"x": 415,
-						"y": 418,
-						"w": 64,
-						"h": 73
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/stairs_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 199,
-						"y": 744,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 48
-					},
-					"spriteSourceSize": {
-						"x": 12,
-						"y": 19,
-						"w": 40,
-						"h": 29
-					},
-					"frame": {
-						"x": 199,
-						"y": 810,
-						"w": 40,
-						"h": 29
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "character_icons/skaduwee/ranged_female.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 13,
-						"w": 41,
-						"h": 51
-					},
-					"frame": {
-						"x": 444,
-						"y": 116,
-						"w": 41,
-						"h": 51
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "buildings/tivara/wall/stairs_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 422,
-						"y": 493,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "character_icons/skaduwee/warrior_male.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 12,
-						"w": 39,
-						"h": 52
-					},
-					"frame": {
-						"x": 422,
-						"y": 559,
-						"w": 39,
-						"h": 52
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "character_icons/skaduwee/magician_female.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 11,
-						"w": 33,
-						"h": 53
-					},
-					"frame": {
-						"x": 463,
-						"y": 559,
-						"w": 33,
-						"h": 53
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "character_icons/tivara/archer_female.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 13,
-						"w": 40,
-						"h": 51
-					},
-					"frame": {
-						"x": 446,
-						"y": 169,
-						"w": 40,
-						"h": 51
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 48
-					},
-					"spriteSourceSize": {
-						"x": 11,
-						"y": 16,
-						"w": 43,
-						"h": 32
-					},
-					"frame": {
-						"x": 446,
-						"y": 222,
-						"w": 43,
-						"h": 32
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "weapons/arrow.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 31,
-						"h": 4
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 31,
-						"h": 4
-					},
-					"frame": {
-						"x": 1,
-						"y": 835,
-						"w": 31,
-						"h": 4
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/olival_small/olival_small-0.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 422,
-						"y": 613,
-						"w": 32,
-						"h": 32
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 27,
-						"h": 61
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 27,
-						"h": 61
-					},
-					"frame": {
-						"x": 425,
-						"y": 647,
-						"w": 27,
-						"h": 61
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 27,
-						"h": 61
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 27,
-						"h": 61
-					},
-					"frame": {
-						"x": 425,
-						"y": 710,
-						"w": 27,
-						"h": 61
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "character_icons/tivara/maceman_male.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 12,
-						"y": 14,
-						"w": 37,
-						"h": 50
-					},
-					"frame": {
-						"x": 456,
-						"y": 614,
-						"w": 37,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "character_icons/skaduwee/worker_male.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 9,
-						"w": 32,
-						"h": 55
-					},
-					"frame": {
-						"x": 454,
-						"y": 666,
-						"w": 32,
-						"h": 55
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "buildings/tivara/olival/olival.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 14,
-						"w": 32,
-						"h": 48
-					},
-					"frame": {
-						"x": 454,
-						"y": 723,
-						"w": 32,
-						"h": 48
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 48
-					},
-					"spriteSourceSize": {
-						"x": 11,
-						"y": 17,
-						"w": 44,
-						"h": 31
-					},
-					"frame": {
-						"x": 425,
-						"y": 773,
-						"w": 44,
-						"h": 31
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 22,
-						"h": 22
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 22,
-						"h": 22
-					},
-					"frame": {
-						"x": 230,
-						"y": 715,
-						"w": 22,
-						"h": 22
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-3.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 22,
-						"h": 22
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 22,
-						"h": 22
-					},
-					"frame": {
-						"x": 241,
-						"y": 810,
-						"w": 22,
-						"h": 22
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "character_icons/skaduwee/worker_female.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 11,
-						"w": 32,
-						"h": 53
-					},
-					"frame": {
-						"x": 265,
-						"y": 784,
-						"w": 32,
-						"h": 53
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "character_icons/tivara/worker_female.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 12,
-						"w": 32,
-						"h": 52
-					},
-					"frame": {
-						"x": 299,
-						"y": 784,
-						"w": 32,
-						"h": 52
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "character_icons/tivara/worker_male.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 14,
-						"w": 32,
-						"h": 50
-					},
-					"frame": {
-						"x": 333,
-						"y": 784,
-						"w": 32,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.9
-					}
-				},
-				{
-					"filename": "buildings/tivara/temple/temple-olival.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 33,
-						"h": 41
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 0,
-						"w": 32,
-						"h": 41
-					},
-					"frame": {
-						"x": 367,
-						"y": 784,
-						"w": 32,
-						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "character_icons/skaduwee/owl.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 22,
-						"h": 22
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 22,
-						"h": 22
-					},
-					"frame": {
-						"x": 401,
-						"y": 784,
-						"w": 22,
-						"h": 22
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/olival/olival-floor.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 10
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 0,
-						"w": 31,
-						"h": 10
-					},
-					"frame": {
-						"x": 254,
-						"y": 715,
-						"w": 31,
-						"h": 10
+						"y": 479,
+						"w": 12,
+						"h": 24
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1149,8 +99,8 @@
 						"h": 23
 					},
 					"frame": {
-						"x": 471,
-						"y": 773,
+						"x": 15,
+						"y": 479,
 						"w": 17,
 						"h": 23
 					},
@@ -1174,8 +124,8 @@
 						"h": 23
 					},
 					"frame": {
-						"x": 470,
-						"y": 256,
+						"x": 34,
+						"y": 479,
 						"w": 17,
 						"h": 23
 					},
@@ -1199,8 +149,8 @@
 						"h": 23
 					},
 					"frame": {
-						"x": 470,
-						"y": 281,
+						"x": 53,
+						"y": 479,
 						"w": 17,
 						"h": 23
 					},
@@ -1224,10 +174,85 @@
 						"h": 23
 					},
 					"frame": {
-						"x": 470,
-						"y": 306,
+						"x": 72,
+						"y": 479,
 						"w": 17,
 						"h": 23
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 22,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 22,
+						"h": 22
+					},
+					"frame": {
+						"x": 91,
+						"y": 479,
+						"w": 22,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 22,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 22,
+						"h": 22
+					},
+					"frame": {
+						"x": 115,
+						"y": 479,
+						"w": 22,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "character_icons/skaduwee/owl.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 22,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 22,
+						"h": 22
+					},
+					"frame": {
+						"x": 139,
+						"y": 479,
+						"w": 22,
+						"h": 22
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1249,8 +274,8 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 470,
-						"y": 331,
+						"x": 163,
+						"y": 479,
 						"w": 15,
 						"h": 22
 					},
@@ -1274,85 +299,10 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 470,
-						"y": 355,
+						"x": 180,
+						"y": 479,
 						"w": 15,
 						"h": 22
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/skaduwee/infantry_inn/cloud-vertical.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 12,
-						"h": 24
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 12,
-						"h": 24
-					},
-					"frame": {
-						"x": 470,
-						"y": 379,
-						"w": 12,
-						"h": 24
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/olival_small/olival_small-1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 425,
-						"y": 806,
-						"w": 32,
-						"h": 32
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "buildings/tivara/olival_small/olival_small-2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 459,
-						"y": 806,
-						"w": 32,
-						"h": 32
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1374,10 +324,85 @@
 						"h": 19
 					},
 					"frame": {
-						"x": 401,
-						"y": 808,
+						"x": 197,
+						"y": 479,
 						"w": 14,
 						"h": 19
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "weapons/arrow.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 31,
+						"h": 4
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 31,
+						"h": 4
+					},
+					"frame": {
+						"x": 197,
+						"y": 500,
+						"w": 31,
+						"h": 4
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/ankguard/ankguard-flag/flag-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 14,
+						"h": 19
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 13,
+						"h": 19
+					},
+					"frame": {
+						"x": 213,
+						"y": 479,
+						"w": 13,
+						"h": 19
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/olival/olival-floor.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 10
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 31,
+						"h": 10
+					},
+					"frame": {
+						"x": 228,
+						"y": 479,
+						"w": 31,
+						"h": 10
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1399,8 +424,8 @@
 						"h": 9
 					},
 					"frame": {
-						"x": 404,
-						"y": 418,
+						"x": 230,
+						"y": 491,
 						"w": 9,
 						"h": 9
 					},
@@ -1424,8 +449,8 @@
 						"h": 9
 					},
 					"frame": {
-						"x": 349,
-						"y": 513,
+						"x": 241,
+						"y": 491,
 						"w": 9,
 						"h": 9
 					},
@@ -1449,10 +474,35 @@
 						"h": 9
 					},
 					"frame": {
-						"x": 487,
-						"y": 116,
+						"x": 252,
+						"y": 491,
 						"w": 9,
 						"h": 9
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/sandhold/sandhold.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 320,
+						"h": 320
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 57,
+						"w": 311,
+						"h": 263
+					},
+					"frame": {
+						"x": 217,
+						"y": 1,
+						"w": 311,
+						"h": 263
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1474,8 +524,8 @@
 						"h": 9
 					},
 					"frame": {
-						"x": 360,
-						"y": 513,
+						"x": 217,
+						"y": 266,
 						"w": 9,
 						"h": 9
 					},
@@ -1485,24 +535,1499 @@
 					}
 				},
 				{
-					"filename": "buildings/tivara/ankguard/ankguard-flag/flag-0.png",
+					"filename": "buildings/skaduwee/owlery/owlery.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 14,
-						"h": 19
+						"w": 64,
+						"h": 192
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 3,
+						"w": 63,
+						"h": 189
+					},
+					"frame": {
+						"x": 230,
+						"y": 266,
+						"w": 63,
+						"h": 189
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 16,
+						"w": 43,
+						"h": 32
+					},
+					"frame": {
+						"x": 261,
+						"y": 457,
+						"w": 43,
+						"h": 32
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icons/skaduwee/frost_forge.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 192
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 4,
+						"w": 108,
+						"h": 181
+					},
+					"frame": {
+						"x": 295,
+						"y": 266,
+						"w": 108,
+						"h": 181
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "character_icons/skaduwee/worker_male.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 9,
+						"w": 32,
+						"h": 55
+					},
+					"frame": {
+						"x": 306,
+						"y": 449,
+						"w": 32,
+						"h": 55
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "character_icons/skaduwee/magician_female.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 11,
+						"w": 33,
+						"h": 53
+					},
+					"frame": {
+						"x": 340,
+						"y": 449,
+						"w": 33,
+						"h": 53
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "character_icons/skaduwee/worker_female.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 11,
+						"w": 32,
+						"h": 53
+					},
+					"frame": {
+						"x": 375,
+						"y": 449,
+						"w": 32,
+						"h": 53
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "buildings/tivara/watchtower.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 176
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 8,
+						"w": 128,
+						"h": 168
+					},
+					"frame": {
+						"x": 405,
+						"y": 266,
+						"w": 128,
+						"h": 168
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/stairs_left.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 64,
+						"h": 64
+					},
+					"frame": {
+						"x": 409,
+						"y": 436,
+						"w": 64,
+						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/stairs_right.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 64,
+						"h": 64
+					},
+					"frame": {
+						"x": 475,
+						"y": 436,
+						"w": 64,
+						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/temple/temple.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 192,
+						"h": 192
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 23,
+						"w": 185,
+						"h": 165
+					},
+					"frame": {
+						"x": 530,
+						"y": 1,
+						"w": 185,
+						"h": 165
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icons/skaduwee/owlery.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 32,
+						"h": 95
+					},
+					"frame": {
+						"x": 530,
+						"y": 168,
+						"w": 32,
+						"h": 95
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/skaduwee/frost_forge/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 157,
+						"h": 151
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 0,
+						"w": 141,
+						"h": 151
+					},
+					"frame": {
+						"x": 535,
+						"y": 265,
+						"w": 141,
+						"h": 151
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icons/tivara/temple.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 11,
+						"w": 93,
+						"h": 83
+					},
+					"frame": {
+						"x": 541,
+						"y": 418,
+						"w": 93,
+						"h": 83
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/tivara/ankguard/1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 75,
+						"h": 82
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 75,
+						"h": 82
+					},
+					"frame": {
+						"x": 636,
+						"y": 418,
+						"w": 75,
+						"h": 82
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/tivara/sandhold/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 107,
+						"h": 101
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 11,
+						"w": 106,
+						"h": 90
+					},
+					"frame": {
+						"x": 564,
+						"y": 168,
+						"w": 106,
+						"h": 90
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_top_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 64,
+						"h": 89
+					},
+					"frame": {
+						"x": 672,
+						"y": 168,
+						"w": 64,
+						"h": 89
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "building_icon_anims/skaduwee/frost_forge/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 157,
+						"h": 151
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 4,
+						"w": 141,
+						"h": 147
+					},
+					"frame": {
+						"x": 678,
+						"y": 259,
+						"w": 141,
+						"h": 147
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/tivara/sandhold/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 107,
+						"h": 101
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 106,
+						"h": 97
+					},
+					"frame": {
+						"x": 713,
+						"y": 408,
+						"w": 106,
+						"h": 97
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/workmill.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 128,
+						"h": 128
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					"frame": {
+						"x": 717,
+						"y": 1,
+						"w": 128,
+						"h": 128
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/olival_small/olival_small-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 717,
+						"y": 131,
+						"w": 32,
+						"h": 32
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_top_right_bottom_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 64,
+						"h": 89
+					},
+					"frame": {
+						"x": 738,
+						"y": 165,
+						"w": 64,
+						"h": 89
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/olival_small/olival_small-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 751,
+						"y": 131,
+						"w": 32,
+						"h": 32
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/olival_small/olival_small-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 785,
+						"y": 131,
+						"w": 32,
+						"h": 32
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_top_right_bottom_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 64,
+						"h": 89
+					},
+					"frame": {
+						"x": 804,
+						"y": 165,
+						"w": 64,
+						"h": 89
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 17,
+						"w": 44,
+						"h": 31
+					},
+					"frame": {
+						"x": 819,
+						"y": 131,
+						"w": 44,
+						"h": 31
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/infantry_inn/infantry_inn.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 128
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 0,
+						"w": 125,
+						"h": 128
+					},
+					"frame": {
+						"x": 847,
+						"y": 1,
+						"w": 125,
+						"h": 128
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 19,
+						"w": 40,
+						"h": 29
+					},
+					"frame": {
+						"x": 865,
+						"y": 131,
+						"w": 40,
+						"h": 29
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icons/tivara/sandhold.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 128
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 9,
+						"w": 125,
+						"h": 119
+					},
+					"frame": {
+						"x": 974,
+						"y": 1,
+						"w": 125,
+						"h": 119
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/misc/spawn.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 80,
+						"h": 57
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 80,
+						"h": 52
+					},
+					"frame": {
+						"x": 1101,
+						"y": 1,
+						"w": 80,
+						"h": 52
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/tivara/temple/1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 77,
+						"h": 70
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 77,
+						"h": 70
+					},
+					"frame": {
+						"x": 1101,
+						"y": 55,
+						"w": 77,
+						"h": 70
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icons/tivara/ankguard.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 128
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 24,
+						"w": 115,
+						"h": 99
+					},
+					"frame": {
+						"x": 974,
+						"y": 122,
+						"w": 115,
+						"h": 99
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_top_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 8,
+						"w": 64,
+						"h": 88
+					},
+					"frame": {
+						"x": 907,
+						"y": 131,
+						"w": 64,
+						"h": 88
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "character_icons/tivara/worker_female.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 12,
+						"w": 32,
+						"h": 52
+					},
+					"frame": {
+						"x": 870,
+						"y": 162,
+						"w": 32,
+						"h": 52
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "character_icons/tivara/slingshot_female.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 13,
+						"w": 32,
+						"h": 51
+					},
+					"frame": {
+						"x": 870,
+						"y": 216,
+						"w": 32,
+						"h": 51
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_top_left_bottom_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 8,
+						"w": 64,
+						"h": 88
+					},
+					"frame": {
+						"x": 904,
+						"y": 221,
+						"w": 64,
+						"h": 88
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "building_icon_anims/tivara/temple/2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 77,
+						"h": 70
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 77,
+						"h": 70
+					},
+					"frame": {
+						"x": 821,
+						"y": 269,
+						"w": 77,
+						"h": 70
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/tivara/ankguard/2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 75,
+						"h": 82
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 75,
+						"h": 82
+					},
+					"frame": {
+						"x": 1091,
+						"y": 127,
+						"w": 75,
+						"h": 82
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 27,
+						"h": 61
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 27,
+						"h": 61
+					},
+					"frame": {
+						"x": 1168,
+						"y": 127,
+						"w": 27,
+						"h": 61
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 27,
+						"h": 61
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 27,
+						"h": 61
+					},
+					"frame": {
+						"x": 1168,
+						"y": 190,
+						"w": 27,
+						"h": 61
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/tivara/ankguard/3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 75,
+						"h": 82
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 75,
+						"h": 82
+					},
+					"frame": {
+						"x": 1091,
+						"y": 211,
+						"w": 75,
+						"h": 82
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_top_left_bottom_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 8,
+						"w": 64,
+						"h": 88
+					},
+					"frame": {
+						"x": 970,
+						"y": 223,
+						"w": 64,
+						"h": 88
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/sandhold/sandhold-crystal.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 52,
+						"h": 59
+					},
+					"frame": {
+						"x": 1036,
+						"y": 223,
+						"w": 52,
+						"h": 59
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "character_icons/general/warrior.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 12,
+						"w": 52,
+						"h": 52
+					},
+					"frame": {
+						"x": 1036,
+						"y": 284,
+						"w": 52,
+						"h": 52
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_top_left_top_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 8,
+						"w": 64,
+						"h": 88
+					},
+					"frame": {
+						"x": 900,
+						"y": 311,
+						"w": 64,
+						"h": 88
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_bottom_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 18,
+						"w": 64,
+						"h": 78
+					},
+					"frame": {
+						"x": 966,
+						"y": 313,
+						"w": 64,
+						"h": 78
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_bottom_left_bottom_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 18,
+						"w": 64,
+						"h": 78
+					},
+					"frame": {
+						"x": 821,
+						"y": 341,
+						"w": 64,
+						"h": 78
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_bottom_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 21,
+						"w": 64,
+						"h": 75
+					},
+					"frame": {
+						"x": 821,
+						"y": 421,
+						"w": 64,
+						"h": 75
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "buildings/tivara/wall/wall_empty.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 23,
+						"w": 64,
+						"h": 73
+					},
+					"frame": {
+						"x": 887,
+						"y": 401,
+						"w": 64,
+						"h": 73
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.75
+					}
+				},
+				{
+					"filename": "building_icon_anims/skaduwee/infantry_inn/1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 70
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 70
+					},
+					"frame": {
+						"x": 953,
+						"y": 401,
+						"w": 50,
+						"h": 70
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/skaduwee/infantry_inn/2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 70
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 70
+					},
+					"frame": {
+						"x": 1005,
+						"y": 393,
+						"w": 50,
+						"h": 70
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "character_icons/skaduwee/warrior_male.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 12,
+						"w": 39,
+						"h": 52
+					},
+					"frame": {
+						"x": 1032,
+						"y": 338,
+						"w": 39,
+						"h": 52
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "building_icons/skaduwee/infantry_inn.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 63,
+						"h": 64
+					},
+					"frame": {
+						"x": 1090,
+						"y": 295,
+						"w": 63,
+						"h": 64
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "character_icons/skaduwee/ranged_female.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 13,
+						"w": 41,
+						"h": 51
+					},
+					"frame": {
+						"x": 1155,
+						"y": 295,
+						"w": 41,
+						"h": 51
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "character_icons/tivara/archer_female.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 13,
+						"w": 40,
+						"h": 51
+					},
+					"frame": {
+						"x": 1155,
+						"y": 348,
+						"w": 40,
+						"h": 51
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "building_icon_anims/skaduwee/owlery/1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 51
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 51
+					},
+					"frame": {
+						"x": 1073,
+						"y": 361,
+						"w": 50,
+						"h": 51
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "building_icon_anims/skaduwee/owlery/2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 51
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 51
+					},
+					"frame": {
+						"x": 1125,
+						"y": 401,
+						"w": 50,
+						"h": 51
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "character_icons/tivara/maceman_male.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 14,
+						"w": 37,
+						"h": 50
+					},
+					"frame": {
+						"x": 1057,
+						"y": 454,
+						"w": 37,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "character_icons/tivara/worker_male.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 14,
+						"w": 32,
+						"h": 50
+					},
+					"frame": {
+						"x": 1096,
+						"y": 454,
+						"w": 32,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.9
+					}
+				},
+				{
+					"filename": "buildings/tivara/olival/olival.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 14,
+						"w": 32,
+						"h": 48
+					},
+					"frame": {
+						"x": 1130,
+						"y": 454,
+						"w": 32,
+						"h": 48
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "buildings/tivara/temple/temple-olival.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 33,
+						"h": 41
 					},
 					"spriteSourceSize": {
 						"x": 1,
 						"y": 0,
-						"w": 13,
-						"h": 19
+						"w": 32,
+						"h": 41
 					},
 					"frame": {
-						"x": 265,
-						"y": 727,
-						"w": 13,
-						"h": 19
+						"x": 1164,
+						"y": 454,
+						"w": 32,
+						"h": 41
 					},
 					"anchor": {
 						"x": 0.5,
@@ -1515,6 +2040,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:aefa636cd37e7da235c82c29f45c5f82:ba08651e2384355b005e97f0986e0891:a9758daa4601cfd09e71f5a21b84c376$"
+		"smartupdate": "$TexturePacker:SmartUpdate:510cfbf14c1c2acef589bf47b2527a04:601f6647d5b4f790b5e5b2349f286d03:a9758daa4601cfd09e71f5a21b84c376$"
 	}
 }

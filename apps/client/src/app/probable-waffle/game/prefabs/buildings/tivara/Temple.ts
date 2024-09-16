@@ -5,10 +5,9 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
-
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 import {
   ProductionCostComponent,
@@ -22,6 +21,15 @@ import AnkGuard from "./AnkGuard";
 import TivaraSlingshotFemale from "../../characters/tivara/TivaraSlingshotFemale";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import {
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
+} from "../../gui/icon-animations";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -57,11 +65,37 @@ export default class Temple extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new ObjectDescriptorComponent({
+          color: 0xc2a080
+        } satisfies ObjectDescriptorDefinition),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x5c9999,
+              epsilon: 0
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new VisionComponent(this, {
+          range: 5
+        } satisfies VisionDefinition),
+        new IdComponent(),
+        new InfoComponent({
+          name: "Temple",
+          description: "Produces Tivara Sling shooters",
+          portraitAnimation: {
+            idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
+            action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
+          },
+          smallImage: {
+            key: "factions",
+            frame: "building_icons/tivara/temple.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100

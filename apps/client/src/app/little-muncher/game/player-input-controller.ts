@@ -100,7 +100,7 @@ export class PlayerInputController {
 
   private registerEvents() {
     this.subscriptions = [
-      this.littleMuncherScene.onDestroy.subscribe(this.destroy),
+      this.littleMuncherScene.onShutdown.subscribe(this.destroy),
       this.littleMuncherScene.onResize.subscribe(this.resetPosition)
     ];
   }

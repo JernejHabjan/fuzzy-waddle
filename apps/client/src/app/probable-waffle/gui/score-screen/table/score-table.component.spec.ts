@@ -45,7 +45,7 @@ describe("ScoreTableComponent", () => {
     const gameInstance = gameInstanceClientServiceStub.gameInstance!;
     const playerDefinition = {
       player: {
-        playerNumber: gameInstance.players.length,
+        playerNumber: gameInstance.players.length + 1,
         playerName: "Player " + (gameInstance.players.length + 1),
         playerPosition: gameInstance.players.length,
         joined: true
@@ -64,6 +64,7 @@ describe("ScoreTableComponent", () => {
     // noinspection UnnecessaryLocalVariableJS
     const mockPlayers = [
       {
+        playerNumber: 1,
         name: "Player 1",
         unit_produced: 10,
         unit_killed: 5,

@@ -1,9 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "fuzzy-waddle",
-  "affected": {
-    "defaultBase": "develop"
-  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx-cloud",
@@ -36,6 +33,11 @@
           "codeCoverage": true
         }
       }
+    },
+    "@nx/webpack:webpack": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "namedInputs": {
@@ -67,5 +69,6 @@
       "style": "scss"
     }
   },
-  "defaultProject": "client"
+  "defaultProject": "client",
+  "defaultBase": "develop"
 }

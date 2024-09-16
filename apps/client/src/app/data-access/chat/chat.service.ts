@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { IChatService } from "./chat.service.interface";
@@ -9,7 +9,7 @@ import { ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
   providedIn: "root"
 })
 export class ChatService implements IChatService {
-  constructor(private authenticatedSocketService: AuthenticatedSocketService) {}
+  private authenticatedSocketService = inject(AuthenticatedSocketService);
 
   sendMessage(msg: ChatMessage): void {
     const socket = this.authenticatedSocketService.socket;

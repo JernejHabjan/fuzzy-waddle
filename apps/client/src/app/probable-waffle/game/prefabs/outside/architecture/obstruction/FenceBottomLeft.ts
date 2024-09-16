@@ -6,6 +6,10 @@ import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class FenceBottomLeft extends Phaser.GameObjects.Image {
@@ -27,7 +31,16 @@ export default class FenceBottomLeft extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.9655744749875858);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new ColliderComponent()], []);
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0x6e4b1e
+        } satisfies ObjectDescriptorDefinition),
+        new ColliderComponent()
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

@@ -21,7 +21,6 @@ import { StaticObjectHelper } from "../../entity/placable-objects/static-object"
 import { DynamicObjectHelper } from "../../entity/placable-objects/dynamic-object";
 import { MapNavHelper } from "../map/map-nav-helper";
 import { MinimapTextureHelper } from "../map/minimap-texture.helper";
-
 import { GameObjectsHelper } from "../map/game-objects-helper";
 import { Actor } from "../../entity/actor/actor";
 import { RepresentableActor } from "../../entity/actor/representable-actor";

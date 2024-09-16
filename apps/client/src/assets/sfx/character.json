@@ -1,0 +1,17 @@
+{
+  "resources": [
+    "apps/client/src/assets/sfx/character.mp3"
+  ],
+  "spritemap": {
+    "death1": {
+      "start": 0,
+      "end": 1.985375,
+      "loop": false
+    },
+    "footstep": {
+      "start": 3,
+      "end": 3.469,
+      "loop": false
+    }
+  }
+}

@@ -5,10 +5,9 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
-
 import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
 import {
   ProductionCostComponent,
@@ -23,6 +22,13 @@ import { ContainableComponent } from "../../../entity/actor/components/containab
 import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
 import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
+import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import { MovementSystem } from "../../../entity/systems/movement.system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
@@ -37,11 +43,29 @@ export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x9fbbcb,
+              epsilon: 0.1
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
           range: 5
         } satisfies VisionDefinition),
         new IdComponent(),
+        new InfoComponent({
+          name: "Skaduwee Ranged",
+          description: "A ranged unit",
+          smallImage: {
+            key: "factions",
+            frame: "character_icons/skaduwee/ranged_female.png"
+          }
+        } satisfies InfoDefinition),
         new SelectableComponent(this),
         new HealthComponent(this, {
           maxHealth: 100
@@ -68,9 +92,10 @@ export default class SkaduweeRangedFemale extends Phaser.GameObjects.Sprite {
         new ContainableComponent(this),
         new RequirementsComponent(this, {
           actors: [InfantryInn.name]
-        } satisfies RequirementsDefinition)
+        } satisfies RequirementsDefinition),
+        new ActorTranslateComponent(this)
       ],
-      []
+      [new MovementSystem(this)]
     );
 
     this.on("pointerdown", () => {

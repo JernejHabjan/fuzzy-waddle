@@ -5,6 +5,7 @@ import {
   ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
+  ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleListeners,
   ProbableWafflePlayerDataChangeEvent,
   ProbableWaffleSpectatorDataChangeEvent
@@ -19,7 +20,7 @@ export class GameStateServerService {
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
     if (!gameInstance) {
-      console.log("game instance not found");
+      console.log("game instance not found in updateGameState in GameStateServerService");
       return false;
     }
 
@@ -50,6 +51,10 @@ export class GameStateServerService {
       case "spectatorDataChange":
         const spectatorData = body.payload as ProbableWaffleSpectatorDataChangeEvent;
         ProbableWaffleListeners.spectatorChanged(gameInstance, spectatorData);
+        break;
+      case "gameStateDataChange":
+        const gameStateData = body.payload as ProbableWaffleGameStateDataChangeEvent;
+        ProbableWaffleListeners.gameStateDataChanged(gameInstance, gameStateData);
         break;
       default:
         throw new Error("Unknown communicator");

@@ -41,6 +41,7 @@ export class BaseScene<
   _onPreload: EventEmitter<void> = new EventEmitter<void>();
   _onCreate: EventEmitter<void> = new EventEmitter<void>();
   _postCreate: EventEmitter<void> = new EventEmitter<void>();
+  _onShutdown: EventEmitter<void> = new EventEmitter<void>();
   _onDestroy: EventEmitter<void> = new EventEmitter<void>();
   onUpdate: EventEmitter<UpdateEventData> = new EventEmitter<UpdateEventData>();
   onResize: EventEmitter<void> = new EventEmitter<void>();
@@ -67,8 +68,15 @@ export class BaseScene<
     return this._postCreate.pipe(take(1));
   }
 
+  /**
+   * @deprecated - use {@link onShutdown} instead as that is handled on scene restart
+   */
   get onDestroy(): Observable<void> {
     return this._onDestroy.pipe(take(1));
+  }
+
+  get onShutdown(): Observable<void> {
+    return this._onShutdown;
   }
 
   preload() {
@@ -84,6 +92,7 @@ export class BaseScene<
     this.data.set(SceneGameDataKey, this.getSceneGameData());
 
     this.registerSceneDestroy();
+    this.registerSceneShutdown();
     this.registerSceneResize();
     this.registerScenePostCreate();
     this._onInit.emit();
@@ -105,9 +114,11 @@ export class BaseScene<
   }
 
   private registerSceneResize() {
-    this.scale.on(Phaser.Scale.Events.RESIZE, () => {
-      this.onResize.emit();
-    });
+    this.scale.on(Phaser.Scale.Events.RESIZE, this.sceneResize, this);
+  }
+
+  private sceneResize() {
+    this.onResize.emit();
   }
 
   private registerScenePostCreate() {
@@ -123,15 +134,36 @@ export class BaseScene<
     });
   }
 
+  private registerSceneShutdown() {
+    this.events.on(Phaser.Scenes.Events.SHUTDOWN, this._sceneShutdown, this);
+  }
+
+  private _sceneShutdown() {
+    this.cleanupBaseScene();
+    this._onShutdown.emit();
+    this.shutDown();
+  }
+
+  /**
+   * on scene restart for example
+   */
+  protected shutDown(): void {}
+
   subscribe(subscription?: Subscription) {
     if (!subscription) return;
     this.subscriptions.push(subscription);
   }
 
+  private cleanupBaseScene() {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
   destroy() {
     this.scale.removeAllListeners();
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.cleanupBaseScene();
     this._onDestroy.emit();
+    this.events.off(Phaser.Scenes.Events.SHUTDOWN, this._sceneShutdown, this);
+    this.scale.off(Phaser.Scale.Events.RESIZE, this.sceneResize, this);
   }
 
   protected postCreate(): void {}
@@ -144,6 +176,10 @@ export class BaseScene<
   get gameMode(): TGameMode {
     if (!this.baseGameData.gameInstance.gameMode) throw new Error("GameMode is not defined");
     return this.baseGameData.gameInstance.gameMode as TGameMode;
+  }
+
+  get players(): TPlayer[] {
+    return this.baseGameData.gameInstance.players as TPlayer[];
   }
 
   get playerOrNull(): TPlayer | null {

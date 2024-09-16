@@ -14,6 +14,10 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent, ContainerDefinition } from "../../../../../entity/building/container-component";
 import { IdComponent } from "../../../../../entity/actor/components/id-component";
 import { ColliderComponent, ColliderDefinition } from "../../../../../entity/actor/components/collider-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Tree5 extends Phaser.GameObjects.Image {
@@ -34,6 +38,9 @@ export default class Tree5 extends Phaser.GameObjects.Image {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0x304f33
+        } satisfies ObjectDescriptorDefinition),
         new IdComponent(),
         new ColliderComponent({
           colliderFactorReduction: 0.5

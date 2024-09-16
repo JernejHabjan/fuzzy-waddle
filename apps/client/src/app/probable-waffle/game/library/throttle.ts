@@ -21,7 +21,7 @@ export function throttle<T extends (...args: any) => any>(func: T, limit: number
 
       setTimeout(() => (inThrottle = false), limit);
 
-      lastResult = func.apply(context, args);
+      lastResult = func.apply(context, args as any);
     }
 
     return lastResult;

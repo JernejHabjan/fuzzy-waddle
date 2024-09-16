@@ -1,18 +1,46 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
+import { Subscription } from "rxjs";
+import Phaser from "phaser";
+import { listenToSelectionEvents } from "../../../data/scene-data";
+import { getActorComponent } from "../../../data/actor-component";
+import { IdComponent } from "./id-component";
+import { ActorTranslateComponent } from "./actor-translate-component";
+
+export type SelectableDefinition = {
+  offsetY?: number;
+};
 
 export class SelectableComponent {
   private selected: boolean = false;
-  private selectionCircle!: any;
-  constructor(private readonly gameObject: GameObject) {
+  private selectionCircle!: Phaser.GameObjects.Graphics;
+  private actorMovedSubscription?: Subscription;
+  private selectionChangedSubscription?: Subscription;
+  constructor(
+    private readonly gameObject: GameObject,
+    private readonly selectableDefinition?: SelectableDefinition
+  ) {
     this.createSelectionCircle();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init);
+    this.listenToSelectionEvents();
+  }
+
+  private init = () => {
+    this.subscribeActorMove();
+  };
+
+  private subscribeActorMove() {
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    if (!actorTranslateComponent) return;
+    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(this.update);
   }
 
   private createSelectionCircle() {
     const bounds = getGameObjectBounds(this.gameObject);
     if (!bounds) return;
     const ellipse = new Phaser.Geom.Ellipse(0, 0, bounds.width, bounds.width / 2);
+    ellipse.y = this.selectableDefinition?.offsetY ?? 0;
     const graphics = this.gameObject.scene.add.graphics();
     graphics.lineStyle(2, 0xffffff); // todo color from player
     graphics.strokeEllipseShape(ellipse);
@@ -25,18 +53,16 @@ export class SelectableComponent {
     this.selected = selected;
     this.selectionCircle.visible = selected;
     if (selected) this.update();
-    console.warn(`Selected set to ${selected} for ${this.gameObject.constructor.name}`);
   }
 
   getSelected(): boolean {
     return this.selected;
   }
 
-  update() {
-    // todo use
+  private update = () => {
     this.setPosition();
     this.setDepth();
-  }
+  };
 
   private setPosition() {
     const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
@@ -49,7 +75,33 @@ export class SelectableComponent {
     if (gameObjectDepth !== null) this.selectionCircle.depth = gameObjectDepth - 1;
   }
 
+  private listenToSelectionEvents() {
+    this.selectionChangedSubscription = listenToSelectionEvents(this.gameObject.scene)?.subscribe((payload) => {
+      const gameObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!gameObjectId) return;
+      switch (payload.property) {
+        case "selection.added":
+          const selection = payload.data.playerStateData!.selection!;
+          if (selection.includes(gameObjectId)) this.setSelected(true);
+          break;
+        case "selection.removed":
+          const removed = payload.data.playerStateData!.selection!;
+          if (removed.includes(gameObjectId)) this.setSelected(false);
+          break;
+        case "selection.set":
+          const set = payload.data.playerStateData!.selection!;
+          this.setSelected(set.includes(gameObjectId));
+          break;
+        case "selection.cleared":
+          this.setSelected(false);
+          break;
+      }
+    });
+  }
+
   private destroy = () => {
     this.selectionCircle.destroy();
+    this.actorMovedSubscription?.unsubscribe();
+    this.selectionChangedSubscription?.unsubscribe();
   };
 }

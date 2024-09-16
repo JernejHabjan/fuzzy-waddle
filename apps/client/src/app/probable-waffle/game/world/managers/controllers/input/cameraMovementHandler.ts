@@ -1,8 +1,9 @@
 import { Cameras, Geom, Input, Types } from "phaser";
+import GameProbableWaffleScene from "../../../../scenes/GameProbableWaffleScene";
 
 export class CameraMovementHandler {
   private readonly enabledMouseCornerMovement = false;
-  private readonly lockToScreen = false; // todo could be enabled later
+  private readonly lockToScreen = false; // todo could be enabled later - need to move cursor manually in phaser
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private cursorOverGameInstance = false;
@@ -26,11 +27,13 @@ export class CameraMovementHandler {
     this.mainCamera = scene.cameras.main;
     this.input = scene.input;
     this.createKeyboardControls();
+    this.createPointerControls();
     this.zoomListener();
     this.screenEdgeListener();
     this.lockCursorToScreen();
-    this.scene.events.on("update", this.update, this);
-    this.scene.events.on("shutdown", this.destroy, this);
+    this.scene.events.on(Phaser.Scenes.Events.CREATE, this.create, this);
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   /**
@@ -57,6 +60,9 @@ export class CameraMovementHandler {
     this.input.off(Input.Events.GAME_OUT);
     this.input.off(Input.Events.GAME_OVER);
     this.input.off(Input.Events.POINTER_WHEEL, this.zoomWithScrollHandler);
+    this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
+    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
     this.keyboardMovementControls?.destroy();
   }
 
@@ -82,6 +88,33 @@ export class CameraMovementHandler {
     };
 
     this.keyboardMovementControls = new Cameras.Controls.FixedKeyControl(controlConfig);
+  }
+
+  /**
+   * Creates pointer controls for camera movement (dragging) on mobile
+   */
+  private createPointerControls() {
+    const touchEnabled = this.input.manager.touch;
+    if (!touchEnabled) return;
+    this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
+    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
+  }
+
+  private handlePointerDown(pointer: Input.Pointer) {
+    if (!pointer.leftButtonDown()) return;
+    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+  }
+
+  private handlePointerMove(pointer: Input.Pointer) {
+    if (!pointer.leftButtonDown()) return;
+    this.mainCamera.scrollX -= pointer.velocity.x * this.cameraZoomFactor;
+    this.mainCamera.scrollY -= pointer.velocity.y * this.cameraZoomFactor;
+  }
+
+  private handlePointerUp(pointer: Input.Pointer) {
+    if (!pointer.rightButtonReleased()) return;
+    this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
   }
 
   private screenEdgeMovementUpdate() {
@@ -221,6 +254,23 @@ export class CameraMovementHandler {
           this.input.mouse.releasePointerLock();
         }
       });
+    }
+  }
+
+  private create() {
+    this.centerCamera();
+  }
+
+  private centerCamera() {
+    // try to find current player
+    if (!(this.scene instanceof GameProbableWaffleScene)) return;
+    const gameScene = this.scene as GameProbableWaffleScene;
+    const initialWorldSpawnPosition =
+      gameScene.player.playerController.data.playerDefinition?.initialWorldSpawnPosition;
+    if (initialWorldSpawnPosition) {
+      this.mainCamera.scrollX = initialWorldSpawnPosition.x;
+      this.mainCamera.scrollY = initialWorldSpawnPosition.y;
+      console.error("Todo not working fully because of some weird offset -.-");
     }
   }
 }

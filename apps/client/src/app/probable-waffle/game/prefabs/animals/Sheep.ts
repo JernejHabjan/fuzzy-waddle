@@ -4,6 +4,22 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../data/actor-data";
+import {
+  getGameObjectDirection,
+  moveGameObjectToRandomTileInNavigableRadius,
+  MovementSystem,
+  PathMoveConfig
+} from "../../entity/systems/movement.system";
+import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { getGameObjectCurrentTile, onPostSceneInitialized } from "../../data/game-object-helper";
+import { ANIM_SHEEP_IDLE_DOWN, ANIM_SHEEP_IDLE_LEFT, ANIM_SHEEP_IDLE_RIGHT, ANIM_SHEEP_IDLE_UP } from "./anims/animals";
+import { getActorSystem } from "../../data/actor-system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
@@ -15,20 +31,31 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.play("sheep_idle_down");
 
     /* START-USER-CTR-CODE */
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition),
+        new ActorTranslateComponent(this)
+      ],
+      [new MovementSystem(this)]
+    );
+    onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 
-  override addedToScene() {
-    super.addedToScene();
-
-    this.handleWoolParticles(this.scene);
-    this.handleSheepRandomRotation();
-  }
-
   /* START-USER-CODE */
+  private postSceneCreate() {
+    this.handleWoolParticles(this.scene);
+    this.startMovement();
+  }
+  private nextTile?: Vector2Simple;
+  private readonly actionDelay = 5000;
+  private readonly movementSpeed = 2000;
+  private readonly radius = 5;
+  private currentDelay: Phaser.Time.TimerEvent | null = null;
   private woolParticles?: Phaser.GameObjects.Particles.ParticleEmitter;
-  private repeatingEvent?: Phaser.Time.TimerEvent;
-  private direction: "up" | "right" | "down" | "left" = "down";
   private sheared = false;
   private handleWoolParticles(scene: Phaser.Scene) {
     // Add wool particle emitter to the scene
@@ -48,6 +75,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     const maxShearedCount = 5;
 
     this.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
+      this.cancelMovement();
       if (shearedCount < maxShearedCount) {
         this.woolParticles?.emitParticleAt(this.x, this.y - 25, Phaser.Math.Between(1, 4));
       }
@@ -62,45 +90,112 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
           this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
           this.sheared = false;
           this.playSheepAnimation();
+          this.moveSheepAfterDelay();
         });
+      } else {
+        this.moveSheepAfterDelay();
       }
     });
   }
-
-  private handleSheepRandomRotation() {
-    this.rotateSheepToRandomDirection();
-    this.playSheepAnimation();
-    this.repeatingEvent = this.scene.time.addEvent({
-      delay: Phaser.Math.Between(2000, 5000),
-      callback: () => {
-        if (!this.active) return;
-        this.rotateSheepToRandomDirection();
-        this.playSheepAnimation();
-      },
-      loop: true
-    });
+  private async startMovement() {
+    if (!this.active) return;
+    this.nextTile = undefined;
+    try {
+      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
+        duration: this.movementSpeed,
+        onPathUpdate: (newTileXY) => {
+          this.nextTile = newTileXY;
+          this.playAnimation("walk", newTileXY);
+        }
+      } satisfies PathMoveConfig);
+    } catch (e) {
+      console.error(e);
+    }
+    this.nextTile = undefined;
+    this.moveSheepAfterDelay();
   }
 
-  private rotateSheepToRandomDirection() {
-    const randomDirection = Phaser.Math.Between(0, 3);
-    switch (randomDirection) {
-      case 0:
-        this.direction = "up";
+  private moveSheepAfterDelay() {
+    this.removeDelay();
+    if (!this.active) return;
+    this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.startMovement, [], this);
+  }
+
+  private playAnimation(animType: "walk" | "idle", tile?: Vector2Simple) {
+    if (!this.active) return;
+    this.removeDelay();
+    this.cancelMovement();
+
+    const currentTile = tile ?? getGameObjectCurrentTile(this);
+    if (!currentTile) return;
+    const anim = this.getAnim(currentTile);
+    if (!anim) return;
+
+    const { walkAnim, idleAnim } = anim;
+    const animToPlay = animType === "walk" ? walkAnim : idleAnim;
+    this.play(animToPlay);
+  }
+
+  private getAnim(newTile: Vector2Simple): { walkAnim: string; idleAnim: string } | undefined {
+    const direction = getGameObjectDirection(this, newTile);
+
+    let walkAnim: string;
+    let idleAnim: string;
+
+    switch (direction) {
+      case "north":
+        walkAnim = ANIM_SHEEP_IDLE_UP; // todo ANIM_SHEEP_WALK_TOP;
+        idleAnim = ANIM_SHEEP_IDLE_UP;
         break;
-      case 1:
-        this.direction = "right";
+      case "south":
+        walkAnim = ANIM_SHEEP_IDLE_DOWN; // todo ANIM_SHEEP_WALK_DOWN;
+        idleAnim = ANIM_SHEEP_IDLE_DOWN;
         break;
-      case 2:
-        this.direction = "down";
+      case "east":
+      case "northeast":
+      case "southeast":
+        walkAnim = ANIM_SHEEP_IDLE_RIGHT; // todo ANIM_SHEEP_WALK_RIGHT;
+        idleAnim = ANIM_SHEEP_IDLE_RIGHT;
         break;
-      case 3:
-        this.direction = "left";
+
+      case "west":
+      case "northwest":
+      case "southwest":
+        walkAnim = ANIM_SHEEP_IDLE_LEFT; // todo ANIM_SHEEP_WALK_LEFT;
+        idleAnim = ANIM_SHEEP_IDLE_LEFT;
         break;
+      default:
+        return;
     }
+    return { walkAnim, idleAnim };
   }
 
   private playSheepAnimation() {
-    const anim = "sheep_idle_" + this.direction + (this.sheared ? "_sheared" : "");
+    const direction = getGameObjectDirection(this, this.nextTile ?? getGameObjectCurrentTile(this)!);
+
+    let dirMapped: "up" | "right" | "down" | "left" = "down";
+    switch (direction) {
+      case "north":
+        dirMapped = "up";
+        break;
+      case "south":
+        dirMapped = "down";
+        break;
+      case "east":
+      case "northeast":
+      case "southeast":
+        dirMapped = "right";
+        break;
+      case "west":
+      case "northwest":
+      case "southwest":
+        dirMapped = "left";
+        break;
+      default:
+        return;
+    }
+
+    const anim = "sheep_idle_" + dirMapped + (this.sheared ? "_sheared" : "");
     this.play(anim, true);
   }
 
@@ -109,9 +204,18 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     return super.setDepth(value);
   }
 
+  private cancelMovement = () => {
+    const movementSystem = getActorSystem<MovementSystem>(this, MovementSystem);
+    if (movementSystem) movementSystem.cancelMovement();
+  };
+
+  private removeDelay() {
+    this.currentDelay?.remove(false);
+    this.currentDelay = null;
+  }
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
-    this.repeatingEvent?.remove(false);
+    this.currentDelay?.remove(false);
   }
 
   // Write your code here.

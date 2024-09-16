@@ -1,6 +1,7 @@
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../../environments/environment";
+import { getCommunicator } from "../../../data/scene-data";
 
 export class MapObject {
   // todo
@@ -9,7 +10,7 @@ export class MapObject {
 export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };
   constructor(private readonly scene: ProbableWaffleScene) {
-    scene.onDestroy.subscribe(() => this.destroy());
+    scene.onShutdown.subscribe(() => this.destroy());
     scene.onPostCreate.subscribe(() => this.listen());
   }
 
@@ -20,7 +21,7 @@ export class SceneGameState {
 
     // after 3 seconds, change state to StartingTheGame
     setTimeout(() => {
-      this.scene.baseGameData.communicator.gameInstanceMetadataChanged?.send({
+      getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
         property: "sessionState",
         gameInstanceId: this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
         data: { sessionState: GameSessionState.StartingTheGame },
@@ -31,7 +32,7 @@ export class SceneGameState {
 
   pauseUntilAllPlayersAreReady() {
     this.handleCurrentSessionState(this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState!);
-    this.sessionStateSubscription = this.scene.baseGameData.communicator.gameInstanceMetadataChanged?.on.subscribe(
+    this.sessionStateSubscription = getCommunicator(this.scene).gameInstanceMetadataChanged?.on.subscribe(
       (metadataEvent) => {
         switch (metadataEvent.property) {
           case "sessionState":
@@ -51,7 +52,7 @@ export class SceneGameState {
         break;
       case GameSessionState.StartingTheGame:
         const sendInProgress = () => {
-          this.scene.baseGameData.communicator.gameInstanceMetadataChanged?.send({
+          getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
             property: "sessionState",
             gameInstanceId: this.scene.gameInstanceId,
             data: { sessionState: GameSessionState.InProgress },

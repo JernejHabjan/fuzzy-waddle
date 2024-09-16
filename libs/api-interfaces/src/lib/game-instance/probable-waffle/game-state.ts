@@ -1,5 +1,12 @@
 import { BaseGameState } from "../game-state";
 import { BaseData } from "../data";
+import { HealthComponentData } from "../../communicators/probable-waffle/communicator-game-events";
+
+export interface ProbableWaffleGameCommand {
+  command: string;
+  target: any;
+  issuedAt: Date;
+}
 
 export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameStateData> {
   constructor(data?: ProbableWaffleGameStateData) {
@@ -23,5 +30,27 @@ export interface ProbableWaffleGameStateData extends BaseData {
 }
 
 export interface ActorDefinition extends Record<string, any> {
-  name: string;
+  // Constructor name - used to create actor
+  name?: string;
+
+  x?: number;
+  y?: number;
+  z?: number;
+
+  // OwnerComponent
+  owner?: number;
+
+  // IdComponent
+  id?: string;
+
+  health?: Partial<HealthComponentData>;
+
+  // todo remove?
+  selectable?: boolean;
+
+  // TODO OTHERS FOR EXAMPLE PRODUCTION COMPONENT ETC???
+
+  // BlackboardComponent
+  blackboardCurrentCommand?: ProbableWaffleGameCommand; // todo this should be filled and used by PawnAiController
+  blackboardCommands?: ProbableWaffleGameCommand[];
 }

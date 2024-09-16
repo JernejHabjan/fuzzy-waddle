@@ -5,7 +5,7 @@
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
+import { OwnerComponent, OwnerDefinition } from "../../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { HealthComponent, HealthDefinition } from "../../../../entity/combat/components/health-component";
 import {
@@ -17,6 +17,10 @@ import { PaymentType } from "../../../../entity/building/payment-type";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { VisionComponent, VisionDefinition } from "../../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class WallBottomRight extends Phaser.GameObjects.Image {
@@ -41,7 +45,17 @@ export default class WallBottomRight extends Phaser.GameObjects.Image {
     setActorData(
       this,
       [
-        new OwnerComponent(this),
+        new ObjectDescriptorComponent({
+          color: 0x95a083
+        } satisfies ObjectDescriptorDefinition),
+        new OwnerComponent(this, {
+          color: [
+            {
+              originalColor: 0x000000,
+              epsilon: 0
+            }
+          ]
+        } satisfies OwnerDefinition),
         new VisionComponent(this, {
           range: 5
         } satisfies VisionDefinition),

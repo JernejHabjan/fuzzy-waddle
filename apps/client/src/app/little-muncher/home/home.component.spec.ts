@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { HomeComponent } from "./home.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import { SpectateTestComponent } from "./spectate/spectate.component.spec";
-import { RouterTestingModule } from "@angular/router/testing";
 import { SpectateComponent } from "./spectate/spectate.component";
-import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-@Component({ selector: "little-muncher-home", template: "", standalone: true, imports: [CommonModule] })
+import { provideRouter } from "@angular/router";
+
+@Component({ selector: "little-muncher-home", template: "", standalone: true, imports: [] })
 export class HomeTestingComponent {}
 
 describe("HomeComponent", () => {
@@ -20,6 +19,7 @@ describe("HomeComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         {
           provide: ServerHealthService,
           useValue: serverHealthServiceStub
@@ -29,7 +29,7 @@ describe("HomeComponent", () => {
           useValue: authServiceStub
         }
       ],
-      imports: [HomeComponent, RouterTestingModule]
+      imports: [HomeComponent]
     })
       .overrideComponent(HomeComponent, {
         remove: {

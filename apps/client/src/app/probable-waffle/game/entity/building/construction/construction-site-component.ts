@@ -5,7 +5,7 @@ import { HealthComponent } from "../../combat/components/health-component";
 import { EventEmitter } from "@angular/core";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
-import { getPlayerController } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
@@ -66,11 +66,11 @@ export class ConstructionSiteComponent {
     this.remainingConstructionTime -= constructionProgress;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
-      const currentHealth = healthComponent.getCurrentHealth();
+      const currentHealth = healthComponent.healthComponentData.health;
       const maxHealth = healthComponent.healthDefinition.maxHealth;
       const healthIncrement =
         ((maxHealth - currentHealth) / this.constructionSiteDefinition.constructionTime) * constructionProgress;
-      healthComponent.setCurrentHealth(currentHealth + healthIncrement);
+      healthComponent.healthComponentData.health += healthIncrement;
     }
 
     this.constructionProgressChanged.emit(
@@ -91,11 +91,11 @@ export class ConstructionSiteComponent {
       const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
       const owner = ownerComponent?.getOwner();
       if (!owner) throw new Error("Owner not found");
-      const playerController = getPlayerController(this.gameObject.scene, owner);
-      if (!playerController) throw new Error("PlayerController not found");
-      const canAfford = playerController.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
+      const player = getPlayer(this.gameObject.scene, owner);
+      if (!player) throw new Error("PlayerController not found");
+      const canAfford = player.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
       if (canAfford) {
-        playerController.payAllResources(this.constructionSiteDefinition.constructionCosts);
+        player.payAllResources(this.constructionSiteDefinition.constructionCosts);
       } else {
         throw new Error("Cannot afford building costs");
       }
@@ -108,7 +108,7 @@ export class ConstructionSiteComponent {
     // set initial health
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
-      healthComponent.setCurrentHealth(
+      healthComponent.healthComponentData.health = Math.floor(
         healthComponent.healthDefinition.maxHealth * this.constructionSiteDefinition.initialHealthPercentage
       );
     }
@@ -125,8 +125,8 @@ export class ConstructionSiteComponent {
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
     if (!owner) throw new Error("Owner not found");
-    const playerController = getPlayerController(this.gameObject.scene, owner);
-    if (!playerController) throw new Error("PlayerController not found");
+    const player = getPlayer(this.gameObject.scene, owner);
+    if (!player) throw new Error("PlayerController not found");
 
     const TimeRefundFactor =
       this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately
@@ -140,7 +140,7 @@ export class ConstructionSiteComponent {
       refundCosts[key as ResourceType] = value * actualRefundFactor;
     });
 
-    playerController.addResources(refundCosts);
+    player.addResources(refundCosts);
 
     // destroy building
     this.gameObject.destroy();

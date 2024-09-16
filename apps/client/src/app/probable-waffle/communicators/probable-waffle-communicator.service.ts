@@ -1,10 +1,10 @@
 import { EventEmitter, Injectable, OnDestroy } from "@angular/core";
 import {
   ProbableWaffleCommunicatorMessageEvent,
-  ProbableWaffleCommunicatorSelectionEvent,
   ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
+  ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
   ProbableWafflePlayerDataChangeEvent,
@@ -29,13 +29,27 @@ export class ProbableWaffleCommunicatorService
   gameModeChanged?: TwoWayCommunicator<ProbableWaffleGameModeDataChangeEvent, ProbableWaffleCommunicatorType>;
   playerChanged?: TwoWayCommunicator<ProbableWafflePlayerDataChangeEvent, ProbableWaffleCommunicatorType>;
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
+  gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
 
-  // game events
-  selection?: TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>;
-
-  saveGame = new EventEmitter<void>(); // todo just for test
-  allScenes = new EventEmitter<{ name: string; data?: any }>();
+  /**
+   * utility events that are broadcast to game instance and other angular services - for example save game
+   */
+  utilityEvents = new EventEmitter<{ name: "save-game"; data?: any }>();
+  /**
+   * cross scene events - internal phaser events that are not related to game instance and are broadcast to all scenes
+   */
+  allScenes = new EventEmitter<{
+    name:
+      | "save-game"
+      | "restart-game"
+      | "selection.deselect"
+      | "selection.singleSelect"
+      | "selection.multiSelect"
+      | "selection.multiSelectPreview"
+      | "selection.terrainSelect";
+    data?: any;
+  }>();
 
   startCommunication(gameInstanceId: string, socket?: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
@@ -60,6 +74,11 @@ export class ProbableWaffleCommunicatorService
       ProbableWaffleCommunicatorType
     >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "spectatorDataChange", gameInstanceId, socket);
 
+    this.gameStateChanged = new TwoWayCommunicator<
+      ProbableWaffleGameStateDataChangeEvent,
+      ProbableWaffleCommunicatorType
+    >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "gameStateDataChange", gameInstanceId, socket);
+
     this.message = new TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>(
       ProbableWaffleGatewayEvent.ProbableWaffleMessage,
       "message",
@@ -67,21 +86,10 @@ export class ProbableWaffleCommunicatorService
       socket
     );
 
-    this.createGameEvents(gameInstanceId, socket);
-
     socket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
       gameInstanceId,
       type: "join"
     } satisfies ProbableWaffleWebsocketRoomEvent);
-  }
-
-  private createGameEvents(gameInstanceId: string, socket?: Socket) {
-    this.selection = new TwoWayCommunicator<ProbableWaffleCommunicatorSelectionEvent, ProbableWaffleCommunicatorType>(
-      ProbableWaffleGatewayEvent.ProbableWaffleAction,
-      "selection",
-      gameInstanceId,
-      socket
-    );
   }
 
   stopCommunication(gameInstanceId: string, socket?: Socket) {
@@ -101,7 +109,7 @@ export class ProbableWaffleCommunicatorService
     this.gameModeChanged?.destroy();
     this.playerChanged?.destroy();
     this.spectatorChanged?.destroy();
+    this.gameStateChanged?.destroy();
     this.message?.destroy();
-    this.selection?.destroy();
   }
 }

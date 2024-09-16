@@ -4,15 +4,16 @@
   "projectType": "application",
   "sourceRoot": "apps/client/src",
   "prefix": "fuzzy-waddle",
+  "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:browser-esbuild",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/client",
         "index": "apps/client/src/index.html",
         "main": "apps/client/src/main.ts",
-        "polyfills": "apps/client/src/polyfills.ts",
+        "polyfills": ["apps/client/src/polyfills.ts", "@angular/localize/init"],
         "tsConfig": "apps/client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets", "apps/client/src/manifest.webmanifest"],
@@ -20,7 +21,15 @@
         "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
         "serviceWorker": true,
         "ngswConfigPath": "apps/client/ngsw-config.json",
-        "allowedCommonJsDependencies": ["phaser", "websocket", "cross-fetch"]
+        "allowedCommonJsDependencies": [
+          "phaser",
+          "websocket",
+          "cross-fetch",
+          "easystarjs",
+          "ws",
+          "@supabase/node-fetch",
+          "eventemitter3"
+        ]
       },
       "configurations": {
         "production": {
@@ -65,7 +74,10 @@
           "buildTarget": "client:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "options": {
+        "proxyConfig": "apps/client/proxy.conf.json"
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -86,6 +98,5 @@
         "jestConfig": "apps/client/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

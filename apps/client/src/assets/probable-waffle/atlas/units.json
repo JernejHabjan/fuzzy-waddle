@@ -4,7 +4,7 @@
 			"image": "units.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 50,
+				"w": 68,
 				"h": 26
 			},
 			"scale": 1,
@@ -554,6 +554,27 @@
 						"w": 22,
 						"h": 24
 					}
+				},
+				{
+					"filename": "skaduwee/owl/projectile/furball/1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 16,
+						"h": 16
+					},
+					"frame": {
+						"x": 51,
+						"y": 1,
+						"w": 16,
+						"h": 16
+					}
 				}
 			]
 		}
@@ -561,6 +582,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:b84290915365b353da8258d4e580d618:2d3ecc2b79941dbb7e1289518bf27735:f2a24b8f3894bf9bf01b668fabf88373$"
+		"smartupdate": "$TexturePacker:SmartUpdate:b0a1764716df2c5d9942a68718d887d4:605511971d181bbcedc1fe9541d86376:f2a24b8f3894bf9bf01b668fabf88373$"
 	}
 }

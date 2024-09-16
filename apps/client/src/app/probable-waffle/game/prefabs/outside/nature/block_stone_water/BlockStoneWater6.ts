@@ -6,6 +6,10 @@ import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class BlockStoneWater6 extends Phaser.GameObjects.Container {
@@ -35,7 +39,16 @@ export default class BlockStoneWater6 extends Phaser.GameObjects.Container {
     this.add(outside_nature_block_stone_water_6);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new ColliderComponent()], []);
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0x95a083
+        } satisfies ObjectDescriptorDefinition),
+        new ColliderComponent()
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

@@ -48,6 +48,7 @@ import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
 import WallTopRightBottomLeft from "../prefabs/buildings/tivara/wall/WallTopRightBottomLeft";
 import WallTopRightBottomRight from "../prefabs/buildings/tivara/wall/WallTopRightBottomRight";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
+import { IdComponent } from "../entity/actor/components/id-component";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -147,13 +148,18 @@ export class ActorManager {
       name: actorName
     };
     const transform = actor as any as Transform;
-    if (transform.x !== undefined) actorDefinition["x"] = transform.x;
-    if (transform.y !== undefined) actorDefinition["y"] = transform.y;
-    if (transform.z !== undefined) actorDefinition["z"] = transform.z;
+    if (transform.x !== undefined) actorDefinition.x = transform.x;
+    if (transform.y !== undefined) actorDefinition.y = transform.y;
+    if (transform.z !== undefined) actorDefinition.z = transform.z;
     const ownerComponent = getActorComponent(actor, OwnerComponent);
-    if (ownerComponent) actorDefinition["owner"] = ownerComponent.getOwner();
+    if (ownerComponent) actorDefinition.owner = ownerComponent.getOwner();
     const selectableComponent = getActorComponent(actor, SelectableComponent);
-    if (selectableComponent) actorDefinition["selectable"] = selectableComponent.getSelected();
+    if (selectableComponent) actorDefinition.selectable = selectableComponent.getSelected();
+    const idComponent = getActorComponent(actor, IdComponent);
+    if (idComponent) actorDefinition.id = idComponent.id;
+
+    // todo blackboard - create a blackboard component that can be added to actors
+
     return actorDefinition;
   }
 
@@ -172,6 +178,7 @@ export class ActorManager {
     if (transform.z !== undefined) transform.z = properties.z;
     if (properties.owner) getActorComponent(actor, OwnerComponent)?.setOwner(properties.owner);
     if (properties.selectable) getActorComponent(actor, SelectableComponent)?.setSelected(properties.selectable);
+    if (properties.id) getActorComponent(actor, IdComponent)?.setId(properties.id);
     DepthHelper.setActorDepth(actor);
     return actor;
   }

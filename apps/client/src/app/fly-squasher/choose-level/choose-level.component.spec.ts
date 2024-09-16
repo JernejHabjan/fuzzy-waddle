@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ChooseLevelComponent } from "./choose-level.component";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter } from "@angular/router";
 
 describe("ChooseLevelComponent", () => {
   let component: ChooseLevelComponent;
@@ -9,7 +9,8 @@ describe("ChooseLevelComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChooseLevelComponent, RouterTestingModule]
+      imports: [ChooseLevelComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChooseLevelComponent);

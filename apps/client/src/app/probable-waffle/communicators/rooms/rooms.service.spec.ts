@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
-
 import { RoomsService } from "./rooms.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { RoomsServiceInterface } from "./rooms.service.interface";
 import { Observable } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
 import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
 import { computed, signal } from "@angular/core";
+import { provideHttpClient } from "@angular/common/http";
 
 export const roomsServiceStub = {
   rooms: signal<ProbableWaffleRoom[]>([]),
@@ -37,8 +37,7 @@ describe("RoomsService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [{ provide: AuthService, useValue: authServiceStub }]
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: AuthService, useValue: authServiceStub }]
     });
     service = TestBed.inject(RoomsService);
   });

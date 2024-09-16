@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing";
-
 import { GameInstanceClientService } from "./game-instance-client.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
 
 export const gameInstanceClientServiceStub = {
   get gameInstanceId(): string | null {
@@ -34,8 +34,7 @@ describe("GameInstanceClientService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [{ provide: AuthService, useValue: authServiceStub }]
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: AuthService, useValue: authServiceStub }]
     });
     service = TestBed.inject(GameInstanceClientService);
   });

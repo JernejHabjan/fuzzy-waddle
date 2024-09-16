@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { ProbableWaffleDataChangeEventProperty, ProbableWaffleGameModeData } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { CommonModule } from "@angular/common";
+
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -9,7 +9,7 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./game-mode-definition.component.html",
   styleUrls: ["./game-mode-definition.component.scss"],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class GameModeDefinitionComponent {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);

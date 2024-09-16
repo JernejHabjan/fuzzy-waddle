@@ -29,9 +29,9 @@ export class Pathfinder {
     });
   }
 
-  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, vector: Vector2Simple): Vector2Simple | null {
+  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, vector: Vector2Simple): Vector2Simple | undefined {
     const tileAtStart = tilemap.getTileAt(vector.x, vector.y);
-    if (!tileAtStart) return null;
+    if (!tileAtStart) return;
     const centerX = tileAtStart.getCenterX();
     const centerY = tileAtStart.getCenterY();
     return { x: centerX, y: centerY };

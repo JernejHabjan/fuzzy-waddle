@@ -3,9 +3,13 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
+/* START-USER-IMPORTS */
 import { setActorData } from "../../../../../data/actor-data";
 import { ColliderComponent } from "../../../../../entity/actor/components/collider-component";
-/* START-USER-IMPORTS */
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class RampStoneBottomLeft extends Phaser.GameObjects.Image {
@@ -21,7 +25,16 @@ export default class RampStoneBottomLeft extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [new ColliderComponent()], []);
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0x95a083
+        } satisfies ObjectDescriptorDefinition),
+        new ColliderComponent()
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

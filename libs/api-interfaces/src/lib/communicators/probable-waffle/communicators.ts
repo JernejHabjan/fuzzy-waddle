@@ -8,6 +8,7 @@ import {
   ProbableWafflePlayerStateData
 } from "../../game-instance/probable-waffle/player";
 import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
+import { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
 
 export type ProbableWaffleGameCommunicatorType = "selection";
 
@@ -16,6 +17,7 @@ export type ProbableWaffleCommunicatorType =
   | "gameModeDataChange"
   | "playerDataChange"
   | "spectatorDataChange"
+  | "gameStateDataChange"
   | "message"
   | ProbableWaffleGameCommunicatorType;
 
@@ -28,8 +30,8 @@ export type RecursiveKeyOf<TObj extends object> = {
   [TKey in keyof TObj & (string | number)]: TObj[TKey] extends any[]
     ? `${TKey}`
     : TObj[TKey] extends object
-    ? `${TKey}` | `${TKey}.${RecursiveKeyOf<TObj[TKey]>}`
-    : `${TKey}`;
+      ? `${TKey}` | `${TKey}.${RecursiveKeyOf<TObj[TKey]>}`
+      : `${TKey}`;
 }[keyof TObj &
   (string | number) &
   Exclude<keyof TObj, keyof Date> &
@@ -57,13 +59,21 @@ export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
   playerNumber?: number;
   playerStateData: Partial<ProbableWafflePlayerStateData>;
   playerControllerData: Partial<ProbableWafflePlayerControllerData>;
+  data: Record<string, any>;
 }>;
 
 export type ProbableWafflePlayerDataChangeEventProperty =
   | ProbableWaffleDataChangeEventProperty<ProbableWafflePlayer>
   | "joined"
   | "left"
-  | "joinedFromNetwork";
+  | "joinedFromNetwork"
+  | "selection.added"
+  | "selection.removed"
+  | "selection.set"
+  | "selection.cleared"
+  | "resource.added"
+  | "resource.removed"
+  | "command.issued.move"; // todo this command needs to be removed from here as it belongs to actor event
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {
   property: ProbableWafflePlayerDataChangeEventProperty;
   data: ProbableWafflePlayerDataChangeEventPayload;
@@ -76,6 +86,24 @@ export type ProbableWaffleSpectatorDataChangeEventProperty =
 export interface ProbableWaffleSpectatorDataChangeEvent extends ProbableWaffleCommunicatorEvent {
   property: ProbableWaffleSpectatorDataChangeEventProperty;
   data: Partial<ProbableWaffleSpectatorData>;
+}
+
+export type ProbableWaffleGameStateDataChangeEventProperty =
+  | ProbableWaffleDataChangeEventProperty<ProbableWaffleGameStateData>
+  | RecursiveKeyOf<ActorDefinition>;
+
+export type ProbableWaffleGameStateDataPayload = Partial<{
+  actorDefinition: Partial<
+    {
+      id: string;
+    } & Partial<ActorDefinition>
+  >;
+  gameState: Partial<ProbableWaffleGameStateData>;
+}>;
+
+export interface ProbableWaffleGameStateDataChangeEvent extends ProbableWaffleCommunicatorEvent {
+  property: ProbableWaffleGameStateDataChangeEventProperty;
+  data: ProbableWaffleGameStateDataPayload;
 }
 
 export interface ProbableWaffleCommunicatorMessageEvent extends ProbableWaffleCommunicatorEvent {

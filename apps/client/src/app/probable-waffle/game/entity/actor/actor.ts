@@ -26,7 +26,7 @@ export abstract class Actor implements IComponent {
     this.components = new ComponentService(this.name);
     if (options?.scene) {
       options.scene.subscribe(options.scene.onUpdate.subscribe((u) => this.update(u.time, u.delta)));
-      options.scene.subscribe(options.scene.onDestroy.subscribe(() => this.destroy()));
+      options.scene.subscribe(options.scene.onShutdown.subscribe(() => this.destroy()));
     }
   }
 

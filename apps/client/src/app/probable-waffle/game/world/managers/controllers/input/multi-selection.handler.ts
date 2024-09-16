@@ -1,5 +1,6 @@
 import Phaser, { GameObjects, Geom, Input } from "phaser";
 import HudProbableWaffle from "../../../../scenes/HudProbableWaffle";
+import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
 
 export const MULTI_SELECTING = "multiSelecting";
 
@@ -16,7 +17,7 @@ export class MultiSelectionHandler {
 
   constructor(private readonly hudScene: HudProbableWaffle) {
     this.selection = hudScene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5);
-    this.hudScene.onDestroy.subscribe(() => this.destroy());
+    this.hudScene.onShutdown.subscribe(() => this.destroy());
     this.setupEvents();
   }
 
@@ -42,6 +43,8 @@ export class MultiSelectionHandler {
   }
 
   private setupEvents() {
+    const touchEnabled = this.hudScene.input.manager.touch;
+    if (touchEnabled) return;
     this.hudScene.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.hudScene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.hudScene.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
@@ -69,7 +72,7 @@ export class MultiSelectionHandler {
     const isShiftDown = pointer.event.shiftKey;
     const isCtrlDown = pointer.event.ctrlKey;
     if (!pointer.rightButtonReleased()) {
-      this.sendSelection("multiSelect", isShiftDown, isCtrlDown);
+      this.sendSelection("selection.multiSelect", isShiftDown, isCtrlDown);
 
       this.hideSelectionRectangle();
     }
@@ -116,16 +119,19 @@ export class MultiSelectionHandler {
     const isShiftDown = pointer.event.shiftKey;
     const isCtrlDown = pointer.event.ctrlKey;
     // use the new Rectangle to check for overlap
-    this.sendSelection("multiSelectPreview", isShiftDown, isCtrlDown);
+    this.sendSelection("selection.multiSelectPreview", isShiftDown, isCtrlDown);
   }
 
-  private sendSelection(type: "multiSelectPreview" | "multiSelect", shiftKey = false, ctrlKey = false) {
+  private sendSelection(
+    type: "selection.multiSelectPreview" | "selection.multiSelect",
+    shiftKey = false,
+    ctrlKey = false
+  ) {
     if (!this.selectionRect) return;
-    this.hudScene.communicator.selection!.sendLocally({
-      gameInstanceId: this.hudScene.gameInstanceId,
-      emitterUserId: this.hudScene.userId,
-      type,
+    this.hudScene.communicator.allScenes!.emit({
+      name: type,
       data: {
+        button: "left",
         selectedArea: {
           x: this.selectionRect.x,
           y: this.selectionRect.y,
@@ -134,7 +140,7 @@ export class MultiSelectionHandler {
         },
         shiftKey,
         ctrlKey
-      }
+      } satisfies ProbableWaffleSelectionData
     });
   }
 }

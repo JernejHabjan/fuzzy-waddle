@@ -17,3 +17,8 @@ export function getSceneService<T>(scene: Phaser.Scene, serviceClass: new (...ar
   }
   return service;
 }
+
+export function getSceneInitializers(scene: Phaser.Scene) {
+  if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleSceneData");
+  return scene.getSceneGameData().initializers;
+}
