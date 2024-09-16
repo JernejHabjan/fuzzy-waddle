@@ -4,11 +4,12 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FactionType, ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { MatchmakingLevel, MatchmakingOptions } from "./matchmaking.component";
+import { IMatchmakingService } from "./matchmaking.service.interface";
 
 @Injectable({
   providedIn: "root"
 })
-export class MatchmakingService {
+export class MatchmakingService implements IMatchmakingService {
   searching = false;
   readonly matchmakingOptions: MatchmakingOptions;
   private readonly roomsService = inject(RoomsService);

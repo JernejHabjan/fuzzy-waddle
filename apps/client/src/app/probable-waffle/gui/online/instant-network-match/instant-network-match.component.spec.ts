@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { InstantNetworkMatchComponent } from "./instant-network-match.component";
+import { matchmakingServiceStub } from "../matchmaking/matchmaking.service.spec";
+import { MatchmakingService } from "../matchmaking/matchmaking.service";
 
 describe("InstantNetworkMatchComponent", () => {
   let component: InstantNetworkMatchComponent;
@@ -7,7 +9,13 @@ describe("InstantNetworkMatchComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InstantNetworkMatchComponent]
+      imports: [InstantNetworkMatchComponent],
+      providers: [
+        {
+          provide: MatchmakingService,
+          useValue: matchmakingServiceStub
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(InstantNetworkMatchComponent);
