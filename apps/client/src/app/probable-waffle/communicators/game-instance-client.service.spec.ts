@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 
 import { GameInstanceClientService } from "./game-instance-client.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
@@ -17,12 +17,12 @@ import {
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
 } from "@fuzzy-waddle/api-interfaces";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Observable } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
-import { GameInstanceLocalStorageService } from "./storage/game-instance-local-storage.service";
 import { gameInstanceLocalStorageServiceStub } from "./storage/game-instance-local-storage.service.spec";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
+import { provideRouter } from "@angular/router";
+import { provideHttpClient } from "@angular/common/http";
 
 export const gameInstanceClientServiceStub = {
   gameInstance: undefined as ProbableWaffleGameInstance | undefined,
@@ -81,11 +81,13 @@ export const gameInstanceClientServiceStub = {
   async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
     return Promise.resolve(null);
   },
-  async addAiPlayer(): Promise<void> {
+  async addAiPlayer(): Promise<PositionPlayerDefinition> {
     this.gameInstance?.addPlayer(this.gameInstance?.initPlayer({} as any));
+    return Promise.resolve({} as PositionPlayerDefinition);
   },
-  async addSelfAsPlayer(): Promise<void> {
-    return Promise.resolve();
+  async addSelfAsPlayer(): Promise<PositionPlayerDefinition> {
+    this.gameInstance?.addPlayer(this.gameInstance?.initPlayer({} as any));
+    return Promise.resolve({} as PositionPlayerDefinition);
   },
   async gameInstanceMetadataChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>,
@@ -108,8 +110,10 @@ describe("GameInstanceClientService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
         { provide: AuthService, useValue: authServiceStub },
         { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceLocalStorageServiceStub }
       ]

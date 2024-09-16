@@ -26,6 +26,11 @@ import { VisionComponent, VisionDefinition } from "../../../entity/actor/compone
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
 import { getActorComponent } from "../../../data/actor-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -43,6 +48,9 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {
@@ -97,7 +105,8 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
         new ContainableComponent(this),
         new RequirementsComponent(this, {
           actors: [InfantryInn.name]
-        } satisfies RequirementsDefinition)
+        } satisfies RequirementsDefinition),
+        new ActorTranslateComponent(this)
       ],
       [new MovementSystem(this)]
     );
@@ -117,7 +126,7 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
 
     setTimeout(() => {
       console.warn("Warning - triggering automatic damage for test:");
-      getActorComponent(this, HealthComponent)!.takeDamage(10, DamageType.Magical); // todo
+      getActorComponent(this, HealthComponent)?.takeDamage(10, DamageType.Magical); // todo
     }, 1000);
     /* END-USER-CTR-CODE */
   }

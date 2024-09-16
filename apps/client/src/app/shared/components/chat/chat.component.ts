@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   inject,
   Input,
   OnDestroy,
@@ -63,6 +64,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     this.newMessage?.next(this.createMessage(this.message));
     this.message = "";
+  }
+
+  @HostListener("window:beforeunload")
+  async onBeforeUnload() {
+    this.ngOnDestroy();
   }
 
   ngOnDestroy(): void {

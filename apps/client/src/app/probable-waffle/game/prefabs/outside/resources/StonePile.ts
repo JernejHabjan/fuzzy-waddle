@@ -12,6 +12,10 @@ import {
   ResourceSourceComponent,
   ResourceSourceDefinition
 } from "../../../entity/economy/resource/resource-source-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class StonePile extends Phaser.GameObjects.Image {
@@ -30,6 +34,9 @@ export default class StonePile extends Phaser.GameObjects.Image {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0x7e7c78
+        } satisfies ObjectDescriptorDefinition),
         new IdComponent(),
         new SelectableComponent(this, { offsetY: 16 } satisfies SelectableDefinition),
         new ResourceSourceComponent(this, {

@@ -29,6 +29,11 @@ import Temple from "../../buildings/tivara/Temple";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -43,6 +48,9 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0xc2a080
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {
@@ -103,7 +111,8 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
             ResourceType.Minerals,
             ResourceType.Stone
           ]
-        } satisfies GathererDefinition)
+        } satisfies GathererDefinition),
+        new ActorTranslateComponent(this)
       ],
       [new MovementSystem(this)]
     );

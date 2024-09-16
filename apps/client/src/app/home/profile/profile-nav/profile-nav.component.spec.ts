@@ -6,7 +6,6 @@ import { Component } from "@angular/core";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
 
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
-import { RouterTestingModule } from "@angular/router/testing";
 
 @Component({ selector: "fuzzy-waddle-profile-nav", template: "", standalone: true, imports: [] })
 export class ProfileNavTestingComponent {}
@@ -17,7 +16,7 @@ describe("ProfileNavComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileNavComponent, RouterTestingModule],
+      imports: [ProfileNavComponent],
       providers: [provideRouter([])]
     })
       .overrideComponent(ProfileNavComponent, {

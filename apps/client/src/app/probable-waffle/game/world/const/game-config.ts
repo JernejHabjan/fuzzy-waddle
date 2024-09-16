@@ -7,12 +7,14 @@ import { Boot } from "../../scenes/Boot";
 import MapEmberEnclave from "../../scenes/MapEmberEnclave";
 import HudProbableWaffle from "../../scenes/HudProbableWaffle";
 import ColorReplacePipelinePlugin from "phaser3-rex-plugins/plugins/colorreplacepipeline-plugin";
+import GameActionsLayer from "../../scenes/GameActionsLayer";
 import { Plugins } from "./Plugins";
+import { OwnerComponent } from "../../entity/actor/components/owner-component";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
   // scene: [GrasslandScene, PlaygroundScene],
-  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing, MapEmberEnclave, HudProbableWaffle],
+  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing, MapEmberEnclave, HudProbableWaffle, GameActionsLayer],
   physics: {
     default: "arcade",
     arcade: {
@@ -24,11 +26,15 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
   backgroundColor: "#222",
   plugins: {
     global: [
-      {
-        key: Plugins.RexColorReplacePipeline,
-        plugin: ColorReplacePipelinePlugin,
-        start: true
-      }
+      ...(OwnerComponent.useColorReplace
+        ? [
+            {
+              key: Plugins.RexColorReplacePipeline,
+              plugin: ColorReplacePipelinePlugin,
+              start: true
+            }
+          ]
+        : [])
     ]
   }
 };

@@ -9,7 +9,7 @@ export class HudGameState {
   private readonly text: Phaser.GameObjects.Text;
   private readonly overlay: Phaser.GameObjects.Rectangle;
   constructor(private readonly scene: ProbableWaffleScene) {
-    scene.onDestroy.subscribe(() => this.destroy());
+    scene.onShutdown.subscribe(() => this.destroy());
     scene.onPostCreate.subscribe(() => this.listen());
     this.overlay = this.scene.add.rectangle(0, 0, 0, 0, 0x000000, 0.5);
     this.text = this.scene.add.text(0, 0, "", { align: "center", fontSize: "32px" }).setOrigin(0.5, 0.5);
@@ -60,6 +60,7 @@ export class HudGameState {
         this.overlay.visible = true;
         break;
       case GameSessionState.StartingTheGame:
+        if (!this.text.active) return;
         this.text.text = "3";
         this.text.visible = true;
         this.overlay.visible = true;
@@ -67,13 +68,13 @@ export class HudGameState {
         const handleCountdown = environment.production;
         if (handleCountdown) {
           setTimeout(() => {
-            this.text.text = "2";
+            if (this.text.active) this.text.text = "2";
           }, 1000);
           setTimeout(() => {
-            this.text.text = "1";
+            if (this.text.active) this.text.text = "1";
           }, 2000);
           setTimeout(() => {
-            this.text.visible = false;
+            if (this.text.active) this.text.visible = false;
             this.overlay.visible = false;
           }, 3000);
         } else {
@@ -82,6 +83,7 @@ export class HudGameState {
         }
         break;
       case GameSessionState.InProgress:
+        if (!this.text.active) return;
         this.text.visible = false;
         this.overlay.visible = false;
         break;

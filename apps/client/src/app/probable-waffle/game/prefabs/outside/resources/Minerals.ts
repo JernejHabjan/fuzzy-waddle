@@ -12,6 +12,10 @@ import {
   ResourceSourceDefinition
 } from "../../../entity/economy/resource/resource-source-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Minerals extends Phaser.GameObjects.Image {
@@ -36,6 +40,9 @@ export default class Minerals extends Phaser.GameObjects.Image {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0x2b8acd
+        } satisfies ObjectDescriptorDefinition),
         new IdComponent(),
         new SelectableComponent(this, { offsetY: 16 } satisfies SelectableDefinition),
         new ResourceSourceComponent(this, {

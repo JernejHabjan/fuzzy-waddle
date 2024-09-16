@@ -27,6 +27,7 @@ export class CameraMovementHandler {
     this.mainCamera = scene.cameras.main;
     this.input = scene.input;
     this.createKeyboardControls();
+    this.createPointerControls();
     this.zoomListener();
     this.screenEdgeListener();
     this.lockCursorToScreen();
@@ -59,6 +60,9 @@ export class CameraMovementHandler {
     this.input.off(Input.Events.GAME_OUT);
     this.input.off(Input.Events.GAME_OVER);
     this.input.off(Input.Events.POINTER_WHEEL, this.zoomWithScrollHandler);
+    this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
+    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
     this.keyboardMovementControls?.destroy();
   }
 
@@ -84,6 +88,33 @@ export class CameraMovementHandler {
     };
 
     this.keyboardMovementControls = new Cameras.Controls.FixedKeyControl(controlConfig);
+  }
+
+  /**
+   * Creates pointer controls for camera movement (dragging) on mobile
+   */
+  private createPointerControls() {
+    const touchEnabled = this.input.manager.touch;
+    if (!touchEnabled) return;
+    this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
+    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
+  }
+
+  private handlePointerDown(pointer: Input.Pointer) {
+    if (!pointer.leftButtonDown()) return;
+    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+  }
+
+  private handlePointerMove(pointer: Input.Pointer) {
+    if (!pointer.leftButtonDown()) return;
+    this.mainCamera.scrollX -= pointer.velocity.x * this.cameraZoomFactor;
+    this.mainCamera.scrollY -= pointer.velocity.y * this.cameraZoomFactor;
+  }
+
+  private handlePointerUp(pointer: Input.Pointer) {
+    if (!pointer.rightButtonReleased()) return;
+    this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
   }
 
   private screenEdgeMovementUpdate() {

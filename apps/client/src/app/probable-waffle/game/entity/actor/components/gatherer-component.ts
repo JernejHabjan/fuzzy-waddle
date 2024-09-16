@@ -9,7 +9,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { getPlayerController } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -217,9 +217,9 @@ export class GathererComponent {
         // return immediately
         const owner = getActorComponent(resourceSource, OwnerComponent)?.getOwner();
         if (!owner) throw new Error("Owner not found");
-        const playerController = getPlayerController(this.gameObject.scene, owner);
-        if (playerController) {
-          const returnedResources = playerController.addResource(this.carriedResourceType, this.carriedResourceAmount);
+        const player = getPlayer(this.gameObject.scene, owner);
+        if (player) {
+          const returnedResources = player.addResource(this.carriedResourceType, this.carriedResourceAmount);
           if (returnedResources > 0) {
             this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
 

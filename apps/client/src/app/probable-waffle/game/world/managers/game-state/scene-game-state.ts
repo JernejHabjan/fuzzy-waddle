@@ -10,7 +10,7 @@ export class MapObject {
 export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };
   constructor(private readonly scene: ProbableWaffleScene) {
-    scene.onDestroy.subscribe(() => this.destroy());
+    scene.onShutdown.subscribe(() => this.destroy());
     scene.onPostCreate.subscribe(() => this.listen());
   }
 

@@ -1,0 +1,544 @@
+{
+    "id": "a6a91335-a5f2-4898-89b5-dd502910baa7",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "superClassName": "ProbableWaffleScene",
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "GameActionsLayer",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 220,
+        "borderHeight": 410
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "10048e55-af20-4c54-ad7e-0d472a583477",
+            "label": "game_actions_container",
+            "displayName": "Game actions",
+            "scope": "CLASS",
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "2dda2ee8-524a-4409-abf8-21d52215f30d",
+                    "label": "game_actions_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "x": -112.60605580401727,
+                    "y": -190.29550515717648,
+                    "scaleX": 10.948325638168216,
+                    "scaleY": 10.305188906705764,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 1,
+                    "rightWidth": 1,
+                    "topHeight": 1,
+                    "bottomHeight": 1,
+                    "width": 20,
+                    "height": 40
+                },
+                {
+                    "type": "Container",
+                    "id": "82286ea3-8d89-462d-8e5d-634cbc7eaa4a",
+                    "label": "game_action_quit",
+                    "displayName": "Quit",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -0.6060558040172737,
+                    "y": 177.70449484282352,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "d559b71d-1ca7-4263-87f7-9dc6dc9852b5",
+                            "label": "game_actions_quit_bg_3",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "021f3421-6238-4318-b8b4-43d88acdb67c",
+                            "label": "text_3",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Quit",
+                            "align": "center",
+                            "fontSize": "14px",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "72741ff2-2526-4d13-a256-685955539944",
+                            "label": "onPointerUpScript_quit",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "6c80fbc9-cde8-4a2a-ae2c-8dc310eab448",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventQuit",
+                                    "displayName": "Emit \"game-quit\"",
+                                    "eventName": "game-quit"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "a09709e7-b28f-4c3a-95c1-90d02e8d98ba",
+                            "label": "onPointerDownScript_quit",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "7fa63355-212d-4544-9a13-9bdcdcda3cb5",
+                                    "label": "quit_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "00d7eed6-68ae-4267-ae5a-9c58d4998bf5",
+                    "label": "game_action_load",
+                    "displayName": "Load",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -1.6060558040172737,
+                    "y": 112.70449484282352,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "74013601-36fe-4815-b2bd-f4371cab3c80",
+                            "label": "game_actions_quit_bg_4",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "2f528641-ce3a-4575-bc34-58dbc73b0e97",
+                            "label": "text_4",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Load",
+                            "align": "center",
+                            "fontSize": "14px",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "9608b685-3fc2-4c85-9c5e-a35c8009c709",
+                            "label": "onPointerUpScript_load",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "04228379-c21f-46df-9856-8ed93fdb032b",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventLoad",
+                                    "displayName": "Emit \"game-load\"",
+                                    "eventName": "game-load"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "07747685-ad8d-4aa7-9a2e-0dc6b2867100",
+                            "label": "onPointerDownScript_load",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "4e4ede52-02cf-4fe1-9898-d6250c15afde",
+                                    "label": "load_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "dbdfb2ae-5b20-4088-80d4-9802f57504ea",
+                    "label": "game_action_save",
+                    "displayName": "Save",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -2.6060558040172737,
+                    "y": 46.70449484282352,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "6c9f3cd8-5e09-4b03-bef4-484532bf23c0",
+                            "label": "game_actions_quit_bg_5",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "91ae5205-3e4e-4d75-b014-ae88c87c5dbe",
+                            "label": "text_5",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Save",
+                            "align": "center",
+                            "fontSize": "14px",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "e654edb2-0ef5-4319-9277-b9c4e3481685",
+                            "label": "onPointerUpScript_save",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "c057f277-7bd3-476e-a8cd-d37cef1b4da1",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventSaveAction",
+                                    "displayName": "Emit \"game-save\"",
+                                    "eventName": "game-save"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "7d3c6aad-059c-4b12-997a-1b6700bba7b9",
+                            "label": "onPointerDownScript_save",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "25b973e6-d5c1-498e-89ff-91ecd431fa86",
+                                    "label": "save_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "23759fc2-f431-4c67-b64a-62a8936969c9",
+                    "label": "game_action_settings",
+                    "displayName": "Settings",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -2.6060558040172737,
+                    "y": -16.29550515717648,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "d14955c1-8951-40f2-b5f7-e7db7ef4aaa3",
+                            "label": "game_actions_quit_bg_1",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "aa09e836-2063-4c4a-b6a4-fe6c3b8fcf7c",
+                            "label": "text_2",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Settings",
+                            "align": "center",
+                            "fontSize": "14px",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "c10154d3-7a6d-4c7d-bd89-5924aab3d907",
+                            "label": "onPointerUpScript_settings",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "ad672895-7ec6-4090-b220-ff8abb37e2a7",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventSettings",
+                                    "displayName": "Emit \"game-settings\"",
+                                    "eventName": "game-settings"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "4b5662d2-a5aa-4996-9328-4f0dd27f93c5",
+                            "label": "onPointerDownScript_settings",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "fb1d6b3e-f13f-4fbb-ac80-570127af2b3b",
+                                    "label": "settings_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "06407245-0844-4526-acee-f1e8d993a5c2",
+                    "label": "game_action_restart",
+                    "displayName": "Restart",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -3.6060558040172737,
+                    "y": -81.29550515717648,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "83ace417-3644-45f7-ada3-7866d709bf88",
+                            "label": "game_actions_quit_bg",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "e9b5c39f-5a7c-4626-8b9c-8765096ca6ef",
+                            "label": "text",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Restart",
+                            "align": "center",
+                            "fontSize": "14px",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "0e592492-224d-4953-8a90-e1904fbfa948",
+                            "label": "onPointerUpScript_continue_1",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "b87f459e-c0b8-48d3-967c-c0fd9bca2e3a",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventRestart",
+                                    "displayName": "Emit \"game-restart\"",
+                                    "eventName": "game-restart"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "2534d8f1-71e5-4fb3-9910-14236d4c23d2",
+                            "label": "onPointerDownScript_restart",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "03fd396f-7ae1-49e5-84d6-bf3ff9748cd3",
+                                    "label": "restart_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "1fa8542f-52e4-4886-9e22-8e8e58a4d5ff",
+                    "label": "game_action_continue",
+                    "displayName": "Continue",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -4.606055804017274,
+                    "y": -147.29550515717648,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "92ef07f0-e9f6-4311-8c36-8343b5a4765c",
+                            "label": "game_actions_quit_bg_2",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "5895c65c-6104-422d-b2d2-b5ff2b0b1f51",
+                            "label": "text_1",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Continue",
+                            "align": "center",
+                            "fontSize": "14px",
+                            "color": "#000000ff",
+                            "stroke": "#ffffffff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "c1f1e619-eace-4529-b69d-3dd29eb273af",
+                            "label": "onPointerUpScript_continue",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "5c15c1d4-b0ee-4655-97f3-d332c2f95859",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventContinueAction",
+                                    "displayName": "Emit \"game-continue\"",
+                                    "eventName": "game-continue"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "6b86d8b4-4084-4407-ada9-8a615a8230a0",
+                            "label": "onPointerDownScript_continue",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "02a0e668-0373-49ee-9c4c-7a126bbb8b1f",
+                                    "label": "continue_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

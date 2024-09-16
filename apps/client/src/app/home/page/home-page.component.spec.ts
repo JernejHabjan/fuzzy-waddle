@@ -4,7 +4,6 @@ import { HomePageComponent } from "./home-page.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { HomePageNavTestingComponent } from "./home-page-nav/home-page-nav.component.spec";
 import { provideRouter } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import { DbAccessTestService } from "../../data-access/db-access-test/db-access-test.service";
@@ -12,7 +11,8 @@ import { dbAccessTestServiceStub } from "../../data-access/db-access-test/db-acc
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
 
 describe("HomePageComponent", () => {
   let component: HomePageComponent;
@@ -20,9 +20,11 @@ describe("HomePageComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomePageComponent, FontAwesomeTestingModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [HomePageComponent, FontAwesomeTestingModule],
       providers: [
         provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceStub },
         { provide: DbAccessTestService, useValue: dbAccessTestServiceStub },
         { provide: ServerHealthService, useValue: serverHealthServiceStub }

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from "@angular/core";
+import { Component, HostListener, inject, OnDestroy } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 import { ScoreTableComponent } from "./table/score-table.component";
@@ -18,6 +18,11 @@ export class ScoreScreenComponent implements OnDestroy {
   protected changeTab = (scoreTable: string) => {
     this.activeTab = scoreTable;
   };
+
+  @HostListener("window:beforeunload")
+  async onBeforeUnload() {
+    await this.ngOnDestroy();
+  }
 
   async ngOnDestroy() {
     await this.gameInstanceClientService.stopGameInstance();

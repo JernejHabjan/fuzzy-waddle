@@ -1,12 +1,11 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
-import { getActorSystem } from "../../../data/actor-system";
-import { MovementSystem } from "../../systems/movement.system";
 import { Subscription } from "rxjs";
 import Phaser from "phaser";
-import { getCommunicator } from "../../../data/scene-data";
+import { listenToSelectionEvents } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "./id-component";
+import { ActorTranslateComponent } from "./actor-translate-component";
 
 export type SelectableDefinition = {
   offsetY?: number;
@@ -16,7 +15,7 @@ export class SelectableComponent {
   private selected: boolean = false;
   private selectionCircle!: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
-  private playerChangedSubscription?: Subscription;
+  private selectionChangedSubscription?: Subscription;
   constructor(
     private readonly gameObject: GameObject,
     private readonly selectableDefinition?: SelectableDefinition
@@ -32,9 +31,9 @@ export class SelectableComponent {
   };
 
   private subscribeActorMove() {
-    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-    if (!movementSystem) return;
-    this.actorMovedSubscription = movementSystem.actorMoved.subscribe(this.update);
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    if (!actorTranslateComponent) return;
+    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(this.update);
   }
 
   private createSelectionCircle() {
@@ -54,7 +53,6 @@ export class SelectableComponent {
     this.selected = selected;
     this.selectionCircle.visible = selected;
     if (selected) this.update();
-    console.warn(`Selected set to ${selected} for ${this.gameObject.constructor.name}`);
   }
 
   getSelected(): boolean {
@@ -78,34 +76,32 @@ export class SelectableComponent {
   }
 
   private listenToSelectionEvents() {
-    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
-      .playerChanged?.onWithFilter((p) => p.property.startsWith("selection"))
-      .subscribe((payload) => {
-        const gameObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
-        if (!gameObjectId) return;
-        switch (payload.property) {
-          case "selection.added":
-            const selection = payload.data.playerStateData!.selection!;
-            if (selection.includes(gameObjectId)) this.setSelected(true);
-            break;
-          case "selection.removed":
-            const removed = payload.data.playerStateData!.selection!;
-            if (removed.includes(gameObjectId)) this.setSelected(false);
-            break;
-          case "selection.set":
-            const set = payload.data.playerStateData!.selection!;
-            this.setSelected(set.includes(gameObjectId));
-            break;
-          case "selection.cleared":
-            this.setSelected(false);
-            break;
-        }
-      });
+    this.selectionChangedSubscription = listenToSelectionEvents(this.gameObject.scene)?.subscribe((payload) => {
+      const gameObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!gameObjectId) return;
+      switch (payload.property) {
+        case "selection.added":
+          const selection = payload.data.playerStateData!.selection!;
+          if (selection.includes(gameObjectId)) this.setSelected(true);
+          break;
+        case "selection.removed":
+          const removed = payload.data.playerStateData!.selection!;
+          if (removed.includes(gameObjectId)) this.setSelected(false);
+          break;
+        case "selection.set":
+          const set = payload.data.playerStateData!.selection!;
+          this.setSelected(set.includes(gameObjectId));
+          break;
+        case "selection.cleared":
+          this.setSelected(false);
+          break;
+      }
+    });
   }
 
   private destroy = () => {
     this.selectionCircle.destroy();
     this.actorMovedSubscription?.unsubscribe();
-    this.playerChangedSubscription?.unsubscribe();
+    this.selectionChangedSubscription?.unsubscribe();
   };
 }

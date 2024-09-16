@@ -161,7 +161,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeRangedFemale);
 
     // skaduweeWarriorMale
-    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1408, 848);
+    const skaduweeWarriorMale = new SkaduweeWarriorMale(this, 1504, 816);
     this.add.existing(skaduweeWarriorMale);
 
     // generalWarrior

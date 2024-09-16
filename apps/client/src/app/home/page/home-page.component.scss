@@ -41,6 +41,11 @@
       color: white;
     }
   }
+  @media (max-width: 520px) {
+    .featured-title {
+      font-size: 1em;
+    }
+  }
 }
 
 .all-games {

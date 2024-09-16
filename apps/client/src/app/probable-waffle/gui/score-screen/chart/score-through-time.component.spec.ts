@@ -50,7 +50,7 @@ describe("ScoreThroughTimeComponent", () => {
   it("should create chart", async () => {
     const gameInstanceService = gameInstanceClientServiceStub;
 
-    gameInstanceService.createGameInstance(
+    await gameInstanceService.createGameInstance(
       "test",
       ProbableWaffleGameInstanceVisibility.Private,
       ProbableWaffleGameInstanceType.Skirmish

@@ -5,9 +5,10 @@ import { serverHealthServiceStub } from "../../shared/services/server-health.ser
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import { SpectateTestComponent } from "./spectate/spectate.component.spec";
-import { RouterTestingModule } from "@angular/router/testing";
 import { SpectateComponent } from "./spectate/spectate.component";
 import { Component } from "@angular/core";
+import { provideRouter } from "@angular/router";
+
 @Component({ selector: "little-muncher-home", template: "", standalone: true, imports: [] })
 export class HomeTestingComponent {}
 
@@ -18,6 +19,7 @@ describe("HomeComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         {
           provide: ServerHealthService,
           useValue: serverHealthServiceStub
@@ -27,7 +29,7 @@ describe("HomeComponent", () => {
           useValue: authServiceStub
         }
       ],
-      imports: [HomeComponent, RouterTestingModule]
+      imports: [HomeComponent]
     })
       .overrideComponent(HomeComponent, {
         remove: {

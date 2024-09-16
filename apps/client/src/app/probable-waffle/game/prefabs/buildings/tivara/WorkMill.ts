@@ -23,6 +23,10 @@ import {
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -49,6 +53,9 @@ export default class WorkMill extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0x967847
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {

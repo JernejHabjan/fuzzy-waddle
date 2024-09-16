@@ -14,7 +14,7 @@ export class SingleSelectionHandler {
     private readonly tilemap: Phaser.Tilemaps.Tilemap
   ) {
     this.bindSceneInput();
-    this.scene.events.once(Phaser.Scenes.Events.DESTROY, this.destroy, this);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     hudScene.events.on(MULTI_SELECTING, this.onMultiSelecting, this);
   }
 

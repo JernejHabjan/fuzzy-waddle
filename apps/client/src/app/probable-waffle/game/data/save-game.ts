@@ -1,27 +1,23 @@
-import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
-import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
-import Hedgehog from "../prefabs/animals/Hedgehog";
-import Sheep from "../prefabs/animals/Sheep";
 import { ActorManager } from "./actor-manager";
 import { filter, Subscription } from "rxjs";
-import GameObject = Phaser.GameObjects.GameObject;
 import {
   SceneActorCreatorCommunicator,
   SceneActorSaveCommunicator
 } from "../scenes/components/scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 import { onPostSceneInitialized } from "./game-object-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class SaveGame {
-  private saveSubscription: Subscription;
+  private saveGameSubscription: Subscription;
 
   constructor(private scene: GameProbableWaffleScene) {
     onPostSceneInitialized(scene, this.postSceneInitialized, this);
     // only ones that have name: SaveGame.SaveGameEvent
-    this.saveSubscription = scene.communicator.allScenes
+    this.saveGameSubscription = scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "save-game"))
       .subscribe(() => this.onSaveGame());
-    scene.onDestroy.subscribe(() => this.destroy());
+    scene.onShutdown.subscribe(() => this.destroy());
   }
 
   private postSceneInitialized() {
@@ -52,7 +48,7 @@ export class SaveGame {
   }
 
   private destroy() {
-    this.saveSubscription.unsubscribe();
+    this.saveGameSubscription.unsubscribe();
   }
 
   private onSaveGame() {

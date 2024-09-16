@@ -2,11 +2,11 @@
   <div class="matchmaking-tooltip">Please select your preferences then press the Search button to find a Match</div>
   <div class="general-title">Number of players</div>
   <div class="text-center">
-    @for (nr of nrOfPlayersOptions; track nr) {
+    @for (nr of matchmakingService.nrOfPlayersOptions; track nr) {
       <input
-        (change)="nrOfPlayersChanged(nr)"
-        [disabled]="searching"
-        [checked]="nr === matchmakingOptions.nrOfPlayers"
+        (change)="matchmakingService.nrOfPlayersChanged(nr)"
+        [disabled]="matchmakingService.searching"
+        [checked]="nr === matchmakingService.matchmakingOptions.nrOfPlayers"
         name="nrOfPlayers"
         type="radio"
         value="{{ nr }}"
@@ -17,10 +17,10 @@
     <div class="general-title">Faction</div>
     <div class="text-center">
       <select
-        [(ngModel)]="matchmakingOptions.factionType"
+        [(ngModel)]="matchmakingService.matchmakingOptions.factionType"
         class="form-select"
-        [disabled]="searching"
-        (change)="factionChanged()"
+        [disabled]="matchmakingService.searching"
+        (change)="matchmakingService.factionChanged()"
       >
         <option [ngValue]="null">Random</option>
         @for (factionType of FactionDefinitions.factions; track factionType) {
@@ -34,10 +34,10 @@
   <div>
     <div class="general-title">Map Pool</div>
     <div class="text-center grid-container" style="max-height: 300px; overflow-y: auto">
-      @for (level of matchmakingOptions.levels; track level) {
+      @for (level of matchmakingService.matchmakingOptions.levels; track level) {
         <input
-          (change)="checkedChanged(level)"
-          [disabled]="searching || !level.enabled"
+          (change)="matchmakingService.checkedChanged(level)"
+          [disabled]="matchmakingService.searching || !level.enabled"
           [checked]="level.checked"
           name="map"
           type="checkbox"
@@ -50,24 +50,24 @@
   </div>
 
   <div class="w-100 mt-4" style="text-align: right">
-    @if (gameFound) {
+    @if (matchmakingService.gameFound) {
       <div class="navigating-text">
-        {{ navigatingText }}
+        {{ matchmakingService.navigatingText }}
       </div>
     } @else {
-      @if (searching) {
-        <button (click)="cancelSearching()" class="btn btn-danger me-2" type="button" style="min-width: 100px">
+      @if (matchmakingService.searching) {
+        <button (click)="matchmakingService.cancelSearching()" class="btn btn-danger me-2" type="button" style="min-width: 100px">
           Cancel
         </button>
       }
       <button
-        (click)="startSearching()"
-        [disabled]="searching || !selectedLevels.length"
+        (click)="matchmakingService.startSearching()"
+        [disabled]="matchmakingService.searching || !matchmakingService.selectedLevels.length"
         class="btn btn-primary"
         type="button"
         style="min-width: 150px"
       >
-        @if (searching) {
+        @if (matchmakingService.searching) {
           Searching...
         } @else {
           Search

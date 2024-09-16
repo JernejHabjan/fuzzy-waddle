@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import PreloadBarUpdaterScript from "../../../other/Template/script-nodes/PreloadBarUpdaterScript";
+import PreloadBarUpdaterScript from "../../../shared/game/phaser/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 /* END-USER-IMPORTS */

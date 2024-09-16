@@ -173,6 +173,32 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../sprites/gui/action_icons/arrow.png</key>
+            <key type="filename">../sprites/gui/action_icons/hand.png</key>
+            <key type="filename">../sprites/gui/actor_info_icons/boot.png</key>
+            <key type="filename">../sprites/gui/actor_info_icons/bow.png</key>
+            <key type="filename">../sprites/gui/actor_info_icons/element.png</key>
+            <key type="filename">../sprites/gui/actor_info_icons/heart.png</key>
+            <key type="filename">../sprites/gui/actor_info_icons/shield.png</key>
+            <key type="filename">../sprites/gui/actor_info_icons/speed_attack.png</key>
+            <key type="filename">../sprites/gui/actor_info_icons/sword.png</key>
+            <key type="filename">../sprites/gui/resource_icons/minerals.png</key>
+            <key type="filename">../sprites/gui/resource_icons/stone.png</key>
+            <key type="filename">../sprites/gui/resource_icons/wood.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9Paddings</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/gui/cryos_mini_gui/borders/border_dark_outer.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>

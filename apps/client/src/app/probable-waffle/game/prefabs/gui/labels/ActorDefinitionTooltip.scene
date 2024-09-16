@@ -1,0 +1,115 @@
+{
+    "id": "d985c1df-7a1a-42bc-8acb-ab45aa405c4f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 250,
+        "borderHeight": 220
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "17f2db5d-de2d-4ecf-94f2-7c6d903612ee",
+            "label": "container_1",
+            "x": 30,
+            "y": 70,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "9b3d2f13-deab-4615-ad68-e15426efbeef",
+                    "label": "game_actions_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "x": -29,
+                    "y": -67,
+                    "scaleX": 12.430939264477326,
+                    "scaleY": 10.778213319031138,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 1,
+                    "rightWidth": 1,
+                    "topHeight": 1,
+                    "bottomHeight": 1,
+                    "width": 20,
+                    "height": 20
+                },
+                {
+                    "type": "Image",
+                    "id": "7f22df4d-6047-4d63-92b5-9805a08ac5c3",
+                    "label": "icon",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "character_icons/general/warrior.png"
+                    },
+                    "x": 100,
+                    "originY": 0.9
+                },
+                {
+                    "type": "Text",
+                    "id": "4b6e075b-8943-4ad8-92cd-168014353b51",
+                    "label": "title",
+                    "scope": "CLASS",
+                    "x": 100,
+                    "y": 17,
+                    "originX": 0.5,
+                    "text": "Actor name",
+                    "align": "center",
+                    "maxLines": 2,
+                    "wordWrapWidth": 250
+                },
+                {
+                    "type": "Text",
+                    "id": "e910978e-f6fd-4b7d-9e6a-6d278257eb27",
+                    "label": "description",
+                    "scope": "CLASS",
+                    "x": 100,
+                    "y": 47,
+                    "originX": 0.5,
+                    "text": "Actual description of this actor",
+                    "align": "center",
+                    "wordWrapWidth": 200
+                },
+                {
+                    "prefabId": "0027e301-c7f8-4a26-9d63-e4e0921787c9",
+                    "id": "d716f215-e6b6-431d-9fe5-c13c3c70df69",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorDefinitionIcon",
+                    "x": 48,
+                    "y": 85
+                },
+                {
+                    "prefabId": "0027e301-c7f8-4a26-9d63-e4e0921787c9",
+                    "id": "1570824c-9e5d-43cb-a37d-7ad283b8b837",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorDefinitionIcon_1",
+                    "x": 47,
+                    "y": 108
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

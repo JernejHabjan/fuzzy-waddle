@@ -1,12 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 
 import { SpectateService } from "./spectate.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SpectateServiceInterface } from "./spectate.service.interface";
 import { Observable, Subject } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
 import { LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
 
 export const spectateServiceStub = {
   rooms: [],
@@ -38,8 +39,7 @@ describe("SpectateService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [{ provide: AuthService, useValue: authServiceStub }]
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: AuthService, useValue: authServiceStub }]
     });
     service = TestBed.inject(SpectateService);
   });

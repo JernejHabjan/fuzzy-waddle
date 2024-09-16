@@ -27,6 +27,10 @@ import { VisionComponent, VisionDefinition } from "../../../entity/actor/compone
 import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE } from "../../gui/icon-animations";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -67,7 +71,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
     const cloud_3 = scene.add.image(-25, -215, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
     cloud_3.scaleX = 2;
     cloud_3.scaleY = 2;
-    cloud_3.angle = 180;
+    cloud_3.angle = -180;
     this.add(cloud_3);
 
     // cloud_2
@@ -80,7 +84,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
     const cloud_1 = scene.add.image(2, -250, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
     cloud_1.scaleX = 2.2;
     cloud_1.scaleY = 2.2;
-    cloud_1.angle = 180;
+    cloud_1.angle = -180;
     this.add(cloud_1);
 
     this.cloud_3 = cloud_3;
@@ -91,6 +95,9 @@ export default class FrostForge extends Phaser.GameObjects.Container {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {

@@ -3,12 +3,12 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
-import ScrollFactorScript from "../script-nodes/ScrollFactorScript";
+import ScrollFactorScript from "../../../shared/game/phaser/script-nodes/ScrollFactorScript";
 import MovingPlatform1 from "../prefabs/MovingPlatform1";
-import HorizontalMoveScript from "../script-nodes/HorizontalMoveScript";
+import HorizontalMoveScript from "../../../shared/game/phaser/script-nodes/HorizontalMoveScript";
 import MovingPlatform2 from "../prefabs/MovingPlatform2";
 import Stone from "../prefabs/Stone";
-import FollowObjectScript from "../script-nodes/FollowObjectScript";
+import FollowObjectScript from "../../../shared/game/phaser/script-nodes/FollowObjectScript";
 import Ladder from "../prefabs/Ladder";
 import Player from "../prefabs/Player";
 import FoodItem from "../prefabs/FoodItem";

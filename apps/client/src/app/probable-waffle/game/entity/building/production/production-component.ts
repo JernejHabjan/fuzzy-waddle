@@ -4,7 +4,7 @@ import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionCostDefinition } from "./production-cost-component";
-import { getPlayerController } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
 import { SceneActorCreatorCommunicator } from "../../../scenes/components/scene-actor-creator-communicator";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
@@ -60,15 +60,15 @@ export class ProductionComponent {
           if (!owner) {
             throw new Error("Owner not found");
           }
-          const playerController = getPlayerController(this.gameObject.scene, owner);
-          if (!playerController) {
+          const player = getPlayer(this.gameObject.scene, owner);
+          if (!player) {
             throw new Error("PlayerController not found");
           }
           // get player resources and pay for production
-          const canPayAllResources = playerController.canPayAllResources(costData.resources);
+          const canPayAllResources = player.canPayAllResources(costData.resources);
 
           if (canPayAllResources) {
-            playerController.payAllResources(costData.resources);
+            player.payAllResources(costData.resources);
             productionCostPaid = true;
           }
         } else {
@@ -186,10 +186,10 @@ export class ProductionComponent {
     if (!owner) return false;
 
     // check if player has enough resources
-    const playerController = getPlayerController(this.gameObject.scene, owner);
-    if (!playerController) return false;
+    const player = getPlayer(this.gameObject.scene, owner);
+    if (!player) return false;
 
-    return playerController.canPayAllResources(item.costData.resources);
+    return player.canPayAllResources(item.costData.resources);
   }
 
   private startProductionInQueue(queue: ProductionQueue) {

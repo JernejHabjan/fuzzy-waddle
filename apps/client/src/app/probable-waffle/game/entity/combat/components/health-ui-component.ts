@@ -3,15 +3,16 @@ import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
-import { MovementSystem } from "../../systems/movement.system";
-import { getActorSystem } from "../../../data/actor-system";
+import { OwnerComponent } from "../../actor/components/owner-component";
+import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 
 export class HealthUiComponent {
+  static ZIndex = 1;
   private healthComponent?: HealthComponent;
   private readonly bar: GameObjects.Graphics;
   private barWidth = 25;
   private barHeight = 8;
-  private barBorder = 2;
+  static barBorder = 2;
 
   private redThreshold = 0.3;
   private orangeThreshold = 0.5;
@@ -27,7 +28,6 @@ export class HealthUiComponent {
   };
 
   private readonly armorColors = {
-    // more white-ish colors
     red: 0xff0000,
     orange: 0xffa500,
     yellow: 0xffff00,
@@ -41,6 +41,7 @@ export class HealthUiComponent {
     this.bar = this.gameObject.scene.add.graphics();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    gameObject.on(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
   }
 
   private init() {
@@ -55,7 +56,7 @@ export class HealthUiComponent {
     }
     this.subscribeActorMove();
 
-    //bar width should be 50% of gameObject width or min 25px
+    // Calculate the bar width based on the parent object's bounds
     const bounds = getGameObjectBounds(this.gameObject);
     if (bounds) {
       this.barWidth = Math.max(Math.round(bounds.width / 3), 25);
@@ -65,9 +66,9 @@ export class HealthUiComponent {
   }
 
   private subscribeActorMove() {
-    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-    if (!movementSystem) return;
-    this.actorMovedSubscription = movementSystem.actorMoved.subscribe(() => {
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    if (!actorTranslateComponent) return;
+    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(() => {
       this.draw();
     });
   }
@@ -82,52 +83,54 @@ export class HealthUiComponent {
     }
   }
 
-  private get barXY() {
+  /**
+   * Calculate the position and size of the bar based on the gameObject bounds.
+   * Ensure that barWidth is set from the parent object's width.
+   */
+  getBounds(): Phaser.Geom.Rectangle {
     const bounds = getGameObjectBounds(this.gameObject);
-    if (!bounds) return [0, 0];
+    if (!bounds) return new Phaser.Geom.Rectangle(0, 0, this.barWidth, this.barHeight);
 
-    // set this health-bar to be above the player center horizontally
+    // Ensure the bar width is calculated from the parent object's width
+    this.barWidth = Math.max(Math.round(bounds.width / 3), 25);
 
-    // set bar x to be half of gameObject width
-    const x = bounds.centerX - this.barWidth / 2;
+    const width = this.barWidth;
+    const x = bounds.centerX - width / 2;
     let y = bounds.centerY - bounds.height / 2;
     if (this.type === "armor") {
-      y += this.barHeight - this.barBorder;
+      y += this.barHeight - HealthUiComponent.barBorder;
     }
-
-    return [x, y];
+    return new Phaser.Geom.Rectangle(x, y, width, this.barHeight);
   }
 
-  /**
-   * set depth to be above player
-   */
   private get barDepth() {
-    return (getGameObjectDepth(this.gameObject) ?? 0) + 1;
+    return (getGameObjectDepth(this.gameObject) ?? 0) + OwnerComponent.ZIndex + HealthUiComponent.ZIndex;
   }
 
   destroy() {
     this.bar.destroy();
     this.changedSubscription?.unsubscribe();
     this.actorMovedSubscription?.unsubscribe();
+    this.gameObject.off(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
   }
 
   private draw() {
     this.bar.clear();
 
-    const [x, y] = this.barXY;
+    const bounds = this.getBounds();
+    const { x, y, width, height } = bounds;
 
     //  BG
     this.bar.fillStyle(0x000000);
-    this.bar.fillRect(x, y, this.barWidth, this.barHeight);
+    this.bar.fillRect(x, y, width, height);
 
-    //  Health
-
+    //  Health or Armor BG
     this.bar.fillStyle(0xffffff);
     this.bar.fillRect(
-      x + this.barBorder,
-      y + this.barBorder,
-      this.barWidth - 2 * this.barBorder,
-      this.barHeight - 2 * this.barBorder
+      x + HealthUiComponent.barBorder,
+      y + HealthUiComponent.barBorder,
+      width - 2 * HealthUiComponent.barBorder,
+      height - 2 * HealthUiComponent.barBorder
     );
 
     let colors;
@@ -150,9 +153,14 @@ export class HealthUiComponent {
       this.bar.fillStyle(colors.green);
     }
 
-    const barFilledWidth = Math.floor((this.barWidth - 2 * this.barBorder) * this.percentage);
+    const barFilledWidth = Math.floor((width - 2 * HealthUiComponent.barBorder) * this.percentage);
 
-    this.bar.fillRect(x + this.barBorder, y + this.barBorder, barFilledWidth, this.barHeight - 2 * this.barBorder);
+    this.bar.fillRect(
+      x + HealthUiComponent.barBorder,
+      y + HealthUiComponent.barBorder,
+      barFilledWidth,
+      height - 2 * HealthUiComponent.barBorder
+    );
     this.setBarDepth();
   }
 

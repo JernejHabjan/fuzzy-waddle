@@ -42,7 +42,6 @@ export class HealthComponent {
       }
     }
   } satisfies SyncOptions<HealthComponentData>;
-
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly healthDefinition: HealthDefinition
@@ -67,6 +66,20 @@ export class HealthComponent {
     }
 
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy.bind(this));
+  }
+
+  getHealthUiComponentBounds(): Phaser.Geom.Rectangle {
+    const healthComponentBounds = this.healthUiComponent.getBounds();
+    const armorComponentBounds = this.armorUiComponent?.getBounds();
+
+    return new Phaser.Geom.Rectangle(
+      healthComponentBounds.x,
+      healthComponentBounds.y,
+      healthComponentBounds.width,
+      armorComponentBounds
+        ? healthComponentBounds.height + armorComponentBounds.height - HealthUiComponent.barBorder
+        : healthComponentBounds.height
+    );
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {

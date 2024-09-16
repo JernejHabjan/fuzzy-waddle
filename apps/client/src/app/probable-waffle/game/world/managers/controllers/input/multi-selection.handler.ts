@@ -17,7 +17,7 @@ export class MultiSelectionHandler {
 
   constructor(private readonly hudScene: HudProbableWaffle) {
     this.selection = hudScene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5);
-    this.hudScene.onDestroy.subscribe(() => this.destroy());
+    this.hudScene.onShutdown.subscribe(() => this.destroy());
     this.setupEvents();
   }
 
@@ -43,6 +43,8 @@ export class MultiSelectionHandler {
   }
 
   private setupEvents() {
+    const touchEnabled = this.hudScene.input.manager.touch;
+    if (touchEnabled) return;
     this.hudScene.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.hudScene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.hudScene.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);

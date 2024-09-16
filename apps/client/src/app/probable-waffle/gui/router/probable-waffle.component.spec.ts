@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProbableWaffleComponent } from "./probable-waffle.component";
-import { RouterTestingModule } from "@angular/router/testing";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
+import { provideRouter } from "@angular/router";
 
 describe("ProbableWaffleComponent", () => {
   let component: ProbableWaffleComponent;
@@ -12,12 +12,13 @@ describe("ProbableWaffleComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         {
           provide: GameInstanceClientService,
           useValue: gameInstanceClientServiceStub
         }
       ],
-      imports: [ProbableWaffleComponent, RouterTestingModule]
+      imports: [ProbableWaffleComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProbableWaffleComponent);

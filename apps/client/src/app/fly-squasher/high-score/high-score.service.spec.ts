@@ -1,7 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 
 import { HighScoreService } from "./high-score.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
 
 export const highScoreServiceStub = {
   postScore: () => {},
@@ -13,7 +14,7 @@ describe("HighScoreService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     service = TestBed.inject(HighScoreService);
   });

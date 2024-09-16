@@ -4,6 +4,11 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../../data/actor-data";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class BushDownwardsSmall extends Phaser.GameObjects.Image {
@@ -14,6 +19,15 @@ export default class BushDownwardsSmall extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0x468c41
+        } satisfies ObjectDescriptorDefinition)
+      ],
+      []
+    );
     this.on("pointerdown", () => {
       // shake the bush fast (distort the image)
       if (this.playingTween) return;

@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
-import PreloadBarUpdaterScript from "../script-nodes/PreloadBarUpdaterScript";
+import PreloadBarUpdaterScript from "../../../shared/game/phaser/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -17,10 +17,10 @@ export default class Preload extends Phaser.Scene {
   }
 
   editorCreate(): void {
-    // probableWaffleLoader
-    const probableWaffleLoader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
-    probableWaffleLoader.scaleX = 0.32715486817515643;
-    probableWaffleLoader.scaleY = 0.32715486817515643;
+    // probable-waffle-loader
+    const probable_waffle_loader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
+    probable_waffle_loader.scaleX = 0.32715486817515643;
+    probable_waffle_loader.scaleY = 0.32715486817515643;
 
     // progressBar
     const progressBar = this.add.rectangle(553.0120849609375, 361, 256, 20);

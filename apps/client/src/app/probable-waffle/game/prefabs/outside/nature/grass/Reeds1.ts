@@ -1,19 +1,30 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
+import { setActorData } from "../../../../data/actor-data";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class Reeds1 extends Phaser.GameObjects.Image {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32, y ?? 32, texture || "outside", frame ?? "nature/grass/reeds_1.png");
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: null
+        } satisfies ObjectDescriptorDefinition)
+      ],
+      []
+    );
     /* END-USER-CTR-CODE */
   }
 

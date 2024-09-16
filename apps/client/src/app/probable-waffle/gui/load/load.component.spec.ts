@@ -4,7 +4,7 @@ import { gameInstanceLocalStorageServiceStub } from "../../communicators/storage
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter } from "@angular/router";
 
 describe("LoadComponent", () => {
   let component: LoadComponent;
@@ -13,10 +13,11 @@ describe("LoadComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceLocalStorageServiceStub }
       ],
-      imports: [LoadComponent, RouterTestingModule]
+      imports: [LoadComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoadComponent);

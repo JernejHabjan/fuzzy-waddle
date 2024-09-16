@@ -5,7 +5,7 @@ import { ServerHealthService } from "../../../shared/services/server-health.serv
 import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter } from "@angular/router";
 
 describe("ProfileComponent", () => {
   let component: ProgressComponent;
@@ -13,8 +13,9 @@ describe("ProfileComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProgressComponent, RouterTestingModule],
+      imports: [ProgressComponent],
       providers: [
+        provideRouter([]),
         {
           provide: ServerHealthService,
           useValue: serverHealthServiceStub

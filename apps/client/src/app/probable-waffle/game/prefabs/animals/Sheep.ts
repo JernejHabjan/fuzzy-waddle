@@ -15,10 +15,14 @@ import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectCurrentTile, onPostSceneInitialized } from "../../data/game-object-helper";
 import { ANIM_SHEEP_IDLE_DOWN, ANIM_SHEEP_IDLE_LEFT, ANIM_SHEEP_IDLE_RIGHT, ANIM_SHEEP_IDLE_UP } from "./anims/animals";
 import { getActorSystem } from "../../data/actor-system";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../entity/actor/components/object-descriptor-component";
+import { ActorTranslateComponent } from "../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
-  private nextTile?: Vector2Simple;
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32, y ?? 49.42203448546586, texture || "animals", frame ?? "sheep/sheep_down.png");
 
@@ -27,17 +31,26 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.play("sheep_idle_down");
 
     /* START-USER-CTR-CODE */
-    setActorData(this, [], [new MovementSystem(this)]);
+    setActorData(
+      this,
+      [
+        new ObjectDescriptorComponent({
+          color: 0xf2f7fa
+        } satisfies ObjectDescriptorDefinition),
+        new ActorTranslateComponent(this)
+      ],
+      [new MovementSystem(this)]
+    );
     onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 
+  /* START-USER-CODE */
   private postSceneCreate() {
     this.handleWoolParticles(this.scene);
     this.startMovement();
   }
-
-  /* START-USER-CODE */
+  private nextTile?: Vector2Simple;
   private readonly actionDelay = 5000;
   private readonly movementSpeed = 2000;
   private readonly radius = 5;
@@ -104,6 +117,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
 
   private moveSheepAfterDelay() {
     this.removeDelay();
+    if (!this.active) return;
     this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.startMovement, [], this);
   }
 

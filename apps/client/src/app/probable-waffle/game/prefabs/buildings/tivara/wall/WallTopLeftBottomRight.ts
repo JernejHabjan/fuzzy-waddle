@@ -17,6 +17,10 @@ import { PaymentType } from "../../../../entity/building/payment-type";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { VisionComponent, VisionDefinition } from "../../../../entity/actor/components/vision-component";
 import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import {
+  ObjectDescriptorComponent,
+  ObjectDescriptorDefinition
+} from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class WallTopLeftBottomRight extends Phaser.GameObjects.Image {
@@ -41,6 +45,9 @@ export default class WallTopLeftBottomRight extends Phaser.GameObjects.Image {
     setActorData(
       this,
       [
+        new ObjectDescriptorComponent({
+          color: 0x95a083
+        } satisfies ObjectDescriptorDefinition),
         new OwnerComponent(this, {
           color: [
             {
