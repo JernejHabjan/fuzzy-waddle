@@ -43,6 +43,8 @@ export class MultiSelectionHandler {
   }
 
   private setupEvents() {
+    const touchEnabled = this.hudScene.input.manager.touch;
+    if (touchEnabled) return;
     this.hudScene.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.hudScene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.hudScene.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
