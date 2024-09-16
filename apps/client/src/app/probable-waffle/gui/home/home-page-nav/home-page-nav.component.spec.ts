@@ -4,7 +4,6 @@ import { HomePageNavComponent } from "./home-page-nav.component";
 import { provideRouter } from "@angular/router";
 import { HomeNavTestingComponent } from "../../../../shared/components/home-nav/home-nav.component.spec";
 import { HomeNavComponent } from "../../../../shared/components/home-nav/home-nav.component";
-import { RouterTestingModule } from "@angular/router/testing";
 
 describe("HomePageNavComponent", () => {
   let component: HomePageNavComponent;
@@ -12,7 +11,7 @@ describe("HomePageNavComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomePageNavComponent, RouterTestingModule],
+      imports: [HomePageNavComponent],
       providers: [provideRouter([])]
     })
       .overrideComponent(HomePageNavComponent, {

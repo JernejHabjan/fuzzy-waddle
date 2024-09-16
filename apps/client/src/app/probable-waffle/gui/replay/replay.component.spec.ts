@@ -5,7 +5,7 @@ import { GameInstanceStorageServiceInterface } from "../../communicators/storage
 import { GameLengthPipe } from "../../../shared/pipes/game-length.pipe";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter } from "@angular/router";
 
 describe("ReplayComponent", () => {
   let component: ReplayComponent;
@@ -14,10 +14,11 @@ describe("ReplayComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceLocalStorageServiceStub }
       ],
-      imports: [ReplayComponent, GameLengthPipe, RouterTestingModule]
+      imports: [ReplayComponent, GameLengthPipe]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ReplayComponent);

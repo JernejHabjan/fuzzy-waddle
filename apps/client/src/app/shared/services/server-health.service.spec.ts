@@ -1,8 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 
 import { ServerHealthService } from "./server-health.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ServerHealthServiceInterface } from "./server-health.service.interface";
+import { provideHttpClient } from "@angular/common/http";
 
 export const serverHealthServiceStub = {
   checkHealth(): Promise<void> {
@@ -23,7 +24,7 @@ describe("ServerHealthService", () => {
   let service: ServerHealthService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
     service = TestBed.inject(ServerHealthService);
   });
 
