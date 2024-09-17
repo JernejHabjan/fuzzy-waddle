@@ -29,6 +29,7 @@ import {
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { TempPawnAiController } from "./TempPawnAiController";
 /* END-USER-IMPORTS */
 
 export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
@@ -100,6 +101,8 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
       ],
       [new MovementSystem(this)]
     );
+
+    new TempPawnAiController(this); // todo
 
     this.on("pointerdown", () => {
       // and play anim skaduwee_worker_male_slash_down

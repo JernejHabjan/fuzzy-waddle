@@ -147,6 +147,9 @@ importers:
       helmet:
         specifier: ^7.1.0
         version: 7.1.0
+      mistreevous:
+        specifier: ^4.1.1
+        version: 4.1.1
       ng2-charts:
         specifier: ^6.0.1
         version: 6.0.1(@angular/cdk@17.0.4(@angular/common@18.2.0(@angular/core@18.2.0(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1))(@angular/core@18.2.0(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1))(@angular/common@18.2.0(@angular/core@18.2.0(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1))(@angular/core@18.2.0(rxjs@7.8.1)(zone.js@0.14.10))(@angular/platform-browser@18.2.0(@angular/animations@18.2.0(@angular/core@18.2.0(rxjs@7.8.1)(zone.js@0.14.10)))(@angular/common@18.2.0(@angular/core@18.2.0(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1))(@angular/core@18.2.0(rxjs@7.8.1)(zone.js@0.14.10)))(chart.js@4.4.4)(rxjs@7.8.1)
@@ -6272,6 +6275,9 @@ packages:
   long-timeout@0.1.1:
     resolution: {integrity: sha512-BFRuQUqc7x2NWxfJBCyUrN8iYUYznzL9JROmRz1gZ6KlOIgmoD+njPVbb+VNn2nGMKggMsK79iUNErillsrx7w==}
 
+  lotto-draw@1.0.2:
+    resolution: {integrity: sha512-1ih414A35BWpApfNlWAHBKOBLSxTj45crAJ+CMWF/kVY5nx6N22DA1OVF/FWW5WM5CGJbIMRh1O+xe8ukyoQ8Q==}
+
   lru-cache@10.0.1:
     resolution: {integrity: sha512-IJ4uwUTi2qCccrioU6g9g/5rvvVl13bsdczUUcqbciD9iLr095yj8DQKdObriEvuNSx325N1rV1O0sJFszx75g==}
     engines: {node: 14 || >=16.14}
@@ -6462,6 +6468,9 @@ packages:
   minizlib@2.1.2:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
+
+  mistreevous@4.1.1:
+    resolution: {integrity: sha512-b5k+Qze0Gxt+WK9QUpFj9UBhNWlJ4A1hOIqLvktIC1HHx38IerbGorB89GYz1cQftfJrgx3ugU7+HI8HAMZujw==}
 
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
@@ -16391,6 +16400,8 @@ snapshots:
 
   long-timeout@0.1.1: {}
 
+  lotto-draw@1.0.2: {}
+
   lru-cache@10.0.1: {}
 
   lru-cache@5.1.1:
@@ -16573,6 +16584,10 @@ snapshots:
     dependencies:
       minipass: 3.3.6
       yallist: 4.0.0
+
+  mistreevous@4.1.1:
+    dependencies:
+      lotto-draw: 1.0.2
 
   mkdirp@0.5.6:
     dependencies:
