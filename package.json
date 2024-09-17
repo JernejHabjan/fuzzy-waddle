@@ -38,7 +38,9 @@
     "sme": "nx build client --source-map=true --named-chunks=true && source-map-explorer dist/apps/client/**/*.js",
     "install-audiosprite-globally": "pnpm install -g audiosprite-ffmpeg",
     "probable-waffle-audio-sprites": "pnpm run install-audiosprite-globally && audiosprite apps/client/src/metadata/sfx/character/**/*.mp3 -o apps/client/src/assets/sfx/character -e mp3 -r 8000",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build-client-dev": "nx build client --source-map=true --named-chunks=true",
+    "serve-buid": "http-server dist/apps/client"
   },
   "engines": {
     "node": ">=22.7.0",
@@ -95,7 +97,7 @@
     "passport-local": "^1.0.0",
     "passport-strategy": "^1.0.0",
     "phaser": "^3.85.1",
-    "phaser3-rex-plugins": "^1.80.6",
+    "phaser3-rex-plugins": "1.80.6",
     "profanity-cleaner": "^0.0.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -167,6 +169,9 @@
       "follow-redirects@<1.15.4": ">=1.15.4",
       "@supabase/gotrue-js": "2.61.0",
       "@supabase/supabase-js>@supabase/auth-js": "2.61.0"
+    },
+    "patchedDependencies": {
+      "phaser3-rex-plugins@1.80.6": "patches/phaser3-rex-plugins@1.80.6.patch"
     }
   },
   "lint-staged": {
