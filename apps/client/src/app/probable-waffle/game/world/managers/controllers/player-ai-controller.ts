@@ -94,8 +94,8 @@ export class PlayerAiController extends PlayerController {
     }
 
     const primaryResourceSource = resourceSources.reduce((previous, current) => {
-      const previousDistance = GameplayLibrary.getDistanceBetweenActors(primaryResourceDrain, previous);
-      const currentDistance = GameplayLibrary.getDistanceBetweenActors(primaryResourceDrain, current);
+      const previousDistance = GameplayLibrary.getDistanceBetweenActors_OLD(primaryResourceDrain, previous);
+      const currentDistance = GameplayLibrary.getDistanceBetweenActors_OLD(primaryResourceDrain, current);
       if (previousDistance === null || currentDistance === null) {
         return previous;
       }

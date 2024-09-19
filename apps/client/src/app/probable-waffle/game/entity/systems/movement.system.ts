@@ -209,6 +209,16 @@ export class MovementSystem {
   private destroy() {
     this.playerChangedSubscription?.unsubscribe();
   }
+
+  async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject | undefined) {
+    if (!targetGameObject) return false;
+    const navigationService = this.navigationService;
+    if (!navigationService) return false;
+    const actorVec2 = navigationService.getCenterTileCoordUnderObject(targetGameObject);
+    if (!actorVec2) return false;
+    const path = await navigationService.getPath(this.gameObject, actorVec2);
+    return path.length > 0;
+  }
 }
 
 export async function moveGameObjectToRandomTileInNavigableRadius(

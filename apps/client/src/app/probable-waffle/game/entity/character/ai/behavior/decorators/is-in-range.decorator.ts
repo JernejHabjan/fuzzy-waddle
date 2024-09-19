@@ -8,7 +8,7 @@ export class IsInRangeDecorator implements IDecorator {
       return false;
     }
 
-    const distance = GameplayLibrary.getDistanceBetweenActors(decoratorData.owner, targetActor);
+    const distance = GameplayLibrary.getDistanceBetweenActors_OLD(decoratorData.owner, targetActor);
     if (distance === null) {
       return false;
     }

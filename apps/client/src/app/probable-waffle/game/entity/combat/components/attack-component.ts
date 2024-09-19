@@ -80,4 +80,8 @@ export class AttackComponent {
     // todo
     return 0;
   }
+
+  getMaximumRange(): number {
+    return Math.max(...this.attackDefinition.attacks.map((attack) => attack.range));
+  }
 }

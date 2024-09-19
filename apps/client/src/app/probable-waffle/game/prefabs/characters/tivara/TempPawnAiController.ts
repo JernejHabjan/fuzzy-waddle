@@ -2,9 +2,19 @@ import Phaser from "phaser";
 import { BehaviourTree } from "mistreevous";
 import { RootNodeDefinition } from "mistreevous/dist/BehaviourTreeDefinition";
 import { Agent } from "mistreevous/dist/Agent";
+import { getActorComponent } from "../../../data/actor-component";
+import { VisionComponent } from "../../../entity/actor/components/vision-component";
+import { PawnAiBlackboard } from "../../../entity/character/ai/pawn-ai-blackboard";
+import { AttackComponent } from "../../../entity/combat/components/attack-component";
+import { GameplayLibrary } from "../../../library/gameplay-library";
+import { getActorSystem } from "../../../data/actor-system";
+import { MovementSystem } from "../../../entity/systems/movement.system";
+import { OrderType } from "../../../entity/character/ai/order-type";
 
 export class TempPawnAiController {
   private behaviourTree: BehaviourTree;
+
+  private blackboard: PawnAiBlackboard = new PawnAiBlackboard();
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.behaviourTree = this.createBehaviourTree();
@@ -38,7 +48,8 @@ export class TempPawnAiController {
                         children: [
                           {
                             type: "condition",
-                            call: "isInRange" satisfies BehaviorTreeMethods
+                            call: "isInRange" satisfies BehaviorTreeMethods,
+                            args: [getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange()]
                           },
                           {
                             type: "action",
@@ -77,23 +88,32 @@ export class TempPawnAiController {
 
   // Define action methods
   isEnemyVisible(): boolean {
-    // Implement logic to check if the enemy is visible
-    return true; // Replace with actual logic
+    const target = this.blackboard.targetGameObject;
+    if (!target) return false;
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return false;
+    return visionComponent.isActorVisible(target) ?? false;
   }
 
-  isInRange(): boolean {
-    // Implement logic to check if the enemy is within attack range
-    return true; // Replace with actual logic
+  isInRange(range?: number): boolean {
+    if (!range) return false;
+    const target = this.blackboard.targetGameObject;
+    if (!target) return false;
+    const distance = GameplayLibrary.getDistanceBetweenActors(this.gameObject, target);
+    if (distance === null) return false;
+    return distance <= range;
   }
 
-  canMoveToEnemy(): boolean {
-    // Implement logic to check if the maceman can move to the enemy
-    return true; // Replace with actual logic
+  async canMoveToEnemy(): Promise<boolean> {
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return Promise.resolve(false);
+    // noinspection UnnecessaryLocalVariableJS
+    const canMove = await movementSystem.canMoveTo(this.blackboard.targetGameObject);
+    return canMove;
   }
 
   moveToEnemy(): void {
-    // Implement logic to move the maceman towards the enemy
-    console.log("Moving to enemy");
+    this.blackboard.orderType = OrderType.Move;
   }
 
   attackEnemy(): void {
