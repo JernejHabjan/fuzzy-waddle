@@ -12,7 +12,7 @@ import { PlayerAiBlackboard } from "../../../entity/character/ai/player-ai/playe
 import { DefaultPlayerAiBehaviorTree } from "../../../entity/character/ai/player-ai/default-player-ai-behavior-tree";
 import { ProductionComponent } from "../../../entity/building/production/production-component";
 
-export class PlayerAiController extends PlayerController {
+export class PlayerAiControllerOld extends PlayerController {
   /**
    * Behavior tree to use for driving the player ai
    */

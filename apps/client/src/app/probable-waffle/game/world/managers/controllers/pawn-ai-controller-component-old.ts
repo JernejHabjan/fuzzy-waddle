@@ -8,7 +8,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
-export class PawnAiControllerComponent {
+export class PawnAiControllerComponentOld {
   // declare queue of OrderData
   orders: Queue<OrderData> = new Queue<OrderData>();
 

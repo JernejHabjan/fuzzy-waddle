@@ -16,6 +16,7 @@ import { BehaviorSubject } from "rxjs";
 import { AudioService } from "./services/audio.service";
 import { TilemapComponent } from "./components/tilemap.component";
 import { RestartGame } from "../data/restart-game";
+import { AiPlayerHandler } from "./components/ai-player-handler";
 
 export interface GameProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -67,6 +68,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
     new RestartGame(this);
+    new AiPlayerHandler(this);
     const creator = new SceneActorCreator(this);
     creator.initActors();
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap));

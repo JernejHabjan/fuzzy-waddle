@@ -1,7 +1,7 @@
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
-import { PawnAiControllerComponent } from "../../../world/managers/controllers/pawn-ai-controller-component";
+import { PawnAiControllerComponentOld } from "../../../world/managers/controllers/pawn-ai-controller-component-old";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
@@ -58,7 +58,7 @@ export class BuilderComponent {
   }
 
   beginConstruction(buildingClass: string, targetLocation: Vector3Simple): boolean {
-    const pawnAiController = getActorComponent(this.gameObject, PawnAiControllerComponent);
+    const pawnAiController = getActorComponent(this.gameObject, PawnAiControllerComponentOld);
     if (!pawnAiController) return false;
     // check requirements
     const missingRequirement = GameplayLibrary.getMissingRequirementsFor(this.gameObject, buildingClass);

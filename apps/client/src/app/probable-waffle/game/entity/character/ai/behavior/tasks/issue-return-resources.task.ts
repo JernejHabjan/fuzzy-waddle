@@ -1,6 +1,6 @@
 import { ITask, TaskData, TaskResultType } from "./task.interface";
 import { GathererComponent } from "../../../../actor/components/gatherer-component";
-import { PawnAiControllerComponent } from "../../../../../world/managers/controllers/pawn-ai-controller-component";
+import { PawnAiControllerComponentOld } from "../../../../../world/managers/controllers/pawn-ai-controller-component-old";
 
 export class IssueReturnResourcesTask implements ITask {
   executeTask(taskData: TaskData): TaskResultType {
@@ -8,7 +8,7 @@ export class IssueReturnResourcesTask implements ITask {
     if (!gathererComponent) {
       return TaskResultType.Failure;
     }
-    const pawnAiController = taskData.owner.components.findComponentOrNull(PawnAiControllerComponent);
+    const pawnAiController = taskData.owner.components.findComponentOrNull(PawnAiControllerComponentOld);
     if (!pawnAiController) {
       return TaskResultType.Failure;
     }

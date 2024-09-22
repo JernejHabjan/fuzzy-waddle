@@ -1,9 +1,9 @@
 import { DecoratorData, IDecorator } from "./decorator.interface";
-import { PawnAiControllerComponent } from "../../../../../world/managers/controllers/pawn-ai-controller-component";
+import { PawnAiControllerComponentOld } from "../../../../../world/managers/controllers/pawn-ai-controller-component-old";
 
 export class IsOrderQueueEmptyDecorator implements IDecorator {
   calculateRawConditionValue(decoratorData: DecoratorData): boolean {
-    const pawnAiController = decoratorData.owner.components.findComponentOrNull(PawnAiControllerComponent);
+    const pawnAiController = decoratorData.owner.components.findComponentOrNull(PawnAiControllerComponentOld);
     if (!pawnAiController) {
       return false;
     }
