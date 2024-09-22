@@ -32,7 +32,7 @@ export class PawnAiControllerComponentOld {
   }
 
   getCurrentOrder(): OrderType | undefined {
-    return this.blackboard.orderType;
+    return this.blackboard.aiOrderType;
   }
 
   addOrder(order: OrderData): void {
@@ -158,7 +158,7 @@ export class PawnAiControllerComponentOld {
     if (!orderData) {
       return;
     }
-    this.blackboard.orderType = orderData.orderType;
+    this.blackboard.aiOrderType = orderData.orderType;
     this.blackboard.targetGameObject = orderData.targetGameObject;
     this.blackboard.targetLocation = orderData.targetLocation;
   }

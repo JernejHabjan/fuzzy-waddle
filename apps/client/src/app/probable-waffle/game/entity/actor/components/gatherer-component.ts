@@ -172,7 +172,7 @@ export class GathererComponent {
     return !!this.carriedResourceAmount;
   }
 
-  isGathering(): boolean {
+  get isGathering(): boolean {
     return !!this.currentResourceSource;
   }
 

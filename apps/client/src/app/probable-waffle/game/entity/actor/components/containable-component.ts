@@ -10,6 +10,17 @@ export class ContainableComponent {
 
   constructor(public owner: GameObject) {}
 
+  isContained() {
+    return !!this.containerOwner;
+  }
+
+  leaveContainer() {
+    if (!this.containerOwner) return;
+
+    const containerComponent = getActorComponent(this.containerOwner, ContainerComponent);
+    containerComponent?.unloadGameObject(this.owner);
+  }
+
   setContainer(containerOwner: GameObject) {
     this.containerOwner = containerOwner;
   }

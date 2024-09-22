@@ -5,10 +5,15 @@ import { VisionComponent } from "../../../../entity/actor/components/vision-comp
 import { GameplayLibrary } from "../../../../library/gameplay-library";
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
 import { getActorSystem } from "../../../../data/actor-system";
-import { MovementSystem } from "../../../../entity/systems/movement.system";
-import { OrderType } from "../../../../entity/character/ai/order-type";
+import { getRandomTileInNavigableRadius, MovementSystem } from "../../../../entity/systems/movement.system";
+import { OrderLabelToTypeMap, OrderType } from "../../../../entity/character/ai/order-type";
 import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackboard";
 import { Agent } from "mistreevous/dist/Agent";
+import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
+import { ResourceSourceComponent } from "../../../../entity/economy/resource/resource-source-component";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { HealthComponent } from "../../../../entity/combat/components/health-component";
+import { ContainableComponent } from "../../../../entity/actor/components/containable-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -19,28 +24,32 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   [propertyName: string]: unknown;
 
   PlayerOrderExists() {
-    // Check if there's an order assigned to the player
-    return false;
+    return !!this.blackboard.playerOrderType;
   }
 
   PlayerOrderIs(orderType: string) {
     // Check if the current player order matches the specified order type
-    return false;
+    return this.blackboard.playerOrderType === OrderLabelToTypeMap[orderType];
   }
 
   HasAttackComponent() {
-    // Check if the agent has the capability to attack
-    return false;
+    return getActorComponent(this.gameObject, AttackComponent) !== null;
   }
 
   TargetIsAlive() {
-    // Check if the target is still alive
-    return false;
+    const target = this.blackboard.targetGameObject;
+    if (!target) return false;
+    const healthComponent = getActorComponent(target, HealthComponent);
+    if (!healthComponent) return false;
+    return healthComponent.healthComponentData.health > 0;
   }
 
-  HealthAboveThreshold(threshold: number) {
-    // Check if the agent's health is above a certain threshold
-    return false;
+  HealthAboveThresholdPercentage(threshold: number) {
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (!healthComponent) return false;
+    const healthPercentage =
+      (healthComponent.healthComponentData.health / healthComponent.healthDefinition.maxHealth) * 100;
+    return healthPercentage > threshold;
   }
 
   InRange() {
@@ -56,7 +65,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   MoveToTarget() {
     // Command the agent to move to the target
     console.log("Moving to target!");
-    this.blackboard.orderType = OrderType.Move;
+    this.blackboard.aiOrderType = OrderType.Move;
 
     return State.SUCCEEDED;
   }
@@ -68,17 +77,20 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   Attack() {
-    // Command the agent to attack the target
-    console.log("Attacking the target!");
+    const target = this.blackboard.targetGameObject;
+    if (!target) return State.FAILED;
+    const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+    if (!attackComponent) return State.FAILED;
+    const primaryAttack = attackComponent.primaryAttack;
+    if (!primaryAttack) return State.FAILED;
+    attackComponent.useAttack(primaryAttack, target);
     return State.SUCCEEDED;
   }
 
   AnyEnemyVisible() {
-    const target = this.blackboard.targetGameObject;
-    if (!target) return false;
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent) return false;
-    return visionComponent.isActorVisible(target) ?? false;
+    return visionComponent.getVisibleEnemies().length > 0;
   }
 
   CanMoveToTarget(): Promise<boolean> {
@@ -94,14 +106,12 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return State.SUCCEEDED;
   }
 
-  CanGatherResource() {
-    // Check if the agent can gather resources from the target
-    return false;
-  }
-
   GatherResource() {
-    // Command the agent to gather resources
-    console.log("Gathering resources!");
+    const target = this.blackboard.targetGameObject;
+    if (!target) return State.FAILED;
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+    gathererComponent.startGatheringResources(target);
     return State.SUCCEEDED;
   }
 
@@ -128,14 +138,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   ContinueGathering() {
-    // Command the agent to continue gathering after dropping off resources
-    console.log("Continuing to gather resources.");
+    this.blackboard.aiOrderType = OrderType.Gather;
     return State.SUCCEEDED;
   }
 
+  /**
+   * Command the agent to leave a construction site or container
+   */
   LeaveConstructionSiteOrCurrentContainer() {
-    // Command the agent to leave a construction site or container
-    console.log("Leaving construction site or container.");
+    const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
+    if (!containableComponent) return State.SUCCEEDED;
+    containableComponent.leaveContainer();
     return State.SUCCEEDED;
   }
 
@@ -146,52 +159,84 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   Attacked() {
-    // Check if the agent has been attacked
-    return false;
+    const attackedCooldown = 1000;
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (!healthComponent) return false;
+    // noinspection UnnecessaryLocalVariableJS
+    const attacked = (healthComponent.latestDamage?.timestamp.getTime() ?? 0) > new Date().getTime() - attackedCooldown;
+    return attacked;
   }
 
-  AssignTarget(targetType: string) {
-    // Assign the specified target to the agent (e.g., an attacker)
-    console.log(`Assigning target: ${targetType}`);
+  AssignEnemy(source: string): State {
+    switch (source) {
+      case "vision":
+        const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+        if (!visionComponent) return State.FAILED;
+        const visibleEnemies = visionComponent.getVisibleEnemies();
+        if (visibleEnemies.length === 0) return State.FAILED;
+        this.blackboard.targetGameObject = visibleEnemies[0];
+        return State.SUCCEEDED;
+      case "retaliation": // todo
+        const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+        if (!healthComponent) return State.FAILED;
+        const latestDamage = healthComponent.latestDamage;
+        if (!latestDamage) return State.FAILED;
+        this.blackboard.targetGameObject = latestDamage.damageInitiator;
+        return State.SUCCEEDED;
+      default:
+        console.error("Invalid source for AssignEnemy.");
+        return State.FAILED;
+    }
+  }
+
+  /**
+   * Command the agent to move randomly within the specified range
+   */
+  async MoveRandomlyInRange(range: number) {
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+    const randomTile = await getRandomTileInNavigableRadius(this.gameObject, range);
+    if (!randomTile) return State.FAILED;
+    this.blackboard.targetLocation = { x: randomTile.x, y: randomTile.y, z: 0 } satisfies Vector3Simple;
+    await movementSystem.moveToLocation(this.blackboard.targetLocation);
     return State.SUCCEEDED;
   }
 
-  AttackEnemy() {
-    // Command the agent to attack an enemy
-    console.log("Attacking enemy!");
-    return State.SUCCEEDED;
-  }
-
-  PatrolOrIdle() {
-    // Command the agent to patrol or idle when no enemies are visible
-    console.log("Patrolling or idling.");
-    return State.SUCCEEDED;
-  }
-
-  MoveRandomlyInRange(range: number) {
-    // Command the agent to move randomly within the specified range
-    console.log(`Moving randomly within range: ${range}`);
-    return State.SUCCEEDED;
-  }
-
-  CooldownReady() {
-    // Check if the cooldown period has passed for an action like resource gathering or attack
+  /**
+   * Check if the cooldown period has passed for an action like resource gathering or attack
+   */
+  CooldownReady(type: string) {
+    if (type === "attack") {
+      const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+      if (!attackComponent) return false;
+      return attackComponent.remainingCooldown <= 0;
+    } else if (type === "gather") {
+      const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+      if (!gathererComponent) return false;
+      return gathererComponent.remainingCooldown <= 0;
+    }
     return false;
   }
 
   TargetExists() {
-    // Check if the movement target exists
-    return false;
+    return this.blackboard.targetGameObject !== null;
   }
 
+  /**
+   * Check if the target still has resources to gather
+   */
   TargetHasResources() {
-    // Check if the target still has resources to gather
-    return false;
+    const target = this.blackboard.targetGameObject;
+    if (!target) return false;
+    const resourceSourceComponent = getActorComponent(target, ResourceSourceComponent);
+    if (!resourceSourceComponent) return false;
+    return resourceSourceComponent.getCurrentResources() > 0;
   }
 
   AnyHighValueResourceVisible() {
-    // Check if there are high-value resources visible to prioritize gathering
-    return false;
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return false;
+    return visionComponent.getVisibleHighValueResources() !== null;
   }
 
   GatherHighValueResource() {
@@ -206,7 +251,12 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   HasHarvestComponent() {
-    // Check if the agent has the capability to harvest resources
-    return false;
+    return getActorComponent(this.gameObject, GathererComponent) !== null;
+  }
+
+  CurrentlyGatheringResources(): boolean {
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return false;
+    return gathererComponent.isGathering;
   }
 }

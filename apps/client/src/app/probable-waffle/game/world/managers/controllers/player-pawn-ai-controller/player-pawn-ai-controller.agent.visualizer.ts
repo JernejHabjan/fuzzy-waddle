@@ -31,7 +31,7 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is the target alive?");
   }
 
-  HealthAboveThreshold(threshold) {
+  HealthAboveThresholdPercentage(threshold) {
     // Check if the agent's health is above a certain threshold
     return getNumberValue("What is the agent's current health?") > threshold;
   }
@@ -126,31 +126,19 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Has the agent been attacked?");
   }
 
-  AssignTarget(targetType) {
-    // Assign the specified target to the agent (e.g., an attacker)
-    showInfoToast(`Assigning target: ${targetType}`);
-    return State.SUCCEEDED;
-  }
-
-  AttackEnemy() {
-    // Command the agent to attack an enemy
-    showInfoToast("Attacking enemy!");
-    return State.SUCCEEDED;
-  }
-
-  PatrolOrIdle() {
-    // Command the agent to patrol or idle when no enemies are visible
-    showInfoToast("Patrolling or idling.");
+  AssignEnemy(source): State {
+    // Assign an enemy to the agent
+    showInfoToast("Assigning enemy.");
     return State.SUCCEEDED;
   }
 
   MoveRandomlyInRange(range) {
     // Command the agent to move randomly within the specified range
     showInfoToast(`Moving randomly within range: ${range}`);
-    return State.SUCCEEDED;
+    return Promise.resolve(State.SUCCEEDED);
   }
 
-  CooldownReady() {
+  CooldownReady(type: string) {
     // Check if the cooldown period has passed for an action like resource gathering or attack
     return getBooleanValue("Is the cooldown ready?");
   }
@@ -189,5 +177,10 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   CanMoveToTarget() {
     // Check if the agent can move to the target
     return Promise.resolve(getBooleanValue("Can the agent move to the target?"));
+  }
+
+  CurrentlyGatheringResources(): boolean {
+    // Check if the agent is currently gathering resources
+    return getBooleanValue("Is the agent currently gathering resources?");
   }
 }

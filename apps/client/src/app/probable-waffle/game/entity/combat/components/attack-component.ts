@@ -36,6 +36,11 @@ export class AttackComponent {
     }
   }
 
+  get primaryAttack(): number | null {
+    if (this.getAttacks().length > 0) return 0; // by default use first attack
+    return null;
+  }
+
   useAttack(attackIndex: number, enemy: GameObject) {
     if (this.remainingCooldown > 0) {
       return;

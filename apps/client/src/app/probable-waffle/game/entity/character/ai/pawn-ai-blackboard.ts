@@ -4,7 +4,8 @@ import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PawnAiBlackboard extends Blackboard {
-  orderType?: OrderType;
+  playerOrderType?: OrderType;
+  aiOrderType?: OrderType;
   targetGameObject?: GameObject;
   targetLocation?: Vector3Simple;
   range?: number;

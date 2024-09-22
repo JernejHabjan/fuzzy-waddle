@@ -8,19 +8,16 @@ export interface IPlayerPawnControllerAgent {
   // Combat-related Actions
   HasAttackComponent(): boolean;
   TargetIsAlive(): boolean;
-  HealthAboveThreshold(threshold: number): boolean;
+  HealthAboveThresholdPercentage(threshold: number): boolean;
   InRange(): boolean;
   Attack(): State;
-  AttackEnemy(): State;
-  AssignTarget(targetType: string): State;
-  PatrolOrIdle(): State;
+  AssignEnemy(source: string): State;
   NoEnemiesVisible(): boolean;
   AnyEnemyVisible(): boolean;
-  CooldownReady(): boolean;
+  CooldownReady(type: string): boolean;
   Attacked(): boolean;
 
   // Resource Gathering
-  CanGatherResource(): boolean;
   AcquireNewResourceSource(): State;
   GatherResource(): State;
   TargetDepleted(): boolean;
@@ -31,6 +28,7 @@ export interface IPlayerPawnControllerAgent {
   AnyHighValueResourceVisible(): boolean;
   GatherHighValueResource(): State;
   HasHarvestComponent(): boolean;
+  CurrentlyGatheringResources(): boolean;
 
   // Resource Drop-off
   InRangeOfResourceDropOff(): boolean;
@@ -43,6 +41,6 @@ export interface IPlayerPawnControllerAgent {
   MoveToTarget(): State;
   CanMoveToTarget(): Promise<boolean>;
   Stop(): State;
-  MoveRandomlyInRange(range: number): State;
+  MoveRandomlyInRange(range: number): Promise<State>;
   TargetExists(): boolean;
 }

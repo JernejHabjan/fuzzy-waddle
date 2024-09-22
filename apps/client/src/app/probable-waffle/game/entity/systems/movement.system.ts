@@ -221,6 +221,24 @@ export class MovementSystem {
   }
 }
 
+export async function getRandomTileInNavigableRadius(
+  gameObject: Phaser.GameObjects.GameObject,
+  radius: number,
+  pathMoveConfig?: PathMoveConfig
+): Promise<Vector2Simple | undefined> {
+  const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
+  if (!movementSystem) return Promise.reject("No movement system found");
+  const newTile =
+    pathMoveConfig?.usePathfinding === false
+      ? getGameObjectTileInRadius(gameObject, radius)
+      : await getGameObjectTileInNavigableRadius(gameObject, radius);
+  if (!newTile) {
+    return Promise.reject("No new tile found");
+  }
+
+  return newTile;
+}
+
 export async function moveGameObjectToRandomTileInNavigableRadius(
   gameObject: Phaser.GameObjects.GameObject,
   radius: number,
@@ -228,10 +246,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
 ): Promise<void> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const newTile =
-    pathMoveConfig?.usePathfinding === false
-      ? getGameObjectTileInRadius(gameObject, radius)
-      : await getGameObjectTileInNavigableRadius(gameObject, radius);
+  const newTile = await getRandomTileInNavigableRadius(gameObject, radius, pathMoveConfig);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }

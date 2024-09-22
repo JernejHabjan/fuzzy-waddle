@@ -20,6 +20,12 @@ export class HealthComponent {
   private armorUiComponent?: HealthUiComponent;
   private playerChangedSubscription?: Subscription;
 
+  latestDamage?: {
+    damageInitiator: Phaser.GameObjects.GameObject | undefined;
+    damage: number;
+    damageType: DamageType;
+    timestamp: Date;
+  };
   private syncConfig = {
     eventPrefix: "health",
     propertyMap: {
@@ -88,6 +94,12 @@ export class HealthComponent {
     } else {
       this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
     }
+    this.latestDamage = {
+      damage,
+      damageType,
+      damageInitiator,
+      timestamp: new Date()
+    };
   }
 
   killActor() {

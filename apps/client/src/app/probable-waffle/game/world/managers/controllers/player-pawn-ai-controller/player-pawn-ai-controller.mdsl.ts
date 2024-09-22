@@ -14,12 +14,12 @@ root [PlayerOrder] {
         sequence {
             condition [PlayerOrderIs, "attack"]
             condition [HasAttackComponent]
+            condition [TargetExists]
             condition [TargetIsAlive]
             branch [ExecuteAttackOrder]
         }
         sequence {
             condition [PlayerOrderIs, "move"]
-            condition [TargetExists]
             branch [MoveToTarget]
         }
         sequence {
@@ -33,50 +33,53 @@ root [PlayerOrder] {
             branch [GatherResource]
         }
         sequence {
-            condition [PlayerOrderIs, "return"]
+            condition [PlayerOrderIs, "returnResources"]
             condition [HasHarvestComponent]
             branch [ReturnResources]
+        }
+        sequence {
+            condition [PlayerOrderIs, "beginConstruction"]
+            branch [ConstructBuilding]
+        }
+        sequence {
+            condition [PlayerOrderIs, "continueConstruction"]
+            branch [ConstructBuilding]
         }
     }
 }
 
 root [AiOrder] {
     sequence {
-        action [LeaveConstructionSiteOrCurrentContainer]
         selector {
+            sequence {
+                condition [Attacked]
+                condition [HasAttackComponent]
+                action [AssignEnemy, "retaliation"]
+                branch [ExecuteAttackOrder]
+            }
             sequence {
                 condition [AnyEnemyVisible]
                 condition [HasAttackComponent]
-                action [AttackEnemy]
+                action [AssignEnemy, "vision"]
+                branch [ExecuteAttackOrder]
             }
             sequence {
                 condition [HasHarvestComponent]
                 condition [CurrentlyGatheringResources]
                 branch [GatherAndReturnResources]
             }
-            action [MoveRandomlyInRange, 5]
+            sequence {
+              action [MoveRandomlyInRange, 5]
+              wait [2000]
+            }
         }
     }
 }
 
 root [MoveToTarget] {
-    selector {
-        sequence {
-            condition [PlayerOrderExists]
-            action [MoveToTarget]
-        }
-        parallel {
-            condition [TargetIsAlive]
-            condition [CanMoveToTarget]
-            action [MoveToTarget]
-            sequence {
-                condition [Attacked]
-                condition [HasAttackComponent]
-                action [Stop]
-                action [AssignTarget, "attacker"]
-                action [Attack]
-            }
-        }
+    sequence {
+        condition [CanMoveToTarget]
+        action [MoveToTarget]
     }
 }
 
@@ -88,48 +91,55 @@ root [ExecuteAttackOrder] {
                 flip {
                     condition [PlayerOrderIs, "attack"]
                 }
-                condition [HealthAboveThreshold, 20]
+                condition [HealthAboveThresholdPercentage, 20]
+                branch [AttackMoveEnemyTarget]
             }
         }
-        selector {
-            flip {
-                condition [TargetIsAlive]
-            }
-            action [Stop]
-            sequence {
-                condition [InRange]
-                branch [MoveToTarget]
-            }
-            action [Attack]
-        }
+        branch [AttackMoveEnemyTarget]
     }
 }
+
+root [AttackMoveEnemyTarget] {
+  selector {
+      sequence {
+        flip {
+          condition [TargetIsAlive]
+        }
+        action [Stop]
+      }
+      sequence {
+          flip {
+            condition [InRange]
+          }
+          branch [MoveToTarget]
+      }
+      sequence {
+          condition [CooldownReady, "attack"]
+          wait [200]
+      }
+      action [Attack]
+  }
+}
+
 
 root [GatherResource] {
     selector {
         flip {
-            condition [CanGatherResource]
+            condition [TargetDepleted]
         }
         action [Stop]
+        action [AcquireNewResourceSource]
         sequence {
-            action [LeaveConstructionSiteOrCurrentContainer]
-            selector {
-                flip {
-                    condition [TargetDepleted]
-                }
-                action [Stop]
-                action [AcquireNewResourceSource]
-                sequence {
-                    condition [InRange]
-                    branch [MoveToTarget]
-                }
-                sequence {
-                    condition [CooldownReady]
-                    wait [200]
-                }
-                action [GatherResource]
+            flip {
+              condition [InRange]
             }
+            branch [MoveToTarget]
         }
+        sequence {
+            condition [CooldownReady, "gather"]
+            wait [200]
+        }
+        action [GatherResource]
     }
 }
 
