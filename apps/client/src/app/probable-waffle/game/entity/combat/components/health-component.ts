@@ -12,6 +12,7 @@ export type HealthDefinition = {
 };
 
 export class HealthComponent {
+  static readonly KilledEvent = "killed";
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
   armorChanged: EventEmitter<number> = new EventEmitter<number>();
 
@@ -104,9 +105,9 @@ export class HealthComponent {
 
   killActor() {
     this.healthComponentData.health = 0;
-    this.healthUiComponent.destroy();
-    this.armorUiComponent?.destroy();
-    this.gameObject.destroy();
+    this.gameObject.emit(HealthComponent.KilledEvent);
+    // do not destroy the gameObject just yet
+    // this.gameObject.destroy();
   }
 
   resetHealth() {

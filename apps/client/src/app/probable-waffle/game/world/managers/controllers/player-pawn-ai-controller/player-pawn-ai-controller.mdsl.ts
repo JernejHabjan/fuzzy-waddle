@@ -49,53 +49,52 @@ root [PlayerOrder] {
 }
 
 root [AiOrder] {
-    sequence {
-        selector {
-            sequence {
-                condition [Attacked]
-                condition [HasAttackComponent]
-                action [AssignEnemy, "retaliation"]
-                branch [ExecuteAttackOrder]
-            }
-            sequence {
-                condition [AnyEnemyVisible]
-                condition [HasAttackComponent]
-                action [AssignEnemy, "vision"]
-                branch [ExecuteAttackOrder]
-            }
-            sequence {
-                condition [HasHarvestComponent]
-                condition [CurrentlyGatheringResources]
-                branch [GatherAndReturnResources]
-            }
-            sequence {
-              action [MoveRandomlyInRange, 5]
-              wait [2000]
-            }
+    selector {
+        sequence {
+            condition [Attacked]
+            condition [HasAttackComponent]
+            action [AssignEnemy, "retaliation"]
+            branch [ExecuteAttackOrder]
+        }
+        sequence {
+            condition [AnyEnemyVisible]
+            condition [HasAttackComponent]
+            action [AssignEnemy, "vision"]
+            branch [ExecuteAttackOrder]
+        }
+        sequence {
+            condition [HasHarvestComponent]
+            condition [CurrentlyGatheringResources]
+            branch [GatherAndReturnResources]
+        }
+        sequence {
+          action [MoveRandomlyInRange, 5]
+          wait [2000]
         }
     }
 }
 
 root [MoveToTarget] {
     sequence {
-        condition [CanMoveToTarget]
         action [MoveToTarget]
     }
 }
 
 root [ExecuteAttackOrder] {
-    sequence {
-        action [LeaveConstructionSiteOrCurrentContainer]
-        selector {
-            sequence {
-                flip {
-                    condition [PlayerOrderIs, "attack"]
+    succeed {
+        sequence {
+            action [LeaveConstructionSiteOrCurrentContainer]
+            selector {
+                sequence {
+                    flip {
+                        condition [PlayerOrderIs, "attack"]
+                    }
+                    condition [HealthAboveThresholdPercentage, 20]
+                    branch [AttackMoveEnemyTarget]
                 }
-                condition [HealthAboveThresholdPercentage, 20]
-                branch [AttackMoveEnemyTarget]
             }
+            branch [AttackMoveEnemyTarget]
         }
-        branch [AttackMoveEnemyTarget]
     }
 }
 
@@ -115,9 +114,8 @@ root [AttackMoveEnemyTarget] {
       }
       sequence {
           condition [CooldownReady, "attack"]
-          wait [200]
+          action [Attack]
       }
-      action [Attack]
   }
 }
 

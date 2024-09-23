@@ -9,6 +9,8 @@ export class PlayerAiController {
   private blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
   private playerAiControllerAgent = new PlayerAiControllerAgent(this.blackboard);
   private behaviourTree: BehaviourTree;
+  private elapsedTime: number = 0;
+  private readonly stepInterval: number = 1000;
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly player: ProbableWafflePlayer
@@ -20,7 +22,11 @@ export class PlayerAiController {
   }
 
   private update(time: number, dt: number) {
-    this.behaviourTree.step();
+    this.elapsedTime += dt;
+    if (this.elapsedTime >= this.stepInterval) {
+      this.behaviourTree.step();
+      this.elapsedTime = 0;
+    }
   }
 
   private onShutdown() {

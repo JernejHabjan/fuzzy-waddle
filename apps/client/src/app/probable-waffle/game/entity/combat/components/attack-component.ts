@@ -21,6 +21,7 @@ export class AttackComponent {
   ) {
     owner.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     owner.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    owner.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
   private destroy() {
@@ -45,7 +46,7 @@ export class AttackComponent {
     if (this.remainingCooldown > 0) {
       return;
     }
-    if (attackIndex >= this.attackDefinition.attacks.length) {
+    if (attackIndex < 0 || attackIndex >= this.attackDefinition.attacks.length) {
       throw new Error("Invalid attack index");
     }
 
@@ -62,6 +63,8 @@ export class AttackComponent {
       }
       enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
     }
+
+    this.remainingCooldown = attack.cooldown;
   }
 
   // gameObject will automatically select and attack targets

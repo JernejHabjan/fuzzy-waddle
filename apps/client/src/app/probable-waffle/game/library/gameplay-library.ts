@@ -3,7 +3,7 @@ import { TransformComponent } from "../entity/actor/components/transformable-com
 import { getActorComponent } from "../data/actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { getGameObjectTransform } from "../data/game-object-helper";
+import { getGameObjectCurrentTile, getGameObjectTransform } from "../data/game-object-helper";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class GameplayLibrary {
@@ -51,7 +51,7 @@ export class GameplayLibrary {
     return distance;
   }
 
-  static getDistanceBetweenActors(actor1: GameObject, actor2: GameObject): number | null {
+  static getWorldDistanceBetweenGameObjects(actor1: GameObject, actor2: GameObject): number | null {
     if (actor1 === actor2) return 0;
     const actor1Transform = getGameObjectTransform(actor1);
     if (!actor1Transform) return null;
@@ -79,23 +79,14 @@ export class GameplayLibrary {
     return distance;
   }
 
-  static getDistanceBetweenGameObjects(gameObject1: GameObject, gameObject2: GameObject): number | null {
-    const transform1 = gameObject1 as unknown as Phaser.GameObjects.Components.Transform;
-    const transform2 = gameObject2 as unknown as Phaser.GameObjects.Components.Transform;
-    if (
-      transform1.x === undefined ||
-      transform1.y === undefined ||
-      transform2.x === undefined ||
-      transform2.y === undefined
-    ) {
-      return null;
-    }
-    // also check z
-    const distance = Math.sqrt(
-      Math.pow(transform1.x - transform2.x, 2) +
-        Math.pow(transform1.y - transform2.y, 2) +
-        Math.pow(transform1.z - transform2.z, 2)
-    );
+  static getTileDistanceBetweenGameObjects(actor1: GameObject, actor2: GameObject): number | null {
+    const actor1Tile = getGameObjectCurrentTile(actor1);
+    if (!actor1Tile) return null;
+    const actor2Tile = getGameObjectCurrentTile(actor2);
+    if (!actor2Tile) return null;
+
+    // noinspection UnnecessaryLocalVariableJS
+    const distance = Math.sqrt(Math.pow(actor1Tile.x - actor2Tile.x, 2) + Math.pow(actor1Tile.y - actor2Tile.y, 2));
     return distance;
   }
 }

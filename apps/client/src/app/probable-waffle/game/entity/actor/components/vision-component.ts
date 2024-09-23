@@ -3,19 +3,22 @@ import { GameplayLibrary } from "../../../library/gameplay-library";
 import Spawn from "../../../prefabs/buildings/misc/Spawn";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
+import { HealthComponent } from "../../combat/components/health-component";
 
 export interface VisionDefinition {
   range: number;
 }
 
 export class VisionComponent {
+  private visibleEnemies?: GameObject[]; // todo
+
   constructor(
     private readonly gameObject: GameObject,
     private readonly visionDefinition: VisionDefinition
   ) {}
 
   isActorVisible(actor: GameObject): boolean {
-    const distance = GameplayLibrary.getDistanceBetweenActors(this.gameObject, actor);
+    const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, actor);
     if (distance === null) {
       return false;
     }
@@ -27,6 +30,7 @@ export class VisionComponent {
   }
 
   getVisibleEnemies(): GameObject[] {
+    // todo if (this.visibleEnemies) return this.visibleEnemies;
     const currentActorOwnerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = currentActorOwnerComponent?.getOwner();
     if (!owner) return [];
@@ -36,10 +40,15 @@ export class VisionComponent {
       const ownerComponent = getActorComponent(c, OwnerComponent);
       const childOwner = ownerComponent?.getOwner();
       if (!childOwner) return false;
-      return childOwner !== owner; // todo this is not respecting teams
+      if (childOwner === owner) return false; // todo this is not respecting teams
+      const healthComponent = getActorComponent(c, HealthComponent);
+      if (!healthComponent) return false;
+      const health = healthComponent.healthComponentData.health;
+      return health > 0;
     });
 
     // todo apply vision radius check here
-    return tempEnemies as GameObject[];
+    this.visibleEnemies = tempEnemies as GameObject[];
+    return this.visibleEnemies;
   }
 }

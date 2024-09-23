@@ -1,4 +1,4 @@
-import { PlayerPawnAiControllerMdsl } from "../player-pawn-ai-controller/player-pawn-ai-controller.mdsl";
+import { PlayerPawnAiControllerMdsl } from "./player-pawn-ai-controller.mdsl";
 import { BehaviourTree } from "mistreevous";
 import Phaser from "phaser";
 import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackboard";
@@ -8,6 +8,8 @@ export class PawnAiController {
   private blackboard: PawnAiBlackboard = new PawnAiBlackboard();
   private playerPawnAiControllerAgent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
   private behaviourTree: BehaviourTree;
+  private elapsedTime: number = 0;
+  private readonly stepInterval: number = 1000;
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.playerPawnAiControllerAgent);
 
@@ -16,7 +18,11 @@ export class PawnAiController {
   }
 
   private update(time: number, dt: number) {
-    this.behaviourTree.step();
+    this.elapsedTime += dt;
+    if (this.elapsedTime >= this.stepInterval) {
+      this.behaviourTree.step();
+      this.elapsedTime = 0;
+    }
   }
 
   private onShutdown() {

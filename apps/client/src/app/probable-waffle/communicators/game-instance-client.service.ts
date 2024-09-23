@@ -45,6 +45,7 @@ import { GameInstanceStorageServiceInterface } from "./storage/game-instance-sto
   providedIn: "root"
 })
 export class GameInstanceClientService implements GameInstanceClientServiceInterface {
+  private readonly DEBUG = false;
   gameInstance?: ProbableWaffleGameInstance;
   /**
    * used to track which player number are we in the game
@@ -191,7 +192,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.communicators) return;
     this.communicatorSubscriptions.push(
       this.communicators.gameStateObservable.subscribe((payload) => {
-        console.log("game state changed on client", payload);
+        if (this.DEBUG) {
+          console.log("game state changed on client", payload);
+        }
       })
     );
   }

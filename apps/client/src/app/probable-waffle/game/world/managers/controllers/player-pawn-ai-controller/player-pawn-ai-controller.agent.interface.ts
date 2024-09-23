@@ -38,8 +38,8 @@ export interface IPlayerPawnControllerAgent {
   LeaveConstructionSiteOrCurrentContainer(): State;
 
   // Movement
-  MoveToTarget(): State;
-  CanMoveToTarget(): Promise<boolean>;
+  MoveToTarget(): Promise<State>;
+  // CanMoveToTarget(): Promise<boolean>;
   Stop(): State;
   MoveRandomlyInRange(range: number): Promise<State>;
   TargetExists(): boolean;

@@ -6,6 +6,7 @@ import { listenToSelectionEvents } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "./id-component";
 import { ActorTranslateComponent } from "./actor-translate-component";
+import { HealthComponent } from "../../combat/components/health-component";
 
 export type SelectableDefinition = {
   offsetY?: number;
@@ -22,6 +23,7 @@ export class SelectableComponent {
   ) {
     this.createSelectionCircle();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init);
     this.listenToSelectionEvents();
   }

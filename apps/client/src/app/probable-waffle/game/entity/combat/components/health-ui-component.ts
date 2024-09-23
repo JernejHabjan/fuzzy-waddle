@@ -40,6 +40,7 @@ export class HealthUiComponent {
   ) {
     this.bar = this.gameObject.scene.add.graphics();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
     gameObject.on(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
   }

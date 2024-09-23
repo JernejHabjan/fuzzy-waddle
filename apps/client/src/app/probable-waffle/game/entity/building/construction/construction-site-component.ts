@@ -41,6 +41,7 @@ export class ConstructionSiteComponent {
   ) {
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
   }
 
   update(time: number, delta: number): void {

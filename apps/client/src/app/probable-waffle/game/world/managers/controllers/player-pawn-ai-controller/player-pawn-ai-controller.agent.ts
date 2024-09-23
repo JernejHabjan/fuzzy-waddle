@@ -57,17 +57,27 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!range) return false;
     const target = this.blackboard.targetGameObject;
     if (!target) return false;
-    const distance = GameplayLibrary.getDistanceBetweenActors(this.gameObject, target);
+    const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, target);
     if (distance === null) return false;
     return distance <= range;
   }
 
-  MoveToTarget() {
-    // Command the agent to move to the target
-    console.log("Moving to target!");
+  async MoveToTarget(): Promise<State> {
+    const target = this.blackboard.targetGameObject;
+    if (!target) return State.FAILED;
     this.blackboard.aiOrderType = OrderType.Move;
-
-    return State.SUCCEEDED;
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+    try {
+      const canMoveToTarget = await this.CanMoveToTarget();
+      if (!canMoveToTarget) return State.FAILED;
+      // console.log("Moving to target!");
+      const success = await movementSystem.moveToActor(target);
+      return success ? State.SUCCEEDED : State.FAILED;
+    } catch (e) {
+      console.error("Error in MoveToTarget", e);
+      return State.FAILED;
+    }
   }
 
   Stop() {
@@ -82,7 +92,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
     const primaryAttack = attackComponent.primaryAttack;
-    if (!primaryAttack) return State.FAILED;
+    if (primaryAttack === null) return State.FAILED;
     attackComponent.useAttack(primaryAttack, target);
     return State.SUCCEEDED;
   }

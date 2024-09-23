@@ -16,7 +16,9 @@ import { getCommunicator } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
+import { HealthComponent } from "../combat/components/health-component";
 import Tween = Phaser.Tweens.Tween;
+import GameObject = Phaser.GameObjects.GameObject;
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -39,6 +41,7 @@ export class MovementSystem {
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
   }
 
@@ -56,6 +59,7 @@ export class MovementSystem {
             const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
             if (isSelected) {
               this.moveToLocation(target); // todo later on, read this from the blackboard and PawnAiController
+              // todo, note that we may also navigate to object and not to the tile under the object - use this.moveToActor(gameObject)
             }
             break;
         }
@@ -93,6 +97,42 @@ export class MovementSystem {
     if (!path.length) return false;
 
     if (this.DEBUG) console.log(`Moving to tile ${vec3.x}, ${vec3.y}`);
+
+    if (this.DEBUG) this.navigationService.drawDebugPath(path);
+
+    try {
+      if (!path.length) return false;
+      // Remove the first tile, as it's the current tile
+      path.shift();
+      await this.moveAlongPath(path, pathMoveConfig);
+    } catch (e) {
+      // console.error("Error moving along path", e);
+      return false;
+    }
+
+    return true;
+  }
+
+  async moveToActor(gameObject: GameObject, pathMoveConfig?: PathMoveConfig): Promise<boolean> {
+    if (pathMoveConfig?.usePathfinding === false) {
+      const vec3 = getGameObjectCurrentTile(gameObject);
+      if (!vec3) return false;
+      return this.moveDirectlyToLocation(
+        {
+          x: vec3.x,
+          y: vec3.y,
+          z: 0
+        } satisfies Vector3Simple,
+        pathMoveConfig
+      )
+        .then(() => true)
+        .catch(() => false);
+    }
+
+    if (!this.navigationService) return false;
+
+    const path = await this.navigationService.getClosestWalkablePath(this.gameObject, gameObject);
+    if (!path.length) return false;
 
     if (this.DEBUG) this.navigationService.drawDebugPath(path);
 
@@ -214,9 +254,7 @@ export class MovementSystem {
     if (!targetGameObject) return false;
     const navigationService = this.navigationService;
     if (!navigationService) return false;
-    const actorVec2 = navigationService.getCenterTileCoordUnderObject(targetGameObject);
-    if (!actorVec2) return false;
-    const path = await navigationService.getPath(this.gameObject, actorVec2);
+    const path = await navigationService.getClosestWalkablePath(this.gameObject, targetGameObject);
     return path.length > 0;
   }
 }

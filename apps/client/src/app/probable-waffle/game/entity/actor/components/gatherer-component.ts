@@ -114,7 +114,7 @@ export class GathererComponent {
 
       // check distance
       // todo here we may need to check navigatable path?
-      const distance = GameplayLibrary.getDistanceBetweenGameObjects(gatherer, resourceDrain);
+      const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(gatherer, resourceDrain);
       if (distance && (!closestResourceDrain || distance < closestResourceDrainDistance)) {
         closestResourceDrain = resourceDrain;
         closestResourceDrainDistance = distance;
@@ -157,7 +157,7 @@ export class GathererComponent {
       // if not correct resource type
       if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) continue;
       // check distance
-      const distance = GameplayLibrary.getDistanceBetweenGameObjects(this.gameObject, gameObject);
+      const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, gameObject);
       if (distance === null) continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
       if (!closestResourceSource || distance < closestResourceSourceDistance) {

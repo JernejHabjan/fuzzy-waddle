@@ -37,6 +37,7 @@ export class OwnerComponent {
       ) as ColorReplacePipelinePlugin;
     }
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
   }
 

@@ -97,7 +97,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
     // spawn
-    const spawn = new Spawn(this, 240, 672);
+    const spawn = new Spawn(this, 800, 976);
     this.add.existing(spawn);
 
     // christmasTree

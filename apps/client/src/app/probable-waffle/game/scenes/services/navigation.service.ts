@@ -1,5 +1,5 @@
 import { js as EasyStar } from "easystarjs";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
 import { WalkableComponent } from "../../entity/actor/components/walkable-component";
@@ -288,5 +288,82 @@ export class NavigationService {
 
   getCenterTileCoordUnderObject(gameObject: Phaser.GameObjects.GameObject): Vector2Simple | undefined {
     return getCenterTileCoordUnderObject(this.tilemap, gameObject);
+  }
+
+  public async getClosestWalkablePath(
+    gameObject: Phaser.GameObjects.GameObject,
+    targetGameObject: Phaser.GameObjects.GameObject
+  ): Promise<Vector2Simple[]> {
+    const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!fromTile) return Promise.resolve([]);
+
+    // Step 1: Get the blocked tiles (occupied by the building)
+    const blockedTiles = getTileCoordsUnderObject(this.tilemap, targetGameObject);
+
+    // Step 2: Find the closest walkable tile around the building
+    const closestWalkableTile = this.getClosestWalkableTileAroundBlockedTiles(fromTile, blockedTiles);
+
+    if (!closestWalkableTile) {
+      throw new Error("No walkable tile found around the building.");
+    }
+
+    // Step 3: Use EasyStar to find the path to the closest walkable tile
+    try {
+      return await this.find(fromTile, closestWalkableTile);
+    } catch (e) {
+      return []; // Return an empty array if no path was found
+    }
+  }
+
+  private getClosestWalkableTileAroundBlockedTiles(
+    fromTile: Vector2Simple,
+    blockedTiles: Vector2Simple[]
+  ): Vector2Simple | undefined {
+    // Find all walkable tiles around each blocked tile
+    const walkableTiles: Vector2Simple[] = [];
+    blockedTiles.forEach((blockedTile) => {
+      const neighbors = this.getNeighboringTiles(blockedTile);
+      neighbors.forEach((neighbor) => {
+        // Ensure the neighbor tile is within grid bounds and walkable
+        if (this.isTileWalkable(neighbor) && !walkableTiles.some((t) => t.x === neighbor.x && t.y === neighbor.y)) {
+          walkableTiles.push(neighbor);
+        }
+      });
+    });
+
+    // Step 2: Find the closest walkable tile to the fromTile
+    if (walkableTiles.length === 0) return undefined;
+    walkableTiles.sort((a, b) => this.getTileDistance(a, fromTile) - this.getTileDistance(b, fromTile));
+
+    return walkableTiles[0];
+  }
+
+  private getNeighboringTiles(tile: Vector2Simple): Vector2Simple[] {
+    const neighbors: Vector2Simple[] = [];
+    const directions = [
+      { x: 0, y: -1 }, // North
+      { x: 0, y: 1 }, // South
+      { x: -1, y: 0 }, // West
+      { x: 1, y: 0 } // East
+    ];
+
+    directions.forEach((dir) => {
+      const neighbor = { x: tile.x + dir.x, y: tile.y + dir.y };
+      if (neighbor.x >= 0 && neighbor.x < this.grid[0].length && neighbor.y >= 0 && neighbor.y < this.grid.length) {
+        neighbors.push(neighbor);
+      }
+    });
+
+    return neighbors;
+  }
+
+  private isTileWalkable(tile: Vector2Simple): boolean {
+    return this.grid[tile.y][tile.x] === 0; // Check if the tile is walkable (0 means walkable)
+  }
+
+  private getTileDistance(tile1: Vector2Simple, tile2: Vector2Simple): number {
+    const dx = tile1.x - tile2.x;
+    const dy = tile1.y - tile2.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 }
