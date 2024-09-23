@@ -56,4 +56,8 @@ export class ResourceDrainComponent {
   getResourceTypes(): ResourceType[] {
     return this.resourceDrainDefinition.resourceTypes;
   }
+
+  getDropOffRange(): number {
+    return 1;
+  }
 }

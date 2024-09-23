@@ -9,7 +9,7 @@ export interface IPlayerPawnControllerAgent {
   HasAttackComponent(): boolean;
   TargetIsAlive(): boolean;
   HealthAboveThresholdPercentage(threshold: number): boolean;
-  InRange(): boolean;
+  InRange(type: "gather" | "attack" | "dropOff" | "construct"): boolean;
   Attack(): State;
   AssignEnemy(source: string): State;
   NoEnemiesVisible(): boolean;
@@ -20,7 +20,6 @@ export interface IPlayerPawnControllerAgent {
   // Resource Gathering
   AcquireNewResourceSource(): State;
   GatherResource(): State;
-  TargetDepleted(): boolean;
   ReturnResources(): State;
   DropOffResources(): State;
   ContinueGathering(): State;
@@ -29,9 +28,6 @@ export interface IPlayerPawnControllerAgent {
   GatherHighValueResource(): State;
   HasHarvestComponent(): boolean;
   CurrentlyGatheringResources(): boolean;
-
-  // Resource Drop-off
-  InRangeOfResourceDropOff(): boolean;
 
   // Construction and Building
   ConstructBuilding(): State;

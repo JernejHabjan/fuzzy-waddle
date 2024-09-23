@@ -14,6 +14,8 @@ import { ResourceSourceComponent } from "../../../../entity/economy/resource/res
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import { ContainableComponent } from "../../../../entity/actor/components/containable-component";
+import { ResourceDrainComponent } from "../../../../entity/economy/resource/resource-drain-component";
+import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -52,11 +54,21 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return healthPercentage > threshold;
   }
 
-  InRange() {
-    const range = getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
-    if (!range) return false;
+  InRange(type: "gather" | "attack" | "dropOff" | "construct") {
     const target = this.blackboard.targetGameObject;
     if (!target) return false;
+    const range =
+      type === "attack"
+        ? getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange()
+        : type === "gather"
+          ? getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(target)
+          : type === "dropOff"
+            ? getActorComponent(target, ResourceDrainComponent)?.getDropOffRange()
+            : type === "construct"
+              ? getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("")
+              : null;
+    if (!range) return false;
+
     const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, target);
     if (distance === null) return false;
     return distance <= range;
@@ -111,8 +123,11 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   AcquireNewResourceSource() {
-    // Find a new resource to gather from
-    console.log("Acquiring new resource source!");
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+    const resourceSource = gathererComponent.getPreferredResourceSource();
+    if (!resourceSource) return State.FAILED;
+    this.blackboard.targetGameObject = resourceSource;
     return State.SUCCEEDED;
   }
 
@@ -121,24 +136,16 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!target) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    gathererComponent.startGatheringResources(target);
+    const successfullyStarted = gathererComponent.startGatheringResources(target);
+    if (!successfullyStarted) return State.FAILED;
+    gathererComponent.gatherResources(target);
     return State.SUCCEEDED;
-  }
-
-  TargetDepleted() {
-    // Check if the resource target is depleted
-    return false;
   }
 
   ReturnResources() {
     // Command the agent to return gathered resources to the drop-off point
     console.log("Returning resources to drop-off.");
     return State.SUCCEEDED;
-  }
-
-  InRangeOfResourceDropOff() {
-    // Check if the agent is in range of the resource drop-off point
-    return false;
   }
 
   DropOffResources() {

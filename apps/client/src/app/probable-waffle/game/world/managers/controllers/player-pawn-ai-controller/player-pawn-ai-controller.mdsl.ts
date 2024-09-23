@@ -59,13 +59,15 @@ root [AiOrder] {
         sequence {
             condition [AnyEnemyVisible]
             condition [HasAttackComponent]
+            flip {
+                condition [HasHarvestComponent]
+            }
             action [AssignEnemy, "vision"]
             branch [ExecuteAttackOrder]
         }
         sequence {
             condition [HasHarvestComponent]
-            condition [CurrentlyGatheringResources]
-            branch [GatherAndReturnResources]
+            branch [AiOrderGatherAndReturnResources]
         }
         sequence {
           action [MoveRandomlyInRange, 5]
@@ -108,7 +110,7 @@ root [AttackMoveEnemyTarget] {
       }
       sequence {
           flip {
-            condition [InRange]
+            condition [InRange, "attack"]
           }
           branch [MoveToTarget]
       }
@@ -122,29 +124,32 @@ root [AttackMoveEnemyTarget] {
 
 root [GatherResource] {
     selector {
-        flip {
-            condition [TargetDepleted]
+        sequence {
+          flip {
+              condition [TargetHasResources]
+          }
+          action [AcquireNewResourceSource]
         }
-        action [Stop]
-        action [AcquireNewResourceSource]
         sequence {
             flip {
-              condition [InRange]
+              condition [InRange, "gather"]
             }
             branch [MoveToTarget]
         }
         sequence {
             condition [CooldownReady, "gather"]
-            wait [200]
+            action [GatherResource]
         }
-        action [GatherResource]
     }
 }
 
-root [GatherAndReturnResources] {
+root [AiOrderGatherAndReturnResources] {
     selector {
+        sequence {
+            condition [CurrentlyGatheringResources]
+            branch [ReturnResources]
+        }
         branch [GatherResource]
-        branch [ReturnResources]
     }
 }
 
@@ -157,7 +162,7 @@ root [ReturnResources] {
             }
             action [Stop]
             sequence {
-                condition [InRangeOfResourceDropOff]
+                condition [InRange, "dropOff"]
                 branch [MoveToTarget]
             }
             action [DropOffResources]
@@ -177,7 +182,7 @@ root [ConstructBuilding] {
                 action [Stop]
                 action [LeaveConstructionSiteOrCurrentContainer]
                 sequence {
-                    condition [InRange]
+                    condition [InRange, "construct"]
                     branch [MoveToTarget]
                 }
             }

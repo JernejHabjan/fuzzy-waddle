@@ -81,20 +81,10 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return State.SUCCEEDED;
   }
 
-  TargetDepleted() {
-    // Check if the resource target is depleted
-    return getBooleanValue("Is the target resource depleted?");
-  }
-
   ReturnResources() {
     // Command the agent to return gathered resources to the drop-off point
     showInfoToast("Returning resources to drop-off.");
     return State.SUCCEEDED;
-  }
-
-  InRangeOfResourceDropOff() {
-    // Check if the agent is in range of the resource drop-off point
-    return getBooleanValue("Is the agent in range of the resource drop-off?");
   }
 
   DropOffResources() {

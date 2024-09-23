@@ -56,18 +56,19 @@ export class GathererComponent {
   /**
    * this gets set by the behavior tree
    */
-  startGatheringResources(resourceSource: GameObject) {
-    if (!this.canGatherFrom(resourceSource)) return;
-    if (this.currentResourceSource === resourceSource) return;
+  startGatheringResources(resourceSource: GameObject): boolean {
+    if (this.currentResourceSource === resourceSource) return true;
+
+    if (!this.canGatherFrom(resourceSource)) return false;
 
     this.currentResourceSource = resourceSource;
 
     const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
-    if (!resourceSourceComponent) return;
+    if (!resourceSourceComponent) return false;
 
     const gatherData = this.getGatherDataForResourceSource(resourceSource);
 
-    if (!gatherData) return;
+    if (!gatherData) return false;
 
     // reset carried amount
     this.setCarriedResourceAmount(0);
@@ -83,6 +84,7 @@ export class GathererComponent {
         containerComponent.loadGameObject(this.gameObject);
       }
     }
+    return true;
   }
 
   findClosestResourceDrain(): GameObject | null {
@@ -149,7 +151,7 @@ export class GathererComponent {
     let closestResourceSourceDistance = 0;
 
     // todo get all gameObjects in the world and check the closest
-    const gameObjects: GameObject[] = [];
+    const gameObjects = this.gameObject.scene.children.list as GameObject[]; // todo this is expensive
     for (const gameObject of gameObjects) {
       // get resourceSourceComponent
       const resourceSourceComponent = getActorComponent(gameObject, ResourceSourceComponent);

@@ -34,6 +34,7 @@ import {
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -116,6 +117,8 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
       ],
       [new MovementSystem(this)]
     );
+
+    new PawnAiController(this); // todo
 
     this.on("pointerdown", () => {
       // and play anim skaduwee_worker_male_slash_down
