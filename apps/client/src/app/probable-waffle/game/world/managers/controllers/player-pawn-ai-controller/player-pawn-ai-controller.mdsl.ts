@@ -146,7 +146,7 @@ root [GatherResource] {
 root [AiOrderGatherAndReturnResources] {
     selector {
         sequence {
-            condition [CurrentlyGatheringResources]
+            condition [GatherCapacityFull]
             branch [ReturnResources]
         }
         branch [GatherResource]

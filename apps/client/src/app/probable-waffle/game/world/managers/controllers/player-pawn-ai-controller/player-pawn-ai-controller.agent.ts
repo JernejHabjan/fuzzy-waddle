@@ -271,9 +271,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return getActorComponent(this.gameObject, GathererComponent) !== null;
   }
 
-  CurrentlyGatheringResources(): boolean {
+  GatherCapacityFull(): boolean {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return false;
-    return gathererComponent.isGathering;
+    return gathererComponent.isCapacityFull();
   }
 }

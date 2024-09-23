@@ -169,8 +169,7 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   //   return Promise.resolve(getBooleanValue("Can the agent move to the target?"));
   // }
 
-  CurrentlyGatheringResources(): boolean {
-    // Check if the agent is currently gathering resources
-    return getBooleanValue("Is the agent currently gathering resources?");
+  GatherCapacityFull(): boolean {
+    return getBooleanValue("Is the agent gathering capacity full?");
   }
 }

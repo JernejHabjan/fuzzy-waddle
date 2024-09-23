@@ -27,7 +27,7 @@ export interface IPlayerPawnControllerAgent {
   AnyHighValueResourceVisible(): boolean;
   GatherHighValueResource(): State;
   HasHarvestComponent(): boolean;
-  CurrentlyGatheringResources(): boolean;
+  GatherCapacityFull(): boolean;
 
   // Construction and Building
   ConstructBuilding(): State;

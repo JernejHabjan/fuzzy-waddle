@@ -8,8 +8,8 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { getPlayer } from "../../../data/scene-data";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -19,7 +19,40 @@ export type GathererDefinition = {
 };
 
 export class GathererComponent {
-  gatheredResources: GatherData[] = [];
+  private readonly gatheredResources: GatherData[] = [
+    {
+      capacity: 10,
+      cooldown: 1000,
+      range: 1,
+      resourceType: ResourceType.Wood,
+      amountPerGathering: 1,
+      needsReturnToDrain: true
+    },
+    {
+      capacity: 10,
+      cooldown: 1000,
+      range: 1,
+      resourceType: ResourceType.Stone,
+      amountPerGathering: 1,
+      needsReturnToDrain: true
+    },
+    {
+      capacity: 10,
+      cooldown: 1000,
+      range: 1,
+      resourceType: ResourceType.Minerals,
+      amountPerGathering: 1,
+      needsReturnToDrain: true
+    },
+    {
+      capacity: 10,
+      cooldown: 1000,
+      range: 1,
+      resourceType: ResourceType.Ambrosia,
+      amountPerGathering: 1,
+      needsReturnToDrain: true
+    }
+  ];
   // amount the gameObject is carrying
   carriedResourceAmount = 0;
   carriedResourceType: ResourceType | null = null;
