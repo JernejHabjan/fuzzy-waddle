@@ -106,7 +106,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
-        duration: this.movementSpeed,
+        tileStepDuration: this.movementSpeed,
         onPathUpdate: (newTileXY) => {
           this.playAnimation("walk", newTileXY);
         }

@@ -5,7 +5,11 @@ import { VisionComponent } from "../../../../entity/actor/components/vision-comp
 import { GameplayLibrary } from "../../../../library/gameplay-library";
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
 import { getActorSystem } from "../../../../data/actor-system";
-import { getRandomTileInNavigableRadius, MovementSystem } from "../../../../entity/systems/movement.system";
+import {
+  getRandomTileInNavigableRadius,
+  MovementSystem,
+  PathMoveConfig
+} from "../../../../entity/systems/movement.system";
 import { OrderLabelToTypeMap, OrderType } from "../../../../entity/character/ai/order-type";
 import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackboard";
 import { Agent } from "mistreevous/dist/Agent";
@@ -59,16 +63,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   InRange(type: "gather" | "attack" | "dropOff" | "construct") {
     const target = this.blackboard.targetGameObject;
     if (!target) return false;
-    const range =
-      type === "attack"
-        ? getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange()
-        : type === "gather"
-          ? getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(target)
-          : type === "dropOff"
-            ? getActorComponent(target, ResourceDrainComponent)?.getDropOffRange()
-            : type === "construct"
-              ? getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("")
-              : null;
+    const range = this.getRangeToTarget(type);
     if (!range) return false;
 
     const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, target);
@@ -76,17 +71,41 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return distance <= range;
   }
 
-  async MoveToTarget(): Promise<State> {
+  private getRangeToTarget(type: "move" | "gather" | "attack" | "dropOff" | "construct"): number | undefined {
+    const target = this.blackboard.targetGameObject;
+    if (!target) return undefined;
+
+    switch (type) {
+      case "move":
+        return 0;
+      case "attack":
+        return getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
+      case "gather":
+        return getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(target);
+      case "dropOff":
+        return getActorComponent(target, ResourceDrainComponent)?.getDropOffRange();
+      case "construct":
+        return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("");
+      default:
+        return undefined;
+    }
+  }
+
+  async MoveToTarget(type: "move" | "gather" | "attack" | "dropOff" | "construct"): Promise<State> {
     const target = this.blackboard.targetGameObject;
     if (!target) return State.FAILED;
+    const range = this.getRangeToTarget(type);
+    if (range === undefined) return State.FAILED;
     this.blackboard.aiOrderType = OrderType.Move;
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
     try {
-      const canMoveToTarget = await this.CanMoveToTarget();
+      const canMoveToTarget = await this.CanMoveToTarget(range);
       if (!canMoveToTarget) return State.FAILED;
       // console.log("Moving to target!");
-      const success = await movementSystem.moveToActor(target);
+      const success = await movementSystem.moveToActor(target, {
+        radiusTilesAroundDestination: range
+      } satisfies Partial<PathMoveConfig>);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       console.error("Error in MoveToTarget", e);
@@ -121,11 +140,12 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return visionComponent.getVisibleEnemies().length > 0;
   }
 
-  CanMoveToTarget(): Promise<boolean> {
+  private async CanMoveToTarget(range: number): Promise<boolean> {
+    if (!this.blackboard.targetGameObject) return Promise.resolve(false);
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return Promise.resolve(false);
     // noinspection UnnecessaryLocalVariableJS
-    return movementSystem.canMoveTo(this.blackboard.targetGameObject);
+    return await movementSystem.canMoveTo(this.blackboard.targetGameObject, range);
   }
 
   AcquireNewResourceSource() {

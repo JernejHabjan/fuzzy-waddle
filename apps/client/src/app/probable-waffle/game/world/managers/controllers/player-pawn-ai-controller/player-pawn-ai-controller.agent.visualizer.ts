@@ -164,11 +164,6 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Does the agent have a harvest component?");
   }
 
-  // CanMoveToTarget() {
-  //   // Check if the agent can move to the target
-  //   return Promise.resolve(getBooleanValue("Can the agent move to the target?"));
-  // }
-
   GatherCapacityFull(): boolean {
     return getBooleanValue("Is the agent gathering capacity full?");
   }

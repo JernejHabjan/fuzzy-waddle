@@ -20,7 +20,7 @@ root [PlayerOrder] {
         }
         sequence {
             condition [PlayerOrderIs, "move"]
-            branch [MoveToTarget]
+            action [MoveToTarget, "move"]
         }
         sequence {
             condition [PlayerOrderIs, "stop"]
@@ -76,12 +76,6 @@ root [AiOrder] {
     }
 }
 
-root [MoveToTarget] {
-    sequence {
-        action [MoveToTarget]
-    }
-}
-
 root [ExecuteAttackOrder] {
     succeed {
         sequence {
@@ -112,7 +106,7 @@ root [AttackMoveEnemyTarget] {
           flip {
             condition [InRange, "attack"]
           }
-          branch [MoveToTarget]
+          action [MoveToTarget, "attack"]
       }
       sequence {
           condition [CooldownReady, "attack"]
@@ -134,7 +128,7 @@ root [GatherResource] {
             flip {
               condition [InRange, "gather"]
             }
-            branch [MoveToTarget]
+            action [MoveToTarget, "gather"]
         }
         sequence {
             condition [CooldownReady, "gather"]
@@ -163,7 +157,7 @@ root [ReturnResources] {
             action [Stop]
             sequence {
                 condition [InRange, "dropOff"]
-                branch [MoveToTarget]
+                action [MoveToTarget, "dropOff"]
             }
             action [DropOffResources]
             action [ContinueGathering]
@@ -183,7 +177,7 @@ root [ConstructBuilding] {
                 action [LeaveConstructionSiteOrCurrentContainer]
                 sequence {
                     condition [InRange, "construct"]
-                    branch [MoveToTarget]
+                    action [MoveToTarget, "construct"]
                 }
             }
             action [ConstructBuilding]

@@ -169,7 +169,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(generalWarrior);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 288, 864);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 1056, 1024);
     this.add.existing(tivaraSlingshotFemale);
 
     // tallGrass_7

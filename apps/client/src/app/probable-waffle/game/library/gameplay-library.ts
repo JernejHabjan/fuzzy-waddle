@@ -87,6 +87,6 @@ export class GameplayLibrary {
 
     // noinspection UnnecessaryLocalVariableJS
     const distance = Math.sqrt(Math.pow(actor1Tile.x - actor2Tile.x, 2) + Math.pow(actor1Tile.y - actor2Tile.y, 2));
-    return distance;
+    return Math.floor(distance);
   }
 }

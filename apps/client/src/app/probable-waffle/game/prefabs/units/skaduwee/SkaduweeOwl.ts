@@ -153,7 +153,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
         usePathfinding: false,
-        duration: this.movementSpeed
+        tileStepDuration: this.movementSpeed
       } satisfies PathMoveConfig);
     } catch (e) {
       console.error(e);

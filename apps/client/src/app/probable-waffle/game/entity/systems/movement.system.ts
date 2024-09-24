@@ -6,7 +6,6 @@ import { DepthHelper } from "../../world/map/depth.helper";
 import { getActorSystem } from "../../data/actor-system";
 import {
   getGameObjectCurrentTile,
-  getGameObjectTileInNavigableRadius,
   getGameObjectTileInRadius,
   getGameObjectTransform
 } from "../../data/game-object-helper";
@@ -22,7 +21,8 @@ import GameObject = Phaser.GameObjects.GameObject;
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
-  duration?: number;
+  radiusTilesAroundDestination?: number;
+  tileStepDuration?: number;
   onUpdateThrottle?: number;
   onComplete?: () => void;
   onPathUpdate?: (newTileXY: Vector2Simple) => void;
@@ -93,7 +93,7 @@ export class MovementSystem {
 
     if (!this.navigationService) return false;
 
-    const path = await this.navigationService.getPath(this.gameObject, vec3);
+    const path = await this.navigationService.findAndUsePathFromGameObjectToTile(this.gameObject, vec3);
     if (!path.length) return false;
 
     if (this.DEBUG) console.log(`Moving to tile ${vec3.x}, ${vec3.y}`);
@@ -113,7 +113,7 @@ export class MovementSystem {
     return true;
   }
 
-  async moveToActor(gameObject: GameObject, pathMoveConfig?: PathMoveConfig): Promise<boolean> {
+  async moveToActor(gameObject: GameObject, pathMoveConfig?: Partial<PathMoveConfig>): Promise<boolean> {
     if (pathMoveConfig?.usePathfinding === false) {
       const vec3 = getGameObjectCurrentTile(gameObject);
       if (!vec3) return false;
@@ -131,7 +131,11 @@ export class MovementSystem {
 
     if (!this.navigationService) return false;
 
-    const path = await this.navigationService.getClosestWalkablePath(this.gameObject, gameObject);
+    const path = await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
+      this.gameObject,
+      gameObject,
+      pathMoveConfig?.radiusTilesAroundDestination
+    );
     if (!path.length) return false;
 
     if (this.DEBUG) this.navigationService.drawDebugPath(path);
@@ -167,7 +171,7 @@ export class MovementSystem {
         targets: this.gameObject,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
-        duration: config?.duration ?? 1000,
+        duration: config?.tileStepDuration ?? 1000,
         onComplete: async () => {
           try {
             await this.moveAlongPath(path, config);
@@ -223,7 +227,7 @@ export class MovementSystem {
         targets: this.gameObject,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
-        duration: pathMoveConfig?.duration ?? 1000,
+        duration: pathMoveConfig?.tileStepDuration ?? 1000,
         onComplete: async () => {
           pathMoveConfig?.onComplete?.();
           resolve();
@@ -250,11 +254,14 @@ export class MovementSystem {
     this.playerChangedSubscription?.unsubscribe();
   }
 
-  async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject | undefined) {
-    if (!targetGameObject) return false;
-    const navigationService = this.navigationService;
-    if (!navigationService) return false;
-    const path = await navigationService.getClosestWalkablePath(this.gameObject, targetGameObject);
+  async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
+    if (!this.navigationService) return false;
+
+    const path = await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
+      this.gameObject,
+      targetGameObject,
+      range
+    );
     return path.length > 0;
   }
 }
@@ -269,7 +276,7 @@ export async function getRandomTileInNavigableRadius(
   const newTile =
     pathMoveConfig?.usePathfinding === false
       ? getGameObjectTileInRadius(gameObject, radius)
-      : await getGameObjectTileInNavigableRadius(gameObject, radius);
+      : await getRandomTileInNavigableRadius(gameObject, radius);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }

@@ -79,7 +79,7 @@ export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
               damage: 10,
               damageType: DamageType.Physical,
               cooldown: 1000,
-              range: 3
+              range: 1
             } satisfies AttackData
           ]
         } satisfies AttackDefinition),
