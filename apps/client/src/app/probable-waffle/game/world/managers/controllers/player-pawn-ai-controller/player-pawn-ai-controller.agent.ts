@@ -35,7 +35,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   HasAttackComponent() {
-    return getActorComponent(this.gameObject, AttackComponent) !== null;
+    // noinspection UnnecessaryLocalVariableJS
+    const hasComponent = !!getActorComponent(this.gameObject, AttackComponent);
+    return hasComponent;
   }
 
   TargetIsAlive() {
@@ -268,7 +270,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   HasHarvestComponent() {
-    return getActorComponent(this.gameObject, GathererComponent) !== null;
+    // noinspection UnnecessaryLocalVariableJS
+    const hasComponent = !!getActorComponent(this.gameObject, GathererComponent);
+    return hasComponent;
   }
 
   GatherCapacityFull(): boolean {
