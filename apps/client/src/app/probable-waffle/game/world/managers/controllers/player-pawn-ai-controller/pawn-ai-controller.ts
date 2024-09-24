@@ -37,16 +37,13 @@ export class PawnAiController {
   private updateDebuggerText() {
     if (!this.nodeDebugger) return;
     const playerOrderType = this.blackboard.playerOrderType;
-    const playerOrderTypeName = playerOrderType ? OrderType[playerOrderType] : null;
+    const playerOrderTypeName = playerOrderType !== undefined ? OrderType[playerOrderType] : null;
     const aiOrderType = this.blackboard.aiOrderType;
-    const aiOrderTypeName = aiOrderType ? OrderType[aiOrderType] : null;
+    const aiOrderTypeName = aiOrderType !== undefined ? OrderType[aiOrderType] : null;
     const targetGameObject = this.blackboard.targetGameObject;
     const targetGameObjectName = targetGameObject ? targetGameObject.constructor.name : null;
     const targetLocation = this.blackboard.targetLocation;
     const targetLocationXYZ = targetLocation ? `${targetLocation.x}, ${targetLocation.y}, ${targetLocation.z}` : null;
-    const range = this.blackboard.range;
-    const acceptanceRadius = this.blackboard.acceptanceRadius;
-    const buildingType = this.blackboard.buildingType;
 
     let text = "";
     if (playerOrderTypeName) {
@@ -60,15 +57,6 @@ export class PawnAiController {
     }
     if (targetLocationXYZ) {
       text += `Target Location: ${targetLocationXYZ}\n`;
-    }
-    if (range) {
-      text += `Range: ${range}\n`;
-    }
-    if (acceptanceRadius) {
-      text += `Acceptance Radius: ${acceptanceRadius}\n`;
-    }
-    if (buildingType) {
-      text += `Building Type: ${buildingType}\n`;
     }
 
     this.nodeDebugger.updateText(text);

@@ -95,8 +95,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   Stop() {
-    // Command the agent to stop its current action
-    console.log("Agent stopped.");
+    this.blackboard.aiOrderType = OrderType.Stop;
+    this.blackboard.targetGameObject = undefined;
+    this.blackboard.targetLocation = undefined;
+
     return State.SUCCEEDED;
   }
 
@@ -107,6 +109,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!attackComponent) return State.FAILED;
     const primaryAttack = attackComponent.primaryAttack;
     if (primaryAttack === null) return State.FAILED;
+    this.blackboard.aiOrderType = OrderType.Attack;
+    this.blackboard.targetLocation = undefined;
     attackComponent.useAttack(primaryAttack, target);
     return State.SUCCEEDED;
   }
@@ -141,6 +145,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const successfullyStarted = gathererComponent.startGatheringResources(target);
     if (!successfullyStarted) return State.FAILED;
     gathererComponent.gatherResources(target);
+    this.blackboard.aiOrderType = OrderType.Gather;
+    this.blackboard.targetLocation = undefined;
     return State.SUCCEEDED;
   }
 
@@ -158,6 +164,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
 
   ContinueGathering() {
     this.blackboard.aiOrderType = OrderType.Gather;
+    this.blackboard.targetLocation = undefined;
     return State.SUCCEEDED;
   }
 
@@ -174,6 +181,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   ConstructBuilding() {
     // Command the agent to construct a building
     console.log("Constructing building!");
+    this.blackboard.aiOrderType = OrderType.BeginConstruction;
+    this.blackboard.targetLocation = undefined;
     return State.SUCCEEDED;
   }
 
@@ -217,6 +226,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const randomTile = await getRandomTileInNavigableRadius(this.gameObject, range);
     if (!randomTile) return State.FAILED;
     this.blackboard.targetLocation = { x: randomTile.x, y: randomTile.y, z: 0 } satisfies Vector3Simple;
+    this.blackboard.aiOrderType = OrderType.Move;
+    this.blackboard.targetGameObject = undefined;
     await movementSystem.moveToLocation(this.blackboard.targetLocation);
     return State.SUCCEEDED;
   }

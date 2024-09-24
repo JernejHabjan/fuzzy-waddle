@@ -8,7 +8,7 @@ export class PawnAiBlackboard extends Blackboard {
   aiOrderType?: OrderType;
   targetGameObject?: GameObject;
   targetLocation?: Vector3Simple;
-  range?: number;
-  acceptanceRadius?: number;
-  buildingType?: string;
+  // range?: number;
+  // acceptanceRadius?: number;
+  // buildingType?: string;
 }
