@@ -220,9 +220,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       case "vision":
         const visionComponent = getActorComponent(this.gameObject, VisionComponent);
         if (!visionComponent) return State.FAILED;
-        const visibleEnemies = visionComponent.getVisibleEnemies();
-        if (visibleEnemies.length === 0) return State.FAILED;
-        this.blackboard.targetGameObject = visibleEnemies[0];
+        const visibleEnemy = visionComponent.getClosestVisibleEnemy();
+        if (!visibleEnemy) return State.FAILED;
+        this.blackboard.targetGameObject = visibleEnemy;
         return State.SUCCEEDED;
       case "retaliation": // todo
         const healthComponent = getActorComponent(this.gameObject, HealthComponent);

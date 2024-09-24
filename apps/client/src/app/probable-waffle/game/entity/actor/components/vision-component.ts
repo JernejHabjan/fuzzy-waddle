@@ -4,6 +4,7 @@ import Spawn from "../../../prefabs/buildings/misc/Spawn";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { HealthComponent } from "../../combat/components/health-component";
+import { State } from "mistreevous";
 
 export interface VisionDefinition {
   range: number;
@@ -50,5 +51,18 @@ export class VisionComponent {
     // todo apply vision radius check here
     this.visibleEnemies = tempEnemies as GameObject[];
     return this.visibleEnemies;
+  }
+
+  getClosestVisibleEnemy(): GameObject | null {
+    const visibleEnemies = this.getVisibleEnemies();
+    if (visibleEnemies.length === 0) return null;
+    // find closest enemy
+    visibleEnemies.sort((a, b) => {
+      const distanceA = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, a);
+      const distanceB = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, b);
+      if (distanceA === null || distanceB === null) return 0;
+      return distanceA - distanceB;
+    });
+    return visibleEnemies[0];
   }
 }
