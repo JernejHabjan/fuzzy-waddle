@@ -6,6 +6,7 @@ import { DepthHelper } from "../../world/map/depth.helper";
 import { getActorSystem } from "../../data/actor-system";
 import {
   getGameObjectCurrentTile,
+  getGameObjectTileInNavigableRadius,
   getGameObjectTileInRadius,
   getGameObjectTransform
 } from "../../data/game-object-helper";
@@ -276,7 +277,7 @@ export async function getRandomTileInNavigableRadius(
   const newTile =
     pathMoveConfig?.usePathfinding === false
       ? getGameObjectTileInRadius(gameObject, radius)
-      : await getRandomTileInNavigableRadius(gameObject, radius);
+      : await getGameObjectTileInNavigableRadius(gameObject, radius);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }

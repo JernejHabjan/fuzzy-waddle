@@ -25,7 +25,7 @@ export function getGameObjectTransform(
   return transformComponent;
 }
 
-export async function getRandomTileInNavigableRadius(
+export async function getGameObjectTileInNavigableRadius(
   gameObject: Phaser.GameObjects.GameObject,
   radius: number
 ): Promise<Vector2Simple | undefined> {
