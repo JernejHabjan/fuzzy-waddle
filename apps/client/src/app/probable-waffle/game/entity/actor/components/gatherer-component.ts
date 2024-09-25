@@ -10,6 +10,8 @@ import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { getPlayer } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
+import { EventEmitter } from "@angular/core";
+import { HealthComponent } from "../../combat/components/health-component";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -19,9 +21,11 @@ export type GathererDefinition = {
 };
 
 export class GathererComponent {
+  // when cooldown has expired
+  onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   private readonly gatheredResources: GatherData[] = [
     {
-      capacity: 10,
+      capacity: 3,
       cooldown: 1000,
       range: 1,
       resourceType: ResourceType.Wood,
@@ -29,7 +33,7 @@ export class GathererComponent {
       needsReturnToDrain: true
     },
     {
-      capacity: 10,
+      capacity: 3,
       cooldown: 1000,
       range: 1,
       resourceType: ResourceType.Stone,
@@ -37,7 +41,7 @@ export class GathererComponent {
       needsReturnToDrain: true
     },
     {
-      capacity: 10,
+      capacity: 3,
       cooldown: 1000,
       range: 1,
       resourceType: ResourceType.Minerals,
@@ -45,7 +49,7 @@ export class GathererComponent {
       needsReturnToDrain: true
     },
     {
-      capacity: 10,
+      capacity: 3,
       cooldown: 1000,
       range: 1,
       resourceType: ResourceType.Ambrosia,
@@ -69,7 +73,25 @@ export class GathererComponent {
   constructor(
     private readonly gameObject: GameObject,
     private readonly gathererComponentDefinition: GathererDefinition
-  ) {}
+  ) {
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+  }
+
+  private update(time: number, delta: number): void {
+    if (this.remainingCooldown <= 0) {
+      return;
+    }
+    this.remainingCooldown -= delta;
+    if (this.remainingCooldown <= 0) {
+      this.onCooldownReady.emit(this.gameObject);
+    }
+  }
+
+  private destroy() {
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+  }
 
   canGatherFrom(gameObject: GameObject): boolean {
     // get resourceSourceComponent from gameObject
@@ -107,9 +129,6 @@ export class GathererComponent {
     this.setCarriedResourceAmount(0);
     this.carriedResourceType = resourceSourceComponent.getResourceType();
 
-    // start cooldown before first gathering
-    this.remainingCooldown = gatherData.cooldown;
-
     if (resourceSourceComponent.mustGathererEnter()) {
       // enter resource source
       const containerComponent = getActorComponent(resourceSource, ContainerComponent);
@@ -132,7 +151,7 @@ export class GathererComponent {
     const gatherer = this.gameObject;
     const gatherOwnerComponent = getActorComponent(gatherer, OwnerComponent);
 
-    const gameObjects: GameObject[] = []; // todo get all gameObjects in the world
+    const gameObjects = this.gameObject.scene.children.list as GameObject[]; // todo this is expensive
     for (const resourceDrain of gameObjects) {
       // check if found resource drain
       const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);
@@ -179,6 +198,11 @@ export class GathererComponent {
     );
   }
 
+  getNewResourceSource(): GameObject | undefined {
+    this.previousResourceSource = null;
+    return this.getPreferredResourceSource();
+  }
+
   getClosestResourceSource(resourceType: ResourceType | null, maxDistance: number): GameObject | undefined {
     let closestResourceSource: GameObject | undefined = undefined;
     let closestResourceSourceDistance = 0;
@@ -191,8 +215,10 @@ export class GathererComponent {
       if (!resourceSourceComponent) continue;
       // if not correct resource type
       if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) continue;
+      // check amount of resources
+      if (resourceSourceComponent.getCurrentResources() <= 0) continue;
       // check distance
-      const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, gameObject);
+      const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, gameObject); // todo here we may need to check navigatable path?
       if (distance === null) continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
       if (!closestResourceSource || distance < closestResourceSourceDistance) {
@@ -203,6 +229,10 @@ export class GathererComponent {
     return closestResourceSource;
   }
 
+  getPreferredResourceDrain(): GameObject | null {
+    return this.findClosestResourceDrain();
+  }
+
   isCarryingResources(): boolean {
     return !!this.carriedResourceAmount;
   }
@@ -211,7 +241,7 @@ export class GathererComponent {
     return !!this.currentResourceSource;
   }
 
-  gatherResources(resourceSource: GameObject): number {
+  async gatherResources(resourceSource: GameObject): Promise<number> {
     if (this.remainingCooldown > 0) return 0;
     if (!this.carriedResourceType) {
       throw new Error("Gatherer is not carrying any resources");
@@ -232,12 +262,12 @@ export class GathererComponent {
     if (!resourceSourceComponent) {
       return 0;
     }
-    const gatheredAmount = resourceSourceComponent.extractResources(this.gameObject, amountToGather);
+    const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
     this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
 
-    console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
+    console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.constructor.name}`);
 
     this.onResourceGathered.next([this.gameObject, resourceSource, gatherData, gatheredAmount]);
 
@@ -254,13 +284,14 @@ export class GathererComponent {
         if (!owner) throw new Error("Owner not found");
         const player = getPlayer(this.gameObject.scene, owner);
         if (player) {
-          const returnedResources = player.addResource(this.carriedResourceType, this.carriedResourceAmount);
+          const carriedResourceType = this.carriedResourceType;
+          const returnedResources = player.addResource(carriedResourceType, this.carriedResourceAmount);
           if (returnedResources > 0) {
             this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
 
-            console.log(`Returned ${returnedResources} ${this.carriedResourceType} to ${this.gameObject.name}`);
+            console.log(`Returned ${returnedResources} ${carriedResourceType} to ${this.gameObject.constructor.name}`);
 
-            this.onResourcesReturned.next([this.gameObject, this.carriedResourceType, returnedResources]);
+            this.onResourcesReturned.next([this.gameObject, carriedResourceType, returnedResources]);
           }
         }
       }
@@ -271,14 +302,14 @@ export class GathererComponent {
     return gatheredAmount;
   }
 
-  returnResources(resourceDrain: GameObject): number {
+  async returnResources(resourceDrain: GameObject): Promise<number> {
     if (!this.carriedResourceType) {
       throw new Error("Gatherer is not carrying any resources");
     }
     // return resources
     const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);
     if (!resourceDrainComponent) return 0;
-    const returnedResources = resourceDrainComponent.returnResources(
+    const returnedResources = await resourceDrainComponent.returnResources(
       this.gameObject,
       this.carriedResourceType,
       this.carriedResourceAmount
@@ -325,7 +356,6 @@ export class GathererComponent {
     if (amount <= 0) {
       this.carriedResourceType = null;
     }
-    // todo maybe add gameplay tags here
   }
 
   private leaveCurrentResourceSource() {

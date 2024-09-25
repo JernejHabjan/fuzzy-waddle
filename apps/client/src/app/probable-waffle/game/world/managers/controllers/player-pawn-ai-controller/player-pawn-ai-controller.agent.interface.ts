@@ -19,15 +19,15 @@ export interface IPlayerPawnControllerAgent {
 
   // Resource Gathering
   AcquireNewResourceSource(): State;
-  GatherResource(): State;
-  ReturnResources(): State;
-  DropOffResources(): State;
+  GatherResource(): Promise<State>;
+  DropOffResources(): Promise<State>;
   ContinueGathering(): State;
   TargetHasResources(): boolean;
   AnyHighValueResourceVisible(): boolean;
   GatherHighValueResource(): State;
   HasHarvestComponent(): boolean;
   GatherCapacityFull(): boolean;
+  AssignResourceDropOff(): State;
 
   // Construction and Building
   ConstructBuilding(): State;

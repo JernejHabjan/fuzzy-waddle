@@ -33,6 +33,7 @@ export interface PathMoveConfig {
 }
 
 export class MovementSystem {
+  private readonly defaultTileStepDuration = 500;
   private _navigationService?: NavigationService;
   private _currentTween?: Tween;
   private readonly DEBUG = false;
@@ -172,7 +173,7 @@ export class MovementSystem {
         targets: this.gameObject,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
-        duration: config?.tileStepDuration ?? 1000,
+        duration: config?.tileStepDuration ?? this.defaultTileStepDuration,
         onComplete: async () => {
           try {
             await this.moveAlongPath(path, config);
@@ -228,7 +229,7 @@ export class MovementSystem {
         targets: this.gameObject,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
-        duration: pathMoveConfig?.tileStepDuration ?? 1000,
+        duration: pathMoveConfig?.tileStepDuration ?? this.defaultTileStepDuration,
         onComplete: async () => {
           pathMoveConfig?.onComplete?.();
           resolve();

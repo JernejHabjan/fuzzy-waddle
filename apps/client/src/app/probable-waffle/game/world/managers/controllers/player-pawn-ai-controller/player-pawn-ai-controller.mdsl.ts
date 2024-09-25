@@ -150,13 +150,18 @@ root [AiOrderGatherAndReturnResources] {
 root [ReturnResources] {
     sequence {
         action [LeaveConstructionSiteOrCurrentContainer]
+        action [AssignResourceDropOff]
         selector {
-            flip {
-                condition [TargetIsAlive]
-            }
-            action [Stop]
             sequence {
-                condition [InRange, "dropOff"]
+              flip {
+                condition [TargetIsAlive]
+              }
+              action [Stop]
+            }
+            sequence {
+                flip {
+                  condition [InRange, "dropOff"]
+                }
                 action [MoveToTarget, "dropOff"]
             }
             action [DropOffResources]

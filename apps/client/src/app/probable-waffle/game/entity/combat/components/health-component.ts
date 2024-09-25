@@ -4,6 +4,8 @@ import { HealthUiComponent } from "./health-ui-component";
 import { Subscription } from "rxjs";
 import { HealthComponentData } from "@fuzzy-waddle/api-interfaces";
 import { ComponentSyncSystem, SyncOptions } from "../../systems/component-sync.system";
+import { ContainerComponent } from "../../building/container-component";
+import Phaser from "phaser";
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -72,7 +74,12 @@ export class HealthComponent {
       this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
     }
 
-    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy.bind(this));
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
+  }
+
+  private gameObjectVisibilityChanged(visible: boolean) {
+    this.setVisibilityUiComponent(visible);
   }
 
   getHealthUiComponentBounds(): Phaser.Geom.Rectangle {
@@ -108,6 +115,17 @@ export class HealthComponent {
     this.gameObject.emit(HealthComponent.KilledEvent);
     // do not destroy the gameObject just yet
     // this.gameObject.destroy();
+    this.hideGameObject();
+  }
+
+  /**
+   * todo this is temp before we display proper death animation and ruins under the gameObject
+   */
+  private hideGameObject() {
+    const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible; // todo this is used on multiple places
+    if (visibleComponent.setVisible === undefined) return;
+    visibleComponent.setVisible(false);
+    this.gameObject.emit(ContainerComponent.GameObjectVisibilityChanged, false);
   }
 
   resetHealth() {
@@ -125,5 +143,6 @@ export class HealthComponent {
 
   private destroy() {
     this.playerChangedSubscription?.unsubscribe();
+    this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   }
 }

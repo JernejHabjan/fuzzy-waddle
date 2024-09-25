@@ -70,8 +70,16 @@ export class HealthUiComponent {
     const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     if (!actorTranslateComponent) return;
     this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(() => {
-      this.draw();
+      this.updateElementPosition();
     });
+  }
+
+  private updateElementPosition() {
+    if (!this.bar) return;
+    const { x, y } = this.getBounds();
+    this.bar.x = x;
+    this.bar.y = y;
+    this.bar.setDepth(this.barDepth);
   }
 
   private get percentage() {
@@ -123,13 +131,13 @@ export class HealthUiComponent {
 
     //  BG
     this.bar.fillStyle(0x000000);
-    this.bar.fillRect(x, y, width, height);
+    this.bar.fillRect(0, 0, width, height);
 
     //  Health or Armor BG
     this.bar.fillStyle(0xffffff);
     this.bar.fillRect(
-      x + HealthUiComponent.barBorder,
-      y + HealthUiComponent.barBorder,
+      HealthUiComponent.barBorder,
+      HealthUiComponent.barBorder,
       width - 2 * HealthUiComponent.barBorder,
       height - 2 * HealthUiComponent.barBorder
     );
@@ -157,16 +165,12 @@ export class HealthUiComponent {
     const barFilledWidth = Math.floor((width - 2 * HealthUiComponent.barBorder) * this.percentage);
 
     this.bar.fillRect(
-      x + HealthUiComponent.barBorder,
-      y + HealthUiComponent.barBorder,
+      HealthUiComponent.barBorder,
+      HealthUiComponent.barBorder,
       barFilledWidth,
       height - 2 * HealthUiComponent.barBorder
     );
-    this.setBarDepth();
-  }
-
-  private setBarDepth() {
-    this.bar.depth = this.barDepth;
+    this.updateElementPosition();
   }
 
   setVisibility(visibility: boolean) {

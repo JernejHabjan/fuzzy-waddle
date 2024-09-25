@@ -11,9 +11,9 @@ export class NodeDebugger {
   private actorMovedSubscription?: Subscription;
   private textNode?: Phaser.GameObjects.Text;
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
-    this.gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    this.gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    this.gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
   }
 
   private init() {

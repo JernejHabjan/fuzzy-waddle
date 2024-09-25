@@ -8,6 +8,7 @@ import { HealthComponent } from "../../combat/components/health-component";
 import { getGameObjectDepth } from "../../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { ActorTranslateComponent } from "./actor-translate-component";
+import { ContainerComponent } from "../../building/container-component";
 
 export type OwnerDefinition = {
   color: { originalColor: number; epsilon: number }[];
@@ -39,10 +40,15 @@ export class OwnerComponent {
     gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   }
 
   private init() {
     this.subscribeActorMove();
+  }
+
+  private gameObjectVisibilityChanged(visible: boolean) {
+    this.ownerUiElement?.setVisible(visible);
   }
 
   setOwner(playerNumber?: number) {
@@ -164,5 +170,6 @@ export class OwnerComponent {
     this.removeAllColorPipelines();
     this.removeOwnerUiElement();
     this.actorMovedSubscription?.unsubscribe();
+    this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   }
 }

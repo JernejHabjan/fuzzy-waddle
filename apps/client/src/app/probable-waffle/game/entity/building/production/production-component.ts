@@ -134,7 +134,7 @@ export class ProductionComponent {
 
     // spawn gameObject
 
-    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform; // todo this is used on multiple places
     if (!transform) throw new Error("Transform not found" + this.gameObject);
     const tilePlacementData = { x: transform.x, y: transform.y, z: transform.z } satisfies Vector3Simple;
 

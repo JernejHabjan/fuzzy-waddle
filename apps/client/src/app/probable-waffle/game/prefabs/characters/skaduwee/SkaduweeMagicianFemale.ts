@@ -25,7 +25,6 @@ import InfantryInn from "../../buildings/skaduwee/InfantryInn";
 import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
 import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
 import { MovementSystem } from "../../../entity/systems/movement.system";
-import { getActorComponent } from "../../../data/actor-component";
 import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
@@ -123,11 +122,6 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
         skaduwee_magician_female_idle_down.play("skaduwee_magician_female_idle_down", true);
       });
     });
-
-    setTimeout(() => {
-      console.warn("Warning - triggering automatic damage for test:");
-      getActorComponent(this, HealthComponent)?.takeDamage(10, DamageType.Magical); // todo
-    }, 1000);
     /* END-USER-CTR-CODE */
   }
 

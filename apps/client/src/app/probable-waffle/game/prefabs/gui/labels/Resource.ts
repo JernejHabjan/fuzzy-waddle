@@ -45,20 +45,10 @@ export default class Resource extends Phaser.GameObjects.Container {
 
   private init = () => {
     this.assignResourceText();
-    this.testEmitResource();
   };
 
   private listenToResourceChanged() {
     this.resourceChangedSubscription = listenToResourceChanged(this.scene)?.subscribe(this.assignResourceText);
-  }
-
-  private testEmitResource() {
-    setTimeout(() => {
-      emitResource(this.scene, "resource.added", {
-        [ResourceType.Wood]: 100
-      } satisfies Partial<PlayerStateResources>);
-      console.log("resources added for test");
-    }, 1000);
   }
 
   private getPlayerResource(): number {

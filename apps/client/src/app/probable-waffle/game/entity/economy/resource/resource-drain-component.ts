@@ -1,9 +1,10 @@
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { PlayerStateResources, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { OwnerComponent } from "../../actor/components/owner-component";
+import { emitResource } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
+import { HealthComponent } from "../../combat/components/health-component";
 
 export type ResourceDrainDefinition = {
   resourceTypes: ResourceType[];
@@ -14,39 +15,57 @@ export class ResourceDrainComponent {
   onResourcesReturned: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
   private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
-  private gathererCapacity = 0;
+  private maximumGathererCapacity = 0;
+  private currentCapacity = 0;
 
   constructor(
     private readonly gameObject: GameObject,
     private readonly resourceDrainDefinition: ResourceDrainDefinition
   ) {
-    this.init();
+    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
   }
 
   init(): void {
     this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
-    this.gathererCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
+    this.maximumGathererCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
+  }
+
+  canDropOffResources(): boolean {
+    const capacityReached = this.currentCapacity >= this.maximumGathererCapacity;
+    return !capacityReached;
   }
 
   /**
    * returns resources to player controller
    */
-  returnResources(gatherer: GameObject, resourceType: ResourceType, amount: number): number {
-    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    // todo if (!ownerComponent.playerController) throw new Error("ownerComponent.playerController is null");
-    // todo const playerResourcesComponent = ownerComponent.playerController.components.findComponent(PlayerResourcesComponent);
-
-    const returnedResources = 0; // todo playerResourcesComponent.addResource(resourceType, amount);
-
-    if (returnedResources <= 0) {
-      return 0;
+  async returnResources(gatherer: GameObject, resourceType: ResourceType, amount: number): Promise<number> {
+    if (this.gathererMustEnter) {
+      this.currentCapacity += 1;
+      this.containerComponent?.loadGameObject(gatherer);
     }
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000); // todo read cooldown from elsewhere
+    });
+
+    if (this.gathererMustEnter) {
+      this.containerComponent?.unloadGameObject(gatherer);
+      this.currentCapacity -= 1;
+    }
+
+    emitResource(this.gameObject.scene, "resource.added", {
+      [resourceType]: amount
+    } satisfies Partial<PlayerStateResources>);
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);
 
-    return returnedResources;
+    // we always return full amount
+    // noinspection UnnecessaryLocalVariableJS
+    const returnedAmount = amount;
+
+    return returnedAmount;
   }
 
   mustGathererEnter(): boolean {

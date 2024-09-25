@@ -16,7 +16,7 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is there a player order?");
   }
 
-  PlayerOrderIs(orderType) {
+  PlayerOrderIs(orderType: string): boolean {
     // Check if the current player order matches the specified order type
     return getStringValue("What is the current player order?") === orderType;
   }
@@ -31,7 +31,7 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is the target alive?");
   }
 
-  HealthAboveThresholdPercentage(threshold) {
+  HealthAboveThresholdPercentage(threshold: number): boolean {
     // Check if the agent's health is above a certain threshold
     return getNumberValue("What is the agent's current health?") > threshold;
   }
@@ -41,10 +41,10 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is the agent in range of the target?");
   }
 
-  MoveToTarget() {
+  MoveToTarget(): Promise<State> {
     // Command the agent to move to the target
     showInfoToast("Moving to target!");
-    return State.SUCCEEDED;
+    return Promise.resolve(State.SUCCEEDED);
   }
 
   Stop() {
@@ -70,9 +70,10 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return State.SUCCEEDED;
   }
 
-  CanGatherResource() {
-    // Check if the agent can gather resources from the target
-    return getBooleanValue("Can the agent gather resources?");
+  AssignResourceDropOff() {
+    // Assign a drop-off point for resources
+    showInfoToast("Assigning resource drop-off.");
+    return State.SUCCEEDED;
   }
 
   GatherResource() {
@@ -81,16 +82,10 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return State.SUCCEEDED;
   }
 
-  ReturnResources() {
+  DropOffResources(): Promise<State> {
     // Command the agent to return gathered resources to the drop-off point
     showInfoToast("Returning resources to drop-off.");
-    return State.SUCCEEDED;
-  }
-
-  DropOffResources() {
-    // Command the agent to drop off gathered resources
-    showInfoToast("Dropping off resources.");
-    return State.SUCCEEDED;
+    return Promise.resolve(State.SUCCEEDED);
   }
 
   ContinueGathering() {
@@ -116,19 +111,19 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Has the agent been attacked?");
   }
 
-  AssignEnemy(source): State {
+  AssignEnemy(): State {
     // Assign an enemy to the agent
     showInfoToast("Assigning enemy.");
     return State.SUCCEEDED;
   }
 
-  MoveRandomlyInRange(range) {
+  MoveRandomlyInRange(range: number): Promise<State> {
     // Command the agent to move randomly within the specified range
     showInfoToast(`Moving randomly within range: ${range}`);
     return Promise.resolve(State.SUCCEEDED);
   }
 
-  CooldownReady(type: string) {
+  CooldownReady() {
     // Check if the cooldown period has passed for an action like resource gathering or attack
     return getBooleanValue("Is the cooldown ready?");
   }

@@ -70,7 +70,6 @@ import TallGrass4 from "../prefabs/outside/foliage/tall_grass/TallGrass4";
 import TallGrass0 from "../prefabs/outside/foliage/tall_grass/TallGrass0";
 import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
 import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
-import SkaduweeOwlFurball from "../prefabs/units/skaduwee/SkaduweeOwlFurball";
 import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 /* START-USER-IMPORTS */
@@ -437,7 +436,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree5);
 
     // skaduweeOwl
-    const skaduweeOwl = new SkaduweeOwl(this, 1056, 784);
+    const skaduweeOwl = new SkaduweeOwl(this, 480, 784);
     this.add.existing(skaduweeOwl);
 
     // tree10
@@ -648,12 +647,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const reeds_4 = new Reeds1(this, -224, 832);
     this.add.existing(reeds_4);
 
-    // skaduweeOwlFurball
-    const skaduweeOwlFurball = new SkaduweeOwlFurball(this, 1008, 752);
-    this.add.existing(skaduweeOwlFurball);
-
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 208, 832);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 272, 592);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
@@ -755,10 +750,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeOwl (components)
     const skaduweeOwlEditorOwner = new EditorOwner(skaduweeOwl);
     skaduweeOwlEditorOwner.owner_id = "2";
-
-    // skaduweeOwlFurball (components)
-    const skaduweeOwlFurballEditorOwner = new EditorOwner(skaduweeOwlFurball);
-    skaduweeOwlFurballEditorOwner.owner_id = "3";
 
     // tivaraWorkerFemale (components)
     const tivaraWorkerFemaleEditorOwner = new EditorOwner(tivaraWorkerFemale);

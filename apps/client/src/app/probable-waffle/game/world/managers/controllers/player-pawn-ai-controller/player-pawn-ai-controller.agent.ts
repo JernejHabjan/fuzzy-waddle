@@ -151,34 +151,48 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   AcquireNewResourceSource() {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    const resourceSource = gathererComponent.getPreferredResourceSource();
+    let resourceSource = gathererComponent.getPreferredResourceSource();
+    const currentResources = resourceSource?.active
+      ? getActorComponent(resourceSource, ResourceSourceComponent)?.getCurrentResources()
+      : 0;
+    if (!currentResources || currentResources <= 0) {
+      resourceSource = gathererComponent.getNewResourceSource();
+    }
     if (!resourceSource) return State.FAILED;
     this.blackboard.targetGameObject = resourceSource;
     return State.SUCCEEDED;
   }
 
-  GatherResource() {
+  AssignResourceDropOff() {
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+    const resourceDrain = gathererComponent.getPreferredResourceDrain();
+    if (!resourceDrain) return State.FAILED;
+    this.blackboard.targetGameObject = resourceDrain;
+    return State.SUCCEEDED;
+  }
+
+  async GatherResource(): Promise<State> {
     const target = this.blackboard.targetGameObject;
     if (!target) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     const successfullyStarted = gathererComponent.startGatheringResources(target);
     if (!successfullyStarted) return State.FAILED;
-    gathererComponent.gatherResources(target);
+    await gathererComponent.gatherResources(target);
     this.blackboard.aiOrderType = OrderType.Gather;
     this.blackboard.targetLocation = undefined;
     return State.SUCCEEDED;
   }
 
-  ReturnResources() {
-    // Command the agent to return gathered resources to the drop-off point
-    console.log("Returning resources to drop-off.");
-    return State.SUCCEEDED;
-  }
-
-  DropOffResources() {
-    // Command the agent to drop off gathered resources
-    console.log("Dropping off resources.");
+  async DropOffResources() {
+    const target = this.blackboard.targetGameObject;
+    if (!target) return State.FAILED;
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+    await gathererComponent.returnResources(target);
+    this.blackboard.aiOrderType = OrderType.ReturnResources;
+    this.blackboard.targetLocation = undefined;
     return State.SUCCEEDED;
   }
 

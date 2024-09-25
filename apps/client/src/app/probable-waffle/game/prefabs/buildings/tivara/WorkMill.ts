@@ -27,6 +27,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ContainerComponent, ContainerDefinition } from "../../../entity/building/container-component";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -92,7 +93,10 @@ export default class WorkMill extends Phaser.GameObjects.Container {
         new ResourceDrainComponent(this, {
           resourceTypes: [ResourceType.Wood]
         } satisfies ResourceDrainDefinition),
-        new ColliderComponent()
+        new ColliderComponent(),
+        new ContainerComponent(this, {
+          capacity: 2
+        } satisfies ContainerDefinition)
       ],
       []
     );
