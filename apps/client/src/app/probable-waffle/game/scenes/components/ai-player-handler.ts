@@ -9,6 +9,7 @@ export class AiPlayerHandler {
   constructor(private readonly scene: GameProbableWaffleScene) {
     this.onShutdownSubscription = scene.onShutdown.subscribe(() => this.clearControllers());
     scene.onDestroy.subscribe(() => this.onShutdownSubscription.unsubscribe());
+    this.createAiPlayerControllersForAiPlayers();
   }
 
   createAiPlayerControllersForAiPlayers() {
@@ -27,5 +28,9 @@ export class AiPlayerHandler {
 
   private clearControllers() {
     this.aiPlayerControllers = [];
+  }
+
+  getAiPlayerController(playerNumber: number) {
+    return this.aiPlayerControllers.find((controller) => controller.player.playerNumber === playerNumber);
   }
 }

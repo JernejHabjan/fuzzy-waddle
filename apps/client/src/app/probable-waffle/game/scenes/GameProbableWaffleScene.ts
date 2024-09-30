@@ -68,11 +68,11 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
     new SaveGame(this);
     new RestartGame(this);
-    new AiPlayerHandler(this);
     const creator = new SceneActorCreator(this);
     creator.initActors();
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
     this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService());
+    this.sceneGameData.systems.push(new AiPlayerHandler(this));
 
     this.sceneGameData.initializers.sceneInitialized.next(true);
     this.sceneGameData.initializers.postSceneInitialized.next(true);

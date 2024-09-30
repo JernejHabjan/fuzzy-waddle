@@ -197,3 +197,8 @@ export function sortActorsByPriority(actors: Phaser.GameObjects.GameObject[]): P
     return 1;
   });
 }
+
+export function getPlayers(scene: Scene): ProbableWafflePlayer[] {
+  if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+  return scene.baseGameData.gameInstance.players;
+}

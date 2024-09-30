@@ -6,6 +6,7 @@ import ActorActions from "../prefabs/gui/buttons/ActorActions";
 import ActorInfoContainer from "../prefabs/gui/labels/ActorInfoContainer";
 import GameActions from "../prefabs/gui/buttons/GameActions";
 import Resources from "../prefabs/gui/labels/Resources";
+import AiControllerDebugPanel from "../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
@@ -21,9 +22,11 @@ import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
 import { getGameObjectBounds } from "../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
+import { environment } from "../../../../environments/environment";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
+
   constructor() {
     super("HudProbableWaffle");
 
@@ -33,6 +36,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
     this.add.existing(actor_actions_container);
@@ -49,36 +53,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     minimap_container.scaleY = 0.9537232846001076;
 
     // minimap_bg
-    const minimap_bg = this.add.nineslice(
-      12,
-      -247,
-      "gui",
-      "cryos_mini_gui/surfaces/surface_parchment.png",
-      32,
-      32,
-      3,
-      3,
-      3,
-      3
-    );
+    const minimap_bg = this.add.nineslice(12, -247, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 32, 3, 3, 3, 3);
     minimap_bg.scaleX = 12.769367198119731;
     minimap_bg.scaleY = 7.444257731898887;
     minimap_bg.setOrigin(0, 0);
     minimap_container.add(minimap_bg);
 
     // minimap_border
-    const minimap_border = this.add.nineslice(
-      0,
-      -255.17628729694155,
-      "gui",
-      "cryos_mini_gui/borders/border_wood.png",
-      128,
-      92,
-      4,
-      4,
-      4,
-      4
-    );
+    const minimap_border = this.add.nineslice(0, -255.17628729694155, "gui", "cryos_mini_gui/borders/border_wood.png", 128, 92, 4, 4, 4, 4);
     minimap_border.scaleX = 3.367102972114097;
     minimap_border.scaleY = 2.7741914555176357;
     minimap_border.setOrigin(0, 0);
@@ -92,6 +74,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const resources_container = new Resources(this, 16, 17);
     this.add.existing(resources_container);
 
+    // aiControllerDebugPanel
+    const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1075, 82);
+    this.add.existing(aiControllerDebugPanel);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -100,6 +86,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.minimap_container = minimap_container;
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
+    this.aiControllerDebugPanel = aiControllerDebugPanel;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -110,6 +97,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private minimap_container!: Phaser.GameObjects.Container;
   private game_actions_container!: GameActions;
   private resources_container!: Resources;
+  private aiControllerDebugPanel!: AiControllerDebugPanel;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -340,6 +328,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.actor_info_container.y = this.scale.height;
     // hide on small devices
     this.actor_info_container.visible = sceneWidth > this.actorInfoSmallScreenBreakpoint;
+
+    // set AI controller debug panel to top right below game actions
+    const gameActionsHeight = getGameObjectBounds(this.game_actions_container)!.height;
+    this.aiControllerDebugPanel.x = this.scale.width - 10;
+    this.aiControllerDebugPanel.y = gameActionsHeight + 10;
+    this.aiControllerDebugPanel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    this.aiControllerDebugPanel.visible = !environment.production;
 
     // redraw minimap
     this.redrawMinimap();
