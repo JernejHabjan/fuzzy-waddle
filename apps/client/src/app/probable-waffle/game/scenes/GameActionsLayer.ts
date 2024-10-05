@@ -45,7 +45,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     // game_action_quit
     const game_action_quit = this.add.container(-0.6060558040172737, 177.70449484282352);
     game_action_quit.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
     );
     game_action_quit.scaleX = 2;
@@ -91,7 +91,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     // game_action_load
     const game_action_load = this.add.container(-1.6060558040172737, 112.70449484282352);
     game_action_load.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
     );
     game_action_load.scaleX = 2;
@@ -137,7 +137,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     // game_action_save
     const game_action_save = this.add.container(-2.6060558040172737, 46.70449484282352);
     game_action_save.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
     );
     game_action_save.scaleX = 2;
@@ -183,7 +183,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     // game_action_settings
     const game_action_settings = this.add.container(-2.6060558040172737, -16.29550515717648);
     game_action_settings.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
     );
     game_action_settings.scaleX = 2;
@@ -229,7 +229,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     // game_action_restart
     const game_action_restart = this.add.container(-3.6060558040172737, -81.29550515717648);
     game_action_restart.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
     );
     game_action_restart.scaleX = 2;
@@ -275,7 +275,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     // game_action_continue
     const game_action_continue = this.add.container(-4.606055804017274, -147.29550515717648);
     game_action_continue.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
     );
     game_action_continue.scaleX = 2;

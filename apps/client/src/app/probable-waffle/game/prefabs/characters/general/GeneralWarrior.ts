@@ -75,7 +75,7 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
               damage: 10,
               damageType: DamageType.Physical,
               cooldown: 1000,
-              range: 3
+              range: 1
             } satisfies AttackData
           ]
         } satisfies AttackDefinition),

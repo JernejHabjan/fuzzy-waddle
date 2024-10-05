@@ -195,14 +195,14 @@ export class NavigationService {
   }
 
   /**
-   * Uses navigation grid to find a random tile that can be navigated to from the current tile within the radius
+   * Uses navigation grid to find a random tile that can be navigated to from the current tile within the radius of current tile
    */
-  public async randomTileInNavigableRadius(
+  async randomTileInNavigableRadius(
     currentTile: Vector2Simple,
-    radiusTiles: number
+    radiusFromCurrentTile: number
   ): Promise<Vector2Simple | undefined> {
     // 1. Get a list of valid tile coordinates within the radius
-    const validTiles = this.validTilesInRadius(currentTile, radiusTiles);
+    const validTiles = this.validTilesInRadiusOfCurrentTile(currentTile, radiusFromCurrentTile, true);
 
     // 2. Ensure there are valid tiles within the radius
     if (validTiles.length === 0) {
@@ -235,7 +235,7 @@ export class NavigationService {
         return sum + distance;
       }, 0);
 
-      if (path.length > 0 && sumPathLengthByXY <= radiusTiles) {
+      if (path.length > 0 && sumPathLengthByXY <= radiusFromCurrentTile) {
         return tile; // Reachable tile within radius found, return it
       }
 
@@ -249,7 +249,7 @@ export class NavigationService {
 
   public randomTileInRadius(currentTile: Vector2Simple, radiusTiles: number): Vector2Simple | undefined {
     // 1. Get a list of valid tile coordinates within the radius
-    const validTiles = this.validTilesInRadius(currentTile, radiusTiles);
+    const validTiles = this.validTilesInRadiusOfCurrentTile(currentTile, radiusTiles, true);
 
     // 2. Ensure there are valid tiles within the radius
     if (validTiles.length === 0) {
@@ -261,14 +261,52 @@ export class NavigationService {
     return validTiles[randomIndex];
   }
 
-  private validTilesInRadius(currentTile: Vector2Simple, radiusTiles: number): Vector2Simple[] {
+  /**
+   * respects blocked tiles under object plus radius around them
+   */
+  public closestWalkableTileBetweenGameObjectsInRadius(
+    gameObject: Phaser.GameObjects.GameObject,
+    destinationGameObject: Phaser.GameObjects.GameObject,
+    radiusTiles?: number
+  ): Vector2Simple | undefined {
+    const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!fromTile) return undefined;
+
+    // Step 1: Get blocked tiles (occupied by the destination object)
+    const blockedTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
+
+    // Step 2: Find the closest walkable tile around the blocked tiles within the radius
+    // noinspection UnnecessaryLocalVariableJS
+    const closestWalkableTile = this.getClosestWalkableTileAroundBlockedTilesInRadius(
+      fromTile,
+      blockedTiles,
+      radiusTiles
+    );
+
+    return closestWalkableTile; // Return the closest walkable tile if found, or undefined
+  }
+
+  /**
+   * Doesn't respect blocked tiles under object
+   */
+  private validTilesInRadiusOfCurrentTile(
+    currentTile: Vector2Simple,
+    radiusTiles: number,
+    walkable: boolean = false
+  ): Vector2Simple[] {
     // 1. Get a list of valid tile coordinates within the radius
     const validTiles: Vector2Simple[] = [];
     for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
       for (let x = currentTile.x - radiusTiles; x <= currentTile.x + radiusTiles; x++) {
         // Ensure coordinates are within grid bounds
         if (0 <= x && x < this.grid[0].length && 0 <= y && y < this.grid.length) {
-          validTiles.push({ x, y });
+          if (walkable) {
+            if (this.grid[y][x] === 0) {
+              validTiles.push({ x, y });
+            }
+          } else {
+            validTiles.push({ x, y });
+          }
         }
       }
     }
@@ -276,7 +314,13 @@ export class NavigationService {
     return validTiles;
   }
 
-  getPath(gameObject: Phaser.GameObjects.GameObject, toTileXY: Vector2Simple): Promise<Vector2Simple[]> {
+  /**
+   * Returns a path from the current tile under the gameObject to the target tile
+   */
+  findAndUsePathFromGameObjectToTile(
+    gameObject: Phaser.GameObjects.GameObject,
+    toTileXY: Vector2Simple
+  ): Promise<Vector2Simple[]> {
     const currentTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!currentTile) return Promise.resolve([]);
     try {
@@ -288,5 +332,96 @@ export class NavigationService {
 
   getCenterTileCoordUnderObject(gameObject: Phaser.GameObjects.GameObject): Vector2Simple | undefined {
     return getCenterTileCoordUnderObject(this.tilemap, gameObject);
+  }
+
+  /**
+   * Finds a path from the gameObject to the targetGameObject within the specified radius.
+   * Respects blocked tiles under the targetGameObject.
+   */
+  public async findAndUseWalkablePathBetweenGameObjectsWithRadius(
+    gameObject: Phaser.GameObjects.GameObject,
+    targetGameObject: Phaser.GameObjects.GameObject,
+    radiusTiles?: number
+  ): Promise<Vector2Simple[]> {
+    const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!fromTile) return Promise.resolve([]);
+
+    // Step 2: Find the closest walkable tile around the building within the radius
+    const closestWalkableTile = this.closestWalkableTileBetweenGameObjectsInRadius(
+      gameObject,
+      targetGameObject,
+      radiusTiles
+    );
+
+    if (!closestWalkableTile) {
+      return []; // Return an empty array if no walkable tile was found
+    }
+
+    // Step 3: Use EasyStar to find the path to the closest walkable tile
+    try {
+      return await this.find(fromTile, closestWalkableTile);
+    } catch (e) {
+      return []; // Return an empty array if no path was found
+    }
+  }
+
+  private getClosestWalkableTileAroundBlockedTilesInRadius(
+    fromTile: Vector2Simple,
+    blockedTiles: Vector2Simple[],
+    radiusTiles: number = 2 // Default radius if not specified
+  ): Vector2Simple | undefined {
+    const walkableTiles: Set<string> = new Set(); // Use Set to avoid duplicates
+
+    // Step 1: Loop through each blocked tile
+    blockedTiles.forEach((blockedTile) => {
+      // Loop through the surrounding tiles within the specified radius
+      for (let dx = -radiusTiles; dx <= radiusTiles; dx++) {
+        for (let dy = -radiusTiles; dy <= radiusTiles; dy++) {
+          // Calculate the neighboring tile coordinates
+          const neighbor: Vector2Simple = { x: blockedTile.x + dx, y: blockedTile.y + dy };
+
+          // Check if the neighbor is within grid bounds, walkable, and within radius
+          if (
+            this.isWithinGridBounds(neighbor) && // Ensure it's within grid bounds
+            this.isTileWalkable(neighbor) &&
+            Math.abs(dx) + Math.abs(dy) <= radiusTiles // Use Manhattan distance
+          ) {
+            // Use a string representation to store the tile in the Set
+            walkableTiles.add(`${neighbor.x},${neighbor.y}`);
+          }
+        }
+      }
+    });
+
+    // Convert Set to an array of Vector2Simple
+    const walkableTilesArray = Array.from(walkableTiles).map((tile) => {
+      const [x, y] = tile.split(",").map(Number);
+      return { x, y };
+    });
+
+    // Step 2: Find the closest walkable tile to the fromTile
+    if (walkableTilesArray.length === 0) {
+      console.warn("No walkable tiles found around the blocked tiles.");
+      return undefined;
+    }
+
+    // Sort the walkable tiles based on distance to fromTile
+    walkableTilesArray.sort((a, b) => this.getTileDistance(a, fromTile) - this.getTileDistance(b, fromTile));
+
+    return walkableTilesArray[0]; // Return the closest tile
+  }
+
+  private isWithinGridBounds(tile: Vector2Simple): boolean {
+    return tile.x >= 0 && tile.x < this.grid[0].length && tile.y >= 0 && tile.y < this.grid.length;
+  }
+
+  private isTileWalkable(tile: Vector2Simple): boolean {
+    return this.grid[tile.y][tile.x] === 0; // Check if the tile is walkable (0 means walkable)
+  }
+
+  private getTileDistance(tile1: Vector2Simple, tile2: Vector2Simple): number {
+    const dx = tile1.x - tile2.x;
+    const dy = tile1.y - tile2.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 }

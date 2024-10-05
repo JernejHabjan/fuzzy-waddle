@@ -21,6 +21,7 @@ export class AttackComponent {
   ) {
     owner.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     owner.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    owner.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
   private destroy() {
@@ -36,11 +37,16 @@ export class AttackComponent {
     }
   }
 
+  get primaryAttack(): number | null {
+    if (this.getAttacks().length > 0) return 0; // by default use first attack
+    return null;
+  }
+
   useAttack(attackIndex: number, enemy: GameObject) {
     if (this.remainingCooldown > 0) {
       return;
     }
-    if (attackIndex >= this.attackDefinition.attacks.length) {
+    if (attackIndex < 0 || attackIndex >= this.attackDefinition.attacks.length) {
       throw new Error("Invalid attack index");
     }
 
@@ -57,6 +63,8 @@ export class AttackComponent {
       }
       enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
     }
+
+    this.remainingCooldown = attack.cooldown;
   }
 
   // gameObject will automatically select and attack targets
@@ -79,5 +87,9 @@ export class AttackComponent {
   getRemainingCooldown(attackIndex: number): number {
     // todo
     return 0;
+  }
+
+  getMaximumRange(): number {
+    return Math.max(...this.attackDefinition.attacks.map((attack) => attack.range));
   }
 }

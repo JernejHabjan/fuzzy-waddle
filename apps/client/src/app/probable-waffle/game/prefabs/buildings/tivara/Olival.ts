@@ -4,7 +4,7 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { setActorData } from "../../../data/actor-data";
 import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
@@ -25,6 +25,8 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { getTilesAroundGameObjectsOfShape } from "../../../data/tile-map-helpers";
+import { onSceneInitialized } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -101,13 +103,16 @@ export default class Olival extends Phaser.GameObjects.Container {
 
     this.bounce(buildings_tivara_olival);
 
-    this.on("pointerdown", () => {
-      this.tintTilemapAroundTransform(this.scene, { x: this.x, y: this.y }, 0x8f788f, 100);
-    });
+    onSceneInitialized(this.scene, this.init, this);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+
+  private init() {
+    this.tintTilemapAroundTransform(this.scene, 0x7eb3cb, 6);
+  }
+
   private bounce = (image: Phaser.GameObjects.Image) => {
     // bounce the sprite up and down forever with a 2 seconds duration
     this.scene.tweens.add({
@@ -120,16 +125,8 @@ export default class Olival extends Phaser.GameObjects.Container {
     });
   };
 
-  private tintTilemapAroundTransform = (
-    scene: Phaser.Scene,
-    transform: Vector2Simple,
-    tint: number,
-    radius: number
-  ) => {
-    const tilemapLayer = scene.children.getFirst("type", "TilemapLayer") as Phaser.Tilemaps.TilemapLayer | null;
-    if (!tilemapLayer) return;
-    const tiles = tilemapLayer.getTilesWithinShape(new Phaser.Geom.Circle(transform.x, transform.y, radius));
-    // tint tiles to red
+  private tintTilemapAroundTransform = (scene: Phaser.Scene, tint: number, radius: number) => {
+    const tiles = getTilesAroundGameObjectsOfShape(this, scene, radius, "circle");
     tiles.forEach((tile) => {
       tile.tint = tint;
     });

@@ -69,7 +69,7 @@ export class BaseScene<
   }
 
   /**
-   * @deprecated - use {@link onShutdown} instead as that is handled on scene restart
+   * NOTE! - use {@link onShutdown} instead as that is handled on scene restart
    */
   get onDestroy(): Observable<void> {
     return this._onDestroy.pipe(take(1));

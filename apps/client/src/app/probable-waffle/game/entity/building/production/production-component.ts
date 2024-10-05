@@ -8,6 +8,7 @@ import { getPlayer } from "../../../data/scene-data";
 import { SceneActorCreatorCommunicator } from "../../../scenes/components/scene-actor-creator-communicator";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { HealthComponent } from "../../combat/components/health-component";
 
 export type ProductionQueueItem = {
   gameObjectClass: string;
@@ -30,9 +31,10 @@ export class ProductionComponent {
     private readonly gameObject: GameObject,
     public readonly productionDefinition: ProductionDefinition
   ) {
-    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
-    this.gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    this.gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
   }
 
   init() {
@@ -132,7 +134,7 @@ export class ProductionComponent {
 
     // spawn gameObject
 
-    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform; // todo this is used on multiple places
     if (!transform) throw new Error("Transform not found" + this.gameObject);
     const tilePlacementData = { x: transform.x, y: transform.y, z: transform.z } satisfies Vector3Simple;
 

@@ -268,8 +268,8 @@ export class CameraMovementHandler {
     const initialWorldSpawnPosition =
       gameScene.player.playerController.data.playerDefinition?.initialWorldSpawnPosition;
     if (initialWorldSpawnPosition) {
-      this.mainCamera.scrollX = initialWorldSpawnPosition.x;
-      this.mainCamera.scrollY = initialWorldSpawnPosition.y;
+      // todo this.mainCamera.scrollX = initialWorldSpawnPosition.x;
+      // todo this.mainCamera.scrollY = initialWorldSpawnPosition.y;
       console.error("Todo not working fully because of some weird offset -.-");
     }
   }

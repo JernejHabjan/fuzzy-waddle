@@ -102,7 +102,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.nextTile = undefined;
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
-        duration: this.movementSpeed,
+        tileStepDuration: this.movementSpeed,
         onPathUpdate: (newTileXY) => {
           this.nextTile = newTileXY;
           this.playAnimation("walk", newTileXY);

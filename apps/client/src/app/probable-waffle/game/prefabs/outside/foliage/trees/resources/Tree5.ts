@@ -11,7 +11,6 @@ import {
   ResourceSourceDefinition
 } from "../../../../../entity/economy/resource/resource-source-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { ContainerComponent, ContainerDefinition } from "../../../../../entity/building/container-component";
 import { IdComponent } from "../../../../../entity/actor/components/id-component";
 import { ColliderComponent, ColliderDefinition } from "../../../../../entity/actor/components/collider-component";
 import {
@@ -48,12 +47,9 @@ export default class Tree5 extends Phaser.GameObjects.Image {
         new SelectableComponent(this),
         new ResourceSourceComponent(this, {
           resourceType: ResourceType.Wood,
-          maximumResources: 100,
+          maximumResources: 20,
           gatheringFactor: 1
-        } satisfies ResourceSourceDefinition),
-        new ContainerComponent(this, {
-          capacity: 2
-        } satisfies ContainerDefinition)
+        } satisfies ResourceSourceDefinition)
       ],
       []
     );

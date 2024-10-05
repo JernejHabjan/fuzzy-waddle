@@ -40,8 +40,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 240,
-            "y": 672
+            "x": 800,
+            "y": 976
         },
         {
             "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
@@ -279,8 +279,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 288,
-            "y": 864
+            "x": 1056,
+            "y": 1024
         },
         {
             "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
@@ -1058,7 +1058,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1056,
+            "x": 480,
             "y": 784
         },
         {
@@ -1634,21 +1634,6 @@
             "y": 832
         },
         {
-            "prefabId": "0ebe068f-8727-4f17-8312-71db0e8cd7a9",
-            "id": "e7a9b643-577d-4e1e-96d3-cec87f6ea507",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "skaduweeOwlFurball",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "3",
-            "x": 1008,
-            "y": 752
-        },
-        {
             "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
             "id": "e694ffe5-8a18-41f0-99aa-ebf0ed5d3926",
             "unlock": [
@@ -1660,8 +1645,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 208,
-            "y": 832
+            "x": 272,
+            "y": 592
         },
         {
             "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
