@@ -1,0 +1,61 @@
+{
+    "id": "a93723c2-c49a-45b4-81e4-ed32a805ae77",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 200,
+        "borderHeight": 150
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "fbd1a3ea-0dd5-41ff-9d19-3dfe12680eda",
+            "label": "container_1",
+            "x": 200.15978001501432,
+            "list": [
+                {
+                    "type": "Text",
+                    "id": "462ed2d8-5d3b-4a35-a43d-357b166ff3e4",
+                    "label": "playerName",
+                    "displayName": "Player Name",
+                    "scope": "CLASS",
+                    "x": -0.15977986418442924,
+                    "y": 6,
+                    "originX": 1,
+                    "text": "Player Name",
+                    "align": "right",
+                    "maxLines": 1,
+                    "wordWrapWidth": 200
+                },
+                {
+                    "type": "Text",
+                    "id": "7d2da8a8-4725-4514-80bb-6d2e33052a30",
+                    "label": "playerAction",
+                    "displayName": "Player Action",
+                    "scope": "CLASS",
+                    "x": -0.15977986418442924,
+                    "y": 34,
+                    "originX": 1,
+                    "text": "Player action",
+                    "align": "right",
+                    "maxLines": 1,
+                    "wordWrapWidth": 200
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

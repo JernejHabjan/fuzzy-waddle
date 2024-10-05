@@ -30,6 +30,7 @@ export interface IPlayerControllerAgent {
   TrainWorker(): State;
   GatherResources(): State;
   AssignWorkerToBuild(): State;
+  AssignWorkersToResource(): State;
   ReassignWorkersToResource(): State;
   ContinueNormalGathering(): State;
 

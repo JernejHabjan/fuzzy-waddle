@@ -69,7 +69,7 @@ root [ManageEconomy] {
 }
 
 root [GatherResources] {
-    selector {
+    sequence {
         condition [NeedMoreResources]
         branch [AssignWorkersToGather]
     }

@@ -6,14 +6,14 @@ import Phaser from "phaser";
 import { PlayerAiControllerMdsl } from "./player-ai-controller.mdsl";
 
 export class PlayerAiController {
-  private blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
-  private playerAiControllerAgent = new PlayerAiControllerAgent(this.blackboard);
+  public blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
+  private playerAiControllerAgent = new PlayerAiControllerAgent(this.player, this.blackboard);
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private readonly stepInterval: number = 1000;
   constructor(
-    private readonly scene: Phaser.Scene,
-    private readonly player: ProbableWafflePlayer
+    public readonly scene: Phaser.Scene,
+    public readonly player: ProbableWafflePlayer
   ) {
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
 
