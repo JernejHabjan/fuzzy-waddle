@@ -36,6 +36,7 @@ import {
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -115,6 +116,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   private owl: Phaser.GameObjects.Sprite;
 
   /* START-USER-CODE */
+  name = ObjectNames.SkaduweeOwl;
   private readonly actionDelay = 5000;
   private readonly movementSpeed = 2000;
   private readonly radius = 5;

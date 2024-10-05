@@ -17,6 +17,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Tree9 extends Phaser.GameObjects.Image {
@@ -57,7 +58,7 @@ export default class Tree9 extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.Tree9;
   // Write your code here.
 
   /* END-USER-CODE */

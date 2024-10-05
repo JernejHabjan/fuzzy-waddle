@@ -30,7 +30,7 @@ export class SaveGame {
     // load them again from save file
     const toRemove: GameObject[] = [];
     this.scene.children.each((child) => {
-      const name = child.constructor.name;
+      const name = child.name;
       const knownActorName = ActorManager.actorMap[name];
       if (knownActorName) {
         toRemove.push(child);

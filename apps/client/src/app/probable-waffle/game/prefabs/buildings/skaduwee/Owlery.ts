@@ -32,6 +32,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Owlery extends Phaser.GameObjects.Container {
@@ -119,6 +120,7 @@ export default class Owlery extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
+  name = ObjectNames.Owlery;
 
   private flapRandomly = (owlSprite: Phaser.GameObjects.Sprite) => {
     if (!this.active) return;
