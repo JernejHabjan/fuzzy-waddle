@@ -47,7 +47,7 @@ export default class Tree1 extends Phaser.GameObjects.Image {
         new SelectableComponent(this),
         new ResourceSourceComponent(this, {
           resourceType: ResourceType.Wood,
-          maximumResources: 100,
+          maximumResources: 20,
           gatheringFactor: 1
         } satisfies ResourceSourceDefinition)
       ],

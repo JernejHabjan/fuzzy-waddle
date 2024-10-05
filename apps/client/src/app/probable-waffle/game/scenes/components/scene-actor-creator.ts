@@ -14,8 +14,6 @@ import { FactionDefinitions } from "../../player/faction-definitions";
 import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
-import { getActorComponent } from "../../data/actor-component";
-import { OwnerComponent } from "../../entity/actor/components/owner-component";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {

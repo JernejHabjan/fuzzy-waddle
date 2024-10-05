@@ -30,12 +30,12 @@ import {
 } from "../../../entity/systems/movement.system";
 import { onPostSceneInitialized } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
-import { ColliderComponent } from "../../../entity/actor/components/collider-component";
 import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -119,10 +119,12 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   private readonly movementSpeed = 2000;
   private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
+  private furballEvent?: Phaser.Time.TimerEvent;
 
   private postSceneCreate() {
     this.drawFlyingUnitVerticalLine();
     this.moveOwl();
+    this.startSpittingFurBalls();
   }
 
   /**
@@ -153,7 +155,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
         usePathfinding: false,
-        duration: this.movementSpeed
+        tileStepDuration: this.movementSpeed
       } satisfies PathMoveConfig);
     } catch (e) {
       console.error(e);
@@ -177,10 +179,46 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     this.currentDelay = null;
   }
 
+  private randomlySpitFurBall() {
+    const centerX = this.x;
+    const centerY = this.y - this.owl.height * 2;
+    const furball = new SkaduweeOwlFurball(this.scene, centerX, centerY);
+    this.scene.add.existing(furball);
+    // set depth same as actor
+    furball.setDepth(this.depth);
+    furball.setOrigin(0.5, 0.5);
+
+    // move furball to some direction as projectile
+    const direction = Phaser.Math.Between(0, 360);
+    const distance = 100;
+    const x = centerX + distance * Math.cos(direction);
+    const y = centerY + distance * Math.sin(direction);
+    this.scene.tweens.add({
+      targets: furball,
+      x,
+      y,
+      duration: 1000,
+      onComplete: () => {
+        furball.destroy();
+      }
+    });
+  }
+
+  private startSpittingFurBalls() {
+    this.furballEvent = this.scene.time.addEvent({
+      delay: 2000,
+      callback: this.randomlySpitFurBall,
+      callbackScope: this,
+      loop: true
+    });
+  }
+
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.cancelMovement();
     this.removeDelay();
+    this.furballEvent?.remove(false);
+    this.furballEvent = undefined;
   }
 
   /* END-USER-CODE */

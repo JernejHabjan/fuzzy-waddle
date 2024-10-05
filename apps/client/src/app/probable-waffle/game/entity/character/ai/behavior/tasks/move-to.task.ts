@@ -1,6 +1,6 @@
 import { ITask, TaskData, TaskResultType } from "./task.interface";
 import { TransformComponent } from "../../../../actor/components/transformable-component";
-import { PawnAiControllerComponent } from "../../../../../world/managers/controllers/pawn-ai-controller-component";
+import { PawnAiControllerComponentOld } from "../../../../../world/managers/controllers/pawn-ai-controller-component-old";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../../../data/actor-component";
 
@@ -17,7 +17,7 @@ export class MoveToTask implements ITask {
     }
 
     // issue move order
-    const pawnAiControllerComponent = getActorComponent(taskData.owner, PawnAiControllerComponent);
+    const pawnAiControllerComponent = getActorComponent(taskData.owner, PawnAiControllerComponentOld);
     if (!pawnAiControllerComponent) {
       return TaskResultType.Failure;
     }

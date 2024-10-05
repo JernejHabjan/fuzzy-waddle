@@ -1,17 +1,25 @@
 import GameObject = Phaser.GameObjects.GameObject;
+import Phaser from "phaser";
+import { HealthComponent } from "../combat/components/health-component";
 
 export type ContainerDefinition = {
   capacity: number;
 };
 
-// apply to resource source that needs gameObjects to enter to gather
+/**
+ * apply to resource source that needs gameObjects to enter to gather
+ */
 export class ContainerComponent {
+  static readonly GameObjectVisibilityChanged = "GameObjectVisibilityChanged";
   private containedGameObjects = new Set<GameObject>();
 
   constructor(
     private readonly gameObject: GameObject,
     public readonly containerDefinition: ContainerDefinition
-  ) {}
+  ) {
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+    gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
+  }
 
   getContainedGameObjects(): GameObject[] {
     return Array.from(this.containedGameObjects);
@@ -19,6 +27,10 @@ export class ContainerComponent {
 
   onKilled() {
     this.unloadAll();
+  }
+
+  destroy() {
+    this.onKilled();
   }
 
   unloadAll() {
@@ -49,8 +61,9 @@ export class ContainerComponent {
   }
 
   setGameObjectVisible(gameObject: GameObject, visible: boolean) {
-    const visibleComponent = gameObject as unknown as Phaser.GameObjects.Components.Visible;
+    const visibleComponent = gameObject as unknown as Phaser.GameObjects.Components.Visible; // todo this is used on multiple places
     if (visibleComponent.setVisible === undefined) return;
     visibleComponent.setVisible(visible);
+    gameObject.emit(ContainerComponent.GameObjectVisibilityChanged, visible);
   }
 }

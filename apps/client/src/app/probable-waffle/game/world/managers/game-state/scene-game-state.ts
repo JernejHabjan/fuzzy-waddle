@@ -17,8 +17,6 @@ export class SceneGameState {
   private listen() {
     this.pauseUntilAllPlayersAreReady();
 
-    console.log("playing level", this.scene.mapInfo.name);
-
     // after 3 seconds, change state to StartingTheGame
     setTimeout(() => {
       getCommunicator(this.scene).gameInstanceMetadataChanged?.send({

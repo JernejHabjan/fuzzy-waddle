@@ -1,5 +1,5 @@
 import { CharacterMovementComponent } from "./components/character-movement-component";
-import { PawnAiControllerComponent } from "../../world/managers/controllers/pawn-ai-controller-component";
+import { PawnAiControllerComponentOld } from "../../world/managers/controllers/pawn-ai-controller-component-old";
 import { Blackboard } from "../character/ai/blackboard";
 import { RepresentableActor } from "./representable-actor";
 import { PawnBehaviorTree, PawnBehaviorTreeClasses } from "../character/ai/behavior-trees";
@@ -25,7 +25,7 @@ export abstract class MovableActor extends RepresentableActor {
     super.initComponents();
 
     this.components.addComponent(new CharacterMovementComponent(this));
-    this.components.addComponent(new PawnAiControllerComponent(this as any, this.blackboard, this.behaviorTree));
+    this.components.addComponent(new PawnAiControllerComponentOld(this as any, this.blackboard, this.behaviorTree));
   }
 
   override update(time: number, delta: number) {

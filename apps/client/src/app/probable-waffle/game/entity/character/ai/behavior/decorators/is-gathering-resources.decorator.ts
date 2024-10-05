@@ -7,6 +7,6 @@ export class IsGatheringResourcesDecorator implements IDecorator {
     if (!gathererComponent) {
       return false;
     }
-    return gathererComponent.isGathering();
+    return gathererComponent.isGathering;
   }
 }

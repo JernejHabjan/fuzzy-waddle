@@ -80,7 +80,7 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
               damage: 1,
               damageType: DamageType.Physical,
               cooldown: 1000,
-              range: 3
+              range: 1
             } satisfies AttackData
           ]
         } satisfies AttackDefinition),
@@ -103,7 +103,7 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
           enterConstructionSite: false
         } satisfies BuilderDefinition),
         new GathererComponent(this, {
-          resourceSweepRadius: 100,
+          resourceSweepRadius: 20,
           resourceSourceGameObjectClasses: [
             ResourceType.Ambrosia,
             ResourceType.Wood,

@@ -125,6 +125,18 @@
             "scope": "CLASS",
             "x": 16,
             "y": 17
+        },
+        {
+            "prefabId": "48af587a-4ba6-4d39-ac86-8cc7d0a2c9e6",
+            "id": "a3584268-6223-4eec-8e05-21e852306e25",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "aiControllerDebugPanel",
+            "scope": "CLASS",
+            "x": 1075,
+            "y": 82
         }
     ],
     "plainObjects": [],

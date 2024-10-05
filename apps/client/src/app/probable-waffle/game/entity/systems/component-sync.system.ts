@@ -60,6 +60,7 @@ export type SyncOptions<T> = {
 };
 
 export class ComponentSyncSystem {
+  private readonly DEBUG = false;
   private subscriptions: Subscription[] = [];
 
   /**
@@ -112,7 +113,9 @@ export class ComponentSyncSystem {
             if (value !== undefined) {
               setNestedProperty(proxiedData, [property as string], value);
 
-              console.log(`Property ${property as string} updated to ${value} on ${gameObject.constructor.name}`);
+              if (this.DEBUG) {
+                console.log(`Property ${property as string} updated to ${value} on ${gameObject.constructor.name}`);
+              }
             }
           }
         }

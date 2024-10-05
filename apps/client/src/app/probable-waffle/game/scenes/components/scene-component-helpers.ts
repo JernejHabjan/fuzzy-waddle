@@ -18,6 +18,15 @@ export function getSceneService<T>(scene: Phaser.Scene, serviceClass: new (...ar
   return service;
 }
 
+export function getSceneSystem<T>(scene: Phaser.Scene, systemClass: new (...args: any[]) => T): T | undefined {
+  if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleSceneData");
+  const system = scene.getSceneGameData().systems.find((s) => s instanceof systemClass);
+  if (!system) {
+    return undefined;
+  }
+  return system;
+}
+
 export function getSceneInitializers(scene: Phaser.Scene) {
   if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleSceneData");
   return scene.getSceneGameData().initializers;
