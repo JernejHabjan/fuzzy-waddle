@@ -94,7 +94,7 @@ export class CameraMovementHandler {
    * Creates pointer controls for camera movement (dragging) on mobile
    */
   private createPointerControls() {
-    const touchEnabled = this.input.manager.touch;
+    const touchEnabled = !this.input.keyboard;
     if (!touchEnabled) return;
     this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);

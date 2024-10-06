@@ -110,6 +110,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       [new MovementSystem(this)]
     );
     onPostSceneInitialized(scene, this.postSceneCreate, this);
+    this.once(HealthComponent.KilledEvent, this.destroy, this);
     /* END-USER-CTR-CODE */
   }
 
@@ -182,6 +183,11 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   }
 
   private randomlySpitFurBall() {
+    if (!this.active) {
+      this.furballEvent?.remove(false);
+      return;
+    }
+
     const centerX = this.x;
     const centerY = this.y - this.owl.height * 2;
     const furball = new SkaduweeOwlFurball(this.scene, centerX, centerY);
