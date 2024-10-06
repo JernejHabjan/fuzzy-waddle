@@ -115,7 +115,7 @@ export class SceneActorCreator {
     player.playerController.data.playerDefinition!.initialWorldSpawnPosition = vec3;
 
     const faction = player.playerController.data.playerDefinition!.factionType;
-    if (!faction) return;
+    if (!faction) throw new Error("Faction not found");
     let actor: Phaser.GameObjects.GameObject | undefined = undefined;
     switch (faction) {
       case FactionType.Skaduwee:

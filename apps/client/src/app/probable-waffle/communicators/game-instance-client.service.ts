@@ -6,6 +6,7 @@ import {
   DifficultyModifiers,
   GameSessionState,
   GameSetupHelpers,
+  getRandomFactionType,
   MapTuning,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
@@ -221,7 +222,25 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async startGame(): Promise<void> {
+    await this.assignMissingFactionTypes();
+
     await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.MovingPlayersToGame });
+  }
+
+  private async assignMissingFactionTypes() {
+    const players = this.gameInstance!.players;
+    for (const player of players) {
+      if (!player.playerController.data.playerDefinition!.factionType) {
+        const factionType = getRandomFactionType();
+        await this.playerChanged(
+          "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty,
+          {
+            playerNumber: player.playerNumber,
+            playerControllerData: { playerDefinition: { factionType } as PositionPlayerDefinition }
+          }
+        );
+      }
+    }
   }
 
   async gameInstanceMetadataChanged(

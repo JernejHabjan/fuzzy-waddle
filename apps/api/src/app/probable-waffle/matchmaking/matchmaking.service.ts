@@ -3,7 +3,7 @@ import {
   DifficultyModifiers,
   FactionType,
   GameSessionState,
-  GameSetupHelpers,
+  getRandomFactionType,
   MapTuning,
   PendingMatchmakingGameInstance,
   PlayerLobbyDefinition,
@@ -168,9 +168,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   }
 
   private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
-    const enumValues = Object.values(FactionType).filter((value) => typeof value === "number");
-    const randomIndex = Math.floor(Math.random() * enumValues.length);
-    const randomFactionType = enumValues[randomIndex] as FactionType;
+    const randomFactionType = getRandomFactionType();
 
     console.log(
       "Probable Waffle - New player",
