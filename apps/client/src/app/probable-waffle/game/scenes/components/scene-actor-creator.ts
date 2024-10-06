@@ -5,7 +5,6 @@ import {
   Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
-import { SceneActorCreatorCommunicator, SceneActorSaveCommunicator } from "./scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../GameProbableWaffleScene";
 import { getCommunicator } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
@@ -17,10 +16,6 @@ import { MovementSystem } from "../../entity/systems/movement.system";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
-    // NOTE: as this class uses ActorManager to create actors, it must not be accessed in components that are included in the actor definition (circular dependency)
-    this.scene.events.on(SceneActorCreatorCommunicator, this.createActorFromDefinition, this);
-    this.scene.events.on(SceneActorSaveCommunicator, this.saveAllKnownActorsToSaveGame, this);
-
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
@@ -43,7 +38,7 @@ export class SceneActorCreator {
       });
   }
 
-  private createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
+  public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
     if (!actorDefinition.name) return undefined;
     const actor = ActorManager.createActor(this.scene, actorDefinition.name, actorDefinition);
     const gameObject = this.scene.add.existing(actor);
@@ -51,7 +46,7 @@ export class SceneActorCreator {
     return gameObject;
   }
 
-  private saveAllKnownActorsToGameState() {
+  public saveAllKnownActorsToGameState() {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
     gameScene.baseGameData.gameInstance.gameState!.data.actors = [];
@@ -99,10 +94,7 @@ export class SceneActorCreator {
     this.scene.communicator.utilityEvents.emit({ name: "save-game" });
   }
 
-  private destroy() {
-    this.scene.events.off(SceneActorCreatorCommunicator, this.createActorFromDefinition, this);
-    this.scene.events.off(SceneActorSaveCommunicator, this.saveAllKnownActorsToSaveGame, this);
-  }
+  private destroy() {}
 
   private spawnActorsFromSpawnList(spawn: Spawn) {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;

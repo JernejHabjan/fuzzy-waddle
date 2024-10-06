@@ -1,11 +1,9 @@
 import { ActorManager } from "./actor-manager";
 import { filter, Subscription } from "rxjs";
-import {
-  SceneActorCreatorCommunicator,
-  SceneActorSaveCommunicator
-} from "../scenes/components/scene-actor-creator-communicator";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 import { onPostSceneInitialized } from "./game-object-helper";
+import { getSceneService } from "../scenes/components/scene-component-helpers";
+import { SceneActorCreator } from "../scenes/components/scene-actor-creator";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class SaveGame {
@@ -41,8 +39,11 @@ export class SaveGame {
     });
     toRemove.forEach((child) => child.destroy());
 
+    const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
+    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
+
     this.scene.baseGameData.gameInstance.gameState!.data.actors.forEach((actorDefinition) => {
-      this.scene.events.emit(SceneActorCreatorCommunicator, actorDefinition);
+      sceneActorCreator.createActorFromDefinition(actorDefinition);
     });
     console.log("Loaded game");
   }
@@ -52,6 +53,8 @@ export class SaveGame {
   }
 
   private onSaveGame() {
-    this.scene.events.emit(SceneActorSaveCommunicator);
+    const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
+    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
+    sceneActorCreator.saveAllKnownActorsToGameState();
   }
 }
