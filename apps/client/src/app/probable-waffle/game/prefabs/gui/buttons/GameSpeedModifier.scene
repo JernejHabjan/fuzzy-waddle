@@ -1,0 +1,260 @@
+{
+    "id": "7dacf888-7495-4899-a649-366b6ff3bad5",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 120,
+        "borderHeight": 30
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "c1630922-c540-4005-9c01-a5405d8baff0",
+            "label": "container_1",
+            "list": [
+                {
+                    "type": "Container",
+                    "id": "d68f7d6c-4a61-457c-ac7b-bece941e269f",
+                    "label": "multiplier_10x",
+                    "displayName": "Actor action",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": 101,
+                    "y": 15,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "f9ce78cc-2c8a-47f3-b406-fa865f6a8733",
+                            "label": "game_action_bg_2",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.0762647352357817,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 20,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "06ea8f3a-201e-49d6-90da-b31b217b1d09",
+                            "label": "text_2",
+                            "y": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "10x",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "38c9c766-92e9-43d9-8484-bdc8c1455dba",
+                            "label": "onPointerUpScript_menu_1",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "b3abe20b-d988-404c-9ed5-89066450f347",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitActorAction_2",
+                                    "displayName": "Emit \"action\"",
+                                    "eventName": "action"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "7fe97257-7344-469b-aa6d-19f4c6af84ee",
+                            "label": "onPointerDownScript_2",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "3432e5b5-34ce-45d4-92da-2aebd019f3ab",
+                                    "label": "action_click_2",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "4dbef76f-15eb-4afd-a5c3-8adee3907373",
+                    "label": "multiplier_3x",
+                    "displayName": "Actor action",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": 61,
+                    "y": 15,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "2a0837db-1fcc-47ed-b08d-7bb2f9621035",
+                            "label": "game_action_bg_1",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.0762647352357817,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 20,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "86bd1f50-59ca-4fff-949c-3c0811bf85ac",
+                            "label": "text",
+                            "y": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "3x",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "b7ec68bd-d479-4463-ae33-d701b0e33093",
+                            "label": "onPointerUpScript_menu",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "6c7f91b1-9ad0-477c-8fa5-9a05942c4a46",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitActorAction_1",
+                                    "displayName": "Emit \"action\"",
+                                    "eventName": "action"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "fa5ef60c-f5af-488b-9903-518380696e4e",
+                            "label": "onPointerDownScript_1",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "0582e897-c313-41a6-911e-fc3bc4c63d11",
+                                    "label": "action_click_1",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "2100e4b4-863d-467b-b694-cf20ba3a6eb8",
+                    "label": "multiplier_1x",
+                    "displayName": "Actor action",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -17,
+                    "hitArea.y": -13,
+                    "hitArea.width": 34.60550202698232,
+                    "hitArea.height": 25.429332302435576,
+                    "x": 21,
+                    "y": 15,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "fdb10e38-4547-4bcc-801c-a08550465f34",
+                            "label": "game_action_bg",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.0762647352357817,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 20,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "87a8e22b-cc2b-4a0b-b29b-96b8a36b7637",
+                            "label": "text_1",
+                            "y": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "1x",
+                            "color": "#000000ff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "91aea8d4-daf0-4559-9969-d808f6c85038",
+                            "label": "onPointerUpScript_menu_9",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "c946f872-01d2-4c3e-b833-a3b0b6b155ea",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitActorAction",
+                                    "displayName": "Emit \"action\"",
+                                    "eventName": "action"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "3088c434-c913-4e8d-b834-69239de484b8",
+                            "label": "onPointerDownScript",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "6cbd3877-bddb-49dc-9b40-df84440e2cfc",
+                                    "label": "action_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -7,13 +7,14 @@ import ActorInfoContainer from "../prefabs/gui/labels/ActorInfoContainer";
 import GameActions from "../prefabs/gui/buttons/GameActions";
 import Resources from "../prefabs/gui/labels/Resources";
 import AiControllerDebugPanel from "../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
+import GameSpeedModifier from "../prefabs/gui/buttons/GameSpeedModifier";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
 import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "./components/scene-component-helpers";
 import { TilemapComponent } from "./components/tilemap.component";
 import { getActorComponent } from "../data/actor-component";
@@ -98,6 +99,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1075, 82);
     this.add.existing(aiControllerDebugPanel);
 
+    // gameSpeedModifier
+    const gameSpeedModifier = new GameSpeedModifier(this, 0, 446);
+    this.add.existing(gameSpeedModifier);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -107,6 +112,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
+    this.gameSpeedModifier = gameSpeedModifier;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -118,6 +124,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private game_actions_container!: GameActions;
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
+  private gameSpeedModifier!: GameSpeedModifier;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -354,8 +361,23 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.aiControllerDebugPanel.visible = !environment.production;
 
+    // position game speed modifier above minimap on left side
+    this.gameSpeedModifier.x = 10;
+    const minimapHeight = getGameObjectBounds(this.minimap_container)!.height;
+    this.gameSpeedModifier.y = this.scale.height - minimapHeight + 10;
+    this.gameSpeedModifier.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    // hide if game mode is not single player
+    this.gameSpeedModifier.visible =
+      this.gameType === ProbableWaffleGameInstanceType.InstantGame ||
+      this.gameType === ProbableWaffleGameInstanceType.Replay ||
+      this.gameType === ProbableWaffleGameInstanceType.Skirmish;
+
     // redraw minimap
     this.redrawMinimap();
+  }
+
+  private get gameType() {
+    return this.parentScene?.baseGameData.gameInstance.gameInstanceMetadata.data.type;
   }
 
   private subscribeToGameEvent(eventName: string, displayText: string) {
