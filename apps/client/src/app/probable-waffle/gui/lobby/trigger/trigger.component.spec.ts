@@ -4,6 +4,8 @@ import { Component } from "@angular/core";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { provideRouter } from "@angular/router";
+import { AuthService } from "../../../../auth/auth.service";
+import { authServiceStub } from "../../../../auth/auth.service.spec";
 
 @Component({ selector: "probable-waffle-trigger", template: "", standalone: true, imports: [] })
 export class TriggerTestingComponent {}
@@ -15,7 +17,11 @@ describe("TriggerComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TriggerComponent],
-      providers: [provideRouter([]), { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TriggerComponent);
