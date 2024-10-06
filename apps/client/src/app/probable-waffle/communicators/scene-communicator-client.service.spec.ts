@@ -4,11 +4,11 @@ import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./s
 import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 
 export const SceneCommunicatorClientServiceStub = {
-  createCommunicators(gameInstanceId: string): ProbableWaffleCommunicators {
-    return {} as ProbableWaffleCommunicators;
+  createCommunicators(gameInstanceId: string): Promise<ProbableWaffleCommunicators> {
+    return Promise.resolve({} as ProbableWaffleCommunicators);
   },
-  destroyCommunicators() {
-    //
+  destroyCommunicators(): Promise<void> {
+    return Promise.resolve();
   }
 } satisfies SceneCommunicatorClientServiceInterface;
 describe("SceneCommunicatorClientService", () => {

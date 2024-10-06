@@ -22,9 +22,9 @@ export interface GameInstanceClientServiceInterface {
    * @private
    * Initializes game and opens level communicators
    */
-  openLevel(littleMuncherLevel: LittleMuncherLevel): void;
+  openLevel(littleMuncherLevel: LittleMuncherLevel): Promise<void>;
 
-  openLevelSpectator(gameInstanceData: LittleMuncherGameInstanceData): void;
+  openLevelSpectator(gameInstanceData: LittleMuncherGameInstanceData): Promise<void>;
 
   stopLevel(removeFrom: "local" | "localAndRemote"): Promise<void>;
 

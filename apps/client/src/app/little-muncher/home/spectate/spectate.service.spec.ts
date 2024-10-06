@@ -12,13 +12,13 @@ import { provideHttpClient } from "@angular/common/http";
 export const spectateServiceStub = {
   rooms: [],
   spectatorDisconnected: new Subject<void>(),
-  listenToRoomEvents() {
-    //
+  listenToRoomEvents(): Promise<void> {
+    return Promise.resolve();
   },
   destroy() {
     //
   },
-  get roomEvent(): Observable<LittleMuncherRoomEvent> | undefined {
+  async getRoomEvent(): Promise<Observable<LittleMuncherRoomEvent> | undefined> {
     return undefined;
   },
   getRooms() {

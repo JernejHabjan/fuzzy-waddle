@@ -27,7 +27,7 @@ import { AuthService } from "../../../auth/auth.service";
 export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild("chatBody") chatBody!: ElementRef;
 
-  @Input({ required: true }) listenToMessages: Observable<ChatMessage> | undefined;
+  @Input({ required: true }) messageListener: Observable<ChatMessage> | undefined;
   @Output() newMessage: EventEmitter<ChatMessage> = new EventEmitter<ChatMessage>();
 
   protected message = "";
@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   protected readonly authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.messageSubscription = this.listenToMessages?.subscribe((msg: ChatMessage) => {
+    this.messageSubscription = this.messageListener?.subscribe((msg: ChatMessage) => {
       this.messages.push(msg);
       this.scrollToBottom();
     });

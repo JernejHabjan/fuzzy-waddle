@@ -7,11 +7,11 @@ import { IChatService } from "./chat.service.interface";
 import { Observable } from "rxjs";
 
 export const chatServiceStub = {
-  sendMessage(msg: ChatMessage) {
-    // do nothing
+  sendMessage(msg: ChatMessage): Promise<void> {
+    return Promise.resolve();
   },
-  get listenToMessages(): Observable<ChatMessage> | undefined {
-    return undefined;
+  getMessageListener(): Promise<Observable<ChatMessage> | undefined> {
+    return Promise.resolve(undefined);
   }
 } satisfies IChatService;
 

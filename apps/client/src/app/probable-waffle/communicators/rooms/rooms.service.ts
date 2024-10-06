@@ -54,8 +54,9 @@ export class RoomsService implements RoomsServiceInterface {
   /**
    * we need to listen to room events, so we know if we're spectating a room that is removed
    */
-  listenToRoomEvents() {
-    this.roomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
+  async listenToRoomEvents() {
+    const roomEvent = await this.getRoomEvent();
+    this.roomsSubscription = roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
       const rooms = this.rooms();
       const roomLocally = rooms.find(
@@ -103,15 +104,15 @@ export class RoomsService implements RoomsServiceInterface {
 
   async init(): Promise<void> {
     await this.initiallyPullRooms();
-    this.listenToRoomEvents();
+    await this.listenToRoomEvents();
   }
 
   async initiallyPullRooms(): Promise<void> {
     this.rooms.set(await this.getRooms());
   }
 
-  get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined {
-    const socket = this.authenticatedSocketService.socket;
+  private async getRoomEvent(): Promise<Observable<ProbableWaffleRoomEvent> | undefined> {
+    const socket = await this.authenticatedSocketService.getSocket();
     return socket
       ?.fromEvent<ProbableWaffleRoomEvent>(ProbableWaffleGatewayEvent.ProbableWaffleRoom)
       .pipe(map((roomEvent: ProbableWaffleRoomEvent) => roomEvent));

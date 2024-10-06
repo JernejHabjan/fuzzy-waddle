@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing";
 import { AuthenticatedSocketService } from "./authenticated-socket.service";
 import { IAuthenticatedSocketService } from "./authenticated-socket.service.interface";
-import { WrappedSocket } from "ngx-socket-io/src/socket-io.service";
+import { Socket } from "ngx-socket-io";
 
 export const createAuthenticatedSocketServiceStub = {
-  get socket(): WrappedSocket | undefined {
+  async getSocket(): Promise<Socket | undefined> {
     return undefined;
   }
 } satisfies IAuthenticatedSocketService;
