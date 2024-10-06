@@ -5,13 +5,13 @@ export interface SpectateServiceInterface {
   rooms: LittleMuncherRoom[];
   spectatorDisconnected: Subject<void>;
 
-  listenToRoomEvents(): void;
+  listenToRoomEvents(): Promise<void>;
 
   getRooms(): Promise<LittleMuncherRoom[]>;
 
   initiallyPullRooms(): Promise<void>;
 
-  get roomEvent(): Observable<LittleMuncherRoomEvent> | undefined;
+  getRoomEvent(): Promise<Observable<LittleMuncherRoomEvent> | undefined>;
 
   joinRoom(gameInstanceId: string): void;
 

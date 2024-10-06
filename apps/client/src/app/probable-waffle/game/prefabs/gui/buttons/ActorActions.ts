@@ -2,17 +2,15 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import ActorAction from "./ActorAction";
 /* START-USER-IMPORTS */
-import { getPlayer, getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
+import { getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/combat/components/attack-component";
 import { ProductionComponent } from "../../../entity/building/production/production-component";
-import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 /* END-USER-IMPORTS */
 
@@ -58,46 +56,64 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     // actor_action_9
     const actor_action_9 = new ActorAction(scene, -51, -40);
     actor_action_9.name = "actor_action_9";
+    actor_action_9.scaleX = 2;
+    actor_action_9.scaleY = 2;
     this.add(actor_action_9);
 
     // actor_action_8
     const actor_action_8 = new ActorAction(scene, -128, -40);
     actor_action_8.name = "actor_action_8";
+    actor_action_8.scaleX = 2;
+    actor_action_8.scaleY = 2;
     this.add(actor_action_8);
 
     // actor_action_7
     const actor_action_7 = new ActorAction(scene, -205, -40);
     actor_action_7.name = "actor_action_7";
+    actor_action_7.scaleX = 2;
+    actor_action_7.scaleY = 2;
     this.add(actor_action_7);
 
     // actor_action_6
     const actor_action_6 = new ActorAction(scene, -51, -98);
     actor_action_6.name = "actor_action_6";
+    actor_action_6.scaleX = 2;
+    actor_action_6.scaleY = 2;
     this.add(actor_action_6);
 
     // actor_action_5
     const actor_action_5 = new ActorAction(scene, -128, -98);
     actor_action_5.name = "actor_action_5";
+    actor_action_5.scaleX = 2;
+    actor_action_5.scaleY = 2;
     this.add(actor_action_5);
 
     // actor_action_4
     const actor_action_4 = new ActorAction(scene, -205, -98);
     actor_action_4.name = "actor_action_4";
+    actor_action_4.scaleX = 2;
+    actor_action_4.scaleY = 2;
     this.add(actor_action_4);
 
     // actor_action_3
     const actor_action_3 = new ActorAction(scene, -51, -156);
     actor_action_3.name = "actor_action_3";
+    actor_action_3.scaleX = 2;
+    actor_action_3.scaleY = 2;
     this.add(actor_action_3);
 
     // actor_action_2
     const actor_action_2 = new ActorAction(scene, -128, -156);
     actor_action_2.name = "actor_action_2";
+    actor_action_2.scaleX = 2;
+    actor_action_2.scaleY = 2;
     this.add(actor_action_2);
 
     // actor_action_1
     const actor_action_1 = new ActorAction(scene, -205, -156);
     actor_action_1.name = "actor_action_1";
+    actor_action_1.scaleX = 2;
+    actor_action_1.scaleY = 2;
     this.add(actor_action_1);
 
     // lists

@@ -33,8 +33,9 @@ export class SpectateService implements SpectateServiceInterface {
   /**
    * we need to listen to room events, so we know if we're spectating a room that is removed
    */
-  listenToRoomEvents() {
-    this.spectateRoomsSubscription = this.roomEvent?.subscribe(async (roomEvent) => {
+  async listenToRoomEvents() {
+    const roomEvent = await this.getRoomEvent();
+    this.spectateRoomsSubscription = roomEvent?.subscribe(async (roomEvent) => {
       const room = roomEvent.room;
       if (roomEvent.action === "added") {
         if (roomEvent.room.gameInstanceMetadataData.createdBy === this.authService.userId) return;
@@ -76,8 +77,8 @@ export class SpectateService implements SpectateServiceInterface {
     this.rooms = await this.getRooms();
   }
 
-  get roomEvent(): Observable<LittleMuncherRoomEvent> | undefined {
-    const socket = this.authenticatedSocketService.socket;
+  async getRoomEvent(): Promise<Observable<LittleMuncherRoomEvent> | undefined> {
+    const socket = await this.authenticatedSocketService.getSocket();
     return socket
       ?.fromEvent<LittleMuncherRoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
       .pipe(map((data: LittleMuncherRoomEvent) => data));
@@ -91,7 +92,7 @@ export class SpectateService implements SpectateServiceInterface {
         gameInstanceId
       } satisfies GameInstanceDataDto)
     );
-    this.gameInstanceClientService.openLevelSpectator(gameInstance);
+    await this.gameInstanceClientService.openLevelSpectator(gameInstance);
   }
 
   // todo use

@@ -21,7 +21,8 @@ export class GameInstanceGuard implements CanActivate {
       if (!environment.production) {
         await this.serverHealthService.checkHealth();
         if (this.serverHealthService.serverAvailable) {
-          await this.router.navigate(["/probable-waffle/instant-network-match"]);
+          await this.router.navigate(["/probable-waffle/instant-game"]);
+          // await this.router.navigate(["/probable-waffle/instant-network-match"]);
         } else {
           await this.router.navigate(["/probable-waffle/instant-game"]);
         }

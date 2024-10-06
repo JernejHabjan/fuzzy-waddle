@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
@@ -13,29 +12,14 @@ import ActorDefinitionTooltip from "../labels/ActorDefinitionTooltip";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 41, y ?? 31);
 
-    this.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
-      Phaser.Geom.Rectangle.Contains
-    );
-    this.scaleX = 2;
-    this.scaleY = 2;
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 21, y ?? 16);
+
+    this.setInteractive(new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
 
     // game_action_bg
-    const game_action_bg = scene.add.nineslice(
-      0,
-      0,
-      "gui",
-      "cryos_mini_gui/buttons/button_small.png",
-      20,
-      20,
-      3,
-      3,
-      3,
-      3
-    );
+    const game_action_bg = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
     game_action_bg.scaleX = 2.0762647352357817;
     game_action_bg.scaleY = 1.5492262688240692;
     this.add(game_action_bg);

@@ -8,6 +8,8 @@ import { TriggerComponent } from "../trigger/trigger.component";
 import { MapSelectorComponent } from "../map-selector/map-selector.component";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
+import { sceneCommunicatorClientServiceStub } from "../../../../fly-squasher/main/scene-communicator-client.service.spec";
 
 @Component({ selector: "probable-waffle-map-definition", template: "", standalone: true, imports: [] })
 export class MapDefinitionTestingComponent {}
@@ -19,7 +21,10 @@ describe("MapDefinitionComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MapDefinitionComponent, FormsModule],
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
+      providers: [
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: SceneCommunicatorClientService, useValue: sceneCommunicatorClientServiceStub }
+      ]
     })
       .overrideComponent(MapDefinitionComponent, {
         remove: {

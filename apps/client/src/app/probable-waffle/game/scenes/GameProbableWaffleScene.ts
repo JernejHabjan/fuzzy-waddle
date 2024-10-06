@@ -71,7 +71,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const creator = new SceneActorCreator(this);
     creator.initActors();
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
-    this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService());
+    this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService(), creator);
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
 
     this.sceneGameData.initializers.sceneInitialized.next(true);

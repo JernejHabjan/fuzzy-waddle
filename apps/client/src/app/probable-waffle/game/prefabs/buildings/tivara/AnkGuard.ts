@@ -31,6 +31,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class AnkGuard extends Phaser.GameObjects.Container {
@@ -156,7 +157,7 @@ export default class AnkGuard extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.AnkGuard;
   // Write your code here.
 
   /* END-USER-CODE */

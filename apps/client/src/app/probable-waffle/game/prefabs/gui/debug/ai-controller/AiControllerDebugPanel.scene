@@ -29,7 +29,7 @@
                     "hitArea.shape": "RECTANGLE",
                     "hitArea.x": -32,
                     "hitArea.y": -13,
-                    "hitArea.width": 183.9034774036696,
+                    "hitArea.width": 182.0350429198294,
                     "hitArea.height": 25.429332302435576,
                     "x": -150.21157898014727,
                     "y": 15,
@@ -58,11 +58,12 @@
                             "id": "d538b452-2cd4-4401-b943-e4a8cc41dbaf",
                             "label": "buttonText",
                             "scope": "CLASS",
-                            "x": 62,
+                            "x": 69.74578515529078,
                             "y": -1,
-                            "originX": 0.5,
+                            "originX": 0.5472303972883584,
                             "originY": 0.5,
-                            "text": "Show AI debugging"
+                            "text": "Show AI debugging",
+                            "color": "#000000ff"
                         },
                         {
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",

@@ -66,8 +66,8 @@ export const gameInstanceClientServiceStub = {
   async addSelfAsSpectator(): Promise<void> {
     return Promise.resolve();
   },
-  listenToGameFound(): Observable<ProbableWaffleGameFoundEvent> {
-    return new Observable<ProbableWaffleGameFoundEvent>();
+  getGameFoundListener(): Promise<Observable<ProbableWaffleGameFoundEvent>> {
+    return Promise.resolve(new Observable<ProbableWaffleGameFoundEvent>());
   },
   async requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void> {
     return Promise.resolve();

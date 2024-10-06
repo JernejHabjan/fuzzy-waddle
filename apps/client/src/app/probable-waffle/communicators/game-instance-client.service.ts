@@ -6,6 +6,7 @@ import {
   DifficultyModifiers,
   GameSessionState,
   GameSetupHelpers,
+  getRandomFactionType,
   MapTuning,
   PlayerLobbyDefinition,
   PositionPlayerDefinition,
@@ -90,7 +91,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
 
-    this.startListeningToGameInstanceEvents();
+    await this.startListeningToGameInstanceEvents();
   }
 
   async stopGameInstance(): Promise<void> {
@@ -114,7 +115,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
                 });
                 break;
               case GameSessionState.Stopped:
-                this.stopListeningToGameInstanceEvents();
+                await this.stopListeningToGameInstanceEvents();
                 this.gameInstance = undefined;
                 break;
             }
@@ -199,10 +200,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  private startListeningToGameInstanceEvents() {
+  private async startListeningToGameInstanceEvents() {
     if (!this.currentGameInstanceId)
       throw new Error("Game instance not found in startListeningToGameInstanceEvents in GameInstanceClientService");
-    this.communicators = this.sceneCommunicatorClientService.createCommunicators(this.currentGameInstanceId);
+    this.communicators = await this.sceneCommunicatorClientService.createCommunicators(this.currentGameInstanceId);
     this.listenToGameInstanceMetadataEvents();
     this.listenToGameModeDataEvents();
     this.listenToPlayerEvents();
@@ -211,17 +212,35 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToSaveGameEvents();
   }
 
-  private stopListeningToGameInstanceEvents() {
+  private async stopListeningToGameInstanceEvents() {
     if (!this.currentGameInstanceId)
       throw new Error("Game instance not found in stopListeningToGameInstanceEvents in GameInstanceClientService");
-    this.sceneCommunicatorClientService.destroyCommunicators(
+    await this.sceneCommunicatorClientService.destroyCommunicators(
       this.currentGameInstanceId,
       this.communicatorSubscriptions
     );
   }
 
   async startGame(): Promise<void> {
+    await this.assignMissingFactionTypes();
+
     await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.MovingPlayersToGame });
+  }
+
+  private async assignMissingFactionTypes() {
+    const players = this.gameInstance!.players;
+    for (const player of players) {
+      if (!player.playerController.data.playerDefinition!.factionType) {
+        const factionType = getRandomFactionType();
+        await this.playerChanged(
+          "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty,
+          {
+            playerNumber: player.playerNumber,
+            playerControllerData: { playerDefinition: { factionType } as PositionPlayerDefinition }
+          }
+        );
+      }
+    }
   }
 
   async gameInstanceMetadataChanged(
@@ -286,7 +305,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void> {
     const gameInstanceData = (await this.getGameInstanceData(gameInstanceId))!;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
-    this.startListeningToGameInstanceEvents();
+    await this.startListeningToGameInstanceEvents();
   }
 
   /**
@@ -301,7 +320,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!gameInstanceData)
       throw new Error("Game instance not found in joinGameInstanceAsPlayer in GameInstanceClientService");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
-    this.startListeningToGameInstanceEvents();
+    await this.startListeningToGameInstanceEvents();
 
     const userId = this.authService.userId;
 
@@ -362,7 +381,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!gameInstanceData)
       throw new Error("Game instance not found in joinGameInstanceAsSpectator in GameInstanceClientService");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
-    this.startListeningToGameInstanceEvents();
+    await this.startListeningToGameInstanceEvents();
     await this.addSelfAsSpectator();
   }
 
@@ -452,13 +471,12 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.spectatorChanged("joined", { userId: this.authService.userId! });
   }
 
-  listenToGameFound(): Observable<ProbableWaffleGameFoundEvent> {
-    return this.authenticatedSocketService
-      .socket!.fromEvent<ProbableWaffleGameFoundEvent>(ProbableWaffleGameInstanceEvent.GameFound)
-      .pipe(
-        filter((data) => data.userIds.includes(this.authService.userId!)),
-        map((data) => data)
-      );
+  async getGameFoundListener(): Promise<Observable<ProbableWaffleGameFoundEvent>> {
+    const socket = await this.authenticatedSocketService.getSocket();
+    return socket!.fromEvent<ProbableWaffleGameFoundEvent>(ProbableWaffleGameInstanceEvent.GameFound).pipe(
+      filter((data) => data.userIds.includes(this.authService.userId!)),
+      map((data) => data)
+    );
   }
 
   async requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void> {
@@ -484,7 +502,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.startOptions.loadFromSave = true;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
-    this.startListeningToGameInstanceEvents();
+    await this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();
   }
 
@@ -503,7 +521,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.Replay;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
-    this.startListeningToGameInstanceEvents();
+    await this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();
   }
 }

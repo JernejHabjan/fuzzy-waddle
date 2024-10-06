@@ -67,7 +67,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   /**
    * remove game instances that have been started more than N time ago
    */
-  @Cron(CronExpression.EVERY_2_HOURS)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   handleCron() {
     const toRemove = this.gameInstanceHolderService.openGameInstances.filter((gi) => {
       const minutesAgo = 1000 * 60 * 15; // 15 minutes

@@ -10,7 +10,7 @@
 
     @if (maximized) {
       <fuzzy-waddle-chat
-        [listenToMessages]="chatService.listenToMessages"
+        [messageListener]="messageListener"
         (newMessage)="chatService.sendMessage($event)"
       />
     }

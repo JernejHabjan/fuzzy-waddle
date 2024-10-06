@@ -80,7 +80,8 @@ export class MatchmakingService implements IMatchmakingService {
 
   async startSearching() {
     this.searching = true;
-    this.gameFoundSubscription = this.gameInstanceClientService.listenToGameFound().subscribe(this.onGameFound);
+    const gameFoundListener = await this.gameInstanceClientService.getGameFoundListener();
+    this.gameFoundSubscription = gameFoundListener.subscribe(this.onGameFound);
     await this.gameInstanceClientService.requestGameSearchForMatchmaking(this.matchmakingOptions);
   }
 

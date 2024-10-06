@@ -25,10 +25,8 @@
             "hitArea.y": -13,
             "hitArea.width": 34.60550202698232,
             "hitArea.height": 25.429332302435576,
-            "x": 41,
-            "y": 31,
-            "scaleX": 2,
-            "scaleY": 2,
+            "x": 21,
+            "y": 16,
             "list": [
                 {
                     "type": "NineSlice",

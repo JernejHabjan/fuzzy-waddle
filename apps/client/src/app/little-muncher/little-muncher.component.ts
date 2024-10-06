@@ -52,7 +52,7 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.userInstanceService.setVisitedGame("little-muncher");
     await this.gameInstanceClientService.startGame();
-    this.spectateService.listenToRoomEvents();
+    await this.spectateService.listenToRoomEvents();
     this.spectatorDisconnectedSubscription = this.spectateService.spectatorDisconnected.subscribe(() => {
       this.toastData = {
         show: true,

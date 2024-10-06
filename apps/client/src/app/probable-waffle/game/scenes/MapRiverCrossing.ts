@@ -96,7 +96,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
     // spawn
-    const spawn = new Spawn(this, 800, 976);
+    const spawn = new Spawn(this, 96, 608);
     this.add.existing(spawn);
 
     // christmasTree
@@ -648,7 +648,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(reeds_4);
 
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, 272, 592);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -192, 704);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale

@@ -1,5 +1,8 @@
 import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from "@angular/core";
 import {
+  GameSessionState,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
   ProbableWaffleLevels,
   ProbableWaffleMapData,
   ProbableWaffleMapEnum,
@@ -8,10 +11,8 @@ import {
   ProbableWaffleRoomHelper
 } from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
-import { ServerHealthService } from "../../../../shared/services/server-health.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { Router } from "@angular/router";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { MapFilterComponent } from "./map-filter/map-filter.component";
 
@@ -27,10 +28,8 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected readonly faFilter = faFilter;
   protected isFilterPopupOpen: boolean = false;
   protected selectedRoom?: ProbableWaffleRoom;
-  protected readonly roomsService = inject(RoomsService);
-  protected readonly serverHealthService = inject(ServerHealthService);
-  protected readonly gameInstanceClientService = inject(GameInstanceClientService);
-  protected readonly router = inject(Router);
+  private readonly roomsService = inject(RoomsService);
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
   @Output() requestNavigateToHostLobby: EventEmitter<void> = new EventEmitter<void>();
 
   async ngOnInit(): Promise<void> {
@@ -93,5 +92,19 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected navigateToCreateLobby() {
     this.requestNavigateToHostLobby.emit();
+  }
+
+  protected get getRoomsToJoin(): ProbableWaffleRoom[] {
+    return this.roomsService
+      .rooms()
+      .filter(
+        (room) =>
+          room.gameInstanceMetadataData.sessionState === GameSessionState.NotStarted &&
+          room.gameInstanceMetadataData.visibility === ProbableWaffleGameInstanceVisibility.Public &&
+          room.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.SelfHosted &&
+          room.players.some(
+            (p) => p.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen
+          )
+      );
   }
 }

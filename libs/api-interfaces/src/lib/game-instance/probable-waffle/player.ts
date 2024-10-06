@@ -140,6 +140,12 @@ export enum FactionType {
   Skaduwee = 2
 }
 
+export function getRandomFactionType(): FactionType {
+  const enumValues = Object.values(FactionType).filter((value) => typeof value === "number");
+  const randomIndex = Math.floor(Math.random() * enumValues.length);
+  return enumValues[randomIndex] as FactionType;
+}
+
 export interface PositionPlayerDefinition {
   // assigned only after entering the game in world space coordinates
   initialWorldSpawnPosition?: Vector3Simple;
