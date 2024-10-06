@@ -258,19 +258,18 @@ export class CameraMovementHandler {
   }
 
   private create() {
-    this.centerCamera();
+    this.centerCameraOnSpawnPoint();
   }
 
-  private centerCamera() {
+  private centerCameraOnSpawnPoint() {
     // try to find current player
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
     const initialWorldSpawnPosition =
       gameScene.player.playerController.data.playerDefinition?.initialWorldSpawnPosition;
     if (initialWorldSpawnPosition) {
-      // todo this.mainCamera.scrollX = initialWorldSpawnPosition.x;
-      // todo this.mainCamera.scrollY = initialWorldSpawnPosition.y;
-      console.error("Todo not working fully because of some weird offset -.-");
+      this.mainCamera.scrollX = initialWorldSpawnPosition.x - this.mainCamera.width / 2;
+      this.mainCamera.scrollY = initialWorldSpawnPosition.y - this.mainCamera.height / 2;
     }
   }
 }

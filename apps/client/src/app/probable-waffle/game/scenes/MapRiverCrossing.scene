@@ -40,8 +40,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 800,
-            "y": 976
+            "x": 96,
+            "y": 608
         },
         {
             "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
@@ -1645,8 +1645,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 272,
-            "y": 592
+            "x": -192,
+            "y": 704
         },
         {
             "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
