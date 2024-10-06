@@ -58,25 +58,25 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       };
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
-    this.openLevel(gameCreate.level);
+    await this.openLevel(gameCreate.level);
   }
 
-  openLevel(littleMuncherLevel: LittleMuncherLevel) {
+  async openLevel(littleMuncherLevel: LittleMuncherLevel): Promise<void> {
     if (!this.gameInstance) return;
     this.gameInstance.initGame({
       hill: littleMuncherLevel.hill
     });
-    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
+    await this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
   }
 
-  openLevelSpectator(gameInstanceData: LittleMuncherGameInstanceData) {
+  async openLevelSpectator(gameInstanceData: LittleMuncherGameInstanceData): Promise<void> {
     // create new game instance from data we received from server
     this.gameInstance = new LittleMuncherGameInstance(gameInstanceData);
-    this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
+    await this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
   }
 
-  private openLevelCommunication(gameInstanceId: string) {
-    this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
+  private async openLevelCommunication(gameInstanceId: string): Promise<void> {
+    await this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
   }
 
   /**

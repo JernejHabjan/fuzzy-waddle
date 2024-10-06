@@ -30,6 +30,7 @@ import {
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -126,6 +127,7 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
   }
 
   /* START-USER-CODE */
+  name = ObjectNames.SkaduweeMagicianFemale;
   private skaduwee_magician_female_idle_down: Phaser.GameObjects.Sprite;
 
   private playTestAttackAnim() {

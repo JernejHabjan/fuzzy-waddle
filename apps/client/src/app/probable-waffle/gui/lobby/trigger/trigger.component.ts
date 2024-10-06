@@ -1,6 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { AuthService } from "../../../../auth/auth.service";
 
 @Component({
   selector: "probable-waffle-trigger",
@@ -11,6 +12,7 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 })
 export class TriggerComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
+  protected readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   protected get mapSelected(): boolean {
@@ -38,5 +40,9 @@ export class TriggerComponent {
 
   protected async leaveClick() {
     await this.router.navigate(["probable-waffle"]);
+  }
+
+  protected get isHost(): boolean {
+    return this.gameInstanceClientService.gameInstance?.isHost(this.authService.userId) ?? false;
   }
 }

@@ -1,5 +1,5 @@
 export interface SceneCommunicatorClientServiceInterface {
-  startListeningToEvents(gameInstanceId: string): void;
+  startListeningToEvents(gameInstanceId: string): Promise<void>;
 
   stopListeningToEvents(): void;
 }

@@ -7,13 +7,14 @@ import ActorInfoContainer from "../prefabs/gui/labels/ActorInfoContainer";
 import GameActions from "../prefabs/gui/buttons/GameActions";
 import Resources from "../prefabs/gui/labels/Resources";
 import AiControllerDebugPanel from "../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
+import GameSpeedModifier from "../prefabs/gui/buttons/GameSpeedModifier";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
 import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "./components/scene-component-helpers";
 import { TilemapComponent } from "./components/tilemap.component";
 import { getActorComponent } from "../data/actor-component";
@@ -26,7 +27,6 @@ import { environment } from "../../../../environments/environment";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-
   constructor() {
     super("HudProbableWaffle");
 
@@ -36,7 +36,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
     this.add.existing(actor_actions_container);
@@ -53,14 +52,36 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     minimap_container.scaleY = 0.9537232846001076;
 
     // minimap_bg
-    const minimap_bg = this.add.nineslice(12, -247, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 32, 3, 3, 3, 3);
+    const minimap_bg = this.add.nineslice(
+      12,
+      -247,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      32,
+      32,
+      3,
+      3,
+      3,
+      3
+    );
     minimap_bg.scaleX = 12.769367198119731;
     minimap_bg.scaleY = 7.444257731898887;
     minimap_bg.setOrigin(0, 0);
     minimap_container.add(minimap_bg);
 
     // minimap_border
-    const minimap_border = this.add.nineslice(0, -255.17628729694155, "gui", "cryos_mini_gui/borders/border_wood.png", 128, 92, 4, 4, 4, 4);
+    const minimap_border = this.add.nineslice(
+      0,
+      -255.17628729694155,
+      "gui",
+      "cryos_mini_gui/borders/border_wood.png",
+      128,
+      92,
+      4,
+      4,
+      4,
+      4
+    );
     minimap_border.scaleX = 3.367102972114097;
     minimap_border.scaleY = 2.7741914555176357;
     minimap_border.setOrigin(0, 0);
@@ -75,8 +96,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.add.existing(resources_container);
 
     // aiControllerDebugPanel
-    const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1075, 82);
+    const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1276, 82);
     this.add.existing(aiControllerDebugPanel);
+
+    // gameSpeedModifier
+    const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
+    this.add.existing(gameSpeedModifier);
 
     // lists
     const hudElements: Array<any> = [];
@@ -87,6 +112,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
+    this.gameSpeedModifier = gameSpeedModifier;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -98,6 +124,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private game_actions_container!: GameActions;
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
+  private gameSpeedModifier!: GameSpeedModifier;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -110,7 +137,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private readonly minimapMargin = 20;
   parentScene?: ProbableWaffleScene;
-  private readonly isometricMinimapDepth = 1000;
   preload() {
     this.load.pack("asset-pack-gui", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle-gui.json");
   }
@@ -168,7 +194,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     ];
     const diamond = this.add.polygon(x + pixelWidth / 2, y + pixelHeight / 2, diamondPoints, color.color);
     diamond.setInteractive(new Phaser.Geom.Polygon(diamondPoints), Phaser.Geom.Polygon.Contains);
-    diamond.depth = this.isometricMinimapDepth;
     return diamond;
   }
 
@@ -336,8 +361,23 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.aiControllerDebugPanel.visible = !environment.production;
 
+    // position game speed modifier above minimap on left side
+    this.gameSpeedModifier.x = 10;
+    const minimapHeight = getGameObjectBounds(this.minimap_container)!.height;
+    this.gameSpeedModifier.y = this.scale.height - minimapHeight + 10;
+    this.gameSpeedModifier.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    // hide if game mode is not single player
+    this.gameSpeedModifier.visible =
+      this.gameType === ProbableWaffleGameInstanceType.InstantGame ||
+      this.gameType === ProbableWaffleGameInstanceType.Replay ||
+      this.gameType === ProbableWaffleGameInstanceType.Skirmish;
+
     // redraw minimap
     this.redrawMinimap();
+  }
+
+  private get gameType() {
+    return this.parentScene?.baseGameData.gameInstance.gameInstanceMetadata.data.type;
   }
 
   private subscribeToGameEvent(eventName: string, displayText: string) {

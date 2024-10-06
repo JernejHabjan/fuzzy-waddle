@@ -41,7 +41,7 @@ export class PawnAiController {
     const aiOrderType = this.blackboard.aiOrderType;
     const aiOrderTypeName = aiOrderType !== undefined ? OrderType[aiOrderType] : null;
     const targetGameObject = this.blackboard.targetGameObject;
-    const targetGameObjectName = targetGameObject ? targetGameObject.constructor.name : null;
+    const targetGameObjectName = targetGameObject ? targetGameObject.name : null;
     const targetLocation = this.blackboard.targetLocation;
     const targetLocationXYZ = targetLocation ? `${targetLocation.x}, ${targetLocation.y}, ${targetLocation.z}` : null;
 

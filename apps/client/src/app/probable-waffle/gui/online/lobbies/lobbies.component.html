@@ -1,7 +1,7 @@
 <div class="lobbies">
   <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate</div>
 
-  @if (roomsService.rooms().length === 0) {
+  @if (getRoomsToJoin.length === 0) {
     <div class="text-center">No open lobbies</div>
     <div class="text-center">
       <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">Create lobby</button>
@@ -26,7 +26,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (room of roomsService.rooms(); track room) {
+            @for (room of getRoomsToJoin; track room) {
               <tr (click)="select(room)" class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}">
                 <td>{{ room.gameInstanceMetadataData.name }}</td>
                 <td>

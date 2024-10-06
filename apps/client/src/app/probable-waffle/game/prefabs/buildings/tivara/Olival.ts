@@ -27,6 +27,7 @@ import {
 } from "../../../entity/actor/components/object-descriptor-component";
 import { getTilesAroundGameObjectsOfShape } from "../../../data/tile-map-helpers";
 import { onSceneInitialized } from "../../../data/game-object-helper";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -108,7 +109,7 @@ export default class Olival extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.Olival;
   private init() {
     this.tintTilemapAroundTransform(this.scene, 0x7eb3cb, 6);
   }

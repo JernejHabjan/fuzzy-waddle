@@ -19,11 +19,11 @@ export const gameInstanceClientServiceStub = {
   startLevel() {
     //
   },
-  openLevelSpectator() {
-    //
+  openLevelSpectator(): Promise<void> {
+    return Promise.resolve();
   },
-  openLevel() {
-    //
+  openLevel(): Promise<void> {
+    return Promise.resolve();
   },
   stopLevel(): Promise<void> {
     return Promise.resolve();

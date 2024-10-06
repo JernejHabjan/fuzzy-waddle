@@ -267,7 +267,7 @@ export class GathererComponent {
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
 
-    console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.constructor.name}`);
+    console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
 
     this.onResourceGathered.next([this.gameObject, resourceSource, gatherData, gatheredAmount]);
 
@@ -289,7 +289,7 @@ export class GathererComponent {
           if (returnedResources > 0) {
             this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
 
-            console.log(`Returned ${returnedResources} ${carriedResourceType} to ${this.gameObject.constructor.name}`);
+            console.log(`Returned ${returnedResources} ${carriedResourceType} to ${this.gameObject.name}`);
 
             this.onResourcesReturned.next([this.gameObject, carriedResourceType, returnedResources]);
           }

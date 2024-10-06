@@ -2,10 +2,9 @@ import { TestBed } from "@angular/core/testing";
 import { RoomsService } from "./rooms.service";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { RoomsServiceInterface } from "./rooms.service.interface";
-import { Observable } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
-import { ProbableWaffleRoom, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
 import { computed, signal } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 
@@ -16,14 +15,12 @@ export const roomsServiceStub = {
   init(): Promise<void> {
     return Promise.resolve();
   },
-  listenToRoomEvents() {
+  listenToRoomEvents(): Promise<void> {
     //
+    return Promise.resolve();
   },
   destroy() {
     //
-  },
-  get roomEvent(): Observable<ProbableWaffleRoomEvent> | undefined {
-    return undefined;
   },
   getRooms(): Promise<ProbableWaffleRoom[]> {
     return Promise.resolve([]);

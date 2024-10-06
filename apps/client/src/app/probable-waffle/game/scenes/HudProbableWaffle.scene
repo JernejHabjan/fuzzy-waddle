@@ -135,8 +135,20 @@
             ],
             "label": "aiControllerDebugPanel",
             "scope": "CLASS",
-            "x": 1075,
+            "x": 1276,
             "y": 82
+        },
+        {
+            "prefabId": "7dacf888-7495-4899-a649-366b6ff3bad5",
+            "id": "9cd1458e-4240-4b34-adae-ab6d1ec08f1b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "gameSpeedModifier",
+            "scope": "CLASS",
+            "x": 13,
+            "y": 486
         }
     ],
     "plainObjects": [],

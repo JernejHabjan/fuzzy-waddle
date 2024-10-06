@@ -70,108 +70,144 @@
                     "id": "31eb95a9-c8a5-4536-a80a-1c3db5793661",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_9",
                     "useGameObjectName": true,
                     "x": -51,
-                    "y": -40
+                    "y": -40,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "92774fff-0573-4757-bf81-26a46dc8375f",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_8",
                     "useGameObjectName": true,
                     "x": -128,
-                    "y": -40
+                    "y": -40,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "89a8452b-287d-4da4-96ca-da142f19d01e",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_7",
                     "useGameObjectName": true,
                     "x": -205,
-                    "y": -40
+                    "y": -40,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "edaf18df-bcc8-40a8-9ae6-8263565f696e",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_6",
                     "useGameObjectName": true,
                     "x": -51,
-                    "y": -98
+                    "y": -98,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "6d1145b5-0550-431e-8a3e-b90e2c464922",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_5",
                     "useGameObjectName": true,
                     "x": -128,
-                    "y": -98
+                    "y": -98,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "ef8e5a9c-b2b3-4d52-8459-f465821ad1ec",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_4",
                     "useGameObjectName": true,
                     "x": -205,
-                    "y": -98
+                    "y": -98,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "73adb2e3-9103-438e-91f0-55175e393613",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_3",
                     "useGameObjectName": true,
                     "x": -51,
-                    "y": -156
+                    "y": -156,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "53db575a-8799-4de4-9835-b6d5d1edcddd",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_2",
                     "useGameObjectName": true,
                     "x": -128,
-                    "y": -156
+                    "y": -156,
+                    "scaleX": 2,
+                    "scaleY": 2
                 },
                 {
                     "prefabId": "c59ed76b-a4f9-4939-a4c8-a08eff5f2fcd",
                     "id": "31eb8e45-3be5-4695-bf57-70d97e227647",
                     "unlock": [
                         "x",
-                        "y"
+                        "y",
+                        "scaleX",
+                        "scaleY"
                     ],
                     "label": "actor_action_1",
                     "useGameObjectName": true,
                     "x": -205,
-                    "y": -156
+                    "y": -156,
+                    "scaleX": 2,
+                    "scaleY": 2
                 }
             ]
         }

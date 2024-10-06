@@ -63,7 +63,7 @@ export function sendActorEvent(
   payloadIn: ProbableWaffleGameStateDataPayload
 ): void {
   const id = getActorComponent(gameObject, IdComponent)?.id;
-  if (!id) throw new Error("actorId is not defined");
+  if (!id) return; // throw new Error("actorId is not defined");
   if (!(gameObject.scene instanceof GameProbableWaffleScene))
     throw new Error("Scene is not of type GameProbableWaffleSceneData");
 

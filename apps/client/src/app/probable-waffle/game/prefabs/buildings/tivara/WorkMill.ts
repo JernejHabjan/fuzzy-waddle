@@ -28,6 +28,7 @@ import {
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ContainerComponent, ContainerDefinition } from "../../../entity/building/container-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -104,7 +105,7 @@ export default class WorkMill extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.WorkMill;
   // Write your code here.
 
   /* END-USER-CODE */

@@ -11,13 +11,13 @@ import { ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
 export class ChatService implements IChatService {
   private authenticatedSocketService = inject(AuthenticatedSocketService);
 
-  sendMessage(msg: ChatMessage): void {
-    const socket = this.authenticatedSocketService.socket;
+  async sendMessage(msg: ChatMessage): Promise<void> {
+    const socket = await this.authenticatedSocketService.getSocket();
     socket?.emit(GatewayChatEvent.CHAT_MESSAGE, msg);
   }
 
-  get listenToMessages(): Observable<ChatMessage> | undefined {
-    const socket = this.authenticatedSocketService.socket;
+  async getMessageListener(): Promise<Observable<ChatMessage> | undefined> {
+    const socket = await this.authenticatedSocketService.getSocket();
     return socket?.fromEvent<ChatMessage>(GatewayChatEvent.CHAT_MESSAGE).pipe(map((data: ChatMessage) => data));
   }
 }

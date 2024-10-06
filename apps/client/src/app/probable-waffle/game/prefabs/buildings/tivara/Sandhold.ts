@@ -35,6 +35,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -136,7 +137,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.Sandhold;
   spawnCrystal(scene: Phaser.Scene) {
     const span = scene.add.sprite(-48, -48, "factions", "buildings/tivara/olival_small/olival_small-0.png");
     span.scaleX = 0.5;

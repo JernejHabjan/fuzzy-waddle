@@ -3,7 +3,7 @@ import {
   DifficultyModifiers,
   FactionType,
   GameSessionState,
-  GameSetupHelpers,
+  getRandomFactionType,
   MapTuning,
   PendingMatchmakingGameInstance,
   PlayerLobbyDefinition,
@@ -40,7 +40,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   /**
    * remove game instances that have been started more than N time ago
    */
-  @Cron(CronExpression.EVERY_2_HOURS)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   handleCron() {
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter((gi) => {
       const minutesAgo = 1000 * 60 * 15; // 15 minutes
@@ -168,9 +168,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   }
 
   private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
-    const enumValues = Object.values(FactionType).filter((value) => typeof value === "number");
-    const randomIndex = Math.floor(Math.random() * enumValues.length);
-    const randomFactionType = enumValues[randomIndex] as FactionType;
+    const randomFactionType = getRandomFactionType();
 
     console.log(
       "Probable Waffle - New player",

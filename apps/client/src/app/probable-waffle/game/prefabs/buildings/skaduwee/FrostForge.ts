@@ -31,6 +31,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -162,7 +163,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
   private cloud_1: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
-
+  name = ObjectNames.FrostForge;
   private tweens: Phaser.Tweens.Tween[] = [];
   private setupCloudsTween(cloud: Phaser.GameObjects.Image) {
     cloud.alpha = 0;

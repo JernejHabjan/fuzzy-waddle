@@ -2,7 +2,7 @@
   <button (click)="leaveClick()" class="btn btn-outline-primary btn-lg ms-auto me-auto" type="button">Leave</button>
   <button
     (click)="start()"
-    [disabled]="!mapSelected || !atLeastTwoPlayersAndDifferentTeamsSelected"
+    [disabled]="!mapSelected || !atLeastTwoPlayersAndDifferentTeamsSelected || !isHost"
     class="btn btn-primary btn-lg ms-auto me-auto"
     type="button"
   >

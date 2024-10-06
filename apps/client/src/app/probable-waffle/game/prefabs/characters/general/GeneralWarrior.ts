@@ -28,6 +28,7 @@ import {
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
@@ -107,7 +108,7 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.GeneralWarrior;
   // Write your code here.
 
   /* END-USER-CODE */

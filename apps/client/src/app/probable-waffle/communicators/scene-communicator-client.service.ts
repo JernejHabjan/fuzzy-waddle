@@ -25,8 +25,9 @@ export type ProbableWaffleCommunicators = {
 export class SceneCommunicatorClientService implements SceneCommunicatorClientServiceInterface {
   private readonly communicator = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  createCommunicators(gameInstanceId: string): ProbableWaffleCommunicators {
-    this.communicator.startCommunication(gameInstanceId, this.authenticatedSocketService.socket);
+  async createCommunicators(gameInstanceId: string): Promise<ProbableWaffleCommunicators> {
+    const socket = await this.authenticatedSocketService.getSocket();
+    this.communicator.startCommunication(gameInstanceId, socket);
     return this.communicatorObservables;
   }
 
@@ -48,8 +49,9 @@ export class SceneCommunicatorClientService implements SceneCommunicatorClientSe
     };
   }
 
-  destroyCommunicators(gameInstanceId: string, subscriptions: Subscription[]) {
-    this.communicator.stopCommunication(gameInstanceId, this.authenticatedSocketService.socket);
+  async destroyCommunicators(gameInstanceId: string, subscriptions: Subscription[]): Promise<void> {
+    const socket = await this.authenticatedSocketService.getSocket();
+    this.communicator.stopCommunication(gameInstanceId, socket);
     subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

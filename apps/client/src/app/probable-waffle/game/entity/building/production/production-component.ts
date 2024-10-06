@@ -5,10 +5,11 @@ import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionCostDefinition } from "./production-cost-component";
 import { getPlayer } from "../../../data/scene-data";
-import { SceneActorCreatorCommunicator } from "../../../scenes/components/scene-actor-creator-communicator";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
 
 export type ProductionQueueItem = {
   gameObjectClass: string;
@@ -156,7 +157,9 @@ export class ProductionComponent {
       ...(originalOwner && { owner: originalOwner })
     } as ActorDefinition;
 
-    this.gameObject.scene.events.emit(SceneActorCreatorCommunicator, actorDefinition);
+    const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
+    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
+    sceneActorCreator.createActorFromDefinition(actorDefinition);
   }
 
   /**

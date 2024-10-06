@@ -30,6 +30,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -130,7 +131,7 @@ export default class Temple extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.Temple;
   private addGlow = (scene: Phaser.Scene, image: Phaser.GameObjects.Image) => {
     // https://labs.phaser.io/view.html?src=src\fx\glow\glow%20fx.js
     if (!image.preFX) return;

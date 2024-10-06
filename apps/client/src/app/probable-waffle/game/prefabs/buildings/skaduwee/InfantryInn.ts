@@ -28,6 +28,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -129,6 +130,7 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
+  name = ObjectNames.InfantryInn;
   private readonly cloud1: Phaser.GameObjects.Image;
   private readonly cloud2: Phaser.GameObjects.Image;
   private readonly tweens: Phaser.Tweens.Tween[] = [];

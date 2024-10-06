@@ -8,12 +8,12 @@ import { AuthenticatedSocketService } from "../../../data-access/chat/authentica
   providedIn: "root"
 })
 export class SceneCommunicatorClientService implements SceneCommunicatorClientServiceInterface {
-  private readonly httpClient = inject(HttpClient);
   private readonly communicator = inject(LittleMuncherCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
 
-  startListeningToEvents(gameInstanceId: string) {
-    this.communicator.startCommunication(gameInstanceId, this.authenticatedSocketService.socket);
+  async startListeningToEvents(gameInstanceId: string): Promise<void> {
+    const socket = await this.authenticatedSocketService.getSocket();
+    this.communicator.startCommunication(gameInstanceId, socket);
   }
 
   stopListeningToEvents() {

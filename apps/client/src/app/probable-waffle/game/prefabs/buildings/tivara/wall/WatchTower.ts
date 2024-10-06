@@ -23,6 +23,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class WatchTower extends Phaser.GameObjects.Image {
@@ -88,7 +89,7 @@ export default class WatchTower extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.WatchTower;
   // Write your code here.
 
   /* END-USER-CODE */

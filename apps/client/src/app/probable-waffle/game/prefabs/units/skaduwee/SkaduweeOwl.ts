@@ -36,6 +36,7 @@ import {
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -109,12 +110,14 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       [new MovementSystem(this)]
     );
     onPostSceneInitialized(scene, this.postSceneCreate, this);
+    this.once(HealthComponent.KilledEvent, this.destroy, this);
     /* END-USER-CTR-CODE */
   }
 
   private owl: Phaser.GameObjects.Sprite;
 
   /* START-USER-CODE */
+  name = ObjectNames.SkaduweeOwl;
   private readonly actionDelay = 5000;
   private readonly movementSpeed = 2000;
   private readonly radius = 5;
@@ -180,6 +183,11 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   }
 
   private randomlySpitFurBall() {
+    if (!this.active) {
+      this.furballEvent?.remove(false);
+      return;
+    }
+
     const centerX = this.x;
     const centerY = this.y - this.owl.height * 2;
     const furball = new SkaduweeOwlFurball(this.scene, centerX, centerY);

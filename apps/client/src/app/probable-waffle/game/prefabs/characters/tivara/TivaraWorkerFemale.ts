@@ -35,6 +35,7 @@ import {
 } from "../../../entity/actor/components/object-descriptor-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
@@ -133,7 +134,7 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.TivaraWorkerFemale;
   // Write your code here.
 
   /* END-USER-CODE */

@@ -5,8 +5,8 @@ import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-cl
 import { provideHttpClient } from "@angular/common/http";
 
 export const SceneCommunicatorClientServiceStub = {
-  startListeningToEvents() {
-    //
+  startListeningToEvents(): Promise<void> {
+    return Promise.resolve();
   },
   stopListeningToEvents() {
     //
