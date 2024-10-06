@@ -2,6 +2,8 @@ import { TestBed } from "@angular/core/testing";
 import { AuthenticatedSocketService } from "./authenticated-socket.service";
 import { IAuthenticatedSocketService } from "./authenticated-socket.service.interface";
 import { Socket } from "ngx-socket-io";
+import { ServerHealthService } from "../../shared/services/server-health.service";
+import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
 
 export const createAuthenticatedSocketServiceStub = {
   async getSocket(): Promise<Socket | undefined> {
@@ -14,7 +16,7 @@ describe("AuthenticatedSocketService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AuthenticatedSocketService]
+      providers: [AuthenticatedSocketService, { provide: ServerHealthService, useValue: serverHealthServiceStub }]
     });
     service = TestBed.inject(AuthenticatedSocketService);
   });

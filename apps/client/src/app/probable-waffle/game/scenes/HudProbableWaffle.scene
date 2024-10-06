@@ -135,7 +135,7 @@
             ],
             "label": "aiControllerDebugPanel",
             "scope": "CLASS",
-            "x": 1075,
+            "x": 1276,
             "y": 82
         },
         {
@@ -147,8 +147,8 @@
             ],
             "label": "gameSpeedModifier",
             "scope": "CLASS",
-            "x": 0,
-            "y": 446
+            "x": 13,
+            "y": 486
         }
     ],
     "plainObjects": [],

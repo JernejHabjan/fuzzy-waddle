@@ -96,11 +96,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.add.existing(resources_container);
 
     // aiControllerDebugPanel
-    const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1075, 82);
+    const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1276, 82);
     this.add.existing(aiControllerDebugPanel);
 
     // gameSpeedModifier
-    const gameSpeedModifier = new GameSpeedModifier(this, 0, 446);
+    const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
     this.add.existing(gameSpeedModifier);
 
     // lists
