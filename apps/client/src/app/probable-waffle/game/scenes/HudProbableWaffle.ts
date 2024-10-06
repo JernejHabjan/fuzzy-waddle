@@ -26,7 +26,6 @@ import { environment } from "../../../../environments/environment";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-
   constructor() {
     super("HudProbableWaffle");
 
@@ -36,7 +35,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
     this.add.existing(actor_actions_container);
@@ -53,14 +51,36 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     minimap_container.scaleY = 0.9537232846001076;
 
     // minimap_bg
-    const minimap_bg = this.add.nineslice(12, -247, "gui", "cryos_mini_gui/surfaces/surface_parchment.png", 32, 32, 3, 3, 3, 3);
+    const minimap_bg = this.add.nineslice(
+      12,
+      -247,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      32,
+      32,
+      3,
+      3,
+      3,
+      3
+    );
     minimap_bg.scaleX = 12.769367198119731;
     minimap_bg.scaleY = 7.444257731898887;
     minimap_bg.setOrigin(0, 0);
     minimap_container.add(minimap_bg);
 
     // minimap_border
-    const minimap_border = this.add.nineslice(0, -255.17628729694155, "gui", "cryos_mini_gui/borders/border_wood.png", 128, 92, 4, 4, 4, 4);
+    const minimap_border = this.add.nineslice(
+      0,
+      -255.17628729694155,
+      "gui",
+      "cryos_mini_gui/borders/border_wood.png",
+      128,
+      92,
+      4,
+      4,
+      4,
+      4
+    );
     minimap_border.scaleX = 3.367102972114097;
     minimap_border.scaleY = 2.7741914555176357;
     minimap_border.setOrigin(0, 0);
@@ -110,7 +130,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private readonly minimapMargin = 20;
   parentScene?: ProbableWaffleScene;
-  private readonly isometricMinimapDepth = 1000;
   preload() {
     this.load.pack("asset-pack-gui", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle-gui.json");
   }
@@ -168,7 +187,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     ];
     const diamond = this.add.polygon(x + pixelWidth / 2, y + pixelHeight / 2, diamondPoints, color.color);
     diamond.setInteractive(new Phaser.Geom.Polygon(diamondPoints), Phaser.Geom.Polygon.Contains);
-    diamond.depth = this.isometricMinimapDepth;
     return diamond;
   }
 

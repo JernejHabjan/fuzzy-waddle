@@ -3,7 +3,6 @@ import GameProbableWaffleScene from "../../../../scenes/GameProbableWaffleScene"
 
 export class CameraMovementHandler {
   private readonly enabledMouseCornerMovement = false;
-  private readonly lockToScreen = false; // todo could be enabled later - need to move cursor manually in phaser
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private cursorOverGameInstance = false;
@@ -11,7 +10,6 @@ export class CameraMovementHandler {
   private readonly cameraEdgeMargin = 30;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
-  private readonly recommendedZoom = 1;
   private readonly cameraZoomFactor = 0.1;
 
   constructor(
@@ -30,7 +28,6 @@ export class CameraMovementHandler {
     this.createPointerControls();
     this.zoomListener();
     this.screenEdgeListener();
-    this.lockCursorToScreen();
     this.scene.events.on(Phaser.Scenes.Events.CREATE, this.create, this);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -228,33 +225,6 @@ export class CameraMovementHandler {
     this.input.on(Input.Events.GAME_OVER, () => {
       this.cursorOverGameInstance = true;
     });
-  }
-
-  /**
-   * https://phaser.io/examples/v3/view/input/mouse/pointer-lock
-   * https://web.dev/articles/pointerlock-intro
-   */
-  private lockCursorToScreen() {
-    if (!this.lockToScreen) return;
-    if (this.input.keyboard && this.input.mouse) {
-      this.input.on("pointerdown", () => {
-        if (this.input.mouse && !this.input.mouse.locked) {
-          this.input.mouse?.requestPointerLock();
-        }
-      });
-      this.input.manager.events.on("pointerlockchange", (event: any) => {
-        const pointerIsLocked = this.input.mouse?.locked;
-        console.log("pointerIsLocked", pointerIsLocked);
-      });
-
-      // on esc, release pointer lock
-      this.input.keyboard.on("keydown_ESC", () => {
-        // todo maybe change this event
-        if (this.input.mouse?.locked) {
-          this.input.mouse.releasePointerLock();
-        }
-      });
-    }
   }
 
   private create() {
