@@ -169,6 +169,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
 
   private moveAfterDelay() {
     this.removeDelay();
+    if (!this.active) return;
     this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.moveOwl, [], this);
   }
 

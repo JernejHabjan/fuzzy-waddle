@@ -120,6 +120,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
   private moveHedgehogAfterDelay() {
     this.removeDelay();
+    if (!this.active) return;
     this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.moveHedgehog, [], this);
   }
 
