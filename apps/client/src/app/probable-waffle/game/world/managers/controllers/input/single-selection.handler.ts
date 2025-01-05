@@ -36,19 +36,22 @@ export class SingleSelectionHandler {
         const isShiftDown = pointer.event.shiftKey; // shift removes from selection
         const isCtrlDown = pointer.event.ctrlKey; // ctrl adds to selection
 
-        // offset pointer by camera position
-        const pointerX = pointer.x + this.scene.cameras.main.scrollX;
-        const pointerY = pointer.y + this.scene.cameras.main.scrollY + this.tilemap.tileHeight;
+        // convert pointerXY to worldXY including camera zoom
+        const worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
 
         const clickedTileXY = new Phaser.Math.Vector2();
         Phaser.Tilemaps.Components.IsometricWorldToTileXY(
-          pointerX,
-          pointerY,
-          true,
+          worldPosition.x,
+          worldPosition.y,
+          false,
           clickedTileXY,
           this.scene.cameras.main,
           this.tilemap.layer
         );
+
+        // for some reason we need to ceil the clicked tile
+        clickedTileXY.x = Math.ceil(clickedTileXY.x);
+        clickedTileXY.y = Math.ceil(clickedTileXY.y);
 
         if (isLeftClick && gameObjectsUnderCursor.length > 0) {
           // An interactive object was clicked

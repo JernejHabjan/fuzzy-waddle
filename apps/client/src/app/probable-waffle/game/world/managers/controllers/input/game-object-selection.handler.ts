@@ -101,12 +101,16 @@ export class GameObjectSelectionHandler {
   }) {
     const selectableChildren = this.getSelectableChildren();
 
-    // Apply camera offset and scale // TODO SCALE NOT HANDLED CORRECTLY
+    const worldXyStart = this.scene.cameras.main.getWorldPoint(selectedArea.x, selectedArea.y);
+    const worldXyEnd = this.scene.cameras.main.getWorldPoint(
+      selectedArea.x + selectedArea.width,
+      selectedArea.y + selectedArea.height
+    );
     const selectedAreaBounds = new Phaser.Geom.Rectangle(
-      selectedArea.x * this.scene.cameras.main.zoom + this.scene.cameras.main.scrollX,
-      selectedArea.y * this.scene.cameras.main.zoom + this.scene.cameras.main.scrollY,
-      selectedArea.width * this.scene.cameras.main.zoom,
-      selectedArea.height * this.scene.cameras.main.zoom
+      worldXyStart.x,
+      worldXyStart.y,
+      worldXyEnd.x - worldXyStart.x,
+      worldXyEnd.y - worldXyStart.y
     );
 
     return selectableChildren.filter((selectableChild) => {
