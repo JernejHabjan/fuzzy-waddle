@@ -103,7 +103,7 @@ export class CameraMovementHandler {
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
-    if (!pointer.isDown || !this.cursorOverGameInstance) return;
+    if (!pointer.isDown) return;
 
     // Calculate movement based on the difference between current and previous pointer positions
     const deltaX = pointer.x - pointer.prevPosition.x;
