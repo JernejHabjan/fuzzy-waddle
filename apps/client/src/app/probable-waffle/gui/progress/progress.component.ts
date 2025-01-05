@@ -4,13 +4,15 @@ import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 
 import { RouterLink } from "@angular/router";
+import { AngularHost } from "../../../shared/consts";
 
 @Component({
   templateUrl: "./progress.component.html",
   styleUrls: ["./progress.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [RouterLink]
+  imports: [RouterLink],
+  host: AngularHost.contentFlexFullHeight
 })
 export class ProgressComponent {
   protected readonly gameInstanceService = inject(DEPRECATED_gameInstanceService);

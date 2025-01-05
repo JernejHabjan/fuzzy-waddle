@@ -8,7 +8,6 @@ import { Component } from "@angular/core";
   styles: [
     `
       .loader {
-        margin: 50px auto 0;
         border: 16px solid #ffe6c2;
         border-top: 16px solid #9f3000;
         border-radius: 50%;

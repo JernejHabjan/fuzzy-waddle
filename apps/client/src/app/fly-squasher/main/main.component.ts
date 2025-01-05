@@ -11,12 +11,14 @@ import { ModalConfig } from "../../shared/components/modal/modal-config";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
 
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
+import { AngularHost } from "../../shared/consts";
 
 @Component({
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
   standalone: true,
-  imports: [ModalComponent, GameContainerComponent]
+  imports: [ModalComponent, GameContainerComponent],
+  host: AngularHost.contentFlexFullHeight
 })
 export class MainComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);

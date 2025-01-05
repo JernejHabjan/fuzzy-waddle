@@ -1,8 +1,9 @@
 <fuzzy-waddle-home-nav />
 
 @if (!authService.isAuthenticated) {
-  <div class="server-health">
+  <div class="server-health d-flex align-items-center justify-content-center h-100 flex-column">
     <p>Not authenticated. Please Login to continue</p>
+    <button routerLink="" class="btn btn-primary m-1" type="button">Home</button>
   </div>
 } @else {
   @if (serverHealthService.serverChecking) {

@@ -11,13 +11,15 @@ import { CommonModule } from "@angular/common";
 import { SpectateComponent } from "./spectate/spectate.component";
 import { LoaderComponent } from "../../shared/loader/loader.component";
 import { RouterLink } from "@angular/router";
+import { AngularHost } from "../../shared/consts";
 
 @Component({
   selector: "little-muncher-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
   standalone: true,
-  imports: [CommonModule, SpectateComponent, LoaderComponent, RouterLink]
+  imports: [CommonModule, SpectateComponent, LoaderComponent, RouterLink],
+  host: AngularHost.contentFlexFullHeightCenter
 })
 export class HomeComponent {
   protected readonly LittleMuncherHills = LittleMuncherHills;

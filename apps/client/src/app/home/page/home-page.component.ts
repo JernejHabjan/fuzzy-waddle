@@ -9,6 +9,7 @@ import { ServerHealthService } from "../../shared/services/server-health.service
 import { ChatFloatComponent } from "../chat/chat-float/chat-float.component";
 import { RouterLink } from "@angular/router";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
+import { AngularHost } from "../../shared/consts";
 
 export type DisplayGame = {
   name: string;
@@ -23,7 +24,8 @@ export type DisplayGame = {
   templateUrl: "./home-page.component.html",
   styleUrls: ["./home-page.component.scss"],
   standalone: true,
-  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent]
+  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent],
+  host: AngularHost.contentFlexFullHeight
 })
 export class HomePageComponent {
   protected readonly environment = environment;
