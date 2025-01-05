@@ -124,29 +124,29 @@ export default class Temple extends Phaser.GameObjects.Container {
     );
 
     this.bounce(buildings_tivara_temple_temple_olival);
-    setTimeout(() => {
-      this.addGlow(scene, buildings_tivara_temple_temple_olival);
-    }, 1000);
+    // todosetTimeout(() => {
+    // todo  this.addGlow(scene, buildings_tivara_temple_temple_olival);
+    // todo}, 1000);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   name = ObjectNames.Temple;
-  private addGlow = (scene: Phaser.Scene, image: Phaser.GameObjects.Image) => {
-    // https://labs.phaser.io/view.html?src=src\fx\glow\glow%20fx.js
-    if (!image.preFX) return;
-    image.preFX.setPadding(32);
-    const fx = image.preFX.addGlow();
+  // tod private addGlow = (scene: Phaser.Scene, image: Phaser.GameObjects.Image) => {
+  // tod   // https://labs.phaser.io/view.html?src=src\fx\glow\glow%20fx.js
+  // tod   if (!image.preFX) return;
+  // tod   image.preFX.setPadding(32);
+  // tod   const fx = image.preFX.addGlow();
 
-    //  For PreFX Glow the quality and distance are set in the Game Configuration
-    scene.tweens.add({
-      targets: fx,
-      outerStrength: 1,
-      yoyo: true,
-      loop: -1,
-      ease: "sine.inout"
-    });
-  };
+  // tod   //  For PreFX Glow the quality and distance are set in the Game Configuration
+  // tod   scene.tweens.add({
+  // tod     targets: fx,
+  // tod     outerStrength: 1,
+  // tod     yoyo: true,
+  // tod     loop: -1,
+  // tod     ease: "sine.inout"
+  // tod   });
+  // tod };
   private bounce = (image: Phaser.GameObjects.Image) => {
     // bounce the sprite up and down forever with a 2 seconds duration
     this.scene.tweens.add({

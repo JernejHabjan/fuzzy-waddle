@@ -10,8 +10,8 @@ const toKey = (x: number, y: number) => `${x}x${y}`;
 const findPath = (
   start: Phaser.Math.Vector2,
   target: Phaser.Math.Vector2,
-  groundLayer: Phaser.Tilemaps.TilemapLayer,
-  wallsLayer: Phaser.Tilemaps.TilemapLayer
+  groundLayer: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer,
+  wallsLayer: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer
 ) => {
   // no path if select invalid tile
   if (!groundLayer.getTileAt(target.x, target.y)) {
