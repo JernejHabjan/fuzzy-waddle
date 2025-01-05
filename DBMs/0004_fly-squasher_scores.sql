@@ -38,13 +38,14 @@ CREATE INDEX idx_fly_squasher_scores_score ON fly_squasher_scores (score);
 
 -- create a view that joins the fly_squasher_scores table with the auth.users table to get the user's meta data (used full name)
 -- and only returns the top 3 unique users' scores for each level (maximum score for each user)
-CREATE OR REPLACE VIEW fly_squasher_scores_with_user_meta AS
+drop view if exists fly_squasher_scores_with_user_meta;
+CREATE VIEW fly_squasher_scores_with_user_meta AS
 WITH scores AS (SELECT fss.id,
                        fss.score,
                        fss.level,
                        fss.user_id,
                        fss.date,
-                       au.raw_user_meta_data,
+                       pr.name,
                        ROW_NUMBER() OVER (PARTITION BY level ORDER BY score DESC) AS level_rn
                 FROM (SELECT id,
                              score,
@@ -53,7 +54,7 @@ WITH scores AS (SELECT fss.id,
                              date,
                              DENSE_RANK() OVER (PARTITION BY level, user_id ORDER BY score DESC) AS rn
                       FROM fly_squasher_scores) fss
-                       JOIN auth.users au ON fss.user_id = au.id
+                       JOIN public.profiles pr ON fss.user_id = pr.id
                 WHERE fss.rn = 1)
 SELECT *
 FROM scores

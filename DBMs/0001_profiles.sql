@@ -50,3 +50,24 @@ create trigger on_auth_user_created
   on auth.users
   for each row
 execute procedure public.handle_new_user();
+
+-- Insert data into public.profiles from auth.users
+INSERT INTO public.profiles (id, email, name, profile_image_url)
+SELECT id,
+       email,
+       CASE
+         -- If provider is google, use the name from raw_user_meta_data
+         WHEN raw_app_meta_data ->> 'provider' = 'google' THEN raw_user_meta_data ->> 'name'
+         -- Otherwise, generate a random name
+         ELSE substring(
+           string_agg(chr(65 + floor(random() * 26)::int), ''), -- Random letters (A-Z)
+           1, 10 -- 10-character random name
+              )
+         END,
+       CASE
+         -- If provider is google, use the avatar_url from raw_user_meta_data
+         WHEN raw_app_meta_data ->> 'provider' = 'google' THEN raw_user_meta_data ->> 'avatar_url'
+         ELSE '' -- No profile image URL for non-Google users
+         END
+FROM auth.users
+group by id;
