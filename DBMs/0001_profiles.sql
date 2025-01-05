@@ -1,65 +1,52 @@
-
--- Drop the trigger first
-DROP TRIGGER IF EXISTS after_user_registration ON auth.users;
-
--- Drop the function associated with the trigger
-DROP FUNCTION IF EXISTS public.create_profile;
-
--- Drop the profiles table
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user();
 DROP TABLE IF EXISTS public.profiles;
 
-CREATE TABLE public.profiles
+create table public.profiles
 (
-  id                bigint primary key generated always as identity,
-  user_id           uuid references auth.users (id) on delete cascade,
+  id                uuid not null references auth.users on delete cascade,
   name              text,
   profile_image_url text,
   email             text,
-  created_at        timestamp with time zone default now(),
-  updated_at        timestamp with time zone default now()
-) WITH (OIDS= FALSE);
+  primary key (id)
+);
 
--- Enable Row Level Security
-ALTER TABLE public.profiles
-  ENABLE ROW LEVEL SECURITY;
-
--- Create a policy to allow any user to read all profiles
-DROP POLICY IF EXISTS "Allow any user to read all profiles" on public.profiles;
-CREATE POLICY "Allow any user to read all profiles"
-  ON public.profiles
-  FOR SELECT
-  USING (true);
-
--- Create a policy to allow authenticated users to update their own profile
-DROP POLICY IF EXISTS "Allow authenticated users to update their own profile" on public.profiles;
-CREATE POLICY "Allow authenticated users to update their own profile"
-  ON public.profiles
-  FOR UPDATE
-  USING (auth.uid() = user_id);
-
--- Create a policy to allow authenticated users to delete their own profile
-DROP POLICY IF EXISTS "Allow authenticated users to delete their own profile" on public.profiles;
-CREATE POLICY "Allow authenticated users to delete their own profile"
-  ON public.profiles
-  FOR DELETE
-  USING (auth.uid() = user_id);
-
--- Create an index on user_id for performance
-CREATE INDEX idx_profiles_user_id ON public.profiles (user_id);
-
-CREATE OR REPLACE FUNCTION public.create_profile()
-  RETURNS trigger AS
+alter table public.profiles
+  enable row level security;
+-- inserts a row into public.profiles
+CREATE FUNCTION public.handle_new_user()
+  RETURNS trigger
+  LANGUAGE plpgsql
+  SECURITY DEFINER
+  SET search_path = ''
+AS
 $$
 BEGIN
-  INSERT INTO public.profiles (user_id, email)
-  VALUES (NEW.id, NEW.email);
+
+  -- if provider is google
+  IF NEW.raw_app_meta_data ->> 'provider' = 'google' THEN
+    INSERT INTO public.profiles (id, email, name, profile_image_url)
+    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url');
+  ELSE
+    -- else insert random name
+    INSERT INTO public.profiles (id, email, name, profile_image_url)
+    VALUES (NEW.id,
+            NEW.email,
+            substring(
+              string_agg(chr(65 + floor(random() * 26)::int), ''), -- Random letters (A-Z)
+              1, 10 -- 10-character random name
+            ),
+            '');
+  END IF;
+
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 
-CREATE TRIGGER after_user_registration
-  AFTER INSERT
-  ON auth.users
-  FOR EACH ROW
-EXECUTE FUNCTION public.create_profile();
+-- trigger the function every time a user is created
+create trigger on_auth_user_created
+  after insert
+  on auth.users
+  for each row
+execute procedure public.handle_new_user();
