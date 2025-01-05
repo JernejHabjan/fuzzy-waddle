@@ -3,18 +3,6 @@ import { SupabaseProviderService } from "../../core/supabase-provider/supabase-p
 import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { User } from "../../users/users.service";
 
-interface UserMetadata {
-  iss: string;
-  sub: string;
-  name: string;
-  email: string;
-  picture: string;
-  full_name: string;
-  avatar_url: string;
-  provider_id: string;
-  email_verified: boolean;
-}
-
 interface ScoreRecord {
   id: number;
   score: number;
