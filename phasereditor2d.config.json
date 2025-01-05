@@ -1,7 +1,11 @@
 {
     "plugins": [],
     "skip": [
-        "dist", "design"
+        "dist",
+        "design"
     ],
-    "playUrl": "http://localhost:4200"
+    "playUrl": "http://localhost:4200",
+    "settings": {
+        "phasereditor2d.scene.enablePixelArt": true
+    }
 }

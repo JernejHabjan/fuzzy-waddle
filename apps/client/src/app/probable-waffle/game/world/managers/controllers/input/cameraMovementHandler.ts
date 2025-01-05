@@ -91,10 +91,9 @@ export class CameraMovementHandler {
    * Creates pointer controls for camera movement (dragging) on mobile
    */
   private createPointerControls() {
-    const touchEnabled = !this.input.keyboard;
-    if (!touchEnabled) return;
+    const isMobile = this.scene.game.device.os.android || this.scene.game.device.os.iOS;
+    if (!isMobile) return;
     this.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
-    this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
   }
 
@@ -104,13 +103,19 @@ export class CameraMovementHandler {
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
-    if (!pointer.leftButtonDown()) return;
-    this.mainCamera.scrollX -= pointer.velocity.x * this.cameraZoomFactor;
-    this.mainCamera.scrollY -= pointer.velocity.y * this.cameraZoomFactor;
+    if (!pointer.isDown || !this.cursorOverGameInstance) return;
+
+    // Calculate movement based on the difference between current and previous pointer positions
+    const deltaX = pointer.x - pointer.prevPosition.x;
+    const deltaY = pointer.y - pointer.prevPosition.y;
+
+    // Adjust the scroll amount based on the camera's zoom level
+    this.mainCamera.scrollX -= deltaX / this.mainCamera.zoom;
+    this.mainCamera.scrollY -= deltaY / this.mainCamera.zoom;
   }
 
   private handlePointerUp(pointer: Input.Pointer) {
-    if (!pointer.rightButtonReleased()) return;
+    if (pointer.primaryDown) return;
     this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
   }
 
@@ -221,6 +226,7 @@ export class CameraMovementHandler {
   private screenEdgeListener() {
     this.input.on(Input.Events.GAME_OUT, () => {
       this.cursorOverGameInstance = false;
+      this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
     });
     this.input.on(Input.Events.GAME_OVER, () => {
       this.cursorOverGameInstance = true;
