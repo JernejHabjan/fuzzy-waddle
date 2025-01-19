@@ -68,7 +68,7 @@ export class FlySquasherScene extends BaseScene<
     this.load.audio("flying", "assets/fly-squasher/sound/sfx/fly.mp3");
     this.load.audio("squish", "assets/fly-squasher/sound/sfx/squish.mp3");
     this.load.audio("restaurant", "assets/fly-squasher/sound/background/restaurant.mp3");
-    this.load.audio("hit", "assets/probable-waffle/sfx/character/death/death1.mp3");
+    this.load.audioSprite("character", "assets/sfx/character.json");
     this.load.audio("tap", "assets/fly-squasher/sound/sfx/tap.mp3");
     this.load.animation("blood-splatter", "assets/fly-squasher/spritesheets/anims/blood-splatter.json");
   }
@@ -243,7 +243,7 @@ export class FlySquasherScene extends BaseScene<
 
   private reducePlayerHealth() {
     this._livesNumber -= 1;
-    this.sound.play("hit", { volume: this.flySquasherAudio.sfxVolumeNormalized });
+    this.sound.playAudioSprite("character", "death1", { volume: this.flySquasherAudio.sfxVolumeNormalized });
     this._livesText.setText("Lives: " + this._livesNumber);
   }
 

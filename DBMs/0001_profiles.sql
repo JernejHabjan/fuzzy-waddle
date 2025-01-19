@@ -45,7 +45,7 @@ AS
 $$
 BEGIN
 
-  -- if provider is google
+  -- if provider is Google
   IF NEW.raw_app_meta_data ->> 'provider' = 'google' THEN
     INSERT INTO public.profiles (id, email, name, profile_image_url)
     VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url');
@@ -78,7 +78,7 @@ INSERT INTO public.profiles (id, email, name, profile_image_url)
 SELECT id,
        email,
        CASE
-         -- If provider is google, use the name from raw_user_meta_data
+         -- If provider is Google, use the name from raw_user_meta_data
          WHEN raw_app_meta_data ->> 'provider' = 'google' THEN raw_user_meta_data ->> 'name'
          -- Otherwise, generate a random name
          ELSE substring(
@@ -87,7 +87,7 @@ SELECT id,
               )
          END,
        CASE
-         -- If provider is google, use the avatar_url from raw_user_meta_data
+         -- If provider is Google, use the avatar_url from raw_user_meta_data
          WHEN raw_app_meta_data ->> 'provider' = 'google' THEN raw_user_meta_data ->> 'avatar_url'
          ELSE '' -- No profile image URL for non-Google users
          END
