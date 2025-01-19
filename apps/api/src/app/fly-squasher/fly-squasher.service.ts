@@ -3,25 +3,13 @@ import { SupabaseProviderService } from "../../core/supabase-provider/supabase-p
 import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { User } from "../../users/users.service";
 
-interface UserMetadata {
-  iss: string;
-  sub: string;
-  name: string;
-  email: string;
-  picture: string;
-  full_name: string;
-  avatar_url: string;
-  provider_id: string;
-  email_verified: boolean;
-}
-
 interface ScoreRecord {
   id: number;
   score: number;
   level: number;
   user_id: string;
   date: string;
-  raw_user_meta_data: UserMetadata;
+  name: string;
 }
 
 @Injectable()
@@ -48,9 +36,6 @@ export class FlySquasherService {
     }
 
     const recordData = data as ScoreRecord[];
-    return recordData.map(
-      (item) =>
-        new ScoreDto(item.score, item.level, item.raw_user_meta_data.full_name, item.user_id, new Date(item.date))
-    );
+    return recordData.map((item) => new ScoreDto(item.score, item.level, item.name, item.user_id, new Date(item.date)));
   }
 }
