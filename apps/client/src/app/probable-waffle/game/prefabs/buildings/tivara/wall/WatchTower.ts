@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorDataFromName } from "../../../../data/actor-data";
 import { ObjectNames } from "../../../../data/object-names";

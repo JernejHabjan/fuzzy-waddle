@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import ActorDefinitionIcon from "./ActorDefinitionIcon";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */

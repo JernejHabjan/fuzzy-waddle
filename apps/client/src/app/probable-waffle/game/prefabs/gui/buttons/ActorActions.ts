@@ -2,8 +2,9 @@
 
 /* START OF COMPILED CODE */
 
-import ActorAction, { ActorActionSetup } from "./ActorAction";
+import ActorAction from "./ActorAction";
 /* START-USER-IMPORTS */
+import { ActorActionSetup } from "./ActorAction";
 import { getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";

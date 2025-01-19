@@ -1,14 +1,11 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionIcon extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? -0.2614598925078324, y ?? -0.08298458904027939);
 
@@ -16,11 +13,16 @@ export default class ActorDefinitionIcon extends Phaser.GameObjects.Container {
     const text_1 = scene.add.text(21.261459892507833, 11.082984589831902, "", {});
     text_1.setOrigin(0, 0.5);
     text_1.text = "New text";
-    text_1.setStyle({ "fontSize": "12px" });
+    text_1.setStyle({ fontSize: "12px" });
     this.add(text_1);
 
     // character_icons_general_warrior_png
-    const character_icons_general_warrior_png = scene.add.image(11.261459892507833, 20.082984589831902, "factions", "character_icons/general/warrior.png");
+    const character_icons_general_warrior_png = scene.add.image(
+      11.261459892507833,
+      20.082984589831902,
+      "factions",
+      "character_icons/general/warrior.png"
+    );
     character_icons_general_warrior_png.scaleX = 0.35151337898441726;
     character_icons_general_warrior_png.scaleY = 0.35151337898441726;
     character_icons_general_warrior_png.setOrigin(0.5, 0.9);

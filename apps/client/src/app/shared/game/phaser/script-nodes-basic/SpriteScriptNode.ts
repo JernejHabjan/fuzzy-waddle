@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 import ScriptNode from "./ScriptNode";
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 

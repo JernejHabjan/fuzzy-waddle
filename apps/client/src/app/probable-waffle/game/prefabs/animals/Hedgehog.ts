@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import {
   ANIM_HEDGEHOG_BALL_DOWN,
@@ -32,20 +31,21 @@ import { ObjectNames } from "../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 16, y ?? 21.596080279718947, texture || "animals", frame ?? "hedgehog/10.png");
 
-    this.setInteractive(new Phaser.Geom.Circle(16, 18, 11.323425464509395), Phaser.Geom.Circle.Contains);
-    this.setOrigin(0.5, 0.6748775087412171);
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 16, y ?? 21.596080279718947, texture || "animals", frame ?? "hedgehog/10.png");
 
-    /* START-USER-CTR-CODE */
+		this.setInteractive(new Phaser.Geom.Circle(16, 18, 11.323425464509395), Phaser.Geom.Circle.Contains);
+		this.setOrigin(0.5, 0.6748775087412171);
+
+		/* START-USER-CTR-CODE */
     setActorDataFromName(this);
 
     onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   name = ObjectNames.Hedgehog;
   private readonly actionDelay = 5000;
   private readonly movementSpeed = 2000;

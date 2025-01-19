@@ -4,7 +4,6 @@
 
 import SpriteScriptNode from "../script-nodes-basic/SpriteScriptNode";
 import ScriptNode from "../script-nodes-basic/ScriptNode";
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import Player from "../prefabs/Player";
 /* END-USER-IMPORTS */

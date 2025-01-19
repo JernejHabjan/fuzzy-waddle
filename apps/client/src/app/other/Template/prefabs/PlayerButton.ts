@@ -2,34 +2,34 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import ScrollFactorScript from "../../../shared/game/phaser/script-nodes/ScrollFactorScript";
 import PlayerControllerScript from "../../../shared/game/phaser/script-nodes/PlayerControllerScript";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class PlayerButton extends Phaser.GameObjects.Image {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 81, y ?? 72, texture || "ui", frame ?? "btn-up");
 
-    // scrollFactorScript
-    new ScrollFactorScript(this);
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 81, y ?? 72, texture || "ui", frame ?? "btn-up");
 
-    // playerControllerScript
-    const playerControllerScript = new PlayerControllerScript(this);
+		// scrollFactorScript
+		new ScrollFactorScript(this);
 
-    this.playerControllerScript = playerControllerScript;
+		// playerControllerScript
+		const playerControllerScript = new PlayerControllerScript(this);
 
-    /* START-USER-CTR-CODE */
+		this.playerControllerScript = playerControllerScript;
+
+		/* START-USER-CTR-CODE */
 
     this.setInteractive();
 
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  public playerControllerScript: PlayerControllerScript;
+	public playerControllerScript: PlayerControllerScript;
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

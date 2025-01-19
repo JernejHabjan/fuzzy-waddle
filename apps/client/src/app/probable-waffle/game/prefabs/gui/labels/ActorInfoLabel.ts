@@ -1,14 +1,11 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabel extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 16, y ?? 11);
 
@@ -20,7 +17,7 @@ export default class ActorInfoLabel extends Phaser.GameObjects.Container {
     const text_1 = scene.add.text(19, 5, "", {});
     text_1.setOrigin(0, 0.5);
     text_1.text = "New text";
-    text_1.setStyle({ "color": "#000000ff" });
+    text_1.setStyle({ color: "#000000ff" });
     this.add(text_1);
 
     this.actor_info_icons_sword_png = actor_info_icons_sword_png;

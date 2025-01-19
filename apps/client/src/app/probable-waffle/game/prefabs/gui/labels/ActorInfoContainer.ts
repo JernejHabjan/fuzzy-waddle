@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import ActorInfoLabel from "./ActorInfoLabel";
 /* START-USER-IMPORTS */
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
@@ -41,6 +40,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     actorInfoLabel.scaleY = 0.5;
     this.add(actorInfoLabel);
     actorInfoLabel.text_1.text = "test123";
+    actorInfoLabel.text_1.setStyle({});
 
     this.actorInfoLabel = actorInfoLabel;
 

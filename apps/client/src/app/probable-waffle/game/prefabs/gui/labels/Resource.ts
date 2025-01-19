@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { getCurrentPlayerNumber, getPlayer, listenToResourceChanged } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
@@ -16,6 +15,7 @@ export default class Resource extends Phaser.GameObjects.Container {
     // resource_text
     const resource_text = scene.add.text(-39, -20, "", {});
     resource_text.text = "0";
+    resource_text.setStyle({});
     this.add(resource_text);
 
     // resource_icon

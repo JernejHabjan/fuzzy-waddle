@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { EventEmitter } from "@angular/core";
 /* END-USER-IMPORTS */

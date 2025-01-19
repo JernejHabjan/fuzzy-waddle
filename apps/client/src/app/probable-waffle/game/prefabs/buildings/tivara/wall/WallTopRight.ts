@@ -2,36 +2,25 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorDataFromName } from "../../../../data/actor-data";
 import { ObjectNames } from "../../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class WallTopRight extends Phaser.GameObjects.Image {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(
-      scene,
-      x ?? 32,
-      y ?? 80.09149131094786,
-      texture || "factions",
-      frame ?? "buildings/tivara/wall/wall_top_right.png"
-    );
 
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "24.522990298557996 26.984425274633125 25.463861396805637 11.742313483021377 32.42630752383816 7.226132211432713 40.517798968767856 11.930487702670902 40.928087805760434 19.370137431428176 41.77339003415473 19.722346693259134 47.91713309038337 15.733638610633264 56.707062735787225 20.144997807456278 57.12971384998437 27.541392305906335 64 30.74790915848871 64.22775064460836 79.86138099615043 31.485435904243303 95.99999999999999 0.06034174411938409 80.2377294354495 -1.4210854715202004e-14 38.83940046943657"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
-    this.setOrigin(0.5, 0.8342863678223735);
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 80.09149131094786, texture || "factions", frame ?? "buildings/tivara/wall/wall_top_right.png");
 
-    /* START-USER-CTR-CODE */
+		this.setInteractive(new Phaser.Geom.Polygon("24.522990298557996 26.984425274633125 25.463861396805637 11.742313483021377 32.42630752383816 7.226132211432713 40.517798968767856 11.930487702670902 40.928087805760434 19.370137431428176 41.77339003415473 19.722346693259134 47.91713309038337 15.733638610633264 56.707062735787225 20.144997807456278 57.12971384998437 27.541392305906335 64 30.74790915848871 64.22775064460836 79.86138099615043 31.485435904243303 95.99999999999999 0.06034174411938409 80.2377294354495 -1.4210854715202004e-14 38.83940046943657"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.8342863678223735);
+
+		/* START-USER-CTR-CODE */
     setActorDataFromName(this);
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   name = ObjectNames.WallTopRight;
   // Write your code here.
 

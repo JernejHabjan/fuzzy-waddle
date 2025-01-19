@@ -2,34 +2,35 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import Croissants from "../prefabs/Croissants";
 import Fly from "../prefabs/Fly";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class FlySquasher extends Phaser.Scene {
-  constructor() {
-    super("FlySquasher");
 
-    /* START-USER-CTR-CODE */
+	constructor() {
+		super("FlySquasher");
+
+		/* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  editorCreate(): void {
-    // croissants
-    const croissants = new Croissants(this, 148, 302);
-    this.add.existing(croissants);
+	editorCreate(): void {
 
-    // fly
-    const fly = new Fly(this, 299, 150);
-    this.add.existing(fly);
+		// croissants
+		const croissants = new Croissants(this, 148, 302);
+		this.add.existing(croissants);
 
-    this.events.emit("scene-awake");
-  }
+		// fly
+		const fly = new Fly(this, 299, 150);
+		this.add.existing(fly);
 
-  /* START-USER-CODE */
+		this.events.emit("scene-awake");
+	}
+
+	/* START-USER-CODE */
 
   // Write your code here
 
