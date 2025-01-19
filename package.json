@@ -37,7 +37,7 @@
     "workspace-schematic": "nx workspace-schematic",
     "sme": "nx build client --source-map=true --named-chunks=true && source-map-explorer dist/apps/client/**/*.js",
     "install-audiosprite-globally": "pnpm install -g audiosprite-ffmpeg",
-    "probable-waffle-audio-sprites": "pnpm run install-audiosprite-globally && audiosprite apps/client/src/metadata/sfx/character/**/*.mp3 -o apps/client/src/assets/sfx/character -e mp3 -r 8000",
+    "probable-waffle-audio-sprites": "pnpm run install-audiosprite-globally && audiosprite apps/client/src/metadata/sfx/character/**/*.mp3 -o apps/client/src/assets/sfx/character -e mp3 -r 8000 && audiosprite apps/client/src/metadata/probable-waffle/sfx/ui-feedback/*.mp3 -o apps/client/src/assets/probable-waffle/sfx/ui-feedback/ui-feedback -e mp3 -r 8000",
     "prepare": "husky",
     "build-client-dev": "nx build client --source-map=true --named-chunks=true",
     "serve-buid": "http-server dist/apps/client"

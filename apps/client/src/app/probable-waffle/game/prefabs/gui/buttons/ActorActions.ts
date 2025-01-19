@@ -262,14 +262,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
               actorName: product,
               costData: actorDefinition.components.productionCost
             });
+            const sound = this.mainSceneWithActors.sound;
+
+            sound.stopByKey("ui-feedback");
             switch (errorCode) {
               case AssignProductionErrorCode.NotEnoughResources:
-                // play "not enough resources" sound effect - todo
-                this.mainSceneWithActors.sound.playAudioSprite("character", "death");
+                sound.playAudioSprite("ui-feedback", "not_enough_resources");
                 break;
               case AssignProductionErrorCode.QueueFull:
-                // play "not enough resources" sound effect - todo
-                this.mainSceneWithActors.sound.playAudioSprite("character", "death");
+                sound.playAudioSprite("ui-feedback", "production_queue_full");
                 break;
               case AssignProductionErrorCode.InvalidProduct:
                 // should not really happen
