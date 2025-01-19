@@ -137,6 +137,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private actorDiamonds: Phaser.GameObjects.Polygon[] = [];
   private readonly minimapWidth = 400;
   private readonly smallMinimapWidth = 200;
+  private readonly minimapHideBreakpoint = 500;
   private readonly minimapSmallScreenBreakpoint = 800;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private readonly minimapMargin = 20;
@@ -170,10 +171,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private redrawMinimap() {
     if (!this.parentScene) return;
+    const sceneWidth = this.scale.width;
+    if (sceneWidth < this.minimapHideBreakpoint) return;
     const tileMapComponent = getSceneComponent(this.parentScene, TilemapComponent);
     if (!tileMapComponent) throw new Error("Tilemap component not found on parent scene");
     const width = tileMapComponent.tilemap.width;
-    const sceneWidth = this.scale.width;
     const widthInPixels = sceneWidth > this.minimapSmallScreenBreakpoint ? this.minimapWidth : this.smallMinimapWidth;
     const y = this.scale.height - widthInPixels / 2;
     const data = tileMapComponent.data;
@@ -345,6 +347,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // set width of minimap container to match the minimap
     this.minimap_container.scaleX = sceneWidth > this.minimapSmallScreenBreakpoint ? 1.026 : 0.55;
     this.minimap_container.scaleY = sceneWidth > this.minimapSmallScreenBreakpoint ? 0.953 : 0.55;
+    this.minimap_container.visible = sceneWidth > this.minimapHideBreakpoint;
 
     // set actor actions to bottom right
     this.actor_actions_container.x = this.scale.width;
@@ -372,9 +375,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.gameSpeedModifier.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     // hide if game mode is not single player
     this.gameSpeedModifier.visible =
-      this.gameType === ProbableWaffleGameInstanceType.InstantGame ||
-      this.gameType === ProbableWaffleGameInstanceType.Replay ||
-      this.gameType === ProbableWaffleGameInstanceType.Skirmish;
+      (this.gameType === ProbableWaffleGameInstanceType.InstantGame ||
+        this.gameType === ProbableWaffleGameInstanceType.Replay ||
+        this.gameType === ProbableWaffleGameInstanceType.Skirmish) &&
+      sceneWidth > this.minimapHideBreakpoint;
 
     // redraw minimap
     this.redrawMinimap();
