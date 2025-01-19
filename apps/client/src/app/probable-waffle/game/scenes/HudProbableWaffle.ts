@@ -4,6 +4,7 @@
 
 import ActorActions from "../prefabs/gui/buttons/ActorActions";
 import ActorInfoContainer from "../prefabs/gui/labels/ActorInfoContainer";
+import OnPointerDownScript from "../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 import GameActions from "../prefabs/gui/buttons/GameActions";
 import Resources from "../prefabs/gui/labels/Resources";
 import AiControllerDebugPanel from "../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
@@ -68,6 +69,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     minimap_bg.scaleY = 7.444257731898887;
     minimap_bg.setOrigin(0, 0);
     minimap_container.add(minimap_bg);
+
+    // preventDefaultScript_1
+    new OnPointerDownScript(minimap_bg);
 
     // minimap_border
     const minimap_border = this.add.nineslice(

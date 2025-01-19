@@ -2,6 +2,7 @@
 
 /* START OF COMPILED CODE */
 
+import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 import ActorInfoLabel from "./ActorInfoLabel";
 /* START-USER-IMPORTS */
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
@@ -37,6 +38,9 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     actor_info_bg.scaleY = 5.076854073573915;
     actor_info_bg.setOrigin(0, 0);
     this.add(actor_info_bg);
+
+    // preventDefaultScript
+    new OnPointerDownScript(actor_info_bg);
 
     // actorInfoLabel
     const actorInfoLabel = new ActorInfoLabel(scene, -196, -62);

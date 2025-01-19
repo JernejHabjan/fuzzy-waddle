@@ -2,6 +2,7 @@
 
 /* START OF COMPILED CODE */
 
+import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 import ActorAction from "./ActorAction";
 /* START-USER-IMPORTS */
 import { ActorActionSetup } from "./ActorAction";
@@ -39,6 +40,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     actor_actions_bg.scaleX = 7.344280364470656;
     actor_actions_bg.scaleY = 5.861319993557232;
     this.add(actor_actions_bg);
+
+    // preventDefaultScript
+    new OnPointerDownScript(actor_actions_bg);
 
     // actor_actions_border
     const actor_actions_border = scene.add.nineslice(

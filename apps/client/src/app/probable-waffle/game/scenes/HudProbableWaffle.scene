@@ -75,7 +75,15 @@
                     "topHeight": 3,
                     "bottomHeight": 3,
                     "width": 32,
-                    "height": 32
+                    "height": 32,
+                    "list": [
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "b53eba72-7feb-44aa-8019-9bb350841988",
+                            "label": "preventDefaultScript_1",
+                            "displayName": "Prevent Default"
+                        }
+                    ]
                 },
                 {
                     "type": "NineSlice",
