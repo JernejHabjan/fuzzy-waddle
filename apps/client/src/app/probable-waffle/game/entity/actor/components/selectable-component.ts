@@ -1,5 +1,5 @@
 import GameObject = Phaser.GameObjects.GameObject;
-import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectDepth, getGameObjectTransform } from "../../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import Phaser from "phaser";
 import { listenToSelectionEvents } from "../../../data/scene-data";
@@ -67,7 +67,8 @@ export class SelectableComponent {
   };
 
   private setPosition() {
-    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform; // todo this is used on multiple places
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!transform) throw new Error("Transform not found");
     if (transform.x === undefined || transform.y === undefined) return;
     this.selectionCircle.setPosition(transform.x, transform.y); // todo
   }

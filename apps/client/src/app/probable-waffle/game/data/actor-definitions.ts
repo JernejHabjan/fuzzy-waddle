@@ -185,7 +185,8 @@ export const pwActorDefinitions: {
         description: "A warrior",
         smallImage: {
           key: "factions",
-          frame: "character_icons/general/warrior.png"
+          frame: "character_icons/general/warrior.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -239,7 +240,8 @@ export const pwActorDefinitions: {
         description: "A maceman",
         smallImage: {
           key: "factions",
-          frame: "character_icons/tivara/maceman_male.png"
+          frame: "character_icons/tivara/maceman_male.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -296,7 +298,8 @@ export const pwActorDefinitions: {
         description: "A slingshot unit",
         smallImage: {
           key: "factions",
-          frame: "character_icons/tivara/slingshot_female.png"
+          frame: "character_icons/tivara/slingshot_female.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -353,7 +356,8 @@ export const pwActorDefinitions: {
         description: "A worker",
         smallImage: {
           key: "factions",
-          frame: "character_icons/tivara/worker_female.png"
+          frame: "character_icons/tivara/worker_female.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -429,7 +433,8 @@ export const pwActorDefinitions: {
         description: "A worker",
         smallImage: {
           key: "factions",
-          frame: "character_icons/tivara/worker_male.png"
+          frame: "character_icons/tivara/worker_male.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -509,7 +514,8 @@ export const pwActorDefinitions: {
         },
         smallImage: {
           key: "factions",
-          frame: "building_icons/tivara/ankguard.png"
+          frame: "building_icons/tivara/ankguard.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -527,7 +533,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProductGameObjectClasses: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
+        availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
       },
       selectable: { enabled: true },
       collider: { enabled: true }
@@ -554,7 +560,8 @@ export const pwActorDefinitions: {
         description: "Creates a suitable surface for Tivara units and buildings",
         smallImage: {
           key: "factions",
-          frame: "buildings/tivara/olival/olival.png"
+          frame: "buildings/tivara/olival/olival.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -601,7 +608,8 @@ export const pwActorDefinitions: {
         },
         smallImage: {
           key: "factions",
-          frame: "building_icons/tivara/sandhold.png"
+          frame: "building_icons/tivara/sandhold.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -626,8 +634,9 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProductGameObjectClasses: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
+        availableProduceActors: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
       },
+      selectable: { enabled: true },
       collider: { enabled: true }
     }
   },
@@ -656,7 +665,8 @@ export const pwActorDefinitions: {
         },
         smallImage: {
           key: "factions",
-          frame: "building_icons/tivara/temple.png"
+          frame: "building_icons/tivara/temple.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -677,8 +687,9 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProductGameObjectClasses: [ObjectNames.TivaraSlingshotFemale]
+        availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
       },
+      selectable: { enabled: true },
       collider: { enabled: true }
     }
   },
@@ -703,7 +714,8 @@ export const pwActorDefinitions: {
         description: "Useful for producing wood",
         smallImage: {
           key: "factions",
-          frame: "buildings/tivara/workmill.png"
+          frame: "buildings/tivara/workmill.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -721,6 +733,7 @@ export const pwActorDefinitions: {
       resourceDrain: {
         resourceTypes: [ResourceType.Wood]
       },
+      selectable: { enabled: true },
       collider: { enabled: true },
       container: {
         capacity: 2
@@ -748,7 +761,8 @@ export const pwActorDefinitions: {
         description: "A flying unit",
         smallImage: {
           key: "factions",
-          frame: "character_icons/skaduwee/owl.png"
+          frame: "character_icons/skaduwee/owl.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -801,7 +815,8 @@ export const pwActorDefinitions: {
         description: "A ranged unit",
         smallImage: {
           key: "factions",
-          frame: "character_icons/skaduwee/ranged_female.png"
+          frame: "character_icons/skaduwee/ranged_female.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -857,7 +872,8 @@ export const pwActorDefinitions: {
         description: "A magician",
         smallImage: {
           key: "factions",
-          frame: "character_icons/skaduwee/magician_female.png"
+          frame: "character_icons/skaduwee/magician_female.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -914,7 +930,8 @@ export const pwActorDefinitions: {
         description: "A warrior",
         smallImage: {
           key: "factions",
-          frame: "character_icons/skaduwee/warrior_male.png"
+          frame: "character_icons/skaduwee/warrior_male.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -971,7 +988,8 @@ export const pwActorDefinitions: {
         description: "A worker",
         smallImage: {
           key: "factions",
-          frame: "character_icons/skaduwee/worker_male.png"
+          frame: "character_icons/skaduwee/worker_male.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -1042,7 +1060,8 @@ export const pwActorDefinitions: {
         description: "A worker",
         smallImage: {
           key: "factions",
-          frame: "character_icons/skaduwee/worker_female.png"
+          frame: "character_icons/skaduwee/worker_female.png",
+          origin: { x: 0.5, y: 0.7 }
         }
       },
       health: {
@@ -1117,7 +1136,8 @@ export const pwActorDefinitions: {
         },
         smallImage: {
           key: "factions",
-          frame: "building_icons/skaduwee/frost_forge.png"
+          frame: "building_icons/skaduwee/frost_forge.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -1142,7 +1162,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProductGameObjectClasses: [ObjectNames.SkaduweeWorkerMale, ObjectNames.SkaduweeWorkerFemale]
+        availableProduceActors: [ObjectNames.SkaduweeWorkerMale, ObjectNames.SkaduweeWorkerFemale]
       },
       collider: { enabled: true }
     }
@@ -1172,7 +1192,8 @@ export const pwActorDefinitions: {
         },
         smallImage: {
           key: "factions",
-          frame: "building_icons/skaduwee/infantry_inn.png"
+          frame: "building_icons/skaduwee/infantry_inn.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -1190,7 +1211,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProductGameObjectClasses: [
+        availableProduceActors: [
           ObjectNames.SkaduweeMagicianFemale,
           ObjectNames.SkaduweeRangedFemale,
           ObjectNames.SkaduweeWarriorMale
@@ -1225,7 +1246,8 @@ export const pwActorDefinitions: {
         },
         smallImage: {
           key: "factions",
-          frame: "building_icons/skaduwee/owlery.png"
+          frame: "building_icons/skaduwee/owlery.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       health: {
@@ -1243,7 +1265,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProductGameObjectClasses: [ObjectNames.SkaduweeOwl]
+        availableProduceActors: [ObjectNames.SkaduweeOwl]
       },
       selectable: { enabled: true },
       collider: { enabled: true }
@@ -1363,7 +1385,8 @@ export const pwActorDefinitions: {
         description: "Main defense building",
         smallImage: {
           key: "factions",
-          frame: "buildings/tivara/watchtower.png"
+          frame: "buildings/tivara/watchtower.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       },
       selectable: { enabled: true },

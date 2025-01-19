@@ -164,7 +164,7 @@ export class ActorManager {
     return actorDefinition;
   }
 
-  static createActor(scene: Phaser.Scene, name: string, properties: any): GameObject {
+  static createActor(scene: Phaser.Scene, name: ObjectNames, properties: any): GameObject {
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {

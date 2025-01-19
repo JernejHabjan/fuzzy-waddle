@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import ActorAction from "./ActorAction";
+import ActorAction, { ActorActionSetup } from "./ActorAction";
 /* START-USER-IMPORTS */
 import { getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
@@ -10,8 +10,12 @@ import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/combat/components/attack-component";
-import { ProductionComponent } from "../../../entity/building/production/production-component";
+import {
+  AssignProductionErrorCode,
+  ProductionComponent
+} from "../../../entity/building/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { pwActorDefinitions } from "../../../data/actor-definitions";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -174,10 +178,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.log("Attack");
     },
     tooltipInfo: {
-      name: "Attack",
-      description: "Attack an enemy"
+      title: "Attack",
+      description: "Attack an enemy",
+      iconKey: "gui",
+      iconFrame: "actor_info_icons/sword.png"
     }
-  };
+  } satisfies ActorActionSetup;
 
   private readonly stopAction = {
     icon: {
@@ -190,10 +196,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.log("Stop");
     },
     tooltipInfo: {
-      name: "Stop",
-      description: "Stop current action"
+      title: "Stop",
+      description: "Stop current action",
+      iconKey: "gui",
+      iconFrame: "action_icons/hand.png"
     }
-  };
+  } satisfies ActorActionSetup;
 
   private readonly moveAction = {
     icon: {
@@ -206,10 +214,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.log("Move");
     },
     tooltipInfo: {
-      name: "Move",
-      description: "Move to a location"
+      title: "Move",
+      description: "Move to a location",
+      iconKey: "gui",
+      iconFrame: "action_icons/arrow.png"
     }
-  };
+  } satisfies ActorActionSetup;
 
   private showActorActions(actor: Phaser.GameObjects.GameObject) {
     let index = 0;
@@ -229,22 +239,51 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent) {
-      const availableToProduce: string[] = productionComponent.productionDefinition.availableProductGameObjectClasses;
+      const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product) => {
+        const actorDefinition = pwActorDefinitions[product];
+        const info = actorDefinition.components?.info;
+        if (!info || !info.smallImage) {
+          throw new Error(`Info component not found for ${product}`);
+        }
         this.actor_actions[index].setup({
           icon: {
-            key: "factions",
-            frame: "character_icons/skaduwee/worker_female.png", // todo
-            origin: { x: 0.5, y: 0.7 }
+            key: info.smallImage.key!,
+            frame: info.smallImage.frame,
+            origin: info.smallImage.origin
           },
-          disabled: true, // todo
+          disabled: false, // todo
           visible: true,
           action: () => {
-            console.log("Produce", product); // todo
+            if (!actorDefinition.components?.productionCost) {
+              throw new Error(`Production cost not found for ${product}`);
+            }
+            const errorCode = productionComponent.startProduction({
+              actorName: product,
+              costData: actorDefinition.components.productionCost
+            });
+            switch (errorCode) {
+              case AssignProductionErrorCode.NotEnoughResources:
+                // play "not enough resources" sound effect - todo
+                this.mainSceneWithActors.sound.playAudioSprite("character", "death");
+                break;
+              case AssignProductionErrorCode.QueueFull:
+                // play "not enough resources" sound effect - todo
+                this.mainSceneWithActors.sound.playAudioSprite("character", "death");
+                break;
+              case AssignProductionErrorCode.InvalidProduct:
+                // should not really happen
+                break;
+              case AssignProductionErrorCode.NoOwner:
+                // should not really happen
+                break;
+            }
           },
           tooltipInfo: {
-            name: "Produce " + product,
-            description: "Produce " + product // todo
+            title: info.name,
+            iconKey: info.smallImage.key!,
+            iconFrame: info.smallImage.frame,
+            description: info.description
           }
         });
         index++;

@@ -1,4 +1,3 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
@@ -9,12 +8,22 @@ import ActorDefinitionIcon from "./ActorDefinitionIcon";
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 30, y ?? 70);
 
     // game_actions_bg
-    const game_actions_bg = scene.add.nineslice(-29, -67, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 20, 20, 1, 1, 1, 1);
+    const game_actions_bg = scene.add.nineslice(
+      -29,
+      -67,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      20,
+      20,
+      1,
+      1,
+      1,
+      1
+    );
     game_actions_bg.scaleX = 12.430939264477326;
     game_actions_bg.scaleY = 10.778213319031138;
     game_actions_bg.setOrigin(0, 0);
@@ -29,7 +38,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     const title = scene.add.text(100, 17, "", {});
     title.setOrigin(0.5, 0);
     title.text = "Actor name";
-    title.setStyle({ "align": "center", "maxLines":2});
+    title.setStyle({ align: "center", maxLines: 2 });
     title.setWordWrapWidth(250);
     this.add(title);
 
@@ -37,7 +46,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     const description = scene.add.text(100, 47, "", {});
     description.setOrigin(0.5, 0);
     description.text = "Actual description of this actor";
-    description.setStyle({ "align": "center" });
+    description.setStyle({ align: "center" });
     description.setWordWrapWidth(200);
     this.add(description);
 
@@ -63,12 +72,19 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
   private description: Phaser.GameObjects.Text;
 
   /* START-USER-CODE */
-
-  // Write your code here.
-
+  setup(tooltipInfo: TooltipInfo) {
+    this.icon.setTexture(tooltipInfo.iconKey, tooltipInfo.iconFrame);
+    this.title.setText(tooltipInfo.title);
+    this.description.setText(tooltipInfo.description);
+  }
   /* END-USER-CODE */
 }
 
 /* END OF COMPILED CODE */
-
+export type TooltipInfo = {
+  iconKey: string;
+  iconFrame: string;
+  title: string;
+  description: string;
+};
 // You can write more code here
