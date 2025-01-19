@@ -10,14 +10,15 @@ import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
+import { ObjectNames } from "../../../data/object-names";
 
 export type ProductionQueueItem = {
-  gameObjectClass: string;
+  gameObjectClass: ObjectNames;
   costData: ProductionCostDefinition;
 };
 
 export type ProductionDefinition = {
-  availableProductGameObjectClasses: string[];
+  availableProductGameObjectClasses: ObjectNames[];
   // How many products can be produced simultaneously - for example 2 marines (SC2)
   queueCount: number;
   capacityPerQueue: number;

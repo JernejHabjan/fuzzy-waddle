@@ -141,7 +141,7 @@ export default class AnkGuard extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: [TivaraSlingshotFemale.name, TivaraMacemanMale.name]
+          availableProductGameObjectClasses: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
         } satisfies ProductionDefinition),
         new ColliderComponent()
       ],

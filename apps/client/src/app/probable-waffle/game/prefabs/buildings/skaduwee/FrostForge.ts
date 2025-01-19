@@ -145,7 +145,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: [SkaduweeWorkerMale.name, SkaduweeWorkerFemale.name]
+          availableProductGameObjectClasses: [ObjectNames.SkaduweeWorkerMale, ObjectNames.SkaduweeWorkerFemale]
         } satisfies ProductionDefinition),
         new ColliderComponent()
       ],

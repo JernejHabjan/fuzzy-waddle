@@ -112,9 +112,9 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
           queueCount: 1,
           capacityPerQueue: 5,
           availableProductGameObjectClasses: [
-            SkaduweeMagicianFemale.name,
-            SkaduweeRangedFemale.name,
-            SkaduweeWarriorMale.name
+            ObjectNames.SkaduweeMagicianFemale,
+            ObjectNames.SkaduweeRangedFemale,
+            ObjectNames.SkaduweeWarriorMale
           ]
         } satisfies ProductionDefinition),
         new ColliderComponent()

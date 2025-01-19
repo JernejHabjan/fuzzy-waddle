@@ -107,7 +107,7 @@ export default class Owlery extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: [SkaduweeOwl.name]
+          availableProductGameObjectClasses: [ObjectNames.SkaduweeOwl]
         } satisfies ProductionDefinition),
         new ColliderComponent()
       ],

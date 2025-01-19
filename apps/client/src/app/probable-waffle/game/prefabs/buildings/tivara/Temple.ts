@@ -116,7 +116,7 @@ export default class Temple extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: [TivaraSlingshotFemale.name]
+          availableProductGameObjectClasses: [ObjectNames.TivaraSlingshotFemale]
         } satisfies ProductionDefinition),
         new ColliderComponent()
       ],

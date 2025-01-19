@@ -109,7 +109,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
         new ProductionComponent(this, {
           queueCount: 1,
           capacityPerQueue: 5,
-          availableProductGameObjectClasses: [TivaraWorkerMale.name, TivaraWorkerFemale.name]
+          availableProductGameObjectClasses: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
         } satisfies ProductionDefinition),
         new ColliderComponent()
       ],

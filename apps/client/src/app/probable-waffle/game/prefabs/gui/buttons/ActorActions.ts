@@ -229,7 +229,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent) {
-      const availableToProduce: string[] = productionComponent.productionDefinition.availableProductGameObjectClasses; // todo
+      const availableToProduce: string[] = productionComponent.productionDefinition.availableProductGameObjectClasses;
       availableToProduce.forEach((product) => {
         this.actor_actions[index].setup({
           icon: {
