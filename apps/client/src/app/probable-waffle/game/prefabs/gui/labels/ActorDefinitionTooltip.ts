@@ -8,12 +8,12 @@ import ActorDefinitionIcon from "./ActorDefinitionIcon";
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 30, y ?? 70);
+    super(scene, x ?? 0, y ?? 0);
 
     // game_actions_bg
     const game_actions_bg = scene.add.nineslice(
-      -29,
-      -67,
+      1,
+      0,
       "gui",
       "cryos_mini_gui/surfaces/surface_dark.png",
       20,
@@ -29,12 +29,12 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     this.add(game_actions_bg);
 
     // icon
-    const icon = scene.add.image(100, 0, "factions", "character_icons/general/warrior.png");
+    const icon = scene.add.image(130, 72, "factions", "character_icons/general/warrior.png");
     icon.setOrigin(0.5, 0.9);
     this.add(icon);
 
     // title
-    const title = scene.add.text(100, 17, "", {});
+    const title = scene.add.text(130, 82, "", {});
     title.setOrigin(0.5, 0);
     title.text = "Actor name";
     title.setStyle({ align: "center", maxLines: 2 });
@@ -42,7 +42,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     this.add(title);
 
     // description
-    const description = scene.add.text(100, 47, "", {});
+    const description = scene.add.text(130, 107, "", {});
     description.setOrigin(0.5, 0);
     description.text = "Actual description of this actor";
     description.setStyle({ align: "center" });
@@ -50,11 +50,11 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     this.add(description);
 
     // actorDefinitionIcon
-    const actorDefinitionIcon = new ActorDefinitionIcon(scene, 48, 85);
+    const actorDefinitionIcon = new ActorDefinitionIcon(scene, 78, 146);
     this.add(actorDefinitionIcon);
 
     // actorDefinitionIcon_1
-    const actorDefinitionIcon_1 = new ActorDefinitionIcon(scene, 47, 108);
+    const actorDefinitionIcon_1 = new ActorDefinitionIcon(scene, 77, 171);
     this.add(actorDefinitionIcon_1);
 
     this.icon = icon;

@@ -118,7 +118,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.events.emit("scene-awake");
   }
 
-  private actor_actions_container!: ActorActions;
+  public actor_actions_container!: ActorActions;
   private actor_info_container!: ActorInfoContainer;
   private minimap_container!: Phaser.GameObjects.Container;
   private game_actions_container!: GameActions;

@@ -9,6 +9,8 @@ import EmitEventActionScript from "../../../../../shared/game/phaser/script-node
 /* START-USER-IMPORTS */
 import { InfoDefinition } from "../../../entity/actor/components/info-component";
 import ActorDefinitionTooltip, { TooltipInfo } from "../labels/ActorDefinitionTooltip";
+import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import { getGameObjectBounds } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
@@ -127,10 +129,18 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       if (!this.tooltipInfo) return;
       if (this.disabled) return;
 
-      const x = this.scene.scale.width - 500; // todo not correct
-      const y = this.scene.scale.height - 500; // todo not correct
+      const hudScene = this.scene as HudProbableWaffle;
+      const bounds = getGameObjectBounds(hudScene.actor_actions_container);
+
+      const x = bounds?.x ?? 0;
+      const y = bounds?.y ?? 0;
       this.tooltip = new ActorDefinitionTooltip(this.scene, x, y);
       this.tooltip.setup(this.tooltipInfo);
+      // set origin of tooltip to 1,1
+      const boundsTooltip = getGameObjectBounds(this.tooltip);
+      if (boundsTooltip) {
+        this.tooltip.y -= boundsTooltip.height;
+      }
       this.scene.add.existing(this.tooltip);
     }, 500);
   };

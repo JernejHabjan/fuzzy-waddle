@@ -18,8 +18,6 @@
             "type": "Container",
             "id": "17f2db5d-de2d-4ecf-94f2-7c6d903612ee",
             "label": "container_1",
-            "x": 30,
-            "y": 70,
             "list": [
                 {
                     "type": "NineSlice",
@@ -30,8 +28,7 @@
                         "key": "gui",
                         "frame": "cryos_mini_gui/surfaces/surface_dark.png"
                     },
-                    "x": -29,
-                    "y": -67,
+                    "x": 1,
                     "scaleX": 12.430939264477326,
                     "scaleY": 10.778213319031138,
                     "originX": 0,
@@ -52,7 +49,8 @@
                         "key": "factions",
                         "frame": "character_icons/general/warrior.png"
                     },
-                    "x": 100,
+                    "x": 130,
+                    "y": 72,
                     "originY": 0.9
                 },
                 {
@@ -60,8 +58,8 @@
                     "id": "4b6e075b-8943-4ad8-92cd-168014353b51",
                     "label": "title",
                     "scope": "CLASS",
-                    "x": 100,
-                    "y": 17,
+                    "x": 130,
+                    "y": 82,
                     "originX": 0.5,
                     "text": "Actor name",
                     "align": "center",
@@ -73,8 +71,8 @@
                     "id": "e910978e-f6fd-4b7d-9e6a-6d278257eb27",
                     "label": "description",
                     "scope": "CLASS",
-                    "x": 100,
-                    "y": 47,
+                    "x": 130,
+                    "y": 107,
                     "originX": 0.5,
                     "text": "Actual description of this actor",
                     "align": "center",
@@ -88,8 +86,8 @@
                         "y"
                     ],
                     "label": "actorDefinitionIcon",
-                    "x": 48,
-                    "y": 85
+                    "x": 78,
+                    "y": 146
                 },
                 {
                     "prefabId": "0027e301-c7f8-4a26-9d63-e4e0921787c9",
@@ -99,8 +97,8 @@
                         "y"
                     ],
                     "label": "actorDefinitionIcon_1",
-                    "x": 47,
-                    "y": 108
+                    "x": 77,
+                    "y": 171
                 }
             ]
         }

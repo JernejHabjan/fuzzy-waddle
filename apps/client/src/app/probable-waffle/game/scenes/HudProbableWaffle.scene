@@ -25,7 +25,7 @@
             ],
             "label": "actor_actions_container",
             "displayName": "Actor actions",
-            "scope": "CLASS",
+            "scope": "PUBLIC",
             "x": 1280,
             "y": 720
         },
