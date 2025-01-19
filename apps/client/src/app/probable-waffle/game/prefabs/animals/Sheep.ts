@@ -4,7 +4,7 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { setActorData } from "../../data/actor-data";
+import { setActorDataFromName } from "../../data/actor-data";
 import {
   getGameObjectDirection,
   moveGameObjectToRandomTileInNavigableRadius,
@@ -15,11 +15,6 @@ import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectCurrentTile, onPostSceneInitialized } from "../../data/game-object-helper";
 import { ANIM_SHEEP_IDLE_DOWN, ANIM_SHEEP_IDLE_LEFT, ANIM_SHEEP_IDLE_RIGHT, ANIM_SHEEP_IDLE_UP } from "./anims/animals";
 import { getActorSystem } from "../../data/actor-system";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../entity/actor/components/object-descriptor-component";
-import { ActorTranslateComponent } from "../../entity/actor/components/actor-translate-component";
 import { ObjectNames } from "../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -32,16 +27,8 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.play("sheep_idle_down");
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xf2f7fa
-        } satisfies ObjectDescriptorDefinition),
-        new ActorTranslateComponent(this)
-      ],
-      [new MovementSystem(this)]
-    );
+    setActorDataFromName(this);
+
     onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }

@@ -6,7 +6,7 @@ import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import HudProbableWaffle from "../../../../scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
-import { getPlayer, getPlayers } from "../../../../data/scene-data";
+import { getPlayer } from "../../../../data/scene-data";
 import { getSceneSystem } from "../../../../scenes/components/scene-component-helpers";
 import { AiPlayerHandler } from "../../../../scenes/components/ai-player-handler";
 /* END-USER-IMPORTS */

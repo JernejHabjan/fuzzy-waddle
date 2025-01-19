@@ -8,7 +8,7 @@ import ActorInfoLabel from "./ActorInfoLabel";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
+import { getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { InfoComponent } from "../../../entity/actor/components/info-component";
 /* END-USER-IMPORTS */

@@ -4,32 +4,7 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
-import {
-  ProductionCostComponent,
-  ProductionCostDefinition
-} from "../../../entity/building/production/production-cost-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../entity/building/payment-type";
-import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
-import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
-import AnkGuard from "./AnkGuard";
-import TivaraSlingshotFemale from "../../characters/tivara/TivaraSlingshotFemale";
-import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
-import { ColliderComponent } from "../../../entity/actor/components/collider-component";
-import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
-import {
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
-} from "../../gui/icon-animations";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../entity/actor/components/object-descriptor-component";
+import { setActorDataFromName } from "../../../data/actor-data";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -63,65 +38,7 @@ export default class Temple extends Phaser.GameObjects.Container {
     this.add(buildings_tivara_temple_temple_olival);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xc2a080
-        } satisfies ObjectDescriptorDefinition),
-        new OwnerComponent(this, {
-          color: [
-            {
-              originalColor: 0x5c9999,
-              epsilon: 0
-            }
-          ]
-        } satisfies OwnerDefinition),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new InfoComponent({
-          name: "Temple",
-          description: "Produces Tivara Sling shooters",
-          portraitAnimation: {
-            idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
-            action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
-          },
-          smallImage: {
-            key: "factions",
-            frame: "building_icons/tivara/temple.png"
-          }
-        } satisfies InfoDefinition),
-        new SelectableComponent(this),
-        new HealthComponent(this, {
-          maxHealth: 100
-        } satisfies HealthDefinition),
-        new ProductionCostComponent(this, {
-          resources: {
-            [ResourceType.Wood]: 10,
-            [ResourceType.Minerals]: 10
-          },
-          refundFactor: 0.5,
-          productionTime: 1000,
-          costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition),
-        new RequirementsComponent(this, {
-          actors: [AnkGuard.name]
-        } satisfies RequirementsDefinition),
-        new ProductionComponent(this, {
-          queueCount: 1,
-          capacityPerQueue: 5,
-          availableProductGameObjectClasses: [ObjectNames.TivaraSlingshotFemale]
-        } satisfies ProductionDefinition),
-        new ColliderComponent()
-      ],
-      []
-    );
+    setActorDataFromName(this);
 
     this.bounce(buildings_tivara_temple_temple_olival);
     // todosetTimeout(() => {

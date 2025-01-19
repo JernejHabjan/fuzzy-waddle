@@ -4,36 +4,7 @@
 
 import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
-import {
-  ProductionCostComponent,
-  ProductionCostDefinition
-} from "../../../entity/building/production/production-cost-component";
-import { AttackComponent, AttackDefinition } from "../../../entity/combat/components/attack-component";
-import { DamageType } from "../../../entity/combat/damage-type";
-import { AttackData } from "../../../entity/combat/attack-data";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../entity/building/payment-type";
-import { ContainableComponent } from "../../../entity/actor/components/containable-component";
-import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
-import { BuilderComponent, BuilderDefinition } from "../../../entity/actor/components/builder-component";
-import { GathererComponent, GathererDefinition } from "../../../entity/actor/components/gatherer-component";
-import Sandhold from "../../buildings/tivara/Sandhold";
-import AnkGuard from "../../buildings/tivara/AnkGuard";
-import Olival from "../../buildings/tivara/Olival";
-import Temple from "../../buildings/tivara/Temple";
-import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
-import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
-import { MovementSystem } from "../../../entity/systems/movement.system";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../entity/actor/components/object-descriptor-component";
-import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { setActorDataFromName } from "../../../data/actor-data";
 import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
@@ -47,77 +18,7 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
     this.play("tivara_worker_female_idle_down");
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xc2a080
-        } satisfies ObjectDescriptorDefinition),
-        new OwnerComponent(this, {
-          color: [
-            {
-              originalColor: 0x31770f,
-              epsilon: 0.25
-            }
-          ]
-        } satisfies OwnerDefinition),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new InfoComponent({
-          name: "Tivara Female Worker",
-          description: "A worker",
-          smallImage: {
-            key: "factions",
-            frame: "character_icons/tivara/worker_female.png"
-          }
-        } satisfies InfoDefinition),
-        new SelectableComponent(this),
-        new HealthComponent(this, {
-          maxHealth: 100
-        } satisfies HealthDefinition),
-        new AttackComponent(this, {
-          attacks: [
-            {
-              damage: 1,
-              damageType: DamageType.Physical,
-              cooldown: 1000,
-              range: 1
-            } satisfies AttackData
-          ]
-        } satisfies AttackDefinition),
-        new ProductionCostComponent(this, {
-          resources: {
-            [ResourceType.Wood]: 10,
-            [ResourceType.Minerals]: 10
-          },
-          refundFactor: 0.5,
-          productionTime: 1000,
-          costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition),
-        new ContainableComponent(this),
-        new RequirementsComponent(this, {
-          actors: [Sandhold.name]
-        } satisfies RequirementsDefinition),
-        new BuilderComponent(this, {
-          constructableBuildingClasses: [Sandhold.name, AnkGuard.name, Olival.name, Temple.name],
-          constructionSiteOffset: 2,
-          enterConstructionSite: false
-        } satisfies BuilderDefinition),
-        new GathererComponent(this, {
-          resourceSweepRadius: 20,
-          resourceSourceGameObjectClasses: [
-            ResourceType.Ambrosia,
-            ResourceType.Wood,
-            ResourceType.Minerals,
-            ResourceType.Stone
-          ]
-        } satisfies GathererDefinition),
-        new ActorTranslateComponent(this)
-      ],
-      [new MovementSystem(this)]
-    );
+    setActorDataFromName(this);
 
     new PawnAiController(this); // todo
 
