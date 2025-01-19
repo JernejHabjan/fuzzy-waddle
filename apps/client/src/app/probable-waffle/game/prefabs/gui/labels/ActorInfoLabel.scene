@@ -24,8 +24,9 @@
                 {
                     "type": "Image",
                     "id": "83bf6e95-db78-43b8-8533-b3d869edbf1b",
-                    "label": "actor_info_icons_sword_png",
-                    "scope": "NESTED_PREFAB",
+                    "label": "icon",
+                    "displayName": "Icon",
+                    "scope": "PUBLIC",
                     "texture": {
                         "key": "gui",
                         "frame": "actor_info_icons/sword.png"
@@ -35,7 +36,7 @@
                 {
                     "type": "Text",
                     "id": "3153596e-269f-4280-bbb1-54cb3645c7f9",
-                    "label": "text_1",
+                    "label": "text",
                     "scope": "NESTED_PREFAB",
                     "x": 19,
                     "y": 5,

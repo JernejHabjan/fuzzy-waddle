@@ -43,7 +43,6 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.SkaduweeOwl;
   private readonly actionDelay = 5000;
-  private readonly movementSpeed = 2000;
   private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
   private furballEvent?: Phaser.Time.TimerEvent;
@@ -80,10 +79,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     if (!this.active) return;
 
     try {
-      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
-        usePathfinding: false,
-        tileStepDuration: this.movementSpeed
-      } satisfies PathMoveConfig);
+      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
     } catch (e) {
       console.error(e);
     }

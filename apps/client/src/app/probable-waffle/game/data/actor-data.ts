@@ -68,7 +68,9 @@ export function setActorDataFromName(actor: Phaser.GameObjects.GameObject) {
       : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
-    ...(componentDefinitions?.translatable ? [new ActorTranslateComponent(actor)] : []),
+    ...(componentDefinitions?.translatable
+      ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
+      : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(componentDefinitions.collider)] : [])
   ];
 

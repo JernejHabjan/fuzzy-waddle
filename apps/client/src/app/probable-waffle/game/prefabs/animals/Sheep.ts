@@ -18,22 +18,21 @@ import { ObjectNames } from "../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 32, y ?? 49.42203448546586, texture || "animals", frame ?? "sheep/sheep_down.png");
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 32, y ?? 49.42203448546586, texture || "animals", frame ?? "sheep/sheep_down.png");
+    this.setInteractive(new Phaser.Geom.Circle(29, 39, 17.805288050449516), Phaser.Geom.Circle.Contains);
+    this.setOrigin(0.5, 0.772219288835404);
+    this.play("sheep_idle_down");
 
-		this.setInteractive(new Phaser.Geom.Circle(29, 39, 17.805288050449516), Phaser.Geom.Circle.Contains);
-		this.setOrigin(0.5, 0.772219288835404);
-		this.play("sheep_idle_down");
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
     setActorDataFromName(this);
 
     onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
   name = ObjectNames.Sheep;
   private postSceneCreate() {
     this.handleWoolParticles(this.scene);
@@ -41,7 +40,6 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   }
   private nextTile?: Vector2Simple;
   private readonly actionDelay = 5000;
-  private readonly movementSpeed = 2000;
   private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
   private woolParticles?: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -91,7 +89,6 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.nextTile = undefined;
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
-        tileStepDuration: this.movementSpeed,
         onPathUpdate: (newTileXY) => {
           this.nextTile = newTileXY;
           this.playAnimation("walk", newTileXY);

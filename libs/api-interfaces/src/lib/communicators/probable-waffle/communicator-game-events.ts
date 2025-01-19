@@ -9,5 +9,5 @@ export interface ProbableWaffleSelectionData {
 
 export type HealthComponentData = {
   health: number;
-  armor: number;
+  armour: number;
 };

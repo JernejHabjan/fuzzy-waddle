@@ -29,6 +29,7 @@ import { ResourceDrainDefinition } from "../entity/economy/resource/resource-dra
 import { ProductionDefinition } from "../entity/building/production/production-component";
 import { ColliderDefinition } from "../entity/actor/components/collider-component";
 import { ResourceSourceDefinition } from "../entity/economy/resource/resource-source-component";
+import { ActorTranslateDefinition } from "../entity/actor/components/actor-translate-component";
 
 const treeDefinitions: ActorDefinition = {
   components: {
@@ -128,7 +129,7 @@ export type ActorDefinition = Partial<{
     resourceDrain: ResourceDrainDefinition;
     resourceSource: ResourceSourceDefinition;
     production: ProductionDefinition;
-    translatable: { enabled: boolean };
+    translatable: ActorTranslateDefinition;
     containable: { enabled: boolean };
     selectable: { enabled: boolean };
     collider: ColliderDefinition;
@@ -147,7 +148,9 @@ export const pwActorDefinitions: {
       objectDescriptor: {
         color: 0x896347
       },
-      translatable: { enabled: true }
+      translatable: {
+        tileStepDuration: 5000
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -158,7 +161,9 @@ export const pwActorDefinitions: {
       objectDescriptor: {
         color: 0xf2f7fa
       },
-      translatable: { enabled: true }
+      translatable: {
+        tileStepDuration: 5000
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -212,7 +217,9 @@ export const pwActorDefinitions: {
         costType: PaymentType.PayImmediately
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -270,7 +277,9 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.AnkGuard]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -328,7 +337,9 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.AnkGuard]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -405,7 +416,9 @@ export const pwActorDefinitions: {
         ]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -482,7 +495,9 @@ export const pwActorDefinitions: {
         ]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -614,7 +629,7 @@ export const pwActorDefinitions: {
       },
       health: {
         maxHealth: 100,
-        maxArmor: 50
+        maxArmour: 50
       },
       productionCost: {
         resources: {
@@ -790,7 +805,10 @@ export const pwActorDefinitions: {
       requirements: {
         actors: [ObjectNames.Owlery]
       },
-      translatable: { enabled: true }
+      translatable: {
+        usePathfinding: false,
+        tileStepDuration: 500
+      }
     },
     systems: { movement: { enabled: true } }
   },
@@ -845,7 +863,9 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.InfantryInn]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -902,7 +922,9 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.InfantryInn]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -960,7 +982,9 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.InfantryInn]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -1032,7 +1056,9 @@ export const pwActorDefinitions: {
         ]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {
@@ -1104,7 +1130,9 @@ export const pwActorDefinitions: {
         ]
       },
       selectable: { enabled: true },
-      translatable: { enabled: true },
+      translatable: {
+        tileStepDuration: 500
+      },
       containable: { enabled: true }
     },
     systems: {

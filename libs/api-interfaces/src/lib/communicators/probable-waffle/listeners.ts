@@ -271,8 +271,8 @@ export class ProbableWaffleListeners {
         const actorArmor = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
         if (!actorArmor) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
         if (!actorArmor.health) actorArmor.health = {};
-        actorArmor.health.armor = event.data.actorDefinition?.health!.armor;
-        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.health.armor);
+        actorArmor.health.armour = event.data.actorDefinition?.health!.armour;
+        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.health.armour);
         break;
 
       default:
