@@ -4,7 +4,7 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
-import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class SingleSelectionHandler {
   private multiSelecting: boolean = false;
@@ -62,7 +62,21 @@ export class SingleSelectionHandler {
           // if we clicked on top of terrain object, then emit terrain selection
           const clickedOnTopOfTerrain = false; // TODO
           if (clickedOnTopOfTerrain) {
-            this.sendTerrainSelection("left", 0, 0, 0, isShiftDown, isCtrlDown);
+            this.sendTerrainSelection(
+              "left",
+              {
+                x: 0,
+                y: 0,
+                z: 0
+              },
+              {
+                x: 0,
+                y: 0,
+                z: 0
+              },
+              isShiftDown,
+              isCtrlDown
+            );
           } else {
             this.sendSelection("left", objectIds, isShiftDown, isCtrlDown);
           }
@@ -83,9 +97,8 @@ export class SingleSelectionHandler {
           }
           this.sendTerrainSelection(
             isLeftClick ? "left" : "right",
-            clickedTileXY.x,
-            clickedTileXY.y,
-            0,
+            { x: clickedTileXY.x, y: clickedTileXY.y, z: 0 },
+            { x: worldPosition.x, y: worldPosition.y, z: 0 },
             isShiftDown,
             isCtrlDown
           );
@@ -121,9 +134,8 @@ export class SingleSelectionHandler {
 
   private sendTerrainSelection(
     button: "left" | "right",
-    x: number,
-    y: number,
-    z: number,
+    terrainSelectedTileVec3: Vector3Simple,
+    terrainSelectedWorldVec3: Vector3Simple,
     shiftKey: boolean = false,
     ctrlKey: boolean = false
   ) {
@@ -131,11 +143,8 @@ export class SingleSelectionHandler {
       name: "selection.terrainSelect",
       data: {
         button,
-        terrainSelected: {
-          x,
-          y,
-          z
-        },
+        terrainSelectedTileVec3,
+        terrainSelectedWorldVec3,
         shiftKey,
         ctrlKey
       } satisfies ProbableWaffleSelectionData

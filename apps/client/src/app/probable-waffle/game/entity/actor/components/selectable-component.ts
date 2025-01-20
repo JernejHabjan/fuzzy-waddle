@@ -1,6 +1,6 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getGameObjectBounds, getGameObjectDepth, getGameObjectTransform } from "../../../data/game-object-helper";
-import { Subscription } from "rxjs";
+import { BehaviorSubject, Subscription } from "rxjs";
 import Phaser from "phaser";
 import { listenToSelectionEvents } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
@@ -17,6 +17,7 @@ export class SelectableComponent {
   private selectionCircle!: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
   private selectionChangedSubscription?: Subscription;
+  selectionChanged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor(
     private readonly gameObject: GameObject,
     private readonly selectableDefinition?: SelectableDefinition
@@ -55,6 +56,7 @@ export class SelectableComponent {
     this.selected = selected;
     this.selectionCircle.visible = selected;
     if (selected) this.update();
+    this.selectionChanged.next(selected);
   }
 
   getSelected(): boolean {
