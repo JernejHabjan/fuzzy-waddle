@@ -13,6 +13,7 @@ import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { Subscription } from "rxjs";
+import { getGameObjectTransform } from "../../../data/game-object-helper";
 
 export default class RallyPoint extends Phaser.GameObjects.Image {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
@@ -27,6 +28,8 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
+  private readonly drawDepth = 100000;
+  private lineGraphics?: Phaser.GameObjects.Graphics;
   private owner: GameObject | null = null;
   // Location to send new actors to
   public tileVec3?: Vector3Simple | null = null;
@@ -41,6 +44,11 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     this.owner = owner;
 
     this.owner.scene.add.existing(this);
+    this.lineGraphics = this.scene.add.graphics();
+    this.lineGraphics.visible = false;
+
+    this.setDepth(this.drawDepth);
+    this.lineGraphics.setDepth(this.drawDepth);
 
     this.selectionComponent = getActorComponent(this.owner, SelectableComponent);
     if (this.selectionComponent) {
@@ -52,7 +60,9 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
 
   private handleVisibility() {
     const selected = this.selectionComponent?.getSelected();
-    this.visible = !!(selected && (this.tileVec3 || this.actor));
+    this.visible = !!(selected && this.isSet());
+    this.lineGraphics?.setVisible(this.visible);
+    this.drawLine();
   }
 
   navigateGameObjectToRallyPoint(newGameObject: Phaser.GameObjects.GameObject) {
@@ -90,9 +100,54 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     this.handleVisibility();
   }
 
+  isSet() {
+    return this.tileVec3 || this.actor;
+  }
+
+  /**
+   * draws a dashed line from the rally point to the actor
+   */
+  private drawLine() {
+    if (!this.owner) return;
+    if (!this.lineGraphics) return;
+    if (!this.visible) return;
+    const ownerTransform = getGameObjectTransform(this.owner);
+    if (!ownerTransform) return;
+
+    this.lineGraphics.clear();
+    this.lineGraphics.lineStyle(2, 0x000000, 1);
+
+    const startX = this.x;
+    const startY = this.y;
+    const endX = ownerTransform.x;
+    const endY = ownerTransform.y;
+
+    const dashLength = 10;
+    const gapLength = 5;
+    const totalLength = Phaser.Math.Distance.Between(startX, startY, endX, endY);
+
+    const angle = Phaser.Math.Angle.Between(startX, startY, endX, endY);
+
+    let currentLength = 0;
+    while (currentLength < totalLength) {
+      const segmentStartX = startX + Math.cos(angle) * currentLength;
+      const segmentStartY = startY + Math.sin(angle) * currentLength;
+      const segmentEndX = startX + Math.cos(angle) * Math.min(currentLength + dashLength, totalLength);
+      const segmentEndY = startY + Math.sin(angle) * Math.min(currentLength + dashLength, totalLength);
+
+      this.lineGraphics.beginPath();
+      this.lineGraphics.moveTo(segmentStartX, segmentStartY);
+      this.lineGraphics.lineTo(segmentEndX, segmentEndY);
+      this.lineGraphics.strokePath();
+
+      currentLength += dashLength + gapLength;
+    }
+  }
+
   destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
+    this.lineGraphics?.destroy();
   }
 }
 

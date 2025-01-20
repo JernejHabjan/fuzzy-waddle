@@ -189,7 +189,7 @@ export class ProductionComponent {
     const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
     if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
     const newGameObject = sceneActorCreator.createActorFromDefinition(actorDefinition);
-    if (newGameObject && this.rallyPoint) {
+    if (newGameObject && this.rallyPoint.isSet()) {
       this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
     }
   }
