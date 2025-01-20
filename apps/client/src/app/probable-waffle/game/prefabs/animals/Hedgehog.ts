@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import {
   ANIM_HEDGEHOG_BALL_DOWN,
@@ -18,7 +17,7 @@ import {
   ANIM_HEDGEHOG_WALK_RIGHT,
   ANIM_HEDGEHOG_WALK_TOP
 } from "./anims/animals";
-import { setActorData } from "../../data/actor-data";
+import { setActorDataFromName } from "../../data/actor-data";
 import {
   getGameObjectDirection,
   moveGameObjectToRandomTileInNavigableRadius,
@@ -28,11 +27,6 @@ import {
 import { getActorSystem } from "../../data/actor-system";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectCurrentTile, onPostSceneInitialized } from "../../data/game-object-helper";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../entity/actor/components/object-descriptor-component";
-import { ActorTranslateComponent } from "../../entity/actor/components/actor-translate-component";
 import { ObjectNames } from "../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -44,16 +38,8 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.6748775087412171);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0x896347
-        } satisfies ObjectDescriptorDefinition),
-        new ActorTranslateComponent(this)
-      ],
-      [new MovementSystem(this)]
-    );
+    setActorDataFromName(this);
+
     onPostSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
@@ -61,7 +47,6 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
   /* START-USER-CODE */
   name = ObjectNames.Hedgehog;
   private readonly actionDelay = 5000;
-  private readonly movementSpeed = 2000;
   private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
 
@@ -108,7 +93,6 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
-        tileStepDuration: this.movementSpeed,
         onPathUpdate: (newTileXY) => {
           this.playAnimation("walk", newTileXY);
         }

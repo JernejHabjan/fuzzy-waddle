@@ -32,6 +32,14 @@
                 "type": "audioSprite",
                 "key": "character"
             },
+           {
+              "jsonURL": "assets/probable-waffle/sfx/ui-feedback/ui-feedback.json",
+              "audioURL": [
+                "assets/probable-waffle/sfx/ui-feedback/ui-feedback.mp3"
+              ],
+              "type": "audioSprite",
+              "key": "ui-feedback"
+            },
             {
                 "url": "assets/probable-waffle/atlas/anims/effects.json",
                 "type": "animation",

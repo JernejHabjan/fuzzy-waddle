@@ -2,27 +2,8 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../data/actor-data";
-import { OwnerComponent, OwnerDefinition } from "../../../../entity/actor/components/owner-component";
-import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
-import { HealthComponent, HealthDefinition } from "../../../../entity/combat/components/health-component";
-import {
-  ProductionCostComponent,
-  ProductionCostDefinition
-} from "../../../../entity/building/production/production-cost-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../../entity/building/payment-type";
-import { IdComponent } from "../../../../entity/actor/components/id-component";
-import { VisionComponent, VisionDefinition } from "../../../../entity/actor/components/vision-component";
-import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
-import { InfoComponent, InfoDefinition } from "../../../../entity/actor/components/info-component";
-import { ContainerComponent, ContainerDefinition } from "../../../../entity/building/container-component";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../../entity/actor/components/object-descriptor-component";
+import { setActorDataFromName } from "../../../../data/actor-data";
 import { ObjectNames } from "../../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -39,52 +20,7 @@ export default class WatchTower extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.8364343678972962);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0x95a083
-        } satisfies ObjectDescriptorDefinition),
-        new OwnerComponent(this, {
-          color: [
-            {
-              originalColor: 0x000000,
-              epsilon: 0
-            }
-          ]
-        } satisfies OwnerDefinition),
-        new VisionComponent(this, {
-          range: 8
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new InfoComponent({
-          name: "Watch Tower",
-          description: "Main defense building",
-          smallImage: {
-            key: "factions",
-            frame: "buildings/tivara/watchtower.png"
-          }
-        } satisfies InfoDefinition),
-        new SelectableComponent(this),
-        new HealthComponent(this, {
-          maxHealth: 100
-        } satisfies HealthDefinition),
-        new ProductionCostComponent(this, {
-          resources: {
-            [ResourceType.Wood]: 10,
-            [ResourceType.Stone]: 30
-          },
-          refundFactor: 0.5,
-          productionTime: 1000,
-          costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition),
-        new ContainerComponent(this, {
-          capacity: 2
-        } satisfies ContainerDefinition),
-        new ColliderComponent()
-      ],
-      []
-    );
+    setActorDataFromName(this);
     /* END-USER-CTR-CODE */
   }
 

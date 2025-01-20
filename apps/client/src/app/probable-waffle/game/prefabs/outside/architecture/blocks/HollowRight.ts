@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
@@ -13,18 +12,14 @@ import {
 /* END-USER-IMPORTS */
 
 export default class HollowRight extends Phaser.GameObjects.Image {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "architecture/blocks/hollow_right.png");
 
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "0 16 32 0 64 16 64.06008016753376 48.20051894405962 31.99335553006827 64 0.09903471103025652 48.20051894405962"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
-    this.setOrigin(0.5, 0.75);
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 48, texture || "outside", frame ?? "architecture/blocks/hollow_right.png");
 
-    /* START-USER-CTR-CODE */
+		this.setInteractive(new Phaser.Geom.Polygon("0 16 32 0 64 16 64.06008016753376 48.20051894405962 31.99335553006827 64 0.09903471103025652 48.20051894405962"), Phaser.Geom.Polygon.Contains);
+		this.setOrigin(0.5, 0.75);
+
+		/* START-USER-CTR-CODE */
     setActorData(
       this,
       [
@@ -36,9 +31,9 @@ export default class HollowRight extends Phaser.GameObjects.Image {
       []
     );
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
 
   // Write your code here.
 

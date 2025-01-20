@@ -7,10 +7,11 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ObjectNames } from "../../../data/object-names";
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce
-  constructableBuildingClasses: string[];
+  constructableBuildingClasses: ObjectNames[];
   // Whether the builder enters the building site while working on it, or not.
   enterConstructionSite: boolean;
   // from how far builder builds building site

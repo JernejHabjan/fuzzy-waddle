@@ -293,7 +293,15 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
 ): Promise<void> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const newTile = await getRandomTileInNavigableRadius(gameObject, radius, pathMoveConfig);
+  const actorTranslateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  if (!actorTranslateComponent) return Promise.reject("No actor translate component found");
+  const newPathMoveConfig = {
+    ...pathMoveConfig,
+    usePathfinding: actorTranslateComponent.actorTranslateDefinition.usePathfinding ?? true,
+    tileStepDuration: actorTranslateComponent.actorTranslateDefinition.tileStepDuration
+  } satisfies PathMoveConfig;
+
+  const newTile = await getRandomTileInNavigableRadius(gameObject, radius, newPathMoveConfig);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }
@@ -303,7 +311,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
       y: newTile.y,
       z: 0
     } satisfies Vector3Simple,
-    pathMoveConfig
+    newPathMoveConfig
   );
   // todo todo this movementSystem.moveToLocation should be called from the pawn ai controller. Here we should only get the new tile
 }

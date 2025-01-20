@@ -41,7 +41,15 @@
                     "topHeight": 3,
                     "bottomHeight": 3,
                     "width": 32,
-                    "height": 16
+                    "height": 16,
+                    "list": [
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "aae942a6-a57e-4521-a0a8-478cc7a88e65",
+                            "label": "preventDefaultScript",
+                            "displayName": "Prevent Default"
+                        }
+                    ]
                 },
                 {
                     "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
@@ -57,16 +65,167 @@
                     "x": -196,
                     "y": -62,
                     "scaleX": 0.5,
+                    "scaleY": 0.5
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "9ff1832a-77b1-4582-b78e-c2b0b61c695e",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_1",
+                    "scope": "CLASS",
+                    "x": -197,
+                    "y": -44,
+                    "scaleX": 0.5,
                     "scaleY": 0.5,
                     "nestedPrefabs": [
                         {
                             "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
-                            "id": "aba15c0c-9445-4c16-9a3d-afc1fd4a1749",
+                            "id": "bc0fe982-dbb1-4237-b3c1-74f6bc4c98c0",
                             "unlock": [
-                                "text"
+                                "fontSize"
                             ],
-                            "label": "text_1",
-                            "text": "test123"
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "27b6b6f3-92f6-41ae-b925-3a89aaec8065",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_2",
+                    "scope": "CLASS",
+                    "x": -199,
+                    "y": -26,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "952ac44c-cfe2-4575-ab9e-b6fcb3d4fd92",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "ce59ae0b-3208-4771-9aba-606e797f4809",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_3",
+                    "scope": "CLASS",
+                    "x": -138,
+                    "y": -44,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "d0d26727-409d-46fa-8b64-7adca947f06e",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "6c7408e8-f8c7-4aff-9aca-3a7134dda0c7",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_4",
+                    "scope": "CLASS",
+                    "x": -77,
+                    "y": -44,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "50904f20-b64a-4919-8a0e-cc30976fc6a1",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "ad680bfe-f79a-4d53-b4af-deda724405f8",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_5",
+                    "scope": "CLASS",
+                    "x": -139,
+                    "y": -26,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "7790f072-f2cb-4460-8915-4d876222158f",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "4ddde703-0eba-4c76-8ccc-be56027920bc",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_6",
+                    "scope": "CLASS",
+                    "x": -77,
+                    "y": -26,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "c1ffd704-07bd-4ad3-8782-701c4b453067",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
                         }
                     ]
                 }
@@ -79,5 +238,19 @@
         "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
-    }
+    },
+    "lists": [
+        {
+            "id": "0d76013f-acbc-43b7-a400-b2b27d9fe0c2",
+            "label": "attributes",
+            "objectIds": [
+                "9ff1832a-77b1-4582-b78e-c2b0b61c695e",
+                "27b6b6f3-92f6-41ae-b925-3a89aaec8065",
+                "ce59ae0b-3208-4771-9aba-606e797f4809",
+                "6c7408e8-f8c7-4aff-9aca-3a7134dda0c7",
+                "ad680bfe-f79a-4d53-b4af-deda724405f8",
+                "4ddde703-0eba-4c76-8ccc-be56027920bc"
+            ]
+        }
+    ]
 }

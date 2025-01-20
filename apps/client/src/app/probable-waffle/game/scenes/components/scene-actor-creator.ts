@@ -13,6 +13,7 @@ import { FactionDefinitions } from "../../player/faction-definitions";
 import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
+import { ObjectNames } from "../../data/object-names";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
@@ -40,7 +41,7 @@ export class SceneActorCreator {
 
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
     if (!actorDefinition.name) return undefined;
-    const actor = ActorManager.createActor(this.scene, actorDefinition.name, actorDefinition);
+    const actor = ActorManager.createActor(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     const gameObject = this.scene.add.existing(actor);
     this.saveActorToGameState(actor);
     return gameObject;

@@ -2,39 +2,9 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
-import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
-import { setActorData } from "../../../data/actor-data";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
-import { ContainerComponent, ContainerDefinition } from "../../../entity/building/container-component";
-import {
-  ResourceDrainComponent,
-  ResourceDrainDefinition
-} from "../../../entity/economy/resource/resource-drain-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
-import TivaraWorkerMale from "../../characters/tivara/TivaraWorkerMale";
-import TivaraWorkerFemale from "../../characters/tivara/TivaraWorkerFemale";
-import {
-  ProductionCostComponent,
-  ProductionCostDefinition
-} from "../../../entity/building/production/production-cost-component";
-import { PaymentType } from "../../../entity/building/payment-type";
-import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
-import { ColliderComponent } from "../../../entity/actor/components/collider-component";
-import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
-import {
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
-} from "../../gui/icon-animations";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../entity/actor/components/object-descriptor-component";
+import { setActorDataFromName } from "../../../data/actor-data";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -56,65 +26,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
     this.add(hover_crystal);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xc2a080
-        } satisfies ObjectDescriptorDefinition),
-        new OwnerComponent(this, {
-          color: [
-            {
-              originalColor: 0x4dbd33,
-              epsilon: 0.1
-            }
-          ]
-        } satisfies OwnerDefinition),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new InfoComponent({
-          name: "Sandhold",
-          description: "Main building of the Tivara faction. It is used to produce workers and store resources.",
-          portraitAnimation: {
-            idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE,
-            action: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION
-          },
-          smallImage: {
-            key: "factions",
-            frame: "building_icons/tivara/sandhold.png"
-          }
-        } satisfies InfoDefinition),
-        new SelectableComponent(this),
-        new HealthComponent(this, {
-          maxHealth: 100,
-          maxArmor: 50
-        } satisfies HealthDefinition),
-        new ProductionCostComponent(this, {
-          resources: {
-            [ResourceType.Wood]: 10,
-            [ResourceType.Minerals]: 10
-          },
-          refundFactor: 0.5,
-          productionTime: 1000,
-          costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition),
-        new ContainerComponent(this, {
-          capacity: 2
-        } satisfies ContainerDefinition),
-        new ResourceDrainComponent(this, {
-          resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Ambrosia]
-        } satisfies ResourceDrainDefinition),
-        new ProductionComponent(this, {
-          queueCount: 1,
-          capacityPerQueue: 5,
-          availableProductGameObjectClasses: [TivaraWorkerMale.name, TivaraWorkerFemale.name]
-        } satisfies ProductionDefinition),
-        new ColliderComponent()
-      ],
-      []
-    );
+    setActorDataFromName(this);
 
     // Create a continuous hover effect for hover_crystal
     scene.tweens.add({
