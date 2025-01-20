@@ -76,7 +76,6 @@ import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -86,14 +85,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -774,7 +772,28 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
   // Write your code here
 
+  createGradientSky() {
+    // Create a graphics object
+    const graphics = this.add.graphics();
+    const width = this.scale.width;
+    const height = this.scale.height;
+
+    // Define gradient colors
+    const topColor = 0x87ceeb;
+    const bottomColor = 0x12110f;
+
+    // Draw gradient
+    graphics.fillGradientStyle(topColor, topColor, bottomColor, bottomColor);
+    graphics.fillRect(0, 0, width, height);
+
+    graphics.setScrollFactor(0);
+    graphics.displayOriginX = 0.5;
+    graphics.displayOriginY = 0.5;
+  }
+
   create() {
+    this.createGradientSky();
+
     this.editorCreate();
 
     super.create();
