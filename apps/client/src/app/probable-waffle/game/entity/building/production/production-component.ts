@@ -1,4 +1,3 @@
-import { RallyPoint } from "../../../player/rally-point";
 import { PaymentType } from "../payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
@@ -13,6 +12,7 @@ import { ObjectNames } from "../../../data/object-names";
 import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-object-helper";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { Subscription } from "rxjs";
+import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ProductionQueueItem = {
@@ -29,7 +29,7 @@ export type ProductionDefinition = {
 
 export class ProductionComponent {
   productionQueues: ProductionQueue[] = [];
-  rallyPoint: RallyPoint | null = null;
+  private rallyPoint: RallyPoint = new RallyPoint(this.gameObject.scene);
   private ownerComponent!: OwnerComponent;
   private playerChangedSubscription?: Subscription;
 
@@ -50,6 +50,7 @@ export class ProductionComponent {
     for (let i = 0; i < this.productionDefinition.queueCount; i++) {
       this.productionQueues.push(new ProductionQueue(this.productionDefinition.capacityPerQueue));
     }
+    this.rallyPoint.init(this.gameObject);
   }
 
   update(time: number, delta: number): void {
@@ -106,24 +107,15 @@ export class ProductionComponent {
       .subscribe((payload) => {
         switch (payload.property) {
           case "command.issued.move":
-            const target = payload.data.data!["vec3"] as Vector3Simple;
+            const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
+            const worldVec3 = payload.data.data!["worldVec3"] as Vector3Simple;
             const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
             if (isSelected) {
-              this.setRallyPointToVec3(target);
+              this.rallyPoint.setLocation(tileVec3, worldVec3);
             }
             break;
         }
       });
-  }
-
-  setRallyPointToVec3(vec3: Vector3Simple) {
-    this.rallyPoint = new RallyPoint(vec3);
-  }
-  setRallyPointToActor(gameObject: GameObject) {
-    if (gameObject === this.gameObject) {
-      this.rallyPoint = null;
-    }
-    this.rallyPoint = new RallyPoint(null, gameObject);
   }
 
   isProducing(): boolean {
@@ -197,7 +189,7 @@ export class ProductionComponent {
     const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
     if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
     const newGameObject = sceneActorCreator.createActorFromDefinition(actorDefinition);
-    if (newGameObject && this.rallyPoint) {
+    if (newGameObject && this.rallyPoint.isSet()) {
       this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
     }
   }
@@ -253,6 +245,7 @@ export class ProductionComponent {
   private destroy() {
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.playerChangedSubscription?.unsubscribe();
+    this.rallyPoint.destroy();
   }
 }
 

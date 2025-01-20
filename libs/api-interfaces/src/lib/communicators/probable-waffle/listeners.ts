@@ -195,7 +195,7 @@ export class ProbableWaffleListeners {
         case "command.issued.move" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
-          const vec3 = payload.data.data!["vec3"];
+          const tileVec3 = payload.data.data!["tileVec3"];
 
           // get selected actors and issue move command to them
           const selectedActors = player.getSelection();
@@ -205,7 +205,7 @@ export class ProbableWaffleListeners {
             if (!actor.blackboardCommands) actor.blackboardCommands = [];
             actor.blackboardCommands.push(actor.blackboardCurrentCommand!);
             console.log(
-              `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${vec3.x} y: ${vec3.y} z: ${vec3.z}`
+              `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${tileVec3.x}, y: ${tileVec3.y}, z: ${tileVec3.z}`
             );
           });
           break;

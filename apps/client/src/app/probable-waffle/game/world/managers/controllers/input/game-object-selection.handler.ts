@@ -50,11 +50,15 @@ export class GameObjectSelectionHandler {
             }
             break;
           case "selection.terrainSelect":
-            console.log("terrainSelect", data.terrainSelected);
+            console.log("terrainSelect", data.terrainSelectedTileVec3, data.terrainSelectedWorldVec3);
             if (data.button === "left") {
               emitEventSelection(this.scene, "selection.cleared");
             } else {
-              emitEventIssueMoveCommandToSelectedActors(this.scene, data.terrainSelected!);
+              emitEventIssueMoveCommandToSelectedActors(
+                this.scene,
+                data.terrainSelectedTileVec3!,
+                data.terrainSelectedWorldVec3!
+              );
             }
             break;
           case "selection.multiSelect":

@@ -57,10 +57,10 @@ export class MovementSystem {
       .subscribe((payload) => {
         switch (payload.property) {
           case "command.issued.move":
-            const target = payload.data.data!["vec3"] as Vector3Simple;
+            const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
             const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
             if (isSelected) {
-              this.moveToLocation(target); // todo later on, read this from the blackboard and PawnAiController
+              this.moveToLocation(tileVec3); // todo later on, read this from the blackboard and PawnAiController
               // todo, note that we may also navigate to object and not to the tile under the object - use this.moveToActor(gameObject)
             }
             break;
