@@ -4,22 +4,19 @@
 
 /* START-USER-IMPORTS */
 import { setActorDataFromName } from "../../../data/actor-data";
-import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class TivaraSlingshotFemale extends Phaser.GameObjects.Sprite {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 32, y ?? 57.57411588434234, texture || "slingshot_female_idle", frame ?? 4);
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 32, y ?? 57.57411588434234, texture || "slingshot_female_idle", frame ?? 4);
+    this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+    this.setOrigin(0.5, 0.8995955734617012);
+    this.play("tivara_slingshot_female_idle_down");
 
-		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-		this.setOrigin(0.5, 0.8995955734617012);
-		this.play("tivara_slingshot_female_idle_down");
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
     setActorDataFromName(this);
-    new PawnAiController(this); // todo
 
     this.on("pointerdown", () => {
       // and play anim skaduwee_worker_male_slash_down
@@ -31,9 +28,9 @@ export default class TivaraSlingshotFemale extends Phaser.GameObjects.Sprite {
       });
     });
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
   name = ObjectNames.TivaraSlingshotFemale;
   // Write your code here.
 

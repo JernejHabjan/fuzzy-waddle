@@ -178,8 +178,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 528,
-            "y": 624
+            "x": -48,
+            "y": 336
         },
         {
             "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
@@ -279,8 +279,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 1056,
-            "y": 1024
+            "x": -80,
+            "y": 704
         },
         {
             "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
@@ -826,8 +826,8 @@
                 "y"
             ],
             "label": "bushDry_3",
-            "x": -64,
-            "y": 304
+            "x": -192,
+            "y": 160
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f28",
@@ -1058,8 +1058,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 480,
-            "y": 784
+            "x": 976,
+            "y": 1040
         },
         {
             "prefabId": "c0d76b4e-4215-46c7-a7f6-4e52c672fdb1",
@@ -1660,8 +1660,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 437,
-            "y": 852
+            "x": -352,
+            "y": 448
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
@@ -1677,6 +1677,39 @@
             "EditorOwner.owner_id": "2",
             "x": 608,
             "y": 1184
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "48d6f605-a66f-4959-abd9-0b0aed8e2f07",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_15",
+            "x": 1152,
+            "y": 608
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "d746fb0e-a453-4683-819f-e3129ed0fcb6",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_16",
+            "x": 1216,
+            "y": 640
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "dc94db04-b78a-4251-a500-9f0f451857e2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_17",
+            "x": 1168,
+            "y": 656
         }
     ],
     "plainObjects": [

@@ -30,6 +30,7 @@ import { ProductionDefinition } from "../entity/building/production/production-c
 import { ColliderDefinition } from "../entity/actor/components/collider-component";
 import { ResourceSourceDefinition } from "../entity/economy/resource/resource-source-component";
 import { ActorTranslateDefinition } from "../entity/actor/components/actor-translate-component";
+import { AiType, PawnAiDefinition } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 
 const treeDefinitions: ActorDefinition = {
   components: {
@@ -130,6 +131,7 @@ export type ActorDefinition = Partial<{
     resourceSource: ResourceSourceDefinition;
     production: ProductionDefinition;
     translatable: ActorTranslateDefinition;
+    aiControlled: PawnAiDefinition;
     containable: { enabled: boolean };
     selectable: { enabled: boolean };
     collider: ColliderDefinition;
@@ -220,7 +222,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -280,7 +285,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -340,7 +348,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -419,7 +430,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -498,7 +512,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -807,7 +824,7 @@ export const pwActorDefinitions: {
       },
       translatable: {
         usePathfinding: false,
-        tileStepDuration: 500
+        tileStepDuration: 1000
       }
     },
     systems: { movement: { enabled: true } }
@@ -866,7 +883,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -925,7 +945,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -985,7 +1008,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -1059,7 +1085,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }
@@ -1133,7 +1162,10 @@ export const pwActorDefinitions: {
       translatable: {
         tileStepDuration: 500
       },
-      containable: { enabled: true }
+      containable: { enabled: true },
+      aiControlled: {
+        type: AiType.Character
+      }
     },
     systems: {
       movement: { enabled: true }

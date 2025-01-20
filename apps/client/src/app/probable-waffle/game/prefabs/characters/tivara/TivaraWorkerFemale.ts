@@ -4,7 +4,6 @@
 
 /* START-USER-IMPORTS */
 import { setActorDataFromName } from "../../../data/actor-data";
-import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -18,8 +17,6 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     setActorDataFromName(this);
-
-    new PawnAiController(this); // todo
 
     this.on("pointerdown", () => {
       // and play anim skaduwee_worker_male_slash_down

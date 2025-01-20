@@ -20,6 +20,7 @@ import { ContainerComponent } from "../entity/building/container-component";
 import { ResourceDrainComponent } from "../entity/economy/resource/resource-drain-component";
 import { ProductionComponent } from "../entity/building/production/production-component";
 import { ResourceSourceComponent } from "../entity/economy/resource/resource-source-component";
+import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -71,7 +72,8 @@ export function setActorDataFromName(actor: Phaser.GameObjects.GameObject) {
     ...(componentDefinitions?.translatable
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
       : []),
-    ...(componentDefinitions?.collider ? [new ColliderComponent(componentDefinitions.collider)] : [])
+    ...(componentDefinitions?.collider ? [new ColliderComponent(componentDefinitions.collider)] : []),
+    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
   ];
 
   const systemDefinitions = definition.systems;
