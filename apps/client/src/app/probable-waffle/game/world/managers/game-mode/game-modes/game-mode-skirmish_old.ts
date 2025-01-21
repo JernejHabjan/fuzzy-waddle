@@ -1,14 +1,14 @@
 import { GameMode } from "../game-mode";
 import { Limitations } from "../limitations";
 import { VictoryCondition, VictoryConditions } from "../victory-conditions";
-import { PlayerController } from "../../controllers/player-controller";
+import { PlayerController_old } from "../../controllers/player-controller_old";
 import { EventEmitter } from "@angular/core";
 import { PlayerAiControllerOld } from "../../controllers/player-ai-controller-old";
 
-export class GameModeSkirmish extends GameMode {
+export class GameModeSkirmish_old extends GameMode {
   // events:
-  playerJoined: EventEmitter<PlayerController> = new EventEmitter();
-  playerLeft: EventEmitter<PlayerController> = new EventEmitter();
+  playerJoined: EventEmitter<PlayerController_old> = new EventEmitter();
+  playerLeft: EventEmitter<PlayerController_old> = new EventEmitter();
 
   constructor(
     private gameSpeed = 1,
@@ -63,7 +63,7 @@ export class GameModeSkirmish extends GameMode {
     // 2. call RestartPlayerAtPlayerStart
   }
 
-  private RestartPlayerAtPlayerStart(player: PlayerController): void {
+  private RestartPlayerAtPlayerStart(player: PlayerController_old): void {
     // find player start and place him there
     // assign team index
     // spawn any additional start building and units

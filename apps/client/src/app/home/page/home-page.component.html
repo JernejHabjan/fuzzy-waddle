@@ -30,7 +30,6 @@
 @if (authService.isAuthenticated && !environment.production) {
   <div>
     <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.add()">Add Test</button>
-    <button class="btn btn-outline-primary ms-1" (click)="addViaMw()">Add Test via MW</button>
     <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.get()">Get Test</button>
     <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.getStorageEntry()">
       Get Storage Entry

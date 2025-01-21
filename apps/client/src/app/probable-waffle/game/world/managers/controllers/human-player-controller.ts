@@ -1,19 +1,19 @@
-import { PlayerController } from "./player-controller";
+import { PlayerController_old } from "./player-controller_old";
 import { Scale } from "phaser";
 import { Building } from "../../../entity/assets/buildings/building";
 import { BuildingCursor } from "./building-cursor";
 import { Actor } from "../../../entity/actor/actor";
-import { TilePlacementData } from "./input/tilemap/tilemap-input.handler";
+import { TilePlacementData_old } from "./input/tilemap/tilemap-input.handler";
 import { ControlGroup } from "./control-group";
 
-export class HumanPlayerController extends PlayerController {
+export class HumanPlayerController extends PlayerController_old {
   scaleManager!: Scale.ScaleManager;
   selectedActors?: Actor[];
   // saved selections of this player
   controlGroups?: ControlGroup[];
 
   hoveredActor?: Actor;
-  hoveredTileXY?: TilePlacementData;
+  hoveredTileXY?: TilePlacementData_old;
   buildingBeingPlacedClass?: typeof Building;
 
   buildingCursor?: BuildingCursor;

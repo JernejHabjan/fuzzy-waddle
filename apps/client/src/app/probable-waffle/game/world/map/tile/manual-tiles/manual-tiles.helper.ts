@@ -1,6 +1,6 @@
-import { MapSizeInfo } from "../../../const/map-size.info";
+import { MapSizeInfo_old } from "../../../const/map-size.info_old";
 import { SlopeDirection, TileLayerProperties } from "../types/tile-types";
-import { TileWorldData } from "../../../managers/controllers/input/tilemap/tilemap-input.handler";
+import { TileWorldData_old } from "../../../managers/controllers/input/tilemap/tilemap-input.handler";
 import { GameObjects, Geom } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
@@ -12,11 +12,11 @@ export interface ManualTile extends TilePlacementWorldWithProperties {
 }
 
 export interface TilePlacementWorldWithProperties {
-  tileWorldData: TileWorldData;
+  tileWorldData: TileWorldData_old;
   tileLayerProperties: TileLayerProperties;
 }
 
-export interface ManualTileLayer {
+export interface ManualTileLayer_old {
   z: number;
   tiles: ManualTile[];
 }
@@ -25,8 +25,8 @@ export class ManualTilesHelper {
   constructor() {}
 
   static getDepth(tileXY: Vector2Simple, tileWorldXYCenter: Vector2Simple, layer: number): number {
-    const layerOffset = layer * MapSizeInfo.info.tileHeight * 2;
-    const ty = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
+    const layerOffset = layer * MapSizeInfo_old.info.tileHeight * 2;
+    const ty = (tileXY.x + tileXY.y) * MapSizeInfo_old.info.tileHeightHalf;
     const depth = tileWorldXYCenter.y + ty + layerOffset;
     return depth;
   }
@@ -35,7 +35,7 @@ export class ManualTilesHelper {
    * Slopes like stairs
    */
   private getSlopeDir(worldXY: Vector2Simple, slopeDir?: SlopeDirection): Geom.Polygon | null {
-    const tileWidth = MapSizeInfo.info.tileWidth;
+    const tileWidth = MapSizeInfo_old.info.tileWidth;
     let manualRectangleInputInterceptor: Geom.Polygon | null = null;
     switch (slopeDir) {
       case SlopeDirection.SouthEast:
@@ -87,8 +87,8 @@ export class ManualTilesHelper {
 
     // displace the rectangle a bit to the left and top by center offset
     for (let i = 0; i < manualRectangleInputInterceptor.points.length; i++) {
-      manualRectangleInputInterceptor.points[i].x -= MapSizeInfo.info.tileWidthHalf;
-      manualRectangleInputInterceptor.points[i].y -= MapSizeInfo.info.tileHeight;
+      manualRectangleInputInterceptor.points[i].x -= MapSizeInfo_old.info.tileWidthHalf;
+      manualRectangleInputInterceptor.points[i].y -= MapSizeInfo_old.info.tileHeight;
     }
   }
 }

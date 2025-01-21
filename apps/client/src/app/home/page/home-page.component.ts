@@ -69,11 +69,4 @@ export class HomePageComponent {
   protected readonly authService = inject(AuthService);
   protected readonly dbAccessTestService = inject(DbAccessTestService);
   protected readonly serverHealthService = inject(ServerHealthService);
-  private readonly httpClient = inject(HttpClient); // todo remove httpClient from view!
-
-  async addViaMw(): Promise<void> {
-    // todo remove this - this is just for testing
-    const url = environment.api + "api/message";
-    return await firstValueFrom(this.httpClient.post<void>(url, { message: "test123" }));
-  }
 }

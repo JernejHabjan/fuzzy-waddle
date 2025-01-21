@@ -1,13 +1,13 @@
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { MapSizeInfo } from "../../const/map-size.info";
+import { MapSizeInfo_old } from "../../const/map-size.info_old";
 
 export class IsoHelper {
   /**
    * @deprecated USE RATHER Phaser.Tilemaps.Components.IsometricWorldToTileXY
    */
   static DEPRECATED_isometricWorldToTileXY(worldX: number, worldY: number, snapToFloor: boolean): Vector2Simple {
-    const tileWidthHalf = MapSizeInfo.info.tileWidthHalf;
-    const tileHeightHalf = MapSizeInfo.info.tileHeightHalf;
+    const tileWidthHalf = MapSizeInfo_old.info.tileWidthHalf;
+    const tileHeightHalf = MapSizeInfo_old.info.tileHeightHalf;
 
     const x = snapToFloor
       ? Math.floor((worldX / tileWidthHalf + worldY / tileHeightHalf) / 2)
@@ -20,8 +20,8 @@ export class IsoHelper {
   }
 
   static isometricTileToWorldXY(tileXY: Vector2Simple): Vector2Simple {
-    const x = (tileXY.x - tileXY.y) * MapSizeInfo.info.tileWidthHalf;
-    const y = (tileXY.x + tileXY.y) * MapSizeInfo.info.tileHeightHalf;
+    const x = (tileXY.x - tileXY.y) * MapSizeInfo_old.info.tileWidthHalf;
+    const y = (tileXY.x + tileXY.y) * MapSizeInfo_old.info.tileHeightHalf;
 
     return { x, y };
   }
@@ -32,7 +32,7 @@ export class IsoHelper {
   }
 
   static getWorldRight(tileXY: Vector2Simple): number {
-    return IsoHelper.getWorldLeft(tileXY) + MapSizeInfo.info.tileWidth;
+    return IsoHelper.getWorldLeft(tileXY) + MapSizeInfo_old.info.tileWidth;
   }
 
   static getWorldTop(tileXY: Vector2Simple): number {
@@ -41,7 +41,7 @@ export class IsoHelper {
   }
 
   static getWorldBottom(tileXY: Vector2Simple): number {
-    return IsoHelper.getWorldTop(tileXY) + MapSizeInfo.info.tileHeight * 2;
+    return IsoHelper.getWorldTop(tileXY) + MapSizeInfo_old.info.tileHeight * 2;
   }
 
   static getWorldCenterX(tileXY: Vector2Simple): number {

@@ -65,7 +65,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
     new SingleSelectionHandler(this, hud, this.tilemap);
-    new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
+    new GameObjectSelectionHandler(this);
     new SaveGame(this);
     new RestartGame(this);
     const creator = new SceneActorCreator(this);

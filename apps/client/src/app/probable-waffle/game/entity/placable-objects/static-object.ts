@@ -1,36 +1,39 @@
 import { GameObjects, Scene } from "phaser";
-import { TilePlacementData, TileWorldData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import {
+  TilePlacementData_old,
+  TileWorldData_old
+} from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 import { GameObjectsHelper } from "../../world/map/game-objects-helper";
 
 export interface GameObjectPlayer {
   playerNumber: number;
 }
 
-export interface PlaceableObjectProperties {
-  placeableAtlasProperties: PlaceableAtlasProperties;
+export interface PlaceableObjectProperties_old {
+  placeableAtlasProperties: PlaceableAtlasProperties_old;
 
   // cost: number; // todo
   // walk_directions // todo...
 }
 
-export interface PlaceableAtlasProperties {
+export interface PlaceableAtlasProperties_old {
   texture: string;
   frame: string;
 }
 
-export interface PlaceableGameObject {
-  tilePlacementData: TilePlacementData; // todo what if it spans multiple tiles?
-  placeableObjectProperties: PlaceableObjectProperties;
+export interface PlaceableGameObject_old {
+  tilePlacementData: TilePlacementData_old; // todo what if it spans multiple tiles?
+  placeableObjectProperties: PlaceableObjectProperties_old;
 }
 
 export interface PlacedGameObject {
-  tileWorldData: TileWorldData;
+  tileWorldData: TileWorldData_old;
   spriteInstance: GameObjects.Sprite;
-  placeableObjectProperties: PlaceableObjectProperties;
+  placeableObjectProperties: PlaceableObjectProperties_old;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PlayerPlaceableGameObject extends PlaceableGameObject {
+export interface PlayerPlaceableGameObject extends PlaceableGameObject_old {
   // belongsToPlayer?: GameObjectPlayer;
 }
 

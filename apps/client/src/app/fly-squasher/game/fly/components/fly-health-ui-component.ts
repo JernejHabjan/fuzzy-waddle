@@ -60,7 +60,7 @@ export class FlyHealthUiComponent implements IComponent {
   /**
    * move bar with player
    */
-  update(time: number, delta: number) {
+  update() {
     this.draw();
     this.bar.depth = this.barDepth;
   }

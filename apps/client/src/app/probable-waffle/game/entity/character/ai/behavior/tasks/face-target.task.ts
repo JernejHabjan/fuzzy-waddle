@@ -1,8 +1,8 @@
-import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { ITask, TaskData_old, TaskResultType } from "./task.interface";
 import { TransformComponent } from "../../../../actor/components/transformable-component";
 
 export class FaceTargetTask implements ITask {
-  executeTask(taskData: TaskData): TaskResultType {
+  executeTask(taskData: TaskData_old): TaskResultType {
     const targetActor = taskData.blackboard.targetGameObject;
     if (!targetActor) {
       return TaskResultType.Failure;

@@ -1,13 +1,13 @@
 import { CharacterMovementComponent } from "./components/character-movement-component";
 import { PawnAiControllerComponentOld } from "../../world/managers/controllers/pawn-ai-controller-component-old";
 import { Blackboard } from "../character/ai/blackboard";
-import { RepresentableActor } from "./representable-actor";
+import { RepresentableActor_old } from "./representable-actor_old";
 import { PawnBehaviorTree, PawnBehaviorTreeClasses } from "../character/ai/behavior-trees";
 
 /*
  * pawn includes AI controller and move component, so it can move around
  */
-export abstract class MovableActor extends RepresentableActor {
+export abstract class MovableActor_old extends RepresentableActor_old {
   abstract behaviorTreeClass: PawnBehaviorTreeClasses;
   abstract blackboardClass: typeof Blackboard;
   private behaviorTree!: PawnBehaviorTree;

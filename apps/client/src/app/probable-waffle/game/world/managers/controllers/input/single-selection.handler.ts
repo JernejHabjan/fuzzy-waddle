@@ -60,7 +60,7 @@ export class SingleSelectionHandler {
             .map((go) => getActorComponent(go, IdComponent)!.id);
           console.log("clicked on interactive objects", gameObjectsUnderCursor.length, objectIds);
           // if we clicked on top of terrain object, then emit terrain selection
-          const clickedOnTopOfTerrain = false; // TODO
+          const clickedOnTopOfTerrain = false;
           if (clickedOnTopOfTerrain) {
             this.sendTerrainSelection(
               "left",

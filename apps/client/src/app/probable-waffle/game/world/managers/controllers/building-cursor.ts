@@ -1,8 +1,8 @@
 // when placing new building
-import { MapSizeInfo } from "../../const/map-size.info";
+import { MapSizeInfo_old } from "../../const/map-size.info_old";
 import { AttackComponent } from "../../../entity/combat/components/attack-component";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
-import { RepresentableActor } from "../../../entity/actor/representable-actor";
+import { RepresentableActor_old } from "../../../entity/actor/representable-actor_old";
 import { Scene, Types } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
@@ -15,7 +15,7 @@ export class BuildingCursor {
   previewAttackRange = false;
 
   allCellsAreValid = false;
-  private building?: RepresentableActor;
+  private building?: RepresentableActor_old;
 
   private pointerLocation?: Vector2Simple;
 
@@ -30,7 +30,7 @@ export class BuildingCursor {
     this.pointerLocation = pointerLocation;
   }
 
-  setupForBuilding(building: RepresentableActor) {
+  setupForBuilding(building: RepresentableActor_old) {
     // todo obtains gridWidthAndHeight from buildingClass
     // get ConstructionSiteComponent from buildingClass
     this.building = building;
@@ -70,8 +70,8 @@ export class BuildingCursor {
 
   // fills with red if not valid
   private drawIsometricShape(isValid: boolean = true) {
-    const width = MapSizeInfo.info.tileWidth;
-    const height = MapSizeInfo.info.tileHeight;
+    const width = MapSizeInfo_old.info.tileWidth;
+    const height = MapSizeInfo_old.info.tileHeight;
     const graphics = this.scene.add.graphics();
     graphics.lineStyle(2, 0x000000, 1);
     graphics.fillStyle(isValid ? 0x00ff00 : 0xff0000, 1);

@@ -10,21 +10,21 @@ import {
   TOP_LEFT as EasyStar_TOP_LEFT,
   TOP_RIGHT as EasyStar_TOP_RIGHT
 } from "easystarjs";
-import { TilemapHelper } from "./tile/tilemap.helper";
+import { TilemapHelper_old } from "./tile/tilemapHelper_old";
 import { TilePlacementWorldWithProperties } from "./tile/manual-tiles/manual-tiles.helper";
-import { MapSizeInfo, TileDefinitions } from "../const/map-size.info";
+import { MapSizeInfo_old, TileDefinitions } from "../const/map-size.info_old";
 import { SlopeDirection } from "./tile/types/tile-types";
 import { Scene } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
-export class Pathfinder {
+export class Pathfinder_old {
   private readonly enableDiagonals = true;
   private readonly maxNavigableStepHeightDiff = 16;
 
   constructor(private readonly scene: Scene) {}
 
   public static DEPRECATED_getTileWorldCenterByPath(vector: Vector2Simple): Vector2Simple {
-    return TilemapHelper.getTileWorldCenterByTilemapTileXY(vector, {
+    return TilemapHelper_old.getTileWorldCenterByTilemapTileXY(vector, {
       centerOfTile: true
     });
   }
@@ -79,9 +79,9 @@ export class Pathfinder {
           let graphics = this.scene.add.graphics();
           graphics.lineStyle(2, 0xff0000, 1);
           graphics.beginPath();
-          let tileCenter = Pathfinder.DEPRECATED_getTileWorldCenterByPath(path[0]);
+          let tileCenter = Pathfinder_old.DEPRECATED_getTileWorldCenterByPath(path[0]);
           graphics.moveTo(tileCenter.x, tileCenter.y);
-          tileCenter = Pathfinder.DEPRECATED_getTileWorldCenterByPath(path[path.length - 1]);
+          tileCenter = Pathfinder_old.DEPRECATED_getTileWorldCenterByPath(path[path.length - 1]);
           graphics.lineTo(tileCenter.x, tileCenter.y);
           graphics.strokePath();
 
@@ -89,11 +89,11 @@ export class Pathfinder {
           graphics = this.scene.add.graphics();
           graphics.lineStyle(2, 0xffffff, 1);
           graphics.beginPath();
-          tileCenter = Pathfinder.DEPRECATED_getTileWorldCenterByPath(path[0]);
+          tileCenter = Pathfinder_old.DEPRECATED_getTileWorldCenterByPath(path[0]);
           graphics.moveTo(tileCenter.x, tileCenter.y);
 
           const allTileWorldXYCentersWithoutFirst = path.map((path) =>
-            Pathfinder.DEPRECATED_getTileWorldCenterByPath(path)
+            Pathfinder_old.DEPRECATED_getTileWorldCenterByPath(path)
           );
           allTileWorldXYCentersWithoutFirst.shift();
 
@@ -191,8 +191,8 @@ export class Pathfinder {
     ): boolean => {
       const currentTileLayer = currentTile.tileWorldData.z;
       const nextTileLayer = nextTile.tileWorldData.z;
-      const currentTileHeight = currentTileLayer * MapSizeInfo.info.tileHeight;
-      const nextTileHeight = nextTileLayer * MapSizeInfo.info.tileHeight;
+      const currentTileHeight = currentTileLayer * MapSizeInfo_old.info.tileHeight;
+      const nextTileHeight = nextTileLayer * MapSizeInfo_old.info.tileHeight;
 
       const slopeAdjustmentFrom = this.getSlopeAdjustmentForTile(currentTile, nextTile);
       const slopeAdjustmentTo = this.getSlopeAdjustmentForTile(nextTile, currentTile);

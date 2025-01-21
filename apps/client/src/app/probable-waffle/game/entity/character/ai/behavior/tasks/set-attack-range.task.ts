@@ -1,9 +1,9 @@
-import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { ITask, TaskData_old, TaskResultType } from "./task.interface";
 import { AttackComponent } from "../../../../combat/components/attack-component";
 import { getActorComponent } from "../../../../../data/actor-component";
 
 export class SetAttackRangeTask implements ITask {
-  executeTask(taskData: TaskData): TaskResultType {
+  executeTask(taskData: TaskData_old): TaskResultType {
     const attackComponent = getActorComponent(taskData.owner, AttackComponent);
     if (!attackComponent) {
       return TaskResultType.Failure;

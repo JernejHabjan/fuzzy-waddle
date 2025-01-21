@@ -1,4 +1,4 @@
-import { PlayerController } from "./player-controller";
+import { PlayerController_old } from "./player-controller_old";
 import {
   ActorAbleToBeCreatedClass,
   ActorAbleToBeProducedClass
@@ -9,14 +9,14 @@ import { GameplayLibrary } from "../../../library/gameplay-library";
 import { ResourceSourceComponent } from "../../../entity/economy/resource/resource-source-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PlayerAiBlackboard } from "../../../entity/character/ai/player-ai/player-ai-blackboard";
-import { DefaultPlayerAiBehaviorTree } from "../../../entity/character/ai/player-ai/default-player-ai-behavior-tree";
+import { DefaultPlayerAiBehaviorTree_old } from "../../../entity/character/ai/player-ai/default-player-ai-behavior-tree_old";
 import { ProductionComponent } from "../../../entity/building/production/production-component";
 
-export class PlayerAiControllerOld extends PlayerController {
+export class PlayerAiControllerOld extends PlayerController_old {
   /**
    * Behavior tree to use for driving the player ai
    */
-  behaviorTree: DefaultPlayerAiBehaviorTree;
+  behaviorTree: DefaultPlayerAiBehaviorTree_old;
 
   /**
    * Blackboard to use for holding all data relevant to the player ai
@@ -43,7 +43,7 @@ export class PlayerAiControllerOld extends PlayerController {
   constructor() {
     super();
     this.blackboard = new PlayerAiBlackboard();
-    this.behaviorTree = new DefaultPlayerAiBehaviorTree();
+    this.behaviorTree = new DefaultPlayerAiBehaviorTree_old();
     this.behaviorTree.init(this, this.blackboard);
   }
 
@@ -57,9 +57,9 @@ export class PlayerAiControllerOld extends PlayerController {
 
     const buildOrder = this.playerState.factionInfo.getBuildOrder();
 
-    // todo check build order
+    // check build order
 
-    return null; // todo
+    return null;
   }
 
   private getPrimaryResourceDrain(): Actor | null {

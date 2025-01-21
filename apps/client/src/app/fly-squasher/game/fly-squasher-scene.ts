@@ -45,7 +45,6 @@ export class FlySquasherScene extends BaseScene<
   private gameOverFlag = false;
   private gameOverText?: Phaser.GameObjects.Text;
   private retryText?: Phaser.GameObjects.Text;
-  private scenery!: Scenery;
   private bossSpawnProbability: number = 0;
   private flySquasherAudio = new FlySquasherAudio();
   constructor() {
@@ -87,7 +86,7 @@ export class FlySquasherScene extends BaseScene<
   override create() {
     super.create();
 
-    this.scenery = new Scenery(this, this.flySquasherAudio);
+    new Scenery(this, this.flySquasherAudio);
     this.setupTexts();
     this.subscribe(
       this.onResize.subscribe(() => {

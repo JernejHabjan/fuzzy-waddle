@@ -1,4 +1,4 @@
-import { MapSizeInfo } from "../const/map-size.info";
+import { MapSizeInfo_old } from "../const/map-size.info_old";
 import { Cameras, Scale, Structs } from "phaser";
 
 export class ScaleHandler {
@@ -33,7 +33,7 @@ export class ScaleHandler {
   setupBounds(centerOn: boolean = false) {
     const maxMapLayers = this.config.maxLayers;
     // noinspection UnnecessaryLocalVariableJS
-    const topMarginDueToMapLayers = maxMapLayers * MapSizeInfo.info.tileHeight;
+    const topMarginDueToMapLayers = maxMapLayers * MapSizeInfo_old.info.tileHeight;
     const topMargin = topMarginDueToMapLayers;
     const leftMargin = this.config.margins.left;
     const bottomMargin = this.config.margins.bottom;

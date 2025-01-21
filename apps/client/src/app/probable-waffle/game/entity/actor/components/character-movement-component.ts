@@ -2,8 +2,8 @@ import {
   ManualTilesHelper,
   TilePlacementWorldWithProperties
 } from "../../../world/map/tile/manual-tiles/manual-tiles.helper";
-import { TilemapHelper } from "../../../world/map/tile/tilemap.helper";
-import { MapSizeInfo } from "../../../world/const/map-size.info";
+import { TilemapHelper_old } from "../../../world/map/tile/tilemapHelper_old";
+import { MapSizeInfo_old } from "../../../world/const/map-size.info_old";
 import { IComponent } from "../../../core/component.service";
 import { Actor } from "../actor";
 import { Events, GameObjects, Tweens } from "phaser";
@@ -82,23 +82,23 @@ export class CharacterMovementComponent implements IComponent {
       }
       const currentNavTile = path[i];
       const tileXY = currentNavTile.tileWorldData.tileXY;
-      const tileWorldXYCenter = TilemapHelper.getTileWorldCenterByTilemapTileXY(tileXY, {
+      const tileWorldXYCenter = TilemapHelper_old.getTileWorldCenterByTilemapTileXY(tileXY, {
         centerOfTile: true
       });
 
       const stepHeight = currentNavTile.tileLayerProperties?.stepHeight ?? 0;
-      const stepHeightPercentage = stepHeight !== 0 ? stepHeight / MapSizeInfo.info.tileHeight : 0;
+      const stepHeightPercentage = stepHeight !== 0 ? stepHeight / MapSizeInfo_old.info.tileHeight : 0;
       const offsetLayerAndStepHeight = currentNavTile.tileWorldData.z + stepHeightPercentage;
 
       // make sure to move to correct layer and walkable height
       const tileWorldXYCenterWithOffset = {
         x: tileWorldXYCenter.x,
-        y: tileWorldXYCenter.y - offsetLayerAndStepHeight * MapSizeInfo.info.tileHeight
+        y: tileWorldXYCenter.y - offsetLayerAndStepHeight * MapSizeInfo_old.info.tileHeight
       };
 
       // this.sinkSpriteInWater(stepHeightPercentage, selection.spriteInstance);
 
-      const offsetByCharacterCenter = MapSizeInfo.info.tileHeightHalf + MapSizeInfo.info.tileHeightHalf / 4;
+      const offsetByCharacterCenter = MapSizeInfo_old.info.tileHeightHalf + MapSizeInfo_old.info.tileHeightHalf / 4;
 
       this.currentNavTween = scene.tweens.add({
         targets: spriteRepresentationComponent.sprite,

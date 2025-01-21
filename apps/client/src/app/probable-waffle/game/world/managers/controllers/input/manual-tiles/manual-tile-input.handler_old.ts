@@ -1,6 +1,6 @@
-import { MapSizeInfo } from "../../../../const/map-size.info";
+import { MapSizeInfo_old } from "../../../../const/map-size.info_old";
 import { Intersection } from "../../../../../library/math/intersection";
-import { ManualTile, ManualTileLayer } from "../../../../map/tile/manual-tiles/manual-tiles.helper";
+import { ManualTile, ManualTileLayer_old } from "../../../../map/tile/manual-tiles/manual-tiles.helper";
 import { IsoHelper } from "../../../../map/tile/iso-helper";
 import { Scene } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
@@ -10,18 +10,18 @@ export interface PossibleClickCoords {
   tileXY: Vector2Simple;
 }
 
-export class ManualTileInputHandler {
+export class ManualTileInputHandler_old {
   constructor(
     private readonly scene: Scene,
-    private readonly manualLayers: ManualTileLayer[]
+    private readonly manualLayers: ManualTileLayer_old[]
   ) {}
 
   /**
    * returns true if the tile was found and selected
    */
   getManualTileOnWorldXY(worldXY: Vector2Simple): ManualTile | null {
-    const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
-    const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+    const searchedWorldX = worldXY.x - MapSizeInfo_old.info.tileWidthHalf;
+    const searchedWorldY = worldXY.y - MapSizeInfo_old.info.tileWidthHalf; // note tileWidth and not height
 
     const foundTile = this.geExistingManualTileAtWorldXY(searchedWorldX, searchedWorldY);
 
@@ -32,9 +32,9 @@ export class ManualTileInputHandler {
    * Searches through all layers if there's a tile that can be clicked at the given worldX, worldY
    * returns true if some coordinates exist and event was emitted
    */
-  searchPossibleTileCoordinatesOnManualLayers(worldXY: Vector2Simple): PossibleClickCoords[] {
-    const searchedWorldX = worldXY.x - MapSizeInfo.info.tileWidthHalf;
-    const searchedWorldY = worldXY.y - MapSizeInfo.info.tileWidthHalf; // note tileWidth and not height
+  searchPossibleTileCoordinatesOnManualLayers_old(worldXY: Vector2Simple): PossibleClickCoords[] {
+    const searchedWorldX = worldXY.x - MapSizeInfo_old.info.tileWidthHalf;
+    const searchedWorldY = worldXY.y - MapSizeInfo_old.info.tileWidthHalf; // note tileWidth and not height
 
     const pointerToTileXY = IsoHelper.DEPRECATED_isometricWorldToTileXY(searchedWorldX, searchedWorldY, true);
 
@@ -44,9 +44,9 @@ export class ManualTileInputHandler {
       const tileY = pointerToTileXY.y + manualLayer.z;
       if (
         -manualLayer.z <= pointerToTileXY.x &&
-        pointerToTileXY.x < MapSizeInfo.info.width - manualLayer.z &&
+        pointerToTileXY.x < MapSizeInfo_old.info.width - manualLayer.z &&
         -manualLayer.z <= pointerToTileXY.y &&
-        pointerToTileXY.y < MapSizeInfo.info.height - manualLayer.z
+        pointerToTileXY.y < MapSizeInfo_old.info.height - manualLayer.z
       ) {
         possibleCoords.push({
           z: manualLayer.z,
@@ -54,7 +54,7 @@ export class ManualTileInputHandler {
         });
       }
     }
-    // this.onEditorTileSelected.next(possibleCoords); // todo later remove this event emitter
+    // this.onEditorTileSelected.next(possibleCoords);
     return possibleCoords;
   }
 
@@ -65,8 +65,8 @@ export class ManualTileInputHandler {
   private geExistingManualTileAtWorldXY(worldX: number, worldY: number): ManualTile | null {
     const pointerToTileXY = IsoHelper.DEPRECATED_isometricWorldToTileXY(worldX, worldY, true);
     const clickPointToTileWorldXY = {
-      x: worldX + MapSizeInfo.info.tileWidthHalf,
-      y: worldY + MapSizeInfo.info.tileWidthHalf
+      x: worldX + MapSizeInfo_old.info.tileWidthHalf,
+      y: worldY + MapSizeInfo_old.info.tileWidthHalf
     };
 
     // search in all layers, starting from the last
@@ -88,7 +88,7 @@ export class ManualTileInputHandler {
             return tile;
           }
         } else {
-          const offsetBecauseOfHeight = 1; // todo clickable height
+          const offsetBecauseOfHeight = 1;
           if (
             tile.tileWorldData.tileXY.x - (tile.tileWorldData.z + offsetBecauseOfHeight) === pointerToTileXY.x &&
             tile.tileWorldData.tileXY.y - (tile.tileWorldData.z + offsetBecauseOfHeight) === pointerToTileXY.y

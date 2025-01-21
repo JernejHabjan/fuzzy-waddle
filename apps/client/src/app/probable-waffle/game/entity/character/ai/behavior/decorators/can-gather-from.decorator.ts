@@ -1,8 +1,8 @@
-import { DecoratorData, IDecorator } from "./decorator.interface";
+import { DecoratorData_old, IDecorator } from "./decorator.interface";
 import { GathererComponent } from "../../../../actor/components/gatherer-component";
 
 export class CanGatherFromDecorator implements IDecorator {
-  calculateRawConditionValue(decoratorData: DecoratorData): boolean {
+  calculateRawConditionValue(decoratorData: DecoratorData_old): boolean {
     const target = decoratorData.blackboard.targetGameObject;
     if (!target) {
       return false;

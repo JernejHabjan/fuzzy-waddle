@@ -1,5 +1,5 @@
 import { Cameras, Scene } from "phaser";
-import { MapSizeInfo } from "../const/map-size.info";
+import { MapSizeInfo_old } from "../const/map-size.info_old";
 
 export class MinimapTextureHelper {
   private scene: Scene;
@@ -15,8 +15,8 @@ export class MinimapTextureHelper {
     const height = this.scene.game.canvas.height * this.mapSizePercentageToWholeWindow;
     const mapSizeInPx = Math.round(Math.min(width, height));
 
-    const mapWidth = MapSizeInfo.info.width;
-    const mapHeight = MapSizeInfo.info.height;
+    const mapWidth = MapSizeInfo_old.info.width;
+    const mapHeight = MapSizeInfo_old.info.height;
 
     const rectangleWidth = Math.round(mapSizeInPx / mapWidth);
     const rectangleHeight = Math.round(mapSizeInPx / mapHeight);
@@ -40,8 +40,8 @@ export class MinimapTextureHelper {
     const height = this.scene.game.canvas.height * this.mapSizePercentageToWholeWindow;
     const mapSizeInPx = Math.round(Math.min(width, height));
 
-    const mapWidth = MapSizeInfo.info.width;
-    const mapHeight = MapSizeInfo.info.height;
+    const mapWidth = MapSizeInfo_old.info.width;
+    const mapHeight = MapSizeInfo_old.info.height;
 
     const rectangleWidth = Math.round(width / mapWidth);
     const rectangleHeight = Math.round(height / mapHeight);
@@ -49,8 +49,8 @@ export class MinimapTextureHelper {
     const minimapWidthInPx = rectangleWidth * mapWidth;
     const minimapHeightInPx = rectangleHeight * mapHeight;
 
-    const worldWidthInPx = MapSizeInfo.info.tileWidth * mapWidth;
-    const worldHeightInPx = MapSizeInfo.info.tileHeight * mapHeight;
+    const worldWidthInPx = MapSizeInfo_old.info.tileWidth * mapWidth;
+    const worldHeightInPx = MapSizeInfo_old.info.tileHeight * mapHeight;
 
     this.minimap = cameras.add(200, 10, minimapWidthInPx, minimapHeightInPx).setName("mini");
 

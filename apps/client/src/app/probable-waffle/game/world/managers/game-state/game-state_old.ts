@@ -3,15 +3,15 @@ import { GameMode } from "../game-mode/game-mode";
 import { VisionManager } from "../../map/vision/vision-manager";
 import { Actor } from "../../../entity/actor/actor";
 
-export class MapObject {
+export class MapObject_old {
   // todo
 }
 
-export class GameState {
+export class GameState_old {
   constructor(
     public gameMode: GameMode,
     public players: PlayerState[],
-    public mapObjects: MapObject[], // todo define further
+    public mapObjects: MapObject_old[], // todo define further
     public visionManager: VisionManager
   ) {}
 

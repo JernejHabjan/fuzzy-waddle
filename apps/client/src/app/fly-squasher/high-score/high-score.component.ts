@@ -11,7 +11,6 @@ import { AngularHost } from "../../shared/consts";
 @Component({
   selector: "fly-squasher-high-score",
   templateUrl: "./high-score.component.html",
-  styleUrls: ["./high-score.component.scss"],
   standalone: true,
   imports: [FaIconComponent, RouterLink],
   host: AngularHost.contentFlexFullHeightCenter

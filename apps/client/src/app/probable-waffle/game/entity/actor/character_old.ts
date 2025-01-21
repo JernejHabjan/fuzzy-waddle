@@ -2,12 +2,12 @@ import { HealthComponent, HealthDefinition } from "../combat/components/health-c
 import { StateMachine } from "../character/animation/state-machine";
 import { CharacterMovementComponent, MoveEventTypeEnum } from "./components/character-movement-component";
 import { CharacterSoundComponent } from "./components/character-sound-component";
-import { MovableActor } from "./movable-actor";
+import { MovableActor_old } from "./movable-actor_old";
 import { Blackboard } from "../character/ai/blackboard";
-import { DefaultPawnBehaviorTree } from "../character/ai/default-pawn-behavior-tree";
+import { DefaultPawnBehaviorTree_old } from "../character/ai/default-pawn-behavior-tree_old";
 import { PawnBehaviorTreeClasses } from "../character/ai/behavior-trees";
-import { TilePlacementData } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
-import { RepresentableActorDefinition } from "./representable-actor";
+import { TilePlacementData_old } from "../../world/managers/controllers/input/tilemap/tilemap-input.handler";
+import { RepresentableActorDefinition } from "./representable-actor_old";
 import { Animations, Scene, Scenes } from "phaser";
 import { SpriteRepresentationComponent } from "./components/sprite-representable-component";
 import { IsoAngleToAnimDirectionEnum } from "../character/animation/iso-animations";
@@ -18,8 +18,8 @@ export type PawnInfoDefinition = RepresentableActorDefinition & {
   cost?: any;
 };
 
-export abstract class Character extends MovableActor {
-  behaviorTreeClass: PawnBehaviorTreeClasses = DefaultPawnBehaviorTree;
+export abstract class Character_old extends MovableActor_old {
+  behaviorTreeClass: PawnBehaviorTreeClasses = DefaultPawnBehaviorTree_old;
   blackboardClass: typeof Blackboard = Blackboard;
   currentDir = "south";
   currentAnimGroup = "walk";
@@ -31,7 +31,7 @@ export abstract class Character extends MovableActor {
   private spriteRepresentationComponent!: SpriteRepresentationComponent;
   private characterMovementComponent!: CharacterMovementComponent;
 
-  protected constructor(scene: Scene, tilePlacementData: TilePlacementData) {
+  protected constructor(scene: Scene, tilePlacementData: TilePlacementData_old) {
     super(scene, tilePlacementData);
   }
 
@@ -107,7 +107,7 @@ export abstract class Character extends MovableActor {
   }
 
   private initStateMachine() {
-    this.warriorStateMachine = new StateMachine(this, "warrior") // todo some unique id?
+    this.warriorStateMachine = new StateMachine(this, "warrior")
       .addState("idle", {
         onEnter: this.warriorIdleEnter,
         onUpdate: this.warriorIdleUpdate
@@ -131,19 +131,9 @@ export abstract class Character extends MovableActor {
     this.components.update(time, delta);
   }
 
-  private warriorIdleEnter() {
-    const sprite = this.spriteRepresentationComponent.sprite;
-    // SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, true);
-    // this.setVelocityX(0) // todo remove navigation tween
-  }
+  private warriorIdleEnter() {}
 
-  private warriorIdleUpdate() {
-    if (this.killed) {
-      return;
-    }
-    const sprite = this.spriteRepresentationComponent.sprite;
-    // SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, true);
-  }
+  private warriorIdleUpdate() {}
 
   private warriorRunEnter() {
     const sprite = this.spriteRepresentationComponent.sprite;
@@ -162,7 +152,7 @@ export abstract class Character extends MovableActor {
     if (this.characterMovementComponent.isMoving || this.killed) {
       return;
     }
-    const isAttacking = false; // todo
+    const isAttacking = false;
     if (isAttacking) {
       this.warriorStateMachine.setState("attack");
     } else {
@@ -181,13 +171,9 @@ export abstract class Character extends MovableActor {
     this.currentAnimGroup = "";
     // SpriteAnimationHelper.playAnimation(sprite, this.currentAnimGroup, this.currentDir, false);
 
-    // todo this.setVelocityX(0)
-
-    // TODO: move sword swing hitbox into place
     // does it need to start part way into the animation?
     const startHit = (anim: Animations.Animation, frame: Animations.AnimationFrame) => {
       if (frame.index != 5) {
-        // todo
         return;
       }
 
@@ -199,11 +185,9 @@ export abstract class Character extends MovableActor {
     sprite.on(Animations.Events.ANIMATION_UPDATE, startHit);
 
     sprite.once(Animations.Events.ANIMATION_COMPLETE_KEY, (a: unknown, b: unknown) => {
-      // todo
       console.log("animation complete", a, b);
       this.warriorStateMachine.setState("idle");
 
-      // TODO: hide and remove the sword swing hitbox
       // this.swordHitbox.body.enable = false;
       // this.physics.world.remove(this.swordHitbox.body);
     });

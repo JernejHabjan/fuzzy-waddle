@@ -5,13 +5,11 @@ import { FlyMovementComponent } from "./fly-movement-component";
 import { FlySoundComponent } from "./fly-sound-component";
 import { FlyHealthComponent } from "./fly-health-component";
 import { Fly } from "../fly";
-import { DamageType } from "../../../../probable-waffle/game/entity/combat/damage-type";
 
 export class FlyHealthSystem implements IComponent {
   private flyPrefabPointerHitSubscription!: Subscription;
   readonly onFlyHit: Subject<Fly> = new Subject<Fly>();
   private flyRepresentableComponent!: FlyRepresentableComponent;
-  private flyMovementComponent!: FlyMovementComponent;
   private flySoundComponent!: FlySoundComponent;
   private healthComponent!: FlyHealthComponent;
 
@@ -19,7 +17,7 @@ export class FlyHealthSystem implements IComponent {
 
   start() {
     this.flyRepresentableComponent = this.fly.components.findComponent(FlyRepresentableComponent);
-    this.flyMovementComponent = this.fly.components.findComponent(FlyMovementComponent);
+    this.fly.components.findComponent(FlyMovementComponent);
     this.flySoundComponent = this.fly.components.findComponent(FlySoundComponent);
     this.healthComponent = this.fly.components.findComponent(FlyHealthComponent);
 
@@ -28,7 +26,7 @@ export class FlyHealthSystem implements IComponent {
 
   private flyHit = () => {
     if (this.fly.killed) return;
-    this.healthComponent.takeDamage(1, DamageType.Physical);
+    this.healthComponent.takeDamage(1);
     if (this.healthComponent.isAlive()) {
       this.flySoundComponent.playHitSound();
     }
