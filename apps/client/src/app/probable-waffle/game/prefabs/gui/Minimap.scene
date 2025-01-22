@@ -1,0 +1,94 @@
+{
+    "id": "427f5265-4bd1-4de9-900f-51854253c9c2",
+    "settings": {
+        "createMethodName": "",
+        "preloadMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "exportClass": true,
+        "autoImport": true,
+        "importFileExtension": false,
+        "generateAwakeHandler": false,
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "borderWidth": 1280,
+        "borderHeight": 720,
+        "borderX": 0,
+        "borderY": 0
+    },
+    "sceneType": "PREFAB",
+    "displayList": [
+        {
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "type": "Container",
+            "id": "3adfe68b-04fd-4769-bd2c-0e887a81064b",
+            "label": "minimap_container",
+            "displayName": "Minimap",
+            "scope": "CLASS",
+            "y": 0,
+            "scaleX": 1.0265358293529236,
+            "scaleY": 0.9537232846001076,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "10f19ecf-da5d-4257-ab96-b586f49ec836",
+                    "label": "minimap_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "x": 12,
+                    "y": -247,
+                    "scaleX": 12.769367198119731,
+                    "scaleY": 7.444257731898887,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 32,
+                    "height": 32,
+                    "list": [
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "b53eba72-7feb-44aa-8019-9bb350841988",
+                            "label": "preventDefaultScript_1",
+                            "displayName": "Prevent Default"
+                        }
+                    ]
+                },
+                {
+                    "type": "NineSlice",
+                    "id": "10845189-d4c1-4a84-b902-5748292d1246",
+                    "label": "minimap_border",
+                    "displayName": "Border",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/borders/border_wood.png"
+                    },
+                    "y": -255.17628729694155,
+                    "scaleX": 3.367102972114097,
+                    "scaleY": 2.7741914555176357,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 4,
+                    "rightWidth": 4,
+                    "topHeight": 4,
+                    "bottomHeight": 4,
+                    "width": 128,
+                    "height": 92
+                }
+            ],
+            "x": 0
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType"
+    }
+}

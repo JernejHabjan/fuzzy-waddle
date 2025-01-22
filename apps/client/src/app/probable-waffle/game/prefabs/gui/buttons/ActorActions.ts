@@ -141,7 +141,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actor_actions = actor_actions;
 
     /* START-USER-CTR-CODE */
-    this.mainSceneWithActors = (scene as HudProbableWaffle).parentScene!;
+    this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
     this.subscribeToPlayerSelection();
     this.hideAllActions();
     /* END-USER-CTR-CODE */
