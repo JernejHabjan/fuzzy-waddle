@@ -50,14 +50,14 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     actorInfoLabel.text.setStyle({});
 
     // actorInfoLabel_1
-    const actorInfoLabel_1 = new ActorInfoLabel(scene, -197, -44);
+    const actorInfoLabel_1 = new ActorInfoLabel(scene, -196, -44);
     actorInfoLabel_1.scaleX = 0.5;
     actorInfoLabel_1.scaleY = 0.5;
     this.add(actorInfoLabel_1);
     actorInfoLabel_1.text.setStyle({ fontSize: "12px" });
 
     // actorInfoLabel_2
-    const actorInfoLabel_2 = new ActorInfoLabel(scene, -199, -26);
+    const actorInfoLabel_2 = new ActorInfoLabel(scene, -196, -26);
     actorInfoLabel_2.scaleX = 0.5;
     actorInfoLabel_2.scaleY = 0.5;
     this.add(actorInfoLabel_2);
@@ -78,7 +78,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     actorInfoLabel_4.text.setStyle({ fontSize: "12px" });
 
     // actorInfoLabel_5
-    const actorInfoLabel_5 = new ActorInfoLabel(scene, -139, -26);
+    const actorInfoLabel_5 = new ActorInfoLabel(scene, -138, -26);
     actorInfoLabel_5.scaleX = 0.5;
     actorInfoLabel_5.scaleY = 0.5;
     this.add(actorInfoLabel_5);
