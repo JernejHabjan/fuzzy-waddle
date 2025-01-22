@@ -173,7 +173,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private mainSceneWithActors?: ProbableWaffleScene;
   private init() {
-    this.mainSceneWithActors = (this.scene as HudProbableWaffle).parentScene!;
+    this.mainSceneWithActors = (this.scene as HudProbableWaffle).probableWaffleScene!;
     this.multiplier_1x.on("action", () => {
       if (this.mainSceneWithActors) {
         this.mainSceneWithActors.time.timeScale = 1;

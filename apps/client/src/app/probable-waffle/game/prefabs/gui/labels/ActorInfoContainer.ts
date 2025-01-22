@@ -111,7 +111,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.attributes = attributes;
 
     /* START-USER-CTR-CODE */
-    this.mainSceneWithActors = (scene as HudProbableWaffle).parentScene!;
+    this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
     this.subscribeToPlayerSelection();
     this.hideAllLabels();
     /* END-USER-CTR-CODE */

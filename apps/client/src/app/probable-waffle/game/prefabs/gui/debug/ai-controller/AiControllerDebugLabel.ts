@@ -34,7 +34,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.playerAction = playerAction;
 
     /* START-USER-CTR-CODE */
-    this.mainSceneWithActors = (this.scene as HudProbableWaffle).parentScene!;
+    this.mainSceneWithActors = (this.scene as HudProbableWaffle).probableWaffleScene!;
     /* END-USER-CTR-CODE */
   }
 
