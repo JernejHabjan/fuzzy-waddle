@@ -5,10 +5,14 @@ and [GitHub Pages](https://jernejhabjan.github.io/fuzzy-waddle/)
 
 ## Setup dev environment
 
+### pnpm
+- [Install](https://pnpm.io/installation)
+
 ### Api
 
 - Copy the `.env.example` file to `.env.local` and fill in the values.
-  - for CORS_ORIGIN, set it to `http://localhost:4200`
+  - for `CORS_ORIGIN`, set it to `http://localhost:4200`
+  - for Supabase, `service_role` as `SUPABASE_SERVICE_KEY` and `URL` are [shown here](https://supabase.com/dashboard/project/bhzetyxjimpabioxoodz/settings/api)
 
 ### Supabase:
 
