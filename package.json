@@ -98,7 +98,7 @@
     "passport-local": "^1.0.0",
     "passport-strategy": "^1.0.0",
     "phaser": "4.0.0-beta.3",
-    "phaser3-rex-plugins": "1.80.6",
+    "phaser3-rex-plugins": "1.80.12",
     "profanity-cleaner": "^0.0.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -172,7 +172,7 @@
       "@supabase/supabase-js>@supabase/auth-js": "2.61.0"
     },
     "patchedDependencies": {
-      "phaser3-rex-plugins@1.80.6": "patches/phaser3-rex-plugins@1.80.6.patch"
+      "phaser3-rex-plugins@1.80.12": "patches/phaser3-rex-plugins@1.80.12.patch"
     }
   },
   "lint-staged": {
