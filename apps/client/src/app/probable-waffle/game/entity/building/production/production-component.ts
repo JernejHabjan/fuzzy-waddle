@@ -11,13 +11,19 @@ import { SceneActorCreator } from "../../../scenes/components/scene-actor-creato
 import { ObjectNames } from "../../../data/object-names";
 import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-object-helper";
 import { SelectableComponent } from "../../actor/components/selectable-component";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ProductionQueueItem = {
   actorName: ObjectNames;
   costData: ProductionCostDefinition;
+};
+
+export type ProductionProgressEvent = {
+  queueIndex: number;
+  queueItemIndex: number;
+  progressInPercentage: number;
 };
 
 export type ProductionDefinition = {
@@ -32,6 +38,7 @@ export class ProductionComponent {
   private rallyPoint: RallyPoint = new RallyPoint(this.gameObject.scene);
   private ownerComponent!: OwnerComponent;
   private playerChangedSubscription?: Subscription;
+  private productionProgressSubject = new Subject<ProductionProgressEvent>();
 
   constructor(
     private readonly gameObject: GameObject,
@@ -51,6 +58,10 @@ export class ProductionComponent {
       this.productionQueues.push(new ProductionQueue(this.productionDefinition.capacityPerQueue));
     }
     this.rallyPoint.init(this.gameObject);
+  }
+
+  get productionProgressObservable() {
+    return this.productionProgressSubject.asObservable();
   }
 
   update(time: number, delta: number): void {
@@ -91,9 +102,18 @@ export class ProductionComponent {
 
         // update production progress
         queue.remainingProductionTime -= delta;
+        queue.remainingProductionTime = Math.max(queue.remainingProductionTime, 0);
+
+        const progress = ((costData.productionTime - queue.remainingProductionTime) / costData.productionTime) * 100;
+
+        // Emit progress event
+        this.productionProgressSubject.next({
+          queueIndex: i,
+          queueItemIndex: j,
+          progressInPercentage: Math.min(progress, 100) // Ensure progress doesn't exceed 100%
+        });
 
         // check if production is ready
-
         if (queue.remainingProductionTime <= 0) {
           this.finishProduction(queue, j);
         }
@@ -126,6 +146,19 @@ export class ProductionComponent {
       }
     }
     return false;
+  }
+
+  getCurrentProgress() {
+    if (!this.isProducing()) return null;
+
+    for (let i = 0; i < this.productionQueues.length; i++) {
+      const queue = this.productionQueues[i];
+      if (queue.queuedItems.length > 0) {
+        const { costData } = queue.queuedItems[0];
+        return 100 - (queue.remainingProductionTime / costData.productionTime) * 100;
+      }
+    }
+    return null;
   }
 
   startProduction(queueItem: ProductionQueueItem): AssignProductionErrorCode | null {
