@@ -7,6 +7,7 @@ import { NodeDebugger } from "./node-debugger";
 import { OrderType } from "../../../../entity/character/ai/order-type";
 import { environment } from "../../../../../../../environments/environment";
 import { Agent } from "mistreevous/dist/Agent";
+import { HealthComponent } from "../../../../entity/combat/components/health-component";
 
 export interface PawnAiDefinition {
   type: AiType;
@@ -40,6 +41,7 @@ export class PawnAiController {
     }
 
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.once(HealthComponent.KilledEvent, this.onShutdown, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.onShutdown, this);
   }
 

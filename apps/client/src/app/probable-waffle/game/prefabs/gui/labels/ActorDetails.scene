@@ -1,0 +1,203 @@
+{
+    "id": "c69196b1-3c89-4041-b182-49ee43a7f77d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 216,
+        "borderHeight": 80
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "aab91f83-de2a-4285-a786-bd334e3318aa",
+            "label": "container_1",
+            "blendMode": -1,
+            "list": [
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "0c3e51e0-c775-4830-bd7a-16758c6c473f",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_1",
+                    "x": 8,
+                    "y": 5,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "79038d64-1e2b-4983-93ac-b8078ec638c3",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "6a409915-1459-4056-b87e-e32004e3f089",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_2",
+                    "x": 8,
+                    "y": 23,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "cf73bedb-8ee8-40ce-a26c-ebc7829d702b",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "0df12cbd-247f-4062-88f8-9ca38d271b5a",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_3",
+                    "x": 66,
+                    "y": 5,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "7707fb04-6f42-4156-a3cc-3e17762e0387",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "4ea22073-a59b-4867-9639-d94738fc5118",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_4",
+                    "x": 127,
+                    "y": 5,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "9fdf49ba-611c-4b1a-b1c4-a3f3b7e69912",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "da05681b-1711-4424-86f6-3ef649ec5b16",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_5",
+                    "x": 66,
+                    "y": 23,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "8025ea86-9cb5-4bf7-8d85-f087166c5552",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
+                    "id": "fcc4b5a7-798a-412b-b589-a944a2ca7569",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "scaleX",
+                        "scaleY"
+                    ],
+                    "label": "actorInfoLabel_6",
+                    "x": 127,
+                    "y": 23,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5,
+                    "nestedPrefabs": [
+                        {
+                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
+                            "id": "b26e4467-fa64-477b-9c58-f63b84b61a59",
+                            "unlock": [
+                                "fontSize"
+                            ],
+                            "label": "text",
+                            "fontSize": "12px"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "lists": [
+        {
+            "id": "0f8bfe3e-da7a-4b59-b246-bc74d03c2318",
+            "label": "attributes",
+            "objectIds": [
+                "0c3e51e0-c775-4830-bd7a-16758c6c473f",
+                "6a409915-1459-4056-b87e-e32004e3f089",
+                "0df12cbd-247f-4062-88f8-9ca38d271b5a",
+                "da05681b-1711-4424-86f6-3ef649ec5b16",
+                "4ea22073-a59b-4867-9639-d94738fc5118",
+                "fcc4b5a7-798a-412b-b589-a944a2ca7569"
+            ]
+        }
+    ]
+}

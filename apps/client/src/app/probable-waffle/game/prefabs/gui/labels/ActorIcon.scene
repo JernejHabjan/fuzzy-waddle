@@ -1,0 +1,83 @@
+{
+    "id": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 216,
+        "borderHeight": 80
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "5f2e2d94-a065-44b7-84eb-b8759399f879",
+            "label": "container_1",
+            "blendMode": -1,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "903d089f-9232-46a8-ae30-b6b4ec6ca198",
+                    "label": "bg",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "x": 8,
+                    "y": 8,
+                    "leftWidth": 2,
+                    "rightWidth": 2,
+                    "topHeight": 2,
+                    "bottomHeight": 2,
+                    "width": 16,
+                    "height": 16,
+                    "list": [
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "8b46480b-52d9-40fa-afa2-767c4d15e51c",
+                            "label": "onPointerUpScript"
+                        }
+                    ]
+                },
+                {
+                    "type": "Text",
+                    "id": "bf196d36-a834-4496-b153-3c14b40f6e0a",
+                    "label": "nr",
+                    "displayName": "Number",
+                    "scope": "CLASS",
+                    "x": 4,
+                    "y": 1,
+                    "text": "2",
+                    "fontSize": "14px"
+                },
+                {
+                    "type": "Image",
+                    "id": "59ba1df0-5151-48c1-a465-05bcc250aae6",
+                    "label": "image",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "character_icons/general/warrior.png"
+                    },
+                    "x": 8,
+                    "y": 8,
+                    "scaleX": 0.22,
+                    "scaleY": 0.22
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

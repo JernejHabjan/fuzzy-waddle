@@ -1,0 +1,233 @@
+{
+    "id": "e27d2558-5360-45f3-bfa5-9d8b1cc736c6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 216,
+        "borderHeight": 80
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "4ceef8d2-a76d-4c6e-a69b-de95cce725be",
+            "label": "container_1",
+            "blendMode": -1,
+            "list": [
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "6bd14d82-f2bc-482c-b9f0-0387e2687ec2",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon1",
+                    "x": 10,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "af5e8b6c-290a-4057-8a29-aa3e9b6f17eb",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon",
+                    "x": 32,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "f1ffb77b-3be3-4509-8c3f-e39081d0bfcd",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_1",
+                    "x": 54,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "3db21959-1140-40f9-b015-fa3ea292c253",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_2",
+                    "x": 76,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "d71fc1f2-66f2-47ac-9138-8107837df3d2",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_3",
+                    "x": 98,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "11925b78-b15e-40f0-9978-efe437bd7474",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_4",
+                    "x": 120,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "55595f46-9156-4861-aa31-6e74aa75a050",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_5",
+                    "x": 144,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "5e33a942-ecf1-4ef5-b187-22784ba7037b",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_6",
+                    "x": 166,
+                    "y": 9
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "31895bbd-601c-49d8-a01a-f6c51b4bf471",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_7",
+                    "x": 10,
+                    "y": 32
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "2b1a6a6c-5eb3-413a-95b2-47a2983e8430",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_8",
+                    "x": 32,
+                    "y": 32
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "488c5dfe-0c2c-4b8e-ab1b-0b804b25a177",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_9",
+                    "x": 54,
+                    "y": 32
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "d9487104-02db-46d9-b7b9-71573b734ffe",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_10",
+                    "x": 76,
+                    "y": 32
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "d483a613-3915-4173-9f22-e04ef3184800",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_11",
+                    "x": 98,
+                    "y": 32
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "a4f18380-b359-453e-9ceb-da673759a1b7",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_12",
+                    "x": 120,
+                    "y": 32
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "387f98e1-21eb-4622-aef3-d5216fbe3fa4",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_13",
+                    "x": 144,
+                    "y": 32
+                },
+                {
+                    "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+                    "id": "2aad48e4-9077-469d-8015-dacccd8b6d25",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorIcon_14",
+                    "x": 166,
+                    "y": 32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "lists": [
+        {
+            "id": "df5f2e0f-480b-4c90-a22c-56539522ddda",
+            "label": "icons",
+            "objectIds": [
+                "6bd14d82-f2bc-482c-b9f0-0387e2687ec2",
+                "af5e8b6c-290a-4057-8a29-aa3e9b6f17eb",
+                "f1ffb77b-3be3-4509-8c3f-e39081d0bfcd",
+                "3db21959-1140-40f9-b015-fa3ea292c253",
+                "d71fc1f2-66f2-47ac-9138-8107837df3d2",
+                "11925b78-b15e-40f0-9978-efe437bd7474",
+                "55595f46-9156-4861-aa31-6e74aa75a050",
+                "5e33a942-ecf1-4ef5-b187-22784ba7037b",
+                "31895bbd-601c-49d8-a01a-f6c51b4bf471",
+                "2b1a6a6c-5eb3-413a-95b2-47a2983e8430",
+                "488c5dfe-0c2c-4b8e-ab1b-0b804b25a177",
+                "d9487104-02db-46d9-b7b9-71573b734ffe",
+                "d483a613-3915-4173-9f22-e04ef3184800",
+                "a4f18380-b359-453e-9ceb-da673759a1b7",
+                "387f98e1-21eb-4622-aef3-d5216fbe3fa4",
+                "2aad48e4-9077-469d-8015-dacccd8b6d25"
+            ]
+        }
+    ]
+}

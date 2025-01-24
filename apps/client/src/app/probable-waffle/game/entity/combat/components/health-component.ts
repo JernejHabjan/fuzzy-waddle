@@ -23,6 +23,8 @@ export class HealthComponent {
   private armorUiComponent?: HealthUiComponent;
   private playerChangedSubscription?: Subscription;
 
+  private destroyAfterMs = 30000;
+
   latestDamage?: {
     damageInitiator: Phaser.GameObjects.GameObject | undefined;
     damage: number;
@@ -113,19 +115,22 @@ export class HealthComponent {
   killActor() {
     this.healthComponentData.health = 0;
     this.gameObject.emit(HealthComponent.KilledEvent);
-    // do not destroy the gameObject just yet
-    // this.gameObject.destroy();
-    this.hideGameObject();
+    this.playDeathAnimation();
+    this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
+      this.gameObject.destroy();
+    });
   }
 
-  /**
-   * todo this is temp before we display proper death animation and ruins under the gameObject
-   */
-  private hideGameObject() {
-    const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible; // todo this is used on multiple places
-    if (visibleComponent.setVisible === undefined) return;
-    visibleComponent.setVisible(false);
-    this.gameObject.emit(ContainerComponent.GameObjectVisibilityChanged, false);
+  private playDeathAnimation() {
+    const sprite = this.gameObject as Phaser.GameObjects.Sprite; // todo
+    if (sprite.anims) {
+      sprite.play("general_warrior_hurt"); // todo
+    } else {
+      // todo this is just fallback - ensure that you handle this case correctly
+      const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible;
+      if (visibleComponent.setVisible === undefined) return;
+      visibleComponent.setVisible(false);
+    }
   }
 
   resetHealth() {

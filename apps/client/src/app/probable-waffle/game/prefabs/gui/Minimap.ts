@@ -63,7 +63,6 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.add(minimap_border);
 
     /* START-USER-CTR-CODE */
-    this.visible = false;
     /* END-USER-CTR-CODE */
   }
 
@@ -82,7 +81,6 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.probableWaffleScene = probableWaffleScene;
     this.hudProbableWaffle = hudProbableWaffle;
     this.redrawMinimap();
-    this.visible = true;
   }
 
   redrawMinimap() {
