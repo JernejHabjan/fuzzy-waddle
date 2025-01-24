@@ -32,7 +32,7 @@ import { ResourceSourceDefinition } from "../entity/economy/resource/resource-so
 import { ActorTranslateDefinition } from "../entity/actor/components/actor-translate-component";
 import { AiType, PawnAiDefinition } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 
-const treeDefinitions: ActorDefinition = {
+const treeDefinitions: ActorInfoDefinition = {
   components: {
     objectDescriptor: {
       color: 0xbea55b
@@ -49,7 +49,7 @@ const treeDefinitions: ActorDefinition = {
     }
   }
 };
-const stairsDefinition: ActorDefinition = {
+const stairsDefinition: ActorInfoDefinition = {
   components: {
     objectDescriptor: {
       color: 0x95a083
@@ -75,14 +75,14 @@ const stairsDefinition: ActorDefinition = {
         [ResourceType.Minerals]: 10
       },
       refundFactor: 0.5,
-      productionTime: 1000,
+      productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
     collider: { enabled: true }
   }
 };
 
-const wallDefinition: ActorDefinition = {
+const wallDefinition: ActorInfoDefinition = {
   components: {
     objectDescriptor: {
       color: 0x95a083
@@ -108,13 +108,13 @@ const wallDefinition: ActorDefinition = {
         [ResourceType.Minerals]: 10
       },
       refundFactor: 0.5,
-      productionTime: 1000,
+      productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
     collider: { enabled: true }
   }
 };
-export type ActorDefinition = Partial<{
+export type ActorInfoDefinition = Partial<{
   components: Partial<{
     objectDescriptor: ObjectDescriptorDefinition;
     owner: OwnerDefinition;
@@ -143,7 +143,7 @@ export type ActorDefinition = Partial<{
   }>;
 }>;
 export const pwActorDefinitions: {
-  [key in ObjectNames]: ActorDefinition;
+  [key in ObjectNames]: ActorInfoDefinition;
 } = {
   [ObjectNames.Hedgehog]: {
     components: {
@@ -215,7 +215,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       selectable: { enabled: true },
@@ -275,7 +275,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -338,7 +338,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -401,7 +401,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -483,7 +483,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -559,7 +559,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       production: {
@@ -605,7 +605,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -654,7 +654,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       container: {
@@ -710,7 +710,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -759,7 +759,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       resourceDrain: {
@@ -816,7 +816,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -873,7 +873,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -935,7 +935,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -998,7 +998,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -1061,7 +1061,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -1138,7 +1138,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       requirements: {
@@ -1209,7 +1209,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       selectable: { enabled: true },
@@ -1265,7 +1265,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       production: {
@@ -1319,7 +1319,7 @@ export const pwActorDefinitions: {
           [ResourceType.Minerals]: 10
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       production: {
@@ -1459,7 +1459,7 @@ export const pwActorDefinitions: {
           [ResourceType.Stone]: 30
         },
         refundFactor: 0.5,
-        productionTime: 1000,
+        productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
       container: {

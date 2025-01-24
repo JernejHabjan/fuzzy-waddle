@@ -6,9 +6,10 @@
 import { getActorComponent } from "../../../data/actor-component";
 import ActorInfoLabel from "./ActorInfoLabel";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { ActorDefinition } from "../../../data/actor-definitions";
+import { ActorInfoDefinition } from "../../../data/actor-definitions";
 import { DamageType } from "../../../entity/combat/damage-type";
 import GameObject = Phaser.GameObjects.GameObject;
+import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {
@@ -79,8 +80,10 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   private attributes: ActorInfoLabel[];
 
   /* START-USER-CODE */
+  private healthSubscription?: Subscription;
+  private armourSubscription?: Subscription;
 
-  showActorAttributes(actor: GameObject, definition: ActorDefinition) {
+  showActorAttributes(actor: GameObject, definition: ActorInfoDefinition) {
     const iconsAndTexts: {
       icon: {
         key: string;
@@ -125,17 +128,30 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
 
     const healthComponent = getActorComponent(actor, HealthComponent);
     const maxHealth = definition.components?.health?.maxHealth;
+    this.healthSubscription?.unsubscribe();
     if (maxHealth) {
-      const currentHealth = healthComponent ? healthComponent.healthComponentData?.health : null;
+      const currentHealth = healthComponent!.healthComponentData!.health;
       const health = `${currentHealth}/${maxHealth}`;
-      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: health });
+      const iconIndex = iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: health });
+
+      this.healthSubscription = healthComponent!.healthChanged.subscribe((newHealth) => {
+        this.attributes[iconIndex - 1].setText(`${newHealth}/${maxHealth}`);
+      });
     }
 
     const maxArmour = definition.components?.health?.maxArmour;
+    this.armourSubscription?.unsubscribe();
     if (maxArmour) {
-      const currentArmour = healthComponent ? healthComponent.healthComponentData?.armour : null;
+      const currentArmour = healthComponent!.healthComponentData.armour;
       const armour = `${currentArmour}/${maxArmour}`;
-      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/shield.png" }, text: armour });
+      const iconIndex = iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/shield.png" },
+        text: armour
+      });
+
+      this.armourSubscription = healthComponent!.armorChanged.subscribe((newArmour) => {
+        this.attributes[iconIndex - 1].setText(`${newArmour}/${maxArmour}`);
+      });
     }
 
     this.attributes.forEach((a) => (a.visible = false));
@@ -149,6 +165,13 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   hideAll() {
     this.attributes.forEach((a) => (a.visible = false));
   }
+
+  destroy(fromScene?: boolean) {
+    this.healthSubscription?.unsubscribe();
+    this.armourSubscription?.unsubscribe();
+    super.destroy(fromScene);
+  }
+
   /* END-USER-CODE */
 }
 

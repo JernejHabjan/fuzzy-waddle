@@ -12,8 +12,10 @@ import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
-import { ActorDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
+import { ActorInfoDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "../../../data/object-names";
+import { getActorComponent } from "../../../data/actor-component";
+import { HealthComponent } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -68,6 +70,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     /* START-USER-CTR-CODE */
     this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
     this.subscribeToPlayerSelection();
+    this.subscribeToActorInfoLabelEvents();
     this.hideAllLabels();
     /* END-USER-CTR-CODE */
   }
@@ -78,8 +81,9 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   private actorInfoLabels: ActorInfoLabels;
 
   /* START-USER-CODE */
-
+  private actorKillSubscription?: Subscription;
   private selectionChangedSubscription?: Subscription;
+  private actorInfoLabelsVisibilitySubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
@@ -87,27 +91,36 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       if (selectedActors.length === 0) {
         this.hideAllLabels();
         return;
-      } else {
-        const actor = selectedActors[0];
-        const definition = pwActorDefinitions[actor.name as ObjectNames];
-        if (!definition) {
-          throw new Error(`Actor definition for ${actor.name} not found.`);
-        }
-
-        this.setActorInfoLabel(definition);
-        this.actorDetails.showActorAttributes(actor, definition);
-        this.progress_bar.setProgressBar(actor);
       }
+      const actor = selectedActors[0];
+      const definition = pwActorDefinitions[actor.name as ObjectNames];
+      this.setActorInfoLabel(definition);
+      this.actorDetails.showActorAttributes(actor, definition);
+      this.progress_bar.setProgressBar(actor);
+      this.actorInfoLabels.showActorLabels(actor);
+      this.subscribeToActorKillEvent(actor);
     });
   }
 
-  private setActorInfoLabel(actorDefinition: ActorDefinition) {
+  private setActorInfoLabel(actorDefinition: ActorInfoDefinition) {
     const infoDefinition = actorDefinition.components?.info;
     this.actorInfoLabel.setText(infoDefinition?.name ?? "");
     this.actorInfoLabel.setIcon(infoDefinition?.smallImage?.key, infoDefinition?.smallImage?.frame);
     this.actorInfoLabel.visible = true;
   }
 
+  /**
+   * Toggles the visibility of the actor info labels and the actor details.
+   * When actor is training or producing, the actor info labels are visible, otherwise the actor details are visible.
+   */
+  private subscribeToActorInfoLabelEvents() {
+    this.actorInfoLabelsVisibilitySubscription = this.actorInfoLabels.visibilityChangedObservable.subscribe(
+      (visible) => {
+        this.actorInfoLabels.visible = visible;
+        this.actorDetails.visible = !visible;
+      }
+    );
+  }
   private hideAllLabels() {
     this.actorInfoLabel.visible = false;
     this.actorInfoLabels.cleanActor();
@@ -118,8 +131,18 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
+    this.actorKillSubscription?.unsubscribe();
+    this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
   }
 
+  private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
+    this.actorKillSubscription?.unsubscribe();
+    this.actorKillSubscription = getActorComponent(actor, HealthComponent)?.healthChanged.subscribe((newHealth) => {
+      if (newHealth <= 0) {
+        this.hideAllLabels();
+      }
+    });
+  }
   /* END-USER-CODE */
 }
 

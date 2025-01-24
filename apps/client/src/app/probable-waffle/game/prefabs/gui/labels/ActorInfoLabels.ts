@@ -4,6 +4,10 @@
 
 import ActorIcon from "./ActorIcon";
 /* START-USER-IMPORTS */
+import { pwActorDefinitions } from "../../../data/actor-definitions";
+import { getActorComponent } from "../../../data/actor-component";
+import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";
+import { BehaviorSubject, Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -106,12 +110,77 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private icons: ActorIcon[];
 
   /* START-USER-CODE */
-
-  // Write your code here.
+  private visibilityChanged = new BehaviorSubject<boolean>(false);
+  private queueChangedSubscription?: Subscription;
 
   /* END-USER-CODE */
   cleanActor() {
-    // todo unsubscribe from progress
+    this.queueChangedSubscription?.unsubscribe();
+    this.visible = false;
+  }
+
+  get visibilityChangedObservable() {
+    return this.visibilityChanged.asObservable();
+  }
+
+  destroy(fromScene?: boolean) {
+    this.cleanActor(); // Clean up subscription
+    super.destroy(fromScene);
+  }
+
+  showActorLabels(actor: Phaser.GameObjects.GameObject) {
+    // Clean up any existing subscription
+    this.queueChangedSubscription?.unsubscribe();
+
+    this.handleProductionComponent(actor);
+  }
+
+  private handleProductionComponent(actor: Phaser.GameObjects.GameObject) {
+    const productionComponent = getActorComponent(actor, ProductionComponent);
+    if (!productionComponent) {
+      this.cleanActor();
+      return;
+    }
+
+    // Subscribe to production progress updates
+    this.queueChangedSubscription = productionComponent.queueChangeObservable.subscribe((event) => {
+      this.handleProductionProgressUpdate(productionComponent, event.itemsFromAllQueues);
+    });
+
+    this.handleProductionProgressUpdate(productionComponent, productionComponent.itemsFromAllQueues);
+  }
+
+  private handleProductionProgressUpdate(
+    productionComponent: ProductionComponent,
+    itemsFromAllQueues: ProductionQueueItem[]
+  ) {
+    const totalProductionSize =
+      productionComponent.productionDefinition.queueCount * productionComponent.productionDefinition.capacityPerQueue;
+    let producingActors = 0;
+    this.icons.forEach((icon, index) => {
+      if (index >= totalProductionSize) {
+        icon.visible = false;
+        return;
+      }
+      const item = itemsFromAllQueues[index];
+      if (item) {
+        const actorName = item.actorName;
+        const actorDefinition = pwActorDefinitions[actorName];
+        const infoComponent = actorDefinition.components!.info!;
+
+        icon.setActorIcon(
+          infoComponent.smallImage!.key,
+          infoComponent.smallImage!.frame,
+          infoComponent.smallImage!.origin
+        );
+        producingActors++;
+      } else {
+        icon.setNumber(index + 1);
+      }
+      icon.visible = true;
+    });
+
+    this.visibilityChanged.next(producingActors > 0);
   }
 }
 

@@ -59,7 +59,8 @@
                 {
                     "type": "Image",
                     "id": "59ba1df0-5151-48c1-a465-05bcc250aae6",
-                    "label": "image_1",
+                    "label": "image",
+                    "scope": "CLASS",
                     "texture": {
                         "key": "factions",
                         "frame": "character_icons/general/warrior.png"

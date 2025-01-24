@@ -25,6 +25,9 @@ export type ProductionProgressEvent = {
   queueItemIndex: number;
   progressInPercentage: number;
 };
+export type ProductionQueueChangeEvent = {
+  itemsFromAllQueues: ProductionQueueItem[];
+};
 
 export type ProductionDefinition = {
   availableProduceActors: ObjectNames[];
@@ -39,7 +42,7 @@ export class ProductionComponent {
   private ownerComponent!: OwnerComponent;
   private playerChangedSubscription?: Subscription;
   private productionProgressSubject = new Subject<ProductionProgressEvent>();
-
+  private queueChangeSubject = new Subject<ProductionQueueChangeEvent>();
   constructor(
     private readonly gameObject: GameObject,
     public readonly productionDefinition: ProductionDefinition
@@ -62,6 +65,14 @@ export class ProductionComponent {
 
   get productionProgressObservable() {
     return this.productionProgressSubject.asObservable();
+  }
+
+  get queueChangeObservable() {
+    return this.queueChangeSubject.asObservable();
+  }
+
+  get itemsFromAllQueues() {
+    return this.productionQueues.reduce((acc, queue) => acc.concat(queue.queuedItems), [] as ProductionQueueItem[]);
   }
 
   update(time: number, delta: number): void {
@@ -175,9 +186,12 @@ export class ProductionComponent {
 
     // add to queue
     queue.queuedItems.push(queueItem);
+    this.queueChangeSubject.next({
+      itemsFromAllQueues: this.itemsFromAllQueues
+    });
     if (queue.queuedItems.length === 1) {
       // start production
-      this.startProductionInQueue(queue);
+      this.resetQueue(queue);
     }
 
     return null;
@@ -189,8 +203,11 @@ export class ProductionComponent {
     }
     const { actorName } = queue.queuedItems[queueIndex];
 
-    queue.remainingProductionTime = 0;
     queue.queuedItems.splice(queueIndex, 1);
+    this.resetQueue(queue);
+    this.queueChangeSubject.next({
+      itemsFromAllQueues: this.itemsFromAllQueues
+    });
 
     // spawn gameObject
 
@@ -233,13 +250,19 @@ export class ProductionComponent {
   private findQueueForProduct(): ProductionQueue | undefined {
     let queueWithLeastProducts: ProductionQueue | undefined = undefined;
     let queueWithLeastProductsCount = Number.MAX_SAFE_INTEGER;
+
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
-      if (queue.queuedItems.length < queueWithLeastProductsCount) {
-        queueWithLeastProducts = queue;
-        queueWithLeastProductsCount = queue.queuedItems.length;
+
+      // Check if the queue is not at full capacity
+      if (queue.queuedItems.length < this.productionDefinition.capacityPerQueue) {
+        if (queue.queuedItems.length < queueWithLeastProductsCount) {
+          queueWithLeastProducts = queue;
+          queueWithLeastProductsCount = queue.queuedItems.length;
+        }
       }
     }
+
     return queueWithLeastProducts;
   }
 
@@ -266,12 +289,9 @@ export class ProductionComponent {
     return null;
   }
 
-  private startProductionInQueue(queue: ProductionQueue) {
-    if (queue.queuedItems.length <= 0) {
-      throw new Error("No gameObject in queue");
-    }
+  private resetQueue(queue: ProductionQueue) {
+    if (queue.queuedItems.length <= 0) return;
     const { costData } = queue.queuedItems[0];
-
     queue.remainingProductionTime = costData.productionTime;
   }
 

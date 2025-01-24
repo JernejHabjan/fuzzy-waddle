@@ -3,9 +3,8 @@
 /* START OF COMPILED CODE */
 
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
-import ActorAction from "./ActorAction";
 /* START-USER-IMPORTS */
-import { ActorActionSetup } from "./ActorAction";
+import ActorAction, { ActorActionSetup } from "./ActorAction";
 import { getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
@@ -18,6 +17,7 @@ import {
 } from "../../../entity/building/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
+import { HealthComponent } from "../../../entity/combat/components/health-component";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -151,6 +151,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   private selectionChangedSubscription?: Subscription;
+  private actorKillSubscription?: Subscription;
   private mainSceneWithActors: ProbableWaffleScene;
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
@@ -162,6 +163,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         const actorsByPriority = sortActorsByPriority(selectedActors);
         const actor = actorsByPriority[0];
         this.showActorActions(actor);
+        this.subscribeToActorKillEvent(actor);
       }
     });
   }
@@ -169,6 +171,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private hideAllActions() {
     this.actor_actions.forEach((action) => {
       action.setup({ visible: false });
+    });
+  }
+
+  private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
+    this.actorKillSubscription?.unsubscribe();
+    this.actorKillSubscription = getActorComponent(actor, HealthComponent)?.healthChanged.subscribe((newHealth) => {
+      if (newHealth <= 0) {
+        this.hideAllActions();
+      }
     });
   }
 
@@ -304,6 +315,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
+    this.actorKillSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */

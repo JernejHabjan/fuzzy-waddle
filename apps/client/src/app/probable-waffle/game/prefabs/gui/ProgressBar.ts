@@ -80,20 +80,23 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
 
     // Subscribe to production progress updates
     this.productionProgressSubscription = productionComponent.productionProgressObservable.subscribe((event) => {
-      const { progressInPercentage } = event; // Using progress from the event
-      this.visible = progressInPercentage > 0 && progressInPercentage < 100;
-      this.setPercentage(progressInPercentage);
+      const { progressInPercentage } = event;
+      this.handleProductionProgressUpdate(progressInPercentage);
     });
 
     // Set initial state based on whether production is ongoing
     if (productionComponent.isProducing()) {
       const percentage = productionComponent.getCurrentProgress() ?? 0;
-      this.visible = percentage > 0 && percentage < 100;
-      this.setPercentage(percentage);
+      this.handleProductionProgressUpdate(percentage);
     } else {
       this.visible = false;
       // do not clear subscription
     }
+  }
+
+  private handleProductionProgressUpdate(progressInPercentage: number) {
+    this.visible = progressInPercentage > 0 && progressInPercentage < 100;
+    this.setPercentage(progressInPercentage);
   }
 
   cleanActor() {
