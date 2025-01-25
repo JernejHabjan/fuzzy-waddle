@@ -40,18 +40,26 @@ export class ProbableWafflePlayer extends BasePlayer<
     return this.playerState.data.resources;
   }
 
+  /**
+   * IMPORTANT - do not use directly - use emitResource function instead
+   * @deprecated
+   */
   addResources(resources: Partial<Record<ResourceType, number>>): void {
     Object.entries(resources).forEach(([resourceType, amount]) => {
       this.addResource(resourceType as ResourceType, amount);
     });
   }
 
-  addResource(resourceType: ResourceType, amount: number): number {
+  private addResource(resourceType: ResourceType, amount: number): number {
     const resourceAmount = this.playerState.data.resources[resourceType] || 0;
     this.playerState.data.resources[resourceType] = resourceAmount + amount;
     return resourceAmount;
   }
 
+  /**
+   * IMPORTANT - do not use directly - use emitResource function instead
+   * @deprecated
+   */
   payAllResources(resources: Partial<Record<ResourceType, number>>): void {
     Object.entries(resources).forEach(([resourceType, amount]) => {
       this.payResources(resourceType as ResourceType, amount);

@@ -93,7 +93,7 @@ export function sendPlayerStateEvent(
 
   const communicator = getCommunicator(scene);
   const data = {
-    playerNumber: scene.player.playerNumber!,
+    playerNumber: scene.player.playerNumber!, // todo this is incorrect, as AI player will not be able to get resources
     ...payloadIn
   } satisfies ProbableWafflePlayerDataChangeEventPayload;
 
