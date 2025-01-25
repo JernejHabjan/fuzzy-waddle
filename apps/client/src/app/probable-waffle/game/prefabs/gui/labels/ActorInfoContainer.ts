@@ -95,10 +95,17 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       const actor = selectedActors[0];
       const definition = pwActorDefinitions[actor.name as ObjectNames];
       this.setActorInfoLabel(definition);
-      this.actorDetails.showActorAttributes(actor, definition);
-      this.progress_bar.setProgressBar(actor);
-      this.actorInfoLabels.showActorLabels(actor);
-      this.subscribeToActorKillEvent(actor);
+      if (selectedActors.length === 1) {
+        this.actorDetails.showActorAttributes(actor, definition);
+        this.progress_bar.setProgressBar(actor);
+        this.actorInfoLabels.showActorLabels(actor);
+        this.subscribeToActorKillEvent(actor);
+        return;
+      }
+      // multi-selection
+      this.actorInfoLabels.showMultipleActors(selectedActors);
+      this.actorDetails.hideAll();
+      this.progress_bar.cleanActor();
     });
   }
 

@@ -8,6 +8,7 @@ import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -181,6 +182,28 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     });
 
     this.visibilityChanged.next(producingActors > 0);
+  }
+
+  showMultipleActors(selectedActors: Phaser.GameObjects.GameObject[]) {
+    this.icons.forEach((icon, index) => {
+      if (index >= selectedActors.length) {
+        icon.visible = false;
+        return;
+      }
+      const actor = selectedActors[index];
+      const actorName = actor.name;
+      const actorDefinition = pwActorDefinitions[actorName as ObjectNames];
+      const infoComponent = actorDefinition.components!.info!;
+
+      icon.setActorIcon(
+        infoComponent.smallImage!.key,
+        infoComponent.smallImage!.frame,
+        infoComponent.smallImage!.origin
+      );
+      icon.visible = true;
+    });
+
+    this.visibilityChanged.next(selectedActors.length > 0);
   }
 }
 

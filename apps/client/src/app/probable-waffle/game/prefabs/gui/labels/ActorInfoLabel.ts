@@ -5,6 +5,8 @@
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
+import { IconHelper } from "./IconHelper";
+
 export default class ActorInfoLabel extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 16, y ?? 11);
@@ -40,12 +42,9 @@ export default class ActorInfoLabel extends Phaser.GameObjects.Container {
   setIcon(key: string | undefined, frame?: string, height = 32) {
     this.icon.visible = !!key;
     if (!key || !frame) return;
-    this.icon.setTexture(key, frame);
-    const aspectRatio = this.icon.width / this.icon.height;
-    const newHeight = height;
-    const newWidth = newHeight * aspectRatio;
-    this.icon.setDisplaySize(newWidth, newHeight);
-    this.icon.setOrigin(0.5, 0.5);
+
+    // noinspection JSSuspiciousNameCombination
+    IconHelper.setIcon(this.icon, key, frame, { x: 0.5, y: 0.5 }, { maxWidth: height, maxHeight: height });
   }
 
   /* END-USER-CODE */

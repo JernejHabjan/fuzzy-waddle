@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
+import { IconHelper } from "./IconHelper";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -49,9 +50,9 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
   setActorIcon(key: string, frame: string, origin: { x: number; y: number }) {
     this.nr.visible = false;
-    this.image.setTexture(key, frame);
-    this.image.setOrigin(origin.x, origin.y);
     this.image.visible = true;
+
+    IconHelper.setIcon(this.image, key, frame, origin, { maxWidth: 16, maxHeight: 16 });
   }
 
   setNumber(number: number) {
