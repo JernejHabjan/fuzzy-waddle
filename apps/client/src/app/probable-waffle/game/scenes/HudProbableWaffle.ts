@@ -104,7 +104,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new CursorHandler(this);
     new HudGameState(this);
     new HudElementVisibilityHandler(this, this.hudElements);
-    new MultiSelectionHandler(this);
+    this.sceneGameData.components.push(new MultiSelectionHandler(this));
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
   }

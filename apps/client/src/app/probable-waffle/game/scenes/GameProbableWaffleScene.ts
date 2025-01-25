@@ -18,7 +18,7 @@ import { TilemapComponent } from "./components/tilemap.component";
 import { RestartGame } from "../data/restart-game";
 import { AiPlayerHandler } from "./components/ai-player-handler";
 
-export interface GameProbableWaffleSceneData {
+export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
   systems: any[];
   components: any[];
@@ -33,21 +33,6 @@ export interface GameProbableWaffleSceneData {
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
-
-  override getSceneGameData() {
-    return this.sceneGameData;
-  }
-
-  private sceneGameData: GameProbableWaffleSceneData = {
-    baseGameData: this.baseGameData,
-    systems: [],
-    components: [],
-    services: [],
-    initializers: {
-      sceneInitialized: new BehaviorSubject<boolean>(false),
-      postSceneInitialized: new BehaviorSubject<boolean>(false)
-    }
-  } satisfies GameProbableWaffleSceneData;
 
   init() {
     super.init();
@@ -64,7 +49,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-    new SingleSelectionHandler(this, hud, this.tilemap);
+    this.sceneGameData.components.push(new SingleSelectionHandler(this, hud, this.tilemap));
     new GameObjectSelectionHandler(this);
     new SaveGame(this);
     new RestartGame(this);
