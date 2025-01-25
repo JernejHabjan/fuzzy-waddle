@@ -108,18 +108,17 @@ export class SingleSelectionHandler {
     );
   }
 
-  private sendSelection(
+  public sendSelection(
     button: "left" | "right",
-    selected: string[],
+    objectIds: string[],
     shiftKey: boolean = false,
     ctrlKey: boolean = false
   ) {
     this.scene.communicator.allScenes!.emit({
       name: "selection.singleSelect",
-
       data: {
         button,
-        selected,
+        objectIds,
         shiftKey,
         ctrlKey
       } satisfies ProbableWaffleSelectionData
