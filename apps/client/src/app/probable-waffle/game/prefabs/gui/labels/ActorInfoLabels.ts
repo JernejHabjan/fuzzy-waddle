@@ -2,12 +2,18 @@
 
 /* START OF COMPILED CODE */
 
-import ActorIcon from "./ActorIcon";
+import ActorIcon, { ActorIconClickAction } from "./ActorIcon";
 /* START-USER-IMPORTS */
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
+import { ObjectNames } from "../../../data/object-names";
+import { SingleSelectionHandler } from "../../../world/managers/controllers/input/single-selection.handler";
+import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
+import { IdComponent } from "../../../entity/actor/components/id-component";
+import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -103,20 +109,25 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.icons = icons;
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    this.subscribeToClickEvents();
+    this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
     /* END-USER-CTR-CODE */
   }
 
   private icons: ActorIcon[];
 
   /* START-USER-CODE */
+  private readonly mainSceneWithActors?: ProbableWaffleScene;
   private visibilityChanged = new BehaviorSubject<boolean>(false);
   private queueChangedSubscription?: Subscription;
+  private clickSubscriptions: Subscription[] = [];
+  private actor?: Phaser.GameObjects.GameObject;
 
   /* END-USER-CODE */
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
     this.visible = false;
+    this.actor = undefined;
   }
 
   get visibilityChangedObservable() {
@@ -124,18 +135,22 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   }
 
   destroy(fromScene?: boolean) {
-    this.cleanActor(); // Clean up subscription
+    this.cleanActor();
+    this.clickSubscriptions.forEach((sub) => sub.unsubscribe());
     super.destroy(fromScene);
   }
 
-  showActorLabels(actor: Phaser.GameObjects.GameObject) {
+  setLabelsForDisplayingActorsQueues(actor: Phaser.GameObjects.GameObject) {
+    this.actor = actor;
     // Clean up any existing subscription
     this.queueChangedSubscription?.unsubscribe();
 
-    this.handleProductionComponent(actor);
+    this.handleProductionComponent();
   }
 
-  private handleProductionComponent(actor: Phaser.GameObjects.GameObject) {
+  private handleProductionComponent() {
+    const actor = this.actor;
+    if (!actor) return;
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (!productionComponent) {
       this.cleanActor();
@@ -169,6 +184,9 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         const infoComponent = actorDefinition.components!.info!;
 
         icon.setActorIcon(
+          {
+            iconIndex: index
+          },
           infoComponent.smallImage!.key,
           infoComponent.smallImage!.frame,
           infoComponent.smallImage!.origin
@@ -181,6 +199,68 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     });
 
     this.visibilityChanged.next(producingActors > 0);
+  }
+
+  setLabelsForDisplayingActors(selectedActors: Phaser.GameObjects.GameObject[]) {
+    this.icons.forEach((icon, index) => {
+      if (index >= selectedActors.length) {
+        icon.visible = false;
+        return;
+      }
+      const actor = selectedActors[index];
+      const actorName = actor.name;
+      const actorDefinition = pwActorDefinitions[actorName as ObjectNames];
+      const infoComponent = actorDefinition.components!.info!;
+      const actorIdComponent = getActorComponent(actor, IdComponent);
+      if (!actorIdComponent) return;
+      icon.setActorIcon(
+        {
+          actorObjectId: actorIdComponent.id
+        },
+        infoComponent.smallImage!.key,
+        infoComponent.smallImage!.frame,
+        infoComponent.smallImage!.origin
+      );
+      icon.visible = true;
+    });
+
+    this.visibilityChanged.next(selectedActors.length > 0);
+  }
+
+  private subscribeToClickEvents() {
+    this.icons.forEach((icon) => {
+      const sub = icon.onClick.subscribe((action) => {
+        this.tryHandleIconClickActor(action);
+        this.tryHandleIconClickProduction(action);
+      });
+      this.clickSubscriptions.push(sub);
+    });
+  }
+
+  private tryHandleIconClickActor(action: ActorIconClickAction) {
+    if (!action.definition.actorObjectId) return;
+    if (!this.mainSceneWithActors) throw new Error("Main scene with actors not found");
+    const singleSelectionHandler = getSceneComponent(this.mainSceneWithActors, SingleSelectionHandler);
+    if (!singleSelectionHandler) throw new Error("SingleSelectionHandler not found");
+    singleSelectionHandler.sendSelection(
+      "left",
+      [action.definition.actorObjectId],
+      action.keys.shift,
+      action.keys.ctrl
+    );
+  }
+
+  private tryHandleIconClickProduction(action: ActorIconClickAction) {
+    if (action.definition.iconIndex === undefined) return;
+    const actor = this.actor;
+    if (!actor) return;
+    const productionComponent = getActorComponent(actor, ProductionComponent);
+    if (!productionComponent) return;
+    const icon = this.icons[action.definition.iconIndex];
+    if (!icon) return;
+    const item = productionComponent.itemsFromAllQueues[action.definition.iconIndex];
+    if (!item) return;
+    productionComponent.cancelProduction(item);
   }
 }
 

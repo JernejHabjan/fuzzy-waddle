@@ -3,8 +3,8 @@ import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionCostDefinition } from "./production-cost-component";
-import { getCommunicator, getPlayer } from "../../../data/scene-data";
-import { ActorDefinition, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { emitResource, getCommunicator, getPlayer } from "../../../data/scene-data";
+import { ActorDefinition, ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
@@ -88,21 +88,7 @@ export class ProductionComponent {
 
         let productionCostPaid = false;
         if (costData.costType == PaymentType.PayOverTime) {
-          const owner = this.ownerComponent.getOwner();
-          if (!owner) {
-            throw new Error("Owner not found");
-          }
-          const player = getPlayer(this.gameObject.scene, owner);
-          if (!player) {
-            throw new Error("PlayerController not found");
-          }
-          // get player resources and pay for production
-          const canPayAllResources = player.canPayAllResources(costData.resources);
-
-          if (canPayAllResources) {
-            player.payAllResources(costData.resources);
-            productionCostPaid = true;
-          }
+          productionCostPaid = this.handlePayOverTimePayment(costData.resources);
         } else {
           productionCostPaid = true;
         }
@@ -184,17 +170,54 @@ export class ProductionComponent {
       throw new Error("No queue found");
     }
 
+    this.handleImmediatePayment(queueItem);
+
     // add to queue
     queue.queuedItems.push(queueItem);
     this.queueChangeSubject.next({
       itemsFromAllQueues: this.itemsFromAllQueues
     });
+
     if (queue.queuedItems.length === 1) {
       // start production
       this.resetQueue(queue);
     }
 
     return null;
+  }
+
+  private handleImmediatePayment(queueItem: ProductionQueueItem): void {
+    if (queueItem.costData.costType === PaymentType.PayImmediately) {
+      const owner = this.ownerComponent.getOwner();
+      if (!owner) return;
+
+      const player = getPlayer(this.gameObject.scene, owner);
+      if (!player) return;
+
+      // Fully pay for the production item
+      emitResource(this.gameObject.scene, "resource.removed", queueItem.costData.resources);
+    }
+  }
+
+  private handlePayOverTimePayment(resources: Partial<Record<ResourceType, number>>): boolean {
+    const owner = this.ownerComponent.getOwner();
+    if (!owner) {
+      throw new Error("Owner not found");
+    }
+    const player = getPlayer(this.gameObject.scene, owner);
+    if (!player) {
+      throw new Error("PlayerController not found");
+    }
+    // get player resources and pay for production
+    const canPayAllResources = player.canPayAllResources(resources);
+
+    let productionCostPaid = false;
+    if (canPayAllResources) {
+      emitResource(this.gameObject.scene, "resource.removed", resources);
+      productionCostPaid = true;
+    }
+
+    return productionCostPaid;
   }
 
   private finishProduction(queue: ProductionQueue, queueIndex: number) {
@@ -299,6 +322,75 @@ export class ProductionComponent {
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.playerChangedSubscription?.unsubscribe();
     this.rallyPoint.destroy();
+  }
+
+  cancelProduction(item: ProductionQueueItem) {
+    for (let i = 0; i < this.productionQueues.length; i++) {
+      const queue = this.productionQueues[i];
+      const index = queue.queuedItems.findIndex((i) => i.actorName === item.actorName);
+
+      if (index !== -1) {
+        // Get the item being cancelled
+        const cancelledItem = queue.queuedItems[index];
+        const { costData } = cancelledItem;
+
+        // Remove the item from the queue
+        queue.queuedItems.splice(index, 1);
+
+        // Notify of queue change
+        this.queueChangeSubject.next({
+          itemsFromAllQueues: this.itemsFromAllQueues
+        });
+
+        this.refund(costData, queue);
+
+        // If queue is empty, reset progress
+        if (queue.queuedItems.length === 0) {
+          this.productionProgressSubject.next({
+            queueIndex: i,
+            queueItemIndex: 0,
+            progressInPercentage: 0
+          });
+        }
+
+        // If the first item was cancelled, reset the queue
+        if (index === 0) {
+          this.resetQueue(queue);
+        }
+
+        break;
+      }
+    }
+  }
+
+  private refund(costData: ProductionCostDefinition, queue: ProductionQueue) {
+    // Refund resources based on payment type and progress
+    const owner = this.ownerComponent.getOwner();
+    if (!owner) return;
+    const player = getPlayer(this.gameObject.scene, owner);
+    if (!player) return;
+    const refundedResources: Partial<Record<ResourceType, number>> = {};
+    switch (costData.costType) {
+      case PaymentType.PayOverTime: // For pay over time, calculate partial refund based on progress
+        const totalProductionTime = costData.productionTime;
+        const remainingTime = queue.remainingProductionTime;
+        const elapsedTime = totalProductionTime - remainingTime;
+        const progressPercentage = elapsedTime / totalProductionTime;
+
+        Object.entries(costData.resources).forEach(([type, amount]) => {
+          // Refund based on remaining progress and refund factor
+          refundedResources[type as ResourceType] = Math.floor(
+            (amount || 0) * (1 - progressPercentage) * costData.refundFactor
+          );
+        });
+        break;
+      case PaymentType.PayImmediately: // For immediate payment, use full refund factor
+        Object.entries(costData.resources).forEach(([type, amount]) => {
+          refundedResources[type as ResourceType] = Math.floor((amount || 0) * costData.refundFactor);
+        });
+        break;
+    }
+    emitResource(this.gameObject.scene, "resource.added", refundedResources);
   }
 }
 

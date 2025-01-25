@@ -213,12 +213,14 @@ export class ProbableWaffleListeners {
         case "resource.added" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          // noinspection JSDeprecatedSymbols
           player.addResources(payload.data.playerStateData!.resources!);
           console.log("resources added for player", player.playerNumber);
           break;
         case "resource.removed" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          // noinspection JSDeprecatedSymbols
           player.payAllResources(payload.data.playerStateData!.resources!);
           console.log("resources removed for player", player.playerNumber);
           break;

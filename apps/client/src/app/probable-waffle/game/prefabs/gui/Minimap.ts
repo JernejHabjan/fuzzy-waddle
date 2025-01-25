@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
-import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSceneComponent } from "../../scenes/components/scene-component-helpers";
 import { TilemapComponent } from "../../scenes/components/tilemap.component";
@@ -13,6 +12,7 @@ import { ObjectDescriptorComponent } from "../../entity/actor/components/object-
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { OwnerComponent } from "../../entity/actor/components/owner-component";
 import HudProbableWaffle from "../../scenes/HudProbableWaffle";
+import { MultiSelectionHandler } from "../../world/managers/controllers/input/multi-selection.handler";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -138,6 +138,11 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
     this.minimapDiamonds.forEach((diamond) => diamond.destroy());
     this.minimapDiamonds = [];
+
+    if (!this.hudProbableWaffle) throw new Error("Parent scene not set");
+    const multiSelectionHandler = getSceneComponent(this.hudProbableWaffle, MultiSelectionHandler);
+    if (!multiSelectionHandler) throw new Error("MultiSelectionHandler not found on parent");
+
     for (let i = 0; i < widthInTiles; i++) {
       for (let j = 0; j < widthInTiles; j++) {
         const tile = layerData[i][j];
@@ -145,7 +150,8 @@ export default class Minimap extends Phaser.GameObjects.Container {
         const isoX = offsetX + (j - i) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
         const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
-        diamond.on("pointerover", (pointer: Phaser.Input.Pointer) => {
+        diamond.on(Phaser.Input.Events.POINTER_OVER, (pointer: Phaser.Input.Pointer) => {
+          if (multiSelectionHandler?.multiSelecting) return;
           if (pointer.rightButtonDown()) {
             this.assignActorActionToTileCoordinates({ x: i, y: j });
             // Handle right-click logic here

@@ -1,6 +1,6 @@
 export interface ProbableWaffleSelectionData {
   button: "left" | "right";
-  selected?: string[];
+  objectIds?: string[];
   selectedArea?: { x: number; y: number; width: number; height: number };
   terrainSelectedTileVec3?: { x: number; y: number; z: number };
   terrainSelectedWorldVec3?: { x: number; y: number; z: number };

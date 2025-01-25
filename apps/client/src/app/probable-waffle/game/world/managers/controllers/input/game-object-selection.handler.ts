@@ -35,18 +35,18 @@ export class GameObjectSelectionHandler {
             emitEventSelection(this.scene, "selection.cleared");
             break;
           case "selection.singleSelect":
-            console.log("singleSelect", data.selected);
+            console.log("singleSelect", data.objectIds);
             const isShiftDown = data.shiftKey;
             const isCtrlDown = data.ctrlKey;
 
             if (isShiftDown) {
-              console.log("removeFromSelection", data.selected);
-              emitEventSelection(this.scene, "selection.removed", data.selected!);
+              console.log("removeFromSelection", data.objectIds);
+              emitEventSelection(this.scene, "selection.removed", data.objectIds!);
             } else if (isCtrlDown) {
-              console.log("additionalSelect", data.selected);
-              emitEventSelection(this.scene, "selection.added", data.selected!);
+              console.log("additionalSelect", data.objectIds);
+              emitEventSelection(this.scene, "selection.added", data.objectIds!);
             } else {
-              emitEventSelection(this.scene, "selection.set", data.selected!);
+              emitEventSelection(this.scene, "selection.set", data.objectIds!);
             }
             break;
           case "selection.terrainSelect":

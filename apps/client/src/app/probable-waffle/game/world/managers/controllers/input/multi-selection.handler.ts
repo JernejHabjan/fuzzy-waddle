@@ -6,6 +6,9 @@ export const MULTI_SELECTING = "multiSelecting";
 
 export class MultiSelectionHandler {
   private _multiSelecting = false;
+  get multiSelecting() {
+    return this._multiSelecting;
+  }
   set multiSelecting(value: boolean) {
     if (this._multiSelecting === value) return;
     this._multiSelecting = value;
@@ -14,9 +17,14 @@ export class MultiSelectionHandler {
 
   private selection: GameObjects.Rectangle;
   private selectionRect: Geom.Rectangle | null = null;
+  /**
+   * Keeps track if pointer was moved out of game
+   */
+  private pointerWithinGame = false;
 
   constructor(private readonly hudScene: HudProbableWaffle) {
     this.selection = hudScene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5);
+    this.selection.depth = -1;
     this.hudScene.onShutdown.subscribe(() => this.destroy());
     this.setupEvents();
   }
@@ -48,9 +56,12 @@ export class MultiSelectionHandler {
     this.hudScene.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.hudScene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.hudScene.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
-    this.hudScene.input.on(Input.Events.GAME_OUT, () => {
-      this.hideSelectionRectangle();
-    });
+    this.hudScene.input.on(Input.Events.GAME_OUT, this.handleGameOut, this);
+  }
+
+  private handleGameOut() {
+    this.hideSelectionRectangle();
+    this.pointerWithinGame = false;
   }
 
   private handlePointerDown(pointer: Input.Pointer) {
@@ -59,6 +70,7 @@ export class MultiSelectionHandler {
     this.selection.x = pointer.worldX;
     this.selection.y = pointer.worldY;
     this.selectionRect = null;
+    this.pointerWithinGame = true;
   }
 
   private hideSelectionRectangle() {
@@ -69,6 +81,7 @@ export class MultiSelectionHandler {
   }
 
   private handlePointerUp(pointer: Input.Pointer) {
+    if (!this.pointerWithinGame) return;
     const isShiftDown = pointer.event.shiftKey;
     const isCtrlDown = pointer.event.ctrlKey;
     if (!pointer.rightButtonReleased()) {
@@ -80,9 +93,7 @@ export class MultiSelectionHandler {
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
-    if (!pointer.leftButtonDown()) {
-      return;
-    }
+    if (!pointer.leftButtonDown() || !this.pointerWithinGame) return;
 
     const prevWorldPosition = this.hudScene.cameras.main.getWorldPoint(pointer.prevPosition.x, pointer.prevPosition.y);
     const dx = pointer.worldX - prevWorldPosition.x;

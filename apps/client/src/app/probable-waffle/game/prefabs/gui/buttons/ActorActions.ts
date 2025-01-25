@@ -18,6 +18,7 @@ import {
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
+import { getSfxVolumeNormalized } from "../../../scenes/services/audio.service";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -281,12 +282,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             const sound = this.mainSceneWithActors.sound;
 
             sound.stopByKey("ui-feedback");
+            const volume = getSfxVolumeNormalized(actor.scene);
             switch (errorCode) {
               case AssignProductionErrorCode.NotEnoughResources:
-                sound.playAudioSprite("ui-feedback", "not_enough_resources");
+                sound.playAudioSprite("ui-feedback", "not_enough_resources", { volume });
                 break;
               case AssignProductionErrorCode.QueueFull:
-                sound.playAudioSprite("ui-feedback", "production_queue_full");
+                sound.playAudioSprite("ui-feedback", "production_queue_full", { volume });
                 break;
               case AssignProductionErrorCode.InvalidProduct:
                 // should not really happen
