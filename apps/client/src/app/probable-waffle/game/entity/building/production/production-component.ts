@@ -300,6 +300,31 @@ export class ProductionComponent {
     this.playerChangedSubscription?.unsubscribe();
     this.rallyPoint.destroy();
   }
+
+  cancelProduction(item: ProductionQueueItem) {
+    for (let i = 0; i < this.productionQueues.length; i++) {
+      const queue = this.productionQueues[i];
+      const index = queue.queuedItems.findIndex((i) => i.actorName === item.actorName);
+      if (index !== -1) {
+        queue.queuedItems.splice(index, 1);
+        this.queueChangeSubject.next({
+          itemsFromAllQueues: this.itemsFromAllQueues
+        });
+        // if queue is empty, broadcast productionProgressSubject
+        if (queue.queuedItems.length === 0) {
+          this.productionProgressSubject.next({
+            queueIndex: i,
+            queueItemIndex: 0,
+            progressInPercentage: 0
+          });
+        }
+        if (index === 0) {
+          this.resetQueue(queue);
+        }
+        break;
+      }
+    }
+  }
 }
 
 export enum AssignProductionErrorCode {
