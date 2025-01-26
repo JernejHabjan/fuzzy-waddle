@@ -24,7 +24,7 @@ export class SceneActorCreator {
    * After scene is created, store every actor in the game state.
    * All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
    */
-  public initActors() {
+  public initInitialActors() {
     this.spawnFromSpawnList();
     this.saveAllKnownActorsToGameState();
   }
@@ -167,7 +167,6 @@ export class SceneActorCreator {
       newActorTransform.x += newActorBounds.width / 2;
       // todo later this should move to some other actor component like ActorTransform or something like that which then emits the transform change event across the game
       movementSystem.instantlyMoveToWorldCoordinates(newActorTransform);
-      this.saveActorToGameState(newActor);
     }
     return newActor;
   }

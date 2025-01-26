@@ -11,7 +11,7 @@ import {
   MovementSystem,
   PathMoveConfig
 } from "../../../entity/systems/movement.system";
-import { onPostSceneInitialized } from "../../../data/game-object-helper";
+import { onSceneInitialized } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
 import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
 import { ObjectNames } from "../../../data/object-names";
@@ -33,7 +33,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     /* START-USER-CTR-CODE */
     setActorDataFromName(this);
 
-    onPostSceneInitialized(scene, this.postSceneCreate, this);
+    onSceneInitialized(scene, this.postSceneCreate, this);
     this.once(HealthComponent.KilledEvent, this.destroy, this);
     /* END-USER-CTR-CODE */
   }

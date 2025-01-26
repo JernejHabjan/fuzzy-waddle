@@ -24,10 +24,7 @@ export interface ProbableWaffleSceneData {
   components: any[];
   services: any[];
   initializers: {
-    // used before postSceneInitialized
     sceneInitialized: BehaviorSubject<boolean>;
-    // used when scene is fully created and initialized - is sent before postCreate event
-    postSceneInitialized: BehaviorSubject<boolean>;
   };
 }
 
@@ -39,7 +36,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   }
 
   create() {
-    super.create();
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
     hud.initializeWithParentScene(this);
@@ -54,13 +50,15 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SaveGame(this);
     new RestartGame(this);
     const creator = new SceneActorCreator(this);
-    creator.initActors();
+
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
     this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService(), creator);
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
 
+    creator.initInitialActors();
+
+    super.create();
     this.sceneGameData.initializers.sceneInitialized.next(true);
-    this.sceneGameData.initializers.postSceneInitialized.next(true);
   }
 
   private cleanup() {
@@ -68,7 +66,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.services = [];
     this.sceneGameData.systems = [];
     this.sceneGameData.initializers.sceneInitialized.next(false);
-    this.sceneGameData.initializers.postSceneInitialized.next(false);
   }
 
   protected shutDown() {
