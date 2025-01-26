@@ -17,7 +17,6 @@ import {
   ANIM_HEDGEHOG_WALK_RIGHT,
   ANIM_HEDGEHOG_WALK_TOP
 } from "./anims/animals";
-import { setActorDataFromName } from "../../data/actor-data";
 import {
   getGameObjectDirection,
   moveGameObjectToRandomTileInNavigableRadius,
@@ -26,7 +25,7 @@ import {
 } from "../../entity/systems/movement.system";
 import { getActorSystem } from "../../data/actor-system";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectCurrentTile, onPostSceneInitialized } from "../../data/game-object-helper";
+import { getGameObjectCurrentTile, onSceneInitialized } from "../../data/game-object-helper";
 import { ObjectNames } from "../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -38,9 +37,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.6748775087412171);
 
     /* START-USER-CTR-CODE */
-    setActorDataFromName(this);
-
-    onPostSceneInitialized(scene, this.postSceneCreate, this);
+    onSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 

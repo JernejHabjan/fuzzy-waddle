@@ -8,12 +8,12 @@
 import { getActorSystem } from "../../../data/actor-system";
 import { MovementSystem } from "../../../entity/systems/movement.system";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import GameObject = Phaser.GameObjects.GameObject;
 import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { Subscription } from "rxjs";
 import { getGameObjectTransform } from "../../../data/game-object-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export default class RallyPoint extends Phaser.GameObjects.Image {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {

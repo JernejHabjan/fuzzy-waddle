@@ -40,8 +40,7 @@ export class ProbableWaffleScene extends BaseScene<
     components: [],
     services: [],
     initializers: {
-      sceneInitialized: new BehaviorSubject<boolean>(false),
-      postSceneInitialized: new BehaviorSubject<boolean>(false)
+      sceneInitialized: new BehaviorSubject<boolean>(false)
     }
   } satisfies ProbableWaffleSceneData;
 

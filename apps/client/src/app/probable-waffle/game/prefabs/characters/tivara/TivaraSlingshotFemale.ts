@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorDataFromName } from "../../../data/actor-data";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -16,8 +15,6 @@ export default class TivaraSlingshotFemale extends Phaser.GameObjects.Sprite {
     this.play("tivara_slingshot_female_idle_down");
 
     /* START-USER-CTR-CODE */
-    setActorDataFromName(this);
-
     this.on("pointerdown", () => {
       // and play anim skaduwee_worker_male_slash_down
       this.play("tivara_slingshot_female_shoot_down", true);

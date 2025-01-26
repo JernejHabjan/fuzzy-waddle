@@ -6,6 +6,7 @@ import { RepresentableActor_old } from "../../../entity/actor/representable-acto
 import { Scene, Types } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
+// TODO USE ActorManager.createActorPartially
 export class BuildingCursor {
   placementGrid: unknown; // todo
   gridWidthAndHeight: {
@@ -36,9 +37,9 @@ export class BuildingCursor {
     this.building = building;
 
     const constructionSiteComponent = building.components.findComponent(ConstructionSiteComponent);
-    const attackComponent = building.components.findComponent(AttackComponent);
+    // todo const attackComponent = building.components.findComponent(AttackComponent);
     this.gridWidthAndHeight = { height: 3, width: 2 }; // todo constructionSiteComponent.gridWidthAndHeight;
-    this.previewAttackRange = !!attackComponent;
+    // todo this.previewAttackRange = !!attackComponent;
   }
 
   hasGrid(): boolean {
@@ -90,6 +91,9 @@ export class BuildingCursor {
     if (!this.building || !this.pointerLocation) {
       return;
     }
+
+    // TODO USE ActorManager.createActorPartially
+
     // todo const buildingSprite = this.building.spriteRepresentationComponent.sprite;
     // todo buildingSprite.setPosition(this.pointerLocation.x, this.pointerLocation.y);
     // todo buildingSprite.setAlpha(0.5);

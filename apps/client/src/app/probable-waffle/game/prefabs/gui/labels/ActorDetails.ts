@@ -8,8 +8,8 @@ import ActorInfoLabel from "./ActorInfoLabel";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
 import { ActorInfoDefinition } from "../../../data/actor-definitions";
 import { DamageType } from "../../../entity/combat/damage-type";
-import GameObject = Phaser.GameObjects.GameObject;
 import { Subscription } from "rxjs";
+import GameObject = Phaser.GameObjects.GameObject;
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {

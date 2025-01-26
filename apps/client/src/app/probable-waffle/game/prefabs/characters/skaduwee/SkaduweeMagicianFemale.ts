@@ -3,25 +3,21 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorDataFromName } from "../../../data/actor-data";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 32, y ?? 57.57118202562538);
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 32, y ?? 57.57118202562538);
+    this.setInteractive(new Phaser.Geom.Circle(0, 0, 32), Phaser.Geom.Circle.Contains);
 
-		this.setInteractive(new Phaser.Geom.Circle(0, 0, 32), Phaser.Geom.Circle.Contains);
+    // skaduwee_magician_female_idle_down
+    const skaduwee_magician_female_idle_down = scene.add.sprite(0, -25.571183923696843, "magician_female_idle", 4);
+    skaduwee_magician_female_idle_down.play("skaduwee_magician_female_idle_down");
+    this.add(skaduwee_magician_female_idle_down);
 
-		// skaduwee_magician_female_idle_down
-		const skaduwee_magician_female_idle_down = scene.add.sprite(0, -25.571183923696843, "magician_female_idle", 4);
-		skaduwee_magician_female_idle_down.play("skaduwee_magician_female_idle_down");
-		this.add(skaduwee_magician_female_idle_down);
-
-		/* START-USER-CTR-CODE */
-    setActorDataFromName(this);
-
+    /* START-USER-CTR-CODE */
     this.skaduwee_magician_female_idle_down = skaduwee_magician_female_idle_down;
     this.on("pointerdown", () => {
       // and play anim skaduwee_worker_male_slash_down
@@ -35,9 +31,9 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
       });
     });
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
   name = ObjectNames.SkaduweeMagicianFemale;
   private skaduwee_magician_female_idle_down: Phaser.GameObjects.Sprite;
 

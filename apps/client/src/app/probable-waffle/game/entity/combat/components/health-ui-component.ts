@@ -2,7 +2,7 @@ import { GameObjects } from "phaser";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
-import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectDepth, onSceneInitialized } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 
@@ -39,9 +39,9 @@ export class HealthUiComponent {
     private readonly type: "health" | "armor"
   ) {
     this.bar = this.gameObject.scene.add.graphics();
+    onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
     gameObject.on(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
   }
 
