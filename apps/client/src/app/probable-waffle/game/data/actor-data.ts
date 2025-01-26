@@ -34,7 +34,7 @@ export function setActorData(actor: Phaser.GameObjects.GameObject, components: a
   actor.setData(ActorDataKey, new ActorData(components, systems));
 }
 
-export function setActorDataFromName(actor: Phaser.GameObjects.GameObject) {
+function gatherMandatoryActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
   const definition = pwActorDefinitions[actor.name as ObjectNames];
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
@@ -49,6 +49,20 @@ export function setActorDataFromName(actor: Phaser.GameObjects.GameObject) {
     ...(componentDefinitions?.owner ? [new OwnerComponent(actor, componentDefinitions.owner)] : []),
     ...(componentDefinitions?.vision ? [new VisionComponent(actor, componentDefinitions.vision)] : []),
     ...(componentDefinitions?.info ? [new InfoComponent(componentDefinitions.info)] : []),
+    ...(componentDefinitions?.requirements ? [new RequirementsComponent(actor, componentDefinitions.requirements)] : [])
+  ];
+
+  return { components, systems: [] };
+}
+
+function gatherUpgradeActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
+  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  if (!definition) {
+    throw new Error(`Actor definition for ${actor.name} not found.`);
+  }
+
+  const componentDefinitions = definition.components;
+  const components = [
     ...(componentDefinitions?.selectable ? [new SelectableComponent(actor)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.attack ? [new AttackComponent(actor, componentDefinitions.attack)] : []),
@@ -64,9 +78,6 @@ export function setActorDataFromName(actor: Phaser.GameObjects.GameObject) {
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
-    ...(componentDefinitions?.requirements
-      ? [new RequirementsComponent(actor, componentDefinitions.requirements)]
-      : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
     ...(componentDefinitions?.translatable
@@ -78,5 +89,46 @@ export function setActorDataFromName(actor: Phaser.GameObjects.GameObject) {
 
   const systemDefinitions = definition.systems;
   const systems = [...(systemDefinitions?.movement ? [new MovementSystem(actor)] : [])];
+  return { components, systems };
+}
+
+function gatherFullActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
+  const mandatoryData = gatherMandatoryActorData(actor);
+  const upgradeData = gatherUpgradeActorData(actor);
+  return {
+    components: [...mandatoryData.components, ...upgradeData.components],
+    systems: [...mandatoryData.systems, ...upgradeData.systems]
+  };
+}
+
+export function setMandatoryActorDataFromName(actor: Phaser.GameObjects.GameObject) {
+  const { components, systems } = gatherMandatoryActorData(actor);
   setActorData(actor, components, systems);
+}
+
+export function setFullActorDataFromName(actor: Phaser.GameObjects.GameObject) {
+  const { components, systems } = gatherFullActorData(actor);
+  setActorData(actor, components, systems);
+}
+
+export function upgradeFromMandatoryToFullActorData(actor: Phaser.GameObjects.GameObject) {
+  const actorData = actor.getData(ActorDataKey) as ActorData;
+  if (!actorData) {
+    setFullActorDataFromName(actor);
+    return;
+  }
+
+  const upgradeData = gatherUpgradeActorData(actor);
+  actorData.components.push(...upgradeData.components);
+  actorData.systems.push(...upgradeData.systems);
+}
+
+export function addActorComponent(actor: Phaser.GameObjects.GameObject, component: any) {
+  const actorData = actor.getData(ActorDataKey) as ActorData;
+  actorData.components.push(component);
+}
+
+export function addActorSystem(actor: Phaser.GameObjects.GameObject, system: any) {
+  const actorData = actor.getData(ActorDataKey) as ActorData;
+  actorData.systems.push(system);
 }

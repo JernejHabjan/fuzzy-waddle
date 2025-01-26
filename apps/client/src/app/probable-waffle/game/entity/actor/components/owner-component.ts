@@ -42,6 +42,7 @@ export class OwnerComponent {
 
   private init() {
     this.subscribeActorMove();
+    this.updateOwnerUiElementPosition();
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {

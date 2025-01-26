@@ -14,7 +14,7 @@ import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-obj
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
 import { ObjectNames } from "../../data/object-names";
-import { setActorDataFromName } from "../../data/actor-data";
+import { setFullActorDataFromName } from "../../data/actor-data";
 import { pwActorDefinitions } from "../../data/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/actor/components/id-component";
@@ -45,7 +45,7 @@ export class SceneActorCreator {
         const idComponent = getActorComponent(gameObject, IdComponent);
         // only initialize those, that haven't been initialized yet
         if (!idComponent) {
-          setActorDataFromName(gameObject);
+          setFullActorDataFromName(gameObject);
         }
       }
     });
@@ -53,7 +53,7 @@ export class SceneActorCreator {
 
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
     if (!actorDefinition.name) return undefined;
-    const actor = ActorManager.createActor(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
+    const actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     const gameObject = this.scene.add.existing(actor);
     this.saveActorToGameState(actor);
     return gameObject;
