@@ -3,14 +3,9 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorDataFromName } from "../../../data/actor-data";
 
 import { HealthComponent } from "../../../entity/combat/components/health-component";
-import {
-  moveGameObjectToRandomTileInNavigableRadius,
-  MovementSystem,
-  PathMoveConfig
-} from "../../../entity/systems/movement.system";
+import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
 import { onSceneInitialized } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
 import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
@@ -31,8 +26,6 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     this.owl = owl;
 
     /* START-USER-CTR-CODE */
-    setActorDataFromName(this);
-
     onSceneInitialized(scene, this.postSceneCreate, this);
     this.once(HealthComponent.KilledEvent, this.destroy, this);
     /* END-USER-CTR-CODE */

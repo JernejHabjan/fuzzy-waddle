@@ -1,5 +1,10 @@
 import GameObject = Phaser.GameObjects.GameObject;
-import { getGameObjectBounds, getGameObjectDepth, getGameObjectTransform } from "../../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectDepth,
+  getGameObjectTransform,
+  onSceneInitialized
+} from "../../../data/game-object-helper";
 import { BehaviorSubject, Subscription } from "rxjs";
 import Phaser from "phaser";
 import { listenToSelectionEvents } from "../../../data/scene-data";
@@ -23,9 +28,9 @@ export class SelectableComponent {
     private readonly selectableDefinition?: SelectableDefinition
   ) {
     this.createSelectionCircle();
+    onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init);
     this.listenToSelectionEvents();
   }
 

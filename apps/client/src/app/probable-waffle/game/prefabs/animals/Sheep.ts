@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorDataFromName } from "../../data/actor-data";
 import {
   getGameObjectDirection,
   moveGameObjectToRandomTileInNavigableRadius,
@@ -26,8 +25,6 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.play("sheep_idle_down");
 
     /* START-USER-CTR-CODE */
-    setActorDataFromName(this);
-
     onSceneInitialized(scene, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }

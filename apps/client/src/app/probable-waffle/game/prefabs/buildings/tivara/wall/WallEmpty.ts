@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorDataFromName } from "../../../../data/actor-data";
 import { ObjectNames } from "../../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -26,7 +25,6 @@ export default class WallEmpty extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.8351621449506107);
 
     /* START-USER-CTR-CODE */
-    setActorDataFromName(this);
     /* END-USER-CTR-CODE */
   }
 

@@ -9,7 +9,7 @@ import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
 import { ObjectNames } from "../../../data/object-names";
-import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
@@ -48,10 +48,10 @@ export class ProductionComponent {
     public readonly productionDefinition: ProductionDefinition
   ) {
     this.listenToMoveEvents();
+    onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
   }
 
   init() {

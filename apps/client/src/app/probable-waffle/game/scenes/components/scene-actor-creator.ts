@@ -14,6 +14,10 @@ import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-obj
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
 import { ObjectNames } from "../../data/object-names";
+import { setActorDataFromName } from "../../data/actor-data";
+import { pwActorDefinitions } from "../../data/actor-definitions";
+import { getActorComponent } from "../../data/actor-component";
+import { IdComponent } from "../../entity/actor/components/id-component";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
@@ -30,13 +34,21 @@ export class SceneActorCreator {
   }
 
   private spawnFromSpawnList() {
-    this.scene.children
-      .getChildren()
-      .filter((c) => c instanceof Spawn)
-      .forEach((spawn: Spawn) => {
-        this.spawnActorsFromSpawnList(spawn);
-        spawn.destroy();
-      });
+    this.scene.children.getChildren().forEach((gameObject: Phaser.GameObjects.GameObject) => {
+      if (gameObject instanceof Spawn) {
+        this.spawnActorsFromSpawnList(gameObject);
+        gameObject.destroy();
+      }
+      // ensure that game objects are fully created
+      const definition = pwActorDefinitions[gameObject.name as ObjectNames];
+      if (definition) {
+        const idComponent = getActorComponent(gameObject, IdComponent);
+        // only initialize those, that haven't been initialized yet
+        if (!idComponent) {
+          setActorDataFromName(gameObject);
+        }
+      }
+    });
   }
 
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {

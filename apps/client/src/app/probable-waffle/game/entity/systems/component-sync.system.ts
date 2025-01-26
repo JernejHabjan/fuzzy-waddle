@@ -1,6 +1,7 @@
 import { EventEmitter } from "@angular/core";
 import { Subscription } from "rxjs";
 import { listenToActorEvents, sendActorEvent } from "../../data/scene-data";
+import { onSceneInitialized } from "../../data/game-object-helper";
 
 function createComponentProxy<T extends object>(
   target: T,
@@ -98,31 +99,35 @@ export class ComponentSyncSystem {
       }
     });
 
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, () => {
-      // Listen to external events and update the component's properties
-      const subscription = listenToActorEvents(gameObject, options.eventPrefix)?.subscribe((payload) => {
-        // Extract property from payload and update the proxiedData
-        const property = Object.keys(options.propertyMap).find((key) =>
-          payload.property.endsWith(options.propertyMap[key as keyof T])
-        ) as keyof T;
+    onSceneInitialized(
+      gameObject.scene,
+      () => {
+        // Listen to external events and update the component's properties
+        const subscription = listenToActorEvents(gameObject, options.eventPrefix)?.subscribe((payload) => {
+          // Extract property from payload and update the proxiedData
+          const property = Object.keys(options.propertyMap).find((key) =>
+            payload.property.endsWith(options.propertyMap[key as keyof T])
+          ) as keyof T;
 
-        if (property) {
-          const key = this.getKey(property, options);
-          if (key.length) {
-            const value = getNestedValue(payload.data.actorDefinition, key);
-            if (value !== undefined) {
-              setNestedProperty(proxiedData, [property as string], value);
+          if (property) {
+            const key = this.getKey(property, options);
+            if (key.length) {
+              const value = getNestedValue(payload.data.actorDefinition, key);
+              if (value !== undefined) {
+                setNestedProperty(proxiedData, [property as string], value);
 
-              if (this.DEBUG) {
-                console.log(`Property ${property as string} updated to ${value} on ${gameObject.name}`);
+                if (this.DEBUG) {
+                  console.log(`Property ${property as string} updated to ${value} on ${gameObject.name}`);
+                }
               }
             }
           }
-        }
-      });
+        });
 
-      if (subscription) this.subscriptions.push(subscription);
-    });
+        if (subscription) this.subscriptions.push(subscription);
+      },
+      this
+    );
 
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.cleanup, this);
 

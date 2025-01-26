@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorDataFromName } from "../../../../data/actor-data";
 import { ObjectNames } from "../../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -20,7 +19,6 @@ export default class WatchTower extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.8364343678972962);
 
     /* START-USER-CTR-CODE */
-    setActorDataFromName(this);
     /* END-USER-CTR-CODE */
   }
 

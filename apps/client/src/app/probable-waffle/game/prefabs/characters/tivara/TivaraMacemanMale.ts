@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorDataFromName } from "../../../data/actor-data";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -19,8 +18,6 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
     this.add(tivara_maceman_male_idle_down);
 
     /* START-USER-CTR-CODE */
-    setActorDataFromName(this);
-
     this.on("pointerdown", () => {
       // and play anim skaduwee_worker_male_slash_down
       tivara_maceman_male_idle_down.play("tivara_maceman_male_large_slash_down", true);

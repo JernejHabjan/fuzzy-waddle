@@ -4,7 +4,7 @@ import { Plugins } from "../../../world/const/Plugins";
 import { GameSetupHelpers, Guid } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { HealthComponent } from "../../combat/components/health-component";
-import { getGameObjectDepth } from "../../../data/game-object-helper";
+import { getGameObjectDepth, onSceneInitialized } from "../../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { ContainerComponent } from "../../building/container-component";
@@ -34,7 +34,7 @@ export class OwnerComponent {
     if (OwnerComponent.useColorReplace) {
       this.colorReplacePipelinePlugin = gameObject.scene.plugins.get(Plugins.RexColorReplacePipeline) as any;
     }
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);

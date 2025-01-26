@@ -50,6 +50,7 @@ import WallTopRightBottomRight from "../prefabs/buildings/tivara/wall/WallTopRig
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { ObjectNames } from "./object-names";
+import { setActorDataFromName } from "./actor-data";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -172,6 +173,7 @@ export class ActorManager {
       throw new Error(`Actor ${name} not found`);
     }
     actor = new actorConstructor(scene);
+    setActorDataFromName(actor);
 
     const transform = actor as any as Transform;
     if (transform.x !== undefined) transform.x = properties.x;
