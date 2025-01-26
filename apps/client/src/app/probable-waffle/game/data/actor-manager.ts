@@ -165,7 +165,7 @@ export class ActorManager {
     return actorDefinition;
   }
 
-  static createActorFully(scene: Phaser.Scene, name: ObjectNames, properties: any): GameObject {
+  static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
@@ -174,7 +174,7 @@ export class ActorManager {
     }
     actor = new actorConstructor(scene);
     setFullActorDataFromName(actor);
-    ActorManager.setActorProperties(actor, properties);
+    ActorManager.setActorProperties(actor, actorDefinition);
     return actor;
   }
 
@@ -183,7 +183,7 @@ export class ActorManager {
    * Use {@link upgradeFromMandatoryToFullActorData} to upgrade the actor to a full actor.
    * Use this method when you are using {@link BuildingCursor}
    */
-  static createActorPartially(scene: Phaser.Scene, name: ObjectNames, properties: any): GameObject {
+  static createActorPartially(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
@@ -192,7 +192,7 @@ export class ActorManager {
     }
     actor = new actorConstructor(scene);
     setMandatoryActorDataFromName(actor);
-    ActorManager.setActorProperties(actor, properties);
+    ActorManager.setActorProperties(actor, actorDefinition);
     return actor;
   }
 
