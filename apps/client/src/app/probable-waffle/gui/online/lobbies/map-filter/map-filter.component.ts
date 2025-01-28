@@ -3,8 +3,6 @@ import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-i
 
 @Component({
   selector: "probable-waffle-map-filter",
-  standalone: true,
-  imports: [],
   templateUrl: "./map-filter.component.html",
   styleUrls: ["./map-filter.component.scss"]
 })

@@ -13,7 +13,6 @@ import { AngularHost } from "../../../shared/consts";
 
 @Component({
   selector: "fuzzy-waddle-instant-game",
-  standalone: true,
   imports: [LoaderComponent],
   host: AngularHost.contentFlexFullHeightCenter,
   template: `<fuzzy-waddle-loader />`

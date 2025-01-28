@@ -1,5 +1,4 @@
 import { ITask, TaskData_old, TaskResultType } from "./task.interface";
-import { TransformComponent } from "../../../../actor/components/transformable-component";
 import { PawnAiControllerComponentOld } from "../../../../../world/managers/controllers/pawn-ai-controller-component-old";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../../../data/actor-component";

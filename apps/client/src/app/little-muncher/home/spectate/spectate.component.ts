@@ -6,9 +6,7 @@ import { ServerHealthService } from "../../../shared/services/server-health.serv
 @Component({
   selector: "little-muncher-spectate",
   templateUrl: "./spectate.component.html",
-  styleUrls: ["./spectate.component.scss"],
-  standalone: true,
-  imports: []
+  styleUrls: ["./spectate.component.scss"]
 })
 export class SpectateComponent implements OnInit {
   protected readonly spectateService = inject(SpectateService);

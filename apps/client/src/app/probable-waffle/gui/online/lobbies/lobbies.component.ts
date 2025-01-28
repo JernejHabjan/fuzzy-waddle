@@ -20,7 +20,6 @@ import { MapFilterComponent } from "./map-filter/map-filter.component";
   selector: "probable-waffle-lobbies",
   templateUrl: "./lobbies.component.html",
   styleUrls: ["./lobbies.component.scss"],
-  standalone: true,
   imports: [FaIconComponent, MapFilterComponent]
 })
 export class LobbiesComponent implements OnInit, OnDestroy {

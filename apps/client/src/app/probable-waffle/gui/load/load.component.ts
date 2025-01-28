@@ -12,7 +12,6 @@ import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "fuzzy-waddle-load",
-  standalone: true,
   imports: [RouterLink, DatePipe],
   templateUrl: "./load.component.html",
   styleUrls: ["./load.component.scss"]

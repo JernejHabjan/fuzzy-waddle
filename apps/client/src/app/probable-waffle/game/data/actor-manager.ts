@@ -29,8 +29,6 @@ import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { DepthHelper } from "../world/map/depth.helper";
-import GameObject = Phaser.GameObjects.GameObject;
-import Transform = Phaser.GameObjects.Components.Transform;
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
@@ -51,6 +49,8 @@ import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { ObjectNames } from "./object-names";
 import { setFullActorDataFromName, setMandatoryActorDataFromName } from "./actor-data";
+import GameObject = Phaser.GameObjects.GameObject;
+import Transform = Phaser.GameObjects.Components.Transform;
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };

@@ -10,7 +10,6 @@ import { RouterLink } from "@angular/router";
   selector: "probable-waffle-home-page-nav",
   templateUrl: "./home-page-nav.component.html",
   styleUrls: ["./home-page-nav.component.scss"],
-  standalone: true,
   imports: [FaIconComponent, HomeNavComponent, RouterLink]
 })
 export class HomePageNavComponent {

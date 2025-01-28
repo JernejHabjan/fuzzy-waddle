@@ -1,6 +1,4 @@
 import { TestBed } from "@angular/core/testing";
-
-import { GameInstanceLocalStorageService } from "./game-instance-local-storage.service";
 import { GameInstanceStorageServiceInterface } from "./game-instance-storage.service.interface";
 import { ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceIndexeddbStorageService } from "./game-instance-indexeddb-storage.service";

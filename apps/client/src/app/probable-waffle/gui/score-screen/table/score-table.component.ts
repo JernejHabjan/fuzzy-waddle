@@ -15,8 +15,6 @@ export type PlayerSummary = {
 
 @Component({
   selector: "probable-waffle-score-table",
-  standalone: true,
-  imports: [],
   templateUrl: "./score-table.component.html",
   styleUrls: ["./score-table.component.scss"]
 })

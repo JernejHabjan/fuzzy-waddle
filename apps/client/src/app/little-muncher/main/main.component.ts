@@ -14,7 +14,6 @@ import { AngularHost } from "../../shared/consts";
   selector: "little-muncher-main",
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
-  standalone: true,
   imports: [GameContainerComponent, GameInterfaceComponent],
   host: AngularHost.contentFlexFullHeight
 })

@@ -8,7 +8,6 @@ import { AngularHost } from "../../../shared/consts";
 @Component({
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
-  standalone: true,
   imports: [FormsModule, RouterLink],
   host: AngularHost.contentFlexFullHeight
 })

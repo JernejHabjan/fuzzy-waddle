@@ -11,7 +11,6 @@ import { AngularHost } from "../../shared/consts";
   selector: "fly-squasher-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
-  standalone: true,
   imports: [FaIconComponent, RouterLink],
   host: AngularHost.contentFlexFullHeight
 })

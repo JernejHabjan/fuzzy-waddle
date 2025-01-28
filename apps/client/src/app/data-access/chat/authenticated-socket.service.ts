@@ -1,7 +1,7 @@
 import { Socket } from "ngx-socket-io";
 import { AuthService } from "../../auth/auth.service";
 import { environment } from "../../../environments/environment";
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { IAuthenticatedSocketService } from "./authenticated-socket.service.interface";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 

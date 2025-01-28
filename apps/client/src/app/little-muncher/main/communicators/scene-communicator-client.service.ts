@@ -1,5 +1,4 @@
-import { Injectable, inject } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { inject, Injectable } from "@angular/core";
 import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 import { LittleMuncherCommunicatorService } from "./little-muncher-communicator.service";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";

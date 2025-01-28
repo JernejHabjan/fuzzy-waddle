@@ -1,7 +1,6 @@
 import { IComponent } from "../../../core/component.service";
 import { Subscription } from "rxjs";
 import { SpriteHelper_old, SpritePlacementData } from "../sprite-helper_old";
-import { TransformComponent } from "./transformable-component";
 import { Actor } from "../actor";
 import { GameObjects, Scene } from "phaser";
 

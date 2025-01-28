@@ -10,7 +10,6 @@ import { AngularHost } from "./shared/consts";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
   host: AngularHost.contentFlexFullHeight,
-  standalone: true,
   imports: [RouterOutlet, SwRefreshComponent]
 })
 export class AppComponent implements OnInit {

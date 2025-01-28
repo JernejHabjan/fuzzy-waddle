@@ -1,6 +1,5 @@
 // when placing new building
 import { MapSizeInfo_old } from "../../const/map-size.info_old";
-import { AttackComponent } from "../../../entity/combat/components/attack-component";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
 import { RepresentableActor_old } from "../../../entity/actor/representable-actor_old";
 import { Scene, Types } from "phaser";

@@ -6,7 +6,6 @@ import { ScoreThroughTimeComponent } from "./chart/score-through-time.component"
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 
 @Component({
-  standalone: true,
   imports: [RouterLink, ScoreTableComponent, ScoreThroughTimeComponent],
   templateUrl: "./score-screen.component.html",
   styleUrls: ["./score-screen.component.scss"]

@@ -32,10 +32,6 @@ import { PlayerController_old } from "../managers/controllers/player-controller_
 import { Barracks } from "../../entity/assets/buildings/barracks";
 import { TownHall } from "../../entity/assets/buildings/town-hall";
 import { GameObjects, Geom, Input, Scale, Scene } from "phaser";
-import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
-import { ResourceDrainComponent } from "../../entity/economy/resource/resource-drain-component";
-import { GathererComponent } from "../../entity/actor/components/gatherer-component";
-import { BuilderComponent } from "../../entity/actor/components/builder-component";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface TilemapToAtlasMap {

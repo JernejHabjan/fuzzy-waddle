@@ -3,15 +3,18 @@
 
   <div class="mt-4">
     @if (mapData) {
-    <div class="map-name">{{ mapData.name }}</div>
-    <div class="map-description">{{ mapData.presentation.description }}</div>
-    <div>{{ mapData.mapInfo.widthTiles }} x {{ mapData.mapInfo.heightTiles }}</div>
-    <div class="position-relative">
-      <canvas class="m-4" #canvas [height]="canvasHeight" [width]="canvasWidth"></canvas>
-      <div class="position-absolute tooltip-drag-and-drop" style="top: 1px; left: calc(50% - {{ canvasWidth / 2 }}px)">
-        Drag to reposition
+      <div class="map-name">{{ mapData.name }}</div>
+      <div class="map-description">{{ mapData.presentation.description }}</div>
+      <div>{{ mapData.mapInfo.widthTiles }} x {{ mapData.mapInfo.heightTiles }}</div>
+      <div class="position-relative">
+        <canvas class="m-4" #canvas [height]="canvasHeight" [width]="canvasWidth"></canvas>
+        <div
+          class="position-absolute tooltip-drag-and-drop"
+          style="top: 1px; left: calc(50% - {{ canvasWidth / 2 }}px)"
+        >
+          Drag to reposition
+        </div>
       </div>
-    </div>
     }
   </div>
   <probable-waffle-trigger />

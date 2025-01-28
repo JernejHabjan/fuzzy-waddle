@@ -9,9 +9,9 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
-import GameObject = Phaser.GameObjects.GameObject;
 import { EventEmitter } from "@angular/core";
 import { HealthComponent } from "../../combat/components/health-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom

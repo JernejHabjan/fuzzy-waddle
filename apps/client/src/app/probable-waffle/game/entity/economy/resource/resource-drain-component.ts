@@ -3,9 +3,8 @@ import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";
-import GameObject = Phaser.GameObjects.GameObject;
-import { HealthComponent } from "../../combat/components/health-component";
 import { onSceneInitialized } from "../../../data/game-object-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ResourceDrainDefinition = {
   resourceTypes: ResourceType[];

@@ -7,65 +7,63 @@ import FoodItem from "./FoodItem";
 /* END-USER-IMPORTS */
 
 export default interface Player {
-
-	 body: Phaser.Physics.Arcade.Body;
+  body: Phaser.Physics.Arcade.Body;
 }
 
 export default class Player extends Phaser.GameObjects.Sprite {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 290.96234741048465, y ?? 207.0022148582068, texture || "player", frame ?? "Idle_001");
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 290.96234741048465, y ?? 207.0022148582068, texture || "player", frame ?? "Idle_001");
+    this.setOrigin(0.5, 0.8096661022845779);
+    scene.physics.add.existing(this, false);
+    this.body.gravity.y = 1400;
+    this.body.allowDrag = false;
+    this.body.setOffset(99.5, 124);
+    this.body.setSize(81, 87, false);
 
-		this.setOrigin(0.5, 0.8096661022845779);
-		scene.physics.add.existing(this, false);
-		this.body.gravity.y = 1400;
-		this.body.allowDrag = false;
-		this.body.setOffset(99.5, 124);
-		this.body.setSize(81, 87, false);
+    // leftKey
+    const leftKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
-		// leftKey
-		const leftKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+    // rightKey
+    const rightKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
-		// rightKey
-		const rightKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+    // upKey
+    const upKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
 
-		// upKey
-		const upKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+    // spaceKey
+    const spaceKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-		// spaceKey
-		const spaceKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    // platformsCollider
+    const platformsCollider = scene.physics.add.collider(this, []);
 
-		// platformsCollider
-		const platformsCollider = scene.physics.add.collider(this, []);
+    // foodsCollider
+    const foodsCollider = scene.physics.add.overlap(this, [], this.playerVsFood, undefined, this);
 
-		// foodsCollider
-		const foodsCollider = scene.physics.add.overlap(this, [], this.playerVsFood, undefined, this);
+    this.platformsCollider = platformsCollider;
+    this.foodsCollider = foodsCollider;
+    this.leftKey = leftKey;
+    this.rightKey = rightKey;
+    this.upKey = upKey;
+    this.spaceKey = spaceKey;
 
-		this.platformsCollider = platformsCollider;
-		this.foodsCollider = foodsCollider;
-		this.leftKey = leftKey;
-		this.rightKey = rightKey;
-		this.upKey = upKey;
-		this.spaceKey = spaceKey;
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
 
     this.scene.events.once(Phaser.Scenes.Events.UPDATE, this.start, this);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.updatePlayer, this);
 
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	private platformsCollider: Phaser.Physics.Arcade.Collider;
-	private foodsCollider: Phaser.Physics.Arcade.Collider;
-	private leftKey: Phaser.Input.Keyboard.Key;
-	private rightKey: Phaser.Input.Keyboard.Key;
-	private upKey: Phaser.Input.Keyboard.Key;
-	private spaceKey: Phaser.Input.Keyboard.Key;
-	public platforms: Phaser.GameObjects.GameObject[] = [];
-	public foodItems: FoodItem[] = [];
+  private platformsCollider: Phaser.Physics.Arcade.Collider;
+  private foodsCollider: Phaser.Physics.Arcade.Collider;
+  private leftKey: Phaser.Input.Keyboard.Key;
+  private rightKey: Phaser.Input.Keyboard.Key;
+  private upKey: Phaser.Input.Keyboard.Key;
+  private spaceKey: Phaser.Input.Keyboard.Key;
+  public platforms: Phaser.GameObjects.GameObject[] = [];
+  public foodItems: FoodItem[] = [];
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
 
   private leftDown = false;
   private rightDown = false;
