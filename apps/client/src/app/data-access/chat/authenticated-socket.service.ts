@@ -38,16 +38,7 @@ export class AuthenticatedSocketService implements IAuthenticatedSocketService {
         }
       });
 
-      socket.connect((err: any) => {
-        if (err) {
-          console.error("Socket connection failed", err);
-          reject(err); // Reject the promise on error
-        } else {
-          resolve(socket); // Resolve the promise when the connection is successful
-        }
-      });
-
-      // Optional: Handle 'connect' and 'error' events directly from the socket instance
+      socket.connect();
       socket.on("connect", () => resolve(socket));
       socket.on("connect_error", (err: any) => reject(err));
     });

@@ -23,7 +23,8 @@
         "@typescript-eslint/triple-slash-reference": "warn",
         "no-case-declarations": "off",
         "@typescript-eslint/no-empty-function": "off",
-        "@angular-eslint/prefer-standalone": "error"
+        "@angular-eslint/prefer-standalone": "error",
+        "@typescript-eslint/no-empty-object-type": "off"
       }
     },
     {
