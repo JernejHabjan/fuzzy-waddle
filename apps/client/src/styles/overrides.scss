@@ -1,2 +1,2 @@
-@import 'variables';
-@import '../../../../node_modules/bootstrap/scss/bootstrap';
+@use 'variables' as *;
+@import 'bootstrap/scss/bootstrap';

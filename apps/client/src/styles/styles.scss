@@ -1,6 +1,6 @@
 @use 'overrides';
-@import 'probable-waffle/probable-waffle-pages';
-
+@use 'probable-waffle/probable-waffle-pages' as *;
+@use 'variables' as *;
 html,
 body {
   height: 100%;
