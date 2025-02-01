@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 22 ]
+        node-version: [ 23 ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
