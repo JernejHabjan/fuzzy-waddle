@@ -8,7 +8,6 @@ import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.c
   selector: "fuzzy-waddle-profile-nav",
   templateUrl: "./profile-nav.component.html",
   styleUrls: ["./profile-nav.component.scss"],
-  standalone: true,
   imports: [HomeNavComponent]
 })
 export class ProfileNavComponent {

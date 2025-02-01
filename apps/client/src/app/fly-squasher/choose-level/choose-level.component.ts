@@ -8,7 +8,6 @@ import { AngularHost } from "../../shared/consts";
   selector: "fly-squasher-choose-level",
   templateUrl: "./choose-level.component.html",
   styleUrls: ["./choose-level.component.scss"],
-  standalone: true,
   imports: [CommonModule, RouterLink],
   host: AngularHost.contentFlexFullHeightCenter
 })

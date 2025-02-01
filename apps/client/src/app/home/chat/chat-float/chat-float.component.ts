@@ -11,7 +11,6 @@ import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
   selector: "fuzzy-waddle-chat-float",
   templateUrl: "./chat-float.component.html",
   styleUrls: ["./chat-float.component.scss"],
-  standalone: true,
   imports: [CommonModule, ChatComponent, FaIconComponent]
 })
 export class ChatFloatComponent implements OnInit {

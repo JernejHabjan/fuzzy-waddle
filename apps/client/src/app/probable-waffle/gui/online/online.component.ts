@@ -11,7 +11,6 @@ import { AngularHost } from "../../../shared/consts";
 @Component({
   templateUrl: "./online.component.html",
   styleUrls: ["./online.component.scss"],
-  standalone: true,
   imports: [MatchmakingComponent, HostComponent, LobbiesComponent, HomeNavComponent, RouterLink],
   host: AngularHost.contentFlexFullHeight
 })

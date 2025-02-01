@@ -1,15 +1,7 @@
 import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
-import {
-  FactionType,
-  ProbableWaffleGameFoundEvent,
-  ProbableWaffleGameInstance,
-  ProbableWaffleLevels
-} from "@fuzzy-waddle/api-interfaces";
+import { FactionType } from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
-import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
 
 import { FormsModule } from "@angular/forms";
 import { MatchmakingService } from "./matchmaking.service";
@@ -31,7 +23,6 @@ export type MatchmakingOptions = {
   selector: "probable-waffle-matchmaking",
   templateUrl: "./matchmaking.component.html",
   styleUrls: ["./matchmaking.component.scss"],
-  standalone: true,
   imports: [FormsModule]
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {

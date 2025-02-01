@@ -4,8 +4,6 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 
 @Component({
   selector: "probable-waffle-spectators-grid",
-  standalone: true,
-  imports: [],
   templateUrl: "./spectators-grid.component.html",
   styleUrls: ["./spectators-grid.component.scss"]
 })

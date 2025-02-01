@@ -50,7 +50,6 @@ interface DisplayRect {
   selector: "probable-waffle-map-definition",
   templateUrl: "./map-definition.component.html",
   styleUrls: ["./map-definition.component.scss"],
-  standalone: true,
   imports: [MapSelectorComponent, TriggerComponent]
 })
 export class MapDefinitionComponent implements OnInit, OnDestroy {

@@ -6,7 +6,6 @@ import { VolumeSettings } from "../shared/volumeSettings";
 import { AngularHost } from "../../shared/consts";
 
 @Component({
-  standalone: true,
   imports: [RouterLink, FormsModule],
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],

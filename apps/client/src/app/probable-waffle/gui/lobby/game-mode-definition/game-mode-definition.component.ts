@@ -8,7 +8,6 @@ import { FormsModule } from "@angular/forms";
   selector: "probable-waffle-game-mode-definition",
   templateUrl: "./game-mode-definition.component.html",
   styleUrls: ["./game-mode-definition.component.scss"],
-  standalone: true,
   imports: [FormsModule]
 })
 export class GameModeDefinitionComponent {

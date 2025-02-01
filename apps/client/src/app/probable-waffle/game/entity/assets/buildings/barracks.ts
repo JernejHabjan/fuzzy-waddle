@@ -1,8 +1,6 @@
 import { Building, BuildingInfoDefinition } from "./building";
 import { ProductionComponent } from "../../building/production/production-component";
 import { PaymentType } from "../../building/payment-type";
-import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
-import Tree1 from "../../../prefabs/outside/foliage/trees/resources/Tree1";
 import { ObjectNames } from "../../../data/object-names";
 
 export const BarracksDefinition: BuildingInfoDefinition = {

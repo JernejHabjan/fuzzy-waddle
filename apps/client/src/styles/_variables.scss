@@ -1,4 +1,4 @@
-@import 'fonts';
+@use 'fonts';
 
 /* custom */
 $app-font-bold: 'EagleLake', sans-serif;
@@ -14,3 +14,4 @@ $primary: #9f3000;
 $secondary: #ffe6c2;
 $font-family-base: 'WorkSans', sans-serif !default;
 $btn-font-family: $app-font-bold !default;
+/* IMPORTANT - use these overrides then in overrides.scss */

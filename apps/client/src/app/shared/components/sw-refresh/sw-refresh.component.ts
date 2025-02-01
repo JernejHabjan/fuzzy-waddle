@@ -9,7 +9,6 @@ import { NgbAlert } from "@ng-bootstrap/ng-bootstrap";
   selector: "fuzzy-waddle-sw-refresh",
   templateUrl: "./sw-refresh.component.html",
   styleUrls: ["./sw-refresh.component.scss"],
-  standalone: true,
   imports: [FaIconComponent, NgbAlert]
 })
 export class SwRefreshComponent implements OnInit {

@@ -11,7 +11,6 @@ import { AngularHost } from "../../../shared/consts";
 @Component({
   templateUrl: "./probable-waffle-game.component.html",
   styleUrls: ["./probable-waffle-game.component.scss"],
-  standalone: true,
   imports: [GameContainerComponent],
   host: AngularHost.contentFlexFullHeight
 })

@@ -12,7 +12,6 @@ import { BaseChartDirective } from "ng2-charts";
 
 @Component({
   selector: "probable-waffle-score-through-time",
-  standalone: true,
   imports: [BaseChartDirective],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]

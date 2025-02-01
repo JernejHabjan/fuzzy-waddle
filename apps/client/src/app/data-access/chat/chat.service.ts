@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { IChatService } from "./chat.service.interface";

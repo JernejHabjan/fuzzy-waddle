@@ -56,7 +56,12 @@
       </div>
     } @else {
       @if (matchmakingService.searching) {
-        <button (click)="matchmakingService.cancelSearching()" class="btn btn-danger me-2" type="button" style="min-width: 100px">
+        <button
+          (click)="matchmakingService.cancelSearching()"
+          class="btn btn-danger me-2"
+          type="button"
+          style="min-width: 100px"
+        >
           Cancel
         </button>
       }

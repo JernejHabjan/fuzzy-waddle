@@ -42,7 +42,6 @@ export class DifficultyDefinitions {
   selector: "probable-waffle-player-definition",
   templateUrl: "./player-definition.component.html",
   styleUrls: ["./player-definition.component.scss"],
-  standalone: true,
   imports: [FormsModule, FaIconComponent]
 })
 export class PlayerDefinitionComponent {

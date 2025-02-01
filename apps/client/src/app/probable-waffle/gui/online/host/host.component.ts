@@ -9,7 +9,6 @@ import { FormsModule } from "@angular/forms";
   selector: "probable-waffle-host",
   templateUrl: "./host.component.html",
   styleUrls: ["./host.component.scss"],
-  standalone: true,
   imports: [FormsModule]
 })
 export class HostComponent {

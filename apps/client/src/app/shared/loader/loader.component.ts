@@ -2,8 +2,6 @@ import { Component } from "@angular/core";
 
 @Component({
   selector: "fuzzy-waddle-loader",
-  standalone: true,
-  imports: [],
   template: `<div class="loader"></div>`,
   styles: [
     `
