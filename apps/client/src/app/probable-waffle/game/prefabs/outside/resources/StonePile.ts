@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../data/actor-data";
 import { IdComponent } from "../../../entity/actor/components/id-component";

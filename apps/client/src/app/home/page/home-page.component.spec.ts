@@ -11,8 +11,6 @@ import { dbAccessTestServiceStub } from "../../data-access/db-access-test/db-acc
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideHttpClient } from "@angular/common/http";
 
 describe("HomePageComponent", () => {
   let component: HomePageComponent;
@@ -23,8 +21,6 @@ describe("HomePageComponent", () => {
       imports: [HomePageComponent, FontAwesomeTestingModule],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceStub },
         { provide: DbAccessTestService, useValue: dbAccessTestServiceStub },
         { provide: ServerHealthService, useValue: serverHealthServiceStub }

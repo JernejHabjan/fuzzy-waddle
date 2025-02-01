@@ -2,7 +2,7 @@ import { HealthComponent } from "../../../../entity/combat/components/health-com
 import { getActorComponent } from "../../../../data/actor-component";
 import { ActorTranslateComponent } from "../../../../entity/actor/components/actor-translate-component";
 import { Subscription } from "rxjs";
-import { getGameObjectDepth, getGameObjectTransform } from "../../../../data/game-object-helper";
+import { getGameObjectDepth, getGameObjectTransform, onSceneInitialized } from "../../../../data/game-object-helper";
 import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 import { HealthUiComponent } from "../../../../entity/combat/components/health-ui-component";
 
@@ -13,7 +13,7 @@ export class NodeDebugger {
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    onSceneInitialized(gameObject.scene, this.init, this);
   }
 
   private init() {

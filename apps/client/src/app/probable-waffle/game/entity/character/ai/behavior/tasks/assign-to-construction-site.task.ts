@@ -1,8 +1,8 @@
-import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { ITask, TaskData_old, TaskResultType } from "./task.interface";
 import { BuilderComponent } from "../../../../actor/components/builder-component";
 
 export class AssignToConstructionSiteTask implements ITask {
-  executeTask(taskData: TaskData): TaskResultType {
+  executeTask(taskData: TaskData_old): TaskResultType {
     const builderComponent = taskData.owner.components.findComponentOrNull(BuilderComponent);
     if (!builderComponent) {
       return TaskResultType.Failure;

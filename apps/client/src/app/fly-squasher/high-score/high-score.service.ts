@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { FlySquasherLevelEnum, ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../environments/environment";

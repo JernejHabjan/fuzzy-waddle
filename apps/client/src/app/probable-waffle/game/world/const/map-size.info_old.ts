@@ -1,5 +1,5 @@
-export class MapSizeInfo {
-  static readonly info: MapSizeInfo = new MapSizeInfo();
+export class MapSizeInfo_old {
+  static readonly info: MapSizeInfo_old = new MapSizeInfo_old();
   public tileWidth = 64;
   public tileHeight = 32;
   public widthInPixels = this.width * this.tileWidth;

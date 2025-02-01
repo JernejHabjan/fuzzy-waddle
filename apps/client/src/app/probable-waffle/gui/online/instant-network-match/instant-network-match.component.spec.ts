@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { InstantNetworkMatchComponent } from "./instant-network-match.component";
 import { matchmakingServiceStub } from "../matchmaking/matchmaking.service.spec";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
+import { ServerHealthService } from "../../../../shared/services/server-health.service";
+import { serverHealthServiceStub } from "../../../../shared/services/server-health.service.spec";
 
 describe("InstantNetworkMatchComponent", () => {
   let component: InstantNetworkMatchComponent;
@@ -14,6 +16,10 @@ describe("InstantNetworkMatchComponent", () => {
         {
           provide: MatchmakingService,
           useValue: matchmakingServiceStub
+        },
+        {
+          provide: ServerHealthService,
+          useValue: serverHealthServiceStub
         }
       ]
     }).compileComponents();

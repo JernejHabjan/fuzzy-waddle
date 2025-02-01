@@ -93,7 +93,7 @@ export function sendPlayerStateEvent(
 
   const communicator = getCommunicator(scene);
   const data = {
-    playerNumber: scene.player.playerNumber!,
+    playerNumber: scene.player.playerNumber!, // todo this is incorrect, as AI player will not be able to get resources
     ...payloadIn
   } satisfies ProbableWafflePlayerDataChangeEventPayload;
 
@@ -153,14 +153,19 @@ export function listenToSelectionEvents(scene: Scene): Observable<ProbableWaffle
   );
 }
 
-export function emitEventIssueMoveCommandToSelectedActors(scene: Phaser.Scene, vec3: Vector3Simple) {
+export function emitEventIssueMoveCommandToSelectedActors(
+  scene: Phaser.Scene,
+  tileVec3: Vector3Simple,
+  worldVec3: Vector3Simple
+) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({
     property: "command.issued.move",
     data: {
       playerNumber: getPlayer(scene)?.playerNumber,
       data: {
-        vec3
+        tileVec3,
+        worldVec3
       }
     },
     gameInstanceId: scene.gameInstanceId,

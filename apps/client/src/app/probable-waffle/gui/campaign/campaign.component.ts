@@ -7,7 +7,6 @@ import { ComingSoonComponent } from "../coming-soon/coming-soon.component";
   selector: "fuzzy-waddle-campaign",
   templateUrl: "./campaign.component.html",
   styleUrls: ["./campaign.component.scss"],
-  standalone: true,
   imports: [HomeNavComponent, ComingSoonComponent]
 })
 export class CampaignComponent {}

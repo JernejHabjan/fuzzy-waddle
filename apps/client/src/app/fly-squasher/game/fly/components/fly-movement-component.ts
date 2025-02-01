@@ -46,7 +46,7 @@ export class FlyMovementComponent implements IComponent {
       this.representableComponent.x = newX;
     }
 
-    // if fly is out of screen, take current rotation mirror it over x and y axis
+    // if fly is out of screen, take current rotation mirror it over x and y-axis
     if (newX < margin) {
       this.representableComponent.rotation = this.representableComponent.rotation - Math.PI / 4;
     }

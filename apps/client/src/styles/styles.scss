@@ -1,14 +1,14 @@
-@import 'overrides';
-@import 'probable-waffle/probable-waffle-pages';
-
+@use 'overrides';
+@use 'probable-waffle/probable-waffle-pages' as *;
+@use 'variables' as *;
 html,
 body {
+  min-width: 300px;
+  min-height: 300px;
   height: 100%;
   @media (max-width: 520px) {
     font-size: 12px;
   }
-  min-width: 300px;
-  min-height: 300px;
 }
 
 body {

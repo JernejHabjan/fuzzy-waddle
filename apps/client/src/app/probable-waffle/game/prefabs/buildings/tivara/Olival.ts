@@ -2,29 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-
-import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
-import {
-  ProductionCostComponent,
-  ProductionCostDefinition
-} from "../../../entity/building/production/production-cost-component";
-import { PaymentType } from "../../../entity/building/payment-type";
-import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
-import Sandhold from "./Sandhold";
-import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
-import { ColliderComponent } from "../../../entity/actor/components/collider-component";
-import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../entity/actor/components/object-descriptor-component";
 import { getTilesAroundGameObjectsOfShape } from "../../../data/tile-map-helpers";
 import { onSceneInitialized } from "../../../data/game-object-helper";
 import { ObjectNames } from "../../../data/object-names";
@@ -55,53 +33,6 @@ export default class Olival extends Phaser.GameObjects.Container {
     this.add(buildings_tivara_olival);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xc2a080
-        } satisfies ObjectDescriptorDefinition),
-        new OwnerComponent(this, {
-          color: [
-            {
-              originalColor: 0x265b17,
-              epsilon: 0.1
-            }
-          ]
-        } satisfies OwnerDefinition),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new InfoComponent({
-          name: "Olival",
-          description: "Creates a suitable surface for Tivara units and buildings",
-          smallImage: {
-            key: "factions",
-            frame: "buildings/tivara/olival/olival.png"
-          }
-        } satisfies InfoDefinition),
-        new SelectableComponent(this),
-        new HealthComponent(this, {
-          maxHealth: 100
-        } satisfies HealthDefinition),
-        new ProductionCostComponent(this, {
-          resources: {
-            [ResourceType.Wood]: 10,
-            [ResourceType.Minerals]: 10
-          },
-          refundFactor: 0.5,
-          productionTime: 1000,
-          costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition),
-        new RequirementsComponent(this, {
-          actors: [Sandhold.name]
-        } satisfies RequirementsDefinition),
-        new ColliderComponent()
-      ],
-      []
-    );
-
     this.bounce(buildings_tivara_olival);
 
     onSceneInitialized(this.scene, this.init, this);

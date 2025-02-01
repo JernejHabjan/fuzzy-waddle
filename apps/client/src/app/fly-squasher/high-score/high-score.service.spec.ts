@@ -4,6 +4,7 @@ import { HighScoreService } from "./high-score.service";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient } from "@angular/common/http";
 
+// noinspection JSUnusedGlobalSymbols
 export const highScoreServiceStub = {
   postScore: () => {},
   getScores: () => []

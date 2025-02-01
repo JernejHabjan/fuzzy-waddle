@@ -9,7 +9,6 @@ import { LobbyChatComponent } from "./lobby-chat/lobby-chat.component";
   selector: "probable-waffle-lobby",
   templateUrl: "./lobby.component.html",
   styleUrls: ["./lobby.component.scss"],
-  standalone: true,
   imports: [
     MapDefinitionComponent,
     PlayerDefinitionComponent,

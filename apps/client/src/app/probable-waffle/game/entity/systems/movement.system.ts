@@ -8,7 +8,8 @@ import {
   getGameObjectCurrentTile,
   getGameObjectTileInNavigableRadius,
   getGameObjectTileInRadius,
-  getGameObjectTransform
+  getGameObjectTransform,
+  onSceneInitialized
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { getSfxVolumeNormalized } from "../../scenes/services/audio.service";
@@ -42,9 +43,9 @@ export class MovementSystem {
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
+    onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
   }
 
   private init() {
@@ -57,10 +58,10 @@ export class MovementSystem {
       .subscribe((payload) => {
         switch (payload.property) {
           case "command.issued.move":
-            const target = payload.data.data!["vec3"] as Vector3Simple;
+            const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
             const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
             if (isSelected) {
-              this.moveToLocation(target); // todo later on, read this from the blackboard and PawnAiController
+              this.moveToLocation(tileVec3); // todo later on, read this from the blackboard and PawnAiController
               // todo, note that we may also navigate to object and not to the tile under the object - use this.moveToActor(gameObject)
             }
             break;
@@ -293,7 +294,15 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
 ): Promise<void> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const newTile = await getRandomTileInNavigableRadius(gameObject, radius, pathMoveConfig);
+  const actorTranslateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  if (!actorTranslateComponent) return Promise.reject("No actor translate component found");
+  const newPathMoveConfig = {
+    ...pathMoveConfig,
+    usePathfinding: actorTranslateComponent.actorTranslateDefinition.usePathfinding ?? true,
+    tileStepDuration: actorTranslateComponent.actorTranslateDefinition.tileStepDuration
+  } satisfies PathMoveConfig;
+
+  const newTile = await getRandomTileInNavigableRadius(gameObject, radius, newPathMoveConfig);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }
@@ -303,7 +312,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
       y: newTile.y,
       z: 0
     } satisfies Vector3Simple,
-    pathMoveConfig
+    newPathMoveConfig
   );
   // todo todo this movementSystem.moveToLocation should be called from the pawn ai controller. Here we should only get the new tile
 }

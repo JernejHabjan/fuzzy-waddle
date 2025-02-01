@@ -9,10 +9,7 @@
     </div>
 
     @if (maximized) {
-      <fuzzy-waddle-chat
-        [messageListener]="messageListener"
-        (newMessage)="chatService.sendMessage($event)"
-      />
+      <fuzzy-waddle-chat [messageListener]="messageListener" (newMessage)="chatService.sendMessage($event)" />
     }
   </div>
 </div>

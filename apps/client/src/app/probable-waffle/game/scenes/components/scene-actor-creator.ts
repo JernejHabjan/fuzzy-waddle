@@ -13,6 +13,11 @@ import { FactionDefinitions } from "../../player/faction-definitions";
 import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
+import { ObjectNames } from "../../data/object-names";
+import { setFullActorDataFromName } from "../../data/actor-data";
+import { pwActorDefinitions } from "../../data/actor-definitions";
+import { getActorComponent } from "../../data/actor-component";
+import { IdComponent } from "../../entity/actor/components/id-component";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
@@ -23,24 +28,32 @@ export class SceneActorCreator {
    * After scene is created, store every actor in the game state.
    * All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
    */
-  public initActors() {
+  public initInitialActors() {
     this.spawnFromSpawnList();
     this.saveAllKnownActorsToGameState();
   }
 
   private spawnFromSpawnList() {
-    this.scene.children
-      .getChildren()
-      .filter((c) => c instanceof Spawn)
-      .forEach((spawn: Spawn) => {
-        this.spawnActorsFromSpawnList(spawn);
-        spawn.destroy();
-      });
+    this.scene.children.getChildren().forEach((gameObject: Phaser.GameObjects.GameObject) => {
+      if (gameObject instanceof Spawn) {
+        this.spawnActorsFromSpawnList(gameObject);
+        gameObject.destroy();
+      }
+      // ensure that game objects are fully created
+      const definition = pwActorDefinitions[gameObject.name as ObjectNames];
+      if (definition) {
+        const idComponent = getActorComponent(gameObject, IdComponent);
+        // only initialize those, that haven't been initialized yet
+        if (!idComponent) {
+          setFullActorDataFromName(gameObject);
+        }
+      }
+    });
   }
 
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
     if (!actorDefinition.name) return undefined;
-    const actor = ActorManager.createActor(this.scene, actorDefinition.name, actorDefinition);
+    const actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     const gameObject = this.scene.add.existing(actor);
     this.saveActorToGameState(actor);
     return gameObject;
@@ -166,7 +179,6 @@ export class SceneActorCreator {
       newActorTransform.x += newActorBounds.width / 2;
       // todo later this should move to some other actor component like ActorTransform or something like that which then emits the transform change event across the game
       movementSystem.instantlyMoveToWorldCoordinates(newActorTransform);
-      this.saveActorToGameState(newActor);
     }
     return newActor;
   }

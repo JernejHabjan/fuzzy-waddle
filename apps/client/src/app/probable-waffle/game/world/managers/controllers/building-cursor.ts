@@ -1,11 +1,11 @@
 // when placing new building
-import { MapSizeInfo } from "../../const/map-size.info";
-import { AttackComponent } from "../../../entity/combat/components/attack-component";
+import { MapSizeInfo_old } from "../../const/map-size.info_old";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
-import { RepresentableActor } from "../../../entity/actor/representable-actor";
+import { RepresentableActor_old } from "../../../entity/actor/representable-actor_old";
 import { Scene, Types } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
+// TODO USE ActorManager.createActorPartially
 export class BuildingCursor {
   placementGrid: unknown; // todo
   gridWidthAndHeight: {
@@ -15,7 +15,7 @@ export class BuildingCursor {
   previewAttackRange = false;
 
   allCellsAreValid = false;
-  private building?: RepresentableActor;
+  private building?: RepresentableActor_old;
 
   private pointerLocation?: Vector2Simple;
 
@@ -30,15 +30,15 @@ export class BuildingCursor {
     this.pointerLocation = pointerLocation;
   }
 
-  setupForBuilding(building: RepresentableActor) {
+  setupForBuilding(building: RepresentableActor_old) {
     // todo obtains gridWidthAndHeight from buildingClass
     // get ConstructionSiteComponent from buildingClass
     this.building = building;
 
     const constructionSiteComponent = building.components.findComponent(ConstructionSiteComponent);
-    const attackComponent = building.components.findComponent(AttackComponent);
+    // todo const attackComponent = building.components.findComponent(AttackComponent);
     this.gridWidthAndHeight = { height: 3, width: 2 }; // todo constructionSiteComponent.gridWidthAndHeight;
-    this.previewAttackRange = !!attackComponent;
+    // todo this.previewAttackRange = !!attackComponent;
   }
 
   hasGrid(): boolean {
@@ -70,8 +70,8 @@ export class BuildingCursor {
 
   // fills with red if not valid
   private drawIsometricShape(isValid: boolean = true) {
-    const width = MapSizeInfo.info.tileWidth;
-    const height = MapSizeInfo.info.tileHeight;
+    const width = MapSizeInfo_old.info.tileWidth;
+    const height = MapSizeInfo_old.info.tileHeight;
     const graphics = this.scene.add.graphics();
     graphics.lineStyle(2, 0x000000, 1);
     graphics.fillStyle(isValid ? 0x00ff00 : 0xff0000, 1);
@@ -90,6 +90,9 @@ export class BuildingCursor {
     if (!this.building || !this.pointerLocation) {
       return;
     }
+
+    // TODO USE ActorManager.createActorPartially
+
     // todo const buildingSprite = this.building.spriteRepresentationComponent.sprite;
     // todo buildingSprite.setPosition(this.pointerLocation.x, this.pointerLocation.y);
     // todo buildingSprite.setAlpha(0.5);

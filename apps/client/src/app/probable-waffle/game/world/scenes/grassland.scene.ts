@@ -1,38 +1,37 @@
 import { CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
 import { DEPRECATED_inputHandler } from "../managers/controllers/input/DEPRECATED_input.handler";
 import { DEPRECATED_scaleHandler } from "../map/DEPRECATED_scale.handler";
-import { MapDefinitions, TileDefinitions } from "../const/map-size.info";
+import { MapDefinitions, TileDefinitions } from "../const/map-size.info_old";
 import { CursorHandler } from "../managers/controllers/input/cursor.handler";
-import { TilemapInputHandler, TilePlacementData } from "../managers/controllers/input/tilemap/tilemap-input.handler";
+import {
+  TilemapInputHandler,
+  TilePlacementData_old
+} from "../managers/controllers/input/tilemap/tilemap-input.handler";
 import { DEPRECATED_multiSelectionHandler } from "../managers/controllers/input/DEPRECATED_multi-selection.handler";
 import { Subscription } from "rxjs";
-import { TilemapHelper } from "../map/tile/tilemap.helper";
-import { Pathfinder } from "../map/pathfinder";
-import { NavInputHandler } from "../managers/controllers/input/nav-input.handler";
+import { TilemapHelper_old } from "../map/tile/tilemapHelper_old";
+import { Pathfinder_old } from "../map/pathfinder_old";
+import { NavInputHandler_old } from "../managers/controllers/input/nav-input.handler_old";
 import {
-  ManualTileInputHandler,
+  ManualTileInputHandler_old,
   PossibleClickCoords
-} from "../managers/controllers/input/manual-tiles/manual-tile-input.handler";
+} from "../managers/controllers/input/manual-tiles/manual-tile-input.handler_old";
 import { ManualTile, ManualTilesHelper } from "../map/tile/manual-tiles/manual-tiles.helper";
 import { TileIndexProperties, TilePossibleProperties } from "../map/tile/types/tile-types";
 import { MapPropertiesHelper } from "../map/tile/map-properties-helper";
 import { MapHelper } from "../map/tile/map-helper";
 import { StaticObjectHelper } from "../../entity/placable-objects/static-object";
-import { DynamicObjectHelper } from "../../entity/placable-objects/dynamic-object";
-import { MapNavHelper } from "../map/map-nav-helper";
+import { DynamicObjectHelper_old } from "../../entity/placable-objects/dynamic-object";
+import { MapNavHelper_old } from "../map/map-nav-helper_old";
 import { MinimapTextureHelper } from "../map/minimap-texture.helper";
 import { GameObjectsHelper } from "../map/game-objects-helper";
 import { Actor } from "../../entity/actor/actor";
-import { RepresentableActor } from "../../entity/actor/representable-actor";
+import { RepresentableActor_old } from "../../entity/actor/representable-actor_old";
 import { SpriteRepresentationComponent } from "../../entity/actor/components/sprite-representable-component";
-import { PlayerController } from "../managers/controllers/player-controller";
+import { PlayerController_old } from "../managers/controllers/player-controller_old";
 import { Barracks } from "../../entity/assets/buildings/barracks";
 import { TownHall } from "../../entity/assets/buildings/town-hall";
 import { GameObjects, Geom, Input, Scale, Scene } from "phaser";
-import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
-import { ResourceDrainComponent } from "../../entity/economy/resource/resource-drain-component";
-import { GathererComponent } from "../../entity/actor/components/gatherer-component";
-import { BuilderComponent } from "../../entity/actor/components/builder-component";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 export interface TilemapToAtlasMap {
@@ -47,14 +46,14 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private scaleHandler!: DEPRECATED_scaleHandler;
   private cursorHandler!: CursorHandler;
   private tilemapInputHandler!: TilemapInputHandler;
-  private manualTileInputHandler!: ManualTileInputHandler;
+  private manualTileInputHandler!: ManualTileInputHandler_old;
   private multiSelectionHandler!: DEPRECATED_multiSelectionHandler;
-  private tilemapHelper!: TilemapHelper;
+  private tilemapHelper!: TilemapHelper_old;
   private manualTilesHelper!: ManualTilesHelper;
   private staticObjectHelper!: StaticObjectHelper;
-  private dynamicObjectHelper!: DynamicObjectHelper;
-  private pathfinder!: Pathfinder;
-  private navInputHandler!: NavInputHandler;
+  private dynamicObjectHelper!: DynamicObjectHelper_old;
+  private pathfinder!: Pathfinder_old;
+  private navInputHandler!: NavInputHandler_old;
   private minimapTextureHelper!: MinimapTextureHelper;
 
   // todo move this somewhere else
@@ -73,10 +72,10 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
   private mapHelper!: MapHelper;
   private gameObjectsHelper!: GameObjectsHelper;
   private playerNumber = 1; // todo
-  private mapNavHelper!: MapNavHelper;
-  private warriorGroup: RepresentableActor[] = [];
+  private mapNavHelper!: MapNavHelper_old;
+  private warriorGroup: RepresentableActor_old[] = [];
   private updateLoopActors: Actor[] = []; // todo to separate update loop then
-  private playerController!: PlayerController; // todo temp
+  private playerController!: PlayerController_old; // todo temp
 
   constructor() {
     super({ key: "GrasslandScene" });
@@ -86,12 +85,12 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     // navigable map
     this.mapHelper = new MapHelper();
     this.gameObjectsHelper = new GameObjectsHelper();
-    this.tilemapHelper = new TilemapHelper(this.mapHelper, this);
+    this.tilemapHelper = new TilemapHelper_old(this.mapHelper, this);
     this.mapPropertiesHelper = new MapPropertiesHelper(this.mapHelper, this.textures);
     this.manualTilesHelper = new ManualTilesHelper(this.mapHelper, this, this.tilemapHelper);
     this.staticObjectHelper = new StaticObjectHelper(this.gameObjectsHelper, this);
-    this.dynamicObjectHelper = new DynamicObjectHelper(this.gameObjectsHelper, this);
-    this.pathfinder = new Pathfinder(this);
+    this.dynamicObjectHelper = new DynamicObjectHelper_old(this.gameObjectsHelper, this);
+    this.pathfinder = new Pathfinder_old(this);
 
     this.bindSceneCommunicator();
 
@@ -100,21 +99,21 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     this.mapPropertiesHelper.mapLayerTilesetsToAtlasesAndExtractProperties();
     this.manualTilesHelper.createEmptyManualLayers();
     this.staticObjectHelper.createStaticObjectLayer();
-    this.dynamicObjectHelper.createDynamicObjectLayer();
+    this.dynamicObjectHelper.createDynamicObjectLayer_old();
 
     // input handling
     this.scaleHandler = new DEPRECATED_scaleHandler(this.cameras, this.scale);
     this.inputHandler = new DEPRECATED_inputHandler(this.input, this.cameras.main);
     this.cursorHandler = new CursorHandler(this);
     this.tilemapInputHandler = new TilemapInputHandler(this.mapHelper.tilemapLayer);
-    this.manualTileInputHandler = new ManualTileInputHandler(this, this.mapHelper.manualLayers);
-    this.mapNavHelper = new MapNavHelper(
+    this.manualTileInputHandler = new ManualTileInputHandler_old(this, this.mapHelper.manualLayers);
+    this.mapNavHelper = new MapNavHelper_old(
       this.mapHelper,
       this.gameObjectsHelper,
       this.tilemapInputHandler,
       this.manualTileInputHandler
     );
-    this.navInputHandler = new NavInputHandler(this, this.pathfinder, this.mapNavHelper);
+    this.navInputHandler = new NavInputHandler_old(this, this.pathfinder, this.mapNavHelper);
     this.multiSelectionHandler = new DEPRECATED_multiSelectionHandler(this, this.input, this.cameras.main);
     this.minimapTextureHelper = new MinimapTextureHelper(this);
 
@@ -175,9 +174,9 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
           const navigableTile = this.mapNavHelper.getNavigableTile(worldXY);
           if (navigableTile) {
             const selectedMovable = this.selected.filter(
-              (obj) => obj instanceof RepresentableActor
-            ) as RepresentableActor[];
-            this.navInputHandler.startNav(navigableTile, selectedMovable);
+              (obj) => obj instanceof RepresentableActor_old
+            ) as RepresentableActor_old[];
+            this.navInputHandler.startNav_old(navigableTile, selectedMovable);
           }
         } else {
           if (gameObjectsUnderCursor.length) {
@@ -208,7 +207,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
               }
             } else {
               const possibleCoordsFound =
-                this.manualTileInputHandler.searchPossibleTileCoordinatesOnManualLayers(worldXY);
+                this.manualTileInputHandler.searchPossibleTileCoordinatesOnManualLayers_old(worldXY);
               this.possibleCoordSelected(possibleCoordsFound, this.editorLayerNr);
               if (possibleCoordsFound.length) {
                 const existingTileSelected = this.manualTileInputHandler.getManualTileOnWorldXY(worldXY);
@@ -259,7 +258,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     });
   }
 
-  private getObjectsUnderSelectionRectangle(rect: Geom.Rectangle): RepresentableActor[] {
+  private getObjectsUnderSelectionRectangle(rect: Geom.Rectangle): RepresentableActor_old[] {
     // return this.gameObjectsHelper.dynamicObjects.filter((o) => {
     //   const bounds = o.spriteInstance.getBounds();
     //   return this.multiSelectionHandler.overlapsBounds(rect, bounds);
@@ -335,10 +334,10 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     }
   }
 
-  private placeAtlasOnCoords(atlasToBePlaced: any | null, tilePlacementData: TilePlacementData): void {
+  private placeAtlasOnCoords(atlasToBePlaced: any | null, tilePlacementData: TilePlacementData_old): void {
     if (atlasToBePlaced === null) return;
 
-    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap([
+    this.dynamicObjectHelper.placeRawSpriteObjectsOnMap_old([
       {
         tilePlacementData,
         placeableObjectProperties: {
@@ -397,7 +396,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     // (builderComponent as any).beginConstruction(Barracks, { tileXY: { x: 1, y: 3 }, z: 0 });
   }
 
-  private placeBarracks(tilePlacementData: TilePlacementData) {
+  private placeBarracks(tilePlacementData: TilePlacementData_old) {
     const barracks = new Barracks(this, tilePlacementData);
     barracks.registerGameObject(); // todo should be called by registration engine
     barracks.possess(this.playerController);
@@ -405,7 +404,7 @@ export class GrasslandScene extends Scene implements CreateSceneFromObjectConfig
     return barracks;
   }
 
-  private placeTownHall(tilePlacementData: TilePlacementData) {
+  private placeTownHall(tilePlacementData: TilePlacementData_old) {
     const townHall = new TownHall(this, tilePlacementData);
     townHall.registerGameObject(); // todo should be called by registration engine
     townHall.possess(this.playerController);

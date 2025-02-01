@@ -17,7 +17,7 @@ export class ContainerComponent {
     private readonly gameObject: GameObject,
     public readonly containerDefinition: ContainerDefinition
   ) {
-    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
   }
 

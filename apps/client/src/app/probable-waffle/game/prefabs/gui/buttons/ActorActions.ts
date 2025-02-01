@@ -2,16 +2,23 @@
 
 /* START OF COMPILED CODE */
 
-import ActorAction from "./ActorAction";
+import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
+import ActorAction, { ActorActionSetup } from "./ActorAction";
 import { getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/combat/components/attack-component";
-import { ProductionComponent } from "../../../entity/building/production/production-component";
+import {
+  AssignProductionErrorCode,
+  ProductionComponent
+} from "../../../entity/building/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { pwActorDefinitions } from "../../../data/actor-definitions";
+import { HealthComponent } from "../../../entity/combat/components/health-component";
+import { getSfxVolumeNormalized } from "../../../scenes/services/audio.service";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -34,6 +41,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     actor_actions_bg.scaleX = 7.344280364470656;
     actor_actions_bg.scaleY = 5.861319993557232;
     this.add(actor_actions_bg);
+
+    // preventDefaultScript
+    new OnPointerDownScript(actor_actions_bg);
 
     // actor_actions_border
     const actor_actions_border = scene.add.nineslice(
@@ -132,7 +142,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actor_actions = actor_actions;
 
     /* START-USER-CTR-CODE */
-    this.mainSceneWithActors = (scene as HudProbableWaffle).parentScene!;
+    this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
     this.subscribeToPlayerSelection();
     this.hideAllActions();
     /* END-USER-CTR-CODE */
@@ -142,6 +152,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   private selectionChangedSubscription?: Subscription;
+  private actorKillSubscription?: Subscription;
   private mainSceneWithActors: ProbableWaffleScene;
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
@@ -153,6 +164,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         const actorsByPriority = sortActorsByPriority(selectedActors);
         const actor = actorsByPriority[0];
         this.showActorActions(actor);
+        this.subscribeToActorKillEvent(actor);
       }
     });
   }
@@ -160,6 +172,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private hideAllActions() {
     this.actor_actions.forEach((action) => {
       action.setup({ visible: false });
+    });
+  }
+
+  private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
+    this.actorKillSubscription?.unsubscribe();
+    this.actorKillSubscription = getActorComponent(actor, HealthComponent)?.healthChanged.subscribe((newHealth) => {
+      if (newHealth <= 0) {
+        this.hideAllActions();
+      }
     });
   }
 
@@ -174,10 +195,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.log("Attack");
     },
     tooltipInfo: {
-      name: "Attack",
-      description: "Attack an enemy"
+      title: "Attack",
+      description: "Attack an enemy",
+      iconKey: "gui",
+      iconFrame: "actor_info_icons/sword.png"
     }
-  };
+  } satisfies ActorActionSetup;
 
   private readonly stopAction = {
     icon: {
@@ -190,10 +213,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.log("Stop");
     },
     tooltipInfo: {
-      name: "Stop",
-      description: "Stop current action"
+      title: "Stop",
+      description: "Stop current action",
+      iconKey: "gui",
+      iconFrame: "action_icons/hand.png"
     }
-  };
+  } satisfies ActorActionSetup;
 
   private readonly moveAction = {
     icon: {
@@ -206,10 +231,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.log("Move");
     },
     tooltipInfo: {
-      name: "Move",
-      description: "Move to a location"
+      title: "Move",
+      description: "Move to a location",
+      iconKey: "gui",
+      iconFrame: "action_icons/arrow.png"
     }
-  };
+  } satisfies ActorActionSetup;
 
   private showActorActions(actor: Phaser.GameObjects.GameObject) {
     let index = 0;
@@ -229,22 +256,53 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent) {
-      const availableToProduce: string[] = productionComponent.productionDefinition.availableProductGameObjectClasses; // todo
+      const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product) => {
+        const actorDefinition = pwActorDefinitions[product];
+        const info = actorDefinition.components?.info;
+        if (!info || !info.smallImage) {
+          throw new Error(`Info component not found for ${product}`);
+        }
         this.actor_actions[index].setup({
           icon: {
-            key: "factions",
-            frame: "character_icons/skaduwee/worker_female.png", // todo
-            origin: { x: 0.5, y: 0.7 }
+            key: info.smallImage.key!,
+            frame: info.smallImage.frame,
+            origin: info.smallImage.origin
           },
-          disabled: true, // todo
+          disabled: false, // todo
           visible: true,
           action: () => {
-            console.log("Produce", product); // todo
+            if (!actorDefinition.components?.productionCost) {
+              throw new Error(`Production cost not found for ${product}`);
+            }
+            const errorCode = productionComponent.startProduction({
+              actorName: product,
+              costData: actorDefinition.components.productionCost
+            });
+            const sound = this.mainSceneWithActors.sound;
+
+            sound.stopByKey("ui-feedback");
+            const volume = getSfxVolumeNormalized(actor.scene);
+            switch (errorCode) {
+              case AssignProductionErrorCode.NotEnoughResources:
+                sound.playAudioSprite("ui-feedback", "not_enough_resources", { volume });
+                break;
+              case AssignProductionErrorCode.QueueFull:
+                sound.playAudioSprite("ui-feedback", "production_queue_full", { volume });
+                break;
+              case AssignProductionErrorCode.InvalidProduct:
+                // should not really happen
+                break;
+              case AssignProductionErrorCode.NoOwner:
+                // should not really happen
+                break;
+            }
           },
           tooltipInfo: {
-            name: "Produce " + product,
-            description: "Produce " + product // todo
+            title: info.name,
+            iconKey: info.smallImage.key!,
+            iconFrame: info.smallImage.frame,
+            description: info.description
           }
         });
         index++;
@@ -259,6 +317,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
+    this.actorKillSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */

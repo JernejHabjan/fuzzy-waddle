@@ -1,18 +1,18 @@
-import { MapSizeInfo } from "../../const/map-size.info";
+import { MapSizeInfo_old } from "../../const/map-size.info_old";
 import { TileCenterOptions } from "./types/tile-types";
 import { IsoHelper } from "./iso-helper";
 import { Scene } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
-export class TilemapHelper {
+export class TilemapHelper_old {
   constructor(private readonly scene: Scene) {}
 
-  static get tileCenterOffset(): number {
+  static get tileCenterOffset_old(): number {
     // todo move to IsoHelper
-    return MapSizeInfo.info.tileHeightHalf;
+    return MapSizeInfo_old.info.tileHeightHalf;
   }
 
-  static adjustTileWorldWithVerticalOffset(
+  static adjustTileWorldWithVerticalOffset_old(
     // todo move to IsoHelper
     tileXY: Vector2Simple,
     tileCenterOptions: TileCenterOptions = null
@@ -21,7 +21,7 @@ export class TilemapHelper {
       return { x: tileXY.x, y: tileXY.y - tileCenterOptions.offsetInPx };
     }
     if (tileCenterOptions?.centerOfTile) {
-      return { x: tileXY.x, y: tileXY.y + TilemapHelper.tileCenterOffset };
+      return { x: tileXY.x, y: tileXY.y + TilemapHelper_old.tileCenterOffset_old };
     }
     return tileXY;
   }
@@ -31,6 +31,6 @@ export class TilemapHelper {
     tileXY: Vector2Simple,
     tileCenterOptions: TileCenterOptions = null
   ): Vector2Simple {
-    return this.adjustTileWorldWithVerticalOffset(IsoHelper.getWorldCenterXY(tileXY), tileCenterOptions);
+    return this.adjustTileWorldWithVerticalOffset_old(IsoHelper.getWorldCenterXY(tileXY), tileCenterOptions);
   }
 }

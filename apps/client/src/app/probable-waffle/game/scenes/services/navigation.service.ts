@@ -6,7 +6,7 @@ import { WalkableComponent } from "../../entity/actor/components/walkable-compon
 import { ColliderComponent } from "../../entity/actor/components/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
-import { Pathfinder } from "../../world/map/pathfinder";
+import { Pathfinder_old } from "../../world/map/pathfinder_old";
 import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent } from "../components/scene-component-helpers";
 import { TilemapComponent } from "../components/tilemap.component";
@@ -48,7 +48,7 @@ export class NavigationService {
       const randomTile = await this.randomTileInNavigableRadius({ x: 33, y: 30 }, 15);
       if (!randomTile) return;
       console.log("RANDOM TILE", randomTile);
-      const tileWorldXY = Pathfinder.getTileWorldCenter(this.tilemap, randomTile)!;
+      const tileWorldXY = Pathfinder_old.getTileWorldCenter(this.tilemap, randomTile)!;
       drawDebugPoint(this.scene, tileWorldXY, 0x0000ff);
     };
 
@@ -59,7 +59,7 @@ export class NavigationService {
   }
 
   getTileWorldCenter(tile: Vector2Simple): Vector2Simple | undefined {
-    return Pathfinder.getTileWorldCenter(this.tilemap, tile);
+    return Pathfinder_old.getTileWorldCenter(this.tilemap, tile);
   }
 
   private setup() {

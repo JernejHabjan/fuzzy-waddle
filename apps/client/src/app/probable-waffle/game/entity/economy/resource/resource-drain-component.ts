@@ -3,8 +3,8 @@ import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";
+import { onSceneInitialized } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
-import { HealthComponent } from "../../combat/components/health-component";
 
 export type ResourceDrainDefinition = {
   resourceTypes: ResourceType[];
@@ -22,7 +22,7 @@ export class ResourceDrainComponent {
     private readonly gameObject: GameObject,
     private readonly resourceDrainDefinition: ResourceDrainDefinition
   ) {
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    onSceneInitialized(gameObject.scene, this.init, this);
   }
 
   init(): void {

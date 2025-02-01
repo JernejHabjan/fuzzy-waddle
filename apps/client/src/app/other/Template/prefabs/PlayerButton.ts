@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import ScrollFactorScript from "../../../shared/game/phaser/script-nodes/ScrollFactorScript";
 import PlayerControllerScript from "../../../shared/game/phaser/script-nodes/PlayerControllerScript";
 /* START-USER-IMPORTS */

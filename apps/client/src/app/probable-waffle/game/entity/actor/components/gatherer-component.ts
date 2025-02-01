@@ -8,10 +8,10 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
-import { getPlayer } from "../../../data/scene-data";
-import GameObject = Phaser.GameObjects.GameObject;
+import { emitResource, getPlayer } from "../../../data/scene-data";
 import { EventEmitter } from "@angular/core";
 import { HealthComponent } from "../../combat/components/health-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -285,13 +285,15 @@ export class GathererComponent {
         const player = getPlayer(this.gameObject.scene, owner);
         if (player) {
           const carriedResourceType = this.carriedResourceType;
-          const returnedResources = player.addResource(carriedResourceType, this.carriedResourceAmount);
-          if (returnedResources > 0) {
-            this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
 
-            console.log(`Returned ${returnedResources} ${carriedResourceType} to ${this.gameObject.name}`);
+          const carriedAmount = this.carriedResourceAmount;
+          if (carriedAmount > 0) {
+            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount });
+            this.setCarriedResourceAmount(0);
 
-            this.onResourcesReturned.next([this.gameObject, carriedResourceType, returnedResources]);
+            console.log(`Returned ${carriedAmount} ${carriedResourceType} to ${this.gameObject.name}`);
+
+            this.onResourcesReturned.next([this.gameObject, carriedResourceType, carriedAmount]);
           }
         }
       }

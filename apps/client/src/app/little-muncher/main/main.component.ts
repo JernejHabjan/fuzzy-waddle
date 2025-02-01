@@ -8,13 +8,14 @@ import { GameInstanceClientService } from "./communicators/game-instance-client.
 
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { GameInterfaceComponent } from "./game-interface/game-interface.component";
+import { AngularHost } from "../../shared/consts";
 
 @Component({
   selector: "little-muncher-main",
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
-  standalone: true,
-  imports: [GameContainerComponent, GameInterfaceComponent]
+  imports: [GameContainerComponent, GameInterfaceComponent],
+  host: AngularHost.contentFlexFullHeight
 })
 export class MainComponent implements OnInit {
   protected readonly littleMuncherGameConfig = littleMuncherGameConfig;

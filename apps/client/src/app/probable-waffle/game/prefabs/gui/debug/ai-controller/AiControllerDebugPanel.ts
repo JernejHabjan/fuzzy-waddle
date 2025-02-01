@@ -14,17 +14,30 @@ import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class AiControllerDebugPanel extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 200.21157284311968, y ?? 0);
 
     // button
     const button = scene.add.container(-150.21157898014727, 15);
-    button.setInteractive(new Phaser.Geom.Rectangle(-32, -13, 182.0350429198294, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
+    button.setInteractive(
+      new Phaser.Geom.Rectangle(-32, -13, 182.0350429198294, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
     this.add(button);
 
     // game_action_bg
-    const game_action_bg = scene.add.nineslice(60, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 90, 20, 3, 3, 3, 3);
+    const game_action_bg = scene.add.nineslice(
+      60,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      90,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
     game_action_bg.scaleX = 2.0762647352357817;
     game_action_bg.scaleY = 1.5492262688240692;
     button.add(game_action_bg);
@@ -33,7 +46,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     const buttonText = scene.add.text(69.74578515529078, -1, "", {});
     buttonText.setOrigin(0.5472303972883584, 0.5);
     buttonText.text = "Show AI debugging";
-    buttonText.setStyle({ "color": "#000000ff" });
+    buttonText.setStyle({ color: "#000000ff" });
     button.add(buttonText);
 
     // onPointerDownScript
@@ -84,7 +97,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     if (this.enabled) {
       this.aiControllerDebugLabel.setVisible(true);
       const buttonHeight = this.button.getBounds().height;
-      const aiPlayers = getPlayers((this.scene as HudProbableWaffle).parentScene!).filter(
+      const aiPlayers = getPlayers((this.scene as HudProbableWaffle).probableWaffleScene!).filter(
         (p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI
       );
       // create new labels for each ai player and put them below the button

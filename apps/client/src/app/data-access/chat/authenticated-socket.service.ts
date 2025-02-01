@@ -1,7 +1,7 @@
 import { Socket } from "ngx-socket-io";
 import { AuthService } from "../../auth/auth.service";
 import { environment } from "../../../environments/environment";
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { IAuthenticatedSocketService } from "./authenticated-socket.service.interface";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 
@@ -38,16 +38,7 @@ export class AuthenticatedSocketService implements IAuthenticatedSocketService {
         }
       });
 
-      socket.connect((err: any) => {
-        if (err) {
-          console.error("Socket connection failed", err);
-          reject(err); // Reject the promise on error
-        } else {
-          resolve(socket); // Resolve the promise when the connection is successful
-        }
-      });
-
-      // Optional: Handle 'connect' and 'error' events directly from the socket instance
+      socket.connect();
       socket.on("connect", () => resolve(socket));
       socket.on("connect_error", (err: any) => reject(err));
     });

@@ -1,4 +1,5 @@
 import { GameObjects } from "phaser";
+
 export class CharacterSoundComponent {
   constructor(private readonly gameObject: GameObjects.GameObject) {}
 

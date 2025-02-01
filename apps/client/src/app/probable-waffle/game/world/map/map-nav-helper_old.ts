@@ -1,16 +1,16 @@
 import { TilemapInputHandler } from "../managers/controllers/input/tilemap/tilemap-input.handler";
-import { ManualTileInputHandler } from "../managers/controllers/input/manual-tiles/manual-tile-input.handler";
+import { ManualTileInputHandler_old } from "../managers/controllers/input/manual-tiles/manual-tile-input.handler_old";
 import { TileLayerProperties } from "./tile/types/tile-types";
 import { GameObjectsHelper } from "./game-objects-helper";
 import { Tilemaps } from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
-export class MapNavHelper {
+export class MapNavHelper_old {
   constructor(
     private readonly mapHelper: any,
     private readonly gameObjectsHelper: GameObjectsHelper,
     private readonly tilemapInputHandler: TilemapInputHandler,
-    private readonly manualTileInputHandler: ManualTileInputHandler
+    private readonly manualTileInputHandler: ManualTileInputHandler_old
   ) {}
 
   /**

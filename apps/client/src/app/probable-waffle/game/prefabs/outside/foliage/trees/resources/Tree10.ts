@@ -2,21 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../../data/actor-data";
-import { SelectableComponent } from "../../../../../entity/actor/components/selectable-component";
-import {
-  ResourceSourceComponent,
-  ResourceSourceDefinition
-} from "../../../../../entity/economy/resource/resource-source-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { IdComponent } from "../../../../../entity/actor/components/id-component";
-import { ColliderComponent, ColliderDefinition } from "../../../../../entity/actor/components/collider-component";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../../../entity/actor/components/object-descriptor-component";
 import { ObjectNames } from "../../../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -35,25 +21,6 @@ export default class Tree10 extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.8833026541239049);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0x304f33
-        } satisfies ObjectDescriptorDefinition),
-        new IdComponent(),
-        new ColliderComponent({
-          colliderFactorReduction: 0.5
-        } satisfies ColliderDefinition),
-        new SelectableComponent(this),
-        new ResourceSourceComponent(this, {
-          resourceType: ResourceType.Wood,
-          maximumResources: 20,
-          gatheringFactor: 1
-        } satisfies ResourceSourceDefinition)
-      ],
-      []
-    );
     /* END-USER-CTR-CODE */
   }
 

@@ -35,7 +35,7 @@ export default class DungeonUi extends Scene implements CreateSceneFromObjectCon
   }
 
   private handlePlayerHealthChanged(health: number) {
-    this.hearts.children.each((go: any, idx: any): boolean => {
+    this.hearts.children.forEach((go: any, idx: any): boolean => {
       const heart = go as Phaser.GameObjects.Image;
       if (idx <= health - 1) {
         heart.setTexture(AssetsDungeon.heartFull);

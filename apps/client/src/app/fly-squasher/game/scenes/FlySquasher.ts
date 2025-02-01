@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import Croissants from "../prefabs/Croissants";
 import Fly from "../prefabs/Fly";
 /* START-USER-IMPORTS */

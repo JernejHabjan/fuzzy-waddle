@@ -105,7 +105,7 @@ export class LittleMuncherScene extends BaseScene<
       "assets/little-muncher/spritesheets/little-muncher-spritesheet.json",
       "assets/little-muncher/spritesheets"
     );
-    this.load.audio("hit", "assets/probable-waffle/sfx/character/death/death1.mp3");
+    this.load.audioSprite("character", "assets/sfx/character.json");
     this.load.audio("bird", "assets/little-muncher/sfx/bird.mp3");
     this.load.audio("ost-little-muncher", "assets/little-muncher/ost/little-muncher.m4a");
   }
@@ -492,7 +492,7 @@ export class LittleMuncherScene extends BaseScene<
   private readonly crashCharacter = (character: Phaser.Physics.Arcade.Sprite, object: Phaser.Physics.Arcade.Sprite) => {
     object.destroy();
     // todo play explosion animation
-    this.sound.play("hit");
+    this.sound.playAudioSprite("character", "death1");
     // shake screen
     this.cameras.main.shake(100, 0.003);
 

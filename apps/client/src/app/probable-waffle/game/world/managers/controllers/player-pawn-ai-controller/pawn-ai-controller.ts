@@ -6,28 +6,48 @@ import { PlayerPawnAiControllerAgent } from "./player-pawn-ai-controller.agent";
 import { NodeDebugger } from "./node-debugger";
 import { OrderType } from "../../../../entity/character/ai/order-type";
 import { environment } from "../../../../../../../environments/environment";
+import { Agent } from "mistreevous/dist/Agent";
+import { HealthComponent } from "../../../../entity/combat/components/health-component";
+
+export interface PawnAiDefinition {
+  type: AiType;
+  stepInterval?: number;
+}
 
 export class PawnAiController {
   private readonly DEBUG = true;
-  private blackboard: PawnAiBlackboard = new PawnAiBlackboard();
-  private playerPawnAiControllerAgent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
-  private behaviourTree: BehaviourTree;
+  private readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
+  private readonly agent: Agent;
+  private readonly behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
-  private readonly stepInterval: number = 1000;
   private readonly nodeDebugger?: NodeDebugger;
-  constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
-    this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.playerPawnAiControllerAgent);
+  constructor(
+    private readonly gameObject: Phaser.GameObjects.GameObject,
+    private readonly pawnAiDefinition: PawnAiDefinition
+  ) {
+    switch (pawnAiDefinition.type) {
+      case AiType.Character:
+        this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
+        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        break;
+      default:
+        this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
+        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        break;
+    }
+
     if (!environment.production && this.DEBUG) {
       this.nodeDebugger = new NodeDebugger(this.gameObject);
     }
 
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.once(HealthComponent.KilledEvent, this.onShutdown, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.onShutdown, this);
   }
 
   private update(time: number, dt: number) {
     this.elapsedTime += dt;
-    if (this.elapsedTime >= this.stepInterval) {
+    if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? 1000)) {
       this.behaviourTree.step();
       this.elapsedTime = 0;
       this.updateDebuggerText();
@@ -65,4 +85,8 @@ export class PawnAiController {
   private onShutdown() {
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
+}
+
+export enum AiType {
+  Character = "Character"
 }

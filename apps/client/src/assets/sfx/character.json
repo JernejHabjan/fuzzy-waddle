@@ -1,6 +1,6 @@
 {
   "resources": [
-    "apps/client/src/assets/sfx/character.mp3"
+    "assets/sfx/character.mp3"
   ],
   "spritemap": {
     "death1": {

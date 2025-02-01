@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { LavaParticles } from "../../../../effects/particles/LavaParticles";
 import { setActorData } from "../../../../data/actor-data";

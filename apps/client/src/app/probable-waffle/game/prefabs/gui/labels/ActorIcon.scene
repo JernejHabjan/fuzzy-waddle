@@ -1,0 +1,112 @@
+{
+    "id": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 216,
+        "borderHeight": 80
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "5f2e2d94-a065-44b7-84eb-b8759399f879",
+            "label": "container_1",
+            "blendMode": -1,
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.width": 16,
+            "hitArea.height": 16,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "903d089f-9232-46a8-ae30-b6b4ec6ca198",
+                    "label": "bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 2,
+                    "rightWidth": 2,
+                    "topHeight": 2,
+                    "bottomHeight": 2,
+                    "width": 16,
+                    "height": 16
+                },
+                {
+                    "type": "Text",
+                    "id": "bf196d36-a834-4496-b153-3c14b40f6e0a",
+                    "label": "nr",
+                    "displayName": "Number",
+                    "scope": "CLASS",
+                    "x": 4,
+                    "y": 1,
+                    "text": "2",
+                    "fontSize": "14px"
+                },
+                {
+                    "type": "Image",
+                    "id": "59ba1df0-5151-48c1-a465-05bcc250aae6",
+                    "label": "image",
+                    "displayName": "Image",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "character_icons/general/warrior.png"
+                    },
+                    "x": 8,
+                    "y": 8,
+                    "scaleX": 0.22,
+                    "scaleY": 0.22
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                    "id": "2183b4d8-4c36-4598-9bbe-1d6f53384f6c",
+                    "label": "onPointerDownScript",
+                    "displayName": "Pointer down",
+                    "list": [
+                        {
+                            "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                            "id": "7a3d7e1d-bcbf-4154-89de-9fad3fa56538",
+                            "label": "actor_action_click",
+                            "displayName": "Push action"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                    "id": "c401f6dc-a09a-40bb-97f4-a3c8ec8c8a53",
+                    "label": "onPointerUpScript_menu_9",
+                    "displayName": "Pointer up",
+                    "list": [
+                        {
+                            "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                            "id": "dfc40691-7187-4a43-bcad-95b28a85991a",
+                            "unlock": [
+                                "eventName"
+                            ],
+                            "label": "emitActorAction",
+                            "displayName": "Emit \"actor-action\"",
+                            "eventName": "actor-action"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

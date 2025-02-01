@@ -18,43 +18,24 @@ import { TilemapComponent } from "./components/tilemap.component";
 import { RestartGame } from "../data/restart-game";
 import { AiPlayerHandler } from "./components/ai-player-handler";
 
-export interface GameProbableWaffleSceneData {
+export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
   systems: any[];
   components: any[];
   services: any[];
   initializers: {
-    // used before postSceneInitialized
     sceneInitialized: BehaviorSubject<boolean>;
-    // used when scene is fully created and initialized - is sent before postCreate event
-    postSceneInitialized: BehaviorSubject<boolean>;
   };
 }
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
 
-  override getSceneGameData() {
-    return this.sceneGameData;
-  }
-
-  private sceneGameData: GameProbableWaffleSceneData = {
-    baseGameData: this.baseGameData,
-    systems: [],
-    components: [],
-    services: [],
-    initializers: {
-      sceneInitialized: new BehaviorSubject<boolean>(false),
-      postSceneInitialized: new BehaviorSubject<boolean>(false)
-    }
-  } satisfies GameProbableWaffleSceneData;
-
   init() {
     super.init();
   }
 
   create() {
-    super.create();
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
     hud.initializeWithParentScene(this);
@@ -64,18 +45,20 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-    new SingleSelectionHandler(this, hud, this.tilemap);
-    new GameObjectSelectionHandler(this); // todo maybe this needs to be on individual game object?
+    this.sceneGameData.components.push(new SingleSelectionHandler(this, hud, this.tilemap));
+    new GameObjectSelectionHandler(this);
     new SaveGame(this);
     new RestartGame(this);
     const creator = new SceneActorCreator(this);
-    creator.initActors();
+
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
     this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService(), creator);
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
 
+    creator.initInitialActors();
+
+    super.create();
     this.sceneGameData.initializers.sceneInitialized.next(true);
-    this.sceneGameData.initializers.postSceneInitialized.next(true);
   }
 
   private cleanup() {
@@ -83,7 +66,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.services = [];
     this.sceneGameData.systems = [];
     this.sceneGameData.initializers.sceneInitialized.next(false);
-    this.sceneGameData.initializers.postSceneInitialized.next(false);
   }
 
   protected shutDown() {

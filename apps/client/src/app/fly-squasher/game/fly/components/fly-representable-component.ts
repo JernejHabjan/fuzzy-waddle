@@ -90,9 +90,9 @@ export class FlyRepresentableComponent implements IComponent {
   }
 
   update(): void {
-    if (!this.fly.killedAt) {
-      return;
-    }
+    if (!this.fly.killedAt) return;
+    if (!this._fly.active) return;
+
     const killedAt: Date = this.fly.killedAt;
     const despawnTimeInMilliseconds = this.fly.despawnTime * 1000;
     const millisecondsSinceKilled = new Date().getTime() - killedAt.getTime();
@@ -103,8 +103,6 @@ export class FlyRepresentableComponent implements IComponent {
       despawnTimeInMilliseconds,
       millisecondsSinceKilled
     );
-
-    // TODO ENSURE THAT UPDATE DOESN'T RUN AFTER COMPONENT IS DESTROYED SOMEHOW
 
     this._fly.setTint(hexColor.color); // TODO THIS DOESN'T WORK OK
   }

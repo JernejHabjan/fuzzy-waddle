@@ -2,11 +2,10 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { emitResource, getCurrentPlayerNumber, getPlayer, listenToResourceChanged } from "../../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer, listenToResourceChanged } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
-import { PlayerStateResources, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class Resource extends Phaser.GameObjects.Container {
@@ -16,6 +15,7 @@ export default class Resource extends Phaser.GameObjects.Container {
     // resource_text
     const resource_text = scene.add.text(-39, -20, "", {});
     resource_text.text = "0";
+    resource_text.setStyle({});
     this.add(resource_text);
 
     // resource_icon

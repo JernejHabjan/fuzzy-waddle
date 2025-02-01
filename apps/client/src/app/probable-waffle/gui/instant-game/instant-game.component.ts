@@ -9,11 +9,12 @@ import {
   ProbableWaffleMapEnum
 } from "@fuzzy-waddle/api-interfaces";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { AngularHost } from "../../../shared/consts";
 
 @Component({
   selector: "fuzzy-waddle-instant-game",
-  standalone: true,
   imports: [LoaderComponent],
+  host: AngularHost.contentFlexFullHeightCenter,
   template: `<fuzzy-waddle-loader />`
 })
 export class InstantGameComponent implements OnInit {

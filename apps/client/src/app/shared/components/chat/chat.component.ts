@@ -16,13 +16,14 @@ import { Observable, Subscription } from "rxjs";
 
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "../../../auth/auth.service";
+import { AngularHost } from "../../consts";
 
 @Component({
   selector: "fuzzy-waddle-chat",
   templateUrl: "./chat.component.html",
   styleUrls: ["./chat.component.scss"],
-  standalone: true,
-  imports: [FormsModule]
+  imports: [FormsModule],
+  host: AngularHost.contentFlexFullHeight
 })
 export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild("chatBody") chatBody!: ElementRef;

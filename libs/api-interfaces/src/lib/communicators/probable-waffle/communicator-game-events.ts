@@ -1,13 +1,14 @@
 export interface ProbableWaffleSelectionData {
   button: "left" | "right";
-  selected?: string[];
+  objectIds?: string[];
   selectedArea?: { x: number; y: number; width: number; height: number };
-  terrainSelected?: { x: number; y: number; z: number };
+  terrainSelectedTileVec3?: { x: number; y: number; z: number };
+  terrainSelectedWorldVec3?: { x: number; y: number; z: number };
   shiftKey?: boolean;
   ctrlKey?: boolean;
 }
 
 export type HealthComponentData = {
   health: number;
-  armor: number;
+  armour: number;
 };

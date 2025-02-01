@@ -1,16 +1,16 @@
 import { ActorManager } from "./actor-manager";
 import { filter, Subscription } from "rxjs";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
-import { onPostSceneInitialized } from "./game-object-helper";
 import { getSceneService } from "../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../scenes/components/scene-actor-creator";
+import { onSceneInitialized } from "./game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
 
   constructor(private scene: GameProbableWaffleScene) {
-    onPostSceneInitialized(scene, this.postSceneInitialized, this);
+    onSceneInitialized(scene, this.postSceneInitialized, this);
     // only ones that have name: SaveGame.SaveGameEvent
     this.saveGameSubscription = scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "save-game"))

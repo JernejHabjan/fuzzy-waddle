@@ -1,5 +1,3 @@
-import { Subscription } from "rxjs";
-import { FactionType, ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { MatchmakingLevel, MatchmakingOptions } from "./matchmaking.component";
 
 export interface IMatchmakingService {

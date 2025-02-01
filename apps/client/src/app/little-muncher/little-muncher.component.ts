@@ -9,12 +9,13 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { HomeComponent } from "./home/home.component";
 import { MainComponent } from "./main/main.component";
 import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
+import { AngularHost } from "../shared/consts";
 
 @Component({
   templateUrl: "./little-muncher.component.html",
   styleUrls: ["./little-muncher.component.scss"],
-  standalone: true,
-  imports: [FaIconComponent, HomeComponent, MainComponent, NgbToast]
+  imports: [FaIconComponent, HomeComponent, MainComponent, NgbToast],
+  host: AngularHost.contentFlexFullHeight
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;

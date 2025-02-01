@@ -1,12 +1,4 @@
-@import "../../../../styles/_variables";
-
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
+@use "../../../../styles/_variables" as *;
 
 .chat-body {
   display: flex;

@@ -1,10 +1,8 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { GameplayLibrary } from "../../../library/gameplay-library";
-import Spawn from "../../../prefabs/buildings/misc/Spawn";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { HealthComponent } from "../../combat/components/health-component";
-import { State } from "mistreevous";
 
 export interface VisionDefinition {
   range: number;
@@ -39,13 +37,20 @@ export class VisionComponent {
     // todo this is expensive
     const tempEnemies = this.gameObject.scene.children.getChildren().filter((c) => {
       const ownerComponent = getActorComponent(c, OwnerComponent);
-      const childOwner = ownerComponent?.getOwner();
-      if (!childOwner) return false;
-      if (childOwner === owner) return false; // todo this is not respecting teams
+      if (!ownerComponent) return false; // No owner
+      const childOwner = ownerComponent.getOwner();
+      if (!childOwner) return false; // No owner
+      if (childOwner === owner) return false; // Same owner
+      const isSameTeam = ownerComponent.isSameTeamAsGameObject(this.gameObject);
+      if (isSameTeam) return false; // Same team
+
       const healthComponent = getActorComponent(c, HealthComponent);
-      if (!healthComponent) return false;
-      const health = healthComponent.healthComponentData.health;
-      return health > 0;
+      if (!healthComponent || healthComponent.healthComponentData.health <= 0) return false; // Dead or no health
+
+      const actorVisible = this.isActorVisible(c as GameObject);
+      if (!actorVisible) return false; // Not visible
+
+      return true;
     });
 
     // todo apply vision radius check here
@@ -56,7 +61,7 @@ export class VisionComponent {
   getClosestVisibleEnemy(): GameObject | null {
     const visibleEnemies = this.getVisibleEnemies();
     if (visibleEnemies.length === 0) return null;
-    // find closest enemy
+    // find the closest enemy
     visibleEnemies.sort((a, b) => {
       const distanceA = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, a);
       const distanceB = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, b);

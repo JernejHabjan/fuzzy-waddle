@@ -9,7 +9,7 @@ import Phaser from "phaser";
 
 export type HealthDefinition = {
   maxHealth: number;
-  maxArmor?: number;
+  maxArmour?: number;
   regenerateHealthRate?: number;
 };
 
@@ -23,6 +23,8 @@ export class HealthComponent {
   private armorUiComponent?: HealthUiComponent;
   private playerChangedSubscription?: Subscription;
 
+  private destroyAfterMs = 30000;
+
   latestDamage?: {
     damageInitiator: Phaser.GameObjects.GameObject | undefined;
     damage: number;
@@ -33,11 +35,11 @@ export class HealthComponent {
     eventPrefix: "health",
     propertyMap: {
       health: "health",
-      armor: "armor"
+      armour: "armor"
     },
     eventEmitters: {
       health: this.healthChanged,
-      armor: this.armorChanged
+      armour: this.armorChanged
     },
     hooks: {
       health: (value: number, previousValue: number) => {
@@ -45,7 +47,7 @@ export class HealthComponent {
           this.killActor(); // Custom logic when health reaches zero
         }
       },
-      armor: (value: number, previousValue: number) => {
+      armour: (value: number, previousValue: number) => {
         // Example of custom logic when armor changes
         console.log(`Armor changed from ${previousValue} to ${value}`);
       }
@@ -58,7 +60,7 @@ export class HealthComponent {
     // Initial health and armor data
     const initialData: HealthComponentData = {
       health: healthDefinition.maxHealth,
-      armor: healthDefinition.maxArmor ?? 0
+      armour: healthDefinition.maxArmour ?? 0
     };
 
     // Sync health and armor with external events, using hooks for custom logic
@@ -70,7 +72,7 @@ export class HealthComponent {
 
     // Initialize UI components for health and armor
     this.healthUiComponent = new HealthUiComponent(this.gameObject, "health");
-    if (this.healthComponentData.armor > 0) {
+    if (this.healthComponentData.armour > 0) {
       this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
     }
 
@@ -97,8 +99,8 @@ export class HealthComponent {
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
-    if (this.healthComponentData.armor > 0) {
-      this.healthComponentData.armor = Math.max(this.healthComponentData.armor - damage, 0);
+    if (this.healthComponentData.armour > 0) {
+      this.healthComponentData.armour = Math.max(this.healthComponentData.armour - damage, 0);
     } else {
       this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
     }
@@ -113,19 +115,22 @@ export class HealthComponent {
   killActor() {
     this.healthComponentData.health = 0;
     this.gameObject.emit(HealthComponent.KilledEvent);
-    // do not destroy the gameObject just yet
-    // this.gameObject.destroy();
-    this.hideGameObject();
+    this.playDeathAnimation();
+    this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
+      this.gameObject.destroy();
+    });
   }
 
-  /**
-   * todo this is temp before we display proper death animation and ruins under the gameObject
-   */
-  private hideGameObject() {
-    const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible; // todo this is used on multiple places
-    if (visibleComponent.setVisible === undefined) return;
-    visibleComponent.setVisible(false);
-    this.gameObject.emit(ContainerComponent.GameObjectVisibilityChanged, false);
+  private playDeathAnimation() {
+    const sprite = this.gameObject as Phaser.GameObjects.Sprite; // todo
+    if (sprite.anims) {
+      sprite.play("general_warrior_hurt"); // todo
+    } else {
+      // todo this is just fallback - ensure that you handle this case correctly
+      const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible;
+      if (visibleComponent.setVisible === undefined) return;
+      visibleComponent.setVisible(false);
+    }
   }
 
   resetHealth() {
@@ -133,7 +138,7 @@ export class HealthComponent {
   }
 
   resetArmor() {
-    this.healthComponentData.armor = this.healthDefinition.maxArmor ?? 0;
+    this.healthComponentData.armour = this.healthDefinition.maxArmour ?? 0;
   }
 
   setVisibilityUiComponent(visibility: boolean) {

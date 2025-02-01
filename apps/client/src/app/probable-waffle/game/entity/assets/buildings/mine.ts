@@ -33,7 +33,7 @@ export const MineDefinitions: BuildingInfoDefinition = {
     refundFactor: 0.5,
     startImmediately: false,
     gridWidthAndHeight: { width: 2, height: 2 },
-    finishedSound: "building-finished" // todo
+    finishedSound: "building-finished"
   }
 };
 

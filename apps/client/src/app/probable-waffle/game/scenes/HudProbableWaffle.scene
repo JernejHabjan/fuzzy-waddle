@@ -25,7 +25,7 @@
             ],
             "label": "actor_actions_container",
             "displayName": "Actor actions",
-            "scope": "CLASS",
+            "scope": "PUBLIC",
             "x": 1280,
             "y": 720
         },
@@ -46,59 +46,17 @@
             "scaleY": 2.2
         },
         {
-            "type": "Container",
+            "prefabId": "427f5265-4bd1-4de9-900f-51854253c9c2",
             "id": "b249fb29-409d-453c-bf16-b6bab734f665",
+            "unlock": [
+                "x",
+                "y"
+            ],
             "label": "minimap_container",
             "displayName": "Minimap",
             "scope": "CLASS",
-            "y": 720,
-            "scaleX": 1.0265358293529236,
-            "scaleY": 0.9537232846001076,
-            "list": [
-                {
-                    "type": "NineSlice",
-                    "id": "10f19ecf-da5d-4257-ab96-b586f49ec836",
-                    "label": "minimap_bg",
-                    "displayName": "Background",
-                    "texture": {
-                        "key": "gui",
-                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
-                    },
-                    "x": 12,
-                    "y": -247,
-                    "scaleX": 12.769367198119731,
-                    "scaleY": 7.444257731898887,
-                    "originX": 0,
-                    "originY": 0,
-                    "leftWidth": 3,
-                    "rightWidth": 3,
-                    "topHeight": 3,
-                    "bottomHeight": 3,
-                    "width": 32,
-                    "height": 32
-                },
-                {
-                    "type": "NineSlice",
-                    "id": "10845189-d4c1-4a84-b902-5748292d1246",
-                    "label": "minimap_border",
-                    "displayName": "Border",
-                    "texture": {
-                        "key": "gui",
-                        "frame": "cryos_mini_gui/borders/border_wood.png"
-                    },
-                    "y": -255.17628729694155,
-                    "scaleX": 3.367102972114097,
-                    "scaleY": 2.7741914555176357,
-                    "originX": 0,
-                    "originY": 0,
-                    "leftWidth": 4,
-                    "rightWidth": 4,
-                    "topHeight": 4,
-                    "bottomHeight": 4,
-                    "width": 128,
-                    "height": 92
-                }
-            ]
+            "x": 0,
+            "y": 720
         },
         {
             "prefabId": "8d138ace-33b5-46f9-a5f9-3f67e0b81b18",

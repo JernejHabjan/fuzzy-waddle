@@ -3,12 +3,13 @@ import { DEPRECATED_gameInstanceService } from "../../communicators/DEPRECATED_g
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { UserInstanceService } from "../../../home/profile/user-instance.service";
 import { RouterOutlet } from "@angular/router";
+import { AngularHost } from "../../../shared/consts";
 
 @Component({
   templateUrl: "./probable-waffle.component.html",
   styleUrls: ["./probable-waffle.component.scss"],
-  standalone: true,
-  imports: [RouterOutlet]
+  imports: [RouterOutlet],
+  host: AngularHost.contentFlexFullHeight
 })
 export class ProbableWaffleComponent implements OnInit, OnDestroy {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);

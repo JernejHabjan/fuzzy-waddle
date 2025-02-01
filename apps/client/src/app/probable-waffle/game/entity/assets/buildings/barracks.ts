@@ -1,8 +1,7 @@
 import { Building, BuildingInfoDefinition } from "./building";
 import { ProductionComponent } from "../../building/production/production-component";
 import { PaymentType } from "../../building/payment-type";
-import { Resources, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
-import Tree1 from "../../../prefabs/outside/foliage/trees/resources/Tree1";
+import { ObjectNames } from "../../../data/object-names";
 
 export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {
@@ -34,7 +33,7 @@ export const BarracksDefinition: BuildingInfoDefinition = {
     refundFactor: 0.5,
     startImmediately: false,
     gridWidthAndHeight: { width: 2, height: 2 },
-    finishedSound: "building-finished" // todo
+    finishedSound: "building-finished"
   }
 };
 
@@ -53,7 +52,7 @@ export class Barracks extends Building {
     super.postStart();
 
     setTimeout(() => {
-      this.productionComponent.startProduction({ gameObjectClass: Tree1.name, costData: null as any });
+      this.productionComponent.startProduction({ actorName: ObjectNames.Tree1, costData: null as any });
       console.log("started production of 1 warrior");
     }, 1000);
   }

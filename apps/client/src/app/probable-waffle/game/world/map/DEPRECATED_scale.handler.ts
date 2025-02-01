@@ -1,4 +1,4 @@
-import { MapDefinitions, MapSizeInfo } from "../const/map-size.info";
+import { MapDefinitions, MapSizeInfo_old } from "../const/map-size.info_old";
 import { Cameras, Scale, Structs } from "phaser";
 
 export class DEPRECATED_scaleHandler {
@@ -19,16 +19,16 @@ export class DEPRECATED_scaleHandler {
   }
 
   setupBounds(centerOn: boolean = false) {
-    const xOffset = MapSizeInfo.info.tileWidthHalf;
-    const yOffset = MapSizeInfo.info.tileHeight;
+    const xOffset = MapSizeInfo_old.info.tileWidthHalf;
+    const yOffset = MapSizeInfo_old.info.tileHeight;
 
-    const layersOffsetY = MapSizeInfo.info.tileHeight * (MapDefinitions.nrLayers + 1);
+    const layersOffsetY = MapSizeInfo_old.info.tileHeight * (MapDefinitions.nrLayers + 1);
 
     this.mainCamera.setBounds(
-      -MapSizeInfo.info.widthInPixels / 2 + xOffset,
+      -MapSizeInfo_old.info.widthInPixels / 2 + xOffset,
       yOffset - layersOffsetY,
-      MapSizeInfo.info.widthInPixels,
-      MapSizeInfo.info.heightInPixels + layersOffsetY,
+      MapSizeInfo_old.info.widthInPixels,
+      MapSizeInfo_old.info.heightInPixels + layersOffsetY,
       centerOn
     );
   }

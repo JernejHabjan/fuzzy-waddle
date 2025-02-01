@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import PreloadBarUpdaterScript from "../../../shared/game/phaser/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */

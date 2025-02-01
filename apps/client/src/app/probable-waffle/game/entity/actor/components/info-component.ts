@@ -12,6 +12,7 @@ export interface InfoDefinition {
   smallImage?: {
     key: string;
     frame: string;
+    origin: { x: number; y: number };
   };
 }
 export class InfoComponent {

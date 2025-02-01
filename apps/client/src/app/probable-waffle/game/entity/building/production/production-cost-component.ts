@@ -10,7 +10,7 @@ export type ProductionCostDefinition = {
 };
 
 export class ProductionCostComponent {
-  finishedSound?: string; // todo
+  finishedSound?: string;
   constructor(
     private readonly owner: GameObject,
     private readonly productionCostDefinition: ProductionCostDefinition

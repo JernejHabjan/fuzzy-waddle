@@ -195,7 +195,7 @@ export class ProbableWaffleListeners {
         case "command.issued.move" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
-          const vec3 = payload.data.data!["vec3"];
+          const tileVec3 = payload.data.data!["tileVec3"];
 
           // get selected actors and issue move command to them
           const selectedActors = player.getSelection();
@@ -205,7 +205,7 @@ export class ProbableWaffleListeners {
             if (!actor.blackboardCommands) actor.blackboardCommands = [];
             actor.blackboardCommands.push(actor.blackboardCurrentCommand!);
             console.log(
-              `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${vec3.x} y: ${vec3.y} z: ${vec3.z}`
+              `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${tileVec3.x}, y: ${tileVec3.y}, z: ${tileVec3.z}`
             );
           });
           break;
@@ -213,12 +213,14 @@ export class ProbableWaffleListeners {
         case "resource.added" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          // noinspection JSDeprecatedSymbols
           player.addResources(payload.data.playerStateData!.resources!);
           console.log("resources added for player", player.playerNumber);
           break;
         case "resource.removed" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          // noinspection JSDeprecatedSymbols
           player.payAllResources(payload.data.playerStateData!.resources!);
           console.log("resources removed for player", player.playerNumber);
           break;
@@ -271,8 +273,8 @@ export class ProbableWaffleListeners {
         const actorArmor = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
         if (!actorArmor) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
         if (!actorArmor.health) actorArmor.health = {};
-        actorArmor.health.armor = event.data.actorDefinition?.health!.armor;
-        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.health.armor);
+        actorArmor.health.armour = event.data.actorDefinition?.health!.armour;
+        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.health.armour);
         break;
 
       default:

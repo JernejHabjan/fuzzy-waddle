@@ -1,13 +1,10 @@
 import { FlyHealthBarOptions, FlyHealthUiComponent } from "./fly-health-ui-component";
 import { EventEmitter } from "@angular/core";
 import { IComponent } from "../../../../probable-waffle/game/core/component.service";
-import { ActorDeathType } from "../../../../probable-waffle/game/entity/combat/actor-death-type";
-import { DamageType } from "../../../../probable-waffle/game/entity/combat/damage-type";
 import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
 
 export type HealthDefinition = {
   maxHealth: number;
-  // todo maybe armor type..
 };
 
 export class FlyHealthComponent implements IComponent {
@@ -19,11 +16,7 @@ export class FlyHealthComponent implements IComponent {
     private readonly actor: Actor,
     private readonly scene: Phaser.Scene,
     public readonly healthDefinition: HealthDefinition,
-    private readonly barOptions: () => FlyHealthBarOptions,
-    regenerateHealth: boolean = false,
-    private regenerateHealthRate: number = 0,
-    private actorDeathType?: ActorDeathType,
-    private actorDeathSound?: string
+    private readonly barOptions: () => FlyHealthBarOptions
   ) {
     this.currentHealth = healthDefinition.maxHealth;
   }
@@ -36,14 +29,14 @@ export class FlyHealthComponent implements IComponent {
     this.healthUiComponent.start();
   }
 
-  update(time: number, delta: number) {
+  update() {
     if (!this.actor.destroyed) {
-      this.healthUiComponent.update(time, delta);
+      this.healthUiComponent.update();
     }
   }
 
-  takeDamage(damage: number, damageType: DamageType, damageInitiator?: Actor) {
-    this.setCurrentHealth(this.currentHealth - damage, damageInitiator);
+  takeDamage(damage: number) {
+    this.setCurrentHealth(this.currentHealth - damage);
   }
 
   killActor() {
@@ -53,7 +46,7 @@ export class FlyHealthComponent implements IComponent {
     // todo something else as well
   }
 
-  setCurrentHealth(newHealth: number, damageInitiator?: Actor) {
+  setCurrentHealth(newHealth: number) {
     if (this.currentHealth <= 0) {
       return;
     }
@@ -74,10 +67,6 @@ export class FlyHealthComponent implements IComponent {
 
   isAlive() {
     return this.currentHealth > 0;
-  }
-
-  resetHealth() {
-    this.setCurrentHealth(this.healthDefinition.maxHealth);
   }
 
   destroy() {

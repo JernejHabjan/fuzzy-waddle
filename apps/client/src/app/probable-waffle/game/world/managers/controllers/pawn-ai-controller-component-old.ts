@@ -27,9 +27,7 @@ export class PawnAiControllerComponentOld {
   /**
    * look for a feasible target in its acquisition radius // circle overlap gameObjects
    */
-  findTargetInAcquisitionRadius(): void {
-    // todo
-  }
+  findTargetInAcquisitionRadius(): void {}
 
   getCurrentOrder(): OrderType | undefined {
     return this.blackboard.aiOrderType;

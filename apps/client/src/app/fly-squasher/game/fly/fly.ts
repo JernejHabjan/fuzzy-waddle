@@ -23,7 +23,6 @@ export class Fly extends Actor {
   private flyRepresentableComponent!: FlyRepresentableComponent;
   private flySoundComponent: FlySoundComponent;
   private flyHealthSystem: FlyHealthSystem;
-  private flyMovementComponent: FlyMovementComponent;
 
   constructor(
     private readonly scene: BaseScene,
@@ -34,7 +33,7 @@ export class Fly extends Actor {
     super({ scene });
 
     this.flySoundComponent = this.components.addComponent(new FlySoundComponent(this, scene, audio));
-    this.flyMovementComponent = this.components.addComponent(new FlyMovementComponent(this, scene, worldSpeedState));
+    this.components.addComponent(new FlyMovementComponent(this, scene, worldSpeedState));
     this.flyRepresentableComponent = this.components.addComponent(
       new FlyRepresentableComponent(this, scene, actorOptions)
     );
@@ -42,7 +41,7 @@ export class Fly extends Actor {
       new FlyHealthComponent(this, scene, { maxHealth: this.maxHealth }, this.healthBarOptions)
     );
 
-    this.flyHealthSystem = this.components.addComponent(new FlyHealthSystem(this)); // todo add system?
+    this.flyHealthSystem = this.components.addComponent(new FlyHealthSystem(this));
   }
 
   get maxHealth(): number {

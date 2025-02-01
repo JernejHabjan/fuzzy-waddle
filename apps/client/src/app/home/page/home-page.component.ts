@@ -1,14 +1,13 @@
 import { Component, inject } from "@angular/core";
 import { AuthService } from "../../auth/auth.service";
 import { DbAccessTestService } from "../../data-access/db-access-test/db-access-test.service";
-import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { firstValueFrom } from "rxjs";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 
 import { ChatFloatComponent } from "../chat/chat-float/chat-float.component";
 import { RouterLink } from "@angular/router";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
+import { AngularHost } from "../../shared/consts";
 
 export type DisplayGame = {
   name: string;
@@ -22,8 +21,8 @@ export type DisplayGame = {
 @Component({
   templateUrl: "./home-page.component.html",
   styleUrls: ["./home-page.component.scss"],
-  standalone: true,
-  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent]
+  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent],
+  host: AngularHost.contentFlexFullHeight
 })
 export class HomePageComponent {
   protected readonly environment = environment;
@@ -67,11 +66,4 @@ export class HomePageComponent {
   protected readonly authService = inject(AuthService);
   protected readonly dbAccessTestService = inject(DbAccessTestService);
   protected readonly serverHealthService = inject(ServerHealthService);
-  private readonly httpClient = inject(HttpClient); // todo remove httpClient from view!
-
-  async addViaMw(): Promise<void> {
-    // todo remove this - this is just for testing
-    const url = environment.api + "api/message";
-    return await firstValueFrom(this.httpClient.post<void>(url, { message: "test123" }));
-  }
 }

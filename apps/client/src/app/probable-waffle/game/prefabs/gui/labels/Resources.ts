@@ -1,15 +1,12 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 import Resource from "./Resource";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Resources extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
@@ -20,7 +17,18 @@ export default class Resources extends Phaser.GameObjects.Container {
     this.add(resources_container);
 
     // resources_bg_1
-    const resources_bg_1 = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 40, 10, 1, 1, 1, 1);
+    const resources_bg_1 = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      40,
+      10,
+      1,
+      1,
+      1,
+      1
+    );
     resources_bg_1.scaleX = 3.2166350536822605;
     resources_bg_1.scaleY = 2.8023638778148445;
     resources_bg_1.setOrigin(0, 0);

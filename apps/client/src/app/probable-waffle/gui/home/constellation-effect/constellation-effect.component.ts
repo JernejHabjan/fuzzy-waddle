@@ -6,9 +6,7 @@ type MousePosition = { x?: number; y?: number };
 @Component({
   selector: "probable-waffle-constellation-effect",
   templateUrl: "./constellation-effect.component.html",
-  styleUrls: ["./constellation-effect.component.scss"],
-  standalone: true,
-  imports: []
+  styleUrls: ["./constellation-effect.component.scss"]
 })
 export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
   private clickListener?: (e: MouseEvent) => void;

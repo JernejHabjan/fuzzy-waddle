@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import { WalkableComponent, WalkableDefinition } from "../../../../entity/actor/components/walkable-component";

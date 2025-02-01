@@ -1,6 +1,11 @@
 import GameObject = Phaser.GameObjects.GameObject;
-import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
-import { Subscription } from "rxjs";
+import {
+  getGameObjectBounds,
+  getGameObjectDepth,
+  getGameObjectTransform,
+  onSceneInitialized
+} from "../../../data/game-object-helper";
+import { BehaviorSubject, Subscription } from "rxjs";
 import Phaser from "phaser";
 import { listenToSelectionEvents } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
@@ -17,14 +22,15 @@ export class SelectableComponent {
   private selectionCircle!: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
   private selectionChangedSubscription?: Subscription;
+  selectionChanged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor(
     private readonly gameObject: GameObject,
     private readonly selectableDefinition?: SelectableDefinition
   ) {
     this.createSelectionCircle();
+    onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init);
     this.listenToSelectionEvents();
   }
 
@@ -55,6 +61,7 @@ export class SelectableComponent {
     this.selected = selected;
     this.selectionCircle.visible = selected;
     if (selected) this.update();
+    this.selectionChanged.next(selected);
   }
 
   getSelected(): boolean {
@@ -67,7 +74,8 @@ export class SelectableComponent {
   };
 
   private setPosition() {
-    const transform = this.gameObject as unknown as Phaser.GameObjects.Components.Transform; // todo this is used on multiple places
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!transform) throw new Error("Transform not found");
     if (transform.x === undefined || transform.y === undefined) return;
     this.selectionCircle.setPosition(transform.x, transform.y); // todo
   }

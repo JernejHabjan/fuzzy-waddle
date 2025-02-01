@@ -2,36 +2,11 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import {
   ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL,
   ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL_FLAP
 } from "../../../../../../assets/probable-waffle/atlas/anims/skaduwee/buildings";
-import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
-import {
-  ProductionCostComponent,
-  ProductionCostDefinition
-} from "../../../entity/building/production/production-cost-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../entity/building/payment-type";
-import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
-import SkaduweeOwl from "../../units/skaduwee/SkaduweeOwl";
-import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
-import { ColliderComponent } from "../../../entity/actor/components/collider-component";
-import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
-import {
-  ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE
-} from "../../gui/icon-animations";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../entity/actor/components/object-descriptor-component";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -61,59 +36,6 @@ export default class Owlery extends Phaser.GameObjects.Container {
     this.add(skaduwee_buildings_owlery_owl);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xf2f7fa
-        } satisfies ObjectDescriptorDefinition),
-        new OwnerComponent(this, {
-          color: [
-            {
-              originalColor: 0xf4f5f7,
-              epsilon: 0
-            }
-          ]
-        } satisfies OwnerDefinition),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new InfoComponent({
-          name: "Owlery",
-          description: "Produces Owls",
-          portraitAnimation: {
-            idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE,
-            action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION
-          },
-          smallImage: {
-            key: "factions",
-            frame: "building_icons/skaduwee/owlery.png"
-          }
-        } satisfies InfoDefinition),
-        new SelectableComponent(this),
-        new HealthComponent(this, {
-          maxHealth: 100
-        } satisfies HealthDefinition),
-        new ProductionCostComponent(this, {
-          resources: {
-            [ResourceType.Wood]: 10,
-            [ResourceType.Minerals]: 10
-          },
-          refundFactor: 0.5,
-          productionTime: 1000,
-          costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition),
-        new ProductionComponent(this, {
-          queueCount: 1,
-          capacityPerQueue: 5,
-          availableProductGameObjectClasses: [SkaduweeOwl.name]
-        } satisfies ProductionDefinition),
-        new ColliderComponent()
-      ],
-      []
-    );
-
     this.flapRandomly(skaduwee_buildings_owlery_owl);
 
     /* END-USER-CTR-CODE */

@@ -29,8 +29,6 @@ import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { DepthHelper } from "../world/map/depth.helper";
-import GameObject = Phaser.GameObjects.GameObject;
-import Transform = Phaser.GameObjects.Components.Transform;
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
@@ -50,6 +48,9 @@ import WallTopRightBottomRight from "../prefabs/buildings/tivara/wall/WallTopRig
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { ObjectNames } from "./object-names";
+import { setFullActorDataFromName, setMandatoryActorDataFromName } from "./actor-data";
+import GameObject = Phaser.GameObjects.GameObject;
+import Transform = Phaser.GameObjects.Components.Transform;
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -164,7 +165,7 @@ export class ActorManager {
     return actorDefinition;
   }
 
-  static createActor(scene: Phaser.Scene, name: string, properties: any): GameObject {
+  static createActorFully(scene: Phaser.Scene, name: ObjectNames, properties: any): GameObject {
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
@@ -172,7 +173,30 @@ export class ActorManager {
       throw new Error(`Actor ${name} not found`);
     }
     actor = new actorConstructor(scene);
+    setFullActorDataFromName(actor);
+    ActorManager.setActorProperties(actor, properties);
+    return actor;
+  }
 
+  /**
+   * Used for spawning actors that are just shells, without any specific components and systems.
+   * Use {@link upgradeFromMandatoryToFullActorData} to upgrade the actor to a full actor.
+   * Use this method when you are using {@link BuildingCursor}
+   */
+  static createActorPartially(scene: Phaser.Scene, name: ObjectNames, properties: any): GameObject {
+    let actor: GameObject | undefined = undefined;
+    const actorConstructor = this.actorMap[name];
+    if (!actorConstructor) {
+      console.error(`Actor ${name} not found`);
+      throw new Error(`Actor ${name} not found`);
+    }
+    actor = new actorConstructor(scene);
+    setMandatoryActorDataFromName(actor);
+    ActorManager.setActorProperties(actor, properties);
+    return actor;
+  }
+
+  static setActorProperties(actor: GameObject, properties: any) {
     const transform = actor as any as Transform;
     if (transform.x !== undefined) transform.x = properties.x;
     if (transform.y !== undefined) transform.y = properties.y;
@@ -181,6 +205,5 @@ export class ActorManager {
     if (properties.selectable) getActorComponent(actor, SelectableComponent)?.setSelected(properties.selectable);
     if (properties.id) getActorComponent(actor, IdComponent)?.setId(properties.id);
     DepthHelper.setActorDepth(actor);
-    return actor;
   }
 }

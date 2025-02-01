@@ -18,8 +18,8 @@
             "type": "Container",
             "id": "5955c766-f0da-4914-9a23-524ee7e9ae14",
             "label": "container_1",
-            "x": 214.40086535603183,
-            "y": 81.33939079440076,
+            "x": 215,
+            "y": 81,
             "list": [
                 {
                     "type": "NineSlice",
@@ -30,10 +30,10 @@
                         "key": "gui",
                         "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
                     },
-                    "x": -214.40086535603183,
-                    "y": -81.33939079440076,
+                    "x": -214.40086364746094,
+                    "y": -80.93078633145431,
                     "scaleX": 6.711135518221706,
-                    "scaleY": 5.076854073573915,
+                    "scaleY": 4.971499722371,
                     "originX": 0,
                     "originY": 0,
                     "leftWidth": 3,
@@ -41,7 +41,15 @@
                     "topHeight": 3,
                     "bottomHeight": 3,
                     "width": 32,
-                    "height": 16
+                    "height": 16,
+                    "list": [
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "aae942a6-a57e-4521-a0a8-478cc7a88e65",
+                            "label": "preventDefaultScript",
+                            "displayName": "Prevent Default"
+                        }
+                    ]
                 },
                 {
                     "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
@@ -53,22 +61,51 @@
                         "scaleY"
                     ],
                     "label": "actorInfoLabel",
+                    "displayName": "Actor Info Label",
+                    "scope": "CLASS",
+                    "x": -188,
+                    "y": -63,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5
+                },
+                {
+                    "prefabId": "b89fdf09-66be-4e65-b8c6-f6f77f767837",
+                    "id": "846ea9ef-c540-43f6-96a5-66b0d8787ce4",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "progress_bar",
+                    "displayName": "Progress Bar",
+                    "scope": "CLASS",
+                    "x": -24,
+                    "y": -49
+                },
+                {
+                    "prefabId": "c69196b1-3c89-4041-b182-49ee43a7f77d",
+                    "id": "75f6f832-5714-43be-a4ec-7c6894f7ee8a",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorDetails",
+                    "displayName": "Actor Details",
                     "scope": "CLASS",
                     "x": -196,
-                    "y": -62,
-                    "scaleX": 0.5,
-                    "scaleY": 0.5,
-                    "nestedPrefabs": [
-                        {
-                            "prefabId": "3153596e-269f-4280-bbb1-54cb3645c7f9",
-                            "id": "aba15c0c-9445-4c16-9a3d-afc1fd4a1749",
-                            "unlock": [
-                                "text"
-                            ],
-                            "label": "text_1",
-                            "text": "test123"
-                        }
-                    ]
+                    "y": -43
+                },
+                {
+                    "prefabId": "e27d2558-5360-45f3-bfa5-9d8b1cc736c6",
+                    "id": "124b1526-7f9a-43d8-ae50-dd5b5f8fb2b2",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "actorInfoLabels",
+                    "displayName": "Actor Info Labels",
+                    "scope": "CLASS",
+                    "x": -206,
+                    "y": -54
                 }
             ]
         }

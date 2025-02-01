@@ -6,9 +6,7 @@ import { AuthService } from "../../../../auth/auth.service";
 @Component({
   selector: "probable-waffle-trigger",
   templateUrl: "./trigger.component.html",
-  styleUrls: ["./trigger.component.scss"],
-  standalone: true,
-  imports: []
+  styleUrls: ["./trigger.component.scss"]
 })
 export class TriggerComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);

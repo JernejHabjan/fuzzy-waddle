@@ -35,26 +35,30 @@ export class GameObjectSelectionHandler {
             emitEventSelection(this.scene, "selection.cleared");
             break;
           case "selection.singleSelect":
-            console.log("singleSelect", data.selected);
+            console.log("singleSelect", data.objectIds);
             const isShiftDown = data.shiftKey;
             const isCtrlDown = data.ctrlKey;
 
             if (isShiftDown) {
-              console.log("removeFromSelection", data.selected);
-              emitEventSelection(this.scene, "selection.removed", data.selected!);
+              console.log("removeFromSelection", data.objectIds);
+              emitEventSelection(this.scene, "selection.removed", data.objectIds!);
             } else if (isCtrlDown) {
-              console.log("additionalSelect", data.selected);
-              emitEventSelection(this.scene, "selection.added", data.selected!);
+              console.log("additionalSelect", data.objectIds);
+              emitEventSelection(this.scene, "selection.added", data.objectIds!);
             } else {
-              emitEventSelection(this.scene, "selection.set", data.selected!);
+              emitEventSelection(this.scene, "selection.set", data.objectIds!);
             }
             break;
           case "selection.terrainSelect":
-            console.log("terrainSelect", data.terrainSelected);
+            console.log("terrainSelect", data.terrainSelectedTileVec3, data.terrainSelectedWorldVec3);
             if (data.button === "left") {
               emitEventSelection(this.scene, "selection.cleared");
             } else {
-              emitEventIssueMoveCommandToSelectedActors(this.scene, data.terrainSelected!);
+              emitEventIssueMoveCommandToSelectedActors(
+                this.scene,
+                data.terrainSelectedTileVec3!,
+                data.terrainSelectedWorldVec3!
+              );
             }
             break;
           case "selection.multiSelect":
@@ -101,12 +105,16 @@ export class GameObjectSelectionHandler {
   }) {
     const selectableChildren = this.getSelectableChildren();
 
-    // Apply camera offset and scale // TODO SCALE NOT HANDLED CORRECTLY
+    const worldXyStart = this.scene.cameras.main.getWorldPoint(selectedArea.x, selectedArea.y);
+    const worldXyEnd = this.scene.cameras.main.getWorldPoint(
+      selectedArea.x + selectedArea.width,
+      selectedArea.y + selectedArea.height
+    );
     const selectedAreaBounds = new Phaser.Geom.Rectangle(
-      selectedArea.x * this.scene.cameras.main.zoom + this.scene.cameras.main.scrollX,
-      selectedArea.y * this.scene.cameras.main.zoom + this.scene.cameras.main.scrollY,
-      selectedArea.width * this.scene.cameras.main.zoom,
-      selectedArea.height * this.scene.cameras.main.zoom
+      worldXyStart.x,
+      worldXyStart.y,
+      worldXyEnd.x - worldXyStart.x,
+      worldXyEnd.y - worldXyStart.y
     );
 
     return selectableChildren.filter((selectableChild) => {

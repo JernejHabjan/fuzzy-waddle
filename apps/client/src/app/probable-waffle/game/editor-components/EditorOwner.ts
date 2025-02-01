@@ -2,7 +2,6 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../data/actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";

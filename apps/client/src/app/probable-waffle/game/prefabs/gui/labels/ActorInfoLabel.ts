@@ -1,42 +1,51 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class ActorInfoLabel extends Phaser.GameObjects.Container {
+import { IconHelper } from "./IconHelper";
 
+export default class ActorInfoLabel extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 16, y ?? 11);
 
-    // actor_info_icons_sword_png
-    const actor_info_icons_sword_png = scene.add.image(0, 5, "gui", "actor_info_icons/sword.png");
-    this.add(actor_info_icons_sword_png);
+    // icon
+    const icon = scene.add.image(0, 5, "gui", "actor_info_icons/sword.png");
+    this.add(icon);
 
-    // text_1
-    const text_1 = scene.add.text(19, 5, "", {});
-    text_1.setOrigin(0, 0.5);
-    text_1.text = "New text";
-    text_1.setStyle({ "color": "#000000ff" });
-    this.add(text_1);
+    // text
+    const text = scene.add.text(19, 5, "", {});
+    text.setOrigin(0, 0.5);
+    text.text = "New text";
+    text.setStyle({ color: "#000000ff" });
+    this.add(text);
 
-    this.actor_info_icons_sword_png = actor_info_icons_sword_png;
-    this.text_1 = text_1;
+    this.icon = icon;
+    this.text = text;
 
     /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
   }
 
-  public actor_info_icons_sword_png: Phaser.GameObjects.Image;
-  public text_1: Phaser.GameObjects.Text;
+  public icon: Phaser.GameObjects.Image;
+  public text: Phaser.GameObjects.Text;
 
   /* START-USER-CODE */
 
-  // Write your code here.
+  setText(text: string) {
+    this.text.text = text;
+  }
+
+  setIcon(key: string | undefined, frame?: string, height = 32) {
+    this.icon.visible = !!key;
+    if (!key || !frame) return;
+
+    // noinspection JSSuspiciousNameCombination
+    IconHelper.setIcon(this.icon, key, frame, { x: 0.5, y: 0.5 }, { maxWidth: height, maxHeight: height });
+  }
 
   /* END-USER-CODE */
 }

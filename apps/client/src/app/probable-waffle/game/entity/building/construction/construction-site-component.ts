@@ -5,7 +5,7 @@ import { HealthComponent } from "../../combat/components/health-component";
 import { EventEmitter } from "@angular/core";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
-import { getPlayer } from "../../../data/scene-data";
+import { emitResource, getPlayer } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
@@ -96,7 +96,7 @@ export class ConstructionSiteComponent {
       if (!player) throw new Error("PlayerController not found");
       const canAfford = player.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
       if (canAfford) {
-        player.payAllResources(this.constructionSiteDefinition.constructionCosts);
+        emitResource(this.gameObject.scene, "resource.removed", this.constructionSiteDefinition.constructionCosts);
       } else {
         throw new Error("Cannot afford building costs");
       }
@@ -141,7 +141,7 @@ export class ConstructionSiteComponent {
       refundCosts[key as ResourceType] = value * actualRefundFactor;
     });
 
-    player.addResources(refundCosts);
+    emitResource(this.gameObject.scene, "resource.added", refundCosts);
 
     // destroy building
     this.gameObject.destroy();

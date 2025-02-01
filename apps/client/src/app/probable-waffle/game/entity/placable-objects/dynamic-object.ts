@@ -1,23 +1,23 @@
 import { Scene } from "phaser";
 import { PlayerPlaceableGameObject } from "./static-object";
-import { SpriteHelper } from "../actor/sprite-helper";
+import { SpriteHelper_old } from "../actor/sprite-helper_old";
 import { IsoHelper } from "../../world/map/tile/iso-helper";
 import { GameObjectsHelper } from "../../world/map/game-objects-helper";
 
-export class DynamicObjectHelper {
+export class DynamicObjectHelper_old {
   constructor(
     private readonly gameObjectsHelper: GameObjectsHelper,
     private readonly scene: Scene
   ) {}
 
-  createDynamicObjectLayer() {
+  createDynamicObjectLayer_old() {
     this.gameObjectsHelper.dynamicObjects = [];
   }
 
-  placeRawSpriteObjectsOnMap(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
+  placeRawSpriteObjectsOnMap_old(playerPlaceableGameObjects: PlayerPlaceableGameObject[]) {
     // todo
     playerPlaceableGameObjects.forEach((p) => {
-      const spriteInstance = SpriteHelper.placeSpriteOnTileXY(
+      const spriteInstance = SpriteHelper_old.placeSpriteOnTileXY_old(
         this.scene,
         p.tilePlacementData,
         p.placeableObjectProperties.placeableAtlasProperties

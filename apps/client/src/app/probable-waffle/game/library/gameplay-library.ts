@@ -2,9 +2,9 @@ import { Actor } from "../entity/actor/actor";
 import { TransformComponent } from "../entity/actor/components/transformable-component";
 import { getActorComponent } from "../data/actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { getGameObjectCurrentTile, getGameObjectTransform } from "../data/game-object-helper";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameplayLibrary {
   static getMissingRequirementsFor(ownedActor: GameObject, desiredProduct: string): Actor | false {

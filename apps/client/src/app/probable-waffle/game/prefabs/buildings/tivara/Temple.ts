@@ -2,34 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from "phaser";
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../data/actor-data";
-import { OwnerComponent, OwnerDefinition } from "../../../entity/actor/components/owner-component";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-import { HealthComponent, HealthDefinition } from "../../../entity/combat/components/health-component";
-import {
-  ProductionCostComponent,
-  ProductionCostDefinition
-} from "../../../entity/building/production/production-cost-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../entity/building/payment-type";
-import { RequirementsComponent, RequirementsDefinition } from "../../../entity/actor/components/requirements-component";
-import { ProductionComponent, ProductionDefinition } from "../../../entity/building/production/production-component";
-import AnkGuard from "./AnkGuard";
-import TivaraSlingshotFemale from "../../characters/tivara/TivaraSlingshotFemale";
-import { VisionComponent, VisionDefinition } from "../../../entity/actor/components/vision-component";
-import { ColliderComponent } from "../../../entity/actor/components/collider-component";
-import { InfoComponent, InfoDefinition } from "../../../entity/actor/components/info-component";
-import {
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
-} from "../../gui/icon-animations";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../entity/actor/components/object-descriptor-component";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -63,90 +36,30 @@ export default class Temple extends Phaser.GameObjects.Container {
     this.add(buildings_tivara_temple_temple_olival);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xc2a080
-        } satisfies ObjectDescriptorDefinition),
-        new OwnerComponent(this, {
-          color: [
-            {
-              originalColor: 0x5c9999,
-              epsilon: 0
-            }
-          ]
-        } satisfies OwnerDefinition),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new VisionComponent(this, {
-          range: 5
-        } satisfies VisionDefinition),
-        new IdComponent(),
-        new InfoComponent({
-          name: "Temple",
-          description: "Produces Tivara Sling shooters",
-          portraitAnimation: {
-            idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
-            action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
-          },
-          smallImage: {
-            key: "factions",
-            frame: "building_icons/tivara/temple.png"
-          }
-        } satisfies InfoDefinition),
-        new SelectableComponent(this),
-        new HealthComponent(this, {
-          maxHealth: 100
-        } satisfies HealthDefinition),
-        new ProductionCostComponent(this, {
-          resources: {
-            [ResourceType.Wood]: 10,
-            [ResourceType.Minerals]: 10
-          },
-          refundFactor: 0.5,
-          productionTime: 1000,
-          costType: PaymentType.PayImmediately
-        } satisfies ProductionCostDefinition),
-        new RequirementsComponent(this, {
-          actors: [AnkGuard.name]
-        } satisfies RequirementsDefinition),
-        new ProductionComponent(this, {
-          queueCount: 1,
-          capacityPerQueue: 5,
-          availableProductGameObjectClasses: [TivaraSlingshotFemale.name]
-        } satisfies ProductionDefinition),
-        new ColliderComponent()
-      ],
-      []
-    );
-
     this.bounce(buildings_tivara_temple_temple_olival);
-    setTimeout(() => {
-      this.addGlow(scene, buildings_tivara_temple_temple_olival);
-    }, 1000);
+    // todosetTimeout(() => {
+    // todo  this.addGlow(scene, buildings_tivara_temple_temple_olival);
+    // todo}, 1000);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   name = ObjectNames.Temple;
-  private addGlow = (scene: Phaser.Scene, image: Phaser.GameObjects.Image) => {
-    // https://labs.phaser.io/view.html?src=src\fx\glow\glow%20fx.js
-    if (!image.preFX) return;
-    image.preFX.setPadding(32);
-    const fx = image.preFX.addGlow();
+  // tod private addGlow = (scene: Phaser.Scene, image: Phaser.GameObjects.Image) => {
+  // tod   // https://labs.phaser.io/view.html?src=src\fx\glow\glow%20fx.js
+  // tod   if (!image.preFX) return;
+  // tod   image.preFX.setPadding(32);
+  // tod   const fx = image.preFX.addGlow();
 
-    //  For PreFX Glow the quality and distance are set in the Game Configuration
-    scene.tweens.add({
-      targets: fx,
-      outerStrength: 1,
-      yoyo: true,
-      loop: -1,
-      ease: "sine.inout"
-    });
-  };
+  // tod   //  For PreFX Glow the quality and distance are set in the Game Configuration
+  // tod   scene.tweens.add({
+  // tod     targets: fx,
+  // tod     outerStrength: 1,
+  // tod     yoyo: true,
+  // tod     loop: -1,
+  // tod     ease: "sine.inout"
+  // tod   });
+  // tod };
   private bounce = (image: Phaser.GameObjects.Image) => {
     // bounce the sprite up and down forever with a 2 seconds duration
     this.scene.tweens.add({

@@ -76,7 +76,6 @@ import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -86,14 +85,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -140,7 +138,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(infantryInn);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, 528, 624);
+    const ankGuard = new AnkGuard(this, -48, 336);
     this.add.existing(ankGuard);
 
     // temple
@@ -168,7 +166,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(generalWarrior);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 1056, 1024);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, -80, 704);
     this.add.existing(tivaraSlingshotFemale);
 
     // tallGrass_7
@@ -356,7 +354,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDry_2);
 
     // bushDry_3
-    const bushDry_3 = new BushDry(this, -64, 304);
+    const bushDry_3 = new BushDry(this, -192, 160);
     this.add.existing(bushDry_3);
 
     // bushUpwardsSmall
@@ -436,7 +434,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree5);
 
     // skaduweeOwl
-    const skaduweeOwl = new SkaduweeOwl(this, 480, 784);
+    const skaduweeOwl = new SkaduweeOwl(this, 976, 1040);
     this.add.existing(skaduweeOwl);
 
     // tree10
@@ -652,12 +650,24 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, 437, 852);
+    const tivaraWorkerMale = new TivaraWorkerMale(this, -352, 448);
     this.add.existing(tivaraWorkerMale);
 
     // workMill_1
     const workMill_1 = new WorkMill(this, 608, 1184);
     this.add.existing(workMill_1);
+
+    // tree_15
+    const tree_15 = new Tree7(this, 1152, 608);
+    this.add.existing(tree_15);
+
+    // tree_16
+    const tree_16 = new Tree7(this, 1216, 640);
+    this.add.existing(tree_16);
+
+    // tree_17
+    const tree_17 = new Tree7(this, 1168, 656);
+    this.add.existing(tree_17);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -774,7 +784,28 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
   // Write your code here
 
+  createGradientSky() {
+    // Create a graphics object
+    const graphics = this.add.graphics();
+    const width = this.scale.width;
+    const height = this.scale.height;
+
+    // Define gradient colors
+    const topColor = 0x87ceeb;
+    const bottomColor = 0x12110f;
+
+    // Draw gradient
+    graphics.fillGradientStyle(topColor, topColor, bottomColor, bottomColor);
+    graphics.fillRect(0, 0, width, height);
+
+    graphics.setScrollFactor(0);
+    graphics.displayOriginX = 0.5;
+    graphics.displayOriginY = 0.5;
+  }
+
   create() {
+    this.createGradientSky();
+
     this.editorCreate();
 
     super.create();

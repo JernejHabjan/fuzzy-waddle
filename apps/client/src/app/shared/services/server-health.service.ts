@@ -1,7 +1,7 @@
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, timeout } from "rxjs";
 import { ServerHealthServiceInterface } from "./server-health.service.interface";
 
 export enum ServerState {
@@ -43,7 +43,7 @@ export class ServerHealthService implements ServerHealthServiceInterface {
 
   private async runCheck(url: string) {
     try {
-      await firstValueFrom(this.httpClient.get(url, { responseType: "text" }));
+      await firstValueFrom(this.httpClient.get(url, { responseType: "text" }).pipe(timeout(5000)));
       this.serverState = ServerState.available;
     } catch (e) {
       console.warn("Server is down", e);

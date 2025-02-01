@@ -1,9 +1,9 @@
-import { ITask, TaskData, TaskResultType } from "./task.interface";
+import { ITask, TaskData_old, TaskResultType } from "./task.interface";
 import { BuilderComponent } from "../../../../actor/components/builder-component";
 import { TransformComponent } from "../../../../actor/components/transformable-component";
 
 export class BeginConstructionTask implements ITask {
-  executeTask(taskData: TaskData): TaskResultType {
+  executeTask(taskData: TaskData_old): TaskResultType {
     const builderComponent = taskData.owner.components.findComponentOrNull(BuilderComponent);
     if (!builderComponent) {
       return TaskResultType.Failure;

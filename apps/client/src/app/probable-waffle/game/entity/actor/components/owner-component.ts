@@ -1,11 +1,10 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
 import { Plugins } from "../../../world/const/Plugins";
-import ColorReplacePipelinePlugin from "phaser3-rex-plugins/plugins/colorreplacepipeline-plugin";
 import { GameSetupHelpers, Guid } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { HealthComponent } from "../../combat/components/health-component";
-import { getGameObjectDepth } from "../../../data/game-object-helper";
+import { getGameObjectDepth, onSceneInitialized } from "../../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { ContainerComponent } from "../../building/container-component";
@@ -24,8 +23,8 @@ export class OwnerComponent {
   static useColorReplace = false;
   private owner?: number;
   ownerColor?: Phaser.Display.Color;
-  private readonly colorReplacePipelinePlugin?: ColorReplacePipelinePlugin;
-  private colorPipelineInstances: Phaser.Renderer.WebGL.Pipelines.PostFXPipeline[] = [];
+  private readonly colorReplacePipelinePlugin?: any;
+  private colorPipelineInstances: any[] = [];
   private ownerUiElement?: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
   constructor(
@@ -33,11 +32,9 @@ export class OwnerComponent {
     public readonly ownerDefinition: OwnerDefinition
   ) {
     if (OwnerComponent.useColorReplace) {
-      this.colorReplacePipelinePlugin = gameObject.scene.plugins.get(
-        Plugins.RexColorReplacePipeline
-      ) as ColorReplacePipelinePlugin;
+      this.colorReplacePipelinePlugin = gameObject.scene.plugins.get(Plugins.RexColorReplacePipeline) as any;
     }
-    gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, this.init, this);
+    onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
@@ -45,6 +42,7 @@ export class OwnerComponent {
 
   private init() {
     this.subscribeActorMove();
+    this.updateOwnerUiElementPosition();
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
@@ -137,7 +135,7 @@ export class OwnerComponent {
 
   private removeAllColorPipelines() {
     this.colorPipelineInstances.forEach((instance) => {
-      this.colorReplacePipelinePlugin?.remove(this.gameObject, instance.name);
+      this.colorReplacePipelinePlugin?.remove(this.gameObject, (instance as any).name);
     });
   }
 
