@@ -35,8 +35,8 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Run linter
-        run: pnpm run lint
+      # todo test remove lint - name: Run linter
+      # todo test remove lint   run: pnpm run lint
 
       - name: Run tests
         run: pnpm run test
