@@ -42,7 +42,7 @@
     "serve-buid": "http-server dist/apps/client"
   },
   "engines": {
-    "node": ">=23.7.0",
+    "node": ">=22.7.0",
     "pnpm": ">=9.9"
   },
   "private": true,
