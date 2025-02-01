@@ -70,5 +70,6 @@
     }
   },
   "defaultProject": "client",
-  "defaultBase": "develop"
+  "defaultBase": "develop",
+  "useLegacyCache": true
 }
