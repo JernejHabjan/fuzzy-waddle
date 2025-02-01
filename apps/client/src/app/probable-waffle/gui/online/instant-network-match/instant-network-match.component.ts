@@ -8,7 +8,6 @@ import { AngularHost } from "../../../../shared/consts";
 
 @Component({
   selector: "fuzzy-waddle-instant-network-match",
-  standalone: true,
   imports: [CommonModule, LoaderComponent, RouterLink],
   host: AngularHost.contentFlexFullHeight,
   template: `

@@ -16,7 +16,6 @@ import { AngularHost } from "../../shared/consts";
 @Component({
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
-  standalone: true,
   imports: [ModalComponent, GameContainerComponent],
   host: AngularHost.contentFlexFullHeight
 })

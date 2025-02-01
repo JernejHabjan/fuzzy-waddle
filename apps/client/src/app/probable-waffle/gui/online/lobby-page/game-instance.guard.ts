@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { environment } from "../../../../../environments/environment";

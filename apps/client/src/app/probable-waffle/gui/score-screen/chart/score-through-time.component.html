@@ -4,14 +4,7 @@
   </div>
   @if (ready) {
     @if (chartData.labels!.length > 1) {
-      <canvas
-        baseChart
-        [data]="chartData"
-        [options]="chartOptions"
-        [legend]="chartLegend"
-        [type]="chartType"
-      >
-      </canvas>
+      <canvas baseChart [data]="chartData" [options]="chartOptions" [legend]="chartLegend" [type]="chartType"> </canvas>
     } @else {
       <div class="no-data">
         <h3>No data available</h3>

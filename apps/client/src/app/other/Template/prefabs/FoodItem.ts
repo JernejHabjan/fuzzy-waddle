@@ -6,19 +6,17 @@
 /* END-USER-IMPORTS */
 
 export default interface FoodItem {
-
-	 body: Phaser.Physics.Arcade.Body;
+  body: Phaser.Physics.Arcade.Body;
 }
 
 export default class FoodItem extends Phaser.GameObjects.Image {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 72, y ?? 70, texture || "volcano", frame ?? "Volcano Level Set_Collectable Object - Meat.png");
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 72, y ?? 70, texture || "volcano", frame ?? "Volcano Level Set_Collectable Object - Meat.png");
+    scene.physics.add.existing(this, false);
+    this.body.setSize(128, 128, false);
 
-		scene.physics.add.existing(this, false);
-		this.body.setSize(128, 128, false);
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
 
     this.idleTween = this.scene.tweens.add({
       targets: this,
@@ -31,9 +29,9 @@ export default class FoodItem extends Phaser.GameObjects.Image {
     });
 
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
 
   private idleTween: Phaser.Tweens.Tween;
 

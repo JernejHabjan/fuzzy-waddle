@@ -1,23 +1,23 @@
 <div class="container mt-4">
   <div class="card-container">
-    @if(gameInstanceDataRecords.length){
-    <div class="d-grid text-center" style="grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 4px">
-      <div class="text-primary">Map Name</div>
-      <div class="text-primary">Played</div>
-      <div class="text-primary">Game length</div>
-      <div></div>
-      @for (rec of gameInstanceDataRecords;track rec) {
-      <div>{{ getMapName(rec.gameInstanceData) }}</div>
-      <div>{{ rec.gameInstanceData.gameInstanceMetadataData!.updatedOn | date: "medium" }}</div>
-      <div>{{ rec.gameInstanceData | gameLength }}</div>
-      <div style="text-align: right">
-        <button class="btn btn-primary" type="button" (click)="startReplay(rec)">Replay</button>
-        <button class="btn btn-primary ms-2" type="button" (click)="deleteReplay(rec)">Delete</button>
+    @if (gameInstanceDataRecords.length) {
+      <div class="d-grid text-center" style="grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 4px">
+        <div class="text-primary">Map Name</div>
+        <div class="text-primary">Played</div>
+        <div class="text-primary">Game length</div>
+        <div></div>
+        @for (rec of gameInstanceDataRecords; track rec) {
+          <div>{{ getMapName(rec.gameInstanceData) }}</div>
+          <div>{{ rec.gameInstanceData.gameInstanceMetadataData!.updatedOn | date: "medium" }}</div>
+          <div>{{ rec.gameInstanceData | gameLength }}</div>
+          <div style="text-align: right">
+            <button class="btn btn-primary" type="button" (click)="startReplay(rec)">Replay</button>
+            <button class="btn btn-primary ms-2" type="button" (click)="deleteReplay(rec)">Delete</button>
+          </div>
+        }
       </div>
-      }
-    </div>
-    }@else{
-    <div class="text-center">No replays found.</div>
+    } @else {
+      <div class="text-center">No replays found.</div>
     }
 
     <div class="mt-4">

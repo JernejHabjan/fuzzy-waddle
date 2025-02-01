@@ -8,7 +8,6 @@ import { ChatComponent } from "../../../../shared/components/chat/chat.component
 
 @Component({
   selector: "probable-waffle-lobby-chat",
-  standalone: true,
   imports: [ChatComponent],
   templateUrl: "./lobby-chat.component.html",
   styleUrls: ["./lobby-chat.component.scss"]

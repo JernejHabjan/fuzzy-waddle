@@ -17,7 +17,6 @@ import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
   selector: "little-muncher-game-interface",
   templateUrl: "./game-interface.component.html",
   styleUrls: ["./game-interface.component.scss"],
-  standalone: true,
   imports: [ModalComponent, FaIconComponent, WrapPipe]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {

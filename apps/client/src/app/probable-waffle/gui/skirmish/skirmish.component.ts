@@ -6,7 +6,6 @@ import { AngularHost } from "../../../shared/consts";
 
 @Component({
   template: `<fuzzy-waddle-loader />`,
-  standalone: true,
   imports: [LoaderComponent],
   host: AngularHost.contentFlexFullHeightCenter
 })

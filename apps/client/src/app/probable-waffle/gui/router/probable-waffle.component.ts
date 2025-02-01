@@ -8,7 +8,6 @@ import { AngularHost } from "../../../shared/consts";
 @Component({
   templateUrl: "./probable-waffle.component.html",
   styleUrls: ["./probable-waffle.component.scss"],
-  standalone: true,
   imports: [RouterOutlet],
   host: AngularHost.contentFlexFullHeight
 })

@@ -10,7 +10,6 @@ import { AngularHost } from "../../../shared/consts";
   templateUrl: "./progress.component.html",
   styleUrls: ["./progress.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [RouterLink],
   host: AngularHost.contentFlexFullHeight
 })

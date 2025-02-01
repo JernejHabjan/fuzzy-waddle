@@ -5,9 +5,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: "fuzzy-waddle-modal",
   templateUrl: "./modal.component.html",
-  styleUrls: ["./modal.component.scss"],
-  standalone: true,
-  imports: []
+  styleUrls: ["./modal.component.scss"]
 })
 @Injectable()
 export class ModalComponent {

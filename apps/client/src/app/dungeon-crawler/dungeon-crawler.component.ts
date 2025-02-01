@@ -7,7 +7,6 @@ import { AngularHost } from "../shared/consts";
 
 @Component({
   selector: "fuzzy-waddle-dungeon-crawler",
-  standalone: true,
   imports: [GameContainerComponent],
   templateUrl: "./dungeon-crawler.component.html",
   styleUrl: "./dungeon-crawler.component.scss",

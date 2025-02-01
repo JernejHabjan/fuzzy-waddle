@@ -5,9 +5,7 @@ import { ProbableWaffleLevels, ProbableWaffleMapData, ProbableWaffleMapEnum } fr
 @Component({
   selector: "probable-waffle-map-selector",
   templateUrl: "./map-selector.component.html",
-  styleUrls: ["./map-selector.component.scss"],
-  standalone: true,
-  imports: []
+  styleUrls: ["./map-selector.component.scss"]
 })
 export class MapSelectorComponent {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);

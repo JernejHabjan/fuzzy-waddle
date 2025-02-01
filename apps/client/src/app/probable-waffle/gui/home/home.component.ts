@@ -7,7 +7,6 @@ import { AngularHost } from "../../../shared/consts";
 @Component({
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
-  standalone: true,
   imports: [ConstellationEffectComponent, HomePageNavComponent],
   host: AngularHost.contentFlexFullHeight
 })

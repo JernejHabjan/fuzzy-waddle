@@ -14,7 +14,6 @@ import { AngularHost } from "../shared/consts";
 @Component({
   templateUrl: "./little-muncher.component.html",
   styleUrls: ["./little-muncher.component.scss"],
-  standalone: true,
   imports: [FaIconComponent, HomeComponent, MainComponent, NgbToast],
   host: AngularHost.contentFlexFullHeight
 })

@@ -7,46 +7,44 @@ import PreloadBarUpdaterScript from "../../../shared/game/phaser/script-nodes/Pr
 /* END-USER-IMPORTS */
 
 export default class PreloadFlySquasher extends Phaser.Scene {
+  constructor() {
+    super("PreloadFlySquasher");
 
-	constructor() {
-		super("PreloadFlySquasher");
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
     // Write your code here.
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	editorCreate(): void {
+  editorCreate(): void {
+    // probable-waffle-loader
+    const probable_waffle_loader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
+    probable_waffle_loader.scaleX = 2;
+    probable_waffle_loader.scaleY = 2;
 
-		// probable-waffle-loader
-		const probable_waffle_loader = this.add.image(505.0120544433594, 360, "probable-waffle-loader");
-		probable_waffle_loader.scaleX = 2;
-		probable_waffle_loader.scaleY = 2;
+    // progressBar
+    const progressBar = this.add.rectangle(553.0120849609375, 361, 256, 20);
+    progressBar.setOrigin(0, 0);
+    progressBar.isFilled = true;
+    progressBar.fillColor = 14737632;
 
-		// progressBar
-		const progressBar = this.add.rectangle(553.0120849609375, 361, 256, 20);
-		progressBar.setOrigin(0, 0);
-		progressBar.isFilled = true;
-		progressBar.fillColor = 14737632;
+    // preloadUpdater
+    new PreloadBarUpdaterScript(progressBar);
 
-		// preloadUpdater
-		new PreloadBarUpdaterScript(progressBar);
+    // progressBarBg
+    const progressBarBg = this.add.rectangle(553.0120849609375, 361, 256, 20);
+    progressBarBg.setOrigin(0, 0);
+    progressBarBg.fillColor = 14737632;
+    progressBarBg.isStroked = true;
 
-		// progressBarBg
-		const progressBarBg = this.add.rectangle(553.0120849609375, 361, 256, 20);
-		progressBarBg.setOrigin(0, 0);
-		progressBarBg.fillColor = 14737632;
-		progressBarBg.isStroked = true;
+    // loadingText
+    const loadingText = this.add.text(552.0120849609375, 329, "", {});
+    loadingText.text = "Loading...";
+    loadingText.setStyle({ color: "#e0e0e0", fontFamily: "arial", fontSize: "20px" });
 
-		// loadingText
-		const loadingText = this.add.text(552.0120849609375, 329, "", {});
-		loadingText.text = "Loading...";
-		loadingText.setStyle({ "color": "#e0e0e0", "fontFamily": "arial", "fontSize": "20px" });
+    this.events.emit("scene-awake");
+  }
 
-		this.events.emit("scene-awake");
-	}
-
-	/* START-USER-CODE */
+  /* START-USER-CODE */
 
   // Write your code here
 

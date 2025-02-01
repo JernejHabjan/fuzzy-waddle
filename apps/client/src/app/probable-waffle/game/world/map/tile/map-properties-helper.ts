@@ -1,4 +1,3 @@
-import { MapDefinitions } from "../../const/map-size.info_old";
 import { TilePossibleProperties } from "./types/tile-types";
 import { TilemapToAtlasMap } from "../../scenes/grassland.scene";
 import { MapHelper } from "./map-helper";

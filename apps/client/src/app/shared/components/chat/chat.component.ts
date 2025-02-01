@@ -22,7 +22,6 @@ import { AngularHost } from "../../consts";
   selector: "fuzzy-waddle-chat",
   templateUrl: "./chat.component.html",
   styleUrls: ["./chat.component.scss"],
-  standalone: true,
   imports: [FormsModule],
   host: AngularHost.contentFlexFullHeight
 })

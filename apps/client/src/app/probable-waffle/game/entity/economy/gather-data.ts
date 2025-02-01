@@ -1,4 +1,4 @@
-import { ResourceType, ResourceTypeDefinition } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export class GatherData {
   constructor(

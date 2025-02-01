@@ -6,8 +6,8 @@ import { GameplayLibrary } from "../../../library/gameplay-library";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ObjectNames } from "../../../data/object-names";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce

@@ -12,7 +12,6 @@ import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "probable-waffle-replay",
-  standalone: true,
   imports: [RouterLink, GameLengthPipe, DatePipe],
   templateUrl: "./replay.component.html",
   styleUrls: ["./replay.component.scss"]

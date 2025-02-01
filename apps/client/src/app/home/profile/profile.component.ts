@@ -9,7 +9,6 @@ import { AngularHost } from "../../shared/consts";
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [CommonModule, ProfileNavComponent],
   host: AngularHost.contentFlexFullHeight
 })
