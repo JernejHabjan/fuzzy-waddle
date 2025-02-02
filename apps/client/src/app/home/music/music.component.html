@@ -1,0 +1,10 @@
+<fuzzy-waddle-home-nav/>
+<div class="music-list">
+  <div *ngFor="let track of ost" class="music-item">
+    <p class="track-name">{{ track.name }}</p>
+    <audio controls class="audio-player">
+      <source [src]="track.path" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+</div>
