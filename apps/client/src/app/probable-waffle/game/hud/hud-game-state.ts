@@ -12,7 +12,15 @@ export class HudGameState {
     scene.onShutdown.subscribe(() => this.destroy());
     scene.onPostCreate.subscribe(() => this.listen());
     this.overlay = this.scene.add.rectangle(0, 0, 0, 0, 0x000000, 0.5);
-    this.text = this.scene.add.text(0, 0, "", { align: "center", fontSize: "32px" }).setOrigin(0.5, 0.5);
+    this.overlay.depth = 1;
+    this.text = this.scene.add
+      .text(0, 0, "", {
+        align: "center",
+        fontSize: "64px",
+        shadow: { offsetX: 2, offsetY: 2, color: "#000", blur: 2, stroke: true, fill: true }
+      })
+      .setOrigin(0.5, 0.5);
+    this.text.depth = this.overlay.depth + 1;
     this.handleResize();
     this.onResizeSubscription = this.scene.onResize.subscribe(() => {
       this.handleResize();
