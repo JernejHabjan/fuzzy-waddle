@@ -192,9 +192,12 @@ export class BuildingCursor {
     }
   }
 
-  private placeBuilding() {
+  private placeBuilding(pointer: Input.Pointer) {
     if (!this.pointerLocation || !this.building) return;
-
+    if (pointer.rightButtonReleased()) {
+      this.stop();
+      return;
+    }
     // Placeholder logic, assuming building placement is always valid.
     this.allCellsAreValid = true; // todo Replace with actual placement check.
 
