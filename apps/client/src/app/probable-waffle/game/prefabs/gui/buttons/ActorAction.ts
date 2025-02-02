@@ -10,6 +10,7 @@ import EmitEventActionScript from "../../../../../shared/game/phaser/script-node
 import ActorDefinitionTooltip, { TooltipInfo } from "../labels/ActorDefinitionTooltip";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
+import { IconHelper } from "../labels/IconHelper";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
@@ -94,10 +95,11 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   }
 
   private setIcon(key: string, frame: string, origin?: { x: number; y: number }) {
-    this.game_action_icon.setTexture(key, frame);
-    if (origin) {
-      this.game_action_icon.setOrigin(origin.x, origin.y);
-    }
+    const size = 24;
+    IconHelper.setIcon(this.game_action_icon, key, frame, origin ?? { x: 0.5, y: 0.5 }, {
+      maxWidth: size,
+      maxHeight: size
+    });
   }
 
   private setDisabled(disabled: boolean) {
