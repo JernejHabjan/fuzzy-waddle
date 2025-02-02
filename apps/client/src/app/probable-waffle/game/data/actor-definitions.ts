@@ -1457,5 +1457,37 @@ export const pwActorDefinitions: {
       },
       collider: { enabled: true }
     }
+  },
+  [ObjectNames.Minerals]: {
+    components: {
+      objectDescriptor: {
+        color: 0xbea55b
+      },
+      collider: {
+        enabled: true
+      },
+      selectable: { enabled: true },
+      resourceSource: {
+        resourceType: ResourceType.Minerals,
+        maximumResources: 100,
+        gatheringFactor: 1
+      }
+    }
+  },
+  [ObjectNames.Stone]: {
+    components: {
+      objectDescriptor: {
+        color: 0xbea55b
+      },
+      collider: {
+        enabled: true
+      },
+      selectable: { enabled: true },
+      resourceSource: {
+        resourceType: ResourceType.Stone,
+        maximumResources: 100,
+        gatheringFactor: 1
+      }
+    }
   }
 };
