@@ -12,6 +12,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "./id-component";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { HealthComponent } from "../../combat/components/health-component";
+import { ContainerComponent } from "../../building/container-component";
 
 export type SelectableDefinition = {
   offsetY?: number;
@@ -31,6 +32,7 @@ export class SelectableComponent {
     onSceneInitialized(gameObject.scene, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     this.listenToSelectionEvents();
   }
 
@@ -109,9 +111,14 @@ export class SelectableComponent {
     });
   }
 
+  private gameObjectVisibilityChanged(visible: boolean) {
+    this.selectionCircle.visible = visible;
+  }
+
   private destroy = () => {
     this.selectionCircle.destroy();
     this.actorMovedSubscription?.unsubscribe();
     this.selectionChangedSubscription?.unsubscribe();
+    this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   };
 }

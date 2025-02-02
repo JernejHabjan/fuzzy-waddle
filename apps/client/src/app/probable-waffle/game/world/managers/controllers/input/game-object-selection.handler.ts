@@ -14,6 +14,7 @@ import { MovementSystem } from "../../../../entity/systems/movement.system";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameObjectSelectionHandler {
+  private readonly debug = false;
   private sub!: Subscription;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
@@ -31,26 +32,26 @@ export class GameObjectSelectionHandler {
         const data = selection.data as ProbableWaffleSelectionData;
         switch (selection.name) {
           case "selection.deselect":
-            console.log("deselect");
+            if (this.debug) console.log("deselect");
             emitEventSelection(this.scene, "selection.cleared");
             break;
           case "selection.singleSelect":
-            console.log("singleSelect", data.objectIds);
+            if (this.debug) console.log("singleSelect", data.objectIds);
             const isShiftDown = data.shiftKey;
             const isCtrlDown = data.ctrlKey;
 
             if (isShiftDown) {
-              console.log("removeFromSelection", data.objectIds);
+              if (this.debug) console.log("removeFromSelection", data.objectIds);
               emitEventSelection(this.scene, "selection.removed", data.objectIds!);
             } else if (isCtrlDown) {
-              console.log("additionalSelect", data.objectIds);
+              if (this.debug) console.log("additionalSelect", data.objectIds);
               emitEventSelection(this.scene, "selection.added", data.objectIds!);
             } else {
               emitEventSelection(this.scene, "selection.set", data.objectIds!);
             }
             break;
           case "selection.terrainSelect":
-            console.log("terrainSelect", data.terrainSelectedTileVec3, data.terrainSelectedWorldVec3);
+            if (this.debug) console.log("terrainSelect", data.terrainSelectedTileVec3, data.terrainSelectedWorldVec3);
             if (data.button === "left") {
               emitEventSelection(this.scene, "selection.cleared");
             } else {
