@@ -18,10 +18,10 @@ import {
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { getSfxVolumeNormalized } from "../../../scenes/services/audio.service";
+import { AudioService } from "../../../scenes/services/audio.service";
 import { BuilderComponent } from "../../../entity/actor/components/builder-component";
 import { ObjectNames } from "../../../data/object-names";
-import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
 /* END-USER-IMPORTS */
 
@@ -147,6 +147,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
+    this.audioService = getSceneService(this.mainSceneWithActors, AudioService)!;
     this.subscribeToPlayerSelection();
     this.hideAllActions();
     /* END-USER-CTR-CODE */
@@ -157,7 +158,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private selectionChangedSubscription?: Subscription;
   private actorKillSubscription?: Subscription;
-  private mainSceneWithActors: ProbableWaffleScene;
+  private readonly mainSceneWithActors: ProbableWaffleScene;
+  private readonly audioService: AudioService;
   /**
    * If true, building icons are displayed with back button
    */
@@ -313,13 +315,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             const sound = this.mainSceneWithActors.sound;
 
             sound.stopByKey("ui-feedback");
-            const volume = getSfxVolumeNormalized(actor.scene);
             switch (errorCode) {
               case AssignProductionErrorCode.NotEnoughResources:
-                sound.playAudioSprite("ui-feedback", "not_enough_resources", { volume });
+                this.audioService.playAudioSprite("ui-feedback", "not_enough_resources");
                 break;
               case AssignProductionErrorCode.QueueFull:
-                sound.playAudioSprite("ui-feedback", "production_queue_full", { volume });
+                this.audioService.playAudioSprite("ui-feedback", "production_queue_full");
                 break;
               case AssignProductionErrorCode.InvalidProduct:
                 console.error("Invalid product");

@@ -1,12 +1,14 @@
+import { environment } from "../../../../environments/environment";
+
 export class VolumeSettings {
   masterVolume: number;
   sfxVolume: number;
   musicVolume: number;
 
   constructor() {
-    this.masterVolume = 100;
+    this.masterVolume = environment.production ? 100 : 0;
     this.sfxVolume = 100;
-    this.musicVolume = 100;
+    this.musicVolume = 60;
   }
 
   init() {

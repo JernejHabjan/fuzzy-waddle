@@ -52,11 +52,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SaveGame(this);
     new RestartGame(this);
     const creator = new SceneActorCreator(this);
+    const audioService = new AudioService(this);
 
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap), new BuildingCursor(this));
     this.sceneGameData.services.push(
       new NavigationService(this, this.tilemap),
-      new AudioService(),
+      audioService,
       creator,
       new DebuggingService()
     );
@@ -66,6 +67,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
 
     super.create();
     this.sceneGameData.initializers.sceneInitialized.next(true);
+
+    audioService.playMusicByShuffledPlaylist();
   }
 
   private cleanup() {
