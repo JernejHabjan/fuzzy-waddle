@@ -8,6 +8,9 @@ import { OrderType } from "../../../../entity/character/ai/order-type";
 import { environment } from "../../../../../../../environments/environment";
 import { Agent } from "mistreevous/dist/Agent";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
+import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
+import { DebuggingService } from "../../../../scenes/services/DebuggingService";
+import { Subscription } from "rxjs";
 
 export interface PawnAiDefinition {
   type: AiType;
@@ -15,12 +18,13 @@ export interface PawnAiDefinition {
 }
 
 export class PawnAiController {
-  private readonly DEBUG = true;
   private readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
   private readonly agent: Agent;
   private readonly behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
-  private readonly nodeDebugger?: NodeDebugger;
+  private nodeDebugger?: NodeDebugger;
+  private aiDebuggingSubscription?: Subscription;
+
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly pawnAiDefinition: PawnAiDefinition
@@ -36,8 +40,16 @@ export class PawnAiController {
         break;
     }
 
-    if (!environment.production && this.DEBUG) {
-      this.nodeDebugger = new NodeDebugger(this.gameObject);
+    if (!environment.production) {
+      const aiDebuggingService = getSceneService(this.gameObject.scene, DebuggingService)!;
+      this.aiDebuggingSubscription = aiDebuggingService.debugChanged.subscribe((debug) => {
+        if (debug) {
+          this.nodeDebugger = new NodeDebugger(this.gameObject);
+        } else {
+          this.nodeDebugger?.destroy();
+          this.nodeDebugger = undefined;
+        }
+      });
     }
 
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
@@ -45,7 +57,7 @@ export class PawnAiController {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.onShutdown, this);
   }
 
-  private update(time: number, dt: number) {
+  private update(_: number, dt: number) {
     this.elapsedTime += dt;
     if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? 1000)) {
       try {
@@ -88,6 +100,7 @@ export class PawnAiController {
 
   private onShutdown() {
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.aiDebuggingSubscription?.unsubscribe();
   }
 }
 

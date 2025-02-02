@@ -7,7 +7,7 @@ import { PlayerAiControllerMdsl } from "./player-ai-controller.mdsl";
 
 export class PlayerAiController {
   public blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
-  private playerAiControllerAgent = new PlayerAiControllerAgent(this.player, this.blackboard);
+  private playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private readonly stepInterval: number = 1000;

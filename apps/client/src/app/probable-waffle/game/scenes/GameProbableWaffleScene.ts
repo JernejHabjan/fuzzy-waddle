@@ -18,6 +18,7 @@ import { TilemapComponent } from "./components/tilemap.component";
 import { RestartGame } from "../data/restart-game";
 import { AiPlayerHandler } from "./components/ai-player-handler";
 import { BuildingCursor } from "../world/managers/controllers/building-cursor";
+import { DebuggingService } from "./services/DebuggingService";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -53,7 +54,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const creator = new SceneActorCreator(this);
 
     this.sceneGameData.components.push(new TilemapComponent(this.tilemap), new BuildingCursor(this));
-    this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService(), creator);
+    this.sceneGameData.services.push(
+      new NavigationService(this, this.tilemap),
+      new AudioService(),
+      creator,
+      new DebuggingService()
+    );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
 
     creator.initInitialActors();

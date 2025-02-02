@@ -3,6 +3,10 @@ import { IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
 import { Agent } from "mistreevous/dist/Agent";
 import { PlayerAiBlackboard } from "../../../../entity/character/ai/player-ai/player-ai-blackboard";
 import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { environment } from "../../../../../../../environments/environment";
+import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
+import { DebuggingService } from "../../../../scenes/services/DebuggingService";
+import { Subscription } from "rxjs";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   private readonly baseHeavyAttackThreshold = 10; // Enemy units count for a heavy attack
@@ -13,10 +17,21 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   private readonly hasSufficientResourcesThreshold = 500; // Threshold for sufficient resources
   private readonly hasEnoughResourcesForWorkerThreshold = 100; // Threshold for training
   private readonly sufficientResourcesForUpgradeThreshold = 1000; // Threshold for upgrades
+  private displayDebugInfo = false;
+  private aiDebuggingSubscription?: Subscription;
   constructor(
+    private readonly scene: Phaser.Scene,
     private readonly player: ProbableWafflePlayer,
     private readonly blackboard: PlayerAiBlackboard
-  ) {}
+  ) {
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
+    if (!environment.production) {
+      const aiDebuggingService = getSceneService(this.scene, DebuggingService)!;
+      this.aiDebuggingSubscription = aiDebuggingService.debugChanged.subscribe((debug) => {
+        this.displayDebugInfo = debug;
+      });
+    }
+  }
 
   [propertyName: string]: unknown;
 
@@ -42,7 +57,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
 
   AssignDefendersToEnemies() {
     if (this.blackboard.defendingUnits.length > 0 && this.blackboard.enemiesNearBase.length > 0) {
-      console.log("Assigning defenders to engage nearby enemies.");
+      this.logDebugInfo("Assigning defenders to engage nearby enemies.");
       this.blackboard.defendingUnits.forEach((unit) => unit.assignTarget(this.blackboard.enemiesNearBase[0]));
       return State.SUCCEEDED;
     }
@@ -51,7 +66,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
 
   AttackEnemyBase() {
     if (this.HasEnoughMilitaryPower()) {
-      console.log("Attacking enemy base with full force!");
+      this.logDebugInfo("Attacking enemy base with full force!");
       this.blackboard.units.forEach((unit) => unit.attack(this.blackboard.enemyBase));
       return State.SUCCEEDED;
     }
@@ -78,7 +93,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const availableStructures = this.blackboard.availableStructures();
     if (availableStructures.length > 0) {
       this.blackboard.selectedStructure = availableStructures[0]; // Choose the first available structure
-      console.log("Selected structure to build:", this.blackboard.selectedStructure);
+      this.logDebugInfo("Selected structure to build:", this.blackboard.selectedStructure);
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -88,7 +103,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const idleWorkers = this.blackboard.workers.filter((worker) => worker.isIdle());
     if (idleWorkers.length > 0) {
       idleWorkers.forEach((worker) => worker.gather(this.blackboard.closestResource()));
-      console.log("Assigned idle workers to gather resources.");
+      this.logDebugInfo("Assigned idle workers to gather resources.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -104,7 +119,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
 
   TrainWorker() {
     if (this.HasEnoughResourcesForWorker()) {
-      console.log("Training a new worker...");
+      this.logDebugInfo("Training a new worker...");
       this.blackboard.trainingBuildings[0].trainUnit("worker");
       return State.SUCCEEDED;
     }
@@ -115,7 +130,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const workers = this.blackboard.workers.filter((worker) => worker.isGathering());
     if (workers.length > 0) {
       workers.forEach((worker) => worker.continueGathering());
-      console.log("Workers are gathering resources.");
+      this.logDebugInfo("Workers are gathering resources.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -125,7 +140,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const idleWorkers = this.blackboard.workers.filter((worker) => worker.isIdle());
     if (idleWorkers.length > 0 && this.blackboard.selectedStructure) {
       idleWorkers[0].startBuilding(this.blackboard.selectedStructure);
-      console.log("Assigned worker to build structure.");
+      this.logDebugInfo("Assigned worker to build structure.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -135,14 +150,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const selectedStructure = this.blackboard.selectedStructure;
     if (selectedStructure && this.HasSufficientResources()) {
       selectedStructure.startConstruction();
-      console.log("Started building:", selectedStructure.name);
+      this.logDebugInfo("Started building:", selectedStructure.name);
       return State.SUCCEEDED;
     }
     return State.FAILED;
   }
 
   ContinueNormalGathering() {
-    console.log("Continuing normal gathering...");
+    this.logDebugInfo("Continuing normal gathering...");
     return State.SUCCEEDED;
   }
 
@@ -151,7 +166,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const workers = this.blackboard.workers.filter((worker) => worker.isGathering());
     if (workers.length > 0 && criticalResource) {
       workers.forEach((worker) => worker.gather(criticalResource));
-      console.log("Reassigned workers to gather the most critical resource.");
+      this.logDebugInfo("Reassigned workers to gather the most critical resource.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -162,7 +177,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const workers = this.blackboard.workers.filter((worker) => worker.isIdle());
     if (workers.length > 0 && resource) {
       workers.forEach((worker) => worker.gather(resource));
-      console.log("Assigned workers to gather the closest resource.");
+      this.logDebugInfo("Assigned workers to gather the closest resource.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -174,7 +189,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
 
   StartUpgrade() {
     if (this.SufficientResourcesForUpgrade()) {
-      console.log("Starting a tech or unit upgrade.");
+      this.logDebugInfo("Starting a tech or unit upgrade.");
       this.blackboard.upgradeBuilding.startUpgrade();
       return State.SUCCEEDED;
     }
@@ -201,7 +216,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const idleScouts = this.blackboard.units.filter((unit) => unit.isScout() && unit.isIdle());
     if (idleScouts.length > 0) {
       idleScouts.forEach((scout) => scout.explore());
-      console.log("Assigned scouts to explore.");
+      this.logDebugInfo("Assigned scouts to explore.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -219,7 +234,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const lowHealthUnits = this.blackboard.units.filter((unit) => unit.health < 20); // Threshold for "low health"
     if (lowHealthUnits.length > 0) {
       lowHealthUnits.forEach((unit) => unit.retreatToSafeZone());
-      console.log("Retreating low-health units.");
+      this.logDebugInfo("Retreating low-health units.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -229,7 +244,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     const enemy = this.blackboard.primaryTarget;
     if (enemy) {
       this.blackboard.units.forEach((unit) => unit.attack(enemy));
-      console.log("Focusing fire on enemy:", enemy.name);
+      this.logDebugInfo("Focusing fire on enemy:", enemy.name);
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -238,7 +253,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   FlankEnemy() {
     const enemies = this.blackboard.enemiesInCombat;
     if (enemies.length > 0 && this.EnemyFlankOpen()) {
-      console.log("Flanking the enemy.");
+      this.logDebugInfo("Flanking the enemy.");
       this.blackboard.units.forEach((unit) => unit.moveToFlank(enemies[0]));
       return State.SUCCEEDED;
     }
@@ -251,14 +266,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
 
   AnalyzeEnemyBase() {
     if (this.blackboard.enemyBase) {
-      console.log("Analyzing enemy base for weaknesses.");
+      this.logDebugInfo("Analyzing enemy base for weaknesses.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
   }
 
   GatherEnemyData() {
-    console.log("Gathering enemy intelligence.");
+    this.logDebugInfo("Gathering enemy intelligence.");
     return State.SUCCEEDED;
   }
 
@@ -271,7 +286,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   }
 
   DecideNextMoveBasedOnAnalysis() {
-    console.log("Deciding next move based on enemy analysis.");
+    this.logDebugInfo("Deciding next move based on enemy analysis.");
     return State.SUCCEEDED;
   }
 
@@ -280,25 +295,35 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   }
 
   ContinueScouting() {
-    console.log("Continuing to scout the map.");
+    this.logDebugInfo("Continuing to scout the map.");
     return State.SUCCEEDED;
   }
 
   ShiftToAggressiveStrategy() {
     this.blackboard.currentStrategy = "aggressive";
-    console.log("Switched to aggressive strategy.");
+    this.logDebugInfo("Switched to aggressive strategy.");
     return State.SUCCEEDED;
   }
 
   ShiftToDefensiveStrategy() {
     this.blackboard.currentStrategy = "defensive";
-    console.log("Switched to defensive strategy.");
+    this.logDebugInfo("Switched to defensive strategy.");
     return State.SUCCEEDED;
   }
 
   ShiftToEconomicStrategy() {
     this.blackboard.currentStrategy = "economic";
-    console.log("Switched to economic strategy.");
+    this.logDebugInfo("Switched to economic strategy.");
     return State.SUCCEEDED;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private logDebugInfo(message?: any, ...optionalParams: any[]) {
+    if (!this.displayDebugInfo) return;
+    console.log(message, ...optionalParams);
+  }
+
+  private onShutdown() {
+    this.aiDebuggingSubscription?.unsubscribe();
   }
 }

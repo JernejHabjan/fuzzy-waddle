@@ -11,6 +11,8 @@ import AiControllerDebugLabel from "./AiControllerDebugLabel";
 import { getPlayers } from "../../../../data/scene-data";
 import HudProbableWaffle from "../../../../scenes/HudProbableWaffle";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
+import { DebuggingService } from "../../../../scenes/services/DebuggingService";
 /* END-USER-IMPORTS */
 
 export default class AiControllerDebugPanel extends Phaser.GameObjects.Container {
@@ -93,11 +95,16 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
   private toggleLabels() {
     this.enabled = !this.enabled;
     this.buttonText.text = this.enabled ? "Hide AI debugging" : "Show AI debugging";
+    const aiDebuggingService = getSceneService(this.mainScene, DebuggingService);
+    if (aiDebuggingService) {
+      aiDebuggingService.debug = this.enabled;
+      aiDebuggingService.debugChanged.next(this.enabled);
+    }
 
     if (this.enabled) {
       this.aiControllerDebugLabel.setVisible(true);
       const buttonHeight = this.button.getBounds().height;
-      const aiPlayers = getPlayers((this.scene as HudProbableWaffle).probableWaffleScene!).filter(
+      const aiPlayers = getPlayers(this.mainScene).filter(
         (p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI
       );
       // create new labels for each ai player and put them below the button
@@ -113,6 +120,10 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
       this.aiControllerDebugLabel.setVisible(false);
       this.labels.forEach((label) => label.destroy());
     }
+  }
+
+  get mainScene() {
+    return (this.scene as HudProbableWaffle).probableWaffleScene!;
   }
 
   destroy() {

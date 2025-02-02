@@ -19,6 +19,7 @@ import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
 import { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
 
 export class ProbableWaffleListeners {
+  private static readonly debug = false;
   static gameInstanceMetadataChanged(
     gameInstance: ProbableWaffleGameInstance | undefined,
     payload: ProbableWaffleGameInstanceMetadataChangeEvent
@@ -116,7 +117,7 @@ export class ProbableWaffleListeners {
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.playerController.data.playerDefinition!.factionType =
             payload.data.playerControllerData!.playerDefinition!.factionType;
-          console.log(
+          ProbableWaffleListeners.logDebugInfo(
             "faction type changed",
             player.playerController.data.playerDefinition!.factionType,
             "for player",
@@ -128,7 +129,7 @@ export class ProbableWaffleListeners {
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.playerController.data.playerDefinition!.team =
             payload.data.playerControllerData!.playerDefinition!.team;
-          console.log(
+          ProbableWaffleListeners.logDebugInfo(
             "team changed",
             player.playerController.data.playerDefinition!.team,
             "for player",
@@ -140,7 +141,7 @@ export class ProbableWaffleListeners {
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.playerController.data.playerDefinition!.difficulty =
             payload.data.playerControllerData!.playerDefinition!.difficulty;
-          console.log(
+          ProbableWaffleListeners.logDebugInfo(
             "difficulty changed",
             player.playerController.data.playerDefinition!.difficulty,
             "for player",
@@ -152,7 +153,7 @@ export class ProbableWaffleListeners {
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           payload.data.playerStateData!.selection!.forEach((id) => player!.setSelectedActor(id));
-          console.log(
+          ProbableWaffleListeners.logDebugInfo(
             "selection added",
             payload.data.playerStateData!.selection!.length,
             "for player",
@@ -164,7 +165,7 @@ export class ProbableWaffleListeners {
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           payload.data.playerStateData!.selection!.forEach((id) => player!.removeSelectedActor(id));
-          console.log(
+          ProbableWaffleListeners.logDebugInfo(
             "selection removed",
             payload.data.playerStateData!.selection!.length,
             "for player",
@@ -177,7 +178,7 @@ export class ProbableWaffleListeners {
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.clearSelection();
           payload.data.playerStateData!.selection!.forEach((id) => player!.setSelectedActor(id));
-          console.log(
+          ProbableWaffleListeners.logDebugInfo(
             "selection set",
             payload.data.playerStateData!.selection!.length,
             "for player",
@@ -189,7 +190,7 @@ export class ProbableWaffleListeners {
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           player.clearSelection();
-          console.log("selection cleared for player", player.playerNumber);
+          ProbableWaffleListeners.logDebugInfo("selection cleared for player", player.playerNumber);
           break;
 
         case "command.issued.move" as ProbableWafflePlayerDataChangeEventProperty:
@@ -204,7 +205,7 @@ export class ProbableWaffleListeners {
           actors.forEach((actor) => {
             if (!actor.blackboardCommands) actor.blackboardCommands = [];
             actor.blackboardCommands.push(actor.blackboardCurrentCommand!);
-            console.log(
+            ProbableWaffleListeners.logDebugInfo(
               `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${tileVec3.x}, y: ${tileVec3.y}, z: ${tileVec3.z}`
             );
           });
@@ -215,14 +216,14 @@ export class ProbableWaffleListeners {
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           // noinspection JSDeprecatedSymbols
           player.addResources(payload.data.playerStateData!.resources!);
-          console.log("resources added for player", player.playerNumber);
+          ProbableWaffleListeners.logDebugInfo("resources added for player", player.playerNumber);
           break;
         case "resource.removed" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           // noinspection JSDeprecatedSymbols
           player.payAllResources(payload.data.playerStateData!.resources!);
-          console.log("resources removed for player", player.playerNumber);
+          ProbableWaffleListeners.logDebugInfo("resources removed for player", player.playerNumber);
           break;
 
         default:
@@ -253,7 +254,7 @@ export class ProbableWaffleListeners {
     switch (event.property) {
       case "all": {
         gameInstance.gameState!.data = event.data.gameState as any;
-        console.log("game state changed to", gameInstance.gameState!.data);
+        ProbableWaffleListeners.logDebugInfo("game state changed to", gameInstance.gameState!.data);
         break;
       }
       case "health.health":
@@ -261,7 +262,7 @@ export class ProbableWaffleListeners {
         if (!actorHealth) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
         if (!actorHealth.health) actorHealth.health = {};
         actorHealth.health.health = event.data.actorDefinition?.health!.health;
-        console.log(
+        ProbableWaffleListeners.logDebugInfo(
           "health changed for actor",
           event.data.actorDefinition!.id!,
           "to health:",
@@ -274,7 +275,12 @@ export class ProbableWaffleListeners {
         if (!actorArmor) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);
         if (!actorArmor.health) actorArmor.health = {};
         actorArmor.health.armour = event.data.actorDefinition?.health!.armour;
-        console.log("armor changed for actor", event.data.actorDefinition!.id!, "to armor:", actorArmor.health.armour);
+        ProbableWaffleListeners.logDebugInfo(
+          "armor changed for actor",
+          event.data.actorDefinition!.id!,
+          "to armor:",
+          actorArmor.health.armour
+        );
         break;
 
       default:
@@ -284,6 +290,12 @@ export class ProbableWaffleListeners {
 
   private static getActorById(id: string, gameInstance: ProbableWaffleGameInstance): ActorDefinition | undefined {
     return gameInstance.gameState!.data.actors.find((a) => a.id === id);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static logDebugInfo(message?: any, ...optionalParams: any[]) {
+    if (!ProbableWaffleListeners.debug) return;
+    console.log(message, ...optionalParams);
   }
 }
 
