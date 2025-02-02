@@ -291,10 +291,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
                 sound.playAudioSprite("ui-feedback", "production_queue_full", { volume });
                 break;
               case AssignProductionErrorCode.InvalidProduct:
-                // should not really happen
+                console.error("Invalid product");
                 break;
               case AssignProductionErrorCode.NoOwner:
-                // should not really happen
+                console.error("No owner");
                 break;
             }
           },

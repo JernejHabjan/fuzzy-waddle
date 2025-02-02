@@ -7,6 +7,7 @@ import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { upgradeFromMandatoryToFullActorData } from "../../../data/actor-data";
 import Vector2 = Phaser.Math.Vector2;
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -194,13 +195,24 @@ export class BuildingCursor {
     this.clearGraphics();
 
     // Save the building to the game state
-    upgradeFromMandatoryToFullActorData(this.building);
-    // todo save to game state
+    this.fullySpawnBuilding();
 
     // Reset the building cursor
     this.building = undefined;
     this.pointerLocation = undefined;
     this.allCellsAreValid = false;
+  }
+
+  private fullySpawnBuilding() {
+    if (!this.building) return;
+
+    upgradeFromMandatoryToFullActorData(this.building);
+
+    const currentPlayer = getCurrentPlayerNumber(this.scene);
+    ActorManager.setActorProperties(this.building, {
+      ...(currentPlayer && { owner: currentPlayer })
+    } satisfies ActorDefinition);
+    // todo save to game state
   }
 
   stop() {

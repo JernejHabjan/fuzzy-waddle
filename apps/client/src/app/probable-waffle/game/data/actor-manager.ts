@@ -198,9 +198,9 @@ export class ActorManager {
 
   static setActorProperties(actor: GameObject, properties: any) {
     const transform = actor as any as Transform;
-    if (transform.x !== undefined) transform.x = properties.x;
-    if (transform.y !== undefined) transform.y = properties.y;
-    if (transform.z !== undefined) transform.z = properties.z;
+    if (transform.x !== undefined && properties.x !== undefined) transform.x = properties.x;
+    if (transform.y !== undefined && properties.y !== undefined) transform.y = properties.y;
+    if (transform.z !== undefined && properties.z !== undefined) transform.z = properties.z;
     if (properties.owner) getActorComponent(actor, OwnerComponent)?.setOwner(properties.owner);
     if (properties.selectable) getActorComponent(actor, SelectableComponent)?.setSelected(properties.selectable);
     if (properties.id) getActorComponent(actor, IdComponent)?.setId(properties.id);
