@@ -19,6 +19,10 @@ import { ActorTranslateComponent } from "../../../entity/actor/components/actor-
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
 import { getSfxVolumeNormalized } from "../../../scenes/services/audio.service";
+import { BuilderComponent } from "../../../entity/actor/components/builder-component";
+import { ObjectNames } from "../../../data/object-names";
+import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
+import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -154,6 +158,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private selectionChangedSubscription?: Subscription;
   private actorKillSubscription?: Subscription;
   private mainSceneWithActors: ProbableWaffleScene;
+  /**
+   * If true, building icons are displayed with back button
+   */
+  private buildingMode: boolean = false;
+
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
       const selectedActors = getSelectedActors(this.mainSceneWithActors);
@@ -163,6 +172,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       } else {
         const actorsByPriority = sortActorsByPriority(selectedActors);
         const actor = actorsByPriority[0];
+        this.buildingMode = false;
         this.showActorActions(actor);
         this.subscribeToActorKillEvent(actor);
       }
@@ -239,13 +249,28 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   } satisfies ActorActionSetup;
 
   private showActorActions(actor: Phaser.GameObjects.GameObject) {
+    this.hideAllIcons();
     let index = 0;
+    if (this.buildingMode) {
+      this.showBuildableIcons(actor, index);
+    } else {
+      index = this.showAttackIcons(actor, index);
+      index = this.showMoveIcons(actor, index);
+      index = this.showProductionIcons(actor, index);
+      this.showBuilderIcons(actor, index);
+    }
+  }
+
+  private showAttackIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
     const attackComponent = getActorComponent(actor, AttackComponent);
     if (attackComponent) {
       this.actor_actions[index].setup(this.attackAction);
       index++;
     }
+    return index;
+  }
 
+  private showMoveIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
     const actorTranslateComponent = getActorComponent(actor, ActorTranslateComponent);
     if (actorTranslateComponent) {
       this.actor_actions[index].setup(this.moveAction);
@@ -253,7 +278,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       this.actor_actions[index].setup(this.stopAction);
       index++;
     }
+    return index;
+  }
 
+  private showProductionIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
@@ -308,10 +336,109 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         index++;
       });
     }
-    // hide all remaining
-    for (let i = index; i < this.actor_actions.length; i++) {
+    return index;
+  }
+
+  private showBuilderIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+    const builderComponent = getActorComponent(actor, BuilderComponent);
+    if (builderComponent) {
+      this.actor_actions[index].setup({
+        icon: {
+          key: "gui",
+          frame: "action_icons/hammer.png",
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        action: () => {
+          this.buildingMode = true;
+          this.showActorActions(actor);
+        },
+        tooltipInfo: {
+          title: "Build",
+          description: "Build a building",
+          iconKey: "gui",
+          iconFrame: "action_icons/hammer.png"
+        }
+      });
+      index++;
+    }
+    return index;
+  }
+
+  private hideAllIcons() {
+    for (let i = 0; i < this.actor_actions.length; i++) {
       this.actor_actions[i].setup({ visible: false });
     }
+  }
+
+  private showBuildableIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+    const builderComponent = getActorComponent(actor, BuilderComponent);
+    if (!builderComponent) throw new Error("BuilderComponent not found");
+    const buildable: ObjectNames[] = builderComponent.constructableBuildings;
+
+    for (const building of buildable) {
+      if (index >= this.actor_actions.length) {
+        console.error("Not enough slots for building icons");
+        return index;
+      }
+      const actorDefinition = pwActorDefinitions[building];
+      const info = actorDefinition.components?.info;
+      if (!info || !info.smallImage) {
+        throw new Error(`Info component not found for ${building}`);
+      }
+      this.actor_actions[index].setup({
+        icon: {
+          key: info.smallImage.key!,
+          frame: info.smallImage.frame,
+          origin: info.smallImage.origin
+        },
+        disabled: false, // todo
+        visible: true,
+        action: () => {
+          const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
+          buildingCursor?.startPlacingBuilding.emit(building);
+        },
+        tooltipInfo: {
+          title: info.name,
+          iconKey: info.smallImage.key!,
+          iconFrame: info.smallImage.frame,
+          description: info.description
+        }
+      });
+      index++;
+    }
+
+    // increase index until it's at least 6 or higher, as we want back icon in the last row
+    const toSkip = Math.max(6 - index, 0);
+    index += toSkip;
+
+    // add back button
+    if (index >= this.actor_actions.length) {
+      console.error("Not enough slots for building icons");
+      return index;
+    }
+    this.actor_actions[index].setup({
+      icon: {
+        key: "gui",
+        frame: "action_icons/back.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: () => {
+        this.buildingMode = false;
+        this.showActorActions(actor);
+        const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
+        buildingCursor?.stopPlacingBuilding.emit();
+      },
+      tooltipInfo: {
+        title: "Stop Building",
+        description: "Stop building",
+        iconKey: "gui",
+        iconFrame: "action_icons/back.png"
+      }
+    });
+
+    return index;
   }
 
   destroy(fromScene?: boolean) {

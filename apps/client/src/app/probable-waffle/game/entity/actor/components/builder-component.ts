@@ -11,7 +11,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce
-  constructableBuildingClasses: ObjectNames[];
+  constructableBuildings: ObjectNames[];
   // Whether the builder enters the building site while working on it, or not.
   enterConstructionSite: boolean;
   // from how far builder builds building site
@@ -33,6 +33,11 @@ export class BuilderComponent {
     private readonly gameObject: GameObject,
     private readonly builderComponentDefinition: BuilderDefinition
   ) {}
+
+  get constructableBuildings(): ObjectNames[] {
+    // NOTE, this can be later filtered, so we show only buildings that are available to the player
+    return this.builderComponentDefinition.constructableBuildings;
+  }
 
   getAssignedConstructionSite() {
     return this.assignedConstructionSite;

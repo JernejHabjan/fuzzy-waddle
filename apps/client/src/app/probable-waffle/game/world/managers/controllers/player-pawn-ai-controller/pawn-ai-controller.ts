@@ -48,7 +48,11 @@ export class PawnAiController {
   private update(time: number, dt: number) {
     this.elapsedTime += dt;
     if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? 1000)) {
-      this.behaviourTree.step();
+      try {
+        this.behaviourTree.step();
+      } catch (e) {
+        console.log(e, "Error stepping behaviour tree");
+      }
       this.elapsedTime = 0;
       this.updateDebuggerText();
     }

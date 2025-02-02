@@ -174,6 +174,8 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">../sprites/gui/action_icons/arrow.png</key>
+            <key type="filename">../sprites/gui/action_icons/back.png</key>
+            <key type="filename">../sprites/gui/action_icons/hammer.png</key>
             <key type="filename">../sprites/gui/action_icons/hand.png</key>
             <key type="filename">../sprites/gui/actor_info_icons/boot.png</key>
             <key type="filename">../sprites/gui/actor_info_icons/bow.png</key>

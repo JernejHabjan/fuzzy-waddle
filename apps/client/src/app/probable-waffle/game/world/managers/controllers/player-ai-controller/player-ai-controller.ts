@@ -24,7 +24,11 @@ export class PlayerAiController {
   private update(time: number, dt: number) {
     this.elapsedTime += dt;
     if (this.elapsedTime >= this.stepInterval) {
-      this.behaviourTree.step();
+      try {
+        this.behaviourTree.step();
+      } catch (e) {
+        console.log(e, "Error stepping behaviour tree");
+      }
       this.elapsedTime = 0;
     }
   }

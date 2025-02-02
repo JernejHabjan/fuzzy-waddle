@@ -1,4 +1,4 @@
-import { GameObjects, Input, Scene } from "phaser";
+import { GameObjects, Input } from "phaser";
 import { ActorDefinition, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
 import { ObjectNames } from "../../../data/object-names";
@@ -6,8 +6,11 @@ import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { upgradeFromMandatoryToFullActorData } from "../../../data/actor-data";
-import Vector2 = Phaser.Math.Vector2;
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { EventEmitter } from "@angular/core";
+import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
+import { Subscription } from "rxjs";
+import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -15,15 +18,25 @@ export class BuildingCursor {
   private building?: GameObjects.GameObject;
   private pointerLocation?: Vector2Simple;
   private attackRangeCircle?: GameObjects.Graphics;
+  startPlacingBuilding = new EventEmitter<ObjectNames>();
+  stopPlacingBuilding = new EventEmitter<void>();
 
   private readonly tileSize = 64;
-  constructor(private scene: Scene) {
-    setTimeout(() => {
-      this.spawn(ObjectNames.FrostForge);
-    }, 2000);
+  private readonly startPlacingSubscription: Subscription;
+  private readonly stopPlacingSubscription: Subscription;
+  private escKey: Phaser.Input.Keyboard.Key | undefined;
+  constructor(private scene: GameProbableWaffleScene) {
+    this.startPlacingSubscription = this.startPlacingBuilding.subscribe((name) => this.spawn(name));
+    this.stopPlacingSubscription = this.stopPlacingBuilding.subscribe(() => this.stop());
+    this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    this.scene.input.on(Input.Events.POINTER_DOWN, this.placeBuilding, this);
+    scene.onShutdown.subscribe(() => this.destroy());
+    this.subscribeToCancelAction();
   }
 
   private spawn(name: ObjectNames) {
+    if (this.building) this.stop();
+
     const pointer = this.scene.input.activePointer;
     let worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
 
@@ -40,9 +53,6 @@ export class BuildingCursor {
 
     this.building = gameObject;
     this.pointerLocation = worldPosition;
-
-    this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
-    this.scene.input.once(Input.Events.POINTER_DOWN, this.placeBuilding, this);
 
     this.drawPlacementGrid();
     this.drawAttackRange();
@@ -188,12 +198,6 @@ export class BuildingCursor {
     // Placeholder logic, assuming building placement is always valid.
     this.allCellsAreValid = true; // todo Replace with actual placement check.
 
-    // Stop handling pointer move events
-    this.stop();
-
-    // Clear the graphics
-    this.clearGraphics();
-
     // Save the building to the game state
     this.fullySpawnBuilding();
 
@@ -201,6 +205,7 @@ export class BuildingCursor {
     this.building = undefined;
     this.pointerLocation = undefined;
     this.allCellsAreValid = false;
+    this.clearGraphics();
   }
 
   private fullySpawnBuilding() {
@@ -215,7 +220,25 @@ export class BuildingCursor {
     // todo save to game state
   }
 
+  private subscribeToCancelAction() {
+    this.escKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    if (!this.escKey) return;
+    this.escKey.on(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
+  }
+
   stop() {
+    this.building?.destroy();
+    this.building = undefined;
+    this.pointerLocation = undefined;
+    this.clearGraphics();
+  }
+
+  private destroy() {
+    this.stop();
     this.scene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    this.scene.input.off(Input.Events.POINTER_DOWN, this.placeBuilding, this);
+    this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
+    this.startPlacingSubscription.unsubscribe();
+    this.stopPlacingSubscription.unsubscribe();
   }
 }

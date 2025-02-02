@@ -408,12 +408,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Sandhold]
       },
       builder: {
-        constructableBuildingClasses: [
-          ObjectNames.Sandhold,
-          ObjectNames.AnkGuard,
-          ObjectNames.Olival,
-          ObjectNames.Temple
-        ],
+        constructableBuildings: [ObjectNames.Sandhold, ObjectNames.AnkGuard, ObjectNames.Olival, ObjectNames.Temple],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
@@ -490,12 +485,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Sandhold]
       },
       builder: {
-        constructableBuildingClasses: [
-          ObjectNames.Sandhold,
-          ObjectNames.AnkGuard,
-          ObjectNames.Olival,
-          ObjectNames.Temple
-        ],
+        constructableBuildings: [ObjectNames.Sandhold, ObjectNames.AnkGuard, ObjectNames.Olival, ObjectNames.Temple],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
@@ -1068,7 +1058,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.FrostForge]
       },
       builder: {
-        constructableBuildingClasses: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
+        constructableBuildings: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
@@ -1145,7 +1135,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.FrostForge]
       },
       builder: {
-        constructableBuildingClasses: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
+        constructableBuildings: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
