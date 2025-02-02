@@ -193,7 +193,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/general/warrior.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -253,7 +253,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/maceman_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -316,7 +316,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/slingshot_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -379,7 +379,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -456,7 +456,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -841,7 +841,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/ranged_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -903,7 +903,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/magician_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -966,7 +966,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/warrior_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -1029,7 +1029,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/worker_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -1106,7 +1106,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/worker_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
