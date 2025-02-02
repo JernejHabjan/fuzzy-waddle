@@ -87,6 +87,7 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "Quit",
+                            "resolution": 3,
                             "align": "center",
                             "fontSize": "14px",
                             "color": "#000000ff"
@@ -168,6 +169,7 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "Load",
+                            "resolution": 3,
                             "align": "center",
                             "fontSize": "14px",
                             "color": "#000000ff"
@@ -249,6 +251,7 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "Save",
+                            "resolution": 3,
                             "align": "center",
                             "fontSize": "14px",
                             "color": "#000000ff"
@@ -330,6 +333,7 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "Settings",
+                            "resolution": 3,
                             "align": "center",
                             "fontSize": "14px",
                             "color": "#000000ff"
@@ -411,6 +415,7 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "Restart",
+                            "resolution": 3,
                             "align": "center",
                             "fontSize": "14px",
                             "color": "#000000ff"
@@ -492,6 +497,7 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "Continue",
+                            "resolution": 3,
                             "align": "center",
                             "fontSize": "14px",
                             "color": "#000000ff",

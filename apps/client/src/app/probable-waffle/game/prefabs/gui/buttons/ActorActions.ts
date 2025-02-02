@@ -206,9 +206,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     },
     tooltipInfo: {
       title: "Attack",
-      description: "Attack an enemy",
+      description: "Attack an enemy or start attack-move to certain location",
       iconKey: "gui",
-      iconFrame: "actor_info_icons/sword.png"
+      iconFrame: "actor_info_icons/sword.png",
+      iconOrigin: { x: 0.5, y: 0.5 }
     }
   } satisfies ActorActionSetup;
 
@@ -226,7 +227,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       title: "Stop",
       description: "Stop current action",
       iconKey: "gui",
-      iconFrame: "action_icons/hand.png"
+      iconFrame: "action_icons/hand.png",
+      iconOrigin: { x: 0.5, y: 0.5 }
     }
   } satisfies ActorActionSetup;
 
@@ -244,7 +246,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       title: "Move",
       description: "Move to a location",
       iconKey: "gui",
-      iconFrame: "action_icons/arrow.png"
+      iconFrame: "action_icons/arrow.png",
+      iconOrigin: { x: 0.5, y: 0.5 }
     }
   } satisfies ActorActionSetup;
 
@@ -330,6 +333,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             title: info.name,
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
+            iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
             description: info.description
           }
         });
@@ -357,7 +361,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           title: "Build",
           description: "Build a building",
           iconKey: "gui",
-          iconFrame: "action_icons/hammer.png"
+          iconFrame: "action_icons/hammer.png",
+          iconOrigin: { x: 0.5, y: 0.5 }
         }
       });
       index++;
@@ -402,6 +407,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           title: info.name,
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
+          iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
           description: info.description
         }
       });
@@ -434,7 +440,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         title: "Stop Building",
         description: "Stop building",
         iconKey: "gui",
-        iconFrame: "action_icons/back.png"
+        iconFrame: "action_icons/back.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
       }
     });
 

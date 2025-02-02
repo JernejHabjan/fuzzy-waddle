@@ -122,6 +122,7 @@
                     "originX": 0.5,
                     "originY": 0.5,
                     "text": "Menu",
+                    "resolution": 4,
                     "align": "center",
                     "fontSize": "12px",
                     "color": "#000000ff"
