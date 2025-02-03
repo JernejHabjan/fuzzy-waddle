@@ -107,7 +107,7 @@ export class LittleMuncherScene extends BaseScene<
     );
     this.load.audioSprite("character", "assets/sfx/character.json");
     this.load.audio("bird", "assets/little-muncher/sfx/bird.mp3");
-    this.load.audio("ost-little-muncher", "assets/little-muncher/ost/little-muncher.m4a");
+    this.load.audio("ost-little-muncher-its-an-adventure", "assets/little-muncher/ost/its-an-adventure.m4a");
   }
 
   override init() {
@@ -154,7 +154,7 @@ export class LittleMuncherScene extends BaseScene<
     );
     this.subscribe(this.communicator.reset?.on.subscribe(() => this.resetGame(false)));
 
-    this.sound.play("ost-little-muncher", {
+    this.sound.play("ost-little-muncher-its-an-adventure", {
       loop: true
     });
   }

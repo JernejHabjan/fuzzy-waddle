@@ -8,6 +8,8 @@ import { ChatFloatComponent } from "../chat/chat-float/chat-float.component";
 import { RouterLink } from "@angular/router";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 import { AngularHost } from "../../shared/consts";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { faMusic } from "@fortawesome/free-solid-svg-icons";
 
 export type DisplayGame = {
   name: string;
@@ -21,10 +23,11 @@ export type DisplayGame = {
 @Component({
   templateUrl: "./home-page.component.html",
   styleUrls: ["./home-page.component.scss"],
-  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent],
+  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent, FaIconComponent],
   host: AngularHost.contentFlexFullHeight
 })
 export class HomePageComponent {
+  protected readonly faMusic = faMusic;
   protected readonly environment = environment;
   private readonly currentlyFeaturedGame = "dungeon-crawler";
   displayGames: DisplayGame[] = [

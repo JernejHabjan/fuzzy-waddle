@@ -12,7 +12,7 @@ import {
   onSceneInitialized
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
-import { getSfxVolumeNormalized } from "../../scenes/services/audio.service";
+import { AudioService } from "../../scenes/services/audio.service";
 import { getCommunicator } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
@@ -40,6 +40,7 @@ export class MovementSystem {
   private readonly DEBUG = false;
   private playerChangedSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
+  private audioService: AudioService | undefined;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -50,6 +51,7 @@ export class MovementSystem {
 
   private init() {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
   }
 
   private listenToMoveEvents() {
@@ -249,8 +251,8 @@ export class MovementSystem {
   }
 
   private onMovementStart() {
-    const volume = getSfxVolumeNormalized(this.gameObject.scene);
-    this.gameObject.scene.sound.playAudioSprite("character", "footstep", { volume });
+    if (!this.audioService) return;
+    this.audioService.playAudioSprite("character", "footstep");
   }
 
   private destroy() {

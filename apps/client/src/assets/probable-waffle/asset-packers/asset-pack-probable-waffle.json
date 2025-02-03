@@ -32,14 +32,6 @@
                 "type": "audioSprite",
                 "key": "character"
             },
-           {
-              "jsonURL": "assets/probable-waffle/sfx/ui-feedback/ui-feedback.json",
-              "audioURL": [
-                "assets/probable-waffle/sfx/ui-feedback/ui-feedback.mp3"
-              ],
-              "type": "audioSprite",
-              "key": "ui-feedback"
-            },
             {
                 "url": "assets/probable-waffle/atlas/anims/effects.json",
                 "type": "animation",
@@ -56,6 +48,13 @@
                 "url": "assets/probable-waffle/atlas/factions.json",
                 "path": "assets/probable-waffle/atlas",
                 "key": "factions"
+            },
+            {
+                "url": [
+                    "assets/probable-waffle/ost/skaduwee/land-of-ice.mp3"
+                ],
+                "type": "audio",
+                "key": "land-of-ice"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_anims.json",
@@ -340,6 +339,14 @@
                 "key": "slingshot_female_walk"
             },
             {
+                "jsonURL": "assets/probable-waffle/sfx/ui-feedback/ui-feedback.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/ui-feedback/ui-feedback.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "ui-feedback"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/units.json",
                 "path": "assets/probable-waffle/atlas",
@@ -501,6 +508,13 @@
                 },
                 "type": "spritesheet",
                 "key": "warrior_walk"
+            },
+            {
+                "url": [
+                    "assets/probable-waffle/ost/skaduwee/winter-tale.mp3"
+                ],
+                "type": "audio",
+                "key": "winter-tale"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_anims.json",
@@ -813,6 +827,7 @@
         "contentType": "phasereditor2d.pack.core.AssetContentType",
         "url": "https://phasereditor2d.com",
         "version": 2,
-        "showAllFilesInBlocks": false
+        "showAllFilesInBlocks": false,
+        "visible": true
     }
 }
