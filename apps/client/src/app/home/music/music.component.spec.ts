@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MusicComponent } from "./music.component";
+import { ProfileNavComponent } from "../profile/profile-nav/profile-nav.component";
+import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
+import { HomeNavTestingComponent } from "../../shared/components/home-nav/home-nav.component.spec";
 
 describe("MusicComponent", () => {
   let component: MusicComponent;
@@ -8,7 +11,16 @@ describe("MusicComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MusicComponent]
-    }).compileComponents();
+    })
+      .overrideComponent(MusicComponent, {
+        remove: {
+          imports: [HomeNavComponent]
+        },
+        add: {
+          imports: [HomeNavTestingComponent]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MusicComponent);
     component = fixture.componentInstance;
