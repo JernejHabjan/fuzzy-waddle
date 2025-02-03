@@ -7,7 +7,7 @@ import { PlayerAiControllerMdsl } from "./player-ai-controller.mdsl";
 
 export class PlayerAiController {
   public blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
-  private playerAiControllerAgent = new PlayerAiControllerAgent(this.player, this.blackboard);
+  private playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private readonly stepInterval: number = 1000;
@@ -24,7 +24,11 @@ export class PlayerAiController {
   private update(time: number, dt: number) {
     this.elapsedTime += dt;
     if (this.elapsedTime >= this.stepInterval) {
-      this.behaviourTree.step();
+      try {
+        this.behaviourTree.step();
+      } catch (e) {
+        console.log(e, "Error stepping behaviour tree");
+      }
       this.elapsedTime = 0;
     }
   }

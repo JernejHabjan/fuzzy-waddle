@@ -66,7 +66,7 @@ export class NodeDebugger {
     );
   }
 
-  private destroy() {
+  destroy() {
     this.actorMovedSubscription?.unsubscribe();
     this.textNode?.destroy();
   }

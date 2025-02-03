@@ -49,20 +49,21 @@
                         "key": "factions",
                         "frame": "character_icons/general/warrior.png"
                     },
-                    "x": 130,
-                    "y": 72,
-                    "originY": 0.9
+                    "x": 131,
+                    "y": 49
                 },
                 {
                     "type": "Text",
                     "id": "4b6e075b-8943-4ad8-92cd-168014353b51",
                     "label": "title",
                     "scope": "CLASS",
-                    "x": 130,
-                    "y": 82,
+                    "x": 129,
+                    "y": 95,
                     "originX": 0.5,
                     "text": "Actor name",
+                    "resolution": 4,
                     "align": "center",
+                    "fontSize": "20px",
                     "maxLines": 2,
                     "wordWrapWidth": 250
                 },
@@ -72,33 +73,12 @@
                     "label": "description",
                     "scope": "CLASS",
                     "x": 130,
-                    "y": 107,
+                    "y": 124,
                     "originX": 0.5,
                     "text": "Actual description of this actor",
+                    "resolution": 4,
                     "align": "center",
                     "wordWrapWidth": 200
-                },
-                {
-                    "prefabId": "0027e301-c7f8-4a26-9d63-e4e0921787c9",
-                    "id": "d716f215-e6b6-431d-9fe5-c13c3c70df69",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorDefinitionIcon",
-                    "x": 78,
-                    "y": 146
-                },
-                {
-                    "prefabId": "0027e301-c7f8-4a26-9d63-e4e0921787c9",
-                    "id": "1570824c-9e5d-43cb-a37d-7ad283b8b837",
-                    "unlock": [
-                        "x",
-                        "y"
-                    ],
-                    "label": "actorDefinitionIcon_1",
-                    "x": 77,
-                    "y": 171
                 }
             ]
         }

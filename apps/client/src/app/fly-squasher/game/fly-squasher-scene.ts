@@ -63,7 +63,7 @@ export class FlySquasherScene extends BaseScene<
       "assets/fly-squasher/spritesheets/scenes/croissants-spritesheet.json",
       "assets/fly-squasher/spritesheets/scenes"
     );
-    this.load.audio("ost-fly-squasher", "assets/fly-squasher/sound/ost/fly-squasher.m4a");
+    this.load.audio("ost-fly-squasher-here-and-there", "assets/fly-squasher/sound/ost/here-and-there.m4a");
     this.load.audio("flying", "assets/fly-squasher/sound/sfx/fly.mp3");
     this.load.audio("squish", "assets/fly-squasher/sound/sfx/squish.mp3");
     this.load.audio("restaurant", "assets/fly-squasher/sound/background/restaurant.mp3");
@@ -114,7 +114,7 @@ export class FlySquasherScene extends BaseScene<
   private get ost() {
     switch (this.level) {
       default:
-        return "ost-fly-squasher";
+        return "ost-fly-squasher-here-and-there";
     }
   }
 

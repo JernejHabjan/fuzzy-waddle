@@ -8,7 +8,7 @@
   </div>
 </a>
 
-<div class="all-games">
+<div class="card-row">
   @for (game of displayGames; track game) {
     <a class="tile-game nav-link card-container" routerLink="{{ game.route }}">
       <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
@@ -24,11 +24,19 @@
     </a>
   }
 </div>
+
+<div class="card-row">
+  <div class="music-tile cursor-pointer nav-link card-container" routerLink="/music">
+    <fa-icon [icon]="faMusic" size="2x"></fa-icon>
+    <h2>Music</h2>
+  </div>
+</div>
+
 @if (serverHealthService.serverAvailable && authService.isAuthenticated) {
   <fuzzy-waddle-chat-float />
 }
 @if (authService.isAuthenticated && !environment.production) {
-  <div>
+  <div class="card-row">
     <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.add()">Add Test</button>
     <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.get()">Get Test</button>
     <button class="btn btn-outline-primary ms-1" (click)="dbAccessTestService.getStorageEntry()">

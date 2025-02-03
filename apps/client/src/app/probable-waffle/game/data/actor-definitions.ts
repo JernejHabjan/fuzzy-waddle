@@ -193,7 +193,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/general/warrior.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -253,7 +253,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/maceman_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -316,7 +316,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/slingshot_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -379,7 +379,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -408,12 +408,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Sandhold]
       },
       builder: {
-        constructableBuildingClasses: [
-          ObjectNames.Sandhold,
-          ObjectNames.AnkGuard,
-          ObjectNames.Olival,
-          ObjectNames.Temple
-        ],
+        constructableBuildings: [ObjectNames.Sandhold, ObjectNames.AnkGuard, ObjectNames.Olival, ObjectNames.Temple],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
@@ -461,7 +456,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -490,12 +485,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Sandhold]
       },
       builder: {
-        constructableBuildingClasses: [
-          ObjectNames.Sandhold,
-          ObjectNames.AnkGuard,
-          ObjectNames.Olival,
-          ObjectNames.Temple
-        ],
+        constructableBuildings: [ObjectNames.Sandhold, ObjectNames.AnkGuard, ObjectNames.Olival, ObjectNames.Temple],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
@@ -851,7 +841,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/ranged_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -913,7 +903,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/magician_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -976,7 +966,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/warrior_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -1039,7 +1029,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/worker_male.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -1068,7 +1058,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.FrostForge]
       },
       builder: {
-        constructableBuildingClasses: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
+        constructableBuildings: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
@@ -1116,7 +1106,7 @@ export const pwActorDefinitions: {
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/worker_female.png",
-          origin: { x: 0.5, y: 0.7 }
+          origin: { x: 0.5, y: 0.6 }
         }
       },
       health: {
@@ -1145,7 +1135,7 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.FrostForge]
       },
       builder: {
-        constructableBuildingClasses: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
+        constructableBuildings: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
         constructionSiteOffset: 2,
         enterConstructionSite: false
       },
@@ -1466,6 +1456,38 @@ export const pwActorDefinitions: {
         capacity: 2
       },
       collider: { enabled: true }
+    }
+  },
+  [ObjectNames.Minerals]: {
+    components: {
+      objectDescriptor: {
+        color: 0xbea55b
+      },
+      collider: {
+        enabled: true
+      },
+      selectable: { enabled: true },
+      resourceSource: {
+        resourceType: ResourceType.Minerals,
+        maximumResources: 100,
+        gatheringFactor: 1
+      }
+    }
+  },
+  [ObjectNames.Stone]: {
+    components: {
+      objectDescriptor: {
+        color: 0xbea55b
+      },
+      collider: {
+        enabled: true
+      },
+      selectable: { enabled: true },
+      resourceSource: {
+        resourceType: ResourceType.Stone,
+        maximumResources: 100,
+        gatheringFactor: 1
+      }
     }
   }
 };

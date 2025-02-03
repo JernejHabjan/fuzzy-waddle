@@ -181,15 +181,15 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
       if (item) {
         const actorName = item.actorName;
         const actorDefinition = pwActorDefinitions[actorName];
-        const infoComponent = actorDefinition.components!.info!;
-
+        const infoComponent = actorDefinition.components?.info;
+        if (!infoComponent?.smallImage) return;
         icon.setActorIcon(
           {
             iconIndex: index
           },
-          infoComponent.smallImage!.key,
-          infoComponent.smallImage!.frame,
-          infoComponent.smallImage!.origin
+          infoComponent.smallImage.key,
+          infoComponent.smallImage.frame,
+          infoComponent.smallImage.origin
         );
         producingActors++;
       } else {
@@ -212,14 +212,14 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
       const actorDefinition = pwActorDefinitions[actorName as ObjectNames];
       const infoComponent = actorDefinition.components!.info!;
       const actorIdComponent = getActorComponent(actor, IdComponent);
-      if (!actorIdComponent) return;
+      if (!actorIdComponent || !infoComponent.smallImage) return;
       icon.setActorIcon(
         {
           actorObjectId: actorIdComponent.id
         },
-        infoComponent.smallImage!.key,
-        infoComponent.smallImage!.frame,
-        infoComponent.smallImage!.origin
+        infoComponent.smallImage.key,
+        infoComponent.smallImage.frame,
+        infoComponent.smallImage.origin
       );
       icon.visible = true;
     });

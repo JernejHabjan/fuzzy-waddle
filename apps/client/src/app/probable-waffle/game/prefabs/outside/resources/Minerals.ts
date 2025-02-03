@@ -15,6 +15,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Minerals extends Phaser.GameObjects.Image {
@@ -63,7 +64,7 @@ export default class Minerals extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.Minerals;
   private readonly availableMinerals = ["minerals_pile_1.png", "minerals_pile_2.png"];
 
   /* END-USER-CODE */

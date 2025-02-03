@@ -12,6 +12,7 @@ export type ResourceSourceDefinition = {
 };
 
 export class ResourceSourceComponent {
+  private static readonly debug = false;
   onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
   onDepleted: Subject<GameObject> = new Subject<GameObject>();
   private currentResources: number;
@@ -60,19 +61,21 @@ export class ResourceSourceComponent {
     this.currentResources -= gatheredAmount;
     const newResources = this.currentResources;
 
-    console.log(
-      "gatherer",
-      gatherer,
-      "extracted",
-      gatheredAmount,
-      this.resourceSourceDefinition.resourceType,
-      "from",
-      this.gameObject,
-      "oldResources",
-      oldResources,
-      "newResources",
-      newResources
-    );
+    if (ResourceSourceComponent.debug) {
+      console.log(
+        "gatherer",
+        gatherer,
+        "extracted",
+        gatheredAmount,
+        this.resourceSourceDefinition.resourceType,
+        "from",
+        this.gameObject,
+        "oldResources",
+        oldResources,
+        "newResources",
+        newResources
+      );
+    }
 
     this.onResourcesChanged.next([this.resourceSourceDefinition.resourceType, gatheredAmount, gatherer]);
     // check if we're depleted

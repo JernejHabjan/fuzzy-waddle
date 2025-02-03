@@ -21,6 +21,7 @@ export type GathererDefinition = {
 };
 
 export class GathererComponent {
+  private static readonly debug = false;
   // when cooldown has expired
   onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   private readonly gatheredResources: GatherData[] = [
@@ -267,7 +268,9 @@ export class GathererComponent {
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
 
-    console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
+    if (GathererComponent.debug) {
+      console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
+    }
 
     this.onResourceGathered.next([this.gameObject, resourceSource, gatherData, gatheredAmount]);
 
@@ -291,8 +294,9 @@ export class GathererComponent {
             emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount });
             this.setCarriedResourceAmount(0);
 
-            console.log(`Returned ${carriedAmount} ${carriedResourceType} to ${this.gameObject.name}`);
-
+            if (GathererComponent.debug) {
+              console.log(`Returned ${carriedAmount} ${carriedResourceType} to ${this.gameObject.name}`);
+            }
             this.onResourcesReturned.next([this.gameObject, carriedResourceType, carriedAmount]);
           }
         }
@@ -318,7 +322,9 @@ export class GathererComponent {
     );
     this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
 
-    console.log(`Returned ${returnedResources} ${this.carriedResourceType} to ${resourceDrain.name}`);
+    if (GathererComponent.debug) {
+      console.log(`Returned ${returnedResources} ${this.carriedResourceType} to ${resourceDrain.name}`);
+    }
     // notify listeners
     this.onResourcesReturned.next([this.gameObject, this.carriedResourceType, returnedResources]);
     return returnedResources;

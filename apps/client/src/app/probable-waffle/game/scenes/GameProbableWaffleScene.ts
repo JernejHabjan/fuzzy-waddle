@@ -17,6 +17,8 @@ import { AudioService } from "./services/audio.service";
 import { TilemapComponent } from "./components/tilemap.component";
 import { RestartGame } from "../data/restart-game";
 import { AiPlayerHandler } from "./components/ai-player-handler";
+import { BuildingCursor } from "../world/managers/controllers/building-cursor";
+import { DebuggingService } from "./services/DebuggingService";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -50,15 +52,23 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SaveGame(this);
     new RestartGame(this);
     const creator = new SceneActorCreator(this);
+    const audioService = new AudioService(this);
 
-    this.sceneGameData.components.push(new TilemapComponent(this.tilemap));
-    this.sceneGameData.services.push(new NavigationService(this, this.tilemap), new AudioService(), creator);
+    this.sceneGameData.components.push(new TilemapComponent(this.tilemap), new BuildingCursor(this));
+    this.sceneGameData.services.push(
+      new NavigationService(this, this.tilemap),
+      audioService,
+      creator,
+      new DebuggingService()
+    );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
 
     creator.initInitialActors();
 
     super.create();
     this.sceneGameData.initializers.sceneInitialized.next(true);
+
+    audioService.playMusicByShuffledPlaylist();
   }
 
   private cleanup() {

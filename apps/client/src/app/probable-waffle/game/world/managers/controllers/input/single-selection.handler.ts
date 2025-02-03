@@ -7,6 +7,7 @@ import { MULTI_SELECTING } from "./multi-selection.handler";
 import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class SingleSelectionHandler {
+  private readonly debug = false;
   private multiSelecting: boolean = false;
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -22,7 +23,9 @@ export class SingleSelectionHandler {
     // timeout so this is executed after this pointer up event
     setTimeout(() => {
       this.multiSelecting = multiSelecting;
-      console.log("multiSelecting", multiSelecting);
+      if (this.debug) {
+        console.log("multiSelecting", multiSelecting);
+      }
     });
   }
 
@@ -58,7 +61,9 @@ export class SingleSelectionHandler {
           const objectIds = gameObjectsUnderCursor
             .filter((go) => !!getActorComponent(go, SelectableComponent) && !!getActorComponent(go, IdComponent))
             .map((go) => getActorComponent(go, IdComponent)!.id);
-          console.log("clicked on interactive objects", gameObjectsUnderCursor.length, objectIds);
+          if (this.debug) {
+            console.log("clicked on interactive objects", gameObjectsUnderCursor.length, objectIds);
+          }
           // if we clicked on top of terrain object, then emit terrain selection
           const clickedOnTopOfTerrain = false;
           if (clickedOnTopOfTerrain) {

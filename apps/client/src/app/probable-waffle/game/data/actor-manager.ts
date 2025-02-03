@@ -49,6 +49,8 @@ import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { ObjectNames } from "./object-names";
 import { setFullActorDataFromName, setMandatoryActorDataFromName } from "./actor-data";
+import Minerals from "../prefabs/outside/resources/Minerals";
+import Stone from "../../../other/Template/prefabs/Stone";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
 
@@ -116,7 +118,7 @@ export class ActorManager {
     [ObjectNames.Owlery]: Owlery
   };
 
-  private static trees: ActorMap = {
+  private static resources: ActorMap = {
     [ObjectNames.Tree1]: Tree1,
     [ObjectNames.Tree4]: Tree4,
     [ObjectNames.Tree5]: Tree5,
@@ -124,7 +126,9 @@ export class ActorManager {
     [ObjectNames.Tree7]: Tree7,
     [ObjectNames.Tree9]: Tree9,
     [ObjectNames.Tree10]: Tree10,
-    [ObjectNames.Tree11]: Tree11
+    [ObjectNames.Tree11]: Tree11,
+    [ObjectNames.Minerals]: Minerals,
+    [ObjectNames.Stone]: Stone
   };
 
   public static actorMap: ActorMap = {
@@ -137,7 +141,7 @@ export class ActorManager {
     ...ActorManager.skaduweeWorkers,
     ...ActorManager.skaduweeUnits,
     ...ActorManager.skaduweeBuildings,
-    ...ActorManager.trees
+    ...ActorManager.resources
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
@@ -165,7 +169,7 @@ export class ActorManager {
     return actorDefinition;
   }
 
-  static createActorFully(scene: Phaser.Scene, name: ObjectNames, properties: any): GameObject {
+  static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
@@ -174,7 +178,7 @@ export class ActorManager {
     }
     actor = new actorConstructor(scene);
     setFullActorDataFromName(actor);
-    ActorManager.setActorProperties(actor, properties);
+    ActorManager.setActorProperties(actor, actorDefinition);
     return actor;
   }
 
@@ -183,7 +187,7 @@ export class ActorManager {
    * Use {@link upgradeFromMandatoryToFullActorData} to upgrade the actor to a full actor.
    * Use this method when you are using {@link BuildingCursor}
    */
-  static createActorPartially(scene: Phaser.Scene, name: ObjectNames, properties: any): GameObject {
+  static createActorPartially(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
@@ -192,15 +196,15 @@ export class ActorManager {
     }
     actor = new actorConstructor(scene);
     setMandatoryActorDataFromName(actor);
-    ActorManager.setActorProperties(actor, properties);
+    ActorManager.setActorProperties(actor, actorDefinition);
     return actor;
   }
 
   static setActorProperties(actor: GameObject, properties: any) {
     const transform = actor as any as Transform;
-    if (transform.x !== undefined) transform.x = properties.x;
-    if (transform.y !== undefined) transform.y = properties.y;
-    if (transform.z !== undefined) transform.z = properties.z;
+    if (transform.x !== undefined && properties.x !== undefined) transform.x = properties.x;
+    if (transform.y !== undefined && properties.y !== undefined) transform.y = properties.y;
+    if (transform.z !== undefined && properties.z !== undefined) transform.z = properties.z;
     if (properties.owner) getActorComponent(actor, OwnerComponent)?.setOwner(properties.owner);
     if (properties.selectable) getActorComponent(actor, SelectableComponent)?.setSelected(properties.selectable);
     if (properties.id) getActorComponent(actor, IdComponent)?.setId(properties.id);
