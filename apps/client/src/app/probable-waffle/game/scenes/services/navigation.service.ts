@@ -10,6 +10,7 @@ import { Pathfinder_old } from "../../world/map/pathfinder_old";
 import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent } from "../components/scene-component-helpers";
 import { TilemapComponent } from "../components/tilemap.component";
+import { onSceneInitialized } from "../../data/game-object-helper";
 
 export class NavigationService {
   private easyStar: EasyStar;
@@ -22,10 +23,13 @@ export class NavigationService {
     private readonly scene: Phaser.Scene,
     private readonly tilemap: Phaser.Tilemaps.Tilemap
   ) {
-    this.extractTilemapGrid();
-
+    onSceneInitialized(scene, this.init, this);
     this.scene.events.on("updateNavigation", this.updateNavigation, this);
     this.easyStar = new EasyStar();
+  }
+
+  private init() {
+    this.extractTilemapGrid();
 
     this.updateNavigation();
 
