@@ -27,6 +27,7 @@ export type ProductionProgressEvent = {
 };
 export type ProductionQueueChangeEvent = {
   itemsFromAllQueues: ProductionQueueItem[];
+  type: "add" | "remove" | "completed";
 };
 
 export type ProductionDefinition = {
@@ -175,7 +176,8 @@ export class ProductionComponent {
     // add to queue
     queue.queuedItems.push(queueItem);
     this.queueChangeSubject.next({
-      itemsFromAllQueues: this.itemsFromAllQueues
+      itemsFromAllQueues: this.itemsFromAllQueues,
+      type: "add"
     });
 
     if (queue.queuedItems.length === 1) {
@@ -229,7 +231,8 @@ export class ProductionComponent {
     queue.queuedItems.splice(queueIndex, 1);
     this.resetQueue(queue);
     this.queueChangeSubject.next({
-      itemsFromAllQueues: this.itemsFromAllQueues
+      itemsFromAllQueues: this.itemsFromAllQueues,
+      type: "completed"
     });
 
     // spawn gameObject
@@ -339,7 +342,8 @@ export class ProductionComponent {
 
         // Notify of queue change
         this.queueChangeSubject.next({
-          itemsFromAllQueues: this.itemsFromAllQueues
+          itemsFromAllQueues: this.itemsFromAllQueues,
+          type: "remove"
         });
 
         this.refund(costData, queue);

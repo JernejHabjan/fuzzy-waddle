@@ -107,8 +107,9 @@ export function setMandatoryActorDataFromName(actor: Phaser.GameObjects.GameObje
 }
 
 export function setFullActorDataFromName(actor: Phaser.GameObjects.GameObject) {
-  const { components, systems } = gatherFullActorData(actor);
-  setActorData(actor, components, systems);
+  const actorData = gatherFullActorData(actor);
+  setActorData(actor, actorData.components, actorData.systems);
+  actor.emit(ActorDataAddedEvent, actorData);
 }
 
 export function upgradeFromMandatoryToFullActorData(actor: Phaser.GameObjects.GameObject) {
@@ -121,14 +122,19 @@ export function upgradeFromMandatoryToFullActorData(actor: Phaser.GameObjects.Ga
   const upgradeData = gatherUpgradeActorData(actor);
   actorData.components.push(...upgradeData.components);
   actorData.systems.push(...upgradeData.systems);
+  actor.emit(ActorDataAddedEvent, actorData);
 }
 
 export function addActorComponent(actor: Phaser.GameObjects.GameObject, component: any) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.push(component);
+  actor.emit(ActorDataAddedEvent, actorData);
 }
 
 export function addActorSystem(actor: Phaser.GameObjects.GameObject, system: any) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.push(system);
+  actor.emit(ActorDataAddedEvent, actorData);
 }
+
+export const ActorDataAddedEvent = "actorDataAdded";

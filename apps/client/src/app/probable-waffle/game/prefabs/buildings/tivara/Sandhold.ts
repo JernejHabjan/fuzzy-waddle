@@ -2,8 +2,11 @@
 
 /* START OF COMPILED CODE */
 
+import SandholdLevel1 from "./Sandhold/SandholdLevel1";
+import SandholdCursor from "./Sandhold/SandholdCursor";
+import SandholdFoundation1 from "./Sandhold/SandholdFoundation1";
+import SandholdFoundation2 from "./Sandhold/SandholdFoundation2";
 /* START-USER-IMPORTS */
-import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -11,61 +14,42 @@ export default class Sandhold extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 160, y ?? 240);
 
-    this.setInteractive(
-      new Phaser.Geom.Polygon("-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22"),
-      Phaser.Geom.Polygon.Contains
-    );
+    // sandholdLevel1
+    const sandholdLevel1 = new SandholdLevel1(scene, 0, 0);
+    this.add(sandholdLevel1);
 
-    // sandhold_building
-    const sandhold_building = scene.add.image(0, -80, "factions", "buildings/tivara/sandhold/sandhold.png");
-    this.add(sandhold_building);
+    // sandholdCursor
+    const sandholdCursor = new SandholdCursor(scene, 0, 0);
+    sandholdCursor.visible = false;
+    this.add(sandholdCursor);
 
-    // hover_crystal
-    const hover_crystal = scene.add.image(0, -192, "factions", "buildings/tivara/sandhold/sandhold-crystal.png");
-    this.add(hover_crystal);
+    // sandholdFoundation1
+    const sandholdFoundation1 = new SandholdFoundation1(scene, 0, 0);
+    sandholdFoundation1.visible = false;
+    this.add(sandholdFoundation1);
+
+    // sandholdFoundation2
+    const sandholdFoundation2 = new SandholdFoundation2(scene, 0, 0);
+    sandholdFoundation2.visible = false;
+    this.add(sandholdFoundation2);
+
+    this.sandholdLevel1 = sandholdLevel1;
+    this.sandholdCursor = sandholdCursor;
+    this.sandholdFoundation1 = sandholdFoundation1;
+    this.sandholdFoundation2 = sandholdFoundation2;
 
     /* START-USER-CTR-CODE */
-    // Create a continuous hover effect for hover_crystal
-    scene.tweens.add({
-      targets: hover_crystal,
-      y: "-=4", // move up by 4
-      duration: 1000, // takes 1000ms
-      ease: "Sine.InOut",
-      yoyo: true, // reverse the animation after it completes
-      loop: -1 // loop indefinitely
-    });
-
-    // spawn crystal every 4-6 seconds
-    scene.time.addEvent({
-      delay: Phaser.Math.Between(4000, 6000),
-      callback: () => this.spawnCrystal(scene),
-      callbackScope: this,
-      loop: true
-    });
+    sandholdLevel1.setup(this);
     /* END-USER-CTR-CODE */
   }
 
+  public sandholdLevel1: SandholdLevel1;
+  public sandholdCursor: SandholdCursor;
+  public sandholdFoundation1: SandholdFoundation1;
+  public sandholdFoundation2: SandholdFoundation2;
+
   /* START-USER-CODE */
   name = ObjectNames.Sandhold;
-  spawnCrystal(scene: Phaser.Scene) {
-    const span = scene.add.sprite(-48, -48, "factions", "buildings/tivara/olival_small/olival_small-0.png");
-    span.scaleX = 0.5;
-    span.scaleY = 0.5;
-    span.angle = -70;
-    span.play(ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL);
-    this.add(span);
-
-    scene.tweens.add({
-      targets: span,
-      duration: 1000,
-      x: -112,
-      y: 64,
-      onComplete: function () {
-        span.destroy(); // destroy the sprite after the tween completes
-      }
-    });
-  }
-
   /* END-USER-CODE */
 }
 

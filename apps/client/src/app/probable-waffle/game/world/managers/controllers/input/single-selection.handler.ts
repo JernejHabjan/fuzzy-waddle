@@ -59,7 +59,8 @@ export class SingleSelectionHandler {
         if (isLeftClick && gameObjectsUnderCursor.length > 0) {
           // An interactive object was clicked
           const objectIds = gameObjectsUnderCursor
-            .filter((go) => !!getActorComponent(go, SelectableComponent) && !!getActorComponent(go, IdComponent))
+            .map((go) => this.getSelectableGameObject(go))
+            .filter((go) => !!go)
             .map((go) => getActorComponent(go, IdComponent)!.id);
           if (this.debug) {
             console.log("clicked on interactive objects", gameObjectsUnderCursor.length, objectIds);
@@ -111,6 +112,17 @@ export class SingleSelectionHandler {
       },
       this
     );
+  }
+
+  private getSelectableGameObject(
+    go: GameObjects.GameObject
+  ): (GameObjects.GameObject & { selectableComponent: SelectableComponent; idComponent: IdComponent }) | null {
+    const hasComp = !!getActorComponent(go, SelectableComponent) && !!getActorComponent(go, IdComponent);
+    if (hasComp) return go as any;
+
+    const parent = go.parentContainer;
+    if (!parent) return null;
+    return this.getSelectableGameObject(parent);
   }
 
   public sendSelection(
