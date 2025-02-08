@@ -319,8 +319,12 @@
             </struct>
             <key type="filename">../sprites/factions/building_icons/tivara/ankguard.png</key>
             <key type="filename">../sprites/factions/building_icons/tivara/sandhold.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/foundation/foundation_2.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/infantry_inn.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/workmill.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/workmill/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/workmill/foundation/foundation_2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -397,6 +401,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/factions/buildings/skaduwee/frost_forge/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/frost_forge/foundation/foundation_2.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/frost_forge/frost_forge.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -443,6 +449,23 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/factions/buildings/skaduwee/owlery/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/owlery/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,48,32,96</rect>
+                <key>scale9Paddings</key>
+                <rect>16,48,32,96</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-1.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery-owl/owlery-owl-2.png</key>
@@ -459,21 +482,6 @@
                 <rect>6,6,11,11</rect>
                 <key>scale9Paddings</key>
                 <rect>6,6,11,11</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">../sprites/factions/buildings/skaduwee/owlery/owlery.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>16,48,32,96</rect>
-                <key>scale9Paddings</key>
-                <rect>16,48,32,96</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -530,6 +538,8 @@
                 <false/>
             </struct>
             <key type="filename">../sprites/factions/buildings/tivara/ankguard/ankguard.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/ankguard/foundation/foundation_2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -591,6 +601,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/factions/buildings/tivara/sandhold/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/sandhold/foundation/foundation_2.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/sandhold/sandhold.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -603,6 +615,23 @@
                 <rect>80,80,160,160</rect>
                 <key>scale9Paddings</key>
                 <rect>80,80,160,160</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/factions/buildings/tivara/temple/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/temple/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/temple/temple.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>48,48,96,96</rect>
+                <key>scale9Paddings</key>
+                <rect>48,48,96,96</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -621,7 +650,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/factions/buildings/tivara/temple/temple.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/foundation/foundation_1.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -630,9 +659,9 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>48,48,96,96</rect>
+                <rect>16,24,32,48</rect>
                 <key>scale9Paddings</key>
-                <rect>48,48,96,96</rect>
+                <rect>16,24,32,48</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -678,6 +707,8 @@
                 <false/>
             </struct>
             <key type="filename">../sprites/factions/buildings/tivara/watchtower.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/watchtower/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/watchtower/foundation/foundation_2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
