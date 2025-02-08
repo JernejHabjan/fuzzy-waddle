@@ -8,7 +8,7 @@ import { Subscription } from "rxjs";
 import { SandholdShared } from "./SandholdShared";
 /* END-USER-IMPORTS */
 import Sandhold from "../Sandhold";
-import { ActorDataAddedEvent } from "../../../../data/actor-data";
+import { ActorDataChangedEvent } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { ProductionComponent } from "../../../../entity/building/production/production-component";
 
@@ -46,18 +46,25 @@ export default class SandholdLevel1 extends Phaser.GameObjects.Container {
   }
 
   private onInit() {
-    this.parent!.on(ActorDataAddedEvent, this.actorDataAdded, this);
-    this.actorDataAdded();
+    this.parent!.on(ActorDataChangedEvent, this.actorDataChanged, this);
+    this.actorDataChanged();
   }
 
-  actorDataAdded() {
+  actorDataChanged() {
     this.registerProductionCompletedEvent();
   }
 
   private registerProductionCompletedEvent() {
-    if (this.queueChangeSubscription || !this.parent) return;
+    if (!this.parent) return;
     const productionComponent = getActorComponent(this.parent, ProductionComponent);
-    if (!productionComponent) return;
+    if (!productionComponent) {
+      this.queueChangeSubscription?.unsubscribe();
+      return;
+    }
+    if (this.queueChangeSubscription) {
+      // already subscribed
+      return;
+    }
     this.queueChangeSubscription = productionComponent.queueChangeObservable.subscribe((event) => {
       if (event.type === "completed") {
         if (!this.parent) return;
@@ -70,7 +77,7 @@ export default class SandholdLevel1 extends Phaser.GameObjects.Container {
     if (this.queueChangeSubscription) {
       this.queueChangeSubscription.unsubscribe();
     }
-    this.parent?.off(ActorDataAddedEvent, this.actorDataAdded, this);
+    this.parent?.off(ActorDataChangedEvent, this.actorDataChanged, this);
     super.destroy(fromScene);
   }
   /* END-USER-CODE */

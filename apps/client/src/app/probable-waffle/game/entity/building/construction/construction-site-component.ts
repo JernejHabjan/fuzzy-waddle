@@ -156,6 +156,14 @@ export class ConstructionSiteComponent {
     this.gameObject.destroy();
   }
 
+  notStarted() {
+    return this.state === ConstructionStateEnum.NotStarted;
+  }
+
+  started() {
+    return this.state === ConstructionStateEnum.Constructing || this.state === ConstructionStateEnum.Paused;
+  }
+
   isFinished() {
     return this.state === ConstructionStateEnum.Finished;
   }

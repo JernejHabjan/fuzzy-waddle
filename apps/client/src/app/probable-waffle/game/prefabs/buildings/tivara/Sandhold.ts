@@ -8,6 +8,9 @@ import SandholdFoundation1 from "./Sandhold/SandholdFoundation1";
 import SandholdFoundation2 from "./Sandhold/SandholdFoundation2";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
+import { ActorDataChangedEvent } from "../../../data/actor-data";
+import { getActorComponent } from "../../../data/actor-component";
+import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -40,6 +43,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     sandholdLevel1.setup(this);
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
@@ -50,6 +54,32 @@ export default class Sandhold extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   name = ObjectNames.Sandhold;
+  private setup() {
+    this.on(ActorDataChangedEvent, this.actorDataChanged, this);
+  }
+
+  private actorDataChanged() {
+    const constructionSiteComponent = getActorComponent(this, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return;
+    if (constructionSiteComponent.notStarted() || constructionSiteComponent.started()) {
+      this.sandholdCursor.visible = false;
+      this.sandholdFoundation1.visible = true;
+      this.sandholdFoundation2.visible = false; // todo set visible at percentage?
+      this.sandholdLevel1.visible = false;
+      // todo handle subscription here
+    } else {
+      this.sandholdCursor.visible = false;
+      this.sandholdFoundation1.visible = false;
+      this.sandholdFoundation2.visible = false;
+      this.sandholdLevel1.visible = true;
+    }
+  }
+
+  destroy(fromScene?: boolean) {
+    this.off(ActorDataChangedEvent, this.actorDataChanged, this);
+    super.destroy(fromScene);
+  }
+
   /* END-USER-CODE */
 }
 
