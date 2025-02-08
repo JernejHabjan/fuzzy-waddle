@@ -21,6 +21,7 @@ import { ResourceDrainComponent } from "../entity/economy/resource/resource-drai
 import { ProductionComponent } from "../entity/building/production/production-component";
 import { ResourceSourceComponent } from "../entity/economy/resource/resource-source-component";
 import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -49,6 +50,9 @@ function gatherMandatoryActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.owner ? [new OwnerComponent(actor, componentDefinitions.owner)] : []),
     ...(componentDefinitions?.vision ? [new VisionComponent(actor, componentDefinitions.vision)] : []),
     ...(componentDefinitions?.info ? [new InfoComponent(componentDefinitions.info)] : []),
+    ...(componentDefinitions?.constructable
+      ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
+      : []),
     ...(componentDefinitions?.requirements ? [new RequirementsComponent(actor, componentDefinitions.requirements)] : [])
   ];
 

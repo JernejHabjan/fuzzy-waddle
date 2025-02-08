@@ -7,13 +7,12 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
+import { pwActorDefinitions } from "../../../data/actor-definitions";
+import { ObjectNames } from "../../../data/object-names";
+import { ProductionCostDefinition } from "../production/production-cost-component";
 
 export type ConstructionSiteDefinition = {
-  constructionCosts: Partial<Record<ResourceType, number>>;
-  // Whether to check collision for each grid cell
-  checkCollision: boolean;
-  constructionCostType: PaymentType;
-  constructionTime: number;
+  // Whether the building site consumes builders when building is finished
   consumesBuilders: boolean;
   maxAssignedBuilders: number;
   // Factor to multiply all passed building time with, independent of any currently assigned builders
@@ -23,8 +22,9 @@ export type ConstructionSiteDefinition = {
   refundFactor: number;
   // Whether to start building immediately after spawn, or not
   startImmediately: boolean;
-  gridWidthAndHeight: { width: number; height: number };
-  finishedSound?: string;
+  finishedSound?: {
+    key: string;
+  };
 };
 
 export class ConstructionSiteComponent {
@@ -44,25 +44,32 @@ export class ConstructionSiteComponent {
     gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
   }
 
+  private get productionDefinition(): ProductionCostDefinition | null {
+    const definition = pwActorDefinitions[this.gameObject.name as ObjectNames];
+    return definition.components?.productionCost ?? null;
+  }
+
   update(time: number, delta: number): void {
-    if (this.state === ConstructionStateEnum.NotStarted && this.constructionSiteDefinition.startImmediately) {
-      this.startConstruction();
-    } else if (this.state == ConstructionStateEnum.Finished) {
+    if (this.state == ConstructionStateEnum.Finished) {
+      this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
       return;
     }
+    if (this.state === ConstructionStateEnum.NotStarted && this.constructionSiteDefinition.startImmediately) {
+      this.startConstruction();
+    }
 
-    const SpeedBoostFgameObject = 1.0;
+    const speedBoost = 1.0;
     // float ConstructionProgress =
-    //   (DeltaTime * ProgressMadeAutomatically * SpeedBoostFgameObject) +
-    //   (DeltaTime * ProgressMadePerBuilder * AssignedBuilders.Num() * SpeedBoostFgameObject);
+    //   (DeltaTime * ProgressMadeAutomatically * speedBoost) +
+    //   (DeltaTime * ProgressMadePerBuilder * AssignedBuilders.Num() * speedBoost);
     const constructionProgress =
-      delta * this.constructionSiteDefinition.progressMadeAutomatically * SpeedBoostFgameObject +
-      delta *
-        this.constructionSiteDefinition.progressMadePerBuilder *
-        this.assignedBuilders.length *
-        SpeedBoostFgameObject;
+      delta * this.constructionSiteDefinition.progressMadeAutomatically * speedBoost +
+      delta * this.constructionSiteDefinition.progressMadePerBuilder * this.assignedBuilders.length * speedBoost;
 
     // todo other logic here
+
+    const productionDefinition = this.productionDefinition;
+    if (!productionDefinition) throw new Error("Production definition not found");
 
     this.remainingConstructionTime -= constructionProgress;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
@@ -70,13 +77,11 @@ export class ConstructionSiteComponent {
       const currentHealth = healthComponent.healthComponentData.health;
       const maxHealth = healthComponent.healthDefinition.maxHealth;
       const healthIncrement =
-        ((maxHealth - currentHealth) / this.constructionSiteDefinition.constructionTime) * constructionProgress;
+        ((maxHealth - currentHealth) / productionDefinition.productionTime) * constructionProgress;
       healthComponent.healthComponentData.health += healthIncrement;
     }
 
-    this.constructionProgressChanged.emit(
-      this.remainingConstructionTime / this.constructionSiteDefinition.constructionTime
-    );
+    this.constructionProgressChanged.emit(this.remainingConstructionTime / productionDefinition.productionTime);
 
     // Check if finished.
     if (this.remainingConstructionTime <= 0) {
@@ -88,22 +93,25 @@ export class ConstructionSiteComponent {
     if (this.state !== ConstructionStateEnum.NotStarted) {
       throw new Error("ConstructionSiteComponent can only be started once");
     }
-    if (this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately) {
+    const productionDefinition = this.productionDefinition;
+    if (!productionDefinition) throw new Error("Production definition not found");
+    if (productionDefinition.productionTime === PaymentType.PayImmediately) {
       const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
       const owner = ownerComponent?.getOwner();
       if (!owner) throw new Error("Owner not found");
       const player = getPlayer(this.gameObject.scene, owner);
       if (!player) throw new Error("PlayerController not found");
-      const canAfford = player.canPayAllResources(this.constructionSiteDefinition.constructionCosts);
+
+      const canAfford = player.canPayAllResources(productionDefinition.resources);
       if (canAfford) {
-        emitResource(this.gameObject.scene, "resource.removed", this.constructionSiteDefinition.constructionCosts);
+        emitResource(this.gameObject.scene, "resource.removed", productionDefinition.resources);
       } else {
         throw new Error("Cannot afford building costs");
       }
     }
 
     // start building
-    this.remainingConstructionTime = this.constructionSiteDefinition.constructionTime;
+    this.remainingConstructionTime = productionDefinition.productionTime;
     this.state = ConstructionStateEnum.Constructing;
 
     // set initial health
@@ -114,7 +122,7 @@ export class ConstructionSiteComponent {
       );
     }
 
-    this.constructionStarted.emit(this.constructionSiteDefinition.constructionTime);
+    this.constructionStarted.emit(productionDefinition.productionTime);
   }
 
   cancelConstruction() {
@@ -129,15 +137,16 @@ export class ConstructionSiteComponent {
     const player = getPlayer(this.gameObject.scene, owner);
     if (!player) throw new Error("PlayerController not found");
 
+    const productionDefinition = this.productionDefinition;
+    if (!productionDefinition) throw new Error("Production definition not found");
+
     const TimeRefundFactor =
-      this.constructionSiteDefinition.constructionCostType === PaymentType.PayImmediately
-        ? this.getProgressPercentage()
-        : 1.0;
+      productionDefinition.costType === PaymentType.PayImmediately ? this.getProgressPercentage() : 1.0;
     const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
 
     // refund costs
     const refundCosts: Partial<Record<ResourceType, number>> = {};
-    Object.entries(this.constructionSiteDefinition.constructionCosts).forEach(([key, value]) => {
+    Object.entries(productionDefinition.resources).forEach(([key, value]) => {
       refundCosts[key as ResourceType] = value * actualRefundFactor;
     });
 
@@ -172,7 +181,6 @@ export class ConstructionSiteComponent {
 
     if (this.constructionSiteDefinition.consumesBuilders) {
       this.assignedBuilders.forEach((builder) => {
-        // todo also somehow else destroy???
         builder.destroy();
       });
     }
@@ -182,7 +190,9 @@ export class ConstructionSiteComponent {
   }
 
   private getProgressPercentage() {
-    return 1 - this.remainingConstructionTime / this.constructionSiteDefinition.constructionTime;
+    const productionDefinition = this.productionDefinition;
+    if (!productionDefinition) throw new Error("Production definition not found");
+    return 1 - this.remainingConstructionTime / productionDefinition.productionTime;
   }
 
   private onDestroy() {

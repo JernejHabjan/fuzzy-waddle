@@ -31,6 +31,17 @@ import { ColliderDefinition } from "../entity/actor/components/collider-componen
 import { ResourceSourceDefinition } from "../entity/economy/resource/resource-source-component";
 import { ActorTranslateDefinition } from "../entity/actor/components/actor-translate-component";
 import { AiType, PawnAiDefinition } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { ConstructionSiteDefinition } from "../entity/building/construction/construction-site-component";
+
+const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
+  consumesBuilders: false,
+  maxAssignedBuilders: 4,
+  progressMadeAutomatically: 0,
+  progressMadePerBuilder: 0.1,
+  initialHealthPercentage: 0.2,
+  refundFactor: 0.5,
+  startImmediately: false
+};
 
 const treeDefinitions: ActorInfoDefinition = {
   components: {
@@ -78,7 +89,10 @@ const stairsDefinition: ActorInfoDefinition = {
       productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
-    collider: { enabled: true }
+    collider: { enabled: true },
+    constructable: {
+      ...coreConstructionSiteDefinition
+    }
   }
 };
 
@@ -114,6 +128,7 @@ const wallDefinition: ActorInfoDefinition = {
     collider: { enabled: true }
   }
 };
+
 export type ActorInfoDefinition = Partial<{
   components: Partial<{
     objectDescriptor: ObjectDescriptorDefinition;
@@ -125,6 +140,7 @@ export type ActorInfoDefinition = Partial<{
     productionCost: ProductionCostDefinition;
     requirements: RequirementsDefinition;
     builder: BuilderDefinition;
+    constructable: ConstructionSiteDefinition;
     gatherer: GathererDefinition;
     container: ContainerDefinition;
     resourceDrain: ResourceDrainDefinition;
@@ -558,7 +574,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Olival]: {
@@ -602,7 +621,10 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Sandhold]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Sandhold]: {
@@ -659,7 +681,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Temple]: {
@@ -712,7 +737,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.WorkMill]: {
@@ -759,6 +787,9 @@ export const pwActorDefinitions: {
       collider: { enabled: true },
       container: {
         capacity: 2
+      },
+      constructable: {
+        ...coreConstructionSiteDefinition
       }
     }
   },
@@ -1214,7 +1245,10 @@ export const pwActorDefinitions: {
         capacityPerQueue: 5,
         availableProduceActors: [ObjectNames.SkaduweeWorkerMale, ObjectNames.SkaduweeWorkerFemale]
       },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.InfantryInn]: {
@@ -1268,7 +1302,10 @@ export const pwActorDefinitions: {
         ]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Owlery]: {
@@ -1318,7 +1355,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.SkaduweeOwl]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Tree1]: {
@@ -1455,7 +1495,10 @@ export const pwActorDefinitions: {
       container: {
         capacity: 2
       },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Minerals]: {

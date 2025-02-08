@@ -49,7 +49,10 @@ export class BuilderComponent {
     const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
     if (!constructionSiteComponent) return;
 
-    if (!constructionSiteComponent.canAssignBuilder()) return;
+    if (!constructionSiteComponent.canAssignBuilder()) {
+      // todo play sound and show notification on screen - same as "the production queue is full"
+      return;
+    }
     this.assignedConstructionSite = constructionSite;
     constructionSiteComponent.assignBuilder(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
