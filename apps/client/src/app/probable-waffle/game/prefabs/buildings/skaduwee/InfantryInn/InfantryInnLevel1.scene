@@ -1,0 +1,84 @@
+{
+    "id": "3ced6440-c6be-42af-abfd-51da002cc7b4",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e5dfd303-6b6c-4502-9b54-9a38cfed02d8",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.y": -35,
+            "hitArea.radius": 59.91620797027979,
+            "x": 64,
+            "y": 128,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "1616ba08-7e20-430c-ae69-1337c7571baf",
+                    "label": "infantry_inn_building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn.png"
+                    },
+                    "x": -0.16910280030724323,
+                    "y": -31.74029716298027
+                },
+                {
+                    "type": "Image",
+                    "id": "c85c7a3d-7d47-4cc5-bd38-ec278205ffca",
+                    "label": "cloud_1",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": 24,
+                    "y": -82
+                },
+                {
+                    "type": "Image",
+                    "id": "c603ff60-03b6-472d-98d6-66a441f75546",
+                    "label": "cloud_2",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": 13,
+                    "y": -110
+                },
+                {
+                    "type": "Sprite",
+                    "id": "704458a4-1da6-4289-ae83-b194874df19c",
+                    "label": "skaduwee_buildings_infantry_inn_entrance",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
+                    },
+                    "x": 24,
+                    "y": -8,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skaduwee-buildings-infantry-inn-entrance"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
