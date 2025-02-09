@@ -1,0 +1,56 @@
+{
+    "id": "36df16b2-d946-48bf-b6dd-48f656d26cac",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "a8b58923-b395-4fbf-a5cf-77c61399439d",
+            "label": "buildings_tivara_temple_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-87.4233523303501 -76.75060092556245 -16.50738820893966 -110.3423734041253 -8.36392821413655 -103.21684590867258 0.11884261378335736 -107.28857590607413 10.298167607287255 -101.52029174308859 19.459560101440744 -108.98513007165812 87.32172672479999 -74.71473592686168 87.66103755791679 10.791594018571004 0.45815344690015536 53.544758991287324 -89.11990649593407 9.095039852987014",
+            "x": 96,
+            "y": 132,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "7b24e1f3-e89a-4fe4-a7d9-b762b7256c9f",
+                    "label": "buildings_tivara_temple",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/temple/temple.png"
+                    },
+                    "x": -0.30766778687379315,
+                    "y": -36.666560409786456
+                },
+                {
+                    "type": "Image",
+                    "id": "cfed576d-8210-4789-b1ef-b2048e751de7",
+                    "label": "buildings_tivara_temple_temple_olival",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/temple/temple-olival.png"
+                    },
+                    "x": -2,
+                    "y": -13
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
