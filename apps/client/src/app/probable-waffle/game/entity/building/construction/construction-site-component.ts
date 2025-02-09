@@ -111,13 +111,13 @@ export class ConstructionSiteComponent {
       }
     }
 
-    this.progressPercentage = this.getProgressFraction() * 100;
-    this.constructionProgressPercentageChanged.next(this.progressPercentage);
-
     // Check if finished.
     if (this.remainingConstructionTime <= 0) {
       this.finishConstruction();
     }
+
+    this.progressPercentage = this.getProgressFraction() * 100;
+    this.constructionProgressPercentageChanged.next(this.progressPercentage);
   }
 
   startConstruction() {

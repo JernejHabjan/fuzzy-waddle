@@ -23,6 +23,7 @@ import { BuilderComponent } from "../../../entity/actor/components/builder-compo
 import { ObjectNames } from "../../../data/object-names";
 import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
+import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -158,6 +159,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private selectionChangedSubscription?: Subscription;
   private actorKillSubscription?: Subscription;
+  private actorConstructionSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
   private readonly audioService: AudioService;
   /**
@@ -177,6 +179,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.buildingMode = false;
         this.showActorActions(actor);
         this.subscribeToActorKillEvent(actor);
+        this.subscribeToActorConstructionEvent(actor);
       }
     });
   }
@@ -192,6 +195,19 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actorKillSubscription = getActorComponent(actor, HealthComponent)?.healthChanged.subscribe((newHealth) => {
       if (newHealth <= 0) {
         this.hideAllActions();
+      }
+    });
+  }
+
+  private subscribeToActorConstructionEvent(actor: Phaser.GameObjects.GameObject) {
+    this.actorConstructionSubscription?.unsubscribe();
+    this.actorConstructionSubscription = getActorComponent(
+      actor,
+      ConstructionSiteComponent
+    )?.constructionProgressPercentageChanged.subscribe((progress) => {
+      if (progress === 100) {
+        // show actions again
+        this.showActorActions(actor);
       }
     });
   }
@@ -453,6 +469,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();
+    this.actorConstructionSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */
