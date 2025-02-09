@@ -9,7 +9,9 @@ import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "../../../data/object-names";
 import { ProductionCostDefinition } from "../production/production-cost-component";
 import { onObjectReady } from "../../../data/game-object-helper";
+import { BehaviorSubject } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
+import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished
@@ -30,7 +32,10 @@ export type ConstructionSiteDefinition = {
 
 export class ConstructionSiteComponent {
   public constructionStarted: EventEmitter<number> = new EventEmitter<number>();
-  public constructionProgressChanged: EventEmitter<number> = new EventEmitter<number>();
+  public progressPercentage = 0;
+  public constructionProgressPercentageChanged: BehaviorSubject<number> = new BehaviorSubject<number>(
+    this.progressPercentage
+  );
   private remainingConstructionTime = 0;
   private constructionSiteData: ConstructionSiteComponentData = {
     state: ConstructionStateEnum.NotStarted
@@ -51,6 +56,10 @@ export class ConstructionSiteComponent {
   private init() {
     if (this.constructionSiteData.state === ConstructionStateEnum.NotStarted) {
       this.setInitialHealth();
+    }
+    if (this.constructionSiteData.state === ConstructionStateEnum.Finished) {
+      this.progressPercentage = 100;
+      this.constructionProgressPercentageChanged.next(this.progressPercentage);
     }
   }
 
@@ -104,7 +113,8 @@ export class ConstructionSiteComponent {
       }
     }
 
-    this.constructionProgressChanged.emit(this.remainingConstructionTime / productionDefinition.productionTime);
+    this.progressPercentage = this.getProgressFraction() * 100;
+    this.constructionProgressPercentageChanged.next(this.progressPercentage);
 
     // Check if finished.
     if (this.remainingConstructionTime <= 0) {
@@ -170,7 +180,7 @@ export class ConstructionSiteComponent {
     if (!productionDefinition) throw new Error("Production definition not found");
 
     const TimeRefundFactor =
-      productionDefinition.costType === PaymentType.PayImmediately ? this.getProgressPercentage() : 1.0;
+      productionDefinition.costType === PaymentType.PayImmediately ? this.getProgressFraction() : 1.0;
     const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
 
     // refund costs
@@ -183,17 +193,6 @@ export class ConstructionSiteComponent {
 
     // destroy building
     this.gameObject.destroy();
-  }
-
-  notStarted() {
-    return this.constructionSiteData.state === ConstructionStateEnum.NotStarted;
-  }
-
-  started() {
-    return (
-      this.constructionSiteData.state === ConstructionStateEnum.Constructing ||
-      this.constructionSiteData.state === ConstructionStateEnum.Paused
-    );
   }
 
   isFinished() {
@@ -225,14 +224,17 @@ export class ConstructionSiteComponent {
       });
     }
 
+    upgradeFromConstructingToFullActorData(this.gameObject);
+
     // todo spawn finished building
     this.onConstructionFinished.emit(this.gameObject);
   }
 
-  private getProgressPercentage() {
+  private getProgressFraction() {
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
-    return 1 - this.remainingConstructionTime / productionDefinition.productionTime;
+    const val = 1 - this.remainingConstructionTime / productionDefinition.productionTime;
+    return Math.min(1, Math.max(0, val)); // clamp between 0 and 1
   }
 
   getData(): ConstructionSiteComponentData {

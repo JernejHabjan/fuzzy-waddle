@@ -11,6 +11,8 @@ import { ObjectNames } from "../../../data/object-names";
 import { ActorDataChangedEvent } from "../../../data/actor-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import { Subscription } from "rxjs";
+import { environment } from "../../../../../../environments/environment";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -54,35 +56,50 @@ export default class Sandhold extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   name = ObjectNames.Sandhold;
+
+  private constructionSiteHandlerSetup = false;
+  private constructionSubscription?: Subscription;
   private setup() {
     this.on(ActorDataChangedEvent, this.actorDataChanged, this);
     this.setupTestClickBuildEvent();
   }
 
   private actorDataChanged() {
+    this.constructionSiteHandler();
+  }
+
+  private handlePrefabVisibility(progress: number | null) {
+    this.sandholdCursor.visible = progress === null;
+    this.sandholdLevel1.visible = progress === 100;
+    this.sandholdFoundation1.visible = progress !== null && progress < 50;
+    this.sandholdFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+  }
+
+  private constructionSiteHandler() {
+    if (this.constructionSiteHandlerSetup) return;
     const constructionSiteComponent = getActorComponent(this, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return;
-    if (constructionSiteComponent.notStarted() || constructionSiteComponent.started()) {
-      this.sandholdCursor.visible = false;
-      this.sandholdFoundation1.visible = true;
-      this.sandholdFoundation2.visible = false; // todo set visible at percentage?
-      this.sandholdLevel1.visible = false;
-      // todo handle subscription here
+    if (!constructionSiteComponent) {
+      this.constructionSubscription?.unsubscribe();
+      this.handlePrefabVisibility(null);
+      return;
+    }
+    this.constructionSiteHandlerSetup = true;
+    if (constructionSiteComponent.isFinished()) {
+      this.handlePrefabVisibility(100);
     } else {
-      this.sandholdCursor.visible = false;
-      this.sandholdFoundation1.visible = false;
-      this.sandholdFoundation2.visible = false;
-      this.sandholdLevel1.visible = true;
+      this.constructionSubscription = constructionSiteComponent.constructionProgressPercentageChanged.subscribe(
+        (progress) => this.handlePrefabVisibility(progress)
+      );
     }
   }
+
   private setupTestClickBuildEvent() {
+    if (environment.production) return;
     console.log("Just test click build event - remove this");
     this.sandholdFoundation1.on("pointerdown", () => {
       const constructionSiteComponent = getActorComponent(this, ConstructionSiteComponent);
       if (!constructionSiteComponent) return;
-      if (constructionSiteComponent.notStarted()) {
-        constructionSiteComponent.startConstruction();
-      }
+      constructionSiteComponent.startConstruction();
       constructionSiteComponent.assignBuilder(this); // todo
       constructionSiteComponent.update(0, 200); // todo
     });
@@ -90,6 +107,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
 
   destroy(fromScene?: boolean) {
     this.off(ActorDataChangedEvent, this.actorDataChanged, this);
+    this.constructionSubscription?.unsubscribe();
     super.destroy(fromScene);
   }
 
