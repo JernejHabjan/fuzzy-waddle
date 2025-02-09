@@ -23,9 +23,9 @@ export class NavigationService {
     private readonly scene: Phaser.Scene,
     private readonly tilemap: Phaser.Tilemaps.Tilemap
   ) {
-    onSceneInitialized(scene, this.init, this);
     this.scene.events.on("updateNavigation", this.updateNavigation, this);
     this.easyStar = new EasyStar();
+    onSceneInitialized(scene, this.init, this, null);
   }
 
   private init() {
