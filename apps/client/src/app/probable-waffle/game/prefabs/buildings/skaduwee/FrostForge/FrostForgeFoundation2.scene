@@ -1,0 +1,46 @@
+{
+    "id": "fef82e39-599c-4ce1-98f4-fca3d14eaef5",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "1c9aaad1-6e5c-4c3d-9fac-cff4fcd3ccaf",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-68.71281854408106 -92.92778060517628 -43.905596581521934 -128.89825245088701 -2.973680343299378 -142.54222453029453 40.4389580911791 -130.138613549015 86.33231872191348 -65.63983644636124 92.53412421255325 27.38724591323546 6.9492084417242665 47.23302348328275 -93.52004050664019 11.262551637572017",
+            "x": 129,
+            "y": 324,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "47266a9d-7086-4417-838d-fadcc139c711",
+                    "label": "buildings_skaduwee_frost_forge_frost_forge_png",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/frost_forge/foundation/foundation_2.png"
+                    },
+                    "x": -1,
+                    "y": -18.21845166634691,
+                    "originY": 0.7957454759361422
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
