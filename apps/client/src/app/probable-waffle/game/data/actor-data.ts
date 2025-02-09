@@ -31,8 +31,8 @@ import Transform = Phaser.GameObjects.Components.Transform;
 export const ActorDataKey = "actorData";
 export class ActorData {
   constructor(
-    public readonly components: any[],
-    public readonly systems: any[]
+    public readonly components: Map<new (...args: any[]) => any, any>,
+    public readonly systems: Map<new (...args: any[]) => any, any>
   ) {}
 }
 
@@ -42,7 +42,9 @@ export function setActorData(
   systems: any[],
   actorDefinition?: Partial<ActorDefinition>
 ) {
-  const actorData = new ActorData(components, systems);
+  const componentMap = new Map(components.map((c) => [c.constructor, c]));
+  const systemMap = new Map(systems.map((s) => [s.constructor, s]));
+  const actorData = new ActorData(componentMap, systemMap);
   actor.setData(ActorDataKey, actorData);
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
@@ -185,8 +187,13 @@ export function upgradeFromCoreToConstructingActorData(
   }
 
   const upgradeData = gatherConstructingActorData(actor);
-  actorData.components.push(...upgradeData.components);
-  actorData.systems.push(...upgradeData.systems);
+  for (const [key, component] of upgradeData.components) {
+    actorData.components.set(key, component); // Overwrites existing or adds new
+  }
+
+  for (const [key, system] of upgradeData.systems) {
+    actorData.systems.set(key, system); // Overwrites existing or adds new
+  }
 
   setActorProperties(actor, actorDefinition);
 
@@ -204,8 +211,13 @@ export function upgradeFromConstructingToFullActorData(
   }
 
   const upgradeData = gatherCompletedActorData(actor);
-  actorData.components.push(...upgradeData.components);
-  actorData.systems.push(...upgradeData.systems);
+  for (const [key, component] of upgradeData.components) {
+    actorData.components.set(key, component); // Overwrites existing or adds new
+  }
+
+  for (const [key, system] of upgradeData.systems) {
+    actorData.systems.set(key, system); // Overwrites existing or adds new
+  }
 
   setActorProperties(actor, actorDefinition);
 
@@ -218,7 +230,7 @@ export function addActorComponent(
   actorDefinition?: Partial<ActorDefinition>
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
-  actorData.components.push(component);
+  actorData.components.set(component.constructor, component);
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -229,7 +241,7 @@ export function addActorSystem(
   actorDefinition?: Partial<ActorDefinition>
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
-  actorData.systems.push(system);
+  actorData.systems.set(system.constructor, system);
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -240,10 +252,7 @@ export function removeActorComponent(
   actorDefinition?: Partial<ActorDefinition>
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
-  const index = actorData.components.indexOf(component);
-  if (index >= 0) {
-    actorData.components.splice(index, 1);
-  }
+  actorData.components.delete(component.constructor);
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -254,10 +263,7 @@ export function removeActorSystem(
   actorDefinition?: Partial<ActorDefinition>
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
-  const index = actorData.systems.indexOf(system);
-  if (index >= 0) {
-    actorData.systems.splice(index, 1);
-  }
+  actorData.systems.delete(system.constructor);
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
