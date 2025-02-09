@@ -36,11 +36,11 @@ import { ConstructionSiteDefinition } from "../entity/building/construction/cons
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
   maxAssignedBuilders: 4,
-  progressMadeAutomatically: 0,
+  progressMadeAutomatically: 1,
   progressMadePerBuilder: 1,
   initialHealthPercentage: 0.2,
   refundFactor: 0.5,
-  startImmediately: false
+  startImmediately: true
 };
 
 const treeDefinitions: ActorInfoDefinition = {
