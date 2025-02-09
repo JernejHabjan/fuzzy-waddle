@@ -30,7 +30,7 @@ export default class BlockObsidian2 extends Phaser.GameObjects.Image {
         new ObjectDescriptorComponent({
           color: 0x49463c
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent()
+        new ColliderComponent(this)
       ],
       []
     );

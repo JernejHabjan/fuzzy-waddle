@@ -1,6 +1,7 @@
 export * from "./lib/communicators/probable-waffle/communicators";
 export * from "./lib/communicators/probable-waffle/communicator-game-events";
 export * from "./lib/communicators/probable-waffle/listeners";
+export * from "./lib/communicators/probable-waffle/construction-state-enum";
 export * from "./lib/user-info/probable-waffle/user-info";
 export * from "./lib/game-instance/probable-waffle/game-instance";
 export * from "./lib/game-instance/probable-waffle/game-mode";

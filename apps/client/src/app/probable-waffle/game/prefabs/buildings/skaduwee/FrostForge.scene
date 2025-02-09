@@ -22,84 +22,66 @@
             "y": 323.7847134131514,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "4931a4ee-4853-470b-a5e8-23f12bc49758",
-                    "label": "buildings_skaduwee_frost_forge_frost_forge_png",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/frost_forge/frost_forge.png"
-                    },
-                    "x": -1,
-                    "y": -18.21845166634691,
-                    "originY": 0.7957454759361422
-                },
-                {
-                    "type": "Sprite",
-                    "id": "84271ac3-461a-40c4-8f9e-7074a0bde613",
-                    "label": "frost_forge_flame",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png"
-                    },
-                    "x": 2,
-                    "y": -235,
-                    "scaleX": 1.5,
-                    "scaleY": 2,
-                    "originY": 0.5151570341464229,
-                    "animationPlayMethod": 1,
-                    "animationKey": "frost_forge_flame"
-                },
-                {
-                    "type": "Image",
-                    "id": "b6b700a5-583c-4afa-8802-2f71e737d073",
-                    "label": "cloud_3",
+                    "prefabId": "e21ec86d-cd03-4e38-8727-df7b32e119d2",
+                    "id": "d885f6ef-50fa-485a-86d7-e91f5ddeb400",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "frostForgeCursor",
                     "scope": "CLASS",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
-                    },
-                    "x": -25,
-                    "y": -215,
-                    "scaleX": 2,
-                    "scaleY": 2,
-                    "angle": 180
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Image",
-                    "id": "b35727b7-1b04-4197-8824-734e4f9a8fd0",
-                    "label": "cloud_2",
+                    "prefabId": "a7db3e7d-f66d-4e97-bf80-a68c13a51af4",
+                    "id": "f5615eee-4763-410c-b13f-13edad86b450",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "frostForgeFoundation1",
                     "scope": "CLASS",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
-                    },
-                    "x": 26,
-                    "y": -232,
-                    "scaleX": 2,
-                    "scaleY": 2
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Image",
-                    "id": "6f2f9d75-27ce-4b6c-a769-bb3366be1538",
-                    "label": "cloud_1",
+                    "prefabId": "fef82e39-599c-4ce1-98f4-fca3d14eaef5",
+                    "id": "75373bf4-f419-46e5-bccb-8ddec6e5a3ef",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "frostForgeFoundation2",
                     "scope": "CLASS",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
-                    },
-                    "x": 2,
-                    "y": -250,
-                    "scaleX": 2.2,
-                    "scaleY": 2.2,
-                    "angle": 180
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "91ea1140-b002-44ed-87ea-1aa28a19755f",
+                    "id": "1335db57-9d83-4ca8-90f6-c6c93c5b5f46",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "frostForgeLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

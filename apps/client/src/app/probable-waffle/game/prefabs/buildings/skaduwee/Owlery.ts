@@ -2,12 +2,13 @@
 
 /* START OF COMPILED CODE */
 
+import OwleryCursor from "./Owlery/OwleryCursor";
+import OwleryFoundation1 from "./Owlery/OwleryFoundation1";
+import OwleryFoundation2 from "./Owlery/OwleryFoundation2";
+import OwleryLevel1 from "./Owlery/OwleryLevel1";
 /* START-USER-IMPORTS */
-import {
-  ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL,
-  ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL_FLAP
-} from "../../../../../../assets/probable-waffle/atlas/anims/skaduwee/buildings";
 import { ObjectNames } from "../../../data/object-names";
+import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
 export default class Owlery extends Phaser.GameObjects.Container {
@@ -21,43 +22,55 @@ export default class Owlery extends Phaser.GameObjects.Container {
       Phaser.Geom.Polygon.Contains
     );
 
-    // owlery_building
-    const owlery_building = scene.add.image(0, -80, "factions", "buildings/skaduwee/owlery/owlery.png");
-    this.add(owlery_building);
+    // owleryCursor
+    const owleryCursor = new OwleryCursor(scene, 0, 0);
+    owleryCursor.visible = false;
+    this.add(owleryCursor);
 
-    // skaduwee_buildings_owlery_owl
-    const skaduwee_buildings_owlery_owl = scene.add.sprite(
-      3,
-      -134,
-      "factions",
-      "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png"
-    );
-    skaduwee_buildings_owlery_owl.play("skaduwee-buildings-owlery-owl");
-    this.add(skaduwee_buildings_owlery_owl);
+    // owleryFoundation1
+    const owleryFoundation1 = new OwleryFoundation1(scene, 0, 0);
+    owleryFoundation1.visible = false;
+    this.add(owleryFoundation1);
+
+    // owleryFoundation2
+    const owleryFoundation2 = new OwleryFoundation2(scene, 0, 0);
+    owleryFoundation2.visible = false;
+    this.add(owleryFoundation2);
+
+    // owleryLevel1
+    const owleryLevel1 = new OwleryLevel1(scene, 0, 0);
+    this.add(owleryLevel1);
+
+    this.owleryCursor = owleryCursor;
+    this.owleryFoundation1 = owleryFoundation1;
+    this.owleryFoundation2 = owleryFoundation2;
+    this.owleryLevel1 = owleryLevel1;
 
     /* START-USER-CTR-CODE */
-    this.flapRandomly(skaduwee_buildings_owlery_owl);
-
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
+  private owleryCursor: OwleryCursor;
+  private owleryFoundation1: OwleryFoundation1;
+  private owleryFoundation2: OwleryFoundation2;
+  private owleryLevel1: OwleryLevel1;
+
   /* START-USER-CODE */
   name = ObjectNames.Owlery;
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+  }
 
-  private flapRandomly = (owlSprite: Phaser.GameObjects.Sprite) => {
-    if (!this.active) return;
-    owlSprite.play(ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL_FLAP, true);
-    // on animation end, play default
-    owlSprite.once("animationcomplete", () => {
-      owlSprite.play(ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL, true);
-    });
-    const randomDelay = Phaser.Math.Between(20000, 40000);
-    setTimeout(() => {
-      this.flapRandomly(owlSprite);
-    }, randomDelay);
-  };
-  // Write your code here.
-
+  private handlePrefabVisibility(progress: number | null) {
+    this.owleryCursor.visible = progress === null;
+    this.owleryLevel1.visible = progress === 100;
+    this.owleryFoundation1.visible = progress !== null && progress < 50;
+    this.owleryFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+    if (this.owleryLevel1.visible) {
+      this.owleryLevel1.start();
+    }
+  }
   /* END-USER-CODE */
 }
 

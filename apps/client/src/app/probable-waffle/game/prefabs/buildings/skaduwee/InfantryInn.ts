@@ -2,8 +2,13 @@
 
 /* START OF COMPILED CODE */
 
+import InfantryInnCursor from "./InfantryInn/InfantryInnCursor";
+import InfantryInnFoundation1 from "./InfantryInn/InfantryInnFoundation1";
+import InfantryInnFoundation2 from "./InfantryInn/InfantryInnFoundation2";
+import InfantryInnLevel1 from "./InfantryInn/InfantryInnLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
+import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -12,81 +17,54 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
 
     this.setInteractive(new Phaser.Geom.Circle(0, -35, 59.91620797027979), Phaser.Geom.Circle.Contains);
 
-    // infantry_inn_building
-    const infantry_inn_building = scene.add.image(
-      -0.16910280030724323,
-      -31.74029716298027,
-      "factions",
-      "buildings/skaduwee/infantry_inn/infantry_inn.png"
-    );
-    this.add(infantry_inn_building);
+    // infantryInnCursor
+    const infantryInnCursor = new InfantryInnCursor(scene, 0, 0);
+    infantryInnCursor.visible = false;
+    this.add(infantryInnCursor);
 
-    // cloud_1
-    const cloud_1 = scene.add.image(24, -82, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
-    this.add(cloud_1);
+    // infantryInnFoundation1
+    const infantryInnFoundation1 = new InfantryInnFoundation1(scene, 0, 0);
+    infantryInnFoundation1.visible = false;
+    this.add(infantryInnFoundation1);
 
-    // cloud_2
-    const cloud_2 = scene.add.image(13, -110, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
-    this.add(cloud_2);
+    // infantryInnFoundation2
+    const infantryInnFoundation2 = new InfantryInnFoundation2(scene, 0, 0);
+    infantryInnFoundation2.visible = false;
+    this.add(infantryInnFoundation2);
 
-    // skaduwee_buildings_infantry_inn_entrance
-    const skaduwee_buildings_infantry_inn_entrance = scene.add.sprite(
-      24,
-      -8,
-      "factions",
-      "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
-    );
-    skaduwee_buildings_infantry_inn_entrance.play("skaduwee-buildings-infantry-inn-entrance");
-    this.add(skaduwee_buildings_infantry_inn_entrance);
+    // infantryInnLevel1
+    const infantryInnLevel1 = new InfantryInnLevel1(scene, 0, 0);
+    this.add(infantryInnLevel1);
+
+    this.infantryInnCursor = infantryInnCursor;
+    this.infantryInnFoundation1 = infantryInnFoundation1;
+    this.infantryInnFoundation2 = infantryInnFoundation2;
+    this.infantryInnLevel1 = infantryInnLevel1;
 
     /* START-USER-CTR-CODE */
-    this.cloud1 = cloud_1;
-    this.cloud2 = cloud_2;
-    this.setupCloudsTween(this.cloud1);
-    this.setupCloudsTween(this.cloud2);
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
+  private infantryInnCursor: InfantryInnCursor;
+  private infantryInnFoundation1: InfantryInnFoundation1;
+  private infantryInnFoundation2: InfantryInnFoundation2;
+  private infantryInnLevel1: InfantryInnLevel1;
+
   /* START-USER-CODE */
   name = ObjectNames.InfantryInn;
-  private readonly cloud1: Phaser.GameObjects.Image;
-  private readonly cloud2: Phaser.GameObjects.Image;
-  private readonly tweens: Phaser.Tweens.Tween[] = [];
-  private setupCloudsTween(cloud: Phaser.GameObjects.Image) {
-    if (!this.active) return;
-    // Moving up and disappearing
-    this.tweens.push(
-      this.scene.tweens.add({
-        targets: cloud,
-        y: -128,
-        alpha: 0,
-        duration: 3000,
-        onComplete: () => {
-          if (!this.active) return;
-          // Waiting for 2-4 seconds
-          this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
-            if (!this.active) return;
-            // Re-appearing and setting down
-            cloud.y = -80;
-            this.scene.tweens.add({
-              targets: cloud,
-              y: -100,
-              alpha: 1,
-              duration: 1000,
-              onComplete: () => {
-                // Setting up the next upward movement
-                this.setupCloudsTween(cloud);
-              }
-            });
-          });
-        }
-      })
-    );
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
   }
 
-  override destroy(fromScene?: boolean) {
-    super.destroy(fromScene);
-    this.tweens.forEach((tween) => tween.destroy());
+  private handlePrefabVisibility(progress: number | null) {
+    this.infantryInnCursor.visible = progress === null;
+    this.infantryInnLevel1.visible = progress === 100;
+    this.infantryInnFoundation1.visible = progress !== null && progress < 50;
+    this.infantryInnFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+    if (this.infantryInnLevel1.visible) {
+      this.infantryInnLevel1.start();
+    }
   }
 
   /* END-USER-CODE */

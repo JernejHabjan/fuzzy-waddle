@@ -72,10 +72,12 @@ import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
 import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
 import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
+import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -85,13 +87,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -102,7 +105,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(christmasTree);
 
     // spawn_1
-    const spawn_1 = new Spawn(this, 1152, 832);
+    const spawn_1 = new Spawn(this, 1296, 816);
     this.add.existing(spawn_1);
 
     // christmasTree_1
@@ -134,7 +137,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(owlery);
 
     // infantryInn
-    const infantryInn = new InfantryInn(this, 1376, 800);
+    const infantryInn = new InfantryInn(this, 1120, 960);
     this.add.existing(infantryInn);
 
     // ankGuard
@@ -150,7 +153,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerMale);
 
     // skaduweeWorkerFemale
-    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1088, 944);
+    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 960, 736);
     this.add.existing(skaduweeWorkerFemale);
 
     // skaduweeRangedFemale
@@ -669,6 +672,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree_17 = new Tree7(this, 1168, 656);
     this.add.existing(tree_17);
 
+    // stairsRight
+    const stairsRight = new StairsRight(this, -512, 272);
+    this.add.existing(stairsRight);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -804,7 +811,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   create() {
-    this.createGradientSky();
+    // todo - buggy when zooming out - this.createGradientSky();
 
     this.editorCreate();
 

@@ -11,8 +11,10 @@ import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent } from "../components/scene-component-helpers";
 import { TilemapComponent } from "../components/tilemap.component";
 import { onSceneInitialized } from "../../data/game-object-helper";
+import { throttle } from "../../library/throttle";
 
 export class NavigationService {
+  static UpdateNavigationEvent = "updateNavigation";
   private easyStar: EasyStar;
   private grid: number[][] = [];
   private tilemapGrid: number[][] = [];
@@ -23,9 +25,10 @@ export class NavigationService {
     private readonly scene: Phaser.Scene,
     private readonly tilemap: Phaser.Tilemaps.Tilemap
   ) {
-    this.scene.events.on("updateNavigation", this.updateNavigation, this);
+    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.easyStar = new EasyStar();
-    onSceneInitialized(scene, this.init, this, null);
+    onSceneInitialized(scene, this.init, this);
   }
 
   private init() {
@@ -194,6 +197,8 @@ export class NavigationService {
     this.easyStar.setAcceptableTiles([0]);
     this.easyStar.enableDiagonals();
   }
+
+  private throttleUpdateNavigation = throttle(this.updateNavigation.bind(this), 100);
 
   private updateNavigation() {
     this.setup();
@@ -428,5 +433,9 @@ export class NavigationService {
     const dx = tile1.x - tile2.x;
     const dy = tile1.y - tile2.y;
     return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  private destroy() {
+    this.scene.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
   }
 }

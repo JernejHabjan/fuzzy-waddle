@@ -17,38 +17,70 @@
             "type": "Container",
             "id": "75d98e32-5bb9-40eb-b3dc-40dff0670310",
             "label": "container_1",
-            "hitArea.shape": "POLYGON",
-            "hitArea.points": "-154 2 -1 -219 153 0 123 24 119 47 82 64 60 53 5 79 -56 53 -81 58 -119 42 -120 22",
             "x": 160,
             "y": 240,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "c2521bdc-2237-48fc-a234-e24d31a901db",
-                    "label": "sandhold_building",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/sandhold/sandhold.png"
-                    },
-                    "y": -80
+                    "prefabId": "d6c85010-94fd-45cf-a765-f815fd67504e",
+                    "id": "404a5066-1034-42dd-a782-729678e90bf5",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "sandholdLevel1",
+                    "scope": "NESTED_PREFAB",
+                    "x": 0,
+                    "y": 0
                 },
                 {
-                    "type": "Image",
-                    "id": "a459f271-db15-401d-a2aa-969756c1fbdd",
-                    "label": "hover_crystal",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/sandhold/sandhold-crystal.png"
-                    },
-                    "y": -192
+                    "prefabId": "a4d059b9-9449-4f26-8d6b-884b3331d1c5",
+                    "id": "7fa3d223-1d64-41b5-ae13-80b0aa46d752",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "sandholdCursor",
+                    "scope": "NESTED_PREFAB",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "48f4cd57-29f5-4428-8207-3db3de9f2017",
+                    "id": "caa16b05-5ddd-41db-880b-84b39743d15a",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "sandholdFoundation1",
+                    "scope": "NESTED_PREFAB",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "df74fe55-9c73-4271-a370-8e4c10a6ebd6",
+                    "id": "f3c720a4-7197-419c-a216-860de275c2e1",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "sandholdFoundation2",
+                    "scope": "NESTED_PREFAB",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

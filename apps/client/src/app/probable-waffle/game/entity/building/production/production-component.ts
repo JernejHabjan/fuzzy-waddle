@@ -4,12 +4,12 @@ import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionCostDefinition } from "./production-cost-component";
 import { emitResource, getCommunicator, getPlayer } from "../../../data/scene-data";
-import { ActorDefinition, ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ActorDefinition, ConstructionStateEnum, ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
 import { ObjectNames } from "../../../data/object-names";
-import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectTransform, onObjectReady } from "../../../data/game-object-helper";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
@@ -27,6 +27,7 @@ export type ProductionProgressEvent = {
 };
 export type ProductionQueueChangeEvent = {
   itemsFromAllQueues: ProductionQueueItem[];
+  type: "add" | "remove" | "completed";
 };
 
 export type ProductionDefinition = {
@@ -48,7 +49,7 @@ export class ProductionComponent {
     public readonly productionDefinition: ProductionDefinition
   ) {
     this.listenToMoveEvents();
-    onSceneInitialized(gameObject.scene, this.init, this);
+    onObjectReady(gameObject, this.init, this);
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
@@ -175,7 +176,8 @@ export class ProductionComponent {
     // add to queue
     queue.queuedItems.push(queueItem);
     this.queueChangeSubject.next({
-      itemsFromAllQueues: this.itemsFromAllQueues
+      itemsFromAllQueues: this.itemsFromAllQueues,
+      type: "add"
     });
 
     if (queue.queuedItems.length === 1) {
@@ -229,7 +231,8 @@ export class ProductionComponent {
     queue.queuedItems.splice(queueIndex, 1);
     this.resetQueue(queue);
     this.queueChangeSubject.next({
-      itemsFromAllQueues: this.itemsFromAllQueues
+      itemsFromAllQueues: this.itemsFromAllQueues,
+      type: "completed"
     });
 
     // spawn gameObject
@@ -256,7 +259,10 @@ export class ProductionComponent {
       x: spawnPosition.x,
       y: spawnPosition.y,
       ...(spawnPosition.z && { z: spawnPosition.z }),
-      ...(originalOwner && { owner: originalOwner })
+      ...(originalOwner && { owner: originalOwner }),
+      constructionSite: {
+        state: ConstructionStateEnum.Finished
+      }
     } as ActorDefinition;
 
     const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
@@ -339,7 +345,8 @@ export class ProductionComponent {
 
         // Notify of queue change
         this.queueChangeSubject.next({
-          itemsFromAllQueues: this.itemsFromAllQueues
+          itemsFromAllQueues: this.itemsFromAllQueues,
+          type: "remove"
         });
 
         this.refund(costData, queue);

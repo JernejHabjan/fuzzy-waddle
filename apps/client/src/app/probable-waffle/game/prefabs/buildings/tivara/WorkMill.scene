@@ -19,25 +19,69 @@
             "hitArea.shape": "POLYGON",
             "hitArea.points": "-63.89974877636719 -65.64818497632388 -36.35219201632184 -96.09548455321611 16.32646915639647 -69.99779920159419 16.568114391133705 -48.974663779454325 41.215928334332176 -61.781861220528036 51.60667342803349 -53.80756847419912 52.33160913224522 -20.460526080460014 62.72235422594652 -9.103200047809736 60.30590187857412 0.07931887220537703 7.385595471118592 31.25155415330933 -49.64267992687003 27.62687563225073 -59.79177978583411 7.570321149059822 -58.82519884688515 -61.781861220528036",
             "x": 64,
-            "y": 96.29342343955079,
+            "y": 96,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "e5b08a8f-d604-469b-9d8d-7f3367fe6eac",
-                    "label": "buildings_tivara_workmill_png_1",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/workmill.png"
-                    },
-                    "y": -32.29342343955079
+                    "prefabId": "5f1fd9ba-425c-42ba-9171-b791ce425fe6",
+                    "id": "92571083-bbd7-4fab-8a40-b758cbc8daab",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "workMillCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "334dcb05-ad23-40e7-b656-b089d229b8a3",
+                    "id": "302b1387-fdc4-4f3c-8dbc-deb666abd3ad",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "workMillFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "cccfff85-391c-4509-b9f2-c227cf3ebe6f",
+                    "id": "99ca902a-bc9d-4d18-87dd-906d9af73372",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "workMillFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "fd634376-bf8a-44f2-b2ae-9c41763ccf19",
+                    "id": "f3219c92-6d92-4519-b183-dfe5c3cbb4e0",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "workMillLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

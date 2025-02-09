@@ -1,0 +1,98 @@
+{
+    "id": "7564d59b-99df-4c23-b501-44705a3dcf24",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "d4e29f2b-0d54-4c4f-b4f5-a0c2b4b727b6",
+            "label": "buildings_tivara_ankguard_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-72.22985939462845 -86.73420955564553 0.01286537585883707 -123.56383394844298 68.9503674444284 -88.15073357075313 69.89471678783346 -63.12547597051896 110.02956388254862 -46.12718778922783 115.22348527127645 -20.62975551729116 114.75131059957391 17.616392890613866 51.95207926313728 47.835571879575866 0.48504004756136965 65.30603473256951 -101.97686371188792 14.7833448603987 -101.97686371188792 -13.074960770050666 -83.08987684378667 -13.547135441753198",
+            "x": 128,
+            "y": 182,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "555ce448-75b0-447e-acdb-1cd31813a12e",
+                    "label": "ankguard-building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard.png"
+                    },
+                    "y": -54.83180956776931
+                },
+                {
+                    "type": "Sprite",
+                    "id": "5e254b6c-41b4-4cb1-a385-b8b4132a07b7",
+                    "label": "tivara_buildings_aknguard_flame",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-0.png"
+                    },
+                    "x": -4,
+                    "y": 41.16819043223069,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-aknguard-flame"
+                },
+                {
+                    "type": "Sprite",
+                    "id": "f9b68f6f-6867-4466-8fa6-ed8e9e9b68f9",
+                    "label": "tivara_buildings_ankguard_flame_stick_right",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
+                    },
+                    "x": -43,
+                    "y": 15,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-ankguard-flame-stick"
+                },
+                {
+                    "type": "Sprite",
+                    "id": "245253f4-fd98-4c50-89e6-7e11a9693801",
+                    "label": "tivara_buildings_ankguard_flame_stick_left",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
+                    },
+                    "x": -97,
+                    "y": -11,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-ankguard-flame-stick"
+                },
+                {
+                    "type": "Sprite",
+                    "id": "75af9be9-c504-42d4-8dcd-62a9db042244",
+                    "label": "tivara_buildings_ankguard_flag",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/ankguard-flag/flag-0.png"
+                    },
+                    "x": -29,
+                    "y": -123,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara-buildings-ankguard-flag"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

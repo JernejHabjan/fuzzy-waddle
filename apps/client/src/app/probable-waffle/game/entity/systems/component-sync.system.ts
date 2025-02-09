@@ -1,7 +1,7 @@
 import { EventEmitter } from "@angular/core";
 import { Subscription } from "rxjs";
 import { listenToActorEvents, sendActorEvent } from "../../data/scene-data";
-import { onSceneInitialized } from "../../data/game-object-helper";
+import { onObjectReady } from "../../data/game-object-helper";
 
 function createComponentProxy<T extends object>(
   target: T,
@@ -99,8 +99,8 @@ export class ComponentSyncSystem {
       }
     });
 
-    onSceneInitialized(
-      gameObject.scene,
+    onObjectReady(
+      gameObject,
       () => {
         // Listen to external events and update the component's properties
         const subscription = listenToActorEvents(gameObject, options.eventPrefix)?.subscribe((payload) => {

@@ -1,5 +1,6 @@
 import {
   ActorDefinition,
+  ConstructionStateEnum,
   FactionType,
   ProbableWaffleGameStateDataPayload,
   Vector3Simple
@@ -45,7 +46,14 @@ export class SceneActorCreator {
         const idComponent = getActorComponent(gameObject, IdComponent);
         // only initialize those, that haven't been initialized yet
         if (!idComponent) {
-          setFullActorDataFromName(gameObject);
+          const ownerId = EditorOwner.getComponent(gameObject)?.owner_id;
+          const actorDefinition = {
+            constructionSite: {
+              state: ConstructionStateEnum.Finished
+            },
+            owner: ownerId ? parseInt(ownerId) : undefined
+          } satisfies ActorDefinition;
+          setFullActorDataFromName(gameObject, actorDefinition);
         }
       }
     });
@@ -166,7 +174,10 @@ export class SceneActorCreator {
       x: newX,
       y: vec3.y,
       z: vec3.z,
-      owner: owner_id
+      owner: owner_id,
+      constructionSite: {
+        state: ConstructionStateEnum.Finished
+      }
     } as ActorDefinition;
 
     const newActor = this.createActorFromDefinition(actorDefinition);

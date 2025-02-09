@@ -36,7 +36,7 @@ export default class FenceBottom extends Phaser.GameObjects.Image {
         new ObjectDescriptorComponent({
           color: 0x6e4b1e
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent()
+        new ColliderComponent(this)
       ],
       []
     );

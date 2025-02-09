@@ -2,8 +2,13 @@
 
 /* START OF COMPILED CODE */
 
+import TempleCursor from "./Temple/TempleCursor";
+import TempleFoundation1 from "./Temple/TempleFoundation1";
+import TempleFoundation2 from "./Temple/TempleFoundation2";
+import TempleLevel1 from "./Temple/TempleLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
+import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -17,60 +22,55 @@ export default class Temple extends Phaser.GameObjects.Container {
       Phaser.Geom.Polygon.Contains
     );
 
-    // buildings_tivara_temple
-    const buildings_tivara_temple = scene.add.image(
-      -0.30766778687379315,
-      -36.666560409786456,
-      "factions",
-      "buildings/tivara/temple/temple.png"
-    );
-    this.add(buildings_tivara_temple);
+    // templeCursor
+    const templeCursor = new TempleCursor(scene, 0, 0);
+    templeCursor.visible = false;
+    this.add(templeCursor);
 
-    // buildings_tivara_temple_temple_olival
-    const buildings_tivara_temple_temple_olival = scene.add.image(
-      -2,
-      -13,
-      "factions",
-      "buildings/tivara/temple/temple-olival.png"
-    );
-    this.add(buildings_tivara_temple_temple_olival);
+    // templeFoundation1
+    const templeFoundation1 = new TempleFoundation1(scene, 0, 0);
+    templeFoundation1.visible = false;
+    this.add(templeFoundation1);
+
+    // templeFoundation2
+    const templeFoundation2 = new TempleFoundation2(scene, 0, 0);
+    templeFoundation2.visible = false;
+    this.add(templeFoundation2);
+
+    // templeLevel1
+    const templeLevel1 = new TempleLevel1(scene, 0, 0);
+    this.add(templeLevel1);
+
+    this.templeCursor = templeCursor;
+    this.templeFoundation1 = templeFoundation1;
+    this.templeFoundation2 = templeFoundation2;
+    this.templeLevel1 = templeLevel1;
 
     /* START-USER-CTR-CODE */
-    this.bounce(buildings_tivara_temple_temple_olival);
-    // todosetTimeout(() => {
-    // todo  this.addGlow(scene, buildings_tivara_temple_temple_olival);
-    // todo}, 1000);
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
+  private templeCursor: TempleCursor;
+  private templeFoundation1: TempleFoundation1;
+  private templeFoundation2: TempleFoundation2;
+  private templeLevel1: TempleLevel1;
+
   /* START-USER-CODE */
   name = ObjectNames.Temple;
-  // tod private addGlow = (scene: Phaser.Scene, image: Phaser.GameObjects.Image) => {
-  // tod   // https://labs.phaser.io/view.html?src=src\fx\glow\glow%20fx.js
-  // tod   if (!image.preFX) return;
-  // tod   image.preFX.setPadding(32);
-  // tod   const fx = image.preFX.addGlow();
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+  }
 
-  // tod   //  For PreFX Glow the quality and distance are set in the Game Configuration
-  // tod   scene.tweens.add({
-  // tod     targets: fx,
-  // tod     outerStrength: 1,
-  // tod     yoyo: true,
-  // tod     loop: -1,
-  // tod     ease: "sine.inout"
-  // tod   });
-  // tod };
-  private bounce = (image: Phaser.GameObjects.Image) => {
-    // bounce the sprite up and down forever with a 2 seconds duration
-    this.scene.tweens.add({
-      targets: image,
-      y: "-=4", // move up by 4
-      duration: 1000, // takes 1000ms
-      ease: "Sine.InOut",
-      yoyo: true, // reverse the animation after it completes
-      loop: -1 // loop indefinitely
-    });
-  };
+  private handlePrefabVisibility(progress: number | null) {
+    this.templeCursor.visible = progress === null;
+    this.templeLevel1.visible = progress === 100;
+    this.templeFoundation1.visible = progress !== null && progress < 50;
+    this.templeFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+    if (this.templeLevel1.visible) {
+      this.templeLevel1.start();
+    }
+  }
 
   /* END-USER-CODE */
 }

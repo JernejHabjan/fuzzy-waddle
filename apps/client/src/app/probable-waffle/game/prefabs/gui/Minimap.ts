@@ -13,6 +13,8 @@ import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { OwnerComponent } from "../../entity/actor/components/owner-component";
 import HudProbableWaffle from "../../scenes/HudProbableWaffle";
 import { MultiSelectionHandler } from "../../world/managers/controllers/input/multi-selection.handler";
+import { NavigationService } from "../../scenes/services/navigation.service";
+import { throttle } from "../../library/throttle";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -81,7 +83,10 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.probableWaffleScene = probableWaffleScene;
     this.hudProbableWaffle = hudProbableWaffle;
     this.redrawMinimap();
+    this.probableWaffleScene.events.on(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
   }
+
+  private throttleRedrawMinimap = throttle(this.redrawMinimap.bind(this), 1000);
 
   redrawMinimap() {
     if (!this.probableWaffleScene || !this.hudProbableWaffle) return;
@@ -247,6 +252,13 @@ export default class Minimap extends Phaser.GameObjects.Container {
       return Phaser.Display.Color.HexStringToColor(color.substring(3));
     }
     return null;
+  }
+
+  destroy(fromScene?: boolean) {
+    this.minimapDiamonds.forEach((diamond) => diamond.destroy());
+    this.actorDiamonds.forEach((diamond) => diamond.destroy());
+    this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
+    super.destroy(fromScene);
   }
 }
 
