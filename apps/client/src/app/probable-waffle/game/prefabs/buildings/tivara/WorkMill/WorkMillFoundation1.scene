@@ -1,0 +1,44 @@
+{
+    "id": "334dcb05-ad23-40e7-b656-b089d229b8a3",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "ef64b3da-e085-4d64-9380-44d320d18360",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-43.58652410760945 -28.5288412644298 -6.248941565650952 -39.730116027017345 46 -7 43 15 -11.049487892474183 10.408923386469795 -53.72101079756962 -12.527020175019004",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "4ef1fc54-4e24-4b42-98d9-140cc8d4a6ff",
+                    "label": "buildings_tivara_workmill_png_1",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/workmill/foundation/foundation_1.png"
+                    },
+                    "y": -32.29342343955079
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "id": "5f1fd9ba-425c-42ba-9171-b791ce425fe6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "42d76755-2d34-4059-a718-7fa033fe8823",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-63.89974877636719 -65.64818497632388 -36.35219201632184 -96.09548455321611 16.32646915639647 -69.99779920159419 16.568114391133705 -48.974663779454325 41.215928334332176 -61.781861220528036 51.60667342803349 -53.80756847419912 52.33160913224522 -20.460526080460014 62.72235422594652 -9.103200047809736 60.30590187857412 0.07931887220537703 7.385595471118592 31.25155415330933 -49.64267992687003 27.62687563225073 -59.79177978583411 7.570321149059822 -58.82519884688515 -61.781861220528036",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "3b536929-dd1b-48eb-8299-ae9d9125dafa",
+                    "label": "buildings_tivara_workmill_png_1",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/workmill.png"
+                    },
+                    "y": -32.29342343955079
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
