@@ -1,0 +1,46 @@
+{
+    "id": "f7fab24c-06d7-4f82-9acb-6b23f42290a2",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "0e9867be-5c38-4d82-aa52-798c3d847d65",
+            "label": "buildings_tivara_ankguard_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-83.31893505129565 -10.968612672769211 -68.96583095017587 -95.29309926684788 -30.076220676169484 -50.290633702641685 -8.409669154810032 -63.22067251377557 38.73547595408027 -41.33901510668488 38.036554937262224 -90.96240730076622 59.703106458621676 -90.96240730076622 63.197711542711914 -25.263831719869813 85.33003813686165 -10.07154366644923 -0.7885864698569804 32.98776863691006",
+            "x": 128,
+            "y": 182,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "85434286-d875-4b1f-bbcc-1798ab323476",
+                    "label": "ankguard-building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/ankguard/foundation/foundation_1.png"
+                    },
+                    "y": -54.83180956776931
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
