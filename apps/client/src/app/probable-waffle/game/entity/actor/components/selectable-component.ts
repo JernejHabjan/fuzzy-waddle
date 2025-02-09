@@ -3,7 +3,7 @@ import {
   getGameObjectBounds,
   getGameObjectDepth,
   getGameObjectTransform,
-  onSceneInitialized
+  onObjectReady
 } from "../../../data/game-object-helper";
 import { BehaviorSubject, Subscription } from "rxjs";
 import Phaser from "phaser";
@@ -29,7 +29,7 @@ export class SelectableComponent {
     private readonly selectableDefinition?: SelectableDefinition
   ) {
     this.createSelectionCircle();
-    onSceneInitialized(gameObject.scene, this.init, this);
+    onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);

@@ -22,33 +22,52 @@
             "y": 54.535253459978904,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "66eb2964-e95f-457f-b4fd-577396276006",
-                    "label": "buildings_tivara_olival_floor",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/olival/olival-floor.png"
-                    },
-                    "x": 0.008459511735509295,
-                    "y": 4.464746540021096
+                    "prefabId": "2475b77a-58b3-4f6b-87cc-b2502d73ad2d",
+                    "id": "96a92624-cba8-4df2-9bb4-7e9c9781657a",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "olivalCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Image",
-                    "id": "b201ad12-d410-4775-992e-632a780c3eca",
-                    "label": "buildings_tivara_olival",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/olival/olival.png"
-                    },
-                    "y": -22
+                    "prefabId": "0e262c51-e497-4b22-b8da-4b99fb22605c",
+                    "id": "f4c05a42-b796-43ed-b5ce-c89585fdebc3",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "olivalFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "1757a63f-b1b5-4c04-a8e6-1227fabf9391",
+                    "id": "8287ef48-964b-47c0-a3e6-522e0e6cfa6b",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "olivalLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

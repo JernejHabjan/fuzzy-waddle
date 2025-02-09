@@ -1,0 +1,59 @@
+{
+    "id": "c0e090f6-907b-4d78-b6f4-d624511de02a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "14573592-85e0-4be6-8156-5925d6ef08c3",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.y": -35,
+            "hitArea.radius": 59.91620797027979,
+            "x": 64,
+            "y": 128,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "b88879c3-33eb-4334-bd71-d7e13bef023a",
+                    "label": "infantry_inn_building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn.png"
+                    },
+                    "x": -0.16910280030724323,
+                    "y": -31.74029716298027
+                },
+                {
+                    "type": "Sprite",
+                    "id": "5414e97b-b889-47e1-b2eb-140141c0e170",
+                    "label": "skaduwee_buildings_infantry_inn_entrance",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
+                    },
+                    "x": 24,
+                    "y": -8,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skaduwee-buildings-infantry-inn-entrance"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -4,7 +4,7 @@ import { Plugins } from "../../../world/const/Plugins";
 import { GameSetupHelpers, Guid } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { HealthComponent } from "../../combat/components/health-component";
-import { getGameObjectDepth, onSceneInitialized } from "../../../data/game-object-helper";
+import { getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { ContainerComponent } from "../../building/container-component";
@@ -27,6 +27,7 @@ export class OwnerComponent {
   private colorPipelineInstances: any[] = [];
   private ownerUiElement?: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
+  private ready: boolean = false;
   constructor(
     private readonly gameObject: GameObject,
     public readonly ownerDefinition: OwnerDefinition
@@ -34,15 +35,23 @@ export class OwnerComponent {
     if (OwnerComponent.useColorReplace) {
       this.colorReplacePipelinePlugin = gameObject.scene.plugins.get(Plugins.RexColorReplacePipeline) as any;
     }
-    onSceneInitialized(gameObject.scene, this.init, this);
+    onObjectReady(gameObject, this.init, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   }
 
   private init() {
+    this.ready = true;
     this.subscribeActorMove();
+    this.tryToSetComponents();
+  }
+
+  private tryToSetComponents() {
+    if (!this.ready || !this.owner) return;
     this.updateOwnerUiElementPosition();
+    this.assignOwnerColor();
+    this.setOwnerColorToActor();
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
@@ -51,8 +60,7 @@ export class OwnerComponent {
 
   setOwner(playerNumber?: number) {
     this.owner = playerNumber;
-    this.assignOwnerColor();
-    this.setOwnerColorToActor();
+    this.tryToSetComponents();
   }
 
   clearOwner() {

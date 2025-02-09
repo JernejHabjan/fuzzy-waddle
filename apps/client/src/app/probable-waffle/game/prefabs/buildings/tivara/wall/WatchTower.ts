@@ -2,30 +2,66 @@
 
 /* START OF COMPILED CODE */
 
+import WatchTowerCursor from "./WatchTower/WatchTowerCursor";
+import WatchTowerFoundation1 from "./WatchTower/WatchTowerFoundation1";
+import WatchTowerFoundation2 from "./WatchTower/WatchTowerFoundation2";
+import WatchTowerLevel1 from "./WatchTower/WatchTowerLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../../data/object-names";
+import { ConstructionHelper } from "../../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
-export default class WatchTower extends Phaser.GameObjects.Image {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 64, y ?? 147.21244874992414, texture || "factions", frame ?? "buildings/tivara/watchtower.png");
+export default class WatchTower extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 64, y ?? 148);
 
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "0.13401186115921604 39.2416526175671 15.242462334190208 32.36315409427169 23.850238309993998 35.76842810667759 24.134011144361153 28.768698192287687 31.51210483790726 24.41751473199126 39.55233514497674 27.728197799608097 40.40365364807821 21.012240719585364 47.592565452046216 16.18810253534369 55.8219776486938 19.498785602960524 56.48411426221717 12.309873798992527 64.14598079013044 8.242463173063243 72.0521992360407 12.540365740748797 71.95760829125165 20.486005103029214 79.99783859832112 16.13482164273279 87.8488870158125 21.053550771763526 88.41643268454682 28.43164446530963 96.07829921246008 24.364233839380375 104.11852951952956 28.43164446530963 104.40230235389672 36.37728382759006 112.4425326609662 32.30987320166079 127.95544760637084 41.20142201183175 128.09080885025003 65.25632144690857 123.92880727953172 65.91845806043193 124.49635294826604 82.56646434330521 122.22617027332878 83.32319190161763 122.15753086298719 146.90324363506113 63.718092542300454 176 8.061482621909171 148.4492605488969 8.028380866554102 85.24191407279183 4.008736890581162 82.61368531927107 3.854135199197586 66.07130434122858 -0.010907085391778537 64.37068573600926"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
-    this.setOrigin(0.5, 0.8364343678972962);
+    this.blendMode = Phaser.BlendModes.SKIP_CHECK;
+
+    // watchTowerCursor
+    const watchTowerCursor = new WatchTowerCursor(scene, 0, 0);
+    watchTowerCursor.visible = false;
+    this.add(watchTowerCursor);
+
+    // watchTowerFoundation1
+    const watchTowerFoundation1 = new WatchTowerFoundation1(scene, 0, 0);
+    watchTowerFoundation1.visible = false;
+    this.add(watchTowerFoundation1);
+
+    // watchTowerFoundation2
+    const watchTowerFoundation2 = new WatchTowerFoundation2(scene, 0, 0);
+    this.add(watchTowerFoundation2);
+
+    // watchTowerLevel1
+    const watchTowerLevel1 = new WatchTowerLevel1(scene, 0, 0);
+    this.add(watchTowerLevel1);
+
+    this.watchTowerCursor = watchTowerCursor;
+    this.watchTowerFoundation1 = watchTowerFoundation1;
+    this.watchTowerFoundation2 = watchTowerFoundation2;
+    this.watchTowerLevel1 = watchTowerLevel1;
 
     /* START-USER-CTR-CODE */
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
+  private watchTowerCursor: WatchTowerCursor;
+  private watchTowerFoundation1: WatchTowerFoundation1;
+  private watchTowerFoundation2: WatchTowerFoundation2;
+  private watchTowerLevel1: WatchTowerLevel1;
+
   /* START-USER-CODE */
   name = ObjectNames.WatchTower;
-  // Write your code here.
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+  }
 
+  private handlePrefabVisibility(progress: number | null) {
+    this.watchTowerCursor.visible = progress === null;
+    this.watchTowerLevel1.visible = progress === 100;
+    this.watchTowerFoundation1.visible = progress !== null && progress < 50;
+    this.watchTowerFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+  }
   /* END-USER-CODE */
 }
 

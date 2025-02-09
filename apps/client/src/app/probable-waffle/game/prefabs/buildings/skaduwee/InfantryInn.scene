@@ -23,58 +23,66 @@
             "y": 128,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "57ae8924-5c22-4302-84e7-6ca1bfe3af16",
-                    "label": "infantry_inn_building",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn.png"
-                    },
-                    "x": -0.16910280030724323,
-                    "y": -31.74029716298027
+                    "prefabId": "c0e090f6-907b-4d78-b6f4-d624511de02a",
+                    "id": "f5e32c07-faef-44fe-9dde-74a6b0b0b36f",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "infantryInnCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Image",
-                    "id": "a0c23c3e-09f5-4744-9321-8661ccf19d31",
-                    "label": "cloud_1",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
-                    },
-                    "x": 24,
-                    "y": -82
+                    "prefabId": "42866629-f747-4abb-80e0-06ee012fc4c7",
+                    "id": "650777be-dc92-4a77-af60-c6d9f053d38b",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "infantryInnFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Image",
-                    "id": "48628aa0-8206-45d1-9ce5-db362dd16fdc",
-                    "label": "cloud_2",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
-                    },
-                    "x": 13,
-                    "y": -110
+                    "prefabId": "718213cc-fe62-4921-be27-29b8acbbdd88",
+                    "id": "587c636f-7307-4cbb-a087-5d62ac39e773",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "infantryInnFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Sprite",
-                    "id": "a365c703-dcd4-4ea6-971b-69f58a5f3b14",
-                    "label": "skaduwee_buildings_infantry_inn_entrance",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/infantry_inn/infantry_inn-entrance/infantry_inn-0.png"
-                    },
-                    "x": 24,
-                    "y": -8,
-                    "animationPlayMethod": 1,
-                    "animationKey": "skaduwee-buildings-infantry-inn-entrance"
+                    "prefabId": "3ced6440-c6be-42af-abfd-51da002cc7b4",
+                    "id": "b96540f2-d4a5-4594-9402-e160ddbd2006",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "infantryInnLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

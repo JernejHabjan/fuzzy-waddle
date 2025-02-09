@@ -30,7 +30,7 @@ export default class Height4 extends Phaser.GameObjects.Image {
         new ObjectDescriptorComponent({
           color: 0x95a083
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent()
+        new ColliderComponent(this)
       ],
       []
     );

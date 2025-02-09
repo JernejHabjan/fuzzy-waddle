@@ -31,6 +31,17 @@ import { ColliderDefinition } from "../entity/actor/components/collider-componen
 import { ResourceSourceDefinition } from "../entity/economy/resource/resource-source-component";
 import { ActorTranslateDefinition } from "../entity/actor/components/actor-translate-component";
 import { AiType, PawnAiDefinition } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { ConstructionSiteDefinition } from "../entity/building/construction/construction-site-component";
+
+const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
+  consumesBuilders: false,
+  maxAssignedBuilders: 4,
+  progressMadeAutomatically: 1,
+  progressMadePerBuilder: 1,
+  initialHealthPercentage: 0.2,
+  refundFactor: 0.5,
+  startImmediately: true
+};
 
 const treeDefinitions: ActorInfoDefinition = {
   components: {
@@ -78,7 +89,10 @@ const stairsDefinition: ActorInfoDefinition = {
       productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
-    collider: { enabled: true }
+    collider: { enabled: true },
+    constructable: {
+      ...coreConstructionSiteDefinition
+    }
   }
 };
 
@@ -114,6 +128,160 @@ const wallDefinition: ActorInfoDefinition = {
     collider: { enabled: true }
   }
 };
+
+const tivaraWorkerDefinition: ActorInfoDefinition = {
+  components: {
+    objectDescriptor: {
+      color: 0xc2a080
+    },
+    owner: {
+      color: [
+        {
+          originalColor: 0x31770f,
+          epsilon: 0.25
+        }
+      ]
+    },
+    vision: {
+      range: 5
+    },
+    health: {
+      maxHealth: 100
+    },
+    attack: {
+      attacks: [
+        {
+          damage: 1,
+          damageType: DamageType.Physical,
+          cooldown: 1000,
+          range: 1
+        }
+      ]
+    },
+    productionCost: {
+      resources: {
+        [ResourceType.Wood]: 10,
+        [ResourceType.Minerals]: 10
+      },
+      refundFactor: 0.5,
+      productionTime: 5000,
+      costType: PaymentType.PayImmediately
+    },
+    requirements: {
+      actors: [ObjectNames.Sandhold]
+    },
+    builder: {
+      constructableBuildings: [
+        ObjectNames.Sandhold,
+        ObjectNames.AnkGuard,
+        ObjectNames.Olival,
+        ObjectNames.Temple,
+        ObjectNames.WorkMill,
+        ObjectNames.WatchTower,
+        ObjectNames.Wall
+      ],
+      constructionSiteOffset: 2,
+      enterConstructionSite: false
+    },
+    gatherer: {
+      resourceSweepRadius: 20,
+      resourceSourceGameObjectClasses: [
+        ResourceType.Ambrosia,
+        ResourceType.Wood,
+        ResourceType.Minerals,
+        ResourceType.Stone
+      ]
+    },
+    selectable: { enabled: true },
+    translatable: {
+      tileStepDuration: 500
+    },
+    containable: { enabled: true },
+    aiControlled: {
+      type: AiType.Character
+    }
+  },
+  systems: {
+    movement: { enabled: true }
+  }
+};
+
+const skaduweeWorkerDefinition: ActorInfoDefinition = {
+  components: {
+    objectDescriptor: {
+      color: 0xf2f7fa
+    },
+    owner: {
+      color: [
+        {
+          originalColor: 0x7995bf,
+          epsilon: 0.15
+        }
+      ]
+    },
+    vision: {
+      range: 5
+    },
+    health: {
+      maxHealth: 100
+    },
+    attack: {
+      attacks: [
+        {
+          damage: 1,
+          damageType: DamageType.Physical,
+          cooldown: 1000,
+          range: 1
+        }
+      ]
+    },
+    productionCost: {
+      resources: {
+        [ResourceType.Wood]: 10,
+        [ResourceType.Minerals]: 10
+      },
+      refundFactor: 0.5,
+      productionTime: 5000,
+      costType: PaymentType.PayImmediately
+    },
+    requirements: {
+      actors: [ObjectNames.FrostForge]
+    },
+    builder: {
+      constructableBuildings: [
+        ObjectNames.FrostForge,
+        ObjectNames.InfantryInn,
+        ObjectNames.Owlery,
+        ObjectNames.WorkMill,
+        ObjectNames.WatchTower,
+        ObjectNames.Wall
+      ],
+      constructionSiteOffset: 2,
+      enterConstructionSite: false
+    },
+    gatherer: {
+      resourceSweepRadius: 20,
+      resourceSourceGameObjectClasses: [
+        ResourceType.Ambrosia,
+        ResourceType.Wood,
+        ResourceType.Minerals,
+        ResourceType.Stone
+      ]
+    },
+    selectable: { enabled: true },
+    translatable: {
+      tileStepDuration: 500
+    },
+    containable: { enabled: true },
+    aiControlled: {
+      type: AiType.Character
+    }
+  },
+  systems: {
+    movement: { enabled: true }
+  }
+};
+
 export type ActorInfoDefinition = Partial<{
   components: Partial<{
     objectDescriptor: ObjectDescriptorDefinition;
@@ -125,6 +293,7 @@ export type ActorInfoDefinition = Partial<{
     productionCost: ProductionCostDefinition;
     requirements: RequirementsDefinition;
     builder: BuilderDefinition;
+    constructable: ConstructionSiteDefinition;
     gatherer: GathererDefinition;
     container: ContainerDefinition;
     resourceDrain: ResourceDrainDefinition;
@@ -358,21 +527,9 @@ export const pwActorDefinitions: {
     }
   },
   [ObjectNames.TivaraWorkerFemale]: {
+    ...tivaraWorkerDefinition,
     components: {
-      objectDescriptor: {
-        color: 0xc2a080
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x31770f,
-            epsilon: 0.25
-          }
-        ]
-      },
-      vision: {
-        range: 5
-      },
+      ...tivaraWorkerDefinition.components,
       info: {
         name: "Tivara Female Worker",
         description: "A worker",
@@ -381,75 +538,13 @@ export const pwActorDefinitions: {
           frame: "character_icons/tivara/worker_female.png",
           origin: { x: 0.5, y: 0.6 }
         }
-      },
-      health: {
-        maxHealth: 100
-      },
-      attack: {
-        attacks: [
-          {
-            damage: 1,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1
-          }
-        ]
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.Sandhold]
-      },
-      builder: {
-        constructableBuildings: [ObjectNames.Sandhold, ObjectNames.AnkGuard, ObjectNames.Olival, ObjectNames.Temple],
-        constructionSiteOffset: 2,
-        enterConstructionSite: false
-      },
-      gatherer: {
-        resourceSweepRadius: 20,
-        resourceSourceGameObjectClasses: [
-          ResourceType.Ambrosia,
-          ResourceType.Wood,
-          ResourceType.Minerals,
-          ResourceType.Stone
-        ]
-      },
-      selectable: { enabled: true },
-      translatable: {
-        tileStepDuration: 500
-      },
-      containable: { enabled: true },
-      aiControlled: {
-        type: AiType.Character
       }
-    },
-    systems: {
-      movement: { enabled: true }
     }
   },
   [ObjectNames.TivaraWorkerMale]: {
+    ...tivaraWorkerDefinition,
     components: {
-      objectDescriptor: {
-        color: 0xc2a080
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x31770f,
-            epsilon: 0.25
-          }
-        ]
-      },
-      vision: {
-        range: 5
-      },
+      ...tivaraWorkerDefinition.components,
       info: {
         name: "Tivara Male Worker",
         description: "A worker",
@@ -458,57 +553,7 @@ export const pwActorDefinitions: {
           frame: "character_icons/tivara/worker_male.png",
           origin: { x: 0.5, y: 0.6 }
         }
-      },
-      health: {
-        maxHealth: 100
-      },
-      attack: {
-        attacks: [
-          {
-            damage: 1,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1
-          }
-        ]
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.Sandhold]
-      },
-      builder: {
-        constructableBuildings: [ObjectNames.Sandhold, ObjectNames.AnkGuard, ObjectNames.Olival, ObjectNames.Temple],
-        constructionSiteOffset: 2,
-        enterConstructionSite: false
-      },
-      gatherer: {
-        resourceSweepRadius: 20,
-        resourceSourceGameObjectClasses: [
-          ResourceType.Ambrosia,
-          ResourceType.Wood,
-          ResourceType.Minerals,
-          ResourceType.Stone
-        ]
-      },
-      selectable: { enabled: true },
-      translatable: {
-        tileStepDuration: 500
-      },
-      containable: { enabled: true },
-      aiControlled: {
-        type: AiType.Character
       }
-    },
-    systems: {
-      movement: { enabled: true }
     }
   },
   [ObjectNames.AnkGuard]: {
@@ -558,7 +603,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Olival]: {
@@ -602,7 +650,10 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Sandhold]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Sandhold]: {
@@ -659,7 +710,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Temple]: {
@@ -712,7 +766,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.WorkMill]: {
@@ -759,6 +816,9 @@ export const pwActorDefinitions: {
       collider: { enabled: true },
       container: {
         capacity: 2
+      },
+      constructable: {
+        ...coreConstructionSiteDefinition
       }
     }
   },
@@ -1008,21 +1068,9 @@ export const pwActorDefinitions: {
     }
   },
   [ObjectNames.SkaduweeWorkerMale]: {
+    ...skaduweeWorkerDefinition,
     components: {
-      objectDescriptor: {
-        color: 0xf2f7fa
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x7995bf,
-            epsilon: 0.15
-          }
-        ]
-      },
-      vision: {
-        range: 5
-      },
+      ...skaduweeWorkerDefinition.components,
       info: {
         name: "Skaduwee Male Worker",
         description: "A worker",
@@ -1031,75 +1079,13 @@ export const pwActorDefinitions: {
           frame: "character_icons/skaduwee/worker_male.png",
           origin: { x: 0.5, y: 0.6 }
         }
-      },
-      health: {
-        maxHealth: 100
-      },
-      attack: {
-        attacks: [
-          {
-            damage: 1,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1
-          }
-        ]
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.FrostForge]
-      },
-      builder: {
-        constructableBuildings: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
-        constructionSiteOffset: 2,
-        enterConstructionSite: false
-      },
-      gatherer: {
-        resourceSweepRadius: 20,
-        resourceSourceGameObjectClasses: [
-          ResourceType.Ambrosia,
-          ResourceType.Wood,
-          ResourceType.Minerals,
-          ResourceType.Stone
-        ]
-      },
-      selectable: { enabled: true },
-      translatable: {
-        tileStepDuration: 500
-      },
-      containable: { enabled: true },
-      aiControlled: {
-        type: AiType.Character
       }
-    },
-    systems: {
-      movement: { enabled: true }
     }
   },
   [ObjectNames.SkaduweeWorkerFemale]: {
+    ...skaduweeWorkerDefinition,
     components: {
-      objectDescriptor: {
-        color: 0xf2f7fa
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x7995bf,
-            epsilon: 0.15
-          }
-        ]
-      },
-      vision: {
-        range: 5
-      },
+      ...skaduweeWorkerDefinition.components,
       info: {
         name: "Skaduwee Female Worker",
         description: "A worker",
@@ -1108,57 +1094,7 @@ export const pwActorDefinitions: {
           frame: "character_icons/skaduwee/worker_female.png",
           origin: { x: 0.5, y: 0.6 }
         }
-      },
-      health: {
-        maxHealth: 100
-      },
-      attack: {
-        attacks: [
-          {
-            damage: 1,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1
-          }
-        ]
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.FrostForge]
-      },
-      builder: {
-        constructableBuildings: [ObjectNames.FrostForge, ObjectNames.InfantryInn, ObjectNames.Owlery],
-        constructionSiteOffset: 2,
-        enterConstructionSite: false
-      },
-      gatherer: {
-        resourceSweepRadius: 20,
-        resourceSourceGameObjectClasses: [
-          ResourceType.Ambrosia,
-          ResourceType.Wood,
-          ResourceType.Minerals,
-          ResourceType.Stone
-        ]
-      },
-      selectable: { enabled: true },
-      translatable: {
-        tileStepDuration: 500
-      },
-      containable: { enabled: true },
-      aiControlled: {
-        type: AiType.Character
       }
-    },
-    systems: {
-      movement: { enabled: true }
     }
   },
   [ObjectNames.FrostForge]: {
@@ -1214,7 +1150,10 @@ export const pwActorDefinitions: {
         capacityPerQueue: 5,
         availableProduceActors: [ObjectNames.SkaduweeWorkerMale, ObjectNames.SkaduweeWorkerFemale]
       },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.InfantryInn]: {
@@ -1268,7 +1207,10 @@ export const pwActorDefinitions: {
         ]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Owlery]: {
@@ -1318,7 +1260,10 @@ export const pwActorDefinitions: {
         availableProduceActors: [ObjectNames.SkaduweeOwl]
       },
       selectable: { enabled: true },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Tree1]: {
@@ -1455,7 +1400,54 @@ export const pwActorDefinitions: {
       container: {
         capacity: 2
       },
-      collider: { enabled: true }
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
+    }
+  },
+  [ObjectNames.Wall]: {
+    components: {
+      objectDescriptor: {
+        color: 0x95a083
+      },
+      owner: {
+        color: [
+          {
+            originalColor: 0x000000,
+            epsilon: 0
+          }
+        ]
+      },
+      vision: {
+        range: 8
+      },
+      info: {
+        name: "Wall",
+        description: "Defense building",
+        smallImage: {
+          key: "factions",
+          frame: "buildings/tivara/wall/wall_top_right_bottom_left.png",
+          origin: { x: 0.5, y: 0.5 }
+        }
+      },
+      selectable: { enabled: true },
+      health: {
+        maxHealth: 70
+      },
+      productionCost: {
+        resources: {
+          [ResourceType.Wood]: 10,
+          [ResourceType.Stone]: 30
+        },
+        refundFactor: 0.5,
+        productionTime: 5000,
+        costType: PaymentType.PayImmediately
+      },
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
     }
   },
   [ObjectNames.Minerals]: {

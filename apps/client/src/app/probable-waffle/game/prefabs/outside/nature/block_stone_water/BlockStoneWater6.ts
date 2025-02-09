@@ -44,7 +44,7 @@ export default class BlockStoneWater6 extends Phaser.GameObjects.Container {
         new ObjectDescriptorComponent({
           color: 0x95a083
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent()
+        new ColliderComponent(this)
       ],
       []
     );

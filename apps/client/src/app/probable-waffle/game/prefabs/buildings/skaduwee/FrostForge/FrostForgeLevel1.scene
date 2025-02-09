@@ -1,0 +1,107 @@
+{
+    "id": "91ea1140-b002-44ed-87ea-1aa28a19755f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "088af73f-a7db-4085-9df2-c08314daaa1a",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-68.7545786628312 -214.43394506509725 -38.690327299456825 -228.69121890752223 -0.2576760720504012 -233.34032994309558 43.44396766233913 -227.14151522899778 69.16904872584504 -214.74388580080216 71.27223590831247 -192.47146282907468 60.98195252153286 -182.48068661227393 62.22171546435243 -148.38720568473596 69.97023385697469 -142.18839097063815 75.4034707557831 -79.55104366487666 85.32112237919412 -46.381415218517645 96.47898886457017 -37.703074618780704 106.60762571945156 11.039650145841563 74.37378920614296 32.73550164518389 36.251078714441434 42.65360518774037 6.371750760001362 44.99389139705903 -37.82475711902734 42.96354592344528 -76.25740834643375 32.73550164518389 -106.16641807554313 10.997986227988292 -98.7969319792297 -38.23869519017006 -87.09176657806283 -49.2553214500918 -75.38660117689597 -80.92812194736686 -73.32098375316063 -142.20810551818164 -65.05851405821932 -148.40495778938765 -60.82475661048905 -182.48068661227393 -70.74286015304554 -192.08884941912552",
+            "x": 129,
+            "y": 324,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "fba00d45-ec40-4944-858b-9e5851b8abfe",
+                    "label": "buildings_skaduwee_frost_forge_frost_forge_png",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/frost_forge/frost_forge.png"
+                    },
+                    "x": -1,
+                    "y": -18.21845166634691,
+                    "originY": 0.7957454759361422
+                },
+                {
+                    "type": "Sprite",
+                    "id": "6a3076ff-2ed5-4866-b8b2-2399afdf4a8b",
+                    "label": "frost_forge_flame",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png"
+                    },
+                    "x": 2,
+                    "y": -235,
+                    "scaleX": 1.5,
+                    "scaleY": 2,
+                    "originY": 0.5151570341464229,
+                    "animationPlayMethod": 1,
+                    "animationKey": "frost_forge_flame"
+                },
+                {
+                    "type": "Image",
+                    "id": "3b74f146-f5c8-4f73-88ab-45a5f1c6d4de",
+                    "label": "cloud_3",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": -25,
+                    "y": -215,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "angle": -180
+                },
+                {
+                    "type": "Image",
+                    "id": "4a0dc72c-f6cb-42b2-97e2-1a36ccd836bb",
+                    "label": "cloud_2",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": 26,
+                    "y": -232,
+                    "scaleX": 2,
+                    "scaleY": 2
+                },
+                {
+                    "type": "Image",
+                    "id": "39705706-27c4-4862-8e71-83a788a69287",
+                    "label": "cloud_1",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/cloud-vertical.png"
+                    },
+                    "x": 2,
+                    "y": -250,
+                    "scaleX": 2.2,
+                    "scaleY": 2.2,
+                    "angle": -180
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -42,6 +42,7 @@ export enum ObjectNames {
   WallTopRightBottomLeft = "WallTopRightBottomLeft",
   WallTopRightBottomRight = "WallTopRightBottomRight",
   WatchTower = "WatchTower",
+  Wall = "Wall",
   Minerals = "Minerals",
   Stone = "Stone"
 }

@@ -5,7 +5,7 @@ import { ObjectNames } from "../../../data/object-names";
 import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
-import { upgradeFromMandatoryToFullActorData } from "../../../data/actor-data";
+import { upgradeFromCoreToConstructingActorData } from "../../../data/actor-data";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { EventEmitter } from "@angular/core";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
@@ -42,7 +42,7 @@ export class BuildingCursor {
 
     worldPosition = this.snapToGrid(worldPosition);
 
-    const actor = ActorManager.createActorPartially(this.scene, name, {
+    const actor = ActorManager.createActorCore(this.scene, name, {
       x: worldPosition.x,
       y: worldPosition.y,
       z: 0
@@ -202,7 +202,7 @@ export class BuildingCursor {
     this.allCellsAreValid = true; // todo Replace with actual placement check.
 
     // Save the building to the game state
-    this.fullySpawnBuilding();
+    this.spawnConstructionSite();
 
     // Reset the building cursor
     this.building = undefined;
@@ -211,15 +211,15 @@ export class BuildingCursor {
     this.clearGraphics();
   }
 
-  private fullySpawnBuilding() {
+  private spawnConstructionSite() {
     if (!this.building) return;
 
-    upgradeFromMandatoryToFullActorData(this.building);
-
     const currentPlayer = getCurrentPlayerNumber(this.scene);
-    ActorManager.setActorProperties(this.building, {
+    const actorDefinition = {
       ...(currentPlayer && { owner: currentPlayer })
-    } satisfies ActorDefinition);
+    } satisfies ActorDefinition;
+
+    upgradeFromCoreToConstructingActorData(this.building, actorDefinition);
     // todo save to game state
   }
 

@@ -2,9 +2,13 @@
 
 /* START OF COMPILED CODE */
 
+import AnkGuardCursor from "./AnkGuard/AnkGuardCursor";
+import AnkGuardFoundation1 from "./AnkGuard/AnkGuardFoundation1";
+import AnkGuardFoundation2 from "./AnkGuard/AnkGuardFoundation2";
+import AnkGuardLevel1 from "./AnkGuard/AnkGuardLevel1";
 /* START-USER-IMPORTS */
-import { ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK } from "../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
 import { ObjectNames } from "../../../data/object-names";
+import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
 export default class AnkGuard extends Phaser.GameObjects.Container {
@@ -18,67 +22,52 @@ export default class AnkGuard extends Phaser.GameObjects.Container {
       Phaser.Geom.Polygon.Contains
     );
 
-    // ankguard-building
-    const ankguard_building = scene.add.image(
-      0,
-      -54.83180956776931,
-      "factions",
-      "buildings/tivara/ankguard/ankguard.png"
-    );
-    this.add(ankguard_building);
+    // ankGuardCursor
+    const ankGuardCursor = new AnkGuardCursor(scene, 0, 0);
+    ankGuardCursor.visible = false;
+    this.add(ankGuardCursor);
 
-    // tivara_buildings_aknguard_flame
-    const tivara_buildings_aknguard_flame = scene.add.sprite(
-      -4,
-      41.16819043223069,
-      "factions",
-      "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-0.png"
-    );
-    tivara_buildings_aknguard_flame.play("tivara-buildings-aknguard-flame");
-    this.add(tivara_buildings_aknguard_flame);
+    // ankGuardFoundation1
+    const ankGuardFoundation1 = new AnkGuardFoundation1(scene, 0, 0);
+    ankGuardFoundation1.visible = false;
+    this.add(ankGuardFoundation1);
 
-    // tivara_buildings_ankguard_flame_stick_right
-    const tivara_buildings_ankguard_flame_stick_right = scene.add.sprite(
-      -43,
-      15,
-      "factions",
-      "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
-    );
-    tivara_buildings_ankguard_flame_stick_right.play("tivara-buildings-ankguard-flame-stick");
-    this.add(tivara_buildings_ankguard_flame_stick_right);
+    // ankGuardFoundation2
+    const ankGuardFoundation2 = new AnkGuardFoundation2(scene, 0, 0);
+    ankGuardFoundation2.visible = false;
+    this.add(ankGuardFoundation2);
 
-    // tivara_buildings_ankguard_flame_stick_left
-    const tivara_buildings_ankguard_flame_stick_left = scene.add.sprite(
-      -97,
-      -11,
-      "factions",
-      "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
-    );
-    tivara_buildings_ankguard_flame_stick_left.play("tivara-buildings-ankguard-flame-stick");
-    this.add(tivara_buildings_ankguard_flame_stick_left);
+    // ankGuardLevel1
+    const ankGuardLevel1 = new AnkGuardLevel1(scene, 0, 0);
+    this.add(ankGuardLevel1);
 
-    // tivara_buildings_ankguard_flag
-    const tivara_buildings_ankguard_flag = scene.add.sprite(
-      -29,
-      -123,
-      "factions",
-      "buildings/tivara/ankguard/ankguard-flag/flag-0.png"
-    );
-    tivara_buildings_ankguard_flag.play("tivara-buildings-ankguard-flag");
-    this.add(tivara_buildings_ankguard_flag);
+    this.ankGuardCursor = ankGuardCursor;
+    this.ankGuardFoundation1 = ankGuardFoundation1;
+    this.ankGuardFoundation2 = ankGuardFoundation2;
+    this.ankGuardLevel1 = ankGuardLevel1;
 
     /* START-USER-CTR-CODE */
-    // delay playing of animation for one of flame stick
-    setTimeout(() => {
-      if (!this.active) return;
-      tivara_buildings_ankguard_flame_stick_left.play(ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK);
-    }, 1000);
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
+  private ankGuardCursor: AnkGuardCursor;
+  private ankGuardFoundation1: AnkGuardFoundation1;
+  private ankGuardFoundation2: AnkGuardFoundation2;
+  private ankGuardLevel1: AnkGuardLevel1;
+
   /* START-USER-CODE */
   name = ObjectNames.AnkGuard;
-  // Write your code here.
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+  }
+
+  private handlePrefabVisibility(progress: number | null) {
+    this.ankGuardCursor.visible = progress === null;
+    this.ankGuardLevel1.visible = progress === 100;
+    this.ankGuardFoundation1.visible = progress !== null && progress < 50;
+    this.ankGuardFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+  }
 
   /* END-USER-CODE */
 }

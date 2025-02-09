@@ -22,34 +22,66 @@
             "y": 132.66656040978646,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "2a225345-fea6-477d-b465-8668a5b443ca",
-                    "label": "buildings_tivara_temple",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/temple/temple.png"
-                    },
-                    "x": -0.30766778687379315,
-                    "y": -36.666560409786456
+                    "prefabId": "36df16b2-d946-48bf-b6dd-48f656d26cac",
+                    "id": "7a3b9b6b-d7b5-483b-bc82-35eea8892d24",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "templeCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Image",
-                    "id": "787a34d8-176b-43a0-9c81-cd66f9df70a6",
-                    "label": "buildings_tivara_temple_temple_olival",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/temple/temple-olival.png"
-                    },
-                    "x": -2,
-                    "y": -13
+                    "prefabId": "430bf72e-8242-4421-a00a-21abec8e0937",
+                    "id": "c53e3710-9780-4936-9a10-5d315ed2a81f",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "templeFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "0ebaeafb-1f02-4d5f-a8f3-8aed60065013",
+                    "id": "5a9ce279-7489-461f-b824-ccee6170172e",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "templeFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "65e4120b-0d19-4828-aee6-6dca89606832",
+                    "id": "0faac52a-01e3-43c3-ab89-51a4a19e3cc4",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "templeLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

@@ -1,0 +1,45 @@
+{
+    "id": "430bf72e-8242-4421-a00a-21abec8e0937",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "08c0f4dc-942e-4842-9f1f-1ca775f7aa54",
+            "label": "buildings_tivara_temple_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-92.85872555160927 2.0843003546512477 1.717588417333971 -49.52617879048964 89.09801153792648 0.4054915641346497 87.84971977906085 12.8884091527907 1.0934425379011685 55.95447483365416 -89.73799615444524 12.69478030500892",
+            "x": 96,
+            "y": 132,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "17695a53-e8f6-4114-a1b0-9ac9d12186f8",
+                    "label": "buildings_tivara_temple",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/temple/foundation/foundation_1.png"
+                    },
+                    "x": -0.30766778687379315,
+                    "y": -36.666560409786456
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

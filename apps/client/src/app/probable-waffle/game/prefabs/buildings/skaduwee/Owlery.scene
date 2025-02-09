@@ -22,35 +22,66 @@
             "y": 176,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "ff08562d-2fe9-40fa-b76d-1d303cf8dede",
-                    "label": "owlery_building",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/owlery/owlery.png"
-                    },
-                    "y": -80
+                    "prefabId": "cf0fd26d-1f79-470e-b69d-7f6d5f6eaf7f",
+                    "id": "33159f07-b19e-4f8f-b759-c438891a1cc3",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "owleryCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Sprite",
-                    "id": "2342d4f1-6d17-4fd3-8ca2-001408894983",
-                    "label": "skaduwee_buildings_owlery_owl",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png"
-                    },
-                    "x": 3,
-                    "y": -134,
-                    "animationPlayMethod": 1,
-                    "animationKey": "skaduwee-buildings-owlery-owl"
+                    "prefabId": "01711a0b-064c-4bca-9f9e-87f0cc1c01f1",
+                    "id": "e85b7f38-99d7-41d2-9703-3ad8bbc9e184",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "owleryFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "9475b60b-794f-4b88-880e-4a5e0039d38a",
+                    "id": "a34c1c42-da4a-4d38-a8db-5e118a036018",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "owleryFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "408da1f7-215d-48e8-9cdd-a7f70673eeb2",
+                    "id": "8ec6eaeb-cc93-4f5d-a873-9c13e0a7082a",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "owleryLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

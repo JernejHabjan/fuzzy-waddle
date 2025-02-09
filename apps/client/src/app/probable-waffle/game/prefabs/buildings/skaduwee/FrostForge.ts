@@ -2,8 +2,13 @@
 
 /* START OF COMPILED CODE */
 
+import FrostForgeCursor from "./FrostForge/FrostForgeCursor";
+import FrostForgeFoundation1 from "./FrostForge/FrostForgeFoundation1";
+import FrostForgeFoundation2 from "./FrostForge/FrostForgeFoundation2";
+import FrostForgeLevel1 from "./FrostForge/FrostForgeLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
+import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -17,113 +22,55 @@ export default class FrostForge extends Phaser.GameObjects.Container {
       Phaser.Geom.Polygon.Contains
     );
 
-    // buildings_skaduwee_frost_forge_frost_forge_png
-    const buildings_skaduwee_frost_forge_frost_forge_png = scene.add.image(
-      -1,
-      -18.21845166634691,
-      "factions",
-      "buildings/skaduwee/frost_forge/frost_forge.png"
-    );
-    buildings_skaduwee_frost_forge_frost_forge_png.setOrigin(0.5, 0.7957454759361422);
-    this.add(buildings_skaduwee_frost_forge_frost_forge_png);
+    // frostForgeCursor
+    const frostForgeCursor = new FrostForgeCursor(scene, 0, 0);
+    frostForgeCursor.visible = false;
+    this.add(frostForgeCursor);
 
-    // frost_forge_flame
-    const frost_forge_flame = scene.add.sprite(
-      2,
-      -235,
-      "factions",
-      "buildings/skaduwee/frost_forge/flame/frost_forge_flame_1.png"
-    );
-    frost_forge_flame.scaleX = 1.5;
-    frost_forge_flame.scaleY = 2;
-    frost_forge_flame.setOrigin(0.5, 0.5151570341464229);
-    frost_forge_flame.play("frost_forge_flame");
-    this.add(frost_forge_flame);
+    // frostForgeFoundation1
+    const frostForgeFoundation1 = new FrostForgeFoundation1(scene, 0, 0);
+    frostForgeFoundation1.visible = false;
+    this.add(frostForgeFoundation1);
 
-    // cloud_3
-    const cloud_3 = scene.add.image(-25, -215, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
-    cloud_3.scaleX = 2;
-    cloud_3.scaleY = 2;
-    cloud_3.angle = -180;
-    this.add(cloud_3);
+    // frostForgeFoundation2
+    const frostForgeFoundation2 = new FrostForgeFoundation2(scene, 0, 0);
+    frostForgeFoundation2.visible = false;
+    this.add(frostForgeFoundation2);
 
-    // cloud_2
-    const cloud_2 = scene.add.image(26, -232, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
-    cloud_2.scaleX = 2;
-    cloud_2.scaleY = 2;
-    this.add(cloud_2);
+    // frostForgeLevel1
+    const frostForgeLevel1 = new FrostForgeLevel1(scene, 0, 0);
+    this.add(frostForgeLevel1);
 
-    // cloud_1
-    const cloud_1 = scene.add.image(2, -250, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
-    cloud_1.scaleX = 2.2;
-    cloud_1.scaleY = 2.2;
-    cloud_1.angle = -180;
-    this.add(cloud_1);
-
-    this.cloud_3 = cloud_3;
-    this.cloud_2 = cloud_2;
-    this.cloud_1 = cloud_1;
+    this.frostForgeCursor = frostForgeCursor;
+    this.frostForgeFoundation1 = frostForgeFoundation1;
+    this.frostForgeFoundation2 = frostForgeFoundation2;
+    this.frostForgeLevel1 = frostForgeLevel1;
 
     /* START-USER-CTR-CODE */
-    this.setupCloudsTween(this.cloud_1);
-    this.setupCloudsTween(this.cloud_2);
-    this.setupCloudsTween(this.cloud_3);
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
-  private cloud_3: Phaser.GameObjects.Image;
-  private cloud_2: Phaser.GameObjects.Image;
-  private cloud_1: Phaser.GameObjects.Image;
+  private frostForgeCursor: FrostForgeCursor;
+  private frostForgeFoundation1: FrostForgeFoundation1;
+  private frostForgeFoundation2: FrostForgeFoundation2;
+  private frostForgeLevel1: FrostForgeLevel1;
 
   /* START-USER-CODE */
   name = ObjectNames.FrostForge;
-  private tweens: Phaser.Tweens.Tween[] = [];
-  private setupCloudsTween(cloud: Phaser.GameObjects.Image) {
-    cloud.alpha = 0;
-    cloud.y = -215;
-    // Waiting for 2-4 seconds, then appear it in 1 second
-    this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
-      this.moveAndFade(cloud);
-    });
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
   }
 
-  private moveAndFade(cloud: Phaser.GameObjects.Image) {
-    if (!this.active) return;
-    // Moving up and disappearing
-    this.tweens.push(
-      this.scene.tweens.add({
-        targets: cloud,
-        y: -300,
-        alpha: 0,
-        duration: 2000,
-        onComplete: () => {
-          if (!this.active) return;
-          // Waiting for 2-4 seconds
-          this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
-            if (!this.active) return;
-            // Re-appearing and setting down
-            cloud.y = -215;
-            this.scene.tweens.add({
-              targets: cloud,
-              y: -275,
-              alpha: 1,
-              duration: 3000,
-              onComplete: () => {
-                // Setting up the next upward movement
-                this.moveAndFade(cloud);
-              }
-            });
-          });
-        }
-      })
-    );
+  private handlePrefabVisibility(progress: number | null) {
+    this.frostForgeCursor.visible = progress === null;
+    this.frostForgeLevel1.visible = progress === 100;
+    this.frostForgeFoundation1.visible = progress !== null && progress < 50;
+    this.frostForgeFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+    if (this.frostForgeLevel1.visible) {
+      this.frostForgeLevel1.start();
+    }
   }
-
-  override destroy(fromScene?: boolean) {
-    super.destroy(fromScene);
-    this.tweens.forEach((t) => t.destroy());
-  }
-
   /* END-USER-CODE */
 }
 

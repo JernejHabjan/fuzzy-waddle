@@ -22,74 +22,66 @@
             "y": 182.8318108210126,
             "list": [
                 {
-                    "type": "Image",
-                    "id": "777b9299-21ca-47c0-b340-58cc30eec3d3",
-                    "label": "ankguard-building",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/ankguard/ankguard.png"
-                    },
-                    "y": -54.83180956776931
+                    "prefabId": "7564d59b-99df-4c23-b501-44705a3dcf24",
+                    "id": "7dba22f5-32a3-49cf-ad02-cba3f2d68cd6",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "ankGuardCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Sprite",
-                    "id": "48e1cb45-52bc-43bb-8e87-33adaa6bb9b1",
-                    "label": "tivara_buildings_aknguard_flame",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-0.png"
-                    },
-                    "x": -4,
-                    "y": 41.16819043223069,
-                    "animationPlayMethod": 1,
-                    "animationKey": "tivara-buildings-aknguard-flame"
+                    "prefabId": "f7fab24c-06d7-4f82-9acb-6b23f42290a2",
+                    "id": "24fdeec7-d04b-4d5f-871d-887d04dd2f84",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "ankGuardFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Sprite",
-                    "id": "0a10dde3-ba8e-467f-a310-a24795e0cd03",
-                    "label": "tivara_buildings_ankguard_flame_stick_right",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
-                    },
-                    "x": -43,
-                    "y": 15,
-                    "animationPlayMethod": 1,
-                    "animationKey": "tivara-buildings-ankguard-flame-stick"
+                    "prefabId": "5a2007ca-1738-492e-80bd-8aab211a3df4",
+                    "id": "a6c7b5fd-8f3c-4767-9787-bcca07b5fe90",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "ankGuardFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
                 },
                 {
-                    "type": "Sprite",
-                    "id": "423d9d4c-cbff-4af1-a0fe-f7b76cc52bbc",
-                    "label": "tivara_buildings_ankguard_flame_stick_left",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/ankguard/ankguard-flame-stick/flame-stick-1.png"
-                    },
-                    "x": -97,
-                    "y": -11,
-                    "animationPlayMethod": 1,
-                    "animationKey": "tivara-buildings-ankguard-flame-stick"
-                },
-                {
-                    "type": "Sprite",
-                    "id": "46b16d0b-4dcf-4c10-aa25-d647df728dd4",
-                    "label": "tivara_buildings_ankguard_flag",
-                    "texture": {
-                        "key": "factions",
-                        "frame": "buildings/tivara/ankguard/ankguard-flag/flag-0.png"
-                    },
-                    "x": -29,
-                    "y": -123,
-                    "animationPlayMethod": 1,
-                    "animationKey": "tivara-buildings-ankguard-flag"
+                    "prefabId": "da5f4c17-a03e-4eb9-9704-d94b23691f91",
+                    "id": "6c843e77-a770-4b96-b888-9a6606d8e105",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "ankGuardLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

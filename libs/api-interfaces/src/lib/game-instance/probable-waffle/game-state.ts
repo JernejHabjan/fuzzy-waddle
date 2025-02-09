@@ -1,6 +1,9 @@
 import { BaseGameState } from "../game-state";
 import { BaseData } from "../data";
-import { HealthComponentData } from "../../communicators/probable-waffle/communicator-game-events";
+import {
+  ConstructionSiteComponentData,
+  HealthComponentData
+} from "../../communicators/probable-waffle/communicator-game-events";
 
 export interface ProbableWaffleGameCommand {
   command: string;
@@ -44,6 +47,7 @@ export interface ActorDefinition extends Record<string, any> {
   id?: string;
 
   health?: Partial<HealthComponentData>;
+  constructionSite?: Partial<ConstructionSiteComponentData>;
 
   // todo remove?
   selectable?: boolean;

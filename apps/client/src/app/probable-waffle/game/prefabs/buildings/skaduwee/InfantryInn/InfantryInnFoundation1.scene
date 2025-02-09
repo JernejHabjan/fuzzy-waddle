@@ -1,0 +1,46 @@
+{
+    "id": "42866629-f747-4abb-80e0-06ee012fc4c7",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "91cec813-e338-48bf-bf35-6c6bb773f6fd",
+            "label": "container_1",
+            "hitArea.shape": "ELLIPSE",
+            "hitArea.width": 122.35893225371242,
+            "hitArea.height": 61.09258617525286,
+            "x": 64,
+            "y": 128,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "ae1fc074-12c9-4915-a58b-e948d23cade0",
+                    "label": "infantry_inn_building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/infantry_inn/foundation/foundation_1.png"
+                    },
+                    "x": -0.16910280030724323,
+                    "y": -31.74029716298027
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

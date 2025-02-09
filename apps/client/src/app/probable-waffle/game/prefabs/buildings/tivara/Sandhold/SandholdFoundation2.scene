@@ -1,0 +1,46 @@
+{
+    "id": "df74fe55-9c73-4271-a370-8e4c10a6ebd6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "ec19aac1-f256-441d-8d7c-ff974c004b18",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-154 2 -143.69506876429327 -12.573094357850977 1.8734611246904365 -90.16911208748081 138.27607480024585 -15.20219592954831 153 0 123 24 105.41230515402918 31.464356968079414 80.43584022290452 44.60986482656608 60 53 5 79 -56 53 -76.65297868601124 44.60986482656608 -100.31489283128724 34.75073393270105 -120 22",
+            "x": 160,
+            "y": 240,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "1c365100-66b7-4c09-8ff8-f9f1d5f49d14",
+                    "label": "sandhold_building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/sandhold/foundation/foundation_2.png"
+                    },
+                    "y": -80
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

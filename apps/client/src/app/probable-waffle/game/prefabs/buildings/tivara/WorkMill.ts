@@ -2,13 +2,18 @@
 
 /* START OF COMPILED CODE */
 
+import WorkMillCursor from "./WorkMill/WorkMillCursor";
+import WorkMillFoundation1 from "./WorkMill/WorkMillFoundation1";
+import WorkMillFoundation2 from "./WorkMill/WorkMillFoundation2";
+import WorkMillLevel1 from "./WorkMill/WorkMillLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
+import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 64, y ?? 96.29342343955079);
+    super(scene, x ?? 64, y ?? 96);
 
     this.setInteractive(
       new Phaser.Geom.Polygon(
@@ -17,22 +22,52 @@ export default class WorkMill extends Phaser.GameObjects.Container {
       Phaser.Geom.Polygon.Contains
     );
 
-    // buildings_tivara_workmill_png_1
-    const buildings_tivara_workmill_png_1 = scene.add.image(
-      0,
-      -32.29342343955079,
-      "factions",
-      "buildings/tivara/workmill.png"
-    );
-    this.add(buildings_tivara_workmill_png_1);
+    // workMillCursor
+    const workMillCursor = new WorkMillCursor(scene, 0, 0);
+    workMillCursor.visible = false;
+    this.add(workMillCursor);
+
+    // workMillFoundation1
+    const workMillFoundation1 = new WorkMillFoundation1(scene, 0, 0);
+    workMillFoundation1.visible = false;
+    this.add(workMillFoundation1);
+
+    // workMillFoundation2
+    const workMillFoundation2 = new WorkMillFoundation2(scene, 0, 0);
+    workMillFoundation2.visible = false;
+    this.add(workMillFoundation2);
+
+    // workMillLevel1
+    const workMillLevel1 = new WorkMillLevel1(scene, 0, 0);
+    this.add(workMillLevel1);
+
+    this.workMillCursor = workMillCursor;
+    this.workMillFoundation1 = workMillFoundation1;
+    this.workMillFoundation2 = workMillFoundation2;
+    this.workMillLevel1 = workMillLevel1;
 
     /* START-USER-CTR-CODE */
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
+  private workMillCursor: WorkMillCursor;
+  private workMillFoundation1: WorkMillFoundation1;
+  private workMillFoundation2: WorkMillFoundation2;
+  private workMillLevel1: WorkMillLevel1;
+
   /* START-USER-CODE */
   name = ObjectNames.WorkMill;
-  // Write your code here.
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+  }
+
+  private handlePrefabVisibility(progress: number | null) {
+    this.workMillCursor.visible = progress === null;
+    this.workMillLevel1.visible = progress === 100;
+    this.workMillFoundation1.visible = progress !== null && progress < 50;
+    this.workMillFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
+  }
 
   /* END-USER-CODE */
 }

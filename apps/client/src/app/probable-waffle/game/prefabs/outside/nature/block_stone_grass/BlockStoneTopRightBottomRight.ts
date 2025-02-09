@@ -36,7 +36,7 @@ export default class BlockStoneTopRightBottomRight extends Phaser.GameObjects.Im
         new ObjectDescriptorComponent({
           color: 0x95a083
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent()
+        new ColliderComponent(this)
       ],
       []
     );

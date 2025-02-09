@@ -1,0 +1,48 @@
+{
+    "id": "a7db3e7d-f66d-4e97-bf80-a68c13a51af4",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "9f5be5bb-bc3f-4bcb-9d6e-0277a5d77e87",
+            "label": "container_1",
+            "hitArea.shape": "ELLIPSE",
+            "hitArea.y": 7,
+            "hitArea.width": 219.83793962711323,
+            "hitArea.height": 103.31459971915817,
+            "x": 129,
+            "y": 324,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "b455e300-5aa8-49b4-bcac-e527e14b342c",
+                    "label": "buildings_skaduwee_frost_forge_frost_forge_png",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/frost_forge/foundation/foundation_1.png"
+                    },
+                    "x": -1,
+                    "y": -18.21845166634691,
+                    "originY": 0.7957454759361422
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -16,6 +16,7 @@ import { ActorInfoDefinition, pwActorDefinitions } from "../../../data/actor-def
 import { ObjectNames } from "../../../data/object-names";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
+import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -82,6 +83,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   private actorKillSubscription?: Subscription;
+  private actorConstructionSubscription?: Subscription;
   private selectionChangedSubscription?: Subscription;
   private actorInfoLabelsVisibilitySubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
@@ -97,10 +99,9 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       const definition = pwActorDefinitions[actor.name as ObjectNames];
       this.setActorInfoLabel(definition);
       if (selectedActors.length === 1) {
-        this.actorDetails.showActorAttributes(actor, definition);
-        this.progress_bar.setProgressBar(actor);
-        this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
+        this.setActorDetailLabels(actor);
         this.subscribeToActorKillEvent(actor);
+        this.subscribeToActorConstructionEvent(actor);
         return;
       }
       // multi-selection
@@ -108,6 +109,13 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       this.actorDetails.hideAll();
       this.progress_bar.cleanActor();
     });
+  }
+
+  private setActorDetailLabels(actor: Phaser.GameObjects.GameObject) {
+    const definition = pwActorDefinitions[actor.name as ObjectNames];
+    this.actorDetails.showActorAttributes(actor, definition);
+    this.progress_bar.setProgressBar(actor);
+    this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
   }
 
   private setActorInfoLabel(actorDefinition: ActorInfoDefinition) {
@@ -136,13 +144,6 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.actorDetails.hideAll();
   }
 
-  destroy(fromScene?: boolean) {
-    super.destroy(fromScene);
-    this.selectionChangedSubscription?.unsubscribe();
-    this.actorKillSubscription?.unsubscribe();
-    this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
-  }
-
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
     this.actorKillSubscription?.unsubscribe();
     this.actorKillSubscription = getActorComponent(actor, HealthComponent)?.healthChanged.subscribe((newHealth) => {
@@ -150,6 +151,27 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
         this.hideAllLabels();
       }
     });
+  }
+
+  private subscribeToActorConstructionEvent(actor: Phaser.GameObjects.GameObject) {
+    this.actorConstructionSubscription?.unsubscribe();
+    this.actorConstructionSubscription = getActorComponent(
+      actor,
+      ConstructionSiteComponent
+    )?.constructionProgressPercentageChanged.subscribe((progress) => {
+      if (progress === 100) {
+        // show actions again
+        this.setActorDetailLabels(actor);
+      }
+    });
+  }
+
+  destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.selectionChangedSubscription?.unsubscribe();
+    this.actorKillSubscription?.unsubscribe();
+    this.actorConstructionSubscription?.unsubscribe();
+    this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
   }
   /* END-USER-CODE */
 }

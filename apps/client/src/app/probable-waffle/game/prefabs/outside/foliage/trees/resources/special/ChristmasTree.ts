@@ -36,7 +36,7 @@ export default class ChristmasTree extends Phaser.GameObjects.Image {
         new ObjectDescriptorComponent({
           color: 0xc6c209
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent()
+        new ColliderComponent(this)
       ],
       []
     );
