@@ -187,12 +187,11 @@ export function upgradeFromCoreToConstructingActorData(
   }
 
   const upgradeData = gatherConstructingActorData(actor);
-  for (const [key, component] of upgradeData.components) {
-    actorData.components.set(key, component); // Overwrites existing or adds new
+  for (const component of upgradeData.components) {
+    actorData.components.set(component.constructor, component);
   }
-
-  for (const [key, system] of upgradeData.systems) {
-    actorData.systems.set(key, system); // Overwrites existing or adds new
+  for (const system of upgradeData.systems) {
+    actorData.systems.set(system.constructor, system);
   }
 
   setActorProperties(actor, actorDefinition);
@@ -211,12 +210,11 @@ export function upgradeFromConstructingToFullActorData(
   }
 
   const upgradeData = gatherCompletedActorData(actor);
-  for (const [key, component] of upgradeData.components) {
-    actorData.components.set(key, component); // Overwrites existing or adds new
+  for (const component of upgradeData.components) {
+    actorData.components.set(component.constructor, component);
   }
-
-  for (const [key, system] of upgradeData.systems) {
-    actorData.systems.set(key, system); // Overwrites existing or adds new
+  for (const system of upgradeData.systems) {
+    actorData.systems.set(system.constructor, system);
   }
 
   setActorProperties(actor, actorDefinition);
