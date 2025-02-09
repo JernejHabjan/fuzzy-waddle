@@ -72,9 +72,9 @@ export function getGameObjectCurrentTile(gameObject: Phaser.GameObjects.GameObje
  * @param {Phaser.Scene} scene - The Phaser scene to monitor for initialization.
  * @param {() => void} callback - The callback function to execute once the scene is initialized.
  * @param {any} scope - The scope in which to call the callback function.
- * @param {number | null} [delay=0] - The delay in milliseconds before executing the callback. If null, the callback is executed immediately. Defaults to 0, so scene callback is async broadcast after all components register completely on main thread.
+ * @param {number | null} [delay=0] - The delay in milliseconds before executing the callback. If null, the callback is executed immediately. Defaults to null.
  */
-export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, scope: any, delay: number | null = 0) {
+export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, scope: any, delay: number | null = null) {
   getSceneInitializers(scene)
     .sceneInitialized.pipe(
       filter((created) => created),
@@ -85,6 +85,36 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
         callback.call(scope);
       } else {
         setTimeout(() => callback.call(scope), delay);
+      }
+    });
+}
+
+/**
+ * Waits until scene and gameObject are initialized and active, then executes the callback.
+ */
+export function onObjectReady(
+  gameObject: Phaser.GameObjects.GameObject,
+  callback: () => void,
+  scope: any,
+  delay: number | null = 0
+) {
+  const executeCallback = () => {
+    if (delay === null) {
+      callback.call(scope);
+    } else {
+      setTimeout(() => callback.call(scope), delay);
+    }
+  };
+  getSceneInitializers(gameObject.scene)
+    .sceneInitialized.pipe(
+      filter((created) => created),
+      first()
+    )
+    .subscribe(() => {
+      if (gameObject.active && gameObject.scene.sys.displayList.exists(gameObject)) {
+        executeCallback();
+      } else {
+        gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, () => executeCallback());
       }
     });
 }

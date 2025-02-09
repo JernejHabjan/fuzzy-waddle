@@ -56,6 +56,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
   name = ObjectNames.Sandhold;
   private setup() {
     this.on(ActorDataChangedEvent, this.actorDataChanged, this);
+    this.setupTestClickBuildEvent();
   }
 
   private actorDataChanged() {
@@ -73,6 +74,18 @@ export default class Sandhold extends Phaser.GameObjects.Container {
       this.sandholdFoundation2.visible = false;
       this.sandholdLevel1.visible = true;
     }
+  }
+  private setupTestClickBuildEvent() {
+    console.log("Just test click build event - remove this");
+    this.sandholdFoundation1.on("pointerdown", () => {
+      const constructionSiteComponent = getActorComponent(this, ConstructionSiteComponent);
+      if (!constructionSiteComponent) return;
+      if (constructionSiteComponent.notStarted()) {
+        constructionSiteComponent.startConstruction();
+      }
+      constructionSiteComponent.assignBuilder(this); // todo
+      constructionSiteComponent.update(0, 200); // todo
+    });
   }
 
   destroy(fromScene?: boolean) {

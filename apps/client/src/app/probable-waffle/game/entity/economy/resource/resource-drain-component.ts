@@ -3,7 +3,7 @@ import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";
-import { onSceneInitialized } from "../../../data/game-object-helper";
+import { onObjectReady } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ResourceDrainDefinition = {
@@ -22,7 +22,7 @@ export class ResourceDrainComponent {
     private readonly gameObject: GameObject,
     private readonly resourceDrainDefinition: ResourceDrainDefinition
   ) {
-    onSceneInitialized(gameObject.scene, this.init, this);
+    onObjectReady(gameObject, this.init, this);
   }
 
   init(): void {

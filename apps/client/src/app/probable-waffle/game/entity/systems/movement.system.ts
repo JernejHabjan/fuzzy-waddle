@@ -9,7 +9,7 @@ import {
   getGameObjectTileInNavigableRadius,
   getGameObjectTileInRadius,
   getGameObjectTransform,
-  onSceneInitialized
+  onObjectReady
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { AudioService } from "../../scenes/services/audio.service";
@@ -44,7 +44,7 @@ export class MovementSystem {
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
-    onSceneInitialized(gameObject.scene, this.init, this);
+    onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }

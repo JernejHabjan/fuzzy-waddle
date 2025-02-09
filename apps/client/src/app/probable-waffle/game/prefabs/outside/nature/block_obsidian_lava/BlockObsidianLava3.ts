@@ -44,7 +44,7 @@ export default class BlockObsidianLava3 extends Phaser.GameObjects.Container {
         new ObjectDescriptorComponent({
           color: 0xbd3c00
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent()
+        new ColliderComponent(this)
       ],
       []
     );

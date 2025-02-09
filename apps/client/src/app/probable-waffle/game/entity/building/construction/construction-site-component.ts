@@ -1,15 +1,15 @@
 import { PaymentType } from "../payment-type";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { ConstructionStateEnum } from "./construction-state-enum";
+import { ConstructionSiteComponentData, ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { EventEmitter } from "@angular/core";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
-import GameObject = Phaser.GameObjects.GameObject;
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "../../../data/object-names";
 import { ProductionCostDefinition } from "../production/production-cost-component";
+import { onObjectReady } from "../../../data/game-object-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished
@@ -17,6 +17,7 @@ export type ConstructionSiteDefinition = {
   maxAssignedBuilders: number;
   // Factor to multiply all passed building time with, independent of any currently assigned builders
   progressMadeAutomatically: number;
+  // Factor to multiply all passed building time with, dependent on the number of builders assigned
   progressMadePerBuilder: number;
   initialHealthPercentage: number;
   refundFactor: number;
@@ -31,7 +32,9 @@ export class ConstructionSiteComponent {
   public constructionStarted: EventEmitter<number> = new EventEmitter<number>();
   public constructionProgressChanged: EventEmitter<number> = new EventEmitter<number>();
   private remainingConstructionTime = 0;
-  private state: ConstructionStateEnum = ConstructionStateEnum.NotStarted;
+  private constructionSiteData: ConstructionSiteComponentData = {
+    state: ConstructionStateEnum.NotStarted
+  } satisfies ConstructionSiteComponentData;
   private assignedBuilders: GameObject[] = [];
   private onConstructionFinished: EventEmitter<GameObject> = new EventEmitter<GameObject>();
 
@@ -39,9 +42,16 @@ export class ConstructionSiteComponent {
     private readonly gameObject: GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
   ) {
+    onObjectReady(gameObject, this.init, this);
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
+  }
+
+  private init() {
+    if (this.constructionSiteData.state === ConstructionStateEnum.NotStarted) {
+      this.setInitialHealth();
+    }
   }
 
   private get productionDefinition(): ProductionCostDefinition | null {
@@ -50,13 +60,18 @@ export class ConstructionSiteComponent {
   }
 
   update(time: number, delta: number): void {
-    if (this.state == ConstructionStateEnum.Finished) {
+    if (this.constructionSiteData.state == ConstructionStateEnum.Finished) {
       this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
       return;
     }
-    if (this.state === ConstructionStateEnum.NotStarted && this.constructionSiteDefinition.startImmediately) {
+    if (
+      this.constructionSiteData.state === ConstructionStateEnum.NotStarted &&
+      this.constructionSiteDefinition.startImmediately
+    ) {
       this.startConstruction();
     }
+
+    if (this.constructionSiteData.state !== ConstructionStateEnum.Constructing) return;
 
     const speedBoost = 1.0;
     // float ConstructionProgress =
@@ -79,6 +94,14 @@ export class ConstructionSiteComponent {
       const healthIncrement =
         ((maxHealth - currentHealth) / productionDefinition.productionTime) * constructionProgress;
       healthComponent.healthComponentData.health += healthIncrement;
+
+      const maxArmour = healthComponent.healthDefinition.maxArmour;
+      if (maxArmour) {
+        const currentArmour = healthComponent.healthComponentData.armour;
+        const armourIncrement =
+          ((maxArmour - currentArmour) / productionDefinition.productionTime) * constructionProgress;
+        healthComponent.healthComponentData.armour += armourIncrement;
+      }
     }
 
     this.constructionProgressChanged.emit(this.remainingConstructionTime / productionDefinition.productionTime);
@@ -90,7 +113,7 @@ export class ConstructionSiteComponent {
   }
 
   startConstruction() {
-    if (this.state !== ConstructionStateEnum.NotStarted) {
+    if (this.constructionSiteData.state !== ConstructionStateEnum.NotStarted) {
       throw new Error("ConstructionSiteComponent can only be started once");
     }
     const productionDefinition = this.productionDefinition;
@@ -112,17 +135,23 @@ export class ConstructionSiteComponent {
 
     // start building
     this.remainingConstructionTime = productionDefinition.productionTime;
-    this.state = ConstructionStateEnum.Constructing;
+    this.constructionSiteData.state = ConstructionStateEnum.Constructing;
 
-    // set initial health
+    this.constructionStarted.emit(productionDefinition.productionTime);
+  }
+
+  private setInitialHealth() {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
       healthComponent.healthComponentData.health = Math.floor(
         healthComponent.healthDefinition.maxHealth * this.constructionSiteDefinition.initialHealthPercentage
       );
+      if (healthComponent.healthDefinition.maxArmour) {
+        healthComponent.healthComponentData.armour = Math.floor(
+          healthComponent.healthDefinition.maxArmour * this.constructionSiteDefinition.initialHealthPercentage
+        );
+      }
     }
-
-    this.constructionStarted.emit(productionDefinition.productionTime);
   }
 
   cancelConstruction() {
@@ -157,15 +186,18 @@ export class ConstructionSiteComponent {
   }
 
   notStarted() {
-    return this.state === ConstructionStateEnum.NotStarted;
+    return this.constructionSiteData.state === ConstructionStateEnum.NotStarted;
   }
 
   started() {
-    return this.state === ConstructionStateEnum.Constructing || this.state === ConstructionStateEnum.Paused;
+    return (
+      this.constructionSiteData.state === ConstructionStateEnum.Constructing ||
+      this.constructionSiteData.state === ConstructionStateEnum.Paused
+    );
   }
 
   isFinished() {
-    return this.state === ConstructionStateEnum.Finished;
+    return this.constructionSiteData.state === ConstructionStateEnum.Finished;
   }
 
   canAssignBuilder() {
@@ -184,7 +216,7 @@ export class ConstructionSiteComponent {
   }
 
   private finishConstruction() {
-    this.state = ConstructionStateEnum.Finished;
+    this.constructionSiteData.state = ConstructionStateEnum.Finished;
     // todo play sound
 
     if (this.constructionSiteDefinition.consumesBuilders) {
@@ -201,6 +233,14 @@ export class ConstructionSiteComponent {
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
     return 1 - this.remainingConstructionTime / productionDefinition.productionTime;
+  }
+
+  getData(): ConstructionSiteComponentData {
+    return this.constructionSiteData;
+  }
+
+  setData(data: Partial<ConstructionSiteComponentData>) {
+    this.constructionSiteData = { ...this.constructionSiteData, ...data };
   }
 
   private onDestroy() {

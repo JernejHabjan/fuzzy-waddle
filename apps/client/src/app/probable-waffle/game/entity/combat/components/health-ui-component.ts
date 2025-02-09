@@ -2,7 +2,7 @@ import { GameObjects } from "phaser";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
-import { getGameObjectBounds, getGameObjectDepth, onSceneInitialized } from "../../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 
@@ -28,10 +28,10 @@ export class HealthUiComponent {
   };
 
   private readonly armorColors = {
-    red: 0xff0000,
-    orange: 0xffa500,
-    yellow: 0xffff00,
-    green: 0xffffff
+    red: 0x8b4513, // Saddle brown for damaged armor
+    orange: 0x808080, // Gray for moderately worn armor
+    yellow: 0xa9a9a9, // Dark gray for lightly worn armor
+    green: 0xb8b8b8 // Light steel color for pristine armor
   };
 
   constructor(
@@ -39,7 +39,7 @@ export class HealthUiComponent {
     private readonly type: "health" | "armor"
   ) {
     this.bar = this.gameObject.scene.add.graphics();
-    onSceneInitialized(gameObject.scene, this.init, this);
+    onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.on(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);

@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { getTilesAroundGameObjectsOfShape } from "../../../data/tile-map-helpers";
-import { onSceneInitialized } from "../../../data/game-object-helper";
+import { onObjectReady } from "../../../data/game-object-helper";
 import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
@@ -35,7 +35,7 @@ export default class Olival extends Phaser.GameObjects.Container {
     /* START-USER-CTR-CODE */
     this.bounce(buildings_tivara_olival);
 
-    onSceneInitialized(this.scene, this.init, this);
+    onObjectReady(this, this.init, this);
     /* END-USER-CTR-CODE */
   }
 

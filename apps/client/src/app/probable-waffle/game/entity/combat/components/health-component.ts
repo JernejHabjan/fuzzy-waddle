@@ -14,6 +14,7 @@ export type HealthDefinition = {
 };
 
 export class HealthComponent {
+  static readonly DEBUG = false;
   static readonly KilledEvent = "killed";
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
   armorChanged: EventEmitter<number> = new EventEmitter<number>();
@@ -49,7 +50,7 @@ export class HealthComponent {
       },
       armour: (value: number, previousValue: number) => {
         // Example of custom logic when armor changes
-        console.log(`Armor changed from ${previousValue} to ${value}`);
+        if (HealthComponent.DEBUG) console.log(`Armor changed from ${previousValue} to ${value}`);
       }
     }
   } satisfies SyncOptions<HealthComponentData>;
@@ -149,5 +150,13 @@ export class HealthComponent {
   private destroy() {
     this.playerChangedSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
+  }
+
+  getData(): HealthComponentData {
+    return this.healthComponentData;
+  }
+
+  setData(data: Partial<HealthComponentData>) {
+    this.healthComponentData = { ...this.healthComponentData, ...data };
   }
 }

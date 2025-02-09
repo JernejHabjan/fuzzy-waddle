@@ -1,3 +1,5 @@
+import { ConstructionStateEnum } from "./construction-state-enum";
+
 export interface ProbableWaffleSelectionData {
   button: "left" | "right";
   objectIds?: string[];
@@ -11,4 +13,8 @@ export interface ProbableWaffleSelectionData {
 export type HealthComponentData = {
   health: number;
   armour: number;
+};
+
+export type ConstructionSiteComponentData = {
+  state: ConstructionStateEnum;
 };

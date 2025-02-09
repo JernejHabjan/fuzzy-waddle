@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { onSceneInitialized } from "../../../../data/game-object-helper";
+import { onObjectReady } from "../../../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { SandholdShared } from "./SandholdShared";
 /* END-USER-IMPORTS */
@@ -33,7 +33,7 @@ export default class SandholdLevel1 extends Phaser.GameObjects.Container {
     this.sandholdShared = new SandholdShared(this);
     this.sandholdShared.hoverCrystal(scene, hover_crystal);
 
-    onSceneInitialized(scene, this.onInit, this);
+    onObjectReady(this, this.onInit, this);
     /* END-USER-CTR-CODE */
   }
 
