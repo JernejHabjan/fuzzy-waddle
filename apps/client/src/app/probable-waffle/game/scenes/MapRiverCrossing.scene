@@ -66,8 +66,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1152,
-            "y": 832
+            "x": 1296,
+            "y": 816
         },
         {
             "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
@@ -163,8 +163,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1376,
-            "y": 800
+            "x": 1120,
+            "y": 960
         },
         {
             "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
@@ -223,8 +223,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1088,
-            "y": 944
+            "x": 960,
+            "y": 736
         },
         {
             "prefabId": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
@@ -1710,6 +1710,17 @@
             "label": "tree_17",
             "x": 1168,
             "y": 656
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
+            "id": "96b260be-36e3-4878-8e02-9b68495ac63a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairsRight",
+            "x": -512,
+            "y": 272
         }
     ],
     "plainObjects": [
