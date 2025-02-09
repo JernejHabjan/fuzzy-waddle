@@ -2,10 +2,12 @@
 
 /* START OF COMPILED CODE */
 
+import OlivalCursor from "./Olival/OlivalCursor";
+import OlivalFoundation1 from "./Olival/OlivalFoundation1";
+import OlivalLevel1 from "./Olival/OlivalLevel1";
 /* START-USER-IMPORTS */
-import { getTilesAroundGameObjectsOfShape } from "../../../data/tile-map-helpers";
-import { onObjectReady } from "../../../data/game-object-helper";
 import { ObjectNames } from "../../../data/object-names";
+import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -19,50 +21,48 @@ export default class Olival extends Phaser.GameObjects.Container {
       Phaser.Geom.Polygon.Contains
     );
 
-    // buildings_tivara_olival_floor
-    const buildings_tivara_olival_floor = scene.add.image(
-      0.008459511735509295,
-      4.464746540021096,
-      "factions",
-      "buildings/tivara/olival/olival-floor.png"
-    );
-    this.add(buildings_tivara_olival_floor);
+    // olivalCursor
+    const olivalCursor = new OlivalCursor(scene, 0, 0);
+    olivalCursor.visible = false;
+    this.add(olivalCursor);
 
-    // buildings_tivara_olival
-    const buildings_tivara_olival = scene.add.image(0, -22, "factions", "buildings/tivara/olival/olival.png");
-    this.add(buildings_tivara_olival);
+    // olivalFoundation1
+    const olivalFoundation1 = new OlivalFoundation1(scene, 0, 0);
+    olivalFoundation1.visible = false;
+    this.add(olivalFoundation1);
+
+    // olivalLevel1
+    const olivalLevel1 = new OlivalLevel1(scene, 0, 0);
+    this.add(olivalLevel1);
+
+    this.olivalCursor = olivalCursor;
+    this.olivalFoundation1 = olivalFoundation1;
+    this.olivalLevel1 = olivalLevel1;
 
     /* START-USER-CTR-CODE */
-    this.bounce(buildings_tivara_olival);
-
-    onObjectReady(this, this.init, this);
+    this.setup();
     /* END-USER-CTR-CODE */
   }
 
+  private olivalCursor: OlivalCursor;
+  private olivalFoundation1: OlivalFoundation1;
+  private olivalLevel1: OlivalLevel1;
+
   /* START-USER-CODE */
   name = ObjectNames.Olival;
-  private init() {
-    this.tintTilemapAroundTransform(this.scene, 0x7eb3cb, 6);
+
+  private setup() {
+    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
   }
 
-  private bounce = (image: Phaser.GameObjects.Image) => {
-    // bounce the sprite up and down forever with a 2 seconds duration
-    this.scene.tweens.add({
-      targets: image,
-      y: "-=4", // move up by 4
-      duration: 1000, // takes 1000ms
-      ease: "Sine.InOut",
-      yoyo: true, // reverse the animation after it completes
-      loop: -1 // loop indefinitely
-    });
-  };
-
-  private tintTilemapAroundTransform = (scene: Phaser.Scene, tint: number, radius: number) => {
-    const tiles = getTilesAroundGameObjectsOfShape(this, scene, radius, "circle");
-    tiles.forEach((tile) => {
-      tile.tint = tint;
-    });
-  };
+  private handlePrefabVisibility(progress: number | null) {
+    this.olivalCursor.visible = progress === null;
+    this.olivalLevel1.visible = progress === 100;
+    this.olivalFoundation1.visible = progress !== null && progress < 100;
+    if (this.olivalLevel1.visible) {
+      this.olivalLevel1.start();
+    }
+  }
   /* END-USER-CODE */
 }
 

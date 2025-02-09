@@ -22,8 +22,8 @@ export class HealthUiComponent {
 
   private readonly healthColors = {
     red: 0xff0000,
-    orange: 0xffa500,
-    yellow: 0xffff00,
+    orange: 0xff8c00, // Darker orange
+    yellow: 0xffd700, // Golden yellow for better contrast
     green: 0x00ff00
   };
 
