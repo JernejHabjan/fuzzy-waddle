@@ -1,0 +1,37 @@
+{
+    "id": "76709353-d428-4a0d-a34c-ff1bb90734e9",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "d8f7032e-36d6-49bc-95f5-09f624e7081b",
+            "label": "buildings_tivara_watchtower_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "4.679730980723043 55.46675383144921 62.96255654715912 19.46853804041517 101.98929282310415 50.01161667576024 122.55970184655219 53.78285833005904 123.90254201381228 147.2635427107816 64.01900249388103 176.66401915774185 6.079017077835758 150.26532757765023",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/tivara/watchtower/foundation/foundation_2.png"
+            },
+            "x": 64,
+            "y": 147,
+            "originY": 0.8364343678972962
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

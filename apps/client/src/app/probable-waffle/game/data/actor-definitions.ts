@@ -176,7 +176,8 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.AnkGuard,
         ObjectNames.Olival,
         ObjectNames.Temple,
-        ObjectNames.WorkMill
+        ObjectNames.WorkMill,
+        ObjectNames.WatchTower
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
@@ -250,7 +251,8 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.FrostForge,
         ObjectNames.InfantryInn,
         ObjectNames.Owlery,
-        ObjectNames.WorkMill
+        ObjectNames.WorkMill,
+        ObjectNames.WatchTower
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
