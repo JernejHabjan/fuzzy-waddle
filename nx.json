@@ -1,15 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "fuzzy-waddle",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx-cloud",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"],
-        "accessToken": "MjdiNDE4MmUtMTEwMC00ZDFmLWE1ZTQtYWFhMWI0MDQ0ODVkfHJlYWQtd3JpdGU="
-      }
-    }
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
@@ -71,6 +62,5 @@
   },
   "defaultProject": "client",
   "defaultBase": "develop",
-  "useLegacyCache": true,
-  "nxCloudId": "679e9e4abfe776a970526c3a"
+  "useLegacyCache": true
 }
