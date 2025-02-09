@@ -78,6 +78,7 @@ export class ConstructionSiteComponent {
       this.constructionSiteDefinition.startImmediately
     ) {
       this.startConstruction();
+      this.setInitialHealth();
     }
 
     if (this.constructionSiteData.state !== ConstructionStateEnum.Constructing) return;
