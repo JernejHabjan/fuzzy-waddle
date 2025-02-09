@@ -1,0 +1,58 @@
+{
+    "id": "408da1f7-215d-48e8-9cdd-a7f70673eeb2",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 176
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "17f2f3a5-ace2-4180-9207-2b62dc862e66",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-29.198913756532136 -132.13554367686658 -29.393053965807688 -151.14078501381945 -19.073855503242058 -165.58766286141133 1.0485814987609317 -172.81110178520728 21.686978423892192 -164.8137229767189 30.20031715550884 -150.36684512912703 30.45829711707298 -133.34016766589374 26.008798018194 -123.10624502212163 25.82529643447679 4.115500961156727 20.519498822728373 11.61680103293898 10.456779214239987 14.910054722989713 -8.387950234383709 15.093013261325865 -21.926882071258987 9.60425711124131 -25.22013576130973 3.749583884484423 -24.81325440994174 -123.10624502212163",
+            "x": 32,
+            "y": 176,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "325ab0e5-ddd7-4b22-8c59-ac483ff39dc0",
+                    "label": "owlery_building",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/owlery/owlery.png"
+                    },
+                    "y": -80
+                },
+                {
+                    "type": "Sprite",
+                    "id": "48ecf2ba-0e6d-4069-b53d-0d8003e1c03e",
+                    "label": "skaduwee_buildings_owlery_owl",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/owlery/owlery-owl/owlery-owl-0.png"
+                    },
+                    "x": 3,
+                    "y": -134,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skaduwee-buildings-owlery-owl"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
