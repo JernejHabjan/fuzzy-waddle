@@ -83,14 +83,9 @@ export class ConstructionSiteComponent {
     if (this.constructionSiteData.state !== ConstructionStateEnum.Constructing) return;
 
     const speedBoost = 1.0;
-    // float ConstructionProgress =
-    //   (DeltaTime * ProgressMadeAutomatically * speedBoost) +
-    //   (DeltaTime * ProgressMadePerBuilder * AssignedBuilders.Num() * speedBoost);
     const constructionProgress =
       delta * this.constructionSiteDefinition.progressMadeAutomatically * speedBoost +
       delta * this.constructionSiteDefinition.progressMadePerBuilder * this.assignedBuilders.length * speedBoost;
-
-    // todo other logic here
 
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
@@ -98,17 +93,20 @@ export class ConstructionSiteComponent {
     this.remainingConstructionTime -= constructionProgress;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
-      const currentHealth = healthComponent.healthComponentData.health;
       const maxHealth = healthComponent.healthDefinition.maxHealth;
-      const healthIncrement =
-        ((maxHealth - currentHealth) / productionDefinition.productionTime) * constructionProgress;
+      const initialHealth = maxHealth * this.constructionSiteDefinition.initialHealthPercentage;
+      const totalHealthToGain = maxHealth - initialHealth;
+
+      // Calculate health increment based on total health to gain
+      const healthIncrement = (totalHealthToGain / productionDefinition.productionTime) * constructionProgress;
       healthComponent.healthComponentData.health += healthIncrement;
 
+      // Handle armor similarly
       const maxArmour = healthComponent.healthDefinition.maxArmour;
       if (maxArmour) {
-        const currentArmour = healthComponent.healthComponentData.armour;
-        const armourIncrement =
-          ((maxArmour - currentArmour) / productionDefinition.productionTime) * constructionProgress;
+        const initialArmour = maxArmour * this.constructionSiteDefinition.initialHealthPercentage;
+        const totalArmourToGain = maxArmour - initialArmour;
+        const armourIncrement = (totalArmourToGain / productionDefinition.productionTime) * constructionProgress;
         healthComponent.healthComponentData.armour += armourIncrement;
       }
     }
