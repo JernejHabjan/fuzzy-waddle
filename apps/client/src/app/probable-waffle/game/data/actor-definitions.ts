@@ -177,7 +177,8 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.Olival,
         ObjectNames.Temple,
         ObjectNames.WorkMill,
-        ObjectNames.WatchTower
+        ObjectNames.WatchTower,
+        ObjectNames.Wall
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
@@ -252,7 +253,8 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.InfantryInn,
         ObjectNames.Owlery,
         ObjectNames.WorkMill,
-        ObjectNames.WatchTower
+        ObjectNames.WatchTower,
+        ObjectNames.Wall
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
@@ -1397,6 +1399,50 @@ export const pwActorDefinitions: {
       },
       container: {
         capacity: 2
+      },
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
+    }
+  },
+  [ObjectNames.Wall]: {
+    components: {
+      objectDescriptor: {
+        color: 0x95a083
+      },
+      owner: {
+        color: [
+          {
+            originalColor: 0x000000,
+            epsilon: 0
+          }
+        ]
+      },
+      vision: {
+        range: 8
+      },
+      info: {
+        name: "Wall",
+        description: "Defense building",
+        smallImage: {
+          key: "factions",
+          frame: "buildings/tivara/wall/wall_top_right_bottom_left.png",
+          origin: { x: 0.5, y: 0.5 }
+        }
+      },
+      selectable: { enabled: true },
+      health: {
+        maxHealth: 70
+      },
+      productionCost: {
+        resources: {
+          [ResourceType.Wood]: 10,
+          [ResourceType.Stone]: 30
+        },
+        refundFactor: 0.5,
+        productionTime: 5000,
+        costType: PaymentType.PayImmediately
       },
       collider: { enabled: true },
       constructable: {

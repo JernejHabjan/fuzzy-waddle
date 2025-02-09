@@ -54,6 +54,7 @@ import { ConstructionSiteComponent } from "../entity/building/construction/const
 import { HealthComponent } from "../entity/combat/components/health-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
+import Wall from "../prefabs/buildings/tivara/wall/Wall";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -99,7 +100,8 @@ export class ActorManager {
     [ObjectNames.WallTopRight]: WallTopRight,
     [ObjectNames.WallTopRightBottomLeft]: WallTopRightBottomLeft,
     [ObjectNames.WallTopRightBottomRight]: WallTopRightBottomRight,
-    [ObjectNames.WatchTower]: WatchTower
+    [ObjectNames.WatchTower]: WatchTower,
+    [ObjectNames.Wall]: Wall
   };
 
   private static skaduweeWorkers: ActorMap = {
