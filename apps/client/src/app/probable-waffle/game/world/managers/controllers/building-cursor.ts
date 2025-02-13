@@ -85,7 +85,6 @@ export class BuildingCursor {
     this.pointerLocation = worldPosition;
     if (this.downPointerLocation) {
       this.clearSpawnedCursorGameObjects();
-
       this.drawLineBetweenPoints();
     }
 
@@ -217,30 +216,94 @@ export class BuildingCursor {
     this.isDragging = false;
   }
 
+  private lineGraphics?: GameObjects.Graphics;
   private drawLineBetweenPoints() {
     if (!this.downPointerLocation || !this.pointerLocation) return;
 
     const snappedDownPointer = this.snapToGrid(new Vector2(this.downPointerLocation.x, this.downPointerLocation.y));
     const snappedPointer = this.snapToGrid(new Vector2(this.pointerLocation.x, this.pointerLocation.y));
 
-    let x = snappedDownPointer.x;
-    let y = snappedDownPointer.y;
+    const startX = snappedDownPointer.x;
+    const startY = snappedDownPointer.y;
+    const endX = snappedPointer.x;
+    const endY = snappedPointer.y;
 
-    let dx = snappedPointer.x - snappedDownPointer.x;
-    let dy = snappedPointer.y - snappedDownPointer.y;
+    // Convert to isometric coordinates using 2:1 ratio (30-degree angle)
+    // For true isometric, we use sqrt(3) for the Y factor (approximately 1.732)
+    const isoStartX = startX - startY;
+    const isoStartY = (startX + startY) / 1.732; // Using approximately 30-degree angle
+    const isoEndX = endX - endY;
+    const isoEndY = (endX + endY) / 1.732;
 
-    const steps = Math.abs(dx / this.tileSize) + Math.abs(dy / this.tileSize);
+    let midpointX, midpointY;
 
-    for (let i = 0; i < steps; i++) {
-      if (Math.abs(dx) > Math.abs(dy)) {
-        x += Math.sign(dx) * this.tileSize;
-        dx -= Math.sign(dx) * this.tileSize;
+    // Calculate the differences in isometric space
+    const dIsoX = isoEndX - isoStartX;
+    const dIsoY = isoEndY - isoStartY;
+
+    // Determine which isometric axis to follow first
+    if (Math.abs(dIsoX) > Math.abs(dIsoY)) {
+      // Move along isometric X axis first
+      const isoMidX = isoEndX;
+      const isoMidY = isoStartY;
+
+      // Convert back to screen coordinates
+      midpointX = (isoMidX + isoMidY * 1.732) / 2;
+      midpointY = (isoMidY * 1.732 - isoMidX) / 2;
+    } else {
+      // Move along isometric Y axis first
+      const isoMidX = isoStartX;
+      const isoMidY = isoEndY;
+
+      // Convert back to screen coordinates
+      midpointX = (isoMidX + isoMidY * 1.732) / 2;
+      midpointY = (isoMidY * 1.732 - isoMidX) / 2;
+    }
+
+    // Ensure midpoint is snapped to the isometric grid
+    const snappedMidpoint = this.snapToGrid(new Vector2(midpointX, midpointY));
+    midpointX = snappedMidpoint.x;
+    midpointY = snappedMidpoint.y;
+
+    const lineGraphics = this.lineGraphics || this.scene.add.graphics();
+    this.lineGraphics = lineGraphics;
+    lineGraphics.clear();
+    lineGraphics.lineStyle(2, 0xff0000, 1);
+
+    // Draw the path
+    lineGraphics.moveTo(startX, startY);
+    lineGraphics.lineTo(midpointX, midpointY);
+    lineGraphics.lineTo(endX, endY);
+
+    lineGraphics.strokePath();
+
+    // Spawn preview buildings along the path
+    this.clearSpawnedCursorGameObjects();
+
+    // Calculate the number of steps needed based on tile size
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const steps = Math.max(Math.abs(dx), Math.abs(dy)) / (this.tileSize / 2);
+
+    // Spawn buildings along the path
+    for (let i = 0; i <= steps; i++) {
+      let t = i / steps;
+      let x, y;
+
+      if (t <= 0.5) {
+        // First half of the path (start to midpoint)
+        t = t * 2;
+        x = startX + (midpointX - startX) * t;
+        y = startY + (midpointY - startY) * t;
       } else {
-        y += Math.sign(dy) * this.tileSize;
-        dy -= Math.sign(dy) * this.tileSize;
+        // Second half of the path (midpoint to end)
+        t = (t - 0.5) * 2;
+        x = midpointX + (endX - midpointX) * t;
+        y = midpointY + (endY - midpointY) * t;
       }
 
-      this.spawnCursorGameObjectAt(x, y);
+      const snappedPoint = this.snapToGrid(new Vector2(x, y));
+      this.spawnCursorGameObjectAt(snappedPoint.x, snappedPoint.y);
     }
   }
 
