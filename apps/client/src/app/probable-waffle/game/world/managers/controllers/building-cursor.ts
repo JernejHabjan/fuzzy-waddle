@@ -293,7 +293,7 @@ export class BuildingCursor {
       const dy = toIsoY - fromIsoY;
 
       // Calculate number of steps needed (using Manhattan distance in iso space)
-      const steps = Math.max(Math.abs(dx), Math.abs(dy));
+      const steps = Math.max(Math.abs(dx), Math.abs(dy)) / 2;
 
       for (let i = 0; i <= steps; i++) {
         const t = i / steps;
@@ -306,7 +306,7 @@ export class BuildingCursor {
         const screenY = ((isoY - isoX) * (this.tileSize / 4)) / 2;
 
         // Snap to grid and add point
-        const snappedPoint = this.snapToGrid(new Vector2(screenX, screenY));
+        const snappedPoint = new Vector2(screenX, screenY);
         points.push(snappedPoint);
       }
 
@@ -337,6 +337,7 @@ export class BuildingCursor {
     const actor = ActorManager.createActorCore(this.scene, this.building!.name as ObjectNames, { x, y, z: 0 });
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
+    DepthHelper.setActorDepth(gameObject);
 
     if (!this.isDragging) {
       this.drawPlacementGrid({ x, y });
