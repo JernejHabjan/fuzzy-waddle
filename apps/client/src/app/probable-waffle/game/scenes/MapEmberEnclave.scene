@@ -5,6 +5,7 @@
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
         "snapEnabled": true,
+        "snapWidth": 32,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -20,7 +21,6 @@
             "type": "TilemapLayer",
             "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
             "label": "tilemap_level_1",
-            "x": -32,
             "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "layerName": "TileMap_level_1",
             "tilesets": [
@@ -81,7 +81,7 @@
                 "y"
             ],
             "label": "blockObsidianLava5",
-            "x": -992,
+            "x": -960,
             "y": 800
         },
         {

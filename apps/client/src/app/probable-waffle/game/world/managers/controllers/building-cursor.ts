@@ -150,9 +150,10 @@ export class BuildingCursor {
   }
 
   private snapToGrid(worldPosition: Vector2): Vector2 {
-    const snap = this.tileSize / 2;
-    const snapX = Math.round(worldPosition.x / snap) * snap;
-    const snapY = Math.round(worldPosition.y / snap) * snap;
+    const snapByX = this.tileSize / 2;
+    const snapByY = this.tileSize / 4;
+    const snapX = Math.round(worldPosition.x / snapByX) * snapByX;
+    const snapY = Math.round(worldPosition.y / snapByY) * snapByY;
 
     return new Vector2(snapX, snapY);
   }
