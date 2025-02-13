@@ -228,12 +228,11 @@ export class BuildingCursor {
     const endX = snappedPointer.x;
     const endY = snappedPointer.y;
 
-    // Convert to isometric coordinates using 2:1 ratio (30-degree angle)
-    // For true isometric, we use sqrt(3) for the Y factor (approximately 1.732)
-    const isoStartX = startX - startY;
-    const isoStartY = (startX + startY) / 1.732; // Using approximately 30-degree angle
-    const isoEndX = endX - endY;
-    const isoEndY = (endX + endY) / 1.732;
+    // Convert to isometric coordinates using the same 2:1 ratio as the grid
+    const isoStartX = startX / (this.tileSize / 2) - startY / (this.tileSize / 4);
+    const isoStartY = startX / (this.tileSize / 2) + startY / (this.tileSize / 4);
+    const isoEndX = endX / (this.tileSize / 2) - endY / (this.tileSize / 4);
+    const isoEndY = endX / (this.tileSize / 2) + endY / (this.tileSize / 4);
 
     let midpointX, midpointY;
 
@@ -248,16 +247,16 @@ export class BuildingCursor {
       const isoMidY = isoStartY;
 
       // Convert back to screen coordinates
-      midpointX = (isoMidX + isoMidY * 1.732) / 2;
-      midpointY = (isoMidY * 1.732 - isoMidX) / 2;
+      midpointX = ((isoMidX + isoMidY) * (this.tileSize / 2)) / 2;
+      midpointY = ((isoMidY - isoMidX) * (this.tileSize / 4)) / 2;
     } else {
       // Move along isometric Y axis first
       const isoMidX = isoStartX;
       const isoMidY = isoEndY;
 
       // Convert back to screen coordinates
-      midpointX = (isoMidX + isoMidY * 1.732) / 2;
-      midpointY = (isoMidY * 1.732 - isoMidX) / 2;
+      midpointX = ((isoMidX + isoMidY) * (this.tileSize / 2)) / 2;
+      midpointY = ((isoMidY - isoMidX) * (this.tileSize / 4)) / 2;
     }
 
     // Ensure midpoint is snapped to the isometric grid
