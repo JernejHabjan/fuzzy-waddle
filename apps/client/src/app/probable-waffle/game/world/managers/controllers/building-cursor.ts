@@ -273,36 +273,63 @@ export class BuildingCursor {
     lineGraphics.moveTo(startX, startY);
     lineGraphics.lineTo(midpointX, midpointY);
     lineGraphics.lineTo(endX, endY);
-
     lineGraphics.strokePath();
 
     // Spawn preview buildings along the path
     this.clearSpawnedCursorGameObjects();
 
-    // Calculate the number of steps needed based on tile size
-    const dx = endX - startX;
-    const dy = endY - startY;
-    const steps = Math.max(Math.abs(dx), Math.abs(dy)) / (this.tileSize / 2);
+    // Calculate points along the path in isometric space
+    const generatePoints = (from: Vector2, to: Vector2): Vector2[] => {
+      const points: Vector2[] = [];
 
-    // Spawn buildings along the path
-    for (let i = 0; i <= steps; i++) {
-      let t = i / steps;
-      let x, y;
+      // Convert screen coordinates to isometric coordinates
+      const fromIsoX = from.x / (this.tileSize / 2) - from.y / (this.tileSize / 4);
+      const fromIsoY = from.x / (this.tileSize / 2) + from.y / (this.tileSize / 4);
+      const toIsoX = to.x / (this.tileSize / 2) - to.y / (this.tileSize / 4);
+      const toIsoY = to.x / (this.tileSize / 2) + to.y / (this.tileSize / 4);
 
-      if (t <= 0.5) {
-        // First half of the path (start to midpoint)
-        t = t * 2;
-        x = startX + (midpointX - startX) * t;
-        y = startY + (midpointY - startY) * t;
-      } else {
-        // Second half of the path (midpoint to end)
-        t = (t - 0.5) * 2;
-        x = midpointX + (endX - midpointX) * t;
-        y = midpointY + (endY - midpointY) * t;
+      // Calculate differences in isometric space
+      const dx = toIsoX - fromIsoX;
+      const dy = toIsoY - fromIsoY;
+
+      // Calculate number of steps needed (using Manhattan distance in iso space)
+      const steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        // Interpolate in isometric space
+        const isoX = fromIsoX + dx * t;
+        const isoY = fromIsoY + dy * t;
+
+        // Convert back to screen coordinates
+        const screenX = ((isoX + isoY) * (this.tileSize / 2)) / 2;
+        const screenY = ((isoY - isoX) * (this.tileSize / 4)) / 2;
+
+        // Snap to grid and add point
+        const snappedPoint = this.snapToGrid(new Vector2(screenX, screenY));
+        points.push(snappedPoint);
       }
 
-      const snappedPoint = this.snapToGrid(new Vector2(x, y));
-      this.spawnCursorGameObjectAt(snappedPoint.x, snappedPoint.y);
+      return points;
+    };
+
+    // Generate points for both segments
+    const firstSegmentPoints = generatePoints(new Vector2(startX, startY), new Vector2(midpointX, midpointY));
+
+    const secondSegmentPoints = generatePoints(new Vector2(midpointX, midpointY), new Vector2(endX, endY));
+
+    // Combine points and remove duplicates
+    const allPoints = [...firstSegmentPoints];
+    for (const point of secondSegmentPoints) {
+      const isDuplicate = allPoints.some((existing) => existing.x === point.x && existing.y === point.y);
+      if (!isDuplicate) {
+        allPoints.push(point);
+      }
+    }
+
+    // Spawn buildings at each point
+    for (const point of allPoints) {
+      this.spawnCursorGameObjectAt(point.x, point.y);
     }
   }
 
