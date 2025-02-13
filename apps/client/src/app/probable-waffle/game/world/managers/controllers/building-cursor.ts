@@ -53,9 +53,7 @@ export class BuildingCursor {
       z: 0
     } satisfies ActorDefinition);
 
-    const gameObject = this.scene.add.existing(actor);
-
-    this.building = gameObject;
+    this.building = this.scene.add.existing(actor);
     this.pointerLocation = worldPosition;
 
     if (!this.isDragging) {
@@ -229,7 +227,6 @@ export class BuildingCursor {
     this.isDragging = false;
   }
 
-  private lineGraphics?: GameObjects.Graphics;
   private drawLineBetweenPoints() {
     if (!this.downPointerLocation || !this.pointerLocation) return;
 
@@ -276,17 +273,6 @@ export class BuildingCursor {
     const snappedMidpoint = new Vector2(midpointX, midpointY);
     midpointX = snappedMidpoint.x;
     midpointY = snappedMidpoint.y;
-
-    const lineGraphics = this.lineGraphics || this.scene.add.graphics();
-    this.lineGraphics = lineGraphics;
-    lineGraphics.clear();
-    lineGraphics.lineStyle(2, 0xff0000, 1);
-
-    // Draw the path
-    lineGraphics.moveTo(startX, startY);
-    lineGraphics.lineTo(midpointX, midpointY);
-    lineGraphics.lineTo(endX, endY);
-    lineGraphics.strokePath();
 
     // Spawn preview buildings along the path
     this.clearSpawnedCursorGameObjects();
