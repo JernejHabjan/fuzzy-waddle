@@ -260,7 +260,7 @@ export class BuildingCursor {
     }
 
     // Ensure midpoint is snapped to the isometric grid
-    const snappedMidpoint = this.snapToGrid(new Vector2(midpointX, midpointY));
+    const snappedMidpoint = new Vector2(midpointX, midpointY);
     midpointX = snappedMidpoint.x;
     midpointY = snappedMidpoint.y;
 
