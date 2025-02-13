@@ -101,7 +101,7 @@ export class BuildingCursor {
   }
 
   canConstructBuildingAt(location: Vector2Simple): boolean {
-    return true; // Replace with actual placement check.
+    return true; // todo Replace with actual placement check.
   }
 
   private drawPlacementGrid(location: Vector2Simple) {
@@ -149,12 +149,25 @@ export class BuildingCursor {
   }
 
   private snapToGrid(worldPosition: Vector2): Vector2 {
-    const snapByX = this.tileSize / 2;
-    const snapByY = this.tileSize / 4;
-    const snapX = Math.round(worldPosition.x / snapByX) * snapByX;
-    const snapY = Math.round(worldPosition.y / snapByY) * snapByY;
+    // Constants for isometric grid
+    const tileWidth = this.tileSize;
+    const tileHeight = this.tileSize / 2;
 
-    return new Vector2(snapX, snapY);
+    // Convert to isometric coordinates
+    // Divide by half-tile dimensions to normalize the grid
+    const isoX = (worldPosition.x / (tileWidth / 2) - worldPosition.y / (tileHeight / 2)) / 2;
+    const isoY = (worldPosition.x / (tileWidth / 2) + worldPosition.y / (tileHeight / 2)) / 2;
+
+    // Snap to grid
+    const snappedIsoX = Math.round(isoX);
+    const snappedIsoY = Math.round(isoY);
+
+    // Convert back to world coordinates
+    // Multiply by tile dimensions to get back to world space
+    const snappedX = ((snappedIsoX + snappedIsoY) * tileWidth) / 2;
+    const snappedY = ((snappedIsoY - snappedIsoX) * tileHeight) / 2;
+
+    return new Vector2(snappedX, snappedY);
   }
 
   private drawAttackRange(location: Vector2Simple) {
@@ -376,7 +389,7 @@ export class BuildingCursor {
     } satisfies ActorDefinition;
 
     upgradeFromCoreToConstructingActorData(this.building, actorDefinition);
-    // Save to game state
+    // todo Save to game state
   }
 
   private subscribeToCancelAction() {
