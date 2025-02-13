@@ -25,11 +25,16 @@ export class BuildingCursor {
   private readonly startPlacingSubscription: Subscription;
   private readonly stopPlacingSubscription: Subscription;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
+  private downPointerLocation?: Vector2Simple;
+  private spawnedCursorGameObjects: GameObjects.GameObject[] = [];
+  private isDragging: boolean = false;
+
   constructor(private scene: GameProbableWaffleScene) {
     this.startPlacingSubscription = this.startPlacingBuilding.subscribe((name) => this.spawn(name));
     this.stopPlacingSubscription = this.stopPlacingBuilding.subscribe(() => this.stop());
     this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
-    this.scene.input.on(Input.Events.POINTER_DOWN, this.placeBuilding, this);
+    this.scene.input.on(Input.Events.POINTER_DOWN, this.onPointerDown, this);
+    this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
   }
@@ -48,22 +53,28 @@ export class BuildingCursor {
       z: 0
     } satisfies ActorDefinition);
 
-    // noinspection UnnecessaryLocalVariableJS
     const gameObject = this.scene.add.existing(actor);
 
     this.building = gameObject;
     this.pointerLocation = worldPosition;
 
-    this.drawPlacementGrid();
-    this.drawAttackRange();
+    if (!this.isDragging) {
+      this.drawPlacementGrid(worldPosition);
+      this.drawAttackRange(worldPosition);
+    }
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
+    if (this.downPointerLocation) {
+      this.isDragging = true;
+    }
+
     const transformComponent = getGameObjectTransform(this.building);
     if (!transformComponent) return;
 
     let worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
     worldPosition = this.snapToGrid(worldPosition);
+
     if (
       this.pointerLocation &&
       this.pointerLocation.x === worldPosition.x &&
@@ -72,43 +83,43 @@ export class BuildingCursor {
       return;
 
     this.pointerLocation = worldPosition;
+    if (this.downPointerLocation) {
+      this.clearSpawnedCursorGameObjects();
+
+      this.drawLineBetweenPoints();
+    }
 
     transformComponent.x = worldPosition.x;
     transformComponent.y = worldPosition.y;
 
     DepthHelper.setActorDepth(this.building);
 
-    // Clear the previous graphics before drawing the new ones
     this.clearGraphics();
-
-    this.drawPlacementGrid();
-    this.drawAttackRange();
+    if (!this.isDragging) {
+      this.drawPlacementGrid(worldPosition);
+      this.drawAttackRange(worldPosition);
+    }
   }
 
   canConstructBuildingAt(location: Vector2Simple): boolean {
-    // Placeholder logic, assuming building placement is always valid.
     return true; // Replace with actual placement check.
   }
 
-  private drawPlacementGrid() {
-    if (!this.pointerLocation || !this.building) return;
+  private drawPlacementGrid(location: Vector2Simple) {
+    if (!location || !this.building) return;
 
     const bounds = getGameObjectBounds(this.building);
     if (!bounds) return;
 
     const gridGraphics = this.scene.add.graphics();
     const tileSize = this.tileSize;
-    const xPos = this.pointerLocation.x;
-    const yPos = this.pointerLocation.y;
+    const xPos = location.x;
+    const yPos = location.y;
 
-    // Check if building can be placed here
-    const canConstruct = this.canConstructBuildingAt(this.pointerLocation);
+    const canConstruct = this.canConstructBuildingAt(location);
 
-    // Set grid line color based on whether placement is valid
-    gridGraphics.lineStyle(2, canConstruct ? 0x00ff00 : 0xff0000, 1); // Green if valid, red if invalid
-
-    // Set fill color to green for valid placement and semi-transparent
-    gridGraphics.fillStyle(canConstruct ? 0x00ff00 : 0xff0000, 0.3); // Semi-transparent fill
+    gridGraphics.lineStyle(2, canConstruct ? 0x00ff00 : 0xff0000, 1);
+    gridGraphics.fillStyle(canConstruct ? 0x00ff00 : 0xff0000, 0.3);
 
     function moveLineTo(isoX: number, isoY: number) {
       gridGraphics.moveTo(isoX, isoY - tileSize / 4);
@@ -117,25 +128,19 @@ export class BuildingCursor {
       gridGraphics.lineTo(isoX - tileSize / 2, isoY);
     }
 
-    // Draw isometric grid
     for (let i = -3; i <= 3; i++) {
       for (let j = -3; j <= 3; j++) {
-        // Calculate isometric coordinates
         const isoX = xPos + (i - j) * (tileSize / 2);
         const isoY = yPos + (i + j) * (tileSize / 4);
 
-        // Skip outer 3 tiles for filling (only outline them)
         if (Math.abs(i) > 2 || Math.abs(j) > 2) {
-          // Outline only the outer tiles
           moveLineTo(isoX, isoY);
           gridGraphics.closePath();
           gridGraphics.stroke();
         } else {
-          // Fill the inner tiles (under the building)
           gridGraphics.beginPath();
           moveLineTo(isoX, isoY);
           gridGraphics.closePath();
-
           gridGraphics.fillPath();
         }
       }
@@ -152,8 +157,8 @@ export class BuildingCursor {
     return new Vector2(snapX, snapY);
   }
 
-  private drawAttackRange() {
-    if (!this.pointerLocation || !this.building) return;
+  private drawAttackRange(location: Vector2Simple) {
+    if (!location || !this.building) return;
 
     const definition = pwActorDefinitions[this.building.name as ObjectNames];
     if (!definition) return;
@@ -161,7 +166,6 @@ export class BuildingCursor {
     const attackDefinition = definition.components?.attack;
     if (!attackDefinition || !attackDefinition.attacks.length) return;
 
-    // Clear previous attack range ellipse if it exists
     if (this.attackRangeCircle) {
       this.attackRangeCircle.clear();
     }
@@ -171,19 +175,17 @@ export class BuildingCursor {
     const rangeRadiusX = primaryAttack.range;
     const rangeRadiusY = rangeRadiusX / 2;
     const attackRangeGraphics = this.scene.add.graphics();
-    attackRangeGraphics.lineStyle(2, 0xff0000, 1); // Red color for the attack range
+    attackRangeGraphics.lineStyle(2, 0xff0000, 1);
 
-    const xPos = this.pointerLocation.x;
-    const yPos = this.pointerLocation.y;
+    const xPos = location.x;
+    const yPos = location.y;
 
-    // Draw the ellipse to represent the attack range in isometric perspective
     attackRangeGraphics.strokeEllipse(xPos, yPos, rangeRadiusX, rangeRadiusY);
 
     this.attackRangeCircle = attackRangeGraphics;
   }
 
   private clearGraphics() {
-    // Clear the previous graphics (grid and attack range)
     if (this.placementGrid) {
       this.placementGrid.clear();
     }
@@ -192,23 +194,86 @@ export class BuildingCursor {
     }
   }
 
-  private placeBuilding(pointer: Input.Pointer) {
+  private onPointerDown(pointer: Input.Pointer) {
     if (!this.pointerLocation || !this.building) return;
     if (pointer.rightButtonReleased()) {
       this.stop();
       return;
     }
-    // Placeholder logic, assuming building placement is always valid.
-    this.allCellsAreValid = true; // todo Replace with actual placement check.
 
-    // Save the building to the game state
-    this.spawnConstructionSite();
+    this.downPointerLocation = this.snapToGrid(new Vector2(this.pointerLocation.x, this.pointerLocation.y));
+  }
 
-    // Reset the building cursor
+  private onPointerUp(pointer: Input.Pointer) {
+    if (!this.pointerLocation || !this.building || !this.downPointerLocation) return;
+    if (pointer.rightButtonReleased()) {
+      this.stop();
+      return;
+    }
+
+    this.placeBuildings();
+    this.downPointerLocation = undefined;
+    this.isDragging = false;
+  }
+
+  private drawLineBetweenPoints() {
+    if (!this.downPointerLocation || !this.pointerLocation) return;
+
+    const snappedDownPointer = this.snapToGrid(new Vector2(this.downPointerLocation.x, this.downPointerLocation.y));
+    const snappedPointer = this.snapToGrid(new Vector2(this.pointerLocation.x, this.pointerLocation.y));
+
+    let x = snappedDownPointer.x;
+    let y = snappedDownPointer.y;
+
+    let dx = snappedPointer.x - snappedDownPointer.x;
+    let dy = snappedPointer.y - snappedDownPointer.y;
+
+    const steps = Math.abs(dx / this.tileSize) + Math.abs(dy / this.tileSize);
+
+    for (let i = 0; i < steps; i++) {
+      if (Math.abs(dx) > Math.abs(dy)) {
+        x += Math.sign(dx) * this.tileSize;
+        dx -= Math.sign(dx) * this.tileSize;
+      } else {
+        y += Math.sign(dy) * this.tileSize;
+        dy -= Math.sign(dy) * this.tileSize;
+      }
+
+      this.spawnCursorGameObjectAt(x, y);
+    }
+  }
+
+  private spawnCursorGameObjectAt(x: number, y: number) {
+    const actor = ActorManager.createActorCore(this.scene, this.building!.name as ObjectNames, { x, y, z: 0 });
+    const gameObject = this.scene.add.existing(actor);
+    this.spawnedCursorGameObjects.push(gameObject);
+
+    if (!this.isDragging) {
+      this.drawPlacementGrid({ x, y });
+      this.drawAttackRange({ x, y });
+    }
+  }
+
+  private clearSpawnedCursorGameObjects() {
+    for (const gameObject of this.spawnedCursorGameObjects) {
+      gameObject.destroy();
+    }
+    this.spawnedCursorGameObjects = [];
+  }
+
+  private placeBuildings() {
+    this.allCellsAreValid = true; // Placeholder logic
+
+    for (const gameObject of this.spawnedCursorGameObjects) {
+      this.building = gameObject;
+      this.spawnConstructionSite();
+    }
+
     this.building = undefined;
     this.pointerLocation = undefined;
     this.allCellsAreValid = false;
     this.clearGraphics();
+    this.clearSpawnedCursorGameObjects();
   }
 
   private spawnConstructionSite() {
@@ -220,7 +285,7 @@ export class BuildingCursor {
     } satisfies ActorDefinition;
 
     upgradeFromCoreToConstructingActorData(this.building, actorDefinition);
-    // todo save to game state
+    // Save to game state
   }
 
   private subscribeToCancelAction() {
@@ -233,13 +298,16 @@ export class BuildingCursor {
     this.building?.destroy();
     this.building = undefined;
     this.pointerLocation = undefined;
+    this.downPointerLocation = undefined;
     this.clearGraphics();
+    this.clearSpawnedCursorGameObjects();
   }
 
   private destroy() {
     this.stop();
     this.scene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
-    this.scene.input.off(Input.Events.POINTER_DOWN, this.placeBuilding, this);
+    this.scene.input.off(Input.Events.POINTER_DOWN, this.onPointerDown, this);
+    this.scene.input.off(Input.Events.POINTER_UP, this.onPointerUp, this);
     this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
