@@ -5,6 +5,7 @@
 import GameProbableWaffleScene from "./GameProbableWaffleScene";
 import Spawn from "../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../editor-components/EditorOwner";
+import Wall from "../prefabs/buildings/tivara/wall/Wall";
 import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
 import Sheep from "../prefabs/animals/Sheep";
 import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
@@ -22,8 +23,6 @@ import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
 import TallGrass1 from "../prefabs/outside/foliage/tall_grass/TallGrass1";
 import Olival from "../prefabs/buildings/tivara/Olival";
-import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
-import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import BushDownwardsSmall from "../prefabs/outside/foliage/bushes/BushDownwardsSmall";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
@@ -95,9 +94,33 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const spawn = new Spawn(this, 96, 608);
     this.add.existing(spawn);
 
+    // wall_8
+    const wall_8 = new Wall(this, -32, 720);
+    this.add.existing(wall_8);
+
+    // wall_6
+    const wall_6 = new Wall(this, -448, 256);
+    this.add.existing(wall_6);
+
+    // wall_5
+    const wall_5 = new Wall(this, -96, 720);
+    this.add.existing(wall_5);
+
+    // wall_4
+    const wall_4 = new Wall(this, -64, 736);
+    this.add.existing(wall_4);
+
+    // wall_1
+    const wall_1 = new Wall(this, 0, 736);
+    this.add.existing(wall_1);
+
     // christmasTree
     const christmasTree = new ChristmasTree(this, -288, 1184);
     this.add.existing(christmasTree);
+
+    // wall_11
+    const wall_11 = new Wall(this, -96, 752);
+    this.add.existing(wall_11);
 
     // spawn_1
     const spawn_1 = new Spawn(this, 1280, 816);
@@ -110,6 +133,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // sheep_2
     const sheep_2 = new Sheep(this, -144, 1264);
     this.add.existing(sheep_2);
+
+    // wall_10
+    const wall_10 = new Wall(this, -64, 768);
+    this.add.existing(wall_10);
 
     // fenceRight
     const fenceRight = new FenceRight(this, -48, 1248);
@@ -126,6 +153,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tree_11
     const tree_11 = new Tree7(this, 160, 1328);
     this.add.existing(tree_11);
+
+    // wall_7
+    const wall_7 = new Wall(this, -416, 272);
+    this.add.existing(wall_7);
 
     // owlery
     const owlery = new Owlery(this, 1024, 912);
@@ -174,14 +205,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // olival
     const olival = new Olival(this, 128, 768);
     this.add.existing(olival);
-
-    // wallTopLeftTopRight
-    const wallTopLeftTopRight = new WallTopLeftTopRight(this, -448, 256);
-    this.add.existing(wallTopLeftTopRight);
-
-    // wallTopRight
-    const wallTopRight = new WallTopRight(this, -416, 272);
-    this.add.existing(wallTopRight);
 
     // watchTower
     const watchTower = new WatchTower(this, -352, 288);
@@ -651,6 +674,22 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const stairsRight = new StairsRight(this, -480, 272);
     this.add.existing(stairsRight);
 
+    // wall
+    const wall = new Wall(this, 32, 752);
+    this.add.existing(wall);
+
+    // wall_2
+    const wall_2 = new Wall(this, -32, 752);
+    this.add.existing(wall_2);
+
+    // wall_3
+    const wall_3 = new Wall(this, 0, 768);
+    this.add.existing(wall_3);
+
+    // wall_9
+    const wall_9 = new Wall(this, -32, 784);
+    this.add.existing(wall_9);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -698,14 +737,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // olival (components)
     const olivalEditorOwner = new EditorOwner(olival);
     olivalEditorOwner.owner_id = "1";
-
-    // wallTopLeftTopRight (components)
-    const wallTopLeftTopRightEditorOwner = new EditorOwner(wallTopLeftTopRight);
-    wallTopLeftTopRightEditorOwner.owner_id = "1";
-
-    // wallTopRight (components)
-    const wallTopRightEditorOwner = new EditorOwner(wallTopRight);
-    wallTopRightEditorOwner.owner_id = "1";
 
     // watchTower (components)
     const watchTowerEditorOwner = new EditorOwner(watchTower);

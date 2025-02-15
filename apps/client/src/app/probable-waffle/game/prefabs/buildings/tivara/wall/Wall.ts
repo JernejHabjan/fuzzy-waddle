@@ -2,10 +2,10 @@
 
 /* START OF COMPILED CODE */
 
+import WallTopRightBottomLeft from "./WallTopRightBottomLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../../data/object-names";
 import WallTopRightBottomRight from "./WallTopRightBottomRight";
-import WallTopRightBottomLeft from "./WallTopRightBottomLeft";
 import WallTopLeftBottomRight from "./WallTopLeftBottomRight";
 import WallTopLeftBottomLeft from "./WallTopLeftBottomLeft";
 import WallEmpty from "./WallEmpty";
@@ -14,6 +14,17 @@ import WallTopRight from "./WallTopRight";
 import WallBottomLeft from "./WallBottomLeft";
 import WallBottomRight from "./WallBottomRight";
 import { ConstructionHelper } from "../../../../entity/building/construction/construction-helper";
+import WallBottomLeftBottomRight from "./WallBottomLeftBottomRight";
+import WallTopLeftTopRight from "./WallTopLeftTopRight";
+import WallFull from "./WallFull";
+import WallTopLeftBottomRightBottomLeft from "./WallTopLeftBottomRightBottomLeft";
+import WallTopLeftTopRightBottomRight from "./WallTopLeftTopRightBottomRight";
+import WallBottomLeftBottomRightTopRight from "./WallBottomLeftBottomRightTopRight";
+import WallBottomLeftTopLeftTopRight from "./WallBottomLeftTopLeftTopRight";
+import { onObjectReady } from "../../../../data/game-object-helper";
+import WatchTower from "./WatchTower";
+import StairsLeft from "./StairsLeft";
+import StairsRight from "./StairsRight";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -40,11 +51,15 @@ export default class Wall extends Phaser.GameObjects.Container {
     cursor.visible = false;
     this.add(cursor);
 
+    // wallTopRightBottomLeft
+    const wallTopRightBottomLeft = new WallTopRightBottomLeft(scene, 0, 0);
+    this.add(wallTopRightBottomLeft);
+
     this.foundation = foundation;
     this.cursor = cursor;
 
     /* START-USER-CTR-CODE */
-    this.createWall(WallType.Empty); // todo should be full
+    this.updateWall(WallType.Full);
     this.setup();
     /* END-USER-CTR-CODE */
   }
@@ -56,7 +71,8 @@ export default class Wall extends Phaser.GameObjects.Container {
   name = ObjectNames.Wall;
 
   private wall?: Phaser.GameObjects.GameObject;
-  createWall(wallType: WallType) {
+
+  updateWall(wallType: WallType) {
     this.wall?.destroy();
     switch (wallType) {
       case WallType.TopRightBottomRight:
@@ -86,16 +102,148 @@ export default class Wall extends Phaser.GameObjects.Container {
       case WallType.BottomRight:
         this.wall = new WallBottomRight(this.scene, 0, 0);
         break;
+      case WallType.TopLeftTopRight:
+        this.wall = new WallTopLeftTopRight(this.scene, 0, 0);
+        break;
+      case WallType.BottomLeftBottomRight:
+        this.wall = new WallBottomLeftBottomRight(this.scene, 0, 0);
+        break;
+      case WallType.Full:
+        this.wall = new WallFull(this.scene, 0, 0);
+        break;
+      case WallType.TopLeftBottomRightBottomLeft:
+        this.wall = new WallTopLeftBottomRightBottomLeft(this.scene, 0, 0);
+        break;
+      case WallType.TopLeftTopRightBottomRight:
+        this.wall = new WallTopLeftTopRightBottomRight(this.scene, 0, 0);
+        break;
+      case WallType.BottomLeftBottomRightTopRight:
+        this.wall = new WallBottomLeftBottomRightTopRight(this.scene, 0, 0);
+        break;
+      case WallType.BottomLeftTopLeftTopRight:
+        this.wall = new WallBottomLeftTopLeftTopRight(this.scene, 0, 0);
+        break;
+      default:
+        throw new Error("Wall type not found");
     }
     this.add(this.wall);
   }
 
   private setup() {
     new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+
+    onObjectReady(
+      this,
+      () => {
+        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshWallType, this); // todo remove this later
+      },
+      this
+    );
   }
 
-  private adjustWallAccordingToNeighbors() {
-    // todo
+  private refreshWallType() {
+    if (!this.active) return;
+    const wallType = this.getWallTypeAccordingToNeighbors();
+    if (this.cursor.visible) {
+      this.updateCursor(wallType);
+    } else if (this.wall) {
+      this.updateWall(wallType);
+    }
+  }
+
+  private getWallTypeAccordingToNeighbors(): WallType {
+    const neighbors = this.neighbors;
+    if (!neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.bottomRight) {
+      return WallType.Full;
+    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
+      return WallType.Empty;
+    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomRight && !neighbors.bottomLeft) {
+      return WallType.BottomLeft;
+    } else if (neighbors.topLeft && neighbors.topRight && !neighbors.bottomRight && !neighbors.bottomLeft) {
+      return WallType.BottomLeftBottomRight;
+    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
+      return WallType.BottomRight;
+    } else if (!neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
+      return WallType.TopLeft;
+    } else if (!neighbors.topLeft && neighbors.topRight && !neighbors.bottomLeft && neighbors.bottomRight) {
+      return WallType.TopLeftBottomLeft;
+    } else if (!neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
+      return WallType.TopLeftBottomRight;
+    } else if (!neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
+      return WallType.TopLeftTopRight;
+    } else if (neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
+      return WallType.TopRight;
+    } else if (neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && neighbors.bottomRight) {
+      return WallType.TopRightBottomLeft;
+    } else if (neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
+      return WallType.TopRightBottomRight;
+    } else if (neighbors.bottomRight && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.topLeft) {
+      return WallType.BottomLeftTopLeftTopRight;
+    } else if (neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.bottomRight) {
+      return WallType.BottomLeftBottomRightTopRight;
+    } else if (neighbors.bottomLeft && !neighbors.topRight && !neighbors.bottomRight && !neighbors.topLeft) {
+      return WallType.TopLeftTopRightBottomRight;
+    } else if (neighbors.topRight && !neighbors.topLeft && !neighbors.bottomRight && !neighbors.bottomLeft) {
+      return WallType.TopLeftBottomRightBottomLeft;
+    } else {
+      throw new Error("Wall type not found");
+    }
+  }
+
+  private updateCursor(wallType: WallType) {
+    const wall = this.cursor as any as Phaser.GameObjects.Image;
+    switch (wallType) {
+      case WallType.TopRightBottomRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_right_bottom_right.png");
+        break;
+      case WallType.TopRightBottomLeft:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
+        break;
+      case WallType.TopLeftBottomRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_bottom_right.png");
+        break;
+      case WallType.TopLeftBottomLeft:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_bottom_left.png");
+        break;
+      case WallType.Empty:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_empty.png");
+        break;
+      case WallType.TopLeft:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left.png");
+        break;
+      case WallType.TopRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_right.png");
+        break;
+      case WallType.BottomLeft:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left.png");
+        break;
+      case WallType.BottomRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_right.png");
+        break;
+      case WallType.TopLeftTopRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_top_right.png");
+        break;
+      case WallType.BottomLeftBottomRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left_bottom_right.png");
+        break;
+      case WallType.Full:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_full.png");
+        break;
+      case WallType.TopLeftBottomRightBottomLeft:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_bottom_right_bottom_left.png");
+        break;
+      case WallType.TopLeftTopRightBottomRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_top_right_bottom_right.png");
+        break;
+      case WallType.BottomLeftBottomRightTopRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left_bottom_right_top_right.png");
+        break;
+      case WallType.BottomLeftTopLeftTopRight:
+        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left_top_left_top_right.png");
+        break;
+      default:
+        throw new Error("Wall type not found");
+    }
   }
 
   private handlePrefabVisibility(progress: number | null) {
@@ -104,6 +252,48 @@ export default class Wall extends Phaser.GameObjects.Container {
     wall.visible = progress === 100;
     this.foundation.visible = progress !== null && progress < 100;
   }
+
+  private get neighbors(): {
+    topLeft: boolean;
+    topRight: boolean;
+    bottomLeft: boolean;
+    bottomRight: boolean;
+  } {
+    const neighbourTypes = [Wall, WatchTower, StairsLeft, StairsRight];
+
+    const tileWidth = 64;
+    const tileHeight = tileWidth / 2;
+
+    const allWalls = this.scene.children.list.filter(
+      (child) => child !== this && neighbourTypes.some((type) => child instanceof type)
+    ) as Wall[];
+
+    const topLeftWall = allWalls.find(
+      (wall) => wall.x === this.x - tileWidth / 2 && wall.y === this.y - tileHeight / 2
+    );
+    const topRightWall = allWalls.find(
+      (wall) => wall.x === this.x + tileWidth / 2 && wall.y === this.y - tileHeight / 2
+    );
+    const bottomLeftWall = allWalls.find(
+      (wall) => wall.x === this.x - tileWidth / 2 && wall.y === this.y + tileHeight / 2
+    );
+    const bottomRightWall = allWalls.find(
+      (wall) => wall.x === this.x + tileWidth / 2 && wall.y === this.y + tileHeight / 2
+    );
+
+    return {
+      topLeft: !!topLeftWall,
+      topRight: !!topRightWall,
+      bottomLeft: !!bottomLeftWall,
+      bottomRight: !!bottomRightWall
+    };
+  }
+
+  destroy(fromScene?: boolean) {
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.refreshWallType, this);
+    super.destroy(fromScene);
+  }
+
   /* END-USER-CODE */
 }
 
@@ -115,8 +305,15 @@ export enum WallType {
   TopLeftBottomRight,
   TopLeftBottomLeft,
   Empty,
+  Full,
   TopLeft,
   TopRight,
   BottomLeft,
-  BottomRight
+  BottomRight,
+  TopLeftTopRight,
+  BottomLeftBottomRight,
+  BottomLeftTopLeftTopRight,
+  BottomLeftBottomRightTopRight,
+  TopLeftTopRightBottomRight,
+  TopLeftBottomRightBottomLeft
 }
