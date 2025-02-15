@@ -651,7 +651,11 @@
                 <false/>
             </struct>
             <key type="filename">../sprites/factions/buildings/tivara/wall/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_bottom_left_bottom_right_top_right.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_bottom_left_top_left_top_right.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_full.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left_bottom_right_bottom_left.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left_top_right_bottom_right.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
