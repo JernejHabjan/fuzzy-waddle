@@ -355,9 +355,15 @@ export class BuildingCursor {
   private placeBuildings() {
     this.allCellsAreValid = true; // Placeholder logic
 
-    for (const gameObject of this.spawnedCursorGameObjects) {
-      this.building = gameObject;
-      this.spawnConstructionSite();
+    if (this.spawnedCursorGameObjects.length) {
+      this.building?.destroy();
+      for (const gameObject of this.spawnedCursorGameObjects) {
+        this.spawnConstructionSite(gameObject);
+      }
+    } else if (this.building) {
+      this.spawnConstructionSite(this.building);
+    } else {
+      throw new Error("No building to place");
     }
 
     this.building = undefined;
@@ -368,15 +374,13 @@ export class BuildingCursor {
     this.isDragging = false;
   }
 
-  private spawnConstructionSite() {
-    if (!this.building) return;
-
+  private spawnConstructionSite(gameObject: GameObjects.GameObject) {
     const currentPlayer = getCurrentPlayerNumber(this.scene);
     const actorDefinition = {
       ...(currentPlayer && { owner: currentPlayer })
     } satisfies ActorDefinition;
 
-    upgradeFromCoreToConstructingActorData(this.building, actorDefinition);
+    upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
     // todo Save to game state
   }
 
