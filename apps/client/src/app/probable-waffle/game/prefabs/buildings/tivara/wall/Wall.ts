@@ -25,6 +25,7 @@ import { onObjectReady } from "../../../../data/game-object-helper";
 import WatchTower from "./WatchTower";
 import StairsLeft from "./StairsLeft";
 import StairsRight from "./StairsRight";
+import { throttle } from "../../../../library/throttle";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -136,11 +137,13 @@ export default class Wall extends Phaser.GameObjects.Container {
     onObjectReady(
       this,
       () => {
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshWallType, this); // todo remove this later
+        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this); // todo remove this later
       },
       this
     );
   }
+
+  private throttleRedrawWalls = throttle(this.refreshWallType.bind(this), 1000);
 
   private refreshWallType() {
     if (!this.active) return;
@@ -291,7 +294,7 @@ export default class Wall extends Phaser.GameObjects.Container {
   }
 
   destroy(fromScene?: boolean) {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.refreshWallType, this);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this);
     super.destroy(fromScene);
   }
 

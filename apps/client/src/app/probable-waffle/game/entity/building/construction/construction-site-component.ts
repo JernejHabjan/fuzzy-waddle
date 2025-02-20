@@ -28,6 +28,8 @@ export type ConstructionSiteDefinition = {
   finishedSound?: {
     key: string;
   };
+  // Whether multiple buildings can be placed one after another by dragging the mouse - Wall building for example
+  canBeDragPlaced: boolean;
 };
 
 export class ConstructionSiteComponent {
@@ -167,6 +169,7 @@ export class ConstructionSiteComponent {
     if (this.isFinished()) {
       return;
     }
+
     // refund resources
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);

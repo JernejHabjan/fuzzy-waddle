@@ -28,6 +28,7 @@ export class BuildingCursor {
   private downPointerLocation?: Vector2Simple;
   private spawnedCursorGameObjects: GameObjects.GameObject[] = [];
   private isDragging: boolean = false;
+  private canBeDragPlaced: boolean = false;
 
   constructor(private scene: GameProbableWaffleScene) {
     this.startPlacingSubscription = this.startPlacingBuilding.subscribe((name) => this.spawn(name));
@@ -41,6 +42,11 @@ export class BuildingCursor {
 
   private spawn(name: ObjectNames) {
     if (this.building) this.stop();
+
+    const definition = pwActorDefinitions[name as ObjectNames]?.components?.constructable;
+    if (!definition) return;
+
+    this.canBeDragPlaced = definition.canBeDragPlaced;
 
     const pointer = this.scene.input.activePointer;
     let worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
@@ -63,7 +69,7 @@ export class BuildingCursor {
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
-    if (this.downPointerLocation) {
+    if (this.downPointerLocation && this.canBeDragPlaced) {
       this.isDragging = true;
     }
 
@@ -81,7 +87,7 @@ export class BuildingCursor {
       return;
 
     this.pointerLocation = worldPosition;
-    if (this.downPointerLocation) {
+    if (this.isDragging) {
       this.clearSpawnedCursorGameObjects();
       this.drawLineBetweenPoints();
     }
@@ -223,8 +229,6 @@ export class BuildingCursor {
     }
 
     this.placeBuildings();
-    this.downPointerLocation = undefined;
-    this.isDragging = false;
   }
 
   private drawLineBetweenPoints() {
@@ -273,9 +277,6 @@ export class BuildingCursor {
     const snappedMidpoint = new Vector2(midpointX, midpointY);
     midpointX = snappedMidpoint.x;
     midpointY = snappedMidpoint.y;
-
-    // Spawn preview buildings along the path
-    this.clearSpawnedCursorGameObjects();
 
     // Calculate points along the path in isometric space
     const generatePoints = (from: Vector2, to: Vector2): Vector2[] => {
@@ -361,9 +362,10 @@ export class BuildingCursor {
 
     this.building = undefined;
     this.pointerLocation = undefined;
-    this.allCellsAreValid = false;
+    this.downPointerLocation = undefined;
     this.clearGraphics();
-    this.clearSpawnedCursorGameObjects();
+    this.spawnedCursorGameObjects = [];
+    this.isDragging = false;
   }
 
   private spawnConstructionSite() {
@@ -391,6 +393,7 @@ export class BuildingCursor {
     this.downPointerLocation = undefined;
     this.clearGraphics();
     this.clearSpawnedCursorGameObjects();
+    this.isDragging = false;
   }
 
   private destroy() {

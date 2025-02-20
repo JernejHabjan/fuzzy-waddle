@@ -40,7 +40,8 @@ const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   progressMadePerBuilder: 1,
   initialHealthPercentage: 0.2,
   refundFactor: 0.5,
-  startImmediately: true
+  startImmediately: true,
+  canBeDragPlaced: false
 };
 
 const treeDefinitions: ActorInfoDefinition = {
@@ -1446,7 +1447,8 @@ export const pwActorDefinitions: {
       },
       collider: { enabled: true },
       constructable: {
-        ...coreConstructionSiteDefinition
+        ...coreConstructionSiteDefinition,
+        canBeDragPlaced: true
       }
     }
   },
