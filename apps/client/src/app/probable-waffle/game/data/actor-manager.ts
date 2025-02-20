@@ -89,17 +89,6 @@ export class ActorManager {
   private static tivaraWall: ActorMap = {
     [ObjectNames.StairsLeft]: StairsLeft,
     [ObjectNames.StairsRight]: StairsRight,
-    [ObjectNames.WallBottomLeft]: WallBottomLeft,
-    [ObjectNames.WallBottomLeftBottomRight]: WallBottomLeftBottomRight,
-    [ObjectNames.WallBottomRight]: WallBottomRight,
-    [ObjectNames.WallEmpty]: WallEmpty,
-    [ObjectNames.WallTopLeft]: WallTopLeft,
-    [ObjectNames.WallTopLeftBottomLeft]: WallTopLeftBottomLeft,
-    [ObjectNames.WallTopLeftBottomRight]: WallTopLeftBottomRight,
-    [ObjectNames.WallTopLeftTopRight]: WallTopLeftTopRight,
-    [ObjectNames.WallTopRight]: WallTopRight,
-    [ObjectNames.WallTopRightBottomLeft]: WallTopRightBottomLeft,
-    [ObjectNames.WallTopRightBottomRight]: WallTopRightBottomRight,
     [ObjectNames.WatchTower]: WatchTower,
     [ObjectNames.Wall]: Wall
   };

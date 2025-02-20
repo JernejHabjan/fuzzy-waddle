@@ -97,39 +97,6 @@ const stairsDefinition: ActorInfoDefinition = {
   }
 };
 
-const wallDefinition: ActorInfoDefinition = {
-  components: {
-    objectDescriptor: {
-      color: 0x95a083
-    },
-    owner: {
-      color: [
-        {
-          originalColor: 0x000000,
-          epsilon: 0
-        }
-      ]
-    },
-    vision: {
-      range: 5
-    },
-    selectable: { enabled: true },
-    health: {
-      maxHealth: 100
-    },
-    productionCost: {
-      resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
-      },
-      refundFactor: 0.5,
-      productionTime: 5000,
-      costType: PaymentType.PayImmediately
-    },
-    collider: { enabled: true }
-  }
-};
-
 const tivaraWorkerDefinition: ActorInfoDefinition = {
   components: {
     objectDescriptor: {
@@ -1349,17 +1316,6 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.StairsLeft]: stairsDefinition,
   [ObjectNames.StairsRight]: stairsDefinition,
-  [ObjectNames.WallBottomLeft]: wallDefinition,
-  [ObjectNames.WallBottomLeftBottomRight]: wallDefinition,
-  [ObjectNames.WallBottomRight]: wallDefinition,
-  [ObjectNames.WallEmpty]: wallDefinition,
-  [ObjectNames.WallTopLeft]: wallDefinition,
-  [ObjectNames.WallTopLeftBottomLeft]: wallDefinition,
-  [ObjectNames.WallTopLeftBottomRight]: wallDefinition,
-  [ObjectNames.WallTopLeftTopRight]: wallDefinition,
-  [ObjectNames.WallTopRight]: wallDefinition,
-  [ObjectNames.WallTopRightBottomLeft]: wallDefinition,
-  [ObjectNames.WallTopRightBottomRight]: wallDefinition,
   [ObjectNames.WatchTower]: {
     components: {
       objectDescriptor: {

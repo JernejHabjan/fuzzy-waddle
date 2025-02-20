@@ -3,7 +3,6 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class WallBottomLeftBottomRight extends Phaser.GameObjects.Image {
@@ -29,9 +28,7 @@ export default class WallBottomLeftBottomRight extends Phaser.GameObjects.Image 
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.WallBottomLeftBottomRight;
   // Write your code here.
-
   /* END-USER-CODE */
 }
 
