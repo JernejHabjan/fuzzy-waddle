@@ -11,6 +11,7 @@ export type HealthDefinition = {
   maxHealth: number;
   maxArmour?: number;
   regenerateHealthRate?: number;
+  healthDisplayBehavior?: "always" | "onDamage" | "onHover";
 };
 
 export class HealthComponent {
@@ -79,10 +80,20 @@ export class HealthComponent {
 
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
+
+    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
+      this.setVisibilityUiComponent(true);
+    } else {
+      this.setVisibilityUiComponent(false);
+    }
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
-    this.setVisibilityUiComponent(visible);
+    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
+      this.setVisibilityUiComponent(true);
+    } else {
+      this.setVisibilityUiComponent(visible);
+    }
   }
 
   getHealthUiComponentBounds(): Phaser.Geom.Rectangle {
@@ -111,6 +122,14 @@ export class HealthComponent {
       damageInitiator,
       timestamp: new Date()
     };
+
+    if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
+      this.setVisibilityUiComponent(true);
+      // Hide the UI component after a delay if it's set to "onDamage"
+      setTimeout(() => {
+        if (this.gameObject.active) this.setVisibilityUiComponent(false);
+      }, 3000);
+    }
   }
 
   killActor() {

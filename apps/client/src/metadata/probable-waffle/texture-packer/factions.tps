@@ -287,7 +287,6 @@
             </struct>
             <key type="filename">../sprites/factions/building_icons/skaduwee/infantry_inn.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/sandhold/sandhold-crystal.png</key>
-            <key type="filename">../sprites/factions/character_icons/tivara/slingshot_female.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -618,6 +617,24 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/factions/buildings/tivara/stairs/stairs_bottom_left.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/stairs/stairs_bottom_right.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/stairs/stairs_top_left.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/stairs/stairs_top_right.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.75</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/factions/buildings/tivara/temple/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/temple/foundation/foundation_2.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/temple/temple.png</key>
@@ -651,44 +668,19 @@
                 <false/>
             </struct>
             <key type="filename">../sprites/factions/buildings/tivara/wall/foundation/foundation_1.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>16,24,32,48</rect>
-                <key>scale9Paddings</key>
-                <rect>16,24,32,48</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">../sprites/factions/buildings/tivara/wall/stairs_left.png</key>
-            <key type="filename">../sprites/factions/buildings/tivara/wall/stairs_right.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.75</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>16,16,32,32</rect>
-                <key>scale9Paddings</key>
-                <rect>16,16,32,32</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_bottom_left.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_bottom_left_bottom_right.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_bottom_left_bottom_right_top_right.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_bottom_left_top_left_top_right.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_bottom_right.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_empty.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_full.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left_bottom_left.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left_bottom_right.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left_bottom_right_bottom_left.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left_top_right.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_left_top_right_bottom_right.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_right.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_right_bottom_left.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/wall/wall_top_right_bottom_right.png</key>
@@ -731,6 +723,7 @@
             <key type="filename">../sprites/factions/character_icons/skaduwee/worker_male.png</key>
             <key type="filename">../sprites/factions/character_icons/tivara/archer_female.png</key>
             <key type="filename">../sprites/factions/character_icons/tivara/maceman_male.png</key>
+            <key type="filename">../sprites/factions/character_icons/tivara/slingshot_female.png</key>
             <key type="filename">../sprites/factions/character_icons/tivara/worker_female.png</key>
             <key type="filename">../sprites/factions/character_icons/tivara/worker_male.png</key>
             <struct type="IndividualSpriteSettings">

@@ -3,16 +3,15 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../../../data/object-names";
 /* END-USER-IMPORTS */
 
-export default class StairsRight extends Phaser.GameObjects.Image {
+export default class StairsTopLeft extends Phaser.GameObjects.Image {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 48, texture || "factions", frame ?? "buildings/tivara/wall/stairs_right.png");
+    super(scene, x ?? 32, y ?? 48, texture || "factions", frame ?? "buildings/tivara/stairs/stairs_top_left.png");
 
     this.setInteractive(
       new Phaser.Geom.Polygon(
-        "-0.18607871435651901 39.916486832392096 24.598136860352366 3.647124084095992 32 0 64 16 63.93398545839214 48.91631275967055 32.40704391838937 64.19225350585745 -0.12184833795624428 47.92130700721276"
+        "0 16 32 0 39.93927126126608 3.9325941130380144 64.28297785980033 40.32136387230537 64.15618772126629 47.80198204581329 32.07828267215606 64.15790991670349 0.2539579001138854 47.80198204581329"
       ),
       Phaser.Geom.Polygon.Contains
     );
@@ -23,9 +22,7 @@ export default class StairsRight extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.StairsRight;
   // Write your code here.
-
   /* END-USER-CODE */
 }
 

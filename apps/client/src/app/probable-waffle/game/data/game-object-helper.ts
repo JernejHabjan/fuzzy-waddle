@@ -102,7 +102,10 @@ export function onObjectReady(
     if (delay === null) {
       callback.call(scope);
     } else {
-      setTimeout(() => callback.call(scope), delay);
+      setTimeout(() => {
+        if (!gameObject.active) return;
+        callback.call(scope);
+      }, delay);
     }
   };
   getSceneInitializers(gameObject.scene)

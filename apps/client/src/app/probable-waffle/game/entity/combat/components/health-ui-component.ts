@@ -43,6 +43,10 @@ export class HealthUiComponent {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.on(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
+    if (this.healthComponent?.healthDefinition.healthDisplayBehavior === "onHover") {
+      gameObject.on("pointerover", () => this.setVisibility(true));
+      gameObject.on("pointerout", () => this.setVisibility(false));
+    }
   }
 
   private init() {
@@ -121,6 +125,10 @@ export class HealthUiComponent {
     this.changedSubscription?.unsubscribe();
     this.actorMovedSubscription?.unsubscribe();
     this.gameObject.off(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
+    if (this.healthComponent?.healthDefinition.healthDisplayBehavior === "onHover") {
+      this.gameObject.off("pointerover");
+      this.gameObject.off("pointerout");
+    }
   }
 
   private draw() {

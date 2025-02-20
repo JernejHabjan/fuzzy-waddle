@@ -40,7 +40,8 @@ const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   progressMadePerBuilder: 1,
   initialHealthPercentage: 0.2,
   refundFactor: 0.5,
-  startImmediately: true
+  startImmediately: true,
+  canBeDragPlaced: false
 };
 
 const treeDefinitions: ActorInfoDefinition = {
@@ -58,74 +59,6 @@ const treeDefinitions: ActorInfoDefinition = {
       maximumResources: 20,
       gatheringFactor: 1
     }
-  }
-};
-const stairsDefinition: ActorInfoDefinition = {
-  components: {
-    objectDescriptor: {
-      color: 0x95a083
-    },
-    owner: {
-      color: [
-        {
-          originalColor: 0x000000,
-          epsilon: 0
-        }
-      ]
-    },
-    vision: {
-      range: 5
-    },
-    selectable: { enabled: true },
-    health: {
-      maxHealth: 100
-    },
-    productionCost: {
-      resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
-      },
-      refundFactor: 0.5,
-      productionTime: 5000,
-      costType: PaymentType.PayImmediately
-    },
-    collider: { enabled: true },
-    constructable: {
-      ...coreConstructionSiteDefinition
-    }
-  }
-};
-
-const wallDefinition: ActorInfoDefinition = {
-  components: {
-    objectDescriptor: {
-      color: 0x95a083
-    },
-    owner: {
-      color: [
-        {
-          originalColor: 0x000000,
-          epsilon: 0
-        }
-      ]
-    },
-    vision: {
-      range: 5
-    },
-    selectable: { enabled: true },
-    health: {
-      maxHealth: 100
-    },
-    productionCost: {
-      resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
-      },
-      refundFactor: 0.5,
-      productionTime: 5000,
-      costType: PaymentType.PayImmediately
-    },
-    collider: { enabled: true }
   }
 };
 
@@ -178,7 +111,8 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.Temple,
         ObjectNames.WorkMill,
         ObjectNames.WatchTower,
-        ObjectNames.Wall
+        ObjectNames.Wall,
+        ObjectNames.Stairs
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
@@ -254,7 +188,8 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.Owlery,
         ObjectNames.WorkMill,
         ObjectNames.WatchTower,
-        ObjectNames.Wall
+        ObjectNames.Wall,
+        ObjectNames.Stairs
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
@@ -1346,19 +1281,51 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.StairsLeft]: stairsDefinition,
-  [ObjectNames.StairsRight]: stairsDefinition,
-  [ObjectNames.WallBottomLeft]: wallDefinition,
-  [ObjectNames.WallBottomLeftBottomRight]: wallDefinition,
-  [ObjectNames.WallBottomRight]: wallDefinition,
-  [ObjectNames.WallEmpty]: wallDefinition,
-  [ObjectNames.WallTopLeft]: wallDefinition,
-  [ObjectNames.WallTopLeftBottomLeft]: wallDefinition,
-  [ObjectNames.WallTopLeftBottomRight]: wallDefinition,
-  [ObjectNames.WallTopLeftTopRight]: wallDefinition,
-  [ObjectNames.WallTopRight]: wallDefinition,
-  [ObjectNames.WallTopRightBottomLeft]: wallDefinition,
-  [ObjectNames.WallTopRightBottomRight]: wallDefinition,
+  [ObjectNames.Stairs]: {
+    components: {
+      objectDescriptor: {
+        color: 0x95a083
+      },
+      info: {
+        name: "Stairs",
+        description: "Used to move to top of the Wall and Watch Tower",
+        smallImage: {
+          key: "factions",
+          frame: "buildings/tivara/stairs/stairs_top_left.png",
+          origin: { x: 0.5, y: 0.5 }
+        }
+      },
+      owner: {
+        color: [
+          {
+            originalColor: 0x000000,
+            epsilon: 0
+          }
+        ]
+      },
+      vision: {
+        range: 5
+      },
+      selectable: { enabled: true },
+      health: {
+        maxHealth: 300,
+        healthDisplayBehavior: "onDamage"
+      },
+      productionCost: {
+        resources: {
+          [ResourceType.Wood]: 10,
+          [ResourceType.Minerals]: 10
+        },
+        refundFactor: 0.5,
+        productionTime: 5000,
+        costType: PaymentType.PayImmediately
+      },
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
+    }
+  },
   [ObjectNames.WatchTower]: {
     components: {
       objectDescriptor: {
@@ -1386,7 +1353,8 @@ export const pwActorDefinitions: {
       },
       selectable: { enabled: true },
       health: {
-        maxHealth: 100
+        maxHealth: 1000,
+        healthDisplayBehavior: "onDamage"
       },
       productionCost: {
         resources: {
@@ -1399,6 +1367,16 @@ export const pwActorDefinitions: {
       },
       container: {
         capacity: 2
+      },
+      attack: {
+        attacks: [
+          {
+            damage: 10,
+            damageType: DamageType.Physical,
+            cooldown: 1000,
+            range: 10
+          }
+        ]
       },
       collider: { enabled: true },
       constructable: {
@@ -1433,7 +1411,8 @@ export const pwActorDefinitions: {
       },
       selectable: { enabled: true },
       health: {
-        maxHealth: 70
+        maxHealth: 300,
+        healthDisplayBehavior: "onDamage"
       },
       productionCost: {
         resources: {
@@ -1446,7 +1425,8 @@ export const pwActorDefinitions: {
       },
       collider: { enabled: true },
       constructable: {
-        ...coreConstructionSiteDefinition
+        ...coreConstructionSiteDefinition,
+        canBeDragPlaced: true
       }
     }
   },

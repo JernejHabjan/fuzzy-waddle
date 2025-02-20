@@ -5,6 +5,7 @@
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
         "snapEnabled": true,
+        "snapWidth": 32,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -20,7 +21,6 @@
             "type": "TilemapLayer",
             "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
             "label": "tilemap_level_1",
-            "x": -32,
             "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
             "layerName": "TileMap_level_1",
             "tilesets": [
@@ -42,6 +42,17 @@
             "EditorOwner.owner_id": "1",
             "x": 96,
             "y": 608
+        },
+        {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "a5f8b237-0ef3-4e26-9393-2f6f00391a9e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall_6",
+            "x": -448,
+            "y": 256
         },
         {
             "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
@@ -66,7 +77,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1296,
+            "x": 1280,
             "y": 816
         },
         {
@@ -136,6 +147,17 @@
             "y": 1328
         },
         {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "2094d25b-dd09-4319-9150-dbbcd4435ccd",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall_7",
+            "x": -416,
+            "y": 272
+        },
+        {
             "prefabId": "3e9f68eb-dfb2-48a6-9297-29d66e962fa4",
             "id": "57cc06f3-2a81-4e7f-a859-f6fed682accd",
             "unlock": [
@@ -163,7 +185,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1120,
+            "x": 1152,
             "y": 960
         },
         {
@@ -178,7 +200,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -48,
+            "x": -64,
             "y": 336
         },
         {
@@ -193,7 +215,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -192,
+            "x": -128,
             "y": 464
         },
         {
@@ -223,7 +245,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 960,
+            "x": 1024,
             "y": 736
         },
         {
@@ -279,8 +301,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -80,
-            "y": 704
+            "x": -256,
+            "y": 528
         },
         {
             "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
@@ -306,37 +328,7 @@
             ],
             "EditorOwner.owner_id": "1",
             "x": 128,
-            "y": 784
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f32",
-            "id": "46c9a649-4852-476e-88d9-a22703be0c76",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "wallTopLeftTopRight",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -480,
-            "y": 256
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f36",
-            "id": "64bcd74a-c0df-4806-9d27-87b4bc778021",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "wallTopRight",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -448,
-            "y": 272
+            "y": 768
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f37",
@@ -350,7 +342,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -400,
+            "x": -352,
             "y": 288
         },
         {
@@ -383,19 +375,8 @@
                 "y"
             ],
             "label": "bridgeStone",
-            "x": -96,
-            "y": 848
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
-            "id": "5e083bf6-35cc-495f-97d5-7b5186399570",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "blockStone2",
-            "x": 0,
-            "y": 16
+            "x": -64,
+            "y": 864
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
@@ -405,7 +386,7 @@
                 "y"
             ],
             "label": "blockStone",
-            "x": -32,
+            "x": 0,
             "y": 32
         },
         {
@@ -416,7 +397,7 @@
                 "y"
             ],
             "label": "blockStone1",
-            "x": 32,
+            "x": 64,
             "y": 32
         },
         {
@@ -427,7 +408,7 @@
                 "y"
             ],
             "label": "blockStone_1",
-            "x": -64,
+            "x": -32,
             "y": 48
         },
         {
@@ -438,7 +419,7 @@
                 "y"
             ],
             "label": "blockStone_2",
-            "x": 0,
+            "x": 32,
             "y": 48
         },
         {
@@ -449,18 +430,7 @@
                 "y"
             ],
             "label": "blockStone_3",
-            "x": -32,
-            "y": 64
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f28",
-            "id": "ab60a1ee-2c9d-4e13-966c-793797a38d28",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "blockStoneTopRight",
-            "x": -96,
+            "x": 0,
             "y": 64
         },
         {
@@ -472,7 +442,7 @@
             ],
             "label": "blockStoneTopRightBottomRight",
             "x": -64,
-            "y": 80
+            "y": 64
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
@@ -483,7 +453,7 @@
             ],
             "label": "blockStone_4",
             "x": -32,
-            "y": 96
+            "y": 80
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
@@ -505,18 +475,7 @@
             ],
             "label": "rampStoneTopRight",
             "x": -64,
-            "y": 96
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f36",
-            "id": "c877d5fc-dfd9-4221-a9f4-c6de054e1a47",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "rampStoneTopLeft",
-            "x": 0,
-            "y": 112
+            "y": 80
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
@@ -528,7 +487,7 @@
             ],
             "label": "blockStone_5",
             "z": 32,
-            "x": 0,
+            "x": 32,
             "y": -16
         },
         {
@@ -541,20 +500,8 @@
             ],
             "label": "blockStone_6",
             "z": 32,
-            "x": 32,
+            "x": 64,
             "y": 0
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f32",
-            "id": "4084fdef-9302-4759-b9ef-a5c0c853e8d2",
-            "unlock": [
-                "x",
-                "y",
-                "z"
-            ],
-            "label": "rampStoneTopRight_1",
-            "x": 0,
-            "y": 16
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f34",
@@ -564,7 +511,7 @@
                 "y"
             ],
             "label": "rockPiles5",
-            "x": -48,
+            "x": 64,
             "y": 160
         },
         {
@@ -575,18 +522,7 @@
                 "y"
             ],
             "label": "blockStone_7",
-            "x": 0,
-            "y": 176
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f35",
-            "id": "0a4ea41f-3818-4e91-811d-9c163c8c15b8",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "rockPiles6",
-            "x": 48,
+            "x": 128,
             "y": 160
         },
         {
@@ -599,8 +535,8 @@
             ],
             "label": "blockStone_8",
             "z": 32,
-            "x": 0,
-            "y": 144
+            "x": 128,
+            "y": 128
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
@@ -612,8 +548,8 @@
             ],
             "label": "blockStone_9",
             "z": 64,
-            "x": 0,
-            "y": 112
+            "x": 128,
+            "y": 96
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
@@ -625,8 +561,8 @@
             ],
             "label": "blockStone_10",
             "z": 92,
-            "x": 0,
-            "y": 80
+            "x": 128,
+            "y": 64
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
@@ -638,8 +574,8 @@
             ],
             "label": "blockStone_11",
             "z": 128,
-            "x": 0,
-            "y": 48
+            "x": 128,
+            "y": 32
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f31",
@@ -649,8 +585,8 @@
                 "y"
             ],
             "label": "rockPiles2",
-            "x": 32,
-            "y": 192
+            "x": 160,
+            "y": 176
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f32",
@@ -660,8 +596,8 @@
                 "y"
             ],
             "label": "rockPiles3",
-            "x": -32,
-            "y": 192
+            "x": 96,
+            "y": 176
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f31",
@@ -671,8 +607,8 @@
                 "y"
             ],
             "label": "rockPiles",
-            "x": 0,
-            "y": 208
+            "x": 128,
+            "y": 192
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
@@ -683,8 +619,8 @@
                 "z"
             ],
             "label": "tree4",
-            "x": 0,
-            "y": 16
+            "x": 128,
+            "y": 0
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -826,7 +762,7 @@
                 "y"
             ],
             "label": "bushDry_3",
-            "x": -192,
+            "x": -224,
             "y": 160
         },
         {
@@ -882,7 +818,7 @@
             ],
             "label": "tree",
             "x": -704,
-            "y": 464
+            "y": 480
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
@@ -896,7 +832,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -560,
+            "x": -544,
             "y": 512
         },
         {
@@ -907,7 +843,7 @@
                 "y"
             ],
             "label": "blockStone_12",
-            "x": 352,
+            "x": 384,
             "y": 976
         },
         {
@@ -920,8 +856,8 @@
             ],
             "label": "blockStoneWater1",
             "z": 16,
-            "x": 384,
-            "y": 944
+            "x": 416,
+            "y": 928
         },
         {
             "prefabId": "ec58b20e-e03e-4bd4-140e-856ffe433f55",
@@ -933,7 +869,7 @@
             ],
             "label": "blockStoneWater4",
             "z": 32,
-            "x": 352,
+            "x": 384,
             "y": 944
         },
         {
@@ -944,7 +880,7 @@
                 "y"
             ],
             "label": "blockStoneWater3",
-            "x": 416,
+            "x": 448,
             "y": 976
         },
         {
@@ -955,7 +891,7 @@
                 "y"
             ],
             "label": "blockStoneWater",
-            "x": 384,
+            "x": 416,
             "y": 992
         },
         {
@@ -966,7 +902,7 @@
                 "y"
             ],
             "label": "rockPiles_1",
-            "x": 320,
+            "x": 352,
             "y": 992
         },
         {
@@ -1044,7 +980,7 @@
             ],
             "label": "tree5",
             "x": -800,
-            "y": 480
+            "y": 464
         },
         {
             "prefabId": "c06632b7-0afd-49c5-8129-a5051bf0f87d",
@@ -1069,7 +1005,7 @@
                 "y"
             ],
             "label": "tree10",
-            "x": 672,
+            "x": 640,
             "y": 576
         },
         {
@@ -1190,8 +1126,8 @@
                 "y"
             ],
             "label": "fenceLeft",
-            "x": -304,
-            "y": 1232
+            "x": -301,
+            "y": 1233
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1267,7 +1203,7 @@
                 "y"
             ],
             "label": "stonePile",
-            "x": -592,
+            "x": -608,
             "y": 784
         },
         {
@@ -1278,7 +1214,7 @@
                 "y"
             ],
             "label": "stonePile_1",
-            "x": -624,
+            "x": -640,
             "y": 800
         },
         {
@@ -1289,7 +1225,7 @@
                 "y"
             ],
             "label": "stonePile_2",
-            "x": -560,
+            "x": -576,
             "y": 800
         },
         {
@@ -1300,7 +1236,7 @@
                 "y"
             ],
             "label": "stonePile_3",
-            "x": -592,
+            "x": -608,
             "y": 816
         },
         {
@@ -1311,7 +1247,7 @@
                 "y"
             ],
             "label": "stonePile_4",
-            "x": -656,
+            "x": -672,
             "y": 784
         },
         {
@@ -1322,7 +1258,7 @@
                 "y"
             ],
             "label": "stonePile_5",
-            "x": -656,
+            "x": -672,
             "y": 816
         },
         {
@@ -1333,7 +1269,7 @@
                 "y"
             ],
             "label": "minerals",
-            "x": -240,
+            "x": -224,
             "y": 240
         },
         {
@@ -1344,7 +1280,7 @@
                 "y"
             ],
             "label": "minerals_1",
-            "x": -208,
+            "x": -192,
             "y": 224
         },
         {
@@ -1355,7 +1291,7 @@
                 "y"
             ],
             "label": "minerals_2",
-            "x": -208,
+            "x": -192,
             "y": 256
         },
         {
@@ -1366,8 +1302,8 @@
                 "y"
             ],
             "label": "minerals_3",
-            "x": -176,
-            "y": 272
+            "x": -160,
+            "y": 240
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -1377,7 +1313,7 @@
                 "y"
             ],
             "label": "minerals_4",
-            "x": -272,
+            "x": -256,
             "y": 256
         },
         {
@@ -1388,7 +1324,7 @@
                 "y"
             ],
             "label": "minerals_5",
-            "x": -240,
+            "x": -224,
             "y": 272
         },
         {
@@ -1531,7 +1467,7 @@
                 "y"
             ],
             "label": "tallGrass_8",
-            "x": -16,
+            "x": 32,
             "y": 896
         },
         {
@@ -1542,7 +1478,7 @@
                 "y"
             ],
             "label": "tallGrass0",
-            "x": 16,
+            "x": 64,
             "y": 912
         },
         {
@@ -1553,8 +1489,8 @@
                 "y"
             ],
             "label": "tallGrass5",
-            "x": -96,
-            "y": 912
+            "x": -32,
+            "y": 928
         },
         {
             "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
@@ -1564,7 +1500,7 @@
                 "y"
             ],
             "label": "tallGrass_6",
-            "x": -48,
+            "x": 0,
             "y": 880
         },
         {
@@ -1619,8 +1555,8 @@
                 "y"
             ],
             "label": "reeds_3",
-            "x": -16,
-            "y": 880
+            "x": 64,
+            "y": 896
         },
         {
             "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
@@ -1645,7 +1581,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -192,
+            "x": -224,
             "y": 704
         },
         {
@@ -1661,7 +1597,7 @@
             ],
             "EditorOwner.owner_id": "1",
             "x": -352,
-            "y": 448
+            "y": 464
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
@@ -1686,8 +1622,8 @@
                 "y"
             ],
             "label": "tree_15",
-            "x": 1152,
-            "y": 608
+            "x": 1184,
+            "y": 624
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -1697,7 +1633,7 @@
                 "y"
             ],
             "label": "tree_16",
-            "x": 1216,
+            "x": 1248,
             "y": 640
         },
         {
@@ -1708,18 +1644,51 @@
                 "y"
             ],
             "label": "tree_17",
-            "x": 1168,
-            "y": 656
+            "x": 1152,
+            "y": 672
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
-            "id": "96b260be-36e3-4878-8e02-9b68495ac63a",
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "3296e7c3-239b-4be9-a762-b5e270df871c",
             "unlock": [
                 "x",
                 "y"
             ],
-            "label": "stairsRight",
-            "x": -512,
+            "label": "wall",
+            "x": 512,
+            "y": 768
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "1c4ca86b-e002-4bee-b144-0773ca6d7088",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs",
+            "x": 480,
+            "y": 784
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "67d87359-0c17-4d8f-927d-2187ff2136c3",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_1",
+            "x": 544,
+            "y": 752
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "8db1bbcd-738c-4fda-b307-644e5b9e2f7f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_2",
+            "x": -480,
             "y": 272
         }
     ],

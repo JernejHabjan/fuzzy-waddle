@@ -25,6 +25,7 @@ import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMal
 /* END-USER-IMPORTS */
 
 export default class MapEmberEnclave extends GameProbableWaffleScene {
+
   constructor() {
     super("MapEmberEnclave");
 
@@ -34,13 +35,14 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles_2","tiles"], 0, 0);
 
     // spawn_2
     const spawn_2 = new Spawn(this, -176, 1264);
@@ -55,7 +57,7 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     this.add.existing(spawn);
 
     // blockObsidianLava5
-    const blockObsidianLava5 = new BlockObsidianLava5(this, -992, 800);
+    const blockObsidianLava5 = new BlockObsidianLava5(this, -960, 800);
     this.add.existing(blockObsidianLava5);
 
     // bushDownwardsLarge
