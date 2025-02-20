@@ -17,7 +17,7 @@ overrides:
 
 patchedDependencies:
   phaser3-rex-plugins@1.80.13:
-    hash: cbbaa456cfc956dfbac445a342c6bd3678045c889b371891183ebd823986f689
+    hash: fiin6twawnxzoxijw7d74glnwq
     path: patches/phaser3-rex-plugins@1.80.13.patch
 
 importers:
