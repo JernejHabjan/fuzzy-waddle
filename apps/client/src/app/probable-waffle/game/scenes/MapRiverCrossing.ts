@@ -73,6 +73,7 @@ import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -82,45 +83,26 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
     this.add.existing(spawn);
 
-    // wall_8
-    const wall_8 = new Wall(this, -32, 720);
-    this.add.existing(wall_8);
-
     // wall_6
     const wall_6 = new Wall(this, -448, 256);
     this.add.existing(wall_6);
 
-    // wall_5
-    const wall_5 = new Wall(this, -96, 720);
-    this.add.existing(wall_5);
-
-    // wall_4
-    const wall_4 = new Wall(this, -64, 736);
-    this.add.existing(wall_4);
-
-    // wall_1
-    const wall_1 = new Wall(this, 0, 736);
-    this.add.existing(wall_1);
-
     // christmasTree
     const christmasTree = new ChristmasTree(this, -288, 1184);
     this.add.existing(christmasTree);
-
-    // wall_11
-    const wall_11 = new Wall(this, -96, 752);
-    this.add.existing(wall_11);
 
     // spawn_1
     const spawn_1 = new Spawn(this, 1280, 816);
@@ -133,10 +115,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // sheep_2
     const sheep_2 = new Sheep(this, -144, 1264);
     this.add.existing(sheep_2);
-
-    // wall_10
-    const wall_10 = new Wall(this, -64, 768);
-    this.add.existing(wall_10);
 
     // fenceRight
     const fenceRight = new FenceRight(this, -48, 1248);
@@ -673,22 +651,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // stairsRight
     const stairsRight = new StairsRight(this, -480, 272);
     this.add.existing(stairsRight);
-
-    // wall
-    const wall = new Wall(this, 32, 752);
-    this.add.existing(wall);
-
-    // wall_2
-    const wall_2 = new Wall(this, -32, 752);
-    this.add.existing(wall_2);
-
-    // wall_3
-    const wall_3 = new Wall(this, 0, 768);
-    this.add.existing(wall_3);
-
-    // wall_9
-    const wall_9 = new Wall(this, -32, 784);
-    this.add.existing(wall_9);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

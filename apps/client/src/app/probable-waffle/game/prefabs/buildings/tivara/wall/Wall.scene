@@ -55,7 +55,8 @@
                         "x",
                         "y"
                     ],
-                    "label": "wallTopRightBottomLeft",
+                    "label": "editorWall",
+                    "scope": "METHOD",
                     "x": 0,
                     "y": 0
                 }

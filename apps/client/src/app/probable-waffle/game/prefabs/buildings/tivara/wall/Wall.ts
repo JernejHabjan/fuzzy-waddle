@@ -51,14 +51,15 @@ export default class Wall extends Phaser.GameObjects.Container {
     cursor.visible = false;
     this.add(cursor);
 
-    // wallTopRightBottomLeft
-    const wallTopRightBottomLeft = new WallTopRightBottomLeft(scene, 0, 0);
-    this.add(wallTopRightBottomLeft);
+    // editorWall
+    const editorWall = new WallTopRightBottomLeft(scene, 0, 0);
+    this.add(editorWall);
 
     this.foundation = foundation;
     this.cursor = cursor;
 
     /* START-USER-CTR-CODE */
+    editorWall.destroy();
     this.updateWall(WallType.Full);
     this.setup();
     /* END-USER-CTR-CODE */
