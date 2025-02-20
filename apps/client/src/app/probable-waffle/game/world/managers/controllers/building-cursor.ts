@@ -35,6 +35,7 @@ export class BuildingCursor {
     this.stopPlacingSubscription = this.stopPlacingBuilding.subscribe(() => this.stop());
     this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.on(Input.Events.POINTER_DOWN, this.onPointerDown, this);
+    this.scene.input.on(Input.Events.GAME_OUT, this.stop, this);
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
@@ -329,6 +330,9 @@ export class BuildingCursor {
 
     // Spawn buildings at each point
     for (const point of allPoints) {
+      // if point 0,0, then skip it
+      if (point.x === 0 && point.y === 0) continue;
+
       this.spawnCursorGameObjectAt(point.x, point.y);
     }
   }
@@ -405,6 +409,7 @@ export class BuildingCursor {
     this.scene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.off(Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.scene.input.off(Input.Events.POINTER_UP, this.onPointerUp, this);
+    this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
     this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
