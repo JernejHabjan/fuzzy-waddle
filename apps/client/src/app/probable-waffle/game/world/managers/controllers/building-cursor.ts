@@ -190,7 +190,7 @@ export class BuildingCursor {
 
     const primaryAttack = attackDefinition.attacks[0];
 
-    const rangeRadiusX = primaryAttack.range;
+    const rangeRadiusX = primaryAttack.range * this.tileSize;
     const rangeRadiusY = rangeRadiusX / 2;
     const attackRangeGraphics = this.scene.add.graphics();
     attackRangeGraphics.lineStyle(2, 0xff0000, 1);

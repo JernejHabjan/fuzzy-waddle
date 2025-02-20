@@ -1387,7 +1387,7 @@ export const pwActorDefinitions: {
       },
       selectable: { enabled: true },
       health: {
-        maxHealth: 100
+        maxHealth: 1000
       },
       productionCost: {
         resources: {
@@ -1400,6 +1400,16 @@ export const pwActorDefinitions: {
       },
       container: {
         capacity: 2
+      },
+      attack: {
+        attacks: [
+          {
+            damage: 10,
+            damageType: DamageType.Physical,
+            cooldown: 1000,
+            range: 10
+          }
+        ]
       },
       collider: { enabled: true },
       constructable: {
@@ -1434,7 +1444,7 @@ export const pwActorDefinitions: {
       },
       selectable: { enabled: true },
       health: {
-        maxHealth: 70
+        maxHealth: 300
       },
       productionCost: {
         resources: {

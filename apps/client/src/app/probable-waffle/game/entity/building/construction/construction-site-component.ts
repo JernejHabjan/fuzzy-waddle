@@ -103,6 +103,7 @@ export class ConstructionSiteComponent {
       // Calculate health increment based on total health to gain
       const healthIncrement = (totalHealthToGain / productionDefinition.productionTime) * constructionProgress;
       healthComponent.healthComponentData.health += healthIncrement;
+      healthComponent.healthComponentData.health = Math.min(healthComponent.healthComponentData.health, maxHealth);
 
       // Handle armor similarly
       const maxArmour = healthComponent.healthDefinition.maxArmour;
@@ -111,6 +112,7 @@ export class ConstructionSiteComponent {
         const totalArmourToGain = maxArmour - initialArmour;
         const armourIncrement = (totalArmourToGain / productionDefinition.productionTime) * constructionProgress;
         healthComponent.healthComponentData.armour += armourIncrement;
+        healthComponent.healthComponentData.armour = Math.min(healthComponent.healthComponentData.armour, maxArmour);
       }
     }
 
