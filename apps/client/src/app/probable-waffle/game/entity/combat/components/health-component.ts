@@ -11,6 +11,7 @@ export type HealthDefinition = {
   maxHealth: number;
   maxArmour?: number;
   regenerateHealthRate?: number;
+  healthDisplayBehavior?: "always" | "onDamage" | "onHover"; // todo use this
 };
 
 export class HealthComponent {

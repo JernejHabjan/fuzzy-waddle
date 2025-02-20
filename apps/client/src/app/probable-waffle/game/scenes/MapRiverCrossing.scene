@@ -29,17 +29,6 @@
             ]
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f21",
-            "id": "2b1bae61-5e18-46a9-86f0-87f3382dae2e",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "stairsBottomLeft",
-            "x": 544,
-            "y": 752
-        },
-        {
             "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
             "id": "88aa0a36-cef4-4314-8225-c215a3ba8515",
             "unlock": [
@@ -1659,17 +1648,6 @@
             "y": 672
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
-            "id": "96b260be-36e3-4878-8e02-9b68495ac63a",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "stairsTopRight",
-            "x": -480,
-            "y": 272
-        },
-        {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
             "id": "3296e7c3-239b-4be9-a762-b5e270df871c",
             "unlock": [
@@ -1681,26 +1659,37 @@
             "y": 768
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f25",
-            "id": "a3e1e382-9797-4095-81ce-7fbab1d355fd",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "stairsTopRight_1",
-            "x": 480,
-            "y": 784
-        },
-        {
             "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
-            "id": "265594b2-0069-4ba8-94d1-bc74cb8c9914",
+            "id": "1c4ca86b-e002-4bee-b144-0773ca6d7088",
             "unlock": [
                 "x",
                 "y"
             ],
             "label": "stairs",
-            "x": 576,
-            "y": 816
+            "x": 480,
+            "y": 784
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "67d87359-0c17-4d8f-927d-2187ff2136c3",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_1",
+            "x": 544,
+            "y": 752
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "8db1bbcd-738c-4fda-b307-644e5b9e2f7f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_2",
+            "x": -480,
+            "y": 272
         }
     ],
     "plainObjects": [

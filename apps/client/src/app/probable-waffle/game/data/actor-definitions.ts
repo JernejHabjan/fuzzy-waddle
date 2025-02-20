@@ -61,41 +61,6 @@ const treeDefinitions: ActorInfoDefinition = {
     }
   }
 };
-const stairsDefinition: ActorInfoDefinition = {
-  components: {
-    objectDescriptor: {
-      color: 0x95a083
-    },
-    owner: {
-      color: [
-        {
-          originalColor: 0x000000,
-          epsilon: 0
-        }
-      ]
-    },
-    vision: {
-      range: 5
-    },
-    selectable: { enabled: true },
-    health: {
-      maxHealth: 100
-    },
-    productionCost: {
-      resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
-      },
-      refundFactor: 0.5,
-      productionTime: 5000,
-      costType: PaymentType.PayImmediately
-    },
-    collider: { enabled: true },
-    constructable: {
-      ...coreConstructionSiteDefinition
-    }
-  }
-};
 
 const tivaraWorkerDefinition: ActorInfoDefinition = {
   components: {
@@ -146,7 +111,8 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.Temple,
         ObjectNames.WorkMill,
         ObjectNames.WatchTower,
-        ObjectNames.Wall
+        ObjectNames.Wall,
+        ObjectNames.Stairs
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
@@ -222,7 +188,8 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.Owlery,
         ObjectNames.WorkMill,
         ObjectNames.WatchTower,
-        ObjectNames.Wall
+        ObjectNames.Wall,
+        ObjectNames.Stairs
       ],
       constructionSiteOffset: 2,
       enterConstructionSite: false
@@ -1314,8 +1281,50 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.StairsLeft]: stairsDefinition,
-  [ObjectNames.StairsRight]: stairsDefinition,
+  [ObjectNames.Stairs]: {
+    components: {
+      objectDescriptor: {
+        color: 0x95a083
+      },
+      info: {
+        name: "Stairs",
+        description: "Used to move to top of the Wall and Watch Tower",
+        smallImage: {
+          key: "factions",
+          frame: "buildings/tivara/stairs/stairs_top_left.png",
+          origin: { x: 0.5, y: 0.5 }
+        }
+      },
+      owner: {
+        color: [
+          {
+            originalColor: 0x000000,
+            epsilon: 0
+          }
+        ]
+      },
+      vision: {
+        range: 5
+      },
+      selectable: { enabled: true },
+      health: {
+        maxHealth: 300
+      },
+      productionCost: {
+        resources: {
+          [ResourceType.Wood]: 10,
+          [ResourceType.Minerals]: 10
+        },
+        refundFactor: 0.5,
+        productionTime: 5000,
+        costType: PaymentType.PayImmediately
+      },
+      collider: { enabled: true },
+      constructable: {
+        ...coreConstructionSiteDefinition
+      }
+    }
+  },
   [ObjectNames.WatchTower]: {
     components: {
       objectDescriptor: {

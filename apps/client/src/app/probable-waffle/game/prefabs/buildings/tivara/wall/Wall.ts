@@ -23,9 +23,10 @@ import WallBottomLeftBottomRightTopRight from "./WallBottomLeftBottomRightTopRig
 import WallBottomLeftTopLeftTopRight from "./WallBottomLeftTopLeftTopRight";
 import { onObjectReady } from "../../../../data/game-object-helper";
 import WatchTower from "./WatchTower";
-import StairsTopLeft from "../stairs/StairsTopLeft";
-import StairsTopRight from "../stairs/StairsTopRight";
 import { throttle } from "../../../../library/throttle";
+import Stairs from "../stairs/Stairs";
+import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
+import { TilemapComponent } from "../../../../scenes/components/tilemap.component";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -76,59 +77,34 @@ export default class Wall extends Phaser.GameObjects.Container {
 
   updateWall(wallType: WallType) {
     this.wall?.destroy();
-    switch (wallType) {
-      case WallType.TopRightBottomRight:
-        this.wall = new WallTopRightBottomRight(this.scene, 0, 0);
-        break;
-      case WallType.TopRightBottomLeft:
-        this.wall = new WallTopRightBottomLeft(this.scene, 0, 0);
-        break;
-      case WallType.TopLeftBottomRight:
-        this.wall = new WallTopLeftBottomRight(this.scene, 0, 0);
-        break;
-      case WallType.TopLeftBottomLeft:
-        this.wall = new WallTopLeftBottomLeft(this.scene, 0, 0);
-        break;
-      case WallType.Empty:
-        this.wall = new WallEmpty(this.scene, 0, 0);
-        break;
-      case WallType.TopLeft:
-        this.wall = new WallTopLeft(this.scene, 0, 0);
-        break;
-      case WallType.TopRight:
-        this.wall = new WallTopRight(this.scene, 0, 0);
-        break;
-      case WallType.BottomLeft:
-        this.wall = new WallBottomLeft(this.scene, 0, 0);
-        break;
-      case WallType.BottomRight:
-        this.wall = new WallBottomRight(this.scene, 0, 0);
-        break;
-      case WallType.TopLeftTopRight:
-        this.wall = new WallTopLeftTopRight(this.scene, 0, 0);
-        break;
-      case WallType.BottomLeftBottomRight:
-        this.wall = new WallBottomLeftBottomRight(this.scene, 0, 0);
-        break;
-      case WallType.Full:
-        this.wall = new WallFull(this.scene, 0, 0);
-        break;
-      case WallType.TopLeftBottomRightBottomLeft:
-        this.wall = new WallTopLeftBottomRightBottomLeft(this.scene, 0, 0);
-        break;
-      case WallType.TopLeftTopRightBottomRight:
-        this.wall = new WallTopLeftTopRightBottomRight(this.scene, 0, 0);
-        break;
-      case WallType.BottomLeftBottomRightTopRight:
-        this.wall = new WallBottomLeftBottomRightTopRight(this.scene, 0, 0);
-        break;
-      case WallType.BottomLeftTopLeftTopRight:
-        this.wall = new WallBottomLeftTopLeftTopRight(this.scene, 0, 0);
-        break;
-      default:
-        throw new Error("Wall type not found");
+
+    const wallClasses = {
+      [WallType.TopRightBottomRight]: WallTopRightBottomRight,
+      [WallType.TopRightBottomLeft]: WallTopRightBottomLeft,
+      [WallType.TopLeftBottomRight]: WallTopLeftBottomRight,
+      [WallType.TopLeftBottomLeft]: WallTopLeftBottomLeft,
+      [WallType.Empty]: WallEmpty,
+      [WallType.TopLeft]: WallTopLeft,
+      [WallType.TopRight]: WallTopRight,
+      [WallType.BottomLeft]: WallBottomLeft,
+      [WallType.BottomRight]: WallBottomRight,
+      [WallType.TopLeftTopRight]: WallTopLeftTopRight,
+      [WallType.BottomLeftBottomRight]: WallBottomLeftBottomRight,
+      [WallType.Full]: WallFull,
+      [WallType.TopLeftBottomLeftBottomRight]: WallTopLeftBottomRightBottomLeft,
+      [WallType.TopLeftTopRightBottomRight]: WallTopLeftTopRightBottomRight,
+      [WallType.TopRightBottomLeftBottomRight]: WallBottomLeftBottomRightTopRight,
+      [WallType.TopLeftTopRightBottomLeft]: WallBottomLeftTopLeftTopRight
+    };
+
+    const WallClass = wallClasses[wallType];
+
+    if (WallClass) {
+      this.wall = new WallClass(this.scene, 0, 0);
+      this.add(this.wall);
+    } else {
+      throw new Error("Wall type not found");
     }
-    this.add(this.wall);
   }
 
   private setup() {
@@ -182,13 +158,13 @@ export default class Wall extends Phaser.GameObjects.Container {
     } else if (neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
       return WallType.TopRightBottomRight;
     } else if (neighbors.bottomRight && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.topLeft) {
-      return WallType.BottomLeftTopLeftTopRight;
+      return WallType.TopLeftTopRightBottomLeft;
     } else if (neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.bottomRight) {
-      return WallType.BottomLeftBottomRightTopRight;
+      return WallType.TopRightBottomLeftBottomRight;
     } else if (neighbors.bottomLeft && !neighbors.topRight && !neighbors.bottomRight && !neighbors.topLeft) {
       return WallType.TopLeftTopRightBottomRight;
     } else if (neighbors.topRight && !neighbors.topLeft && !neighbors.bottomRight && !neighbors.bottomLeft) {
-      return WallType.TopLeftBottomRightBottomLeft;
+      return WallType.TopLeftBottomLeftBottomRight;
     } else {
       throw new Error("Wall type not found");
     }
@@ -196,57 +172,31 @@ export default class Wall extends Phaser.GameObjects.Container {
 
   private updateCursor(wallType: WallType) {
     const wall = this.cursor as any as Phaser.GameObjects.Image;
-    switch (wallType) {
-      case WallType.TopRightBottomRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_right_bottom_right.png");
-        break;
-      case WallType.TopRightBottomLeft:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
-        break;
-      case WallType.TopLeftBottomRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_bottom_right.png");
-        break;
-      case WallType.TopLeftBottomLeft:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_bottom_left.png");
-        break;
-      case WallType.Empty:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_empty.png");
-        break;
-      case WallType.TopLeft:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left.png");
-        break;
-      case WallType.TopRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_right.png");
-        break;
-      case WallType.BottomLeft:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left.png");
-        break;
-      case WallType.BottomRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_right.png");
-        break;
-      case WallType.TopLeftTopRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_top_right.png");
-        break;
-      case WallType.BottomLeftBottomRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left_bottom_right.png");
-        break;
-      case WallType.Full:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_full.png");
-        break;
-      case WallType.TopLeftBottomRightBottomLeft:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_bottom_right_bottom_left.png");
-        break;
-      case WallType.TopLeftTopRightBottomRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_top_left_top_right_bottom_right.png");
-        break;
-      case WallType.BottomLeftBottomRightTopRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left_bottom_right_top_right.png");
-        break;
-      case WallType.BottomLeftTopLeftTopRight:
-        wall.setTexture("factions", "buildings/tivara/wall/wall_bottom_left_top_left_top_right.png");
-        break;
-      default:
-        throw new Error("Wall type not found");
+    const texturePaths = {
+      [WallType.TopRightBottomRight]: "buildings/tivara/wall/wall_top_right_bottom_right.png",
+      [WallType.TopRightBottomLeft]: "buildings/tivara/wall/wall_top_right_bottom_left.png",
+      [WallType.TopLeftBottomRight]: "buildings/tivara/wall/wall_top_left_bottom_right.png",
+      [WallType.TopLeftBottomLeft]: "buildings/tivara/wall/wall_top_left_bottom_left.png",
+      [WallType.Empty]: "buildings/tivara/wall/wall_empty.png",
+      [WallType.TopLeft]: "buildings/tivara/wall/wall_top_left.png",
+      [WallType.TopRight]: "buildings/tivara/wall/wall_top_right.png",
+      [WallType.BottomLeft]: "buildings/tivara/wall/wall_bottom_left.png",
+      [WallType.BottomRight]: "buildings/tivara/wall/wall_bottom_right.png",
+      [WallType.TopLeftTopRight]: "buildings/tivara/wall/wall_top_left_top_right.png",
+      [WallType.BottomLeftBottomRight]: "buildings/tivara/wall/wall_bottom_left_bottom_right.png",
+      [WallType.Full]: "buildings/tivara/wall/wall_full.png",
+      [WallType.TopLeftBottomLeftBottomRight]: "buildings/tivara/wall/wall_top_left_bottom_right_bottom_left.png",
+      [WallType.TopLeftTopRightBottomRight]: "buildings/tivara/wall/wall_top_left_top_right_bottom_right.png",
+      [WallType.TopRightBottomLeftBottomRight]: "buildings/tivara/wall/wall_bottom_left_bottom_right_top_right.png",
+      [WallType.TopLeftTopRightBottomLeft]: "buildings/tivara/wall/wall_bottom_left_top_left_top_right.png"
+    };
+
+    const texturePath = texturePaths[wallType];
+
+    if (texturePath) {
+      wall.setTexture("factions", texturePath);
+    } else {
+      throw new Error("Wall type not found");
     }
   }
 
@@ -257,40 +207,8 @@ export default class Wall extends Phaser.GameObjects.Container {
     this.foundation.visible = progress !== null && progress < 100;
   }
 
-  private get neighbors(): {
-    topLeft: boolean;
-    topRight: boolean;
-    bottomLeft: boolean;
-    bottomRight: boolean;
-  } {
-    const neighbourTypes = [Wall, WatchTower, StairsTopLeft, StairsTopRight];
-
-    const tileWidth = 64;
-    const tileHeight = tileWidth / 2;
-
-    const allWalls = this.scene.children.list.filter(
-      (child) => child !== this && neighbourTypes.some((type) => child instanceof type)
-    ) as Wall[];
-
-    const topLeftWall = allWalls.find(
-      (wall) => wall.x === this.x - tileWidth / 2 && wall.y === this.y - tileHeight / 2
-    );
-    const topRightWall = allWalls.find(
-      (wall) => wall.x === this.x + tileWidth / 2 && wall.y === this.y - tileHeight / 2
-    );
-    const bottomLeftWall = allWalls.find(
-      (wall) => wall.x === this.x - tileWidth / 2 && wall.y === this.y + tileHeight / 2
-    );
-    const bottomRightWall = allWalls.find(
-      (wall) => wall.x === this.x + tileWidth / 2 && wall.y === this.y + tileHeight / 2
-    );
-
-    return {
-      topLeft: !!topLeftWall,
-      topRight: !!topRightWall,
-      bottomLeft: !!bottomLeftWall,
-      bottomRight: !!bottomRightWall
-    };
+  private get neighbors() {
+    return getNeighboursByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth);
   }
 
   destroy(fromScene?: boolean) {
@@ -316,8 +234,8 @@ export enum WallType {
   BottomRight,
   TopLeftTopRight,
   BottomLeftBottomRight,
-  BottomLeftTopLeftTopRight,
-  BottomLeftBottomRightTopRight,
+  TopLeftTopRightBottomLeft,
+  TopRightBottomLeftBottomRight,
   TopLeftTopRightBottomRight,
-  TopLeftBottomRightBottomLeft
+  TopLeftBottomLeftBottomRight
 }

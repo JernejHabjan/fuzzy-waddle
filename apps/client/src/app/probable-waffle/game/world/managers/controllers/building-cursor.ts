@@ -10,6 +10,7 @@ import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { EventEmitter } from "@angular/core";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
+import { TilemapComponent } from "../../../scenes/components/tilemap.component";
 import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
@@ -21,7 +22,7 @@ export class BuildingCursor {
   startPlacingBuilding = new EventEmitter<ObjectNames>();
   stopPlacingBuilding = new EventEmitter<void>();
 
-  private readonly tileSize = 64;
+  private readonly tileSize = TilemapComponent.tileWidth;
   private readonly startPlacingSubscription: Subscription;
   private readonly stopPlacingSubscription: Subscription;
   private escKey: Phaser.Input.Keyboard.Key | undefined;

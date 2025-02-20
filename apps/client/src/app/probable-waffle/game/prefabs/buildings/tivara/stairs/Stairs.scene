@@ -10,8 +10,8 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 1280,
-        "borderHeight": 720
+        "borderWidth": 64,
+        "borderHeight": 64
     },
     "displayList": [
         {
@@ -45,8 +45,8 @@
                         "key": "factions",
                         "frame": "buildings/tivara/wall/foundation/foundation_1.png"
                     },
-                    "x": 1.0388993897437224,
-                    "y": -33.04250807446053,
+                    "y": -8,
+                    "originY": 0.75,
                     "visible": false
                 },
                 {

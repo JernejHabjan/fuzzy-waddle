@@ -40,10 +40,9 @@ import Stone from "../../../other/Template/prefabs/Stone";
 import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
-import StairsTopLeft from "../prefabs/buildings/tivara/stairs/StairsTopLeft";
-import StairsTopRight from "../prefabs/buildings/tivara/stairs/StairsTopRight";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
+import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -76,8 +75,7 @@ export class ActorManager {
   };
 
   private static tivaraWall: ActorMap = {
-    [ObjectNames.StairsLeft]: StairsTopLeft,
-    [ObjectNames.StairsRight]: StairsTopRight,
+    [ObjectNames.Stairs]: Stairs,
     [ObjectNames.WatchTower]: WatchTower,
     [ObjectNames.Wall]: Wall
   };
