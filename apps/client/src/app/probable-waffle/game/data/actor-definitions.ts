@@ -1308,7 +1308,8 @@ export const pwActorDefinitions: {
       },
       selectable: { enabled: true },
       health: {
-        maxHealth: 300
+        maxHealth: 300,
+        healthDisplayBehavior: "onDamage"
       },
       productionCost: {
         resources: {
@@ -1352,7 +1353,8 @@ export const pwActorDefinitions: {
       },
       selectable: { enabled: true },
       health: {
-        maxHealth: 1000
+        maxHealth: 1000,
+        healthDisplayBehavior: "onDamage"
       },
       productionCost: {
         resources: {
@@ -1409,7 +1411,8 @@ export const pwActorDefinitions: {
       },
       selectable: { enabled: true },
       health: {
-        maxHealth: 300
+        maxHealth: 300,
+        healthDisplayBehavior: "onDamage"
       },
       productionCost: {
         resources: {
