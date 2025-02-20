@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 import GameProbableWaffleScene from "./GameProbableWaffleScene";
+import StairsBottomLeft from "../prefabs/buildings/tivara/stairs/StairsBottomLeft";
 import Spawn from "../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../editor-components/EditorOwner";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
@@ -68,7 +69,8 @@ import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
 import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
 import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
-import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
+import StairsTopRight from "../prefabs/buildings/tivara/stairs/StairsTopRight";
+import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -91,6 +93,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+
+    // stairsBottomLeft
+    const stairsBottomLeft = new StairsBottomLeft(this, 544, 752);
+    this.add.existing(stairsBottomLeft);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -648,9 +654,21 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree_17 = new Tree7(this, 1152, 672);
     this.add.existing(tree_17);
 
-    // stairsRight
-    const stairsRight = new StairsRight(this, -480, 272);
-    this.add.existing(stairsRight);
+    // stairsTopRight
+    const stairsTopRight = new StairsTopRight(this, -480, 272);
+    this.add.existing(stairsTopRight);
+
+    // wall
+    const wall = new Wall(this, 512, 768);
+    this.add.existing(wall);
+
+    // stairsTopRight_1
+    const stairsTopRight_1 = new StairsTopRight(this, 480, 784);
+    this.add.existing(stairsTopRight_1);
+
+    // stairs
+    const stairs = new Stairs(this, 576, 816);
+    this.add.existing(stairs);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

@@ -1,0 +1,74 @@
+{
+    "id": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e016ad01-e72d-4cc9-8a8d-eb2d342de732",
+            "label": "container_1",
+            "blendMode": -1,
+            "x": 32,
+            "y": 48,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "b8fa4efd-1632-441d-a879-f621e5f62c25",
+                    "label": "cursor",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/stairs/stairs_top_left.png"
+                    },
+                    "x": 0.03889938974372242,
+                    "y": -0.04250807446052818,
+                    "originY": 0.75,
+                    "visible": false
+                },
+                {
+                    "type": "Image",
+                    "id": "05d3b850-3499-48de-8fd7-01108e78f123",
+                    "label": "foundation",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/wall/foundation/foundation_1.png"
+                    },
+                    "x": 1.0388993897437224,
+                    "y": -33.04250807446053,
+                    "visible": false
+                },
+                {
+                    "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f24",
+                    "id": "b745b34a-67bc-4c3a-bcad-a0bf62d1b6c9",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "editorStairs",
+                    "scope": "METHOD",
+                    "x": 0.03889938974372242,
+                    "y": -0.04250807446052818
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

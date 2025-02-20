@@ -23,8 +23,8 @@ import WallBottomLeftBottomRightTopRight from "./WallBottomLeftBottomRightTopRig
 import WallBottomLeftTopLeftTopRight from "./WallBottomLeftTopLeftTopRight";
 import { onObjectReady } from "../../../../data/game-object-helper";
 import WatchTower from "./WatchTower";
-import StairsLeft from "./StairsLeft";
-import StairsRight from "./StairsRight";
+import StairsTopLeft from "../stairs/StairsTopLeft";
+import StairsTopRight from "../stairs/StairsTopRight";
 import { throttle } from "../../../../library/throttle";
 /* END-USER-IMPORTS */
 
@@ -263,7 +263,7 @@ export default class Wall extends Phaser.GameObjects.Container {
     bottomLeft: boolean;
     bottomRight: boolean;
   } {
-    const neighbourTypes = [Wall, WatchTower, StairsLeft, StairsRight];
+    const neighbourTypes = [Wall, WatchTower, StairsTopLeft, StairsTopRight];
 
     const tileWidth = 64;
     const tileHeight = tileWidth / 2;

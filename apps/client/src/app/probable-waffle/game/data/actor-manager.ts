@@ -31,19 +31,6 @@ import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
-import StairsLeft from "../prefabs/buildings/tivara/wall/StairsLeft";
-import WallBottomLeft from "../prefabs/buildings/tivara/wall/WallBottomLeft";
-import WallBottomLeftBottomRight from "../prefabs/buildings/tivara/wall/WallBottomLeftBottomRight";
-import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
-import WallBottomRight from "../prefabs/buildings/tivara/wall/WallBottomRight";
-import WallEmpty from "../prefabs/buildings/tivara/wall/WallEmpty";
-import WallTopLeft from "../prefabs/buildings/tivara/wall/WallTopLeft";
-import WallTopLeftBottomLeft from "../prefabs/buildings/tivara/wall/WallTopLeftBottomLeft";
-import WallTopLeftBottomRight from "../prefabs/buildings/tivara/wall/WallTopLeftBottomRight";
-import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
-import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
-import WallTopRightBottomLeft from "../prefabs/buildings/tivara/wall/WallTopRightBottomLeft";
-import WallTopRightBottomRight from "../prefabs/buildings/tivara/wall/WallTopRightBottomRight";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { ObjectNames } from "./object-names";
@@ -52,9 +39,11 @@ import Minerals from "../prefabs/outside/resources/Minerals";
 import Stone from "../../../other/Template/prefabs/Stone";
 import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
+import Wall from "../prefabs/buildings/tivara/wall/Wall";
+import StairsTopLeft from "../prefabs/buildings/tivara/stairs/StairsTopLeft";
+import StairsTopRight from "../prefabs/buildings/tivara/stairs/StairsTopRight";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
-import Wall from "../prefabs/buildings/tivara/wall/Wall";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -87,8 +76,8 @@ export class ActorManager {
   };
 
   private static tivaraWall: ActorMap = {
-    [ObjectNames.StairsLeft]: StairsLeft,
-    [ObjectNames.StairsRight]: StairsRight,
+    [ObjectNames.StairsLeft]: StairsTopLeft,
+    [ObjectNames.StairsRight]: StairsTopRight,
     [ObjectNames.WatchTower]: WatchTower,
     [ObjectNames.Wall]: Wall
   };
