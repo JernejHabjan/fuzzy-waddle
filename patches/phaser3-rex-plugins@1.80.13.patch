@@ -1,9 +1,0 @@
-diff --git a/plugins/utils/system/IsGame.js b/plugins/utils/system/IsGame.js
-index 47f050258d31b4d71e41ee5f07833476fdee63ef..5ddcad821c2bcb22776940f179ed106a5b168cc7 100644
---- a/plugins/utils/system/IsGame.js
-+++ b/plugins/utils/system/IsGame.js
-@@ -1,3 +1,4 @@
-+import { Game } from "phaser";
- const GameClass = Phaser.Game;
- var IsGame = function (object) {
-     return (object instanceof GameClass);
