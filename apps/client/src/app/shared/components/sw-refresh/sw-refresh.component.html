@@ -7,6 +7,8 @@
           <fa-icon [icon]="faSpinner" animation="spin" />
           Downloading...
         </button>
+      } @else if (showInstallationFailed) {
+        <button class="btn btn-sm btn-outline-danger me-2" (click)="recover()">Update</button>
       } @else {
         <button class="btn btn-sm btn-outline-primary me-2" (click)="onVersionRefreshClick()">Update</button>
       }

@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SwRefreshComponent } from "./sw-refresh.component";
 import { Component } from "@angular/core";
-import { SwUpdate } from "@angular/service-worker";
+import { VersionService } from "./version.service";
+import { versionServiceStub } from "./version.service.spec";
 
 @Component({ selector: "fuzzy-waddle-sw-refresh", template: "", standalone: true, imports: [] })
 export class SwRefreshTestingComponent {}
@@ -15,8 +16,8 @@ describe("SwRefreshComponent", () => {
       imports: [SwRefreshComponent],
       providers: [
         {
-          provide: SwUpdate,
-          useValue: {}
+          provide: VersionService,
+          useValue: versionServiceStub
         }
       ]
     });
