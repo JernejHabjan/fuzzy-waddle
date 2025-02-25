@@ -33,6 +33,10 @@ export class VersionService implements VersionServiceInterface, OnDestroy {
   };
 
   private subscribeToSwEvents() {
+    if (!this.swUpdate.isEnabled) {
+      this.localVersionState.set(VersionState.VersionOk);
+      return;
+    }
     this.versionUpdateSubscription = this.swUpdate.versionUpdates.subscribe((versionEvent) => {
       // if version available show version ready modal
       switch (versionEvent.type) {
