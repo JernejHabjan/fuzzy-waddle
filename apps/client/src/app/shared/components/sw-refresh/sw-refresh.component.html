@@ -1,18 +1,20 @@
 @if (showNewVersion) {
-  <div class="mask"></div>
-  <ngb-alert type="info" [dismissible]="false" class="alert-center">
-    <div><strong>Update Available</strong><br />Please wait while we download the latest version.</div>
-    <div>
-      @if (showInstallationFailed) {
-        <button class="btn btn-sm btn-outline-primary me-2" (click)="recover()">Update</button>
-      } @else if (!showVersionReady) {
-        <button class="btn btn-sm btn-outline-primary me-2" [disabled]="true">
-          <fa-icon [icon]="faSpinner" animation="spin" />
-          Downloading...
-        </button>
-      } @else {
-        <button class="btn btn-sm btn-outline-primary me-2" (click)="onVersionRefreshClick()">Update</button>
-      }
-    </div>
-  </ngb-alert>
+  <div class="wrapper">
+    <div class="mask"></div>
+    <ngb-alert type="info" [dismissible]="false" class="alert-center">
+      <div><strong>Update Available</strong><br />Please wait while we download the latest version.</div>
+      <div>
+        @if (showInstallationFailed) {
+          <button class="btn btn-sm btn-outline-primary me-2" (click)="recover()">Update</button>
+        } @else if (!showVersionReady) {
+          <button class="btn btn-sm btn-outline-primary me-2" [disabled]="true">
+            <fa-icon [icon]="faSpinner" animation="spin" />
+            Downloading...
+          </button>
+        } @else {
+          <button class="btn btn-sm btn-outline-primary me-2" (click)="onVersionRefreshClick()">Update</button>
+        }
+      </div>
+    </ngb-alert>
+  </div>
 }
