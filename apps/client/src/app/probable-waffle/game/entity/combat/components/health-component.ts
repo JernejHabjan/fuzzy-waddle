@@ -1,17 +1,20 @@
 import { DamageType } from "../damage-type";
 import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { HealthComponentData } from "@fuzzy-waddle/api-interfaces";
 import { ComponentSyncSystem, SyncOptions } from "../../systems/component-sync.system";
 import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
+import { getActorComponent } from "../../../data/actor-component";
+import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
+import { onObjectReady } from "../../../data/game-object-helper";
 
 export type HealthDefinition = {
   maxHealth: number;
   maxArmour?: number;
   regenerateHealthRate?: number;
-  healthDisplayBehavior?: "always" | "onDamage" | "onHover";
+  healthDisplayBehavior?: "always" | "onDamage";
 };
 
 export class HealthComponent {
@@ -55,6 +58,11 @@ export class HealthComponent {
       }
     }
   } satisfies SyncOptions<HealthComponentData>;
+  private uiComponentsVisible: boolean = true;
+  uiComponentsVisibilityChanged: Subject<boolean> = new Subject<boolean>();
+  private shouldUiElementsBeVisible: boolean = false;
+  private constructionProgressSubscription?: Subscription;
+  private healthUiHideOnTimeout?: number;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly healthDefinition: HealthDefinition
@@ -86,6 +94,20 @@ export class HealthComponent {
     } else {
       this.setVisibilityUiComponent(false);
     }
+
+    onObjectReady(gameObject, this.init, this);
+  }
+
+  private init() {
+    const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
+    if (constructionSiteComponent && !constructionSiteComponent.isFinished()) {
+      const shouldBeVisible = this.shouldUiElementsBeVisible;
+      this.setVisibilityUiComponent(false);
+      this.shouldUiElementsBeVisible = shouldBeVisible;
+      this.constructionProgressSubscription = constructionSiteComponent.constructionStateChanged.subscribe(() =>
+        this.setVisibilityUiComponent(this.shouldUiElementsBeVisible)
+      );
+    }
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
@@ -103,10 +125,12 @@ export class HealthComponent {
     return new Phaser.Geom.Rectangle(
       healthComponentBounds.x,
       healthComponentBounds.y,
-      healthComponentBounds.width,
-      armorComponentBounds
-        ? healthComponentBounds.height + armorComponentBounds.height - HealthUiComponent.barBorder
-        : healthComponentBounds.height
+      this.uiComponentsVisible ? healthComponentBounds.width : 0,
+      this.uiComponentsVisible
+        ? armorComponentBounds
+          ? healthComponentBounds.height + armorComponentBounds.height - HealthUiComponent.barBorder
+          : healthComponentBounds.height
+        : 0
     );
   }
 
@@ -126,7 +150,8 @@ export class HealthComponent {
     if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
       this.setVisibilityUiComponent(true);
       // Hide the UI component after a delay if it's set to "onDamage"
-      setTimeout(() => {
+      clearTimeout(this.healthUiHideOnTimeout);
+      this.healthUiHideOnTimeout = window.setTimeout(() => {
         if (this.gameObject.active) this.setVisibilityUiComponent(false);
       }, 3000);
     }
@@ -162,12 +187,21 @@ export class HealthComponent {
   }
 
   setVisibilityUiComponent(visibility: boolean) {
+    if (!this.gameObject.active) return;
+    this.shouldUiElementsBeVisible = visibility;
+    const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
+    if (constructionSiteComponent && !constructionSiteComponent.isFinished()) visibility = false;
+    const previousVisibility = this.uiComponentsVisible;
+    if (visibility === previousVisibility) return;
     this.healthUiComponent.setVisibility(visibility);
     this.armorUiComponent?.setVisibility(visibility);
+    this.uiComponentsVisible = visibility;
+    this.uiComponentsVisibilityChanged.next(visibility);
   }
 
   private destroy() {
     this.playerChangedSubscription?.unsubscribe();
+    this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   }
 

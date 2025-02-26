@@ -1,7 +1,6 @@
 import { PaymentType } from "../payment-type";
 import { ConstructionSiteComponentData, ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
-import { EventEmitter } from "@angular/core";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
@@ -9,9 +8,10 @@ import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "../../../data/object-names";
 import { ProductionCostDefinition } from "../production/production-cost-component";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { BehaviorSubject } from "rxjs";
-import GameObject = Phaser.GameObjects.GameObject;
+import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
+import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished
@@ -33,7 +33,6 @@ export type ConstructionSiteDefinition = {
 };
 
 export class ConstructionSiteComponent {
-  public constructionStarted: EventEmitter<number> = new EventEmitter<number>();
   public progressPercentage = 0;
   public constructionProgressPercentageChanged: BehaviorSubject<number> = new BehaviorSubject<number>(
     this.progressPercentage
@@ -42,9 +41,11 @@ export class ConstructionSiteComponent {
   private constructionSiteData: ConstructionSiteComponentData = {
     state: ConstructionStateEnum.NotStarted
   } satisfies ConstructionSiteComponentData;
+  public constructionStateChanged: Subject<ConstructionStateEnum> = new Subject<ConstructionStateEnum>();
   private assignedBuilders: GameObject[] = [];
-  private onConstructionFinished: EventEmitter<GameObject> = new EventEmitter<GameObject>();
-
+  constructionProgressUiComponent: ConstructionProgressUiComponent = new ConstructionProgressUiComponent(
+    this.gameObject
+  );
   constructor(
     private readonly gameObject: GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
@@ -149,8 +150,7 @@ export class ConstructionSiteComponent {
     // start building
     this.remainingConstructionTime = productionDefinition.productionTime;
     this.constructionSiteData.state = ConstructionStateEnum.Constructing;
-
-    this.constructionStarted.emit(productionDefinition.productionTime);
+    this.constructionStateChanged.next(this.constructionSiteData.state);
   }
 
   private setInitialHealth() {
@@ -220,6 +220,7 @@ export class ConstructionSiteComponent {
 
   private finishConstruction() {
     this.constructionSiteData.state = ConstructionStateEnum.Finished;
+    this.constructionStateChanged.next(this.constructionSiteData.state);
     // todo play sound
 
     if (this.constructionSiteDefinition.consumesBuilders) {
@@ -229,9 +230,6 @@ export class ConstructionSiteComponent {
     }
 
     upgradeFromConstructingToFullActorData(this.gameObject);
-
-    // todo spawn finished building
-    this.onConstructionFinished.emit(this.gameObject);
   }
 
   private getProgressFraction() {
@@ -247,6 +245,7 @@ export class ConstructionSiteComponent {
 
   setData(data: Partial<ConstructionSiteComponentData>) {
     this.constructionSiteData = { ...this.constructionSiteData, ...data };
+    this.constructionStateChanged.next(this.constructionSiteData.state);
   }
 
   private onDestroy() {
