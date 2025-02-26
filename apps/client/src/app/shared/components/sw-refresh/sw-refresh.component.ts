@@ -5,14 +5,12 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbAlert } from "@ng-bootstrap/ng-bootstrap";
 import { VersionService, VersionState } from "./version.service";
 import { Subscription } from "rxjs";
-import { AngularHost } from "../../consts";
 
 @Component({
   selector: "fuzzy-waddle-sw-refresh",
   templateUrl: "./sw-refresh.component.html",
   styleUrls: ["./sw-refresh.component.scss"],
-  imports: [FaIconComponent, NgbAlert],
-  host: AngularHost.contentFlexFullHeight
+  imports: [FaIconComponent, NgbAlert]
 })
 export class SwRefreshComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;
