@@ -107,6 +107,18 @@
             "scope": "CLASS",
             "x": 13,
             "y": 486
+        },
+        {
+            "prefabId": "98fbac9e-51c8-4577-ba5e-4f5aa45e9180",
+            "id": "b8898387-49f9-48fb-b62a-774309a6e689",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "hudMessages",
+            "scope": "CLASS",
+            "x": 6,
+            "y": 472
         }
     ],
     "plainObjects": [],
