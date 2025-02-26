@@ -36,16 +36,25 @@ export class ActorData {
   ) {}
 }
 
+/**
+ * Sets the actor data - appends the components and systems to the actor.
+ */
 export function setActorData(
   actor: Phaser.GameObjects.GameObject,
   components: any[],
   systems: any[],
   actorDefinition?: Partial<ActorDefinition>
 ) {
-  const componentMap = new Map(components.map((c) => [c.constructor, c]));
-  const systemMap = new Map(systems.map((s) => [s.constructor, s]));
-  const actorData = new ActorData(componentMap, systemMap);
-  actor.setData(ActorDataKey, actorData);
+  let actorData = actor.getData(ActorDataKey) as ActorData;
+  if (actorData) {
+    components.forEach((component) => actorData.components.set(component.constructor, component));
+    systems.forEach((system) => actorData.systems.set(system.constructor, system));
+  } else {
+    const componentMap = new Map(components.map((c) => [c.constructor, c]));
+    const systemMap = new Map(systems.map((s) => [s.constructor, s]));
+    actorData = new ActorData(componentMap, systemMap);
+    actor.setData(ActorDataKey, actorData);
+  }
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }

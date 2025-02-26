@@ -8,7 +8,8 @@ import FrostForgeFoundation2 from "./FrostForge/FrostForgeFoundation2";
 import FrostForgeLevel1 from "./FrostForge/FrostForgeLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
-import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -59,10 +60,14 @@ export default class FrostForge extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.FrostForge;
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.frostForgeCursor)],
+      []
+    );
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     this.frostForgeCursor.visible = progress === null;
     this.frostForgeLevel1.visible = progress === 100;
     this.frostForgeFoundation1.visible = progress !== null && progress < 50;
@@ -70,7 +75,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
     if (this.frostForgeLevel1.visible) {
       this.frostForgeLevel1.start();
     }
-  }
+  };
   /* END-USER-CODE */
 }
 

@@ -12,6 +12,8 @@ import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
 import { TilemapComponent } from "../../../scenes/components/tilemap.component";
 import Vector2 = Phaser.Math.Vector2;
+import { getActorComponent } from "../../../data/actor-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -103,6 +105,18 @@ export class BuildingCursor {
     if (!this.isDragging) {
       this.drawPlacementGrid(worldPosition);
       this.drawAttackRange(worldPosition);
+    }
+
+    // if dragging, then tint spawnedCursorGameObjects and set to semi-transparent, if not dragging, do this for building
+    const tint = this.canConstructBuildingAt(worldPosition) ? undefined : 0xff0000;
+    const gameObjects = this.isDragging ? this.spawnedCursorGameObjects : [this.building!];
+    for (const gameObject of gameObjects) {
+      const constructionGameObjectInterfaceComponent = getActorComponent(
+        gameObject,
+        ConstructionGameObjectInterfaceComponent
+      );
+      if (!constructionGameObjectInterfaceComponent) continue;
+      constructionGameObjectInterfaceComponent.tintAndAlphaCursor(tint, 0.7);
     }
   }
 
