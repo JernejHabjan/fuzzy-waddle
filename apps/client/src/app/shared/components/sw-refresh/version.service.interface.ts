@@ -1,7 +1,8 @@
 import { VersionState } from "./version.service";
-import { Signal } from "@angular/core";
+import { Observable } from "rxjs";
 
 export interface VersionServiceInterface {
-  versionState: Signal<VersionState>;
+  versionState: Observable<VersionState>;
   onVersionRefreshClick: () => void;
+  ready(): Promise<void>;
 }

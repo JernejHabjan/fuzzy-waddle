@@ -3,11 +3,17 @@ import { TestBed } from "@angular/core/testing";
 import { VersionService, VersionState } from "./version.service";
 import { VersionServiceInterface } from "./version.service.interface";
 import { SwUpdate } from "@angular/service-worker";
-import { signal } from "@angular/core";
+import { Observable } from "rxjs";
 
 export const versionServiceStub = {
-  versionState: signal(VersionState.VersionOk),
-  onVersionRefreshClick: () => {}
+  get versionState() {
+    // return observable
+    return new Observable<VersionState>();
+  },
+  onVersionRefreshClick: () => {},
+  async ready() {
+    await Promise.resolve();
+  }
 } satisfies VersionServiceInterface;
 
 describe("VersionService", () => {
