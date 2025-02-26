@@ -1,42 +1,55 @@
-import { Component, inject, OnInit } from "@angular/core";
-import { SwUpdate } from "@angular/service-worker";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbAlert } from "@ng-bootstrap/ng-bootstrap";
+import { VersionService, VersionState } from "./version.service";
+import { Subscription } from "rxjs";
+import { AngularHost } from "../../consts";
 
 @Component({
   selector: "fuzzy-waddle-sw-refresh",
   templateUrl: "./sw-refresh.component.html",
   styleUrls: ["./sw-refresh.component.scss"],
-  imports: [FaIconComponent, NgbAlert]
+  imports: [FaIconComponent, NgbAlert],
+  host: AngularHost.contentFlexFullHeight
 })
-export class SwRefreshComponent implements OnInit {
+export class SwRefreshComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;
   protected showNewVersion = false;
   protected showVersionReady = false;
+  protected showInstallationFailed = false;
+  private versionStateSubscription?: Subscription;
 
-  private readonly swUpdate = inject(SwUpdate);
+  private readonly versionService = inject(VersionService);
 
   ngOnInit(): void {
-    this.swUpdateCheck();
+    this.versionStateSubscription = this.versionService.versionState.subscribe(this.applyVersionState);
   }
 
-  private swUpdateCheck() {
-    if (this.swUpdate.isEnabled) {
-      this.swUpdate.versionUpdates.subscribe((versionEvent) => {
-        // if version available show version ready modal
-        if (versionEvent.type === "VERSION_DETECTED") {
-          this.showNewVersion = true;
-        }
-        if (versionEvent.type === "VERSION_READY") {
-          this.showVersionReady = true;
-        }
-      });
+  private applyVersionState = (versionState: VersionState) => {
+    if (versionState === VersionState.NewVersionDetected) {
+      this.showNewVersion = true;
+    } else if (versionState === VersionState.NewVersionDownloaded) {
+      this.showVersionReady = true;
+    } else if (versionState === VersionState.VersionInstallationFailed) {
+      this.showInstallationFailed = true;
+    } else if (versionState === VersionState.VersionOk) {
+      this.showNewVersion = false;
+    } else if (versionState === VersionState.Checking) {
+      this.showNewVersion = false;
     }
+  };
+
+  protected recover() {
+    window.location.reload();
   }
 
-  protected onVersionRefreshClick = () => {
-    this.swUpdate.activateUpdate().then(() => document.location.reload());
-  };
+  protected onVersionRefreshClick() {
+    this.versionService.onVersionRefreshClick();
+  }
+
+  ngOnDestroy(): void {
+    this.versionStateSubscription?.unsubscribe();
+  }
 }
