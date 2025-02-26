@@ -252,7 +252,7 @@ export class MovementSystem {
 
   private onMovementStart() {
     if (!this.audioService) return;
-    this.audioService.playAudioSprite("character", "footstep");
+    this.audioService.playSpatialAudioSprite(this.gameObject, "character", "footstep");
   }
 
   private destroy() {
