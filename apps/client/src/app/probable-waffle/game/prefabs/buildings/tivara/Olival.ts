@@ -7,7 +7,8 @@ import OlivalFoundation1 from "./Olival/OlivalFoundation1";
 import OlivalLevel1 from "./Olival/OlivalLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
-import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class Olival extends Phaser.GameObjects.Container {
@@ -52,17 +53,21 @@ export default class Olival extends Phaser.GameObjects.Container {
   name = ObjectNames.Olival;
 
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.olivalCursor)],
+      []
+    );
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     this.olivalCursor.visible = progress === null;
     this.olivalLevel1.visible = progress === 100;
     this.olivalFoundation1.visible = progress !== null && progress < 100;
     if (this.olivalLevel1.visible) {
       this.olivalLevel1.start();
     }
-  }
+  };
   /* END-USER-CODE */
 }
 

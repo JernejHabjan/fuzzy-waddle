@@ -5,7 +5,7 @@
 import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../../data/object-names";
-import { ConstructionHelper } from "../../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
 import { onObjectReady } from "../../../../data/game-object-helper";
 import { throttle } from "../../../../library/throttle";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
@@ -15,6 +15,7 @@ import Wall from "../wall/Wall";
 import StairsTopRight from "./StairsTopRight";
 import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
+import { setActorData } from "../../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -80,7 +81,11 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.cursor)],
+      []
+    );
 
     onObjectReady(
       this,
@@ -160,12 +165,12 @@ export default class Stairs extends Phaser.GameObjects.Container {
     }
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     const stairs = this.stairs as any as Phaser.GameObjects.Container;
     this.cursor.visible = progress === null;
     stairs.visible = progress === 100;
     this.foundation.visible = progress !== null && progress < 100;
-  }
+  };
 
   private get neighbors() {
     return getNeighboursByTypes(this, [Wall, WatchTower], TilemapComponent.tileWidth);
