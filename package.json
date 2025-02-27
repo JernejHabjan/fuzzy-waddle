@@ -14,6 +14,7 @@
     "build-gh-pages": "nx run build -- --base-href=/fuzzy-waddle/",
     "test": "nx run-many --all --target=test",
     "lint": "nx run-many --all --target=lint",
+    "lint-fix": "nx run-many --all --target=lint --fix",
     "lint-staged": "nx run-many --all --target=lint --with-deps",
     "e2e": "nx run client-e2e:e2e",
     "nx": "nx",
