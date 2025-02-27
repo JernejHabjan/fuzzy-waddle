@@ -3,7 +3,6 @@ import { IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.in
 import {
   getBooleanValue,
   getNumberValue,
-  getStringValue,
   showInfoToast
 } from "../behavior-tree-utilities/behavior-tree-global-functions";
 
@@ -11,15 +10,21 @@ import {
  * https://nikkorn.github.io/mistreevous-visualiser/index.html
  */
 class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgent {
-  PlayerOrderExists() {
-    // Check if there's an order assigned to the player
-    return getBooleanValue("Is there a player order?");
+  orderQueue = [];
+  currentOrder = null;
+  OrderExistsInQueue() {
+    return !!this.orderQueue.length;
+  }
+
+  AssignNextOrderFromQueue() {
+    // @ts-expect-error - unused parameter.
+    this.currentOrder = this.orderQueue.shift();
+    return State.SUCCEEDED;
   }
 
   // @ts-expect-error - unused parameter.
   PlayerOrderIs(orderType) {
-    // Check if the current player order matches the specified order type
-    return getStringValue("What is the current player order?") === orderType;
+    return this.currentOrder?.["orderType"] === orderType;
   }
 
   HasAttackComponent() {
@@ -49,6 +54,18 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return Promise.resolve(State.SUCCEEDED);
   }
 
+  MoveToTargetOrLocation() {
+    // Command the agent to move to the target or a specific location
+    showInfoToast("Moving to target or location!");
+    return Promise.resolve(State.SUCCEEDED);
+  }
+
+  MoveToLocation() {
+    // Command the agent to move to a specific location
+    showInfoToast("Moving to location!");
+    return Promise.resolve(State.SUCCEEDED);
+  }
+
   Stop() {
     // Command the agent to stop its current action
     showInfoToast("Agent stopped.");
@@ -68,13 +85,17 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
 
   AcquireNewResourceSource() {
     // Find a new resource to gather from
-    showInfoToast("Acquiring new resource source!");
+    showInfoToast("Acquiring new resource source.");
+    // @ts-expect-error - unused parameter.
+    this.orderQueue.push({ orderType: "gather", target: "resource" });
     return State.SUCCEEDED;
   }
 
   AssignResourceDropOff() {
     // Assign a drop-off point for resources
     showInfoToast("Assigning resource drop-off.");
+    // @ts-expect-error - unused parameter.
+    this.orderQueue.push({ orderType: "dropOff", target: "dropOff" });
     return State.SUCCEEDED;
   }
 
@@ -116,13 +137,17 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   AssignEnemy() {
     // Assign an enemy to the agent
     showInfoToast("Assigning enemy.");
+    // @ts-expect-error - unused parameter.
+    this.orderQueue.push({ orderType: "attack", target: "enemy" });
     return State.SUCCEEDED;
   }
 
   // @ts-expect-error - unused parameter.
-  MoveRandomlyInRange(range) {
+  AssignMoveRandomlyInRange(range) {
     // Command the agent to move randomly within the specified range
     showInfoToast(`Moving randomly within range: ${range}`);
+    // @ts-expect-error - unused parameter.
+    this.orderQueue.push({ orderType: "move", target: "random" });
     return Promise.resolve(State.SUCCEEDED);
   }
 
@@ -164,5 +189,12 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
 
   GatherCapacityFull() {
     return getBooleanValue("Is the agent gathering capacity full?");
+  }
+
+  Succeed() {
+    return State.SUCCEEDED;
+  }
+  Fail() {
+    return State.FAILED;
   }
 }

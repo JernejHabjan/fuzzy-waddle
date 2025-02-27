@@ -5,8 +5,9 @@ import GameObject = Phaser.GameObjects.GameObject;
 export class OrderData {
   constructor(
     public orderType: OrderType,
-    public targetGameObject?: GameObject,
-    public targetLocation?: Vector3Simple,
-    public args?: any[]
+    public data: {
+      targetGameObject?: GameObject;
+      targetLocation?: Vector3Simple;
+    }
   ) {}
 }

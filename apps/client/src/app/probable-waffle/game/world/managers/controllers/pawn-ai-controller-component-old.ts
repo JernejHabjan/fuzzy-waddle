@@ -1,4 +1,4 @@
-import { OrderData } from "../../../entity/character/ai/order-data";
+import { OrderData_old } from "../../../entity/character/ai/order-data_old";
 import { Queue } from "../../../library/queue";
 import { OrderType } from "../../../entity/character/ai/order-type";
 import { PawnAiBlackboard } from "../../../entity/character/ai/pawn-ai-blackboard";
@@ -10,7 +10,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 
 export class PawnAiControllerComponentOld {
   // declare queue of OrderData
-  orders: Queue<OrderData> = new Queue<OrderData>();
+  orders: Queue<OrderData_old> = new Queue<OrderData_old>();
 
   constructor(
     private readonly gameObject: GameObject,
@@ -30,17 +30,17 @@ export class PawnAiControllerComponentOld {
   findTargetInAcquisitionRadius(): void {}
 
   getCurrentOrder(): OrderType | undefined {
-    return this.blackboard.aiOrderType;
+    return undefined;
   }
 
-  addOrder(order: OrderData): void {
+  addOrder(order: OrderData_old): void {
     if (!order.orderType) {
       return;
     }
     this.orders.enqueueBack(order);
   }
 
-  insertOrder(order: OrderData): void {
+  insertOrder(order: OrderData_old): void {
     this.orders.enqueueBack(order);
 
     this.obtainNextOrder();
@@ -58,7 +58,7 @@ export class PawnAiControllerComponentOld {
     return this.hasOrderByClass(OrderType.Stop);
   }
 
-  issueOrder(orderData: OrderData) {
+  issueOrder(orderData: OrderData_old) {
     console.log("issueOrder", orderData);
     this.orders.empty();
     this.addOrder(orderData);
@@ -66,7 +66,7 @@ export class PawnAiControllerComponentOld {
   }
 
   issueAttackOrder(target: GameObject) {
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.Attack,
       targetGameObject: target
     };
@@ -75,7 +75,7 @@ export class PawnAiControllerComponentOld {
   }
 
   issueBeginConstructionOrder(constructableBuildingClass: string, targetLocation: Vector3Simple) {
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.BeginConstruction,
       targetLocation,
       args: [constructableBuildingClass] as any
@@ -84,7 +84,7 @@ export class PawnAiControllerComponentOld {
   }
 
   issueContinueConstructionOrder(constructionSite: GameObject) {
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.ContinueConstruction,
       targetGameObject: constructionSite
     };
@@ -92,7 +92,7 @@ export class PawnAiControllerComponentOld {
   }
 
   issueGatherOrder(resourceSource: GameObject) {
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.Gather,
       targetGameObject: resourceSource
     };
@@ -108,7 +108,7 @@ export class PawnAiControllerComponentOld {
     if (!resourceSource) {
       return false;
     }
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.Gather,
       targetGameObject: resourceSource
     };
@@ -118,7 +118,7 @@ export class PawnAiControllerComponentOld {
   }
 
   issueMoveOrder(vector3: Vector3Simple) {
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.Move,
       targetLocation: vector3
     };
@@ -142,7 +142,7 @@ export class PawnAiControllerComponentOld {
   }
 
   issueStopOrder() {
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.Stop
     };
     this.issueOrder(orderData);
@@ -156,12 +156,12 @@ export class PawnAiControllerComponentOld {
     if (!orderData) {
       return;
     }
-    this.blackboard.aiOrderType = orderData.orderType;
-    this.blackboard.targetGameObject = orderData.targetGameObject;
-    this.blackboard.targetLocation = orderData.targetLocation;
+    // this.blackboard.aiOrderType = orderData.orderType;
+    // this.blackboard.targetGameObject = orderData.targetGameObject;
+    // this.blackboard.targetLocation = orderData.targetLocation;
   }
 
-  private composeReturnResourcesOrder(): OrderData | null {
+  private composeReturnResourcesOrder(): OrderData_old | null {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) {
       return null;
@@ -170,7 +170,7 @@ export class PawnAiControllerComponentOld {
     if (!resourceDrain) {
       return null;
     }
-    const orderData: OrderData = {
+    const orderData: OrderData_old = {
       orderType: OrderType.ReturnResources,
       targetGameObject: resourceDrain
     };

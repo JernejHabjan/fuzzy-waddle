@@ -18,12 +18,13 @@ export interface PawnAiDefinition {
 }
 
 export class PawnAiController {
-  private readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
+  readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard(); // todo it's actually blackboard that should replicate
   private readonly agent: Agent;
   private readonly behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private nodeDebugger?: NodeDebugger;
   private aiDebuggingSubscription?: Subscription;
+  private defaultStepInterval: number = 100;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -59,7 +60,7 @@ export class PawnAiController {
 
   private update(_: number, dt: number) {
     this.elapsedTime += dt;
-    if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? 1000)) {
+    if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval)) {
       try {
         this.behaviourTree.step();
       } catch (e) {
@@ -72,21 +73,16 @@ export class PawnAiController {
 
   private updateDebuggerText() {
     if (!this.nodeDebugger) return;
-    const playerOrderType = this.blackboard.playerOrderType;
+    const playerOrderType = this.blackboard.getCurrentOrder()?.orderType;
     const playerOrderTypeName = playerOrderType !== undefined ? OrderType[playerOrderType] : null;
-    const aiOrderType = this.blackboard.aiOrderType;
-    const aiOrderTypeName = aiOrderType !== undefined ? OrderType[aiOrderType] : null;
-    const targetGameObject = this.blackboard.targetGameObject;
+    const targetGameObject = this.blackboard.getCurrentOrder()?.data.targetGameObject;
     const targetGameObjectName = targetGameObject ? targetGameObject.name : null;
-    const targetLocation = this.blackboard.targetLocation;
+    const targetLocation = this.blackboard.getCurrentOrder()?.data.targetLocation;
     const targetLocationXYZ = targetLocation ? `${targetLocation.x}, ${targetLocation.y}, ${targetLocation.z}` : null;
 
     let text = "";
     if (playerOrderTypeName) {
       text += `Player Order Type: ${playerOrderTypeName}\n`;
-    }
-    if (aiOrderTypeName) {
-      text += `AI Order Type: ${aiOrderTypeName}\n`;
     }
     if (targetGameObjectName) {
       text += `Target Game Object: ${targetGameObjectName}\n`;

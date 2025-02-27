@@ -2,7 +2,8 @@ import { State } from "mistreevous";
 
 export interface IPlayerPawnControllerAgent {
   // Player Orders and Status
-  PlayerOrderExists(): boolean;
+  OrderExistsInQueue(): boolean;
+  AssignNextOrderFromQueue(): State;
   PlayerOrderIs(orderType: string): boolean;
 
   // Combat-related Actions
@@ -35,7 +36,13 @@ export interface IPlayerPawnControllerAgent {
 
   // Movement
   MoveToTarget(type: "move" | "gather" | "attack" | "dropOff" | "construct"): Promise<State>;
+  MoveToTargetOrLocation(type: "move" | "gather" | "attack" | "dropOff" | "construct"): Promise<State>;
+  MoveToLocation(): Promise<State>;
   Stop(): State;
-  MoveRandomlyInRange(range: number): Promise<State>;
+  AssignMoveRandomlyInRange(range: number): Promise<State>;
   TargetExists(): boolean;
+
+  // Utility
+  Succeed(): State;
+  Fail(): State;
 }

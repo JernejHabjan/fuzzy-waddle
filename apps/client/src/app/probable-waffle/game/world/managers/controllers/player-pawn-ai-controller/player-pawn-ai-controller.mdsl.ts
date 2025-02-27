@@ -2,14 +2,15 @@ export const PlayerPawnAiControllerMdsl = `
 root {
     selector {
         sequence {
-            condition [PlayerOrderExists]
-            branch [PlayerOrder]
+            condition [OrderExistsInQueue]
+            action [AssignNextOrderFromQueue]
         }
-        branch [AiOrder]
+        branch [ExecuteCurrentOrder]
+        branch [AutoAssignNewOrder]
     }
 }
 
-root [PlayerOrder] {
+root [ExecuteCurrentOrder] {
     selector {
         sequence {
             condition [PlayerOrderIs, "attack"]
@@ -20,7 +21,7 @@ root [PlayerOrder] {
         }
         sequence {
             condition [PlayerOrderIs, "move"]
-            action [MoveToTarget, "move"]
+            action [MoveToTargetOrLocation, "move"]
         }
         sequence {
             condition [PlayerOrderIs, "stop"]
@@ -48,13 +49,12 @@ root [PlayerOrder] {
     }
 }
 
-root [AiOrder] {
+root [AutoAssignNewOrder] {
     selector {
         sequence {
             condition [Attacked]
             condition [HasAttackComponent]
             action [AssignEnemy, "retaliation"]
-            branch [ExecuteAttackOrder]
         }
         sequence {
             condition [AnyEnemyVisible]
@@ -63,15 +63,9 @@ root [AiOrder] {
                 condition [HasHarvestComponent]
             }
             action [AssignEnemy, "vision"]
-            branch [ExecuteAttackOrder]
         }
         sequence {
-            condition [HasHarvestComponent]
-            branch [AiOrderGatherAndReturnResources]
-        }
-        sequence {
-          action [MoveRandomlyInRange, 5]
-          wait [2000]
+          action [AssignMoveRandomlyInRange, 5]
         }
     }
 }
@@ -134,16 +128,6 @@ root [GatherResource] {
             condition [CooldownReady, "gather"]
             action [GatherResource]
         }
-    }
-}
-
-root [AiOrderGatherAndReturnResources] {
-    selector {
-        sequence {
-            condition [GatherCapacityFull]
-            branch [ReturnResources]
-        }
-        branch [GatherResource]
     }
 }
 

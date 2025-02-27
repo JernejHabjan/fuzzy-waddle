@@ -18,6 +18,9 @@ import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
 import { HealthComponent } from "../combat/components/health-component";
+import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { OrderType } from "../character/ai/order-type";
+import { OrderData } from "../character/ai/OrderData";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -56,15 +59,22 @@ export class MovementSystem {
 
   private listenToMoveEvents() {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
-      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move")
+      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move") // todo it's actually blackboard that should replicate
       .subscribe((payload) => {
         switch (payload.property) {
           case "command.issued.move":
             const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
             const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
             if (isSelected) {
-              this.moveToLocation(tileVec3); // todo later on, read this from the blackboard and PawnAiController
               // todo, note that we may also navigate to object and not to the tile under the object - use this.moveToActor(gameObject)
+
+              const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+              if (payerPawnAiController) {
+                payerPawnAiController.blackboard.resetAll();
+                payerPawnAiController.blackboard.addOrder(new OrderData(OrderType.Move, { targetLocation: tileVec3 }));
+              } else {
+                this.moveToLocation(tileVec3);
+              }
             }
             break;
         }
