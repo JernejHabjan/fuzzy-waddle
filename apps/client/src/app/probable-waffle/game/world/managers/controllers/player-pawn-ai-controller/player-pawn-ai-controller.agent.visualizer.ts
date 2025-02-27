@@ -16,7 +16,8 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is there a player order?");
   }
 
-  PlayerOrderIs(orderType: string): boolean {
+  // @ts-expect-error - unused parameter.
+  PlayerOrderIs(orderType) {
     // Check if the current player order matches the specified order type
     return getStringValue("What is the current player order?") === orderType;
   }
@@ -31,7 +32,8 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is the target alive?");
   }
 
-  HealthAboveThresholdPercentage(threshold: number): boolean {
+  // @ts-expect-error - unused parameter.
+  HealthAboveThresholdPercentage(threshold) {
     // Check if the agent's health is above a certain threshold
     return getNumberValue("What is the agent's current health?") > threshold;
   }
@@ -41,7 +43,7 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is the agent in range of the target?");
   }
 
-  MoveToTarget(): Promise<State> {
+  MoveToTarget() {
     // Command the agent to move to the target
     showInfoToast("Moving to target!");
     return Promise.resolve(State.SUCCEEDED);
@@ -79,10 +81,10 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   GatherResource() {
     // Command the agent to gather resources
     showInfoToast("Gathering resources!");
-    return State.SUCCEEDED;
+    return Promise.resolve(State.SUCCEEDED);
   }
 
-  DropOffResources(): Promise<State> {
+  DropOffResources() {
     // Command the agent to return gathered resources to the drop-off point
     showInfoToast("Returning resources to drop-off.");
     return Promise.resolve(State.SUCCEEDED);
@@ -111,13 +113,14 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Has the agent been attacked?");
   }
 
-  AssignEnemy(): State {
+  AssignEnemy() {
     // Assign an enemy to the agent
     showInfoToast("Assigning enemy.");
     return State.SUCCEEDED;
   }
 
-  MoveRandomlyInRange(range: number): Promise<State> {
+  // @ts-expect-error - unused parameter.
+  MoveRandomlyInRange(range) {
     // Command the agent to move randomly within the specified range
     showInfoToast(`Moving randomly within range: ${range}`);
     return Promise.resolve(State.SUCCEEDED);
@@ -159,7 +162,7 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Does the agent have a harvest component?");
   }
 
-  GatherCapacityFull(): boolean {
+  GatherCapacityFull() {
     return getBooleanValue("Is the agent gathering capacity full?");
   }
 }
