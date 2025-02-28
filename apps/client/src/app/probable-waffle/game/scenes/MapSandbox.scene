@@ -42,6 +42,47 @@
             "EditorOwner.owner_id": "1",
             "x": 40,
             "y": 650
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "e0b3669c-7bac-4a27-94db-c5da471f53c8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": 448,
+            "y": 736
+        },
+        {
+            "prefabId": "f09568ca-4e05-4ddd-ba4f-3ad6c515d28b",
+            "id": "3c9fde9f-77b3-458c-9ebb-bbe97c3a8870",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree11",
+            "x": -160,
+            "y": 416
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+            "id": "7dec28fb-7251-4ac5-a799-5fc4d59c074c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "workMill_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -352,
+            "y": 576
         }
     ],
     "plainObjects": [

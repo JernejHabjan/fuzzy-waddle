@@ -21,6 +21,7 @@ import { ContainableComponent } from "../../../../entity/actor/components/contai
 import { ResourceDrainComponent } from "../../../../entity/economy/resource/resource-drain-component";
 import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
 import { OrderData } from "../../../../entity/character/ai/OrderData";
+import { HealingComponent } from "../../../../entity/combat/components/healing-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -282,6 +283,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     // noinspection UnnecessaryLocalVariableJS
     const attacked = (healthComponent.latestDamage?.timestamp.getTime() ?? 0) > new Date().getTime() - attackedCooldown;
     return attacked;
+  }
+
+  Heal(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+    const healingComponent = getActorComponent(target, HealingComponent);
+    if (!healingComponent) return State.FAILED;
+    healingComponent.heal(target);
+    return State.SUCCEEDED;
   }
 
   AssignEnemy(source: string): State {

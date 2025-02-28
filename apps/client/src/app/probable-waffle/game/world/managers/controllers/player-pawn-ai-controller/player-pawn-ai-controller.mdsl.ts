@@ -1,3 +1,24 @@
+/**
+ * selector - finishes when first child returns SUCCESS
+ * parallel - runs multiple until all SUCCESS or any FAILURE
+ * race - runs multiple until any SUCCESS or all FAILURE
+ * all - runs multiple until all finish
+ * lotto - selects one child to run
+ * repeat - runs N times or until child returns FAILURE
+ * retry - runs N times if child returns FAILURE, if child returns SUCCESS, returns SUCCESS
+ * flip - returns SUCCESS if child returns FAILURE, returns FAILURE if child returns SUCCESS
+ * succeed - returns SUCCESS
+ * fail - returns FAILURE
+ * action - runs a function
+ * condition - checks a condition
+ * wait - waits for N seconds
+ * branch - runs another tree
+ * callbacks - entry, step, exit functions
+ * guards - removes node from running state if condition is false - useful with wait
+ *   while - if condition is true
+ *   until - if condition is false
+ * */
+
 export const PlayerPawnAiControllerMdsl = `
 root {
     selector {
@@ -39,12 +60,16 @@ root [ExecuteCurrentOrder] {
             branch [ReturnResources]
         }
         sequence {
-            condition [PlayerOrderIs, "beginConstruction"]
+            condition [PlayerOrderIs, "build"]
             branch [ConstructBuilding]
         }
         sequence {
-            condition [PlayerOrderIs, "continueConstruction"]
+            condition [PlayerOrderIs, "repair"]
             branch [ConstructBuilding]
+        }
+        sequence {
+            condition [PlayerOrderIs, "heal"]
+            branch [Heal]
         }
     }
 }
@@ -54,6 +79,9 @@ root [AutoAssignNewOrder] {
         sequence {
             condition [Attacked]
             condition [HasAttackComponent]
+            flip {
+                condition [HasHarvestComponent]
+            }
             action [AssignEnemy, "retaliation"]
         }
         sequence {
@@ -170,6 +198,26 @@ root [ConstructBuilding] {
                 }
             }
             action [ConstructBuilding]
+        }
+    }
+}
+
+root [Heal] {
+    sequence {
+        action [LeaveConstructionSiteOrCurrentContainer]
+        parallel {
+            selector {
+                flip {
+                    condition [TargetIsAlive]
+                }
+                action [Stop]
+                action [LeaveConstructionSiteOrCurrentContainer]
+                sequence {
+                    condition [InRange, "heal"]
+                    action [MoveToTarget, "heal"]
+                }
+            }
+            action [Heal]
         }
     }
 }

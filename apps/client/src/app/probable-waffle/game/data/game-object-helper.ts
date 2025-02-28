@@ -2,6 +2,10 @@ import { getSceneInitializers, getSceneService } from "../scenes/components/scen
 import { NavigationService } from "../scenes/services/navigation.service";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
+import { GameObjects } from "phaser";
+import { SelectableComponent } from "../entity/actor/components/selectable-component";
+import { IdComponent } from "../entity/actor/components/id-component";
+import { getActorComponent } from "./actor-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
@@ -64,6 +68,17 @@ export function getGameObjectCurrentTile(gameObject: Phaser.GameObjects.GameObje
   if (!navigationService) return;
 
   return navigationService.getCenterTileCoordUnderObject(gameObject);
+}
+
+export function getSelectableGameObject(
+  go: GameObjects.GameObject
+): (GameObjects.GameObject & { selectableComponent: SelectableComponent; idComponent: IdComponent }) | null {
+  const hasComp = !!getActorComponent(go, SelectableComponent) && !!getActorComponent(go, IdComponent);
+  if (hasComp) return go as any;
+
+  const parent = go.parentContainer;
+  if (!parent) return null;
+  return getSelectableGameObject(parent);
 }
 
 /**

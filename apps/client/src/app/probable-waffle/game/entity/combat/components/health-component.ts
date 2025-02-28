@@ -157,6 +157,13 @@ export class HealthComponent {
     }
   }
 
+  heal(amount: number) {
+    this.healthComponentData.health = Math.min(
+      this.healthComponentData.health + amount,
+      this.healthDefinition.maxHealth
+    );
+  }
+
   killActor() {
     this.healthComponentData.health = 0;
     this.gameObject.emit(HealthComponent.KilledEvent);
@@ -211,5 +218,9 @@ export class HealthComponent {
 
   setData(data: Partial<HealthComponentData>) {
     this.healthComponentData = { ...this.healthComponentData, ...data };
+  }
+
+  isDamaged() {
+    return this.healthComponentData.health < this.healthDefinition.maxHealth;
   }
 }

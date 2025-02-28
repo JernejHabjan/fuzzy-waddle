@@ -101,7 +101,7 @@ export class BuilderComponent {
     this.onConstructionStarted.next([this.gameObject, building]);
 
     // issue building order
-    pawnAiController.issueContinueConstructionOrder(building);
+    // pawnAiController.issueContinueConstructionOrder(building);
     return true;
   }
 

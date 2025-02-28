@@ -66,6 +66,12 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return Promise.resolve(State.SUCCEEDED);
   }
 
+  Heal() {
+    // Command the agent to heal the target
+    showInfoToast("Healing the target!");
+    return State.SUCCEEDED;
+  }
+
   Stop() {
     // Command the agent to stop its current action
     showInfoToast("Agent stopped.");

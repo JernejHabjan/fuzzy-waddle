@@ -142,7 +142,8 @@ export class GathererComponent {
 
   findClosestResourceDrain(): GameObject | null {
     if (this.carriedResourceType === null) {
-      throw new Error("Gatherer is not carrying any resources");
+      // Gatherer is not carrying any resources
+      return null;
     }
 
     // find nearby gameObjects
@@ -245,7 +246,8 @@ export class GathererComponent {
   async gatherResources(resourceSource: GameObject): Promise<number> {
     if (this.remainingCooldown > 0) return 0;
     if (!this.carriedResourceType) {
-      throw new Error("Gatherer is not carrying any resources");
+      // Gatherer is not carrying any resources
+      return 0;
     }
 
     // check resource type
@@ -310,7 +312,8 @@ export class GathererComponent {
 
   async returnResources(resourceDrain: GameObject): Promise<number> {
     if (!this.carriedResourceType) {
-      throw new Error("Gatherer is not carrying any resources");
+      // Gatherer is not carrying any resources
+      return 0;
     }
     // return resources
     const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);

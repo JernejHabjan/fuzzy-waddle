@@ -61,27 +61,18 @@ export class MovementSystem {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.move") // todo it's actually blackboard that should replicate
       .subscribe((payload) => {
-        switch (payload.property) {
-          case "command.issued.move":
-            const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
-            const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
-            if (isSelected) {
-              // todo, note that we may also navigate to object and not to the tile under the object - use this.moveToActor(gameObject)
-
-              const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
-              if (payerPawnAiController) {
-                payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
-                  new OrderData(OrderType.Move, { targetLocation: tileVec3 })
-                );
-              } else {
-                this.moveToLocation(tileVec3);
-              }
-            }
-            break;
+        const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
+        if (!isSelected) return;
+        const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
+        const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+        if (payerPawnAiController) {
+          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
+            new OrderData(OrderType.Move, { targetLocation: tileVec3 })
+          );
+        } else {
+          this.moveToLocation(tileVec3);
         }
       });
-
-    // todo this needs to be removed from here, and add this to the pawn ai controller which will then accordingly to blackboard issue MovementSystem.moveToLocation
   }
 
   // todo this should maybe later move to component like ActorTransform which will also broadcast event for transform to game and update actors depth

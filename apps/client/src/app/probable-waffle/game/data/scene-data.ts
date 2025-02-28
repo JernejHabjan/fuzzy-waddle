@@ -173,6 +173,21 @@ export function emitEventIssueMoveCommandToSelectedActors(
   });
 }
 
+export function emitEventIssueActorCommandToSelectedActors(scene: Phaser.Scene, objectIds: string[]) {
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
+  scene.communicator.playerChanged!.send({
+    property: "command.issued.actor",
+    data: {
+      playerNumber: getPlayer(scene)?.playerNumber,
+      data: {
+        objectIds
+      }
+    },
+    gameInstanceId: scene.gameInstanceId,
+    emitterUserId: scene.userId
+  });
+}
+
 export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
   if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleScene");
   const selectionGuids = getPlayer(scene)?.getSelection();

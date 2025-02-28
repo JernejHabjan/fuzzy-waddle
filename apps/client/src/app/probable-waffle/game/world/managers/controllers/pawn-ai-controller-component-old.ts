@@ -76,17 +76,9 @@ export class PawnAiControllerComponentOld {
 
   issueBeginConstructionOrder(constructableBuildingClass: string, targetLocation: Vector3Simple) {
     const orderData: OrderData_old = {
-      orderType: OrderType.BeginConstruction,
+      orderType: OrderType.Build,
       targetLocation,
       args: [constructableBuildingClass] as any
-    };
-    this.issueOrder(orderData);
-  }
-
-  issueContinueConstructionOrder(constructionSite: GameObject) {
-    const orderData: OrderData_old = {
-      orderType: OrderType.ContinueConstruction,
-      targetGameObject: constructionSite
     };
     this.issueOrder(orderData);
   }

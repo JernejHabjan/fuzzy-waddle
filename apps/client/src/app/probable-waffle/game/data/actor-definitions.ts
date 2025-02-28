@@ -136,7 +136,8 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
     }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 };
 
@@ -213,7 +214,8 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
     }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 };
 
@@ -242,6 +244,9 @@ export type ActorInfoDefinition = Partial<{
   }>;
   systems: Partial<{
     movement: {
+      enabled: boolean;
+    };
+    action: {
       enabled: boolean;
     };
   }>;
@@ -395,7 +400,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.TivaraSlingshotFemale]: {
@@ -458,7 +464,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.TivaraWorkerFemale]: {
@@ -812,7 +819,10 @@ export const pwActorDefinitions: {
         tileStepDuration: 1000
       }
     },
-    systems: { movement: { enabled: true } }
+    systems: {
+      movement: { enabled: true },
+      action: { enabled: true }
+    }
   },
   [ObjectNames.SkaduweeRangedFemale]: {
     components: {
@@ -874,7 +884,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.SkaduweeMagicianFemale]: {
@@ -936,7 +947,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.SkaduweeWarriorMale]: {
@@ -999,7 +1011,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.SkaduweeWorkerMale]: {
