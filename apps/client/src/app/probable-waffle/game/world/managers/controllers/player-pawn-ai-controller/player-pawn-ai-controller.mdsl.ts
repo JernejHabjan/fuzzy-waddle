@@ -1,4 +1,5 @@
 /**
+ * sequence - runs children until first FAILURE or all SUCCESS
  * selector - finishes when first child returns SUCCESS
  * parallel - runs multiple until all SUCCESS or any FAILURE
  * race - runs multiple until any SUCCESS or all FAILURE
