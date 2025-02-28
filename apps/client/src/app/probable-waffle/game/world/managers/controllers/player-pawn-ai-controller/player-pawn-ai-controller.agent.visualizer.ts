@@ -1,10 +1,6 @@
 import { State } from "mistreevous";
 import { IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.interface";
-import {
-  getBooleanValue,
-  getNumberValue,
-  showInfoToast
-} from "../behavior-tree-utilities/behavior-tree-global-functions";
+import { getBooleanValue, showInfoToast } from "../behavior-tree-utilities/behavior-tree-global-functions";
 
 /**
  * https://nikkorn.github.io/mistreevous-visualiser/index.html
@@ -35,12 +31,6 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   TargetIsAlive() {
     // Check if the target is still alive
     return getBooleanValue("Is the target alive?");
-  }
-
-  // @ts-expect-error - unused parameter.
-  HealthAboveThresholdPercentage(threshold) {
-    // Check if the agent's health is above a certain threshold
-    return getNumberValue("What is the agent's current health?") > threshold;
   }
 
   InRange() {
@@ -94,14 +84,6 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     showInfoToast("Acquiring new resource source.");
     // @ts-expect-error - unused parameter.
     this.orderQueue.push({ orderType: "gather", target: "resource" });
-    return State.SUCCEEDED;
-  }
-
-  AssignResourceDropOff() {
-    // Assign a drop-off point for resources
-    showInfoToast("Assigning resource drop-off.");
-    // @ts-expect-error - unused parameter.
-    this.orderQueue.push({ orderType: "dropOff", target: "dropOff" });
     return State.SUCCEEDED;
   }
 

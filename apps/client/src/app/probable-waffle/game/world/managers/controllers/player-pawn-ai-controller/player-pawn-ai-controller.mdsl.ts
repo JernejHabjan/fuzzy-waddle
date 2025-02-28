@@ -38,7 +38,7 @@ root [ExecuteCurrentOrder] {
             condition [HasAttackComponent]
             condition [TargetExists]
             condition [TargetIsAlive]
-            branch [ExecuteAttackOrder]
+            branch [AttackMoveEnemyTarget]
         }
         sequence {
             condition [PlayerOrderIs, "move"]
@@ -98,24 +98,6 @@ root [AutoAssignNewOrder] {
     }
 }
 
-root [ExecuteAttackOrder] {
-    succeed {
-        sequence {
-            action [LeaveConstructionSiteOrCurrentContainer]
-            selector {
-                sequence {
-                    flip {
-                        condition [PlayerOrderIs, "attack"]
-                    }
-                    condition [HealthAboveThresholdPercentage, 20]
-                    branch [AttackMoveEnemyTarget]
-                }
-            }
-            branch [AttackMoveEnemyTarget]
-        }
-    }
-}
-
 root [AttackMoveEnemyTarget] {
   selector {
       sequence {
@@ -162,7 +144,6 @@ root [GatherResource] {
 root [ReturnResources] {
     sequence {
         action [LeaveConstructionSiteOrCurrentContainer]
-        action [AssignResourceDropOff]
         selector {
             sequence {
               flip {
@@ -197,7 +178,10 @@ root [ConstructBuilding] {
                     action [MoveToTarget, "construct"]
                 }
             }
-            action [ConstructBuilding]
+            sequence {
+                condition [CooldownReady, "construct"]
+                action [ConstructBuilding]
+            }
         }
     }
 }
@@ -217,7 +201,10 @@ root [Heal] {
                     action [MoveToTarget, "heal"]
                 }
             }
-            action [Heal]
+            sequence {
+                condition [CooldownReady, "heal"]
+                action [Heal]
+            }
         }
     }
 }

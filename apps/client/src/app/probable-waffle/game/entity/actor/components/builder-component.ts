@@ -8,6 +8,8 @@ import { OwnerComponent } from "./owner-component";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ObjectNames } from "../../../data/object-names";
 import GameObject = Phaser.GameObjects.GameObject;
+import { HealthComponent } from "../../combat/components/health-component";
+import { EventEmitter } from "@angular/core";
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce
@@ -23,16 +25,33 @@ export class BuilderComponent {
   // building site the builder is currently working on
   assignedConstructionSite?: GameObject;
 
+  // when cooldown has expired
+  onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   onConstructionSiteEntered: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onAssignedToConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionStarted: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  remainingCooldown = 0;
 
   constructor(
     private readonly gameObject: GameObject,
     private readonly builderComponentDefinition: BuilderDefinition
-  ) {}
+  ) {
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+  }
+
+  private update(time: number, delta: number): void {
+    if (this.remainingCooldown <= 0) {
+      return;
+    }
+    this.remainingCooldown -= delta;
+    if (this.remainingCooldown <= 0) {
+      this.onCooldownReady.emit(this.gameObject);
+    }
+  }
 
   get constructableBuildings(): ObjectNames[] {
     // NOTE, this can be later filtered, so we show only buildings that are available to the player
@@ -134,5 +153,9 @@ export class BuilderComponent {
     // return collision radius of building
     // todo return URTSCollisionLibrary::GetCollisionSize(ConstructibleBuildingClasses[Index]) / 2;
     return 1; // todo
+  }
+
+  private destroy() {
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 }

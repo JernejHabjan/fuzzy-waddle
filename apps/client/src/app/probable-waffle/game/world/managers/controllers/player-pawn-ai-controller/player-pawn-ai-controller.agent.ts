@@ -1,5 +1,9 @@
 import { State } from "mistreevous";
-import { IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.interface";
+import {
+  IPlayerPawnControllerAgent,
+  PlayerPawnCooldownType,
+  PlayerPawnRangeType
+} from "./player-pawn-ai-controller.agent.interface";
 import { getActorComponent } from "../../../../data/actor-component";
 import { VisionComponent } from "../../../../entity/actor/components/vision-component";
 import { GameplayLibrary } from "../../../../library/gameplay-library";
@@ -63,14 +67,6 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return healthComponent.healthComponentData.health > 0;
   }
 
-  HealthAboveThresholdPercentage(threshold: number) {
-    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
-    if (!healthComponent) return false;
-    const healthPercentage =
-      (healthComponent.healthComponentData.health / healthComponent.healthDefinition.maxHealth) * 100;
-    return healthPercentage > threshold;
-  }
-
   InRange(type: "gather" | "attack" | "dropOff" | "construct") {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return false;
@@ -84,7 +80,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return distance <= range;
   }
 
-  private getRangeToTarget(type: "move" | "gather" | "attack" | "dropOff" | "construct"): number | undefined {
+  private getRangeToTarget(type: PlayerPawnRangeType): number | undefined {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return undefined;
     const target = currentOrder.data.targetGameObject;
@@ -101,12 +97,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
         return getActorComponent(target, ResourceDrainComponent)?.getDropOffRange();
       case "construct":
         return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("");
+      case "heal":
+        return getActorComponent(this.gameObject, HealingComponent)?.getHealRange();
       default:
         return undefined;
     }
   }
 
-  async MoveToTarget(type: "move" | "gather" | "attack" | "dropOff" | "construct"): Promise<State> {
+  async MoveToTarget(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
@@ -129,7 +127,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     }
   }
 
-  async MoveToTargetOrLocation(type: "move" | "gather" | "attack" | "dropOff" | "construct"): Promise<State> {
+  async MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
@@ -214,15 +212,6 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     }
     if (!resourceSource) return State.FAILED;
     this.blackboard.addOrder(new OrderData(OrderType.Gather, { targetGameObject: resourceSource }));
-    return State.SUCCEEDED;
-  }
-
-  AssignResourceDropOff() {
-    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
-    if (!gathererComponent) return State.FAILED;
-    const resourceDrain = gathererComponent.getPreferredResourceDrain();
-    if (!resourceDrain) return State.FAILED;
-    this.blackboard.addOrder(new OrderData(OrderType.ReturnResources, { targetGameObject: resourceDrain }));
     return State.SUCCEEDED;
   }
 
@@ -336,15 +325,24 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   /**
    * Check if the cooldown period has passed for an action like resource gathering or attack
    */
-  CooldownReady(type: string) {
-    if (type === "attack") {
-      const attackComponent = getActorComponent(this.gameObject, AttackComponent);
-      if (!attackComponent) return false;
-      return attackComponent.remainingCooldown <= 0;
-    } else if (type === "gather") {
-      const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
-      if (!gathererComponent) return false;
-      return gathererComponent.remainingCooldown <= 0;
+  CooldownReady(type: PlayerPawnCooldownType) {
+    switch (type) {
+      case "attack":
+        const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+        if (!attackComponent) return false;
+        return attackComponent.remainingCooldown <= 0;
+      case "gather":
+        const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+        if (!gathererComponent) return false;
+        return gathererComponent.remainingCooldown <= 0;
+      case "construct":
+        const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+        if (!builderComponent) return false;
+        return builderComponent.remainingCooldown <= 0;
+      case "heal":
+        const healingComponent = getActorComponent(this.gameObject, HealingComponent);
+        if (!healingComponent) return false;
+        return healingComponent.remainingCooldown <= 0;
     }
     return false;
   }
