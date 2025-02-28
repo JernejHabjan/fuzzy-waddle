@@ -1,6 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ProbableWaffleLevels, ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { environment } from "../../../../../environments/environment";
 
 @Component({
   selector: "probable-waffle-map-selector",
@@ -29,6 +30,6 @@ export class MapSelectorComponent {
   }
 
   get levels(): ProbableWaffleMapData[] {
-    return Object.values(ProbableWaffleLevels);
+    return Object.values(ProbableWaffleLevels).filter((level) => (environment.production ? !level.devOnly : true));
   }
 }

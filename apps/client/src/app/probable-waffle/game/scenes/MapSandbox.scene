@@ -1,0 +1,72 @@
+{
+    "id": "dba459ed-b5e7-4548-9d60-a8837740d255",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "snapEnabled": true,
+        "snapWidth": 32,
+        "exportClass": true,
+        "autoImport": true,
+        "superClassName": "GameProbableWaffleScene",
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "MapSandbox",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "TilemapLayer",
+            "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
+            "label": "tilemap_level_1",
+            "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3c",
+            "layerName": "TileMap_level_1",
+            "tilesets": [
+                "tiles",
+                "tiles_2"
+            ]
+        },
+        {
+            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
+            "id": "995e2abe-47e3-4715-85aa-ab35a85fb09f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 40,
+            "y": 650
+        }
+    ],
+    "plainObjects": [
+        {
+            "id": "9cb0db04-e78b-4290-b950-d943f1631f3c",
+            "type": "Tilemap",
+            "label": "tilemap",
+            "scope": "PUBLIC",
+            "key": "tiles_river_crossing",
+            "tilesets": [
+                {
+                    "name": "tiles",
+                    "imageKey": "tiles_1"
+                },
+                {
+                    "name": "tiles_2",
+                    "imageKey": "tiles_2"
+                }
+            ]
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

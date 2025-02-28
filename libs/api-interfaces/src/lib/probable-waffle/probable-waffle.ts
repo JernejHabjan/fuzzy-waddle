@@ -1,8 +1,9 @@
 import { Vector3Simple } from "../game/vector";
 
 export enum ProbableWaffleMapEnum {
-  RiverCrossing = 1,
-  EmberEnclave = 2
+  Sandbox = 1,
+  RiverCrossing = 2,
+  EmberEnclave = 3
 }
 
 export type ProbableWaffleMapType = {
@@ -11,6 +12,7 @@ export type ProbableWaffleMapType = {
 
 export type ProbableWaffleMapData = {
   id: ProbableWaffleMapEnum;
+  devOnly?: boolean;
   name: string;
   loader: {
     mapSceneKey: string;
@@ -28,6 +30,27 @@ export type ProbableWaffleMapData = {
 };
 
 export const ProbableWaffleLevels: ProbableWaffleMapType = {
+  [ProbableWaffleMapEnum.Sandbox]: {
+    id: ProbableWaffleMapEnum.Sandbox,
+    devOnly: true,
+    name: "Sandbox (dev only)",
+    loader: {
+      mapSceneKey: "MapSandbox",
+      mapLoaderAssetPackPath: "asset-pack-probable-waffle-river-crossing.json"
+    },
+    presentation: {
+      description: "Only for development purposes",
+      imagePath: "assets/probable-waffle/tilemaps/thumbnails/river_crossing.png"
+    },
+    mapInfo: {
+      startPositionsOnTile: [
+        { x: 10, y: 20, z: 0 },
+        { x: 40, y: 40, z: 0 }
+      ],
+      widthTiles: 50,
+      heightTiles: 50
+    }
+  },
   [ProbableWaffleMapEnum.RiverCrossing]: {
     id: ProbableWaffleMapEnum.RiverCrossing,
     name: "River Crossing",
