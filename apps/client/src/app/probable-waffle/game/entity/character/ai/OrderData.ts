@@ -8,6 +8,6 @@ export class OrderData {
     public data: {
       targetGameObject?: GameObject;
       targetLocation?: Vector3Simple;
-    }
+    } = {}
   ) {}
 }

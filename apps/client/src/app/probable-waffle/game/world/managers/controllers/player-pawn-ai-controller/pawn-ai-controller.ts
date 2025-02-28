@@ -34,10 +34,12 @@ export class PawnAiController {
       case AiType.Character:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
         this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        this.blackboard.cancellationHandler = () => (this.agent as PlayerPawnAiControllerAgent).Stop();
         break;
       default:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
         this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        this.blackboard.cancellationHandler = () => (this.agent as PlayerPawnAiControllerAgent).Stop();
         break;
     }
 

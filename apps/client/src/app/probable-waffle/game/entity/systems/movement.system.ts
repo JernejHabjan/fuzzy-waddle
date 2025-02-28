@@ -70,8 +70,9 @@ export class MovementSystem {
 
               const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
               if (payerPawnAiController) {
-                payerPawnAiController.blackboard.resetAll();
-                payerPawnAiController.blackboard.addOrder(new OrderData(OrderType.Move, { targetLocation: tileVec3 }));
+                payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
+                  new OrderData(OrderType.Move, { targetLocation: tileVec3 })
+                );
               } else {
                 this.moveToLocation(tileVec3);
               }
@@ -219,7 +220,10 @@ export class MovementSystem {
   };
 
   cancelMovement() {
-    this._currentTween?.stop();
+    if (this._currentTween) {
+      this._currentTween.stop();
+      this._currentTween = undefined;
+    }
   }
 
   private moveDirectlyToLocation(vec3: Vector3Simple, pathMoveConfig: PathMoveConfig): Promise<void> {

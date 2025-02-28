@@ -158,10 +158,18 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     }
   }
 
-  Stop() {
-    this.blackboard.resetAll();
+  Stop = () => {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (currentOrder) {
+      if (currentOrder.orderType === OrderType.Move) {
+        const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+        if (movementSystem) {
+          movementSystem.cancelMovement();
+        }
+      }
+    }
     return State.SUCCEEDED;
-  }
+  };
 
   Attack() {
     const currentOrder = this.blackboard.getCurrentOrder();

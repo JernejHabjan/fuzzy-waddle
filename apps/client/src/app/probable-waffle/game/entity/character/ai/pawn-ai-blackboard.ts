@@ -7,6 +7,7 @@ export class PawnAiBlackboard extends Blackboard {
   private memory: Map<string, any> = new Map();
   private status: "idle" | "executing" | "paused" = "idle";
   private failedOrders: OrderData[] = [];
+  cancellationHandler?: () => void;
 
   getStatus(): string {
     return this.status;
@@ -51,7 +52,14 @@ export class PawnAiBlackboard extends Blackboard {
     this.status = "idle";
   }
 
+  overrideOrderQueueAndActiveOrder(orderData: OrderData): void {
+    this.orderQueue = [orderData];
+    this.resetCurrentOrder();
+    this.status = "idle";
+  }
+
   resetCurrentOrder(): void {
+    this.cancellationHandler?.();
     this.currentOrder = undefined;
   }
 
