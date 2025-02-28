@@ -40,7 +40,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   AssignNextOrderFromQueue() {
-    const playerOrder = this.blackboard.pullNextPlayerOrder();
+    const playerOrder = this.blackboard.peekNextPlayerOrder();
     if (!playerOrder) return State.FAILED;
     this.blackboard.setCurrentOrder(playerOrder);
     return State.SUCCEEDED;

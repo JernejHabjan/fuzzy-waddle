@@ -23,9 +23,11 @@
 export const PlayerPawnAiControllerMdsl = `
 root {
     selector {
-        sequence {
-            condition [OrderExistsInQueue]
-            action [AssignNextOrderFromQueue]
+        fail {
+            sequence {
+                condition [OrderExistsInQueue]
+                action [AssignNextOrderFromQueue]
+            }
         }
         branch [ExecuteCurrentOrder]
         branch [AutoAssignNewOrder]
