@@ -1,7 +1,5 @@
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "./health-component";
-import { EventEmitter } from "@angular/core";
-import GameObject = Phaser.GameObjects.GameObject;
 
 export type HealingDefinition = {
   healPerSecond: number;
@@ -9,7 +7,7 @@ export type HealingDefinition = {
 };
 
 export class HealingComponent {
-  onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
+  // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   remainingCooldown = 0;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -20,14 +18,15 @@ export class HealingComponent {
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
-  private update(time: number, delta: number): void {
+  private update(_: number, delta: number): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
     this.remainingCooldown -= delta;
-    if (this.remainingCooldown <= 0) {
-      this.onCooldownReady.emit(this.gameObject);
-    }
+    this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    // if (this.remainingCooldown <= 0) {
+    //   this.onCooldownReady.emit(this.gameObject);
+    // }
   }
 
   heal(target: Phaser.GameObjects.GameObject) {

@@ -23,7 +23,7 @@ export type GathererDefinition = {
 export class GathererComponent {
   private static readonly debug = false;
   // when cooldown has expired
-  onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
+  // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   private readonly gatheredResources: GatherData[] = [
     {
       capacity: 3,
@@ -80,14 +80,15 @@ export class GathererComponent {
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
-  private update(time: number, delta: number): void {
+  private update(_: number, delta: number): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
     this.remainingCooldown -= delta;
-    if (this.remainingCooldown <= 0) {
-      this.onCooldownReady.emit(this.gameObject);
-    }
+    this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    // if (this.remainingCooldown <= 0) {
+    //   this.onCooldownReady.emit(this.gameObject);
+    // }
   }
 
   private destroy() {

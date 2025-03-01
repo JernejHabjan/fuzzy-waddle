@@ -42,15 +42,8 @@ root [ExecuteCurrentOrder] {
         branch [Gather]
         branch [ReturnResources]
         branch [Build]
-        /*
-        sequence {
-            condition [PlayerOrderIs, "repair"]
-            branch [Repair]
-        }
-        sequence {
-            condition [PlayerOrderIs, "heal"]
-            branch [Heal]
-        }*/
+        branch [Repair]
+        branch [Heal]
     }
 }
 
@@ -380,46 +373,146 @@ root [Build] {
 }
 
 root [Repair] {
-    sequence {
-        action [LeaveConstructionSiteOrCurrentContainer]
-        parallel {
-            selector {
-                flip {
-                    condition [TargetIsAlive]
-                }
-                action [Stop]
-                action [LeaveConstructionSiteOrCurrentContainer]
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "repair"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is repair */
+        succeed {
+            selector { /* executes until first succeeds */
+                /* if no target, stop */
                 sequence {
-                    action [InRange, "repair"]
+                    flip {
+                        condition [TargetExists]
+                    }
+                    action [Stop]
+                }
+
+                /* if no builderComponent, stop */
+                sequence {
+                    flip {
+                        condition [HasBuilderComponent]
+                    }
+                    action [Stop]
+                }
+
+                /* if target is not fully built, stop */
+                sequence {
+                    flip {
+                        condition [ConstructionSiteFinished]
+                    }
+                    action [Stop]
+                }
+
+                /* if target health is 100%, stop */
+                sequence {
+                    condition [TargetHealthFull]
+                    action [Stop]
+                }
+
+                /* if repairer cannot be assigned, stop */
+                sequence {
+                    flip {
+                        condition [CanAssignRepairer]
+                    }
+                    action [Stop]
+                }
+
+                /* exit current container */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    action [LeaveConstructionSiteOrCurrentContainer]
+                }
+
+                /* if target not in range, move to target */
+                sequence {
+                    flip {
+                      action [InRange, "repair"]
+                    }
                     action [MoveToTarget, "repair"]
                 }
-            }
-            sequence {
-                condition [CooldownReady, "repair"]
-                action [Repair]
+
+                sequence {
+                    /* if cooldown not ready, wait */
+                    flip {
+                        condition [CooldownReady, "repair"]
+                    }
+                    sequence {
+                        /* cooldown may not be ready - wait until it is ms */
+                        /* action [Log, "Waiting in repair"] */
+                        wait [100] until [CooldownReady, "repair"]
+                        /* action [Log, "Done waiting in repair"] */
+                    }
+                }
+
+                /* cooldown ready, repair */
+                action [RepairBuilding]
             }
         }
     }
 }
 
 root [Heal] {
-    sequence {
-        action [LeaveConstructionSiteOrCurrentContainer]
-        parallel {
-            selector {
-                flip {
-                    condition [TargetIsAlive]
-                }
-                action [Stop]
-                action [LeaveConstructionSiteOrCurrentContainer]
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "heal"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is heal */
+        succeed {
+            selector { /* executes until first succeeds */
+                /* if no target, stop */
                 sequence {
-                    action [InRange, "heal"]
+                    flip {
+                        condition [TargetExists]
+                    }
+                    action [Stop]
+                }
+
+                /* if no healerComponent, stop */
+                sequence {
+                    flip {
+                        condition [HasHealerComponent]
+                    }
+                    action [Stop]
+                }
+
+                /* if target health is 100%, stop */
+                sequence {
+                    condition [TargetHealthFull]
+                    action [Stop]
+                }
+
+                /* if healer cannot be assigned, stop */
+                sequence {
+                    flip {
+                        condition [CanAssignHealer]
+                    }
+                    action [Stop]
+                }
+
+                /* exit current container */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    action [LeaveConstructionSiteOrCurrentContainer]
+                }
+
+                /* if target not in range, move to target */
+                sequence {
+                    flip {
+                      action [InRange, "heal"]
+                    }
                     action [MoveToTarget, "heal"]
                 }
-            }
-            sequence {
-                condition [CooldownReady, "heal"]
-                action [Heal]
+
+                sequence {
+                    /* if cooldown not ready, wait */
+                    flip {
+                        condition [CooldownReady, "heal"]
+                    }
+                    sequence {
+                        /* cooldown may not be ready - wait until it is ms */
+                        /* action [Log, "Waiting in heal"] */
+                        wait [100] until [CooldownReady, "heal"]
+                        /* action [Log, "Done waiting in heal"] */
+                    }
+                }
+
+                /* cooldown ready, heal */
+                action [HealBuilding]
             }
         }
     }

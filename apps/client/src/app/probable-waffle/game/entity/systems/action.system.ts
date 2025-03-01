@@ -98,7 +98,7 @@ export class ActionSystem {
 
             const targetHealthComponent = getActorComponent(targetGameObject, HealthComponent);
             if (targetHealthComponent) {
-              if (targetHealthComponent.isDamaged()) {
+              if (targetHealthComponent.isDamaged) {
                 // building is damaged
 
                 const selfBuilderComponent = getActorComponent(this.gameObject, BuilderComponent);
@@ -113,7 +113,7 @@ export class ActionSystem {
 
           const targetHealthComponent = getActorComponent(targetGameObject, HealthComponent);
           if (targetHealthComponent) {
-            if (targetHealthComponent.isDamaged()) {
+            if (targetHealthComponent.isDamaged) {
               // target is damaged
 
               const selfBuilderComponent = getActorComponent(this.gameObject, HealingComponent);

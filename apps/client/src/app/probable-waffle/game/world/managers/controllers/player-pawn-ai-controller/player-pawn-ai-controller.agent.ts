@@ -65,7 +65,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!target) return false;
     const healthComponent = getActorComponent(target, HealthComponent);
     if (!healthComponent) return false;
-    return healthComponent.healthComponentData.health > 0;
+    return healthComponent.alive;
   }
 
   async InRange(type: PlayerPawnRangeType): Promise<State> {
@@ -117,11 +117,13 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
         case "dropOff":
           return getActorComponent(targetGameObject, ResourceDrainComponent)?.getDropOffRange();
         case "construct":
-          return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("");
+          return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange();
         case "heal":
           return getActorComponent(this.gameObject, HealingComponent)?.getHealRange();
+        case "repair":
+          return getActorComponent(this.gameObject, BuilderComponent)?.getRepairRange();
         default:
-          return undefined;
+          throw new Error("Invalid range type");
       }
     } else if (targetLocation) {
       // range to location is always 0
@@ -202,6 +204,12 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
           const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
           if (builderComponent) {
             builderComponent.leaveConstructionSite();
+          }
+          break;
+        case OrderType.Repair:
+          const builderComponent2 = getActorComponent(this.gameObject, BuilderComponent);
+          if (builderComponent2) {
+            builderComponent2.leaveRepairSite();
           }
           break;
       }
@@ -405,15 +413,20 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
         if (!gathererComponent) return false;
         return gathererComponent.remainingCooldown <= 0;
       case "construct":
-        const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
-        if (!builderComponent) return false;
-        return builderComponent.remainingCooldown <= 0;
+        const builderComponent1 = getActorComponent(this.gameObject, BuilderComponent);
+        if (!builderComponent1) return false;
+        return builderComponent1.remainingCooldown <= 0;
       case "heal":
         const healingComponent = getActorComponent(this.gameObject, HealingComponent);
         if (!healingComponent) return false;
         return healingComponent.remainingCooldown <= 0;
+      case "repair":
+        const builderComponent2 = getActorComponent(this.gameObject, BuilderComponent);
+        if (!builderComponent2) return false;
+        return builderComponent2.remainingCooldown <= 0;
+      default:
+        throw new Error("Invalid cooldown type");
     }
-    return false;
   }
 
   TargetExists() {
@@ -498,6 +511,44 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     currentOrder.orderType = OrderType.Gather;
     currentOrder.data.targetGameObject = preferredResourceSource;
     return State.SUCCEEDED;
+  }
+
+  ConstructionSiteFinished(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return false;
+    return constructionSiteComponent.isFinished();
+  }
+  TargetHealthFull(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const healthComponent = getActorComponent(target, HealthComponent);
+    if (!healthComponent) return false;
+    return healthComponent.healthIsFull;
+  }
+  RepairBuilding(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+    const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+    if (!builderComponent) return State.FAILED;
+    builderComponent.assignToRepairSite(target);
+    return State.SUCCEEDED;
+  }
+  CanAssignRepairer(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return false;
+    return constructionSiteComponent.canAssignRepairer();
   }
 
   Succeed() {

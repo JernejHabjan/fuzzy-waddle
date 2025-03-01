@@ -220,4 +220,18 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   Log() {
     return State.SUCCEEDED;
   }
+
+  ConstructionSiteFinished() {
+    return getBooleanValue("Is the construction site fully built?");
+  }
+  TargetHealthFull() {
+    return getBooleanValue("Is the target health full?");
+  }
+  RepairBuilding() {
+    showInfoToast("Repairing building!");
+    return State.SUCCEEDED;
+  }
+  CanAssignRepairer() {
+    return getBooleanValue("Can the agent be assigned as a repairer?");
+  }
 }

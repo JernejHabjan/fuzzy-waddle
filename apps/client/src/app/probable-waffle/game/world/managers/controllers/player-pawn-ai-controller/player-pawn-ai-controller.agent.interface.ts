@@ -1,7 +1,7 @@
 import { State } from "mistreevous";
 
-export type PlayerPawnRangeType = "move" | "gather" | "attack" | "dropOff" | "construct" | "heal";
-export type PlayerPawnCooldownType = "gather" | "attack" | "construct" | "heal";
+export type PlayerPawnRangeType = "move" | "gather" | "attack" | "dropOff" | "construct" | "heal" | "repair";
+export type PlayerPawnCooldownType = "gather" | "attack" | "construct" | "heal" | "repair";
 
 export interface IPlayerPawnControllerAgent {
   // Player Orders and Status
@@ -44,6 +44,12 @@ export interface IPlayerPawnControllerAgent {
   CanAssignBuilder(): boolean;
   HasBuilderComponent(): boolean;
   LeaveConstructionSiteOrCurrentContainer(): State;
+
+  // Repair
+  ConstructionSiteFinished(): boolean;
+  TargetHealthFull(): boolean;
+  RepairBuilding(): State;
+  CanAssignRepairer(): boolean;
 
   // Movement
   MoveToTarget(type: PlayerPawnRangeType): Promise<State>;
