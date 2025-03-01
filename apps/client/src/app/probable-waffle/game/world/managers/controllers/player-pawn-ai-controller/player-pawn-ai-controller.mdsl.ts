@@ -1,6 +1,6 @@
 /**
- * sequence - runs children until first FAILURE or all SUCCESS
- * selector - finishes when first child returns SUCCESS
+ * sequence - (needs all succeeded in sequence) updates in sequence - moves to succeeded if all children have succeeded, moves to failed if any have failed
+ * selector - (any succeed in sequence) updates in sequence - moves to failed if all have failed, moves to success if any have succeeded
  * parallel - runs multiple until all SUCCESS or any FAILURE
  * race - runs multiple until any SUCCESS or all FAILURE
  * all - runs multiple until all finish
@@ -12,12 +12,12 @@
  * fail - returns FAILURE
  * action - runs a function
  * condition - checks a condition
- * wait - waits for N seconds
+ * wait - waits for N ms
  * branch - runs another tree
  * callbacks - entry, step, exit functions
  * guards - removes node from running state if condition is false - useful with wait
- *   while - if condition is true
- *   until - if condition is false
+ *   while - runs until condition is true
+ *   until - runs until condition is false
  * */
 
 export const PlayerPawnAiControllerMdsl = `
@@ -30,20 +30,14 @@ root {
             }
         }
         branch [ExecuteCurrentOrder]
-        branch [AutoAssignNewOrder]
+        /* branch [AutoAssignNewOrder] */
     }
 }
 
 root [ExecuteCurrentOrder] {
     selector {
-        sequence {
-            condition [PlayerOrderIs, "attack"]
-            condition [HasAttackComponent]
-            condition [TargetExists]
-            condition [TargetIsAlive]
-            branch [AttackMoveEnemyTarget]
-        }
-        sequence {
+        branch [Attack]
+        /*sequence {
             condition [PlayerOrderIs, "move"]
             selector {
                 sequence {
@@ -79,7 +73,7 @@ root [ExecuteCurrentOrder] {
         sequence {
             condition [PlayerOrderIs, "heal"]
             branch [Heal]
-        }
+        }*/
     }
 }
 
@@ -107,27 +101,60 @@ root [AutoAssignNewOrder] {
     }
 }
 
-root [AttackMoveEnemyTarget] {
-  selector {
-      sequence {
-        flip {
-          condition [TargetIsAlive]
-        }
-        action [Stop]
-      }
-      sequence {
-          flip {
-            condition [InRange, "attack"]
-          }
-          action [MoveToTarget, "attack"]
-      }
-      sequence {
-          condition [CooldownReady, "attack"]
-          action [Attack]
-      }
-  }
-}
+root [Attack] {
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "attack"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is attack */
+        succeed {
+            selector { /* executes until first succeeds */
+                /* if no target, stop */
+                sequence {
+                    flip {
+                        condition [TargetExists]
+                    }
+                    action [Stop]
+                }
 
+                /* if no attack component, stop */
+                sequence {
+                    flip {
+                        condition [HasAttackComponent]
+                    }
+                    action [Stop]
+                }
+
+                /* if target is not alive, stop */
+                sequence {
+                    flip {
+                        condition [TargetIsAlive]
+                    }
+                    action [Stop]
+                }
+
+                /* if target not in range, move to target */
+                sequence {
+                    flip {
+                      action [InRange, "attack"]
+                    }
+                    action [MoveToTarget, "attack"]
+                }
+
+                /* if cooldown ready, attack */
+                sequence {
+                    condition [CooldownReady, "attack"]
+                    action [Attack]
+                }
+
+                sequence {
+                    /* cooldown may not be ready - wait until it is ms */
+                    /* action [Log, "Waiting in attack"] */
+                    wait [100] until [CooldownReady, "attack"]
+                    /* action [Log, "Done waiting in attack"] */
+                }
+            }
+        }
+    }
+}
 
 root [GatherResource] {
     selector {
@@ -139,7 +166,7 @@ root [GatherResource] {
         }
         sequence {
             flip {
-              condition [InRange, "gather"]
+              action [InRange, "gather"]
             }
             action [MoveToTarget, "gather"]
         }
@@ -162,7 +189,7 @@ root [ReturnResources] {
             }
             sequence {
                 flip {
-                  condition [InRange, "dropOff"]
+                  action [InRange, "dropOff"]
                 }
                 action [MoveToTarget, "dropOff"]
             }
@@ -183,7 +210,7 @@ root [ConstructBuilding] {
                 action [Stop]
                 action [LeaveConstructionSiteOrCurrentContainer]
                 sequence {
-                    condition [InRange, "construct"]
+                    action [InRange, "construct"]
                     action [MoveToTarget, "construct"]
                 }
             }
@@ -206,7 +233,7 @@ root [Heal] {
                 action [Stop]
                 action [LeaveConstructionSiteOrCurrentContainer]
                 sequence {
-                    condition [InRange, "heal"]
+                    action [InRange, "heal"]
                     action [MoveToTarget, "heal"]
                 }
             }

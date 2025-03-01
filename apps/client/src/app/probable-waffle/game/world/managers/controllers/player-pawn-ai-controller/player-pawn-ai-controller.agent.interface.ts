@@ -12,7 +12,8 @@ export interface IPlayerPawnControllerAgent {
   // Combat-related Actions
   HasAttackComponent(): boolean;
   TargetIsAlive(): boolean;
-  InRange(type: PlayerPawnRangeType): boolean;
+  /* InRange is not condition but promisey action until this is addressed - https://github.com/nikkorn/mistreevous/issues/95 */
+  InRange(type: PlayerPawnRangeType): Promise<State>;
   Attack(): State;
   AssignEnemy(source: string): State;
   NoEnemiesVisible(): boolean;
@@ -48,4 +49,5 @@ export interface IPlayerPawnControllerAgent {
   // Utility
   Succeed(): State;
   Fail(): State;
+  Log(message: string): State;
 }

@@ -11,6 +11,7 @@ import { HealthComponent } from "../../../../entity/combat/components/health-com
 import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
 import { DebuggingService } from "../../../../scenes/services/DebuggingService";
 import { Subscription } from "rxjs";
+import { BehaviourTreeOptions } from "mistreevous/dist/BehaviourTreeOptions";
 
 export interface PawnAiDefinition {
   type: AiType;
@@ -30,10 +31,15 @@ export class PawnAiController {
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly pawnAiDefinition: PawnAiDefinition
   ) {
+    const options = environment.production
+      ? {}
+      : ({
+          //onNodeStateChange: (change: NodeStateChange) => console.log(change)
+        } satisfies BehaviourTreeOptions);
     switch (pawnAiDefinition.type) {
       case AiType.Character:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
-        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent, options);
         this.blackboard.cancellationHandler = () => {
           (this.agent as PlayerPawnAiControllerAgent).Stop();
           this.behaviourTree.reset();
@@ -41,7 +47,7 @@ export class PawnAiController {
         break;
       default:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
-        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent, options);
         this.blackboard.cancellationHandler = () => {
           (this.agent as PlayerPawnAiControllerAgent).Stop();
           this.behaviourTree.reset();

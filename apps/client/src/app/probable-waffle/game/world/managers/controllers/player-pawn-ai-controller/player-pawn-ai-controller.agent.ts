@@ -67,17 +67,25 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return healthComponent.healthComponentData.health > 0;
   }
 
-  InRange(type: "gather" | "attack" | "dropOff" | "construct") {
+  async InRange(type: "gather" | "attack" | "dropOff" | "construct"): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return false;
+    if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
-    if (!target) return false;
+    if (!target) return State.FAILED;
     const range = this.getRangeToTarget(type);
-    if (!range) return false;
+    if (!range) return State.FAILED;
 
-    const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, target);
-    if (distance === null) return false;
-    return distance <= range;
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    let distance = null;
+    if (movementSystem) {
+      const nrTiles = await movementSystem.getPathToClosestWalkableTileBetweenGameObjectsInRadius(target, range);
+      distance = nrTiles.length;
+    } else {
+      distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, target);
+    }
+
+    if (distance === null) return State.FAILED;
+    return distance <= range ? State.SUCCEEDED : State.FAILED;
   }
 
   private getRangeToTarget(type: PlayerPawnRangeType): number | undefined {
@@ -413,5 +421,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
   Fail() {
     return State.FAILED;
+  }
+  Log(message: string): State {
+    console.log(message);
+    return State.SUCCEEDED;
   }
 }

@@ -138,8 +138,7 @@ export class MovementSystem {
 
     if (!this.navigationService) return false;
 
-    const path = await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
-      this.gameObject,
+    const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
       gameObject,
       pathMoveConfig?.radiusTilesAroundDestination
     );
@@ -265,14 +264,20 @@ export class MovementSystem {
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
-    if (!this.navigationService) return false;
+    const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(targetGameObject, range);
+    return path.length > 0;
+  }
 
-    const path = await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
+  async getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+    targetGameObject: Phaser.GameObjects.GameObject,
+    range?: number
+  ): Promise<Vector2Simple[]> {
+    if (!this.navigationService) return [];
+    return await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
       this.gameObject,
       targetGameObject,
       range
     );
-    return path.length > 0;
   }
 }
 

@@ -35,7 +35,7 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
 
   InRange() {
     // Check if the agent is within range of the target
-    return getBooleanValue("Is the agent in range of the target?");
+    return Promise.resolve(State.SUCCEEDED);
   }
 
   MoveToTarget() {
@@ -189,5 +189,8 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   }
   Fail() {
     return State.FAILED;
+  }
+  Log() {
+    return State.SUCCEEDED;
   }
 }
