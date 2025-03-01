@@ -83,8 +83,12 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   AcquireNewResourceSource() {
     // Find a new resource to gather from
     showInfoToast("Acquiring new resource source.");
-    // @ts-expect-error - unused parameter.
-    this.orderQueue.push({ orderType: "gather", target: "resource" });
+    return State.SUCCEEDED;
+  }
+
+  AcquireNewResourceDrain() {
+    // Find a new resource to drop off resources at
+    showInfoToast("Acquiring new resource drain.");
     return State.SUCCEEDED;
   }
 
@@ -183,6 +187,16 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
 
   GatherCapacityFull() {
     return getBooleanValue("Is the agent gathering capacity full?");
+  }
+
+  AssignDropOffResourcesOrder() {
+    showInfoToast("Assigning drop-off resources order.");
+    return State.SUCCEEDED;
+  }
+
+  AssignGatherResourcesOrder() {
+    showInfoToast("Assigning gather resources order.");
+    return State.SUCCEEDED;
   }
 
   Succeed() {

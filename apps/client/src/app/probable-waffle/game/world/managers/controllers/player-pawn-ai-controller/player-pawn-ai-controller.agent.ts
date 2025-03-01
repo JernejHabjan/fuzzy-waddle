@@ -239,7 +239,20 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       resourceSource = gathererComponent.getNewResourceSource();
     }
     if (!resourceSource) return State.FAILED;
-    this.blackboard.addOrder(new OrderData(OrderType.Gather, { targetGameObject: resourceSource }));
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    currentOrder.data.targetGameObject = resourceSource;
+    return State.SUCCEEDED;
+  }
+
+  AcquireNewResourceDrain() {
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+    const resourceDrain = gathererComponent.getPreferredResourceDrain();
+    if (!resourceDrain) return State.FAILED;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    currentOrder.data.targetGameObject = resourceDrain;
     return State.SUCCEEDED;
   }
 
@@ -427,6 +440,36 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return false;
     return gathererComponent.isCapacityFull();
+  }
+
+  AssignDropOffResourcesOrder(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+
+    const preferredResourceDrain = gathererComponent.getPreferredResourceDrain();
+    if (!preferredResourceDrain) return State.FAILED;
+
+    currentOrder.orderType = OrderType.ReturnResources;
+    currentOrder.data.targetGameObject = preferredResourceDrain;
+    return State.SUCCEEDED;
+  }
+
+  AssignGatherResourcesOrder(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+
+    const preferredResourceSource = gathererComponent.getPreferredResourceSource();
+    if (!preferredResourceSource) return State.FAILED;
+
+    currentOrder.orderType = OrderType.Gather;
+    currentOrder.data.targetGameObject = preferredResourceSource;
+    return State.SUCCEEDED;
   }
 
   Succeed() {

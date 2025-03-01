@@ -9,13 +9,18 @@ export interface IPlayerPawnControllerAgent {
   AssignNextOrderFromQueue(): State;
   PlayerOrderIs(orderType: string): boolean;
 
+  // Assign orders
+  AssignDropOffResourcesOrder(): State;
+  AssignGatherResourcesOrder(): State;
+  AssignEnemy(source: string): State;
+  AssignMoveRandomlyInRange(range: number): Promise<State>;
+
   // Combat-related Actions
   HasAttackComponent(): boolean;
   TargetIsAlive(): boolean;
   /* InRange is not condition but promisey action until this is addressed - https://github.com/nikkorn/mistreevous/issues/95 */
   InRange(type: PlayerPawnRangeType): Promise<State>;
   Attack(): State;
-  AssignEnemy(source: string): State;
   NoEnemiesVisible(): boolean;
   AnyEnemyVisible(): boolean;
   CooldownReady(type: PlayerPawnCooldownType): boolean;
@@ -24,6 +29,7 @@ export interface IPlayerPawnControllerAgent {
 
   // Resource Gathering
   AcquireNewResourceSource(): State;
+  AcquireNewResourceDrain(): State;
   GatherResource(): Promise<State>;
   DropOffResources(): Promise<State>;
   ContinueGathering(): State;
@@ -42,7 +48,6 @@ export interface IPlayerPawnControllerAgent {
   MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State>;
   MoveToLocation(): Promise<State>;
   Stop(): State;
-  AssignMoveRandomlyInRange(range: number): Promise<State>;
   TargetExists(): boolean;
   TargetOrLocationExists(): boolean;
 

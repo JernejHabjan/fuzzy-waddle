@@ -39,17 +39,9 @@ root [ExecuteCurrentOrder] {
         branch [Attack]
         branch [Move]
         branch [Stop]
-        /* sequence {
-            condition [PlayerOrderIs, "gather"]
-            condition [HasHarvestComponent]
-            condition [TargetHasResources]
-            branch [GatherResource]
-        }
-        sequence {
-            condition [PlayerOrderIs, "returnResources"]
-            condition [HasHarvestComponent]
-            branch [ReturnResources]
-        }
+        branch [Gather]
+        branch [ReturnResources]
+        /*
         sequence {
             condition [PlayerOrderIs, "build"]
             branch [ConstructBuilding]
@@ -119,6 +111,11 @@ root [Attack] {
                     action [Stop]
                 }
 
+                /* exit current container */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    action [LeaveConstructionSiteOrCurrentContainer]
+                }
+
                 /* if target not in range, move to target */
                 sequence {
                     flip {
@@ -127,18 +124,21 @@ root [Attack] {
                     action [MoveToTarget, "attack"]
                 }
 
-                /* if cooldown ready, attack */
                 sequence {
-                    condition [CooldownReady, "attack"]
-                    action [Attack]
+                    /* if cooldown not ready, wait */
+                    flip {
+                        condition [CooldownReady, "attack"]
+                    }
+                    sequence {
+                        /* cooldown may not be ready - wait until it is ms */
+                        /* action [Log, "Waiting in attack"] */
+                        wait [100] until [CooldownReady, "attack"]
+                        /* action [Log, "Done waiting in attack"] */
+                    }
                 }
 
-                sequence {
-                    /* cooldown may not be ready - wait until it is ms */
-                    /* action [Log, "Waiting in attack"] */
-                    wait [100] until [CooldownReady, "attack"]
-                    /* action [Log, "Done waiting in attack"] */
-                }
+                /* cooldown ready, attack */
+                action [Attack]
             }
         }
     }
@@ -156,6 +156,11 @@ root [Move] {
                         condition [TargetOrLocationExists]
                     }
                     action [Stop]
+                }
+
+                /* exit current container */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    action [LeaveConstructionSiteOrCurrentContainer]
                 }
 
                 /* move */
@@ -182,45 +187,134 @@ root [Stop] {
     }
 }
 
-root [GatherResource] {
-    selector {
-        sequence {
-          flip {
-              condition [TargetHasResources]
-          }
-          action [AcquireNewResourceSource]
-        }
-        sequence {
-            flip {
-              action [InRange, "gather"]
+root [Gather] {
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "gather"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is gather */
+        succeed {
+            selector { /* executes until first succeeds */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    sequence {
+                        /* if target does not have resources, acquire new resource source */
+                        flip {
+                            condition [TargetHasResources]
+                        }
+                        action [AcquireNewResourceSource]
+                    }
+                }
+
+                /* if no resources exist on the map, stop */
+                sequence {
+                    flip {
+                        condition [TargetExists]
+                    }
+                    action [Stop]
+                }
+
+                /* if no harvest component, stop */
+                sequence {
+                    flip {
+                        condition [HasHarvestComponent]
+                    }
+                    action [Stop]
+                }
+
+                /* if gathering capacity is full, drop off resources */
+                sequence {
+                    condition [GatherCapacityFull]
+                    action [AssignDropOffResourcesOrder]
+                }
+
+                /* exit current container */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    action [LeaveConstructionSiteOrCurrentContainer]
+                }
+
+                /* if target not in range, move to target */
+                sequence {
+                    flip {
+                      action [InRange, "gather"]
+                    }
+                    action [MoveToTarget, "gather"]
+                }
+
+                sequence {
+                    /* if cooldown not ready, wait */
+                    flip {
+                        condition [CooldownReady, "gather"]
+                    }
+                    sequence {
+                        /* cooldown may not be ready - wait until it is ms */
+                        /* action [Log, "Waiting in gather"] */
+                        wait [100] until [CooldownReady, "gather"]
+                        /* action [Log, "Done waiting in gather"] */
+                    }
+                }
+
+                /* cooldown ready, gather */
+                action [GatherResource]
             }
-            action [MoveToTarget, "gather"]
-        }
-        sequence {
-            condition [CooldownReady, "gather"]
-            action [GatherResource]
         }
     }
+
 }
 
 root [ReturnResources] {
-    sequence {
-        action [LeaveConstructionSiteOrCurrentContainer]
-        selector {
-            sequence {
-              flip {
-                condition [TargetIsAlive]
-              }
-              action [Stop]
-            }
-            sequence {
-                flip {
-                  action [InRange, "dropOff"]
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "returnResources"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is returnResources */
+        succeed {
+            selector { /* executes until first succeeds */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    sequence {
+                        /* if target is not alive, try acquiring new resource drain */
+                        flip {
+                            condition [TargetIsAlive]
+                        }
+                        action [AcquireNewResourceDrain]
+                    }
                 }
-                action [MoveToTarget, "dropOff"]
+
+                /* if no resource drains exist on the map, stop */
+                sequence {
+                    flip {
+                        condition [TargetExists]
+                    }
+                    action [Stop]
+                }
+
+                /* if no harvest component, stop */
+                sequence {
+                    flip {
+                        condition [HasHarvestComponent]
+                    }
+                    action [Stop]
+                }
+
+                /* if gathering capacity is empty, gather */
+                sequence {
+                    flip {
+                        condition [GatherCapacityFull]
+                    }
+                    action [AssignGatherResourcesOrder]
+                }
+
+                /* exit current container */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    action [LeaveConstructionSiteOrCurrentContainer]
+                }
+
+                /* if target not in range, move to target */
+                sequence {
+                    flip {
+                      action [InRange, "dropOff"]
+                    }
+                    action [MoveToTarget, "dropOff"]
+                }
+
+                /* deposit resources */
+                action [DropOffResources]
             }
-            action [DropOffResources]
-            action [ContinueGathering]
         }
     }
 }
