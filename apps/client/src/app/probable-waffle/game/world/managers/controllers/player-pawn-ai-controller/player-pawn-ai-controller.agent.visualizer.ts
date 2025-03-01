@@ -8,6 +8,7 @@ import { getBooleanValue, showInfoToast } from "../behavior-tree-utilities/behav
 class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgent {
   orderQueue = [];
   currentOrder = null;
+
   OrderExistsInQueue() {
     return !!this.orderQueue.length;
   }
@@ -54,11 +55,6 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     // Command the agent to move to a specific location
     showInfoToast("Moving to location!");
     return Promise.resolve(State.SUCCEEDED);
-  }
-
-  ReachedLocation() {
-    // Check if the agent has reached the target location
-    return getBooleanValue("Has the agent reached the target location?");
   }
 
   Heal() {
@@ -154,6 +150,11 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Does the target exist?");
   }
 
+  TargetOrLocationExists() {
+    // Check if the target or location exists
+    return getBooleanValue("Does the target or location exist?");
+  }
+
   TargetHasResources() {
     // Check if the target still has resources to gather
     return getBooleanValue("Does the target have resources?");
@@ -187,9 +188,11 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   Succeed() {
     return State.SUCCEEDED;
   }
+
   Fail() {
     return State.FAILED;
   }
+
   Log() {
     return State.SUCCEEDED;
   }

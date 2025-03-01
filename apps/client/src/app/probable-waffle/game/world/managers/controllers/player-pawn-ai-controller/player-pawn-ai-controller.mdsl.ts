@@ -37,21 +37,9 @@ root {
 root [ExecuteCurrentOrder] {
     selector {
         branch [Attack]
-        /*sequence {
-            condition [PlayerOrderIs, "move"]
-            selector {
-                sequence {
-                    condition [ReachedLocation]
-                    action [Stop]
-                }
-                action [MoveToTargetOrLocation, "move"]
-            }
-        }
-        sequence {
-            condition [PlayerOrderIs, "stop"]
-            action [Stop]
-        }
-        sequence {
+        branch [Move]
+        branch [Stop]
+        /* sequence {
             condition [PlayerOrderIs, "gather"]
             condition [HasHarvestComponent]
             condition [TargetHasResources]
@@ -152,6 +140,44 @@ root [Attack] {
                     /* action [Log, "Done waiting in attack"] */
                 }
             }
+        }
+    }
+}
+
+root [Move] {
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "move"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is move */
+        succeed {
+            selector { /* executes until first succeeds */
+                /* if no target, stop */
+                sequence {
+                    flip {
+                        condition [TargetOrLocationExists]
+                    }
+                    action [Stop]
+                }
+
+                /* move */
+                action [MoveToTargetOrLocation, "move"]
+
+                /* if reached target, stop */
+                sequence {
+                    action [Log, "Reached target"]
+                    action [InRange, "move"]
+                    action [Stop]
+                }
+            }
+        }
+    }
+}
+
+root [Stop] {
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "stop"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is stop */
+        succeed {
+            action [Stop]
         }
     }
 }

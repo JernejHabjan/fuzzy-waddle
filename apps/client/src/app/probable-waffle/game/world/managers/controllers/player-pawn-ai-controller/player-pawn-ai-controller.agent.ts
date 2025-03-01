@@ -67,49 +67,66 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return healthComponent.healthComponentData.health > 0;
   }
 
-  async InRange(type: "gather" | "attack" | "dropOff" | "construct"): Promise<State> {
+  async InRange(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
-    const target = currentOrder.data.targetGameObject;
-    if (!target) return State.FAILED;
+    const targetGameObject = currentOrder.data.targetGameObject;
+    const targetLocation = currentOrder.data.targetLocation;
     const range = this.getRangeToTarget(type);
-    if (!range) return State.FAILED;
-
-    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-    let distance = null;
-    if (movementSystem) {
-      const nrTiles = await movementSystem.getPathToClosestWalkableTileBetweenGameObjectsInRadius(target, range);
-      distance = nrTiles.length;
+    if (range === undefined) return State.FAILED;
+    if (targetGameObject) {
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      let distance: null | number;
+      if (movementSystem) {
+        const nrTiles = await movementSystem.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+          targetGameObject,
+          range
+        );
+        distance = nrTiles.length;
+      } else {
+        distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, targetGameObject);
+      }
+      if (distance === null) return State.FAILED;
+      return distance <= range ? State.SUCCEEDED : State.FAILED;
+    } else if (targetLocation) {
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      if (!movementSystem) return State.FAILED;
+      const distance = GameplayLibrary.getTileDistanceBetweenGameObjectAndTile(this.gameObject, targetLocation);
+      if (distance === null) return State.FAILED;
+      return distance <= range ? State.SUCCEEDED : State.FAILED;
     } else {
-      distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, target);
+      return State.FAILED;
     }
-
-    if (distance === null) return State.FAILED;
-    return distance <= range ? State.SUCCEEDED : State.FAILED;
   }
 
   private getRangeToTarget(type: PlayerPawnRangeType): number | undefined {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return undefined;
-    const target = currentOrder.data.targetGameObject;
-    if (!target) return undefined;
 
-    switch (type) {
-      case "move":
-        return 0;
-      case "attack":
-        return getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
-      case "gather":
-        return getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(target);
-      case "dropOff":
-        return getActorComponent(target, ResourceDrainComponent)?.getDropOffRange();
-      case "construct":
-        return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("");
-      case "heal":
-        return getActorComponent(this.gameObject, HealingComponent)?.getHealRange();
-      default:
-        return undefined;
+    const targetGameObject = currentOrder.data.targetGameObject;
+    const targetLocation = currentOrder.data.targetLocation;
+    if (targetGameObject) {
+      switch (type) {
+        case "move":
+          return 0;
+        case "attack":
+          return getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
+        case "gather":
+          return getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(targetGameObject);
+        case "dropOff":
+          return getActorComponent(targetGameObject, ResourceDrainComponent)?.getDropOffRange();
+        case "construct":
+          return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("");
+        case "heal":
+          return getActorComponent(this.gameObject, HealingComponent)?.getHealRange();
+        default:
+          return undefined;
+      }
+    } else if (targetLocation) {
+      // range to location is always 0
+      return 0;
     }
+    return undefined;
   }
 
   async MoveToTarget(type: PlayerPawnRangeType): Promise<State> {
@@ -163,16 +180,6 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       console.error("Error in MoveToLocation", e);
       return State.FAILED;
     }
-  }
-
-  ReachedLocation() {
-    const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return false;
-    const location = currentOrder.data.targetLocation;
-    if (!location) return false;
-    const distance = GameplayLibrary.getTileDistanceBetweenGameObjectAndTile(this.gameObject, location);
-    if (distance === null) return false;
-    return distance <= 0;
   }
 
   Stop = () => {
@@ -374,6 +381,12 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return !!currentOrder.data.targetGameObject;
   }
 
+  TargetOrLocationExists() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    return !!currentOrder.data.targetGameObject || !!currentOrder.data.targetLocation;
+  }
+
   /**
    * Check if the target still has resources to gather
    */
@@ -419,9 +432,11 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   Succeed() {
     return State.SUCCEEDED;
   }
+
   Fail() {
     return State.FAILED;
   }
+
   Log(message: string): State {
     console.log(message);
     return State.SUCCEEDED;
