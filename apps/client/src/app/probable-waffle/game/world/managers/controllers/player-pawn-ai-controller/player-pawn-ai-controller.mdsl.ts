@@ -45,7 +45,13 @@ root [ExecuteCurrentOrder] {
         }
         sequence {
             condition [PlayerOrderIs, "move"]
-            action [MoveToTargetOrLocation, "move"]
+            selector {
+                sequence {
+                    condition [ReachedLocation]
+                    action [Stop]
+                }
+                action [MoveToTargetOrLocation, "move"]
+            }
         }
         sequence {
             condition [PlayerOrderIs, "stop"]

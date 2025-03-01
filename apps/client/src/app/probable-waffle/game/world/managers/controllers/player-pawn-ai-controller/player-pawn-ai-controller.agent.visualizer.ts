@@ -56,6 +56,11 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return Promise.resolve(State.SUCCEEDED);
   }
 
+  ReachedLocation() {
+    // Check if the agent has reached the target location
+    return getBooleanValue("Has the agent reached the target location?");
+  }
+
   Heal() {
     // Command the agent to heal the target
     showInfoToast("Healing the target!");

@@ -43,6 +43,7 @@ export interface IPlayerPawnControllerAgent {
   Stop(): State;
   AssignMoveRandomlyInRange(range: number): Promise<State>;
   TargetExists(): boolean;
+  ReachedLocation(): boolean;
 
   // Utility
   Succeed(): State;

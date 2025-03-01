@@ -157,6 +157,16 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     }
   }
 
+  ReachedLocation() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const location = currentOrder.data.targetLocation;
+    if (!location) return false;
+    const distance = GameplayLibrary.getTileDistanceBetweenGameObjectAndTile(this.gameObject, location);
+    if (distance === null) return false;
+    return distance <= 0;
+  }
+
   Stop = () => {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {

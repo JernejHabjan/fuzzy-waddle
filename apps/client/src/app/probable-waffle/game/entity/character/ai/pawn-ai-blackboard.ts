@@ -58,8 +58,10 @@ export class PawnAiBlackboard extends Blackboard {
     this.status = "idle";
   }
 
-  resetCurrentOrder(): void {
-    this.cancellationHandler?.();
+  resetCurrentOrder(callCancellationHandler: boolean = true): void {
+    if (callCancellationHandler) {
+      this.cancellationHandler?.();
+    }
     this.currentOrder = undefined;
   }
 
@@ -81,5 +83,9 @@ export class PawnAiBlackboard extends Blackboard {
 
   getFailedOrders(): OrderData[] {
     return [...this.failedOrders];
+  }
+
+  popCurrentOrder() {
+    this.pullNextPlayerOrder();
   }
 }
