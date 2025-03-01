@@ -10,7 +10,7 @@ export type AttackDefinition = {
 
 export class AttackComponent {
   // when cooldown has expired
-  onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
+  // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   // gameObject used an attack
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
@@ -27,14 +27,15 @@ export class AttackComponent {
   private destroy() {
     this.owner.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
-  private update(time: number, delta: number): void {
+  private update(_: number, delta: number): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
     this.remainingCooldown -= delta;
-    if (this.remainingCooldown <= 0) {
-      this.onCooldownReady.emit(this.owner);
-    }
+    this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    // if (this.remainingCooldown <= 0) {
+    //   this.onCooldownReady.emit(this.owner);
+    // }
   }
 
   get primaryAttack(): number | null {
@@ -58,9 +59,7 @@ export class AttackComponent {
       // todo   projectile.fireAtGameObject(enemy);
     } else {
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
-      if (!enemyHealthComponent) {
-        throw new Error("Enemy does not have HealthComponent");
-      }
+      if (!enemyHealthComponent) return;
       enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
     }
 

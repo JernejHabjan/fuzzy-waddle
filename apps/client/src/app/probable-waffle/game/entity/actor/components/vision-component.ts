@@ -45,7 +45,7 @@ export class VisionComponent {
       if (isSameTeam) return false; // Same team
 
       const healthComponent = getActorComponent(c, HealthComponent);
-      if (!healthComponent || healthComponent.healthComponentData.health <= 0) return false; // Dead or no health
+      if (!healthComponent || healthComponent.killed) return false; // Dead or no health
 
       const actorVisible = this.isActorVisible(c as GameObject);
       if (!actorVisible) return false; // Not visible

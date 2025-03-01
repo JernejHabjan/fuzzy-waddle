@@ -5,6 +5,7 @@ import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FactionType, ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { MatchmakingLevel, MatchmakingOptions } from "./matchmaking.component";
 import { IMatchmakingService } from "./matchmaking.service.interface";
+import { environment } from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: "root"
@@ -60,14 +61,16 @@ export class MatchmakingService implements IMatchmakingService {
   }
 
   private get levels(): MatchmakingLevel[] {
-    return Object.values(ProbableWaffleLevels).map((level) => ({
-      id: level.id,
-      name: level.name,
-      checked: true,
-      imagePath: level.presentation.imagePath,
-      enabled: true,
-      nrOfPlayers: level.mapInfo.startPositionsOnTile.length
-    }));
+    return Object.values(ProbableWaffleLevels)
+      .filter((level) => (environment.production ? !level.devOnly : true))
+      .map((level) => ({
+        id: level.id,
+        name: level.name,
+        checked: true,
+        imagePath: level.presentation.imagePath,
+        enabled: true,
+        nrOfPlayers: level.mapInfo.startPositionsOnTile.length
+      }));
   }
 
   get nrOfPlayersOptions(): number[] {

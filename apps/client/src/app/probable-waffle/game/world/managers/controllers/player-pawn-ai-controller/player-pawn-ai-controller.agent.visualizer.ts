@@ -1,24 +1,27 @@
 import { State } from "mistreevous";
 import { IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.interface";
-import {
-  getBooleanValue,
-  getNumberValue,
-  getStringValue,
-  showInfoToast
-} from "../behavior-tree-utilities/behavior-tree-global-functions";
+import { getBooleanValue, showInfoToast } from "../behavior-tree-utilities/behavior-tree-global-functions";
 
 /**
  * https://nikkorn.github.io/mistreevous-visualiser/index.html
  */
 class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgent {
-  PlayerOrderExists() {
-    // Check if there's an order assigned to the player
-    return getBooleanValue("Is there a player order?");
+  orderQueue = [];
+  currentOrder = null;
+
+  OrderExistsInQueue() {
+    return !!this.orderQueue.length;
   }
 
-  PlayerOrderIs(orderType: string): boolean {
-    // Check if the current player order matches the specified order type
-    return getStringValue("What is the current player order?") === orderType;
+  AssignNextOrderFromQueue() {
+    // @ts-expect-error - unused parameter.
+    this.currentOrder = this.orderQueue.shift();
+    return State.SUCCEEDED;
+  }
+
+  // @ts-expect-error - unused parameter.
+  PlayerOrderIs(orderType) {
+    return this.currentOrder?.["orderType"] === orderType;
   }
 
   HasAttackComponent() {
@@ -31,20 +34,43 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Is the target alive?");
   }
 
-  HealthAboveThresholdPercentage(threshold: number): boolean {
-    // Check if the agent's health is above a certain threshold
-    return getNumberValue("What is the agent's current health?") > threshold;
-  }
-
   InRange() {
     // Check if the agent is within range of the target
-    return getBooleanValue("Is the agent in range of the target?");
+    return Promise.resolve(State.SUCCEEDED);
   }
 
-  MoveToTarget(): Promise<State> {
+  MoveToTarget() {
     // Command the agent to move to the target
     showInfoToast("Moving to target!");
     return Promise.resolve(State.SUCCEEDED);
+  }
+
+  MoveToTargetOrLocation() {
+    // Command the agent to move to the target or a specific location
+    showInfoToast("Moving to target or location!");
+    return Promise.resolve(State.SUCCEEDED);
+  }
+
+  MoveToLocation() {
+    // Command the agent to move to a specific location
+    showInfoToast("Moving to location!");
+    return Promise.resolve(State.SUCCEEDED);
+  }
+
+  Heal() {
+    // Command the agent to heal the target
+    showInfoToast("Healing the target!");
+    return State.SUCCEEDED;
+  }
+
+  CanHeal() {
+    // Check if the agent can heal
+    return getBooleanValue("Can the agent heal?");
+  }
+
+  HasHealerComponent() {
+    // Check if the agent has the capability to heal
+    return getBooleanValue("Does the agent have a healer component?");
   }
 
   Stop() {
@@ -66,23 +92,23 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
 
   AcquireNewResourceSource() {
     // Find a new resource to gather from
-    showInfoToast("Acquiring new resource source!");
+    showInfoToast("Acquiring new resource source.");
     return State.SUCCEEDED;
   }
 
-  AssignResourceDropOff() {
-    // Assign a drop-off point for resources
-    showInfoToast("Assigning resource drop-off.");
+  AcquireNewResourceDrain() {
+    // Find a new resource to drop off resources at
+    showInfoToast("Acquiring new resource drain.");
     return State.SUCCEEDED;
   }
 
   GatherResource() {
     // Command the agent to gather resources
     showInfoToast("Gathering resources!");
-    return State.SUCCEEDED;
+    return Promise.resolve(State.SUCCEEDED);
   }
 
-  DropOffResources(): Promise<State> {
+  DropOffResources() {
     // Command the agent to return gathered resources to the drop-off point
     showInfoToast("Returning resources to drop-off.");
     return Promise.resolve(State.SUCCEEDED);
@@ -106,20 +132,35 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return State.SUCCEEDED;
   }
 
+  CanAssignBuilder() {
+    // Check if the agent can be assigned as a builder
+    return getBooleanValue("Can the agent be assigned as a builder?");
+  }
+
+  HasBuilderComponent() {
+    // Check if the agent has the capability to build
+    return getBooleanValue("Does the agent have a builder component?");
+  }
+
   Attacked() {
     // Check if the agent has been attacked
     return getBooleanValue("Has the agent been attacked?");
   }
 
-  AssignEnemy(): State {
+  AssignEnemy() {
     // Assign an enemy to the agent
     showInfoToast("Assigning enemy.");
+    // @ts-expect-error - unused parameter.
+    this.orderQueue.push({ orderType: "attack", target: "enemy" });
     return State.SUCCEEDED;
   }
 
-  MoveRandomlyInRange(range: number): Promise<State> {
+  // @ts-expect-error - unused parameter.
+  AssignMoveRandomlyInRange(range) {
     // Command the agent to move randomly within the specified range
     showInfoToast(`Moving randomly within range: ${range}`);
+    // @ts-expect-error - unused parameter.
+    this.orderQueue.push({ orderType: "move", target: "random" });
     return Promise.resolve(State.SUCCEEDED);
   }
 
@@ -131,6 +172,11 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   TargetExists() {
     // Check if the movement target exists
     return getBooleanValue("Does the target exist?");
+  }
+
+  TargetOrLocationExists() {
+    // Check if the target or location exists
+    return getBooleanValue("Does the target or location exist?");
   }
 
   TargetHasResources() {
@@ -159,7 +205,43 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return getBooleanValue("Does the agent have a harvest component?");
   }
 
-  GatherCapacityFull(): boolean {
+  GatherCapacityFull() {
     return getBooleanValue("Is the agent gathering capacity full?");
+  }
+
+  AssignDropOffResourcesOrder() {
+    showInfoToast("Assigning drop-off resources order.");
+    return State.SUCCEEDED;
+  }
+
+  AssignGatherResourcesOrder() {
+    showInfoToast("Assigning gather resources order.");
+    return State.SUCCEEDED;
+  }
+
+  Succeed() {
+    return State.SUCCEEDED;
+  }
+
+  Fail() {
+    return State.FAILED;
+  }
+
+  Log() {
+    return State.SUCCEEDED;
+  }
+
+  ConstructionSiteFinished() {
+    return getBooleanValue("Is the construction site fully built?");
+  }
+  TargetHealthFull() {
+    return getBooleanValue("Is the target health full?");
+  }
+  RepairBuilding() {
+    showInfoToast("Repairing building!");
+    return State.SUCCEEDED;
+  }
+  CanAssignRepairer() {
+    return getBooleanValue("Can the agent be assigned as a repairer?");
   }
 }

@@ -23,7 +23,7 @@ export type GathererDefinition = {
 export class GathererComponent {
   private static readonly debug = false;
   // when cooldown has expired
-  onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
+  // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   private readonly gatheredResources: GatherData[] = [
     {
       capacity: 3,
@@ -80,14 +80,15 @@ export class GathererComponent {
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
-  private update(time: number, delta: number): void {
+  private update(_: number, delta: number): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
     this.remainingCooldown -= delta;
-    if (this.remainingCooldown <= 0) {
-      this.onCooldownReady.emit(this.gameObject);
-    }
+    this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    // if (this.remainingCooldown <= 0) {
+    //   this.onCooldownReady.emit(this.gameObject);
+    // }
   }
 
   private destroy() {
@@ -142,7 +143,8 @@ export class GathererComponent {
 
   findClosestResourceDrain(): GameObject | null {
     if (this.carriedResourceType === null) {
-      throw new Error("Gatherer is not carrying any resources");
+      // Gatherer is not carrying any resources
+      return null;
     }
 
     // find nearby gameObjects
@@ -245,7 +247,8 @@ export class GathererComponent {
   async gatherResources(resourceSource: GameObject): Promise<number> {
     if (this.remainingCooldown > 0) return 0;
     if (!this.carriedResourceType) {
-      throw new Error("Gatherer is not carrying any resources");
+      // Gatherer is not carrying any resources
+      return 0;
     }
 
     // check resource type
@@ -310,7 +313,8 @@ export class GathererComponent {
 
   async returnResources(resourceDrain: GameObject): Promise<number> {
     if (!this.carriedResourceType) {
-      throw new Error("Gatherer is not carrying any resources");
+      // Gatherer is not carrying any resources
+      return 0;
     }
     // return resources
     const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);

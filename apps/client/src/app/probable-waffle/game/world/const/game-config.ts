@@ -7,11 +7,20 @@ import { Boot } from "../../scenes/Boot";
 import MapEmberEnclave from "../../scenes/MapEmberEnclave";
 import HudProbableWaffle from "../../scenes/HudProbableWaffle";
 import GameActionsLayer from "../../scenes/GameActionsLayer";
+import MapSandbox from "../../scenes/MapSandbox";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
   // scene: [GrasslandScene, PlaygroundScene],
-  scene: [Boot, PreloadProbableWaffle, MapRiverCrossing, MapEmberEnclave, HudProbableWaffle, GameActionsLayer],
+  scene: [
+    Boot,
+    PreloadProbableWaffle,
+    MapSandbox,
+    MapRiverCrossing,
+    MapEmberEnclave,
+    HudProbableWaffle,
+    GameActionsLayer
+  ],
   physics: {
     default: "arcade",
     arcade: {

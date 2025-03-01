@@ -27,7 +27,7 @@ export class BeginConstructionTask implements ITask {
       return TaskResultType.Failure;
     }
 
-    builderComponent.beginConstruction(buildingType, targetLocation);
+    // builderComponent.beginConstruction(buildingType, targetLocation);
     return TaskResultType.Success;
   }
 }

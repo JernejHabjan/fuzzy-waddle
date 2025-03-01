@@ -12,15 +12,18 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { BuilderComponent } from "../../actor/components/builder-component";
 
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished
   consumesBuilders: boolean;
   maxAssignedBuilders: number;
+  maxAssignedRepairers: number;
   // Factor to multiply all passed building time with, independent of any currently assigned builders
   progressMadeAutomatically: number;
   // Factor to multiply all passed building time with, dependent on the number of builders assigned
   progressMadePerBuilder: number;
+  repairFactor: number;
   initialHealthPercentage: number;
   refundFactor: number;
   // Whether to start building immediately after spawn, or not
@@ -43,6 +46,7 @@ export class ConstructionSiteComponent {
   } satisfies ConstructionSiteComponentData;
   public constructionStateChanged: Subject<ConstructionStateEnum> = new Subject<ConstructionStateEnum>();
   private assignedBuilders: GameObject[] = [];
+  private assignedRepairers: GameObject[] = [];
   constructionProgressUiComponent: ConstructionProgressUiComponent = new ConstructionProgressUiComponent(
     this.gameObject
   );
@@ -73,15 +77,24 @@ export class ConstructionSiteComponent {
 
   update(time: number, delta: number): void {
     if (this.constructionSiteData.state == ConstructionStateEnum.Finished) {
-      this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+      this.tryRepair(delta);
       return;
     }
+
+    this.tryBuild(delta);
+  }
+
+  private tryBuild(delta: number) {
     if (
       this.constructionSiteData.state === ConstructionStateEnum.NotStarted &&
       this.constructionSiteDefinition.startImmediately
     ) {
       this.startConstruction();
       this.setInitialHealth();
+    }
+
+    if (this.constructionSiteData.state === ConstructionStateEnum.NotStarted && this.assignedBuilders.length > 0) {
+      this.startConstruction();
     }
 
     if (this.constructionSiteData.state !== ConstructionStateEnum.Constructing) return;
@@ -172,14 +185,6 @@ export class ConstructionSiteComponent {
       return;
     }
 
-    // refund resources
-
-    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    const owner = ownerComponent?.getOwner();
-    if (!owner) throw new Error("Owner not found");
-    const player = getPlayer(this.gameObject.scene, owner);
-    if (!player) throw new Error("PlayerController not found");
-
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
 
@@ -196,7 +201,7 @@ export class ConstructionSiteComponent {
     emitResource(this.gameObject.scene, "resource.added", refundCosts);
 
     // destroy building
-    this.gameObject.destroy();
+    // this.gameObject.destroy();
   }
 
   isFinished() {
@@ -204,7 +209,7 @@ export class ConstructionSiteComponent {
   }
 
   canAssignBuilder() {
-    return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders;
+    return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders && !this.isFinished();
   }
 
   assignBuilder(gameObject: GameObject) {
@@ -215,6 +220,47 @@ export class ConstructionSiteComponent {
     const index = this.assignedBuilders.indexOf(gameObject);
     if (index >= 0) {
       this.assignedBuilders.splice(index, 1);
+    }
+  }
+
+  canAssignRepairer() {
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (!healthComponent) return false;
+    return (
+      this.assignedRepairers.length < this.constructionSiteDefinition.maxAssignedRepairers &&
+      healthComponent.healthComponentData.health < healthComponent.healthDefinition.maxHealth
+    );
+  }
+  assignRepairer(gameObject: GameObject) {
+    this.assignedRepairers.push(gameObject);
+  }
+  unAssignRepairer(gameObject: GameObject) {
+    const index = this.assignedRepairers.indexOf(gameObject);
+    if (index >= 0) {
+      this.assignedRepairers.splice(index, 1);
+    }
+  }
+
+  private tryRepair(delta: number) {
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (!healthComponent) return;
+
+    if (this.assignedRepairers.length === 0) return;
+
+    const repairAmount = delta * this.constructionSiteDefinition.repairFactor * this.assignedRepairers.length;
+    healthComponent.healthComponentData.health += repairAmount;
+    healthComponent.healthComponentData.health = Math.min(
+      healthComponent.healthComponentData.health,
+      healthComponent.healthDefinition.maxHealth
+    );
+
+    if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) {
+      this.assignedRepairers.forEach((repairer) => {
+        const builderComponent = getActorComponent(repairer, BuilderComponent);
+        if (builderComponent) {
+          builderComponent.leaveRepairSite();
+        }
+      });
     }
   }
 

@@ -4,7 +4,12 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { getGameObjectBounds } from "../../../../data/game-object-helper";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
-import { emitEventIssueMoveCommandToSelectedActors, emitEventSelection, getPlayer } from "../../../../data/scene-data";
+import {
+  emitEventIssueActorCommandToSelectedActors,
+  emitEventIssueMoveCommandToSelectedActors,
+  emitEventSelection,
+  getPlayer
+} from "../../../../data/scene-data";
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
 import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
@@ -39,16 +44,22 @@ export class GameObjectSelectionHandler {
             if (this.debug) console.log("singleSelect", data.objectIds);
             const isShiftDown = data.shiftKey;
             const isCtrlDown = data.ctrlKey;
+            const isLeftClick = data.button === "left";
 
-            if (isShiftDown) {
-              if (this.debug) console.log("removeFromSelection", data.objectIds);
-              emitEventSelection(this.scene, "selection.removed", data.objectIds!);
-            } else if (isCtrlDown) {
-              if (this.debug) console.log("additionalSelect", data.objectIds);
-              emitEventSelection(this.scene, "selection.added", data.objectIds!);
+            if (isLeftClick) {
+              if (isShiftDown) {
+                if (this.debug) console.log("removeFromSelection", data.objectIds);
+                emitEventSelection(this.scene, "selection.removed", data.objectIds!);
+              } else if (isCtrlDown) {
+                if (this.debug) console.log("additionalSelect", data.objectIds);
+                emitEventSelection(this.scene, "selection.added", data.objectIds!);
+              } else {
+                emitEventSelection(this.scene, "selection.set", data.objectIds!);
+              }
             } else {
-              emitEventSelection(this.scene, "selection.set", data.objectIds!);
+              emitEventIssueActorCommandToSelectedActors(this.scene, data.objectIds!);
             }
+
             break;
           case "selection.terrainSelect":
             if (this.debug) console.log("terrainSelect", data.terrainSelectedTileVec3, data.terrainSelectedWorldVec3);

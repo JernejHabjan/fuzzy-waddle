@@ -89,4 +89,13 @@ export class GameplayLibrary {
     const distance = Math.sqrt(Math.pow(actor1Tile.x - actor2Tile.x, 2) + Math.pow(actor1Tile.y - actor2Tile.y, 2));
     return Math.floor(distance);
   }
+
+  static getTileDistanceBetweenGameObjectAndTile(actor: GameObject, tile: Vector3Simple): number | null {
+    const actorTile = getGameObjectCurrentTile(actor);
+    if (!actorTile) return null;
+
+    // noinspection UnnecessaryLocalVariableJS
+    const distance = Math.sqrt(Math.pow(actorTile.x - tile.x, 2) + Math.pow(actorTile.y - tile.y, 2));
+    return Math.floor(distance);
+  }
 }

@@ -32,15 +32,18 @@ import { ResourceSourceDefinition } from "../entity/economy/resource/resource-so
 import { ActorTranslateDefinition } from "../entity/actor/components/actor-translate-component";
 import { AiType, PawnAiDefinition } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { ConstructionSiteDefinition } from "../entity/building/construction/construction-site-component";
+import { HealingDefinition } from "../entity/combat/components/healing-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
   maxAssignedBuilders: 4,
-  progressMadeAutomatically: 1,
+  maxAssignedRepairers: 2,
+  progressMadeAutomatically: 0,
   progressMadePerBuilder: 1,
   initialHealthPercentage: 0.2,
+  repairFactor: 0.005,
   refundFactor: 0.5,
-  startImmediately: true,
+  startImmediately: false,
   canBeDragPlaced: false
 };
 
@@ -62,8 +65,66 @@ const treeDefinitions: ActorInfoDefinition = {
   }
 };
 
-const tivaraWorkerDefinition: ActorInfoDefinition = {
+const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
   components: {
+    vision: {
+      range: 5
+    },
+    health: {
+      maxHealth: 100
+    },
+    attack: {
+      attacks: [
+        {
+          damage: 1,
+          damageType: DamageType.Physical,
+          cooldown: 1000,
+          range: 1
+        }
+      ]
+    },
+    productionCost: {
+      resources: {
+        [ResourceType.Wood]: 10,
+        [ResourceType.Minerals]: 10
+      },
+      refundFactor: 0.5,
+      productionTime: 5000,
+      costType: PaymentType.PayImmediately
+    },
+    healing: {
+      range: 2,
+      healPerCooldown: 5,
+      cooldown: 1000
+    },
+    gatherer: {
+      resourceSweepRadius: 20,
+      resourceSourceGameObjectClasses: [
+        ResourceType.Ambrosia,
+        ResourceType.Wood,
+        ResourceType.Minerals,
+        ResourceType.Stone
+      ]
+    },
+    selectable: { enabled: true },
+    translatable: {
+      tileStepDuration: 500
+    },
+    containable: { enabled: true },
+    aiControlled: {
+      type: AiType.Character
+    }
+  },
+  systems: {
+    movement: { enabled: true },
+    action: { enabled: true }
+  }
+};
+
+const tivaraWorkerDefinition: ActorInfoDefinition = {
+  ...generalWorkerDefinitions,
+  components: {
+    ...generalWorkerDefinitions.components,
     objectDescriptor: {
       color: 0xc2a080
     },
@@ -75,35 +136,12 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
         }
       ]
     },
-    vision: {
-      range: 5
-    },
-    health: {
-      maxHealth: 100
-    },
-    attack: {
-      attacks: [
-        {
-          damage: 1,
-          damageType: DamageType.Physical,
-          cooldown: 1000,
-          range: 1
-        }
-      ]
-    },
-    productionCost: {
-      resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
-      },
-      refundFactor: 0.5,
-      productionTime: 5000,
-      costType: PaymentType.PayImmediately
-    },
     requirements: {
       actors: [ObjectNames.Sandhold]
     },
     builder: {
+      constructionSiteOffset: 2,
+      enterConstructionSite: false,
       constructableBuildings: [
         ObjectNames.Sandhold,
         ObjectNames.AnkGuard,
@@ -113,35 +151,15 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.WatchTower,
         ObjectNames.Wall,
         ObjectNames.Stairs
-      ],
-      constructionSiteOffset: 2,
-      enterConstructionSite: false
-    },
-    gatherer: {
-      resourceSweepRadius: 20,
-      resourceSourceGameObjectClasses: [
-        ResourceType.Ambrosia,
-        ResourceType.Wood,
-        ResourceType.Minerals,
-        ResourceType.Stone
       ]
-    },
-    selectable: { enabled: true },
-    translatable: {
-      tileStepDuration: 500
-    },
-    containable: { enabled: true },
-    aiControlled: {
-      type: AiType.Character
     }
-  },
-  systems: {
-    movement: { enabled: true }
   }
 };
 
 const skaduweeWorkerDefinition: ActorInfoDefinition = {
+  ...generalWorkerDefinitions,
   components: {
+    ...generalWorkerDefinitions.components,
     objectDescriptor: {
       color: 0xf2f7fa
     },
@@ -153,35 +171,12 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
         }
       ]
     },
-    vision: {
-      range: 5
-    },
-    health: {
-      maxHealth: 100
-    },
-    attack: {
-      attacks: [
-        {
-          damage: 1,
-          damageType: DamageType.Physical,
-          cooldown: 1000,
-          range: 1
-        }
-      ]
-    },
-    productionCost: {
-      resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
-      },
-      refundFactor: 0.5,
-      productionTime: 5000,
-      costType: PaymentType.PayImmediately
-    },
     requirements: {
       actors: [ObjectNames.FrostForge]
     },
     builder: {
+      constructionSiteOffset: 2,
+      enterConstructionSite: false,
       constructableBuildings: [
         ObjectNames.FrostForge,
         ObjectNames.InfantryInn,
@@ -190,33 +185,10 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
         ObjectNames.WatchTower,
         ObjectNames.Wall,
         ObjectNames.Stairs
-      ],
-      constructionSiteOffset: 2,
-      enterConstructionSite: false
-    },
-    gatherer: {
-      resourceSweepRadius: 20,
-      resourceSourceGameObjectClasses: [
-        ResourceType.Ambrosia,
-        ResourceType.Wood,
-        ResourceType.Minerals,
-        ResourceType.Stone
       ]
-    },
-    selectable: { enabled: true },
-    translatable: {
-      tileStepDuration: 500
-    },
-    containable: { enabled: true },
-    aiControlled: {
-      type: AiType.Character
     }
-  },
-  systems: {
-    movement: { enabled: true }
   }
 };
-
 export type ActorInfoDefinition = Partial<{
   components: Partial<{
     objectDescriptor: ObjectDescriptorDefinition;
@@ -234,6 +206,7 @@ export type ActorInfoDefinition = Partial<{
     resourceDrain: ResourceDrainDefinition;
     resourceSource: ResourceSourceDefinition;
     production: ProductionDefinition;
+    healing: HealingDefinition;
     translatable: ActorTranslateDefinition;
     aiControlled: PawnAiDefinition;
     containable: { enabled: boolean };
@@ -242,6 +215,9 @@ export type ActorInfoDefinition = Partial<{
   }>;
   systems: Partial<{
     movement: {
+      enabled: boolean;
+    };
+    action: {
       enabled: boolean;
     };
   }>;
@@ -395,7 +371,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.TivaraSlingshotFemale]: {
@@ -458,7 +435,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.TivaraWorkerFemale]: {
@@ -812,7 +790,10 @@ export const pwActorDefinitions: {
         tileStepDuration: 1000
       }
     },
-    systems: { movement: { enabled: true } }
+    systems: {
+      movement: { enabled: true },
+      action: { enabled: true }
+    }
   },
   [ObjectNames.SkaduweeRangedFemale]: {
     components: {
@@ -874,7 +855,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.SkaduweeMagicianFemale]: {
@@ -936,7 +918,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.SkaduweeWarriorMale]: {
@@ -999,7 +982,8 @@ export const pwActorDefinitions: {
       }
     },
     systems: {
-      movement: { enabled: true }
+      movement: { enabled: true },
+      action: { enabled: true }
     }
   },
   [ObjectNames.SkaduweeWorkerMale]: {

@@ -11,6 +11,7 @@ import { HealthComponent } from "../../../../entity/combat/components/health-com
 import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
 import { DebuggingService } from "../../../../scenes/services/DebuggingService";
 import { Subscription } from "rxjs";
+import { BehaviourTreeOptions } from "mistreevous/dist/BehaviourTreeOptions";
 
 export interface PawnAiDefinition {
   type: AiType;
@@ -18,25 +19,39 @@ export interface PawnAiDefinition {
 }
 
 export class PawnAiController {
-  private readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
+  readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard(); // todo it's actually blackboard that should replicate
   private readonly agent: Agent;
   private readonly behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private nodeDebugger?: NodeDebugger;
   private aiDebuggingSubscription?: Subscription;
+  private defaultStepInterval: number = 100;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly pawnAiDefinition: PawnAiDefinition
   ) {
+    const options = environment.production
+      ? {}
+      : ({
+          //onNodeStateChange: (change: NodeStateChange) => console.log(change)
+        } satisfies BehaviourTreeOptions);
     switch (pawnAiDefinition.type) {
       case AiType.Character:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
-        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent, options);
+        this.blackboard.cancellationHandler = () => {
+          (this.agent as PlayerPawnAiControllerAgent).Stop();
+          this.behaviourTree.reset();
+        };
         break;
       default:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
-        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent);
+        this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent, options);
+        this.blackboard.cancellationHandler = () => {
+          (this.agent as PlayerPawnAiControllerAgent).Stop();
+          this.behaviourTree.reset();
+        };
         break;
     }
 
@@ -59,7 +74,7 @@ export class PawnAiController {
 
   private update(_: number, dt: number) {
     this.elapsedTime += dt;
-    if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? 1000)) {
+    if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval)) {
       try {
         this.behaviourTree.step();
       } catch (e) {
@@ -72,21 +87,16 @@ export class PawnAiController {
 
   private updateDebuggerText() {
     if (!this.nodeDebugger) return;
-    const playerOrderType = this.blackboard.playerOrderType;
+    const playerOrderType = this.blackboard.getCurrentOrder()?.orderType;
     const playerOrderTypeName = playerOrderType !== undefined ? OrderType[playerOrderType] : null;
-    const aiOrderType = this.blackboard.aiOrderType;
-    const aiOrderTypeName = aiOrderType !== undefined ? OrderType[aiOrderType] : null;
-    const targetGameObject = this.blackboard.targetGameObject;
+    const targetGameObject = this.blackboard.getCurrentOrder()?.data.targetGameObject;
     const targetGameObjectName = targetGameObject ? targetGameObject.name : null;
-    const targetLocation = this.blackboard.targetLocation;
+    const targetLocation = this.blackboard.getCurrentOrder()?.data.targetLocation;
     const targetLocationXYZ = targetLocation ? `${targetLocation.x}, ${targetLocation.y}, ${targetLocation.z}` : null;
 
     let text = "";
     if (playerOrderTypeName) {
       text += `Player Order Type: ${playerOrderTypeName}\n`;
-    }
-    if (aiOrderTypeName) {
-      text += `AI Order Type: ${aiOrderTypeName}\n`;
     }
     if (targetGameObjectName) {
       text += `Target Game Object: ${targetGameObjectName}\n`;

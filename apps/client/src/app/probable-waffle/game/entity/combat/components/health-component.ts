@@ -9,6 +9,10 @@ import Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { onObjectReady } from "../../../data/game-object-helper";
+import { environment } from "../../../../../../environments/environment";
+import { SelectableComponent } from "../../actor/components/selectable-component";
+import { OwnerComponent } from "../../actor/components/owner-component";
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -63,6 +67,8 @@ export class HealthComponent {
   private shouldUiElementsBeVisible: boolean = false;
   private constructionProgressSubscription?: Subscription;
   private healthUiHideOnTimeout?: number;
+  private killKey?: Phaser.Input.Keyboard.Key | undefined;
+  private damageKey?: Phaser.Input.Keyboard.Key | undefined;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly healthDefinition: HealthDefinition
@@ -108,6 +114,48 @@ export class HealthComponent {
         this.setVisibilityUiComponent(this.shouldUiElementsBeVisible)
       );
     }
+
+    this.bindKillKey();
+
+    if (!environment.production) {
+      this.bindDamageKey();
+    }
+  }
+
+  private bindKillKey() {
+    this.killKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.DELETE);
+    if (!this.killKey) return;
+    this.killKey.on(Phaser.Input.Keyboard.Events.DOWN, this.killSelected, this);
+  }
+
+  private killSelected() {
+    if (!this.canDamageOrKillOnKeyboardAction()) return;
+    this.killActor();
+  }
+
+  private bindDamageKey() {
+    this.damageKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+    if (!this.damageKey) return;
+    this.damageKey.on(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
+  }
+
+  private damageSelected() {
+    if (!this.canDamageOrKillOnKeyboardAction()) return;
+    this.takeDamage(1, DamageType.Physical);
+  }
+
+  private canDamageOrKillOnKeyboardAction(): boolean {
+    const selectionComponent = getActorComponent(this.gameObject, SelectableComponent);
+    if (!selectionComponent) return false;
+    if (!selectionComponent.getSelected()) return false;
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    if (!ownerComponent) return false;
+    const currentPlayerNumber = getCurrentPlayerNumber(this.gameObject.scene);
+    if (currentPlayerNumber === undefined) return false;
+    if (ownerComponent.getOwner() !== currentPlayerNumber) return false;
+    // noinspection RedundantIfStatementJS
+    if (!this.alive) return false;
+    return true;
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
@@ -157,6 +205,13 @@ export class HealthComponent {
     }
   }
 
+  heal(amount: number) {
+    this.healthComponentData.health = Math.min(
+      this.healthComponentData.health + amount,
+      this.healthDefinition.maxHealth
+    );
+  }
+
   killActor() {
     this.healthComponentData.health = 0;
     this.gameObject.emit(HealthComponent.KilledEvent);
@@ -203,6 +258,16 @@ export class HealthComponent {
     this.playerChangedSubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
+    this.killKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.killSelected, this);
+    this.damageKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
+  }
+
+  get alive(): boolean {
+    return this.healthComponentData.health > 0;
+  }
+
+  get killed(): boolean {
+    return !this.alive;
   }
 
   getData(): HealthComponentData {
@@ -211,5 +276,13 @@ export class HealthComponent {
 
   setData(data: Partial<HealthComponentData>) {
     this.healthComponentData = { ...this.healthComponentData, ...data };
+  }
+
+  get isDamaged() {
+    return this.healthComponentData.health < this.healthDefinition.maxHealth && this.alive;
+  }
+
+  get healthIsFull() {
+    return this.healthComponentData.health === this.healthDefinition.maxHealth;
   }
 }

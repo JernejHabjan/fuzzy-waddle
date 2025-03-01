@@ -1,12 +1,9 @@
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
-import { PawnAiControllerComponentOld } from "../../../world/managers/controllers/pawn-ai-controller-component-old";
-import { GameplayLibrary } from "../../../library/gameplay-library";
 import { getActorComponent } from "../../../data/actor-component";
-import { OwnerComponent } from "./owner-component";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ObjectNames } from "../../../data/object-names";
+import { HealthComponent } from "../../combat/components/health-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
@@ -23,16 +20,34 @@ export class BuilderComponent {
   // building site the builder is currently working on
   assignedConstructionSite?: GameObject;
 
+  // when cooldown has expired
+  // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   onConstructionSiteEntered: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onAssignedToConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionStarted: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  remainingCooldown = 0;
 
   constructor(
     private readonly gameObject: GameObject,
     private readonly builderComponentDefinition: BuilderDefinition
-  ) {}
+  ) {
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+  }
+
+  private update(_: number, delta: number): void {
+    if (this.remainingCooldown <= 0) {
+      return;
+    }
+    this.remainingCooldown -= delta;
+    this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    // if (this.remainingCooldown <= 0) {
+    //   this.onCooldownReady.emit(this.gameObject);
+    // }
+  }
 
   get constructableBuildings(): ObjectNames[] {
     // NOTE, this can be later filtered, so we show only buildings that are available to the player
@@ -66,45 +81,6 @@ export class BuilderComponent {
     }
   }
 
-  beginConstruction(buildingClass: string, targetLocation: Vector3Simple): boolean {
-    const pawnAiController = getActorComponent(this.gameObject, PawnAiControllerComponentOld);
-    if (!pawnAiController) return false;
-    // check requirements
-    const missingRequirement = GameplayLibrary.getMissingRequirementsFor(this.gameObject, buildingClass);
-    if (missingRequirement) {
-      console.log("missing requirement", missingRequirement);
-      // player is missing a required gameObject. stop
-
-      pawnAiController.issueStopOrder();
-      return false;
-    }
-
-    // move builder away to avoid collision
-    // todo
-
-    // spawn building
-    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    const scene = this.gameObject.scene;
-    // todo const building = gameMode.spawnGameObjectForPlayer(
-    // todo   scene,
-    // todo   buildingClass,
-    // todo   targetLocation,
-    // todo   ownerComponent.playerController
-    // todo );
-    const building = null;
-
-    if (!building) {
-      console.log("building could not be spawned");
-      return false;
-    }
-
-    this.onConstructionStarted.next([this.gameObject, building]);
-
-    // issue building order
-    pawnAiController.issueContinueConstructionOrder(building);
-    return true;
-  }
-
   leaveConstructionSite() {
     if (!this.assignedConstructionSite) return;
 
@@ -130,9 +106,63 @@ export class BuilderComponent {
     }
   }
 
-  getConstructionRange(buildingType: string | undefined): number {
-    // return collision radius of building
-    // todo return URTSCollisionLibrary::GetCollisionSize(ConstructibleBuildingClasses[Index]) / 2;
-    return 1; // todo
+  getConstructionRange(): number {
+    return 1;
+  }
+
+  getRepairRange() {
+    return 1;
+  }
+
+  assignToRepairSite(target: Phaser.GameObjects.GameObject) {
+    if (this.assignedConstructionSite === target) return;
+
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return;
+
+    if (!constructionSiteComponent.canAssignRepairer()) {
+      // todo play sound and show notification on screen - same as "the production queue is full"
+      return;
+    }
+    this.assignedConstructionSite = target;
+    constructionSiteComponent.assignRepairer(this.gameObject);
+    this.onAssignedToConstructionSite.next([this.gameObject, target]);
+
+    if (this.builderComponentDefinition.enterConstructionSite) {
+      const containerComponent = getActorComponent(target, ContainerComponent);
+      if (containerComponent) {
+        containerComponent.loadGameObject(this.gameObject);
+        this.onConstructionSiteEntered.next([this.gameObject, target]);
+      }
+    }
+  }
+
+  leaveRepairSite() {
+    if (!this.assignedConstructionSite) return;
+
+    const constructionSite = this.assignedConstructionSite;
+    const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return;
+
+    // remove repairer
+    this.assignedConstructionSite = undefined;
+    constructionSiteComponent.unAssignRepairer(this.gameObject);
+
+    // notify listeners
+    this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
+
+    console.log("builder left repair site");
+    if (this.builderComponentDefinition.enterConstructionSite) {
+      // leave repair site
+      const containerComponent = getActorComponent(constructionSite, ContainerComponent);
+      if (containerComponent) {
+        containerComponent.unloadGameObject(this.gameObject);
+        this.onConstructionSiteLeft.next([this.gameObject, constructionSite]);
+      }
+    }
+  }
+
+  private destroy() {
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 }
