@@ -176,7 +176,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
           movementSystem.cancelMovement();
         }
       }
+      this.blackboard.resetCurrentOrder(false);
     }
+
+    this.blackboard.popCurrentOrderFromQueue();
     return State.SUCCEEDED;
   };
 

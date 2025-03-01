@@ -53,9 +53,8 @@ export class PawnAiBlackboard extends Blackboard {
   }
 
   overrideOrderQueueAndActiveOrder(orderData: OrderData): void {
-    this.orderQueue = [orderData];
     this.resetCurrentOrder();
-    this.status = "idle";
+    this.orderQueue = [orderData];
   }
 
   resetCurrentOrder(callCancellationHandler: boolean = true): void {
@@ -85,7 +84,7 @@ export class PawnAiBlackboard extends Blackboard {
     return [...this.failedOrders];
   }
 
-  popCurrentOrder() {
+  popCurrentOrderFromQueue() {
     this.pullNextPlayerOrder();
   }
 }
