@@ -30,7 +30,7 @@ root {
             }
         }
         branch [ExecuteCurrentOrder]
-        /* branch [AutoAssignNewOrder] */
+        branch [AutoAssignNewOrder]
     }
 }
 
@@ -49,6 +49,8 @@ root [ExecuteCurrentOrder] {
 
 root [AutoAssignNewOrder] {
     selector {
+
+        /* Retaliation */
         sequence {
             condition [Attacked]
             condition [HasAttackComponent]
@@ -57,6 +59,8 @@ root [AutoAssignNewOrder] {
             }
             action [AssignEnemy, "retaliation"]
         }
+
+        /* Attacking visible enemies */
         sequence {
             condition [AnyEnemyVisible]
             condition [HasAttackComponent]
@@ -65,8 +69,13 @@ root [AutoAssignNewOrder] {
             }
             action [AssignEnemy, "vision"]
         }
+
+        /* Moving randomly */
         sequence {
-          action [AssignMoveRandomlyInRange, 5]
+            action [AssignMoveRandomlyInRange, 1]
+            sequence {
+                wait [2000, 5000]
+            }
         }
     }
 }
