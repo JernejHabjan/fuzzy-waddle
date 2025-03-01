@@ -122,6 +122,16 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return State.SUCCEEDED;
   }
 
+  CanAssignBuilder() {
+    // Check if the agent can be assigned as a builder
+    return getBooleanValue("Can the agent be assigned as a builder?");
+  }
+
+  HasBuilderComponent() {
+    // Check if the agent has the capability to build
+    return getBooleanValue("Does the agent have a builder component?");
+  }
+
   Attacked() {
     // Check if the agent has been attacked
     return getBooleanValue("Has the agent been attacked?");

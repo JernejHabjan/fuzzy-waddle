@@ -12,7 +12,7 @@ export enum OrderType {
 
 export const OrderLabelToTypeMap: Record<string, OrderType> = {
   attack: OrderType.Attack,
-  beginConstruction: OrderType.Build,
+  build: OrderType.Build,
   gather: OrderType.Gather,
   move: OrderType.Move,
   returnResources: OrderType.ReturnResources,

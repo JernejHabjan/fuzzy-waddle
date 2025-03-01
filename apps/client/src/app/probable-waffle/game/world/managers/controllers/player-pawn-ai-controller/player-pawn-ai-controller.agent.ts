@@ -26,6 +26,7 @@ import { ResourceDrainComponent } from "../../../../entity/economy/resource/reso
 import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
 import { OrderData } from "../../../../entity/character/ai/OrderData";
 import { HealingComponent } from "../../../../entity/combat/components/healing-component";
+import { ConstructionSiteComponent } from "../../../../entity/building/construction/construction-site-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -185,11 +186,24 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   Stop = () => {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
-      if (currentOrder.orderType === OrderType.Move) {
-        const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-        if (movementSystem) {
-          movementSystem.cancelMovement();
-        }
+      // exit container
+      const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
+      if (containableComponent) {
+        containableComponent.leaveContainer();
+      }
+      switch (currentOrder.orderType) {
+        case OrderType.Move:
+          const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+          if (movementSystem) {
+            movementSystem.cancelMovement();
+          }
+          break;
+        case OrderType.Build:
+          const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+          if (builderComponent) {
+            builderComponent.leaveConstructionSite();
+          }
+          break;
       }
       this.blackboard.resetCurrentOrder(false);
     }
@@ -304,6 +318,20 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!target) return State.FAILED;
     builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
+  }
+
+  CanAssignBuilder(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return false;
+    return constructionSiteComponent.canAssignBuilder();
+  }
+
+  HasBuilderComponent(): boolean {
+    return !!getActorComponent(this.gameObject, BuilderComponent);
   }
 
   Attacked() {

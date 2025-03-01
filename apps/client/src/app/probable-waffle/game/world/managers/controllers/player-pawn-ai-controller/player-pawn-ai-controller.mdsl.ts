@@ -41,14 +41,11 @@ root [ExecuteCurrentOrder] {
         branch [Stop]
         branch [Gather]
         branch [ReturnResources]
+        branch [Build]
         /*
         sequence {
-            condition [PlayerOrderIs, "build"]
-            branch [ConstructBuilding]
-        }
-        sequence {
             condition [PlayerOrderIs, "repair"]
-            branch [ConstructBuilding]
+            branch [Repair]
         }
         sequence {
             condition [PlayerOrderIs, "heal"]
@@ -319,7 +316,70 @@ root [ReturnResources] {
     }
 }
 
-root [ConstructBuilding] {
+root [Build] {
+    sequence { /* ALL MUST SUCCEED */
+        condition [PlayerOrderIs, "build"]
+        /* ensure that action succeeds - we don't want to seek another action as current action is build */
+        succeed {
+            selector { /* executes until first succeeds */
+                /* if no target, stop */
+                sequence {
+                    flip {
+                        condition [TargetExists]
+                    }
+                    action [Stop]
+                }
+
+                /* if no builderComponent, stop */
+                sequence {
+                    flip {
+                        condition [HasBuilderComponent]
+                    }
+                    action [Stop]
+                }
+
+                /* if builder cannot be assigned, stop */
+                sequence {
+                    flip {
+                        condition [CanAssignBuilder]
+                    }
+                    action [Stop]
+                }
+
+                /* exit current container */
+                fail { /* marks itself as fail, so it doesn't exist selector branch */
+                    action [LeaveConstructionSiteOrCurrentContainer]
+                }
+
+                /* if target not in range, move to target */
+                sequence {
+                    flip {
+                      action [InRange, "construct"]
+                    }
+                    action [MoveToTarget, "construct"]
+                }
+
+                sequence {
+                    /* if cooldown not ready, wait */
+                    flip {
+                        condition [CooldownReady, "construct"]
+                    }
+                    sequence {
+                        /* cooldown may not be ready - wait until it is ms */
+                        /* action [Log, "Waiting in construct"] */
+                        wait [100] until [CooldownReady, "construct"]
+                        /* action [Log, "Done waiting in construct"] */
+                    }
+                }
+
+                /* cooldown ready, construct */
+                action [ConstructBuilding]
+            }
+        }
+    }
+}
+
+root [Repair] {
     sequence {
         action [LeaveConstructionSiteOrCurrentContainer]
         parallel {
@@ -330,13 +390,13 @@ root [ConstructBuilding] {
                 action [Stop]
                 action [LeaveConstructionSiteOrCurrentContainer]
                 sequence {
-                    action [InRange, "construct"]
-                    action [MoveToTarget, "construct"]
+                    action [InRange, "repair"]
+                    action [MoveToTarget, "repair"]
                 }
             }
             sequence {
-                condition [CooldownReady, "construct"]
-                action [ConstructBuilding]
+                condition [CooldownReady, "repair"]
+                action [Repair]
             }
         }
     }

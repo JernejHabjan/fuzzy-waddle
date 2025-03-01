@@ -84,6 +84,10 @@ export class ConstructionSiteComponent {
       this.setInitialHealth();
     }
 
+    if (this.constructionSiteData.state === ConstructionStateEnum.NotStarted && this.assignedBuilders.length > 0) {
+      this.startConstruction();
+    }
+
     if (this.constructionSiteData.state !== ConstructionStateEnum.Constructing) return;
 
     const speedBoost = 1.0;

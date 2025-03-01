@@ -41,6 +41,8 @@ export interface IPlayerPawnControllerAgent {
 
   // Construction and Building
   ConstructBuilding(): State;
+  CanAssignBuilder(): boolean;
+  HasBuilderComponent(): boolean;
   LeaveConstructionSiteOrCurrentContainer(): State;
 
   // Movement
