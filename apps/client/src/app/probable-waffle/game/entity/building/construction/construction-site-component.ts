@@ -185,14 +185,6 @@ export class ConstructionSiteComponent {
       return;
     }
 
-    // refund resources
-
-    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    const owner = ownerComponent?.getOwner();
-    if (!owner) throw new Error("Owner not found");
-    const player = getPlayer(this.gameObject.scene, owner);
-    if (!player) throw new Error("PlayerController not found");
-
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
 
@@ -209,7 +201,7 @@ export class ConstructionSiteComponent {
     emitResource(this.gameObject.scene, "resource.added", refundCosts);
 
     // destroy building
-    this.gameObject.destroy();
+    // this.gameObject.destroy();
   }
 
   isFinished() {

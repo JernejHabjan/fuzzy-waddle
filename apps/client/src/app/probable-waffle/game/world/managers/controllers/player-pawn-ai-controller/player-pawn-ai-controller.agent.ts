@@ -181,6 +181,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       console.error("Error in MoveToLocation", e);
+      this.Stop();
       return State.FAILED;
     }
   }

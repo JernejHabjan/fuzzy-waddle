@@ -59,9 +59,7 @@ export class AttackComponent {
       // todo   projectile.fireAtGameObject(enemy);
     } else {
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
-      if (!enemyHealthComponent) {
-        throw new Error("Enemy does not have HealthComponent");
-      }
+      if (!enemyHealthComponent) return;
       enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
     }
 
