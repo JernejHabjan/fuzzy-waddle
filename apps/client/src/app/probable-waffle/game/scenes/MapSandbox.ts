@@ -7,6 +7,7 @@ import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import EditorOwner from "../editor-components/EditorOwner";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
+import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -46,6 +47,10 @@ export default class MapSandbox extends GameProbableWaffleScene {
     const workMill_1 = new WorkMill(this, -352, 576);
     this.add.existing(workMill_1);
 
+    // tivaraSlingshotFemale
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, 224, 560);
+    this.add.existing(tivaraSlingshotFemale);
+
     // tivaraWorkerMale (components)
     const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
     tivaraWorkerMaleEditorOwner.owner_id = "1";
@@ -57,6 +62,10 @@ export default class MapSandbox extends GameProbableWaffleScene {
     // workMill_1 (components)
     const workMill_1EditorOwner = new EditorOwner(workMill_1);
     workMill_1EditorOwner.owner_id = "1";
+
+    // tivaraSlingshotFemale (components)
+    const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);
+    tivaraSlingshotFemaleEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

@@ -356,10 +356,23 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
-    const healingComponent = getActorComponent(target, HealingComponent);
+    const healingComponent = getActorComponent(this.gameObject, HealingComponent);
     if (!healingComponent) return State.FAILED;
     healingComponent.heal(target);
     return State.SUCCEEDED;
+  }
+
+  CanHeal(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const healthComponent = getActorComponent(target, HealthComponent);
+    if (!healthComponent) return false;
+    return !healthComponent.healthIsFull;
+  }
+  HasHealerComponent(): boolean {
+    return !!getActorComponent(this.gameObject, HealingComponent);
   }
 
   AssignEnemy(source: string): State {

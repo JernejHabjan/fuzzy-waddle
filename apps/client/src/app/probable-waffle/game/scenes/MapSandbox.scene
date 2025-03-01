@@ -83,6 +83,21 @@
             "EditorOwner.owner_id": "1",
             "x": -352,
             "y": 576
+        },
+        {
+            "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
+            "id": "d5d32a63-a668-4046-952a-67a74abbafbe",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraSlingshotFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 224,
+            "y": 560
         }
     ],
     "plainObjects": [

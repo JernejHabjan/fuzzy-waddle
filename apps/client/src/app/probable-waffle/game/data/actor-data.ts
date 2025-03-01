@@ -28,6 +28,7 @@ import { DepthHelper } from "../world/map/depth.helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
 import { ActionSystem } from "../entity/systems/action.system";
+import { HealingComponent } from "../entity/combat/components/healing-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -139,6 +140,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
+    ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
     ...(componentDefinitions?.translatable

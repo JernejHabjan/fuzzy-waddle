@@ -25,7 +25,11 @@ export interface IPlayerPawnControllerAgent {
   AnyEnemyVisible(): boolean;
   CooldownReady(type: PlayerPawnCooldownType): boolean;
   Attacked(): boolean;
+
+  // Healing
   Heal(): State;
+  CanHeal(): boolean;
+  HasHealerComponent(): boolean;
 
   // Resource Gathering
   AcquireNewResourceSource(): State;

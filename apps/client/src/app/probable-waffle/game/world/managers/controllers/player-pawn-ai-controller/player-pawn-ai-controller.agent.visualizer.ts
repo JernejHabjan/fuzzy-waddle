@@ -63,6 +63,16 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
     return State.SUCCEEDED;
   }
 
+  CanHeal() {
+    // Check if the agent can heal
+    return getBooleanValue("Can the agent heal?");
+  }
+
+  HasHealerComponent() {
+    // Check if the agent has the capability to heal
+    return getBooleanValue("Does the agent have a healer component?");
+  }
+
   Stop() {
     // Command the agent to stop its current action
     showInfoToast("Agent stopped.");

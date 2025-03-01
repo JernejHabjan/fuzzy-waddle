@@ -2,7 +2,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "./health-component";
 
 export type HealingDefinition = {
-  healPerSecond: number;
+  healPerCooldown: number;
+  cooldown: number;
   range: number;
 };
 
@@ -32,7 +33,8 @@ export class HealingComponent {
   heal(target: Phaser.GameObjects.GameObject) {
     const targetHealthComponent = getActorComponent(target, HealthComponent);
     if (!targetHealthComponent) return;
-    targetHealthComponent.heal(this.healingDefinition.healPerSecond);
+    targetHealthComponent.heal(this.healingDefinition.healPerCooldown);
+    this.remainingCooldown = this.healingDefinition.cooldown;
   }
 
   getHealRange() {

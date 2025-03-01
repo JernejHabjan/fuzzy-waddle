@@ -480,7 +480,7 @@ root [Heal] {
                 /* if healer cannot be assigned, stop */
                 sequence {
                     flip {
-                        condition [CanAssignHealer]
+                        condition [CanHeal]
                     }
                     action [Stop]
                 }
@@ -512,7 +512,7 @@ root [Heal] {
                 }
 
                 /* cooldown ready, heal */
-                action [HealBuilding]
+                action [Heal]
             }
         }
     }
