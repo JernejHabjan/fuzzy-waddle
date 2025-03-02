@@ -14,10 +14,6 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     return getBooleanValue("Is the base under heavy attack?");
   }
 
-  IsEnemyVisible() {
-    return getBooleanValue("Are any enemies visible?");
-  }
-
   HasEnoughMilitaryPower() {
     return getBooleanValue("Does the AI have enough military units?");
   }
@@ -95,6 +91,10 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
+  NeedMoreWorkers() {
+    return getBooleanValue("Does the AI need more workers?");
+  }
+
   AssignWorkersToResource() {
     showInfoToast("Assigning workers to critical resources.");
     return State.SUCCEEDED;
@@ -124,6 +124,19 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
 
   NeedMoreDefense() {
     return getBooleanValue("Does the AI need more defense?");
+  }
+
+  AssignHousingBuilding() {
+    showInfoToast("Assigning housing building.");
+    return State.SUCCEEDED;
+  }
+  AssignProductionBuilding() {
+    showInfoToast("Assigning production building.");
+    return State.SUCCEEDED;
+  }
+  AssignDefenseBuilding() {
+    showInfoToast("Assigning defense building.");
+    return State.SUCCEEDED;
   }
 
   NeedToScout() {
@@ -183,7 +196,7 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
-  IsPlayerWeak() {
+  IsEnemyPlayerWeak() {
     return getBooleanValue("Is the player weak?");
   }
 

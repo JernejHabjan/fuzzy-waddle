@@ -105,7 +105,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(christmasTree);
 
     // spawn_1
-    const spawn_1 = new Spawn(this, 1280, 816);
+    const spawn_1 = new Spawn(this, 1248, 800);
     this.add.existing(spawn_1);
 
     // christmasTree_1
@@ -137,11 +137,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(wall_7);
 
     // owlery
-    const owlery = new Owlery(this, 1024, 912);
+    const owlery = new Owlery(this, 992, 880);
     this.add.existing(owlery);
 
     // infantryInn
-    const infantryInn = new InfantryInn(this, 1152, 960);
+    const infantryInn = new InfantryInn(this, 1088, 928);
     this.add.existing(infantryInn);
 
     // ankGuard

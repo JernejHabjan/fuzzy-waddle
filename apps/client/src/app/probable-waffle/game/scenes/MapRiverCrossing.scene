@@ -77,8 +77,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1280,
-            "y": 816
+            "x": 1248,
+            "y": 800
         },
         {
             "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
@@ -169,8 +169,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1024,
-            "y": 912
+            "x": 992,
+            "y": 880
         },
         {
             "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
@@ -185,8 +185,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1152,
-            "y": 960
+            "x": 1088,
+            "y": 928
         },
         {
             "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",

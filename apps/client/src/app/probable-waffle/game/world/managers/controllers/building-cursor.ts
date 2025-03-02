@@ -1,5 +1,5 @@
 import { GameObjects, Input } from "phaser";
-import { ActorDefinition, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { ActorDefinition, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
 import { ObjectNames } from "../../../data/object-names";
 import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-object-helper";
@@ -401,6 +401,24 @@ export class BuildingCursor {
 
     upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
     // todo Save to game state
+  }
+
+  static spawnBuildingForPlayer(
+    scene: Phaser.Scene,
+    name: ObjectNames,
+    location?: Vector3Simple,
+    playerNumber?: number
+  ) {
+    const actorDefinition = {
+      ...(playerNumber && { owner: playerNumber }),
+      ...(location && { x: location.x, y: location.y, z: location.z })
+    } satisfies ActorDefinition;
+
+    const actor = ActorManager.createActorConstructing(scene, name, actorDefinition);
+    const gameObject = scene.add.existing(actor);
+    DepthHelper.setActorDepth(gameObject);
+
+    return gameObject;
   }
 
   private subscribeToCancelAction() {

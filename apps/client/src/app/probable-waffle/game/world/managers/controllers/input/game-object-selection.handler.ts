@@ -1,14 +1,14 @@
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { filter, Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
-import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { getGameObjectBounds } from "../../../../data/game-object-helper";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
   emitEventSelection,
-  getPlayer
+  getPlayer,
+  getSelectableSceneChildren
 } from "../../../../data/scene-data";
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
 import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
@@ -104,9 +104,7 @@ export class GameObjectSelectionHandler {
   }
 
   private getSelectableChildren() {
-    return this.scene.children.list.filter(
-      (actor) => !!getActorComponent(actor, SelectableComponent) && !!getActorComponent(actor, IdComponent)
-    );
+    return getSelectableSceneChildren(this.scene);
   }
 
   private getSelectableComponentsUnderSelectedArea(selectedArea: {
