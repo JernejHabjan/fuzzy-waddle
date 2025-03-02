@@ -41,6 +41,9 @@ export interface IPlayerControllerAgent {
   NeedMoreHousing(): boolean;
   NeedMoreProduction(): boolean;
   NeedMoreDefense(): boolean;
+  AssignHousingBuilding(): State;
+  AssignProductionBuilding(): State;
+  AssignDefenseBuilding(): State;
 
   // Upgrades and improvements
   StartUpgrade(): State;
@@ -58,5 +61,5 @@ export interface IPlayerControllerAgent {
   ShiftToDefensiveStrategy(): State;
   ShiftToEconomicStrategy(): State;
   DecideNextMoveBasedOnAnalysis(): State;
-  IsPlayerWeak(): boolean;
+  IsEnemyPlayerWeak(): boolean;
 }

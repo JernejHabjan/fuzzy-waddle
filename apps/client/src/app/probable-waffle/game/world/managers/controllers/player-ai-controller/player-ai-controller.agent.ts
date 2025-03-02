@@ -208,6 +208,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     return this.blackboard.defensiveStructures.length < this.blackboard.desiredDefensiveStructures;
   }
 
+  AssignHousingBuilding(): State {
+    return State.SUCCEEDED;
+  }
+  AssignProductionBuilding(): State {
+    return State.SUCCEEDED;
+  }
+  AssignDefenseBuilding(): State {
+    return State.SUCCEEDED;
+  }
+
   NeedToScout() {
     return !this.blackboard.mapFullyExplored && this.blackboard.units.some((unit) => unit.isScout());
   }
@@ -290,7 +300,18 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     return State.SUCCEEDED;
   }
 
-  IsPlayerWeak() {
+  // TODO we can use something like this to determine if the player is weak (BUT IT NEEDS TO BE EVENT-DRIVEN AND STORED IN THE BLACKBOARD OR PLAYER DIRECTLY)
+  // const { currentPlayerActors, enemyActors } = ScenePlayerHelpers.getActorsByPlayer(this.scene, this.player.playerNumber!);
+  // let enemyPlayersUnitsCount = 0;
+  // // find enemy player with least units
+  // enemyActors.forEach((actors) => {
+  //   if (actors.length < enemyPlayersUnitsCount || enemyPlayersUnitsCount === 0) {
+  //     enemyPlayersUnitsCount = actors.length;
+  //   }
+  // });
+  // const currentPlayerUnitsCount = currentPlayerActors.length;
+  // return enemyPlayersUnitsCount < currentPlayerUnitsCount;
+  IsEnemyPlayerWeak() {
     return this.blackboard.militaryStrength < this.blackboard.enemyMilitaryStrength;
   }
 

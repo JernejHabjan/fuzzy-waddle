@@ -20,6 +20,7 @@ import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 import { AttackComponent } from "../entity/combat/components/attack-component";
 import { ProductionComponent } from "../entity/building/production/production-component";
 import { GathererComponent } from "../entity/actor/components/gatherer-component";
+import { SelectableComponent } from "../entity/actor/components/selectable-component";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
@@ -27,6 +28,11 @@ export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePl
     playerNumber = scene.baseGameData.user.playerNumber!;
   }
   return scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
+}
+
+export function getAllPlayers(scene: Scene): ProbableWafflePlayer[] {
+  if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
+  return scene.baseGameData.gameInstance.players;
 }
 
 /**
@@ -198,6 +204,12 @@ export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameO
       (child) =>
         getActorComponent(child, IdComponent)?.id && selectionGuids.includes(getActorComponent(child, IdComponent)!.id)
     );
+}
+
+export function getSelectableSceneChildren(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
+  return scene.children.list.filter(
+    (actor) => !!getActorComponent(actor, SelectableComponent) && !!getActorComponent(actor, IdComponent)
+  );
 }
 
 /**

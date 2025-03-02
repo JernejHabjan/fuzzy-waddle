@@ -126,6 +126,19 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     return getBooleanValue("Does the AI need more defense?");
   }
 
+  AssignHousingBuilding() {
+    showInfoToast("Assigning housing building.");
+    return State.SUCCEEDED;
+  }
+  AssignProductionBuilding() {
+    showInfoToast("Assigning production building.");
+    return State.SUCCEEDED;
+  }
+  AssignDefenseBuilding() {
+    showInfoToast("Assigning defense building.");
+    return State.SUCCEEDED;
+  }
+
   NeedToScout() {
     return getBooleanValue("Does the AI need to scout the map?");
   }
@@ -183,7 +196,7 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
-  IsPlayerWeak() {
+  IsEnemyPlayerWeak() {
     return getBooleanValue("Is the player weak?");
   }
 
