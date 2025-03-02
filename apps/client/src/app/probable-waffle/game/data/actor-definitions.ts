@@ -773,6 +773,9 @@ export const pwActorDefinitions: {
           }
         ]
       },
+      selectable: {
+        enabled: true
+      },
       productionCost: {
         resources: {
           [ResourceType.Wood]: 10,

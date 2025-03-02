@@ -16,7 +16,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 33, y ?? 127.37785319200148);
 
-    this.setInteractive(new Phaser.Geom.Circle(1, 4, 11), Phaser.Geom.Circle.Contains);
+    this.setInteractive(new Phaser.Geom.Circle(0, -109, 15.412651300123422), Phaser.Geom.Circle.Contains);
 
     // owl
     const owl = scene.add.sprite(0, -108, "units", "skaduwee/owl/idle/down_1.png");
