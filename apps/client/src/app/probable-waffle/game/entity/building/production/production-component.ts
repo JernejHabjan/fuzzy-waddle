@@ -14,6 +14,7 @@ import { SelectableComponent } from "../../actor/components/selectable-component
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ConstructionSiteComponent } from "../construction/construction-site-component";
 
 export type ProductionQueueItem = {
   actorName: ObjectNames;
@@ -76,7 +77,12 @@ export class ProductionComponent {
     return this.productionQueues.reduce((acc, queue) => acc.concat(queue.queuedItems), [] as ProductionQueueItem[]);
   }
 
+  get isFinished() {
+    return getActorComponent(this.gameObject, ConstructionSiteComponent)?.isFinished ?? true;
+  }
+
   update(time: number, delta: number): void {
+    if (!this.isFinished) return;
     // process all queues
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
@@ -160,6 +166,7 @@ export class ProductionComponent {
   }
 
   startProduction(queueItem: ProductionQueueItem): AssignProductionErrorCode | null {
+    if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
     const productionState = this.canAssignProduction(queueItem);
     if (productionState) {
       return productionState;
@@ -296,6 +303,7 @@ export class ProductionComponent {
   }
 
   private canAssignProduction(item: ProductionQueueItem): AssignProductionErrorCode | null {
+    if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
     // check if gameObject can be produced
     if (!this.productionDefinition.availableProduceActors.includes(item.actorName))
       return AssignProductionErrorCode.InvalidProduct;
@@ -331,6 +339,7 @@ export class ProductionComponent {
   }
 
   cancelProduction(item: ProductionQueueItem) {
+    if (!this.isFinished) return;
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
       const index = queue.queuedItems.findIndex((i) => i.actorName === item.actorName);
@@ -405,5 +414,6 @@ export enum AssignProductionErrorCode {
   NotEnoughResources = 1,
   QueueFull = 2,
   InvalidProduct = 3,
-  NoOwner = 4
+  NoOwner = 4,
+  NotFinished
 }

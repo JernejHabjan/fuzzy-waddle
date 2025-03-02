@@ -106,7 +106,7 @@ export class HealthComponent {
 
   private init() {
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
-    if (constructionSiteComponent && !constructionSiteComponent.isFinished()) {
+    if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
       const shouldBeVisible = this.shouldUiElementsBeVisible;
       this.setVisibilityUiComponent(false);
       this.shouldUiElementsBeVisible = shouldBeVisible;
@@ -245,7 +245,7 @@ export class HealthComponent {
     if (!this.gameObject.active) return;
     this.shouldUiElementsBeVisible = visibility;
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
-    if (constructionSiteComponent && !constructionSiteComponent.isFinished()) visibility = false;
+    if (constructionSiteComponent && !constructionSiteComponent.isFinished) visibility = false;
     const previousVisibility = this.uiComponentsVisible;
     if (visibility === previousVisibility) return;
     this.healthUiComponent.setVisibility(visibility);

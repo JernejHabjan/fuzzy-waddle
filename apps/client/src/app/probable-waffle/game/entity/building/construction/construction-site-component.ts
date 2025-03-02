@@ -181,9 +181,7 @@ export class ConstructionSiteComponent {
   }
 
   cancelConstruction() {
-    if (this.isFinished()) {
-      return;
-    }
+    if (this.isFinished) return;
 
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
@@ -204,12 +202,12 @@ export class ConstructionSiteComponent {
     // this.gameObject.destroy();
   }
 
-  isFinished() {
+  get isFinished() {
     return this.constructionSiteData.state === ConstructionStateEnum.Finished;
   }
 
   canAssignBuilder() {
-    return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders && !this.isFinished();
+    return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders && !this.isFinished;
   }
 
   assignBuilder(gameObject: GameObject) {

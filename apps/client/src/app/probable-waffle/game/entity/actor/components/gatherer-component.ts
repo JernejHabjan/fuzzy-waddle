@@ -187,7 +187,7 @@ export class GathererComponent {
   private static isReadyToUse(resourceDrain: GameObject): boolean {
     const constructionSiteComponent = getActorComponent(resourceDrain, ConstructionSiteComponent);
     if (!constructionSiteComponent) return true;
-    return constructionSiteComponent.isFinished();
+    return constructionSiteComponent.isFinished;
   }
 
   // Gets the resource source the gameObject has recently been gathering from, if available, or a similar one within its sweep radius

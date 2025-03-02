@@ -534,7 +534,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!target) return false;
     const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
     if (!constructionSiteComponent) return false;
-    return constructionSiteComponent.isFinished();
+    return constructionSiteComponent.isFinished;
   }
   TargetHealthFull(): boolean {
     const currentOrder = this.blackboard.getCurrentOrder();
