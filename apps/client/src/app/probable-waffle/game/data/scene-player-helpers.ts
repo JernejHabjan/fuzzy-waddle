@@ -9,14 +9,14 @@ export class ScenePlayerHelpers {
   ): {
     actorsByPlayer: Map<number, Phaser.GameObjects.GameObject[]>;
     currentPlayerActors: Phaser.GameObjects.GameObject[];
-    enemyActors: Map<number, Phaser.GameObjects.GameObject[]>;
+    actorsByEnemy: Map<number, Phaser.GameObjects.GameObject[]>;
   } {
     const selectableActors = getSelectableSceneChildren(scene);
     const allPlayers = getAllPlayers(scene);
     // iterate over selectable actors and group by player
     const actorsByPlayer = new Map<number, Phaser.GameObjects.GameObject[]>();
     const currentPlayerActors: Phaser.GameObjects.GameObject[] = [];
-    const enemyActors = new Map<number, Phaser.GameObjects.GameObject[]>();
+    const actorsByEnemy = new Map<number, Phaser.GameObjects.GameObject[]>();
     selectableActors.forEach((actor) => {
       const ownerComponent = getActorComponent(actor, OwnerComponent);
       if (!ownerComponent) return;
@@ -28,10 +28,10 @@ export class ScenePlayerHelpers {
       if (playerNr === currentPlayer) {
         currentPlayerActors.push(actor);
       } else {
-        if (!enemyActors.has(playerNr)) enemyActors.set(playerNr, []);
-        enemyActors.get(playerNr)?.push(actor);
+        if (!actorsByEnemy.has(playerNr)) actorsByEnemy.set(playerNr, []);
+        actorsByEnemy.get(playerNr)?.push(actor);
       }
     });
-    return { actorsByPlayer, currentPlayerActors, enemyActors };
+    return { actorsByPlayer, currentPlayerActors, actorsByEnemy };
   }
 }

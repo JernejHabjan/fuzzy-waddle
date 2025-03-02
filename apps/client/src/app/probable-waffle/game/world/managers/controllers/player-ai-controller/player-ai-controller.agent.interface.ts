@@ -4,7 +4,6 @@ export interface IPlayerControllerAgent {
   // Combat-related actions
   IsBaseUnderAttack(): boolean;
   IsBaseUnderHeavyAttack(): boolean;
-  IsEnemyVisible(): boolean;
   AssignDefendersToEnemies(): State;
   AttackEnemyBase(): State;
   IsInCombat(): boolean;

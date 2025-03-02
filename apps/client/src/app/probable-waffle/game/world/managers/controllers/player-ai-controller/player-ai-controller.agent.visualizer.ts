@@ -14,10 +14,6 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     return getBooleanValue("Is the base under heavy attack?");
   }
 
-  IsEnemyVisible() {
-    return getBooleanValue("Are any enemies visible?");
-  }
-
   HasEnoughMilitaryPower() {
     return getBooleanValue("Does the AI have enough military units?");
   }

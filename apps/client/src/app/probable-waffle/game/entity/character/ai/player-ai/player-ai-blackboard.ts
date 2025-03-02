@@ -4,7 +4,7 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 export class PlayerAiBlackboard extends Blackboard {
   constructor(
     public resources: number = 0,
-    public units: any[] = [], // Replace 'any' with the specific unit class
+    public units: Phaser.GameObjects.GameObject[] = [], // Replace 'any' with the specific unit class
     public workers: Phaser.GameObjects.GameObject[] = [], // Replace 'any' with your worker unit class
     public defendingUnits: any[] = [], // Units assigned for base defense
     public visibleEnemies: any[] = [], // Enemies visible to the player

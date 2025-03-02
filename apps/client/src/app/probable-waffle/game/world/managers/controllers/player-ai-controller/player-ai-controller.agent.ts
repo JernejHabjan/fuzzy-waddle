@@ -2,7 +2,7 @@ import { State } from "mistreevous";
 import { IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
 import { Agent } from "mistreevous/dist/Agent";
 import { PlayerAiBlackboard } from "../../../../entity/character/ai/player-ai/player-ai-blackboard";
-import { ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWafflePlayer, ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../../../environments/environment";
 import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
 import { DebuggingService } from "../../../../scenes/services/DebuggingService";
@@ -14,13 +14,20 @@ import { pwActorDefinitions } from "../../../../data/actor-definitions";
 import { ScenePlayerHelpers } from "../../../../data/scene-player-helpers";
 import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
 import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
+import { PawnAiController } from "../player-pawn-ai-controller/pawn-ai-controller";
+import { OrderData } from "../../../../entity/character/ai/OrderData";
+import { OrderType } from "../../../../entity/character/ai/order-type";
+import { BuildingCursor } from "../building-cursor";
+import { getGameObjectTransform } from "../../../../data/game-object-helper";
+import { GameplayLibrary } from "../../../../library/gameplay-library";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   private readonly baseHeavyAttackThreshold = 10; // Enemy units count for a heavy attack
-  private readonly militaryPowerThreshold = 50; // Minimum military power to attack
+  private readonly militaryPowerThreshold = 3; // Minimum military power to attack
   private readonly resourceSurplusThreshold = 500; // Surplus resources needed for expansion or upgrades
   private readonly resourceGatheringThreshold = 300; // Minimum resources needed to stop gathering
-  private readonly needMoreResourcesThreshold = 200; // Threshold for needing more resources
+  private readonly needMoreResourcesThreshold = 5000; // Threshold for needing more resources
   private readonly hasSufficientResourcesThreshold = 500; // Threshold for sufficient resources
   private readonly hasEnoughResourcesForWorkerThreshold = 100; // Threshold for training
   private readonly sufficientResourcesForUpgradeThreshold = 1000; // Threshold for upgrades
@@ -50,11 +57,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     return this.blackboard.enemiesNearBase.length > this.baseHeavyAttackThreshold;
   }
 
-  IsEnemyVisible() {
-    return this.blackboard.visibleEnemies.length > 0;
-  }
-
   HasEnoughMilitaryPower() {
+    // todo temp assign units all SkaduweeWarriorMale from map
+    this.blackboard.units = this.scene.children.getAll("name", ObjectNames.SkaduweeWarriorMale); // TODO SHOULD BE REMOVED FROM HERE LATER
+
     return this.blackboard.units.length >= this.militaryPowerThreshold;
   }
 
@@ -72,12 +78,37 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   }
 
   AttackEnemyBase() {
-    if (this.HasEnoughMilitaryPower()) {
-      this.logDebugInfo("Attacking enemy base with full force!");
-      this.blackboard.units.forEach((unit) => unit.attack(this.blackboard.enemyBase));
-      return State.SUCCEEDED;
+    // todo temp assign enemyBase
+    const { actorsByEnemy } = ScenePlayerHelpers.getActorsByPlayer(this.scene, this.player.playerNumber!); // TODO SHOULD BE REMOVED FROM HERE LATER
+
+    if (!this.HasEnoughMilitaryPower()) {
+      return State.FAILED;
     }
-    return State.FAILED;
+    this.logDebugInfo("Attacking enemy base with full force!");
+    this.blackboard.units.forEach((unit) => {
+      const aiController = getActorComponent(unit, PawnAiController);
+      if (!aiController) return;
+      if (aiController.blackboard.getCurrentOrder()) return; // currently busy
+
+      // find the closest enemy actor
+      let closestEnemy = null;
+      let closestDistance = Infinity;
+      actorsByEnemy.forEach((actors: GameObject[]) => {
+        actors.forEach((actor: GameObject) => {
+          const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(unit, actor);
+          if (distance !== null && distance < closestDistance) {
+            closestDistance = distance;
+            closestEnemy = actor;
+          }
+        });
+      });
+      if (!closestEnemy) return;
+
+      const newOrder = new OrderData(OrderType.Attack, { targetGameObject: closestEnemy });
+      aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
+      aiController.blackboard.setCurrentOrder(newOrder);
+    });
+    return State.SUCCEEDED;
   }
 
   NeedMoreResources() {
@@ -241,18 +272,24 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   }
 
   AssignWorkersToResource() {
-    const workers = this.blackboard.workers.filter((worker) => {
+    // todo temp assign workers all TivaraWorkerMale from map
+    this.blackboard.workers = this.scene.children.getAll("name", ObjectNames.SkaduweeWorkerMale); // TODO SHOULD BE REMOVED FROM HERE LATER
+
+    let anyAssigned = false;
+    this.blackboard.workers.forEach((worker) => {
+      const aiController = getActorComponent(worker, PawnAiController);
+      if (!aiController) return;
+      if (aiController.blackboard.getCurrentOrder()) return; // currently busy
       const gathererComponent = getActorComponent(worker, GathererComponent);
-      if (!gathererComponent) return false;
-      return !gathererComponent.isGathering;
+      if (!gathererComponent) return;
+      const closestResourceSource = gathererComponent.getClosestResourceSource(ResourceType.Wood, 100); // todo hardcoded
+      if (!closestResourceSource) return;
+      const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
+      aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
+      aiController.blackboard.setCurrentOrder(newOrder);
+      anyAssigned = true;
     });
-    if (workers.length > 0) {
-      workers.forEach((worker) => {
-        const gathererComponent = getActorComponent(worker, GathererComponent);
-        if (!gathererComponent) return;
-        const closestResourceSource = gathererComponent.getClosestResourceSource(ResourceType.Wood, 100); // todo hardcoded
-        if (!closestResourceSource) return;
-      });
+    if (anyAssigned) {
       this.logDebugInfo("Assigned workers to gather the closest resource.");
       return State.SUCCEEDED;
     }
@@ -265,7 +302,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
 
   StartUpgrade() {
     if (this.SufficientResourcesForUpgrade()) {
-      this.logDebugInfo("Starting a tech or unit upgrade.");
+      // this.logDebugInfo("Starting a tech or unit upgrade.");
       // todo this.blackboard.upgradeBuilding.startUpgrade();
       return State.SUCCEEDED;
     }
@@ -273,84 +310,141 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   }
 
   NeedMoreHousing() {
+    // return random with 10% chance
+    return Math.random() < 0.1;
+
     return this.blackboard.housingCapacity <= this.blackboard.units.length + 5; // Buffer for housing
   }
 
   NeedMoreProduction() {
+    // return random with 10% chance
+    return Math.random() < 0.1;
+
     return this.blackboard.productionBuildings.length < this.blackboard.desiredProductionBuildings;
   }
 
   NeedMoreDefense() {
+    // return random with 10% chance
+    return Math.random() < 0.1;
+
     return this.blackboard.defensiveStructures.length < this.blackboard.desiredDefensiveStructures;
   }
 
-  AssignHousingBuilding(): State {
+  private assignBuilding(buildingType: ObjectNames): State {
+    // todo temp assign workers all TivaraWorkerMale from map
+    this.blackboard.workers = this.scene.children.getAll("name", ObjectNames.SkaduweeWorkerMale); // TODO SHOULD BE REMOVED FROM HERE LATER
+
+    const validWorkers = this.blackboard.workers.filter((worker) => {
+      const aiController = getActorComponent(worker, PawnAiController);
+      if (!aiController) return;
+      // do not check if busy - override current order
+      // if (aiController.blackboard.getCurrentOrder()) return; // currently busy
+      const builderComponent = getActorComponent(worker, BuilderComponent);
+      if (!builderComponent) return;
+      return builderComponent.isIdle();
+    });
+
+    if (validWorkers.length === 0) return State.FAILED;
+
+    // spawn building:
+    // get random location - get point next to worker
+    const worker = this.blackboard.workers[0];
+    const randomX = getGameObjectTransform(worker)!.x + Math.floor(Math.random() * 10) - 10;
+    const randomY = getGameObjectTransform(worker)!.y + Math.floor(Math.random() * 10) - 10;
+    const location = {
+      x: randomX,
+      y: randomY,
+      z: 0
+    } satisfies Vector3Simple;
+
+    const building = BuildingCursor.spawnBuildingForPlayer(
+      this.scene,
+      buildingType,
+      location,
+      this.player.playerNumber
+    );
+
+    validWorkers.forEach((worker) => {
+      const aiController = getActorComponent(worker, PawnAiController);
+      const newOrder = new OrderData(OrderType.Build, { targetGameObject: building });
+      aiController!.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
+      aiController!.blackboard.setCurrentOrder(newOrder);
+    });
+
+    this.logDebugInfo("Assigned workers to build a new building.");
     return State.SUCCEEDED;
+  }
+
+  AssignHousingBuilding(): State {
+    return this.assignBuilding(ObjectNames.WorkMill);
   }
   AssignProductionBuilding(): State {
-    return State.SUCCEEDED;
+    return this.assignBuilding(ObjectNames.Owlery);
   }
   AssignDefenseBuilding(): State {
-    return State.SUCCEEDED;
+    return this.assignBuilding(ObjectNames.InfantryInn);
   }
 
   NeedToScout() {
-    return !this.blackboard.mapFullyExplored && this.blackboard.units.some((unit) => unit.isScout());
+    return false; // todo
+    // return !this.blackboard.mapFullyExplored && this.blackboard.units.some((unit) => unit.isScout());
   }
 
   AssignScoutUnits() {
-    const idleScouts = this.blackboard.units.filter((unit) => unit.isScout() && unit.isIdle());
-    if (idleScouts.length > 0) {
-      idleScouts.forEach((scout) => scout.explore());
-      this.logDebugInfo("Assigned scouts to explore.");
-      return State.SUCCEEDED;
-    }
+    // const idleScouts = this.blackboard.units.filter((unit) => unit.isScout() && unit.isIdle());
+    // if (idleScouts.length > 0) {
+    //   idleScouts.forEach((scout) => scout.explore());
+    //   this.logDebugInfo("Assigned scouts to explore.");
+    //   return State.SUCCEEDED;
+    // }
     return State.FAILED;
   }
 
   IsInCombat() {
-    return this.blackboard.units.some((unit) => unit.isInCombat());
+    // return this.blackboard.units.some((unit) => unit.isInCombat());
+    return false; // todo
   }
 
-  LowHealthUnit() {
-    return this.blackboard.units.some((unit) => unit.health < 20); // Example low health threshold
+  LowHealthUnit(): boolean {
+    // todo return this.blackboard.units.some((unit) => unit.health < 20); // Example low health threshold
+    return false;
   }
 
   RetreatUnit() {
-    const lowHealthUnits = this.blackboard.units.filter((unit) => unit.health < 20); // Threshold for "low health"
-    if (lowHealthUnits.length > 0) {
-      lowHealthUnits.forEach((unit) => unit.retreatToSafeZone());
-      this.logDebugInfo("Retreating low-health units.");
-      return State.SUCCEEDED;
-    }
+    // todo const lowHealthUnits = this.blackboard.units.filter((unit) => unit.health < 20); // Threshold for "low health"
+    // todo if (lowHealthUnits.length > 0) {
+    // todo   lowHealthUnits.forEach((unit) => unit.retreatToSafeZone());
+    // todo   this.logDebugInfo("Retreating low-health units.");
+    // todo   return State.SUCCEEDED;
+    // todo }
     return State.FAILED;
   }
 
   FocusFire() {
     const enemy = this.blackboard.primaryTarget;
-    if (enemy) {
-      this.blackboard.units.forEach((unit) => unit.attack(enemy));
-      this.logDebugInfo("Focusing fire on enemy:", enemy.name);
-      return State.SUCCEEDED;
-    }
+    // todo if (enemy) {
+    // todo   this.blackboard.units.forEach((unit) => unit.attack(enemy));
+    // todo   this.logDebugInfo("Focusing fire on enemy:", enemy.name);
+    // todo   return State.SUCCEEDED;
+    // todo }
     return State.FAILED;
   }
 
   FlankEnemy() {
     const enemies = this.blackboard.enemiesInCombat;
-    if (enemies.length > 0 && this.EnemyFlankOpen()) {
-      this.logDebugInfo("Flanking the enemy.");
-      this.blackboard.units.forEach((unit) => unit.moveToFlank(enemies[0]));
-      return State.SUCCEEDED;
-    }
+    // todo if (enemies.length > 0 && this.EnemyFlankOpen()) {
+    // todo   this.logDebugInfo("Flanking the enemy.");
+    // todo   this.blackboard.units.forEach((unit) => unit.moveToFlank(enemies[0]));
+    // todo   return State.SUCCEEDED;
+    // todo }
     return State.FAILED;
   }
 
-  EnemySpotted() {
+  EnemySpotted(): boolean {
     return this.blackboard.visibleEnemies.length > 0;
   }
 
-  AnalyzeEnemyBase() {
+  AnalyzeEnemyBase(): State {
     if (this.blackboard.enemyBase) {
       this.logDebugInfo("Analyzing enemy base for weaknesses.");
       return State.SUCCEEDED;
@@ -363,15 +457,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     return State.SUCCEEDED;
   }
 
-  EnemyInRange() {
-    return this.blackboard.units.some((unit) => unit.enemyInRange());
+  EnemyInRange(): boolean {
+    // todo return this.blackboard.units.some((unit) => unit.enemyInRange());
+    return false;
   }
 
-  EnemyFlankOpen() {
+  EnemyFlankOpen(): boolean {
     return this.blackboard.enemyFlankOpen;
   }
 
-  DecideNextMoveBasedOnAnalysis() {
+  DecideNextMoveBasedOnAnalysis(): State {
     this.logDebugInfo("Deciding next move based on enemy analysis.");
     return State.SUCCEEDED;
   }

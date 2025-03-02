@@ -201,6 +201,7 @@ export class ActorManager {
       throw new Error(`Actor ${name} not found`);
     }
     actor = new actorConstructor(scene);
+    setCoreActorDataFromName(actor, actorDefinition);
     setConstructingActorDataFromName(actor, actorDefinition);
     return actor;
   }

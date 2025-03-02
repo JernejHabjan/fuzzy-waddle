@@ -58,7 +58,6 @@ root [DefendBase] {
 
 root [AttackEnemy] {
     sequence {
-        condition [IsEnemyVisible]
         condition [HasEnoughMilitaryPower]
         action [AttackEnemyBase]
     }
@@ -93,10 +92,7 @@ root [GatherResources] {
 }
 
 root [AssignWorkersToGather] {
-    sequence {
-        action [AssignWorkersToResource]
-        action [GatherResource]
-    }
+    action [AssignWorkersToResource]
 }
 
 root [TrainWorkers] {
