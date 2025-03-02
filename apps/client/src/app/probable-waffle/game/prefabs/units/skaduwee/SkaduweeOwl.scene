@@ -17,9 +17,8 @@
             "id": "081b7121-ec3e-46d4-942e-5206fe180c80",
             "label": "units_skaduwee_owl_idle_down_png",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 1,
-            "hitArea.y": 4,
-            "hitArea.radius": 11,
+            "hitArea.y": -109,
+            "hitArea.radius": 15.412651300123422,
             "x": 33,
             "y": 127.37785319200148,
             "list": [
@@ -41,8 +40,8 @@
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }
