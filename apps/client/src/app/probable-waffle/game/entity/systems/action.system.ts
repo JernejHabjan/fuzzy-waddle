@@ -84,7 +84,7 @@ export class ActionSystem {
         if (targetIsBuilding) {
           // target is building
 
-          if (!targetIsBuilding.isFinished()) {
+          if (!targetIsBuilding.isFinished) {
             // Building is not finished
 
             const selfBuilderComponent = getActorComponent(this.gameObject, BuilderComponent);

@@ -305,7 +305,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   private showProductionIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
-    if (productionComponent) {
+    if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product) => {
         const actorDefinition = pwActorDefinitions[product];
@@ -346,6 +346,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
                   HudMessages.HudVisualFeedbackMessageEventName,
                   HudVisualFeedbackMessageType.ProductionQueueFull
                 );
+                break;
+              case AssignProductionErrorCode.NotFinished:
+                console.error("Not finished");
                 break;
               case AssignProductionErrorCode.InvalidProduct:
                 console.error("Invalid product");

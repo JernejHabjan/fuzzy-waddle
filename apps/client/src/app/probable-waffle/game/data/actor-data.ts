@@ -114,6 +114,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
     ...(componentDefinitions?.constructable
       ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
       : []),
+    ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
     ...(componentDefinitions?.selectable ? [new SelectableComponent(actor)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(actor, componentDefinitions.collider)] : [])
@@ -139,7 +140,6 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.resourceSource
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
-    ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
     ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),

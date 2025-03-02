@@ -156,7 +156,7 @@ export class OwnerComponent {
     if (!constructionSiteComponent) {
       return { constructionWidth: 0, constructionHeight: 0 };
     }
-    if (constructionSiteComponent.isFinished()) {
+    if (constructionSiteComponent.isFinished) {
       this.constructionProgressSubscription?.unsubscribe();
       return { constructionWidth: 0, constructionHeight: 0 };
     }

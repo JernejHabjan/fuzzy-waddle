@@ -30,7 +30,7 @@ export class ConstructionGameObjectInterfaceComponent {
       return;
     }
     this.constructionSiteHandlerSetup = true;
-    if (constructionSiteComponent.isFinished()) {
+    if (constructionSiteComponent.isFinished) {
       this.handlePrefabVisibility(100);
       this.onDestroy();
     } else {
