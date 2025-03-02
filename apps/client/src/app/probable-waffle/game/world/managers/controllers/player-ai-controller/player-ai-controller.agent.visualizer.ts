@@ -95,6 +95,10 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
+  NeedMoreWorkers() {
+    return getBooleanValue("Does the AI need more workers?");
+  }
+
   AssignWorkersToResource() {
     showInfoToast("Assigning workers to critical resources.");
     return State.SUCCEEDED;

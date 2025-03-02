@@ -74,17 +74,21 @@ root [ExpandBase] {
 }
 
 root [ManageEconomy] {
-    selector {
-        branch [GatherResources]
-        branch [TrainWorkers]
-        branch [OptimizeResourceGathering]
+    fail {
+        sequence {
+            branch [GatherResources]
+            branch [TrainWorkers]
+            branch [OptimizeResourceGathering]
+        }
     }
 }
 
 root [GatherResources] {
-    sequence {
-        condition [NeedMoreResources]
-        branch [AssignWorkersToGather]
+    succeed {
+        sequence {
+            condition [NeedMoreResources]
+            branch [AssignWorkersToGather]
+        }
     }
 }
 
@@ -96,24 +100,29 @@ root [AssignWorkersToGather] {
 }
 
 root [TrainWorkers] {
-    sequence {
-        condition [HasIdleTrainingBuilding]
-        condition [HasEnoughResourcesForWorker]
-        action [TrainWorker]
+    succeed {
+        sequence {
+            condition [NeedMoreWorkers]
+            condition [HasIdleTrainingBuilding]
+            condition [HasEnoughResourcesForWorker]
+            action [TrainWorker]
+        }
     }
 }
 
 root [OptimizeResourceGathering] {
-    selector {
-        sequence {
-            condition [ResourceShortage]
-            action [ReassignWorkersToResource]
+    succeed {
+        selector {
+            sequence {
+                condition [ResourceShortage]
+                action [ReassignWorkersToResource]
+            }
+            sequence {
+                condition [SufficientResourcesForUpgrade]
+                action [StartUpgrade]
+            }
+            action [ContinueNormalGathering]
         }
-        sequence {
-            condition [SufficientResourcesForUpgrade]
-            action [StartUpgrade]
-        }
-        action [ContinueNormalGathering]
     }
 }
 

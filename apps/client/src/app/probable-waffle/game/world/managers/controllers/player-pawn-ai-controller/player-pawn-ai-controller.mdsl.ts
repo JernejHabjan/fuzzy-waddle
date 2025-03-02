@@ -167,7 +167,7 @@ root [Move] {
 
                 /* if reached target, stop */
                 sequence {
-                    action [Log, "Reached target"]
+                    /* action [Log, "Reached target"] */
                     action [InRange, "move"]
                     action [Stop]
                 }

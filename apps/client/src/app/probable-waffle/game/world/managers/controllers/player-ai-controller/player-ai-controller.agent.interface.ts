@@ -33,6 +33,7 @@ export interface IPlayerControllerAgent {
   AssignWorkersToResource(): State;
   ReassignWorkersToResource(): State;
   ContinueNormalGathering(): State;
+  NeedMoreWorkers(): boolean;
 
   // Building and construction
   IsBaseExpansionNeeded(): boolean;

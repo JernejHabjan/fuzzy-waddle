@@ -85,7 +85,7 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
     });
 
     // Set initial state based on whether production is ongoing
-    if (productionComponent.isProducing()) {
+    if (productionComponent.isProducing) {
       const percentage = productionComponent.getCurrentProgress() ?? 0;
       this.handleProductionProgressUpdate(percentage);
     } else {

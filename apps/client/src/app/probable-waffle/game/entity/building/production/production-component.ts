@@ -142,7 +142,7 @@ export class ProductionComponent {
       });
   }
 
-  isProducing(): boolean {
+  get isProducing(): boolean {
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
       if (queue.queuedItems.length > 0) {
@@ -152,8 +152,12 @@ export class ProductionComponent {
     return false;
   }
 
+  get isIdle() {
+    return !this.isProducing;
+  }
+
   getCurrentProgress() {
-    if (!this.isProducing()) return null;
+    if (!this.isProducing) return null;
 
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i];
