@@ -162,6 +162,10 @@ const routes = [
     path: "music",
     loadComponent: () => import("./home/music/music.component").then((m) => m.MusicComponent)
   },
+  {
+    path: "attributions",
+    loadComponent: () => import("./home/attribution/attribution.component").then((m) => m.AttributionComponent)
+  },
   ...littleMuncherRoutes,
   ...probableWaffleRoutes,
   ...flySquasherRoutes,

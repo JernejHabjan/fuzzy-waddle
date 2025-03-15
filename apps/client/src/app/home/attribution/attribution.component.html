@@ -1,0 +1,37 @@
+@if (attributions$ | async; as attributions) {
+  <div class="container mt-4">
+    @for (attribution of attributions | arraySort:'name'; track attribution) {
+      <div class="card mb-3">
+        <div class="card-body">
+          @if (attribution.url) {
+            <h2 class="card-title">
+              <a [href]="attribution.url" target="_blank">{{ attribution.name }}</a>
+            </h2>
+          } @else {
+            <h2 class="card-title">{{ attribution.name }}</h2>
+          }
+          <p class="card-text"><strong>Type:</strong> {{ attribution.type }}</p>
+          @if (attribution.author) {
+            <p class="card-text"><strong>Author:</strong> {{ attribution.author }}</p>
+          }
+          @if (attribution.reason) {
+            <p class="card-text"><strong>Reason:</strong> {{ attribution.reason }}</p>
+          }
+          @if (attribution.license) {
+            @if (attribution.license.name) {
+              <p class="card-text">
+                <strong>License: </strong>
+                @if (attribution.license.url) {
+                  <a [href]="attribution.license.url"
+                     target="_blank">{{ attribution.license.name }}</a>
+                } @else {
+                  {{ attribution.license.name }}
+                }
+              </p>
+            }
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

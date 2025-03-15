@@ -1,0 +1,151 @@
+[
+  {
+    "type": "voice-acting",
+    "name": "Candace V.@kissvoices",
+    "url": "https://www.fiverr.com/kissvoices",
+    "reason": "Voice acting for the characters Skaduwee Ranged and Skaduwee Worker Female.",
+    "license": {
+      "name": "Commercial license obtained via Fiverr order",
+      "url": ""
+    }
+  },
+  {
+    "type": "voice-acting",
+    "name": "Nick@nicks_voice",
+    "url": "https://www.fiverr.com/nicks_voice",
+    "reason": "Voice acting for the characters Skaduwee Warrior, Skaduwee Worker Male, Tivara Maceman, Tivara Worker Male.",
+    "license": {
+      "name": "Commercial license obtained via Fiverr order",
+      "url": ""
+    }
+  },
+  {
+    "type": "voice-acting",
+    "name": "Katarina C.@contrerasvoice",
+    "url": "https://www.fiverr.com/contrerasvoice",
+    "reason": "Voice acting for the characters Skaduwee Magician, Tivara Slingshot, Tivara Worker Female.",
+    "license": {
+      "name": "Commercial license obtained via Fiverr order",
+      "url": ""
+    }
+  },
+  {
+    "type": "software",
+    "name": "Pixilart",
+    "url": "https://www.pixilart.com/",
+    "author": "Pixilart Inc"
+  },
+  {
+    "type": "software",
+    "name": "Aseprite",
+    "url": "https://www.aseprite.org/",
+    "author": "David Capello"
+  },
+  {
+    "type": "software",
+    "name": "Phaser",
+    "url": "https://github.com/photonstorm/phaser",
+    "author": "Phaser Studio Inc.",
+    "license": {
+      "name": "MIT License",
+      "url": "https://github.com/photonstorm/phaser/blob/master/LICENSE.md"
+    }
+  },
+  {
+    "type": "software",
+    "name": "Phaser Editor",
+    "url": "https://phaser.io/editor",
+    "author": "Phaser Studio Inc.",
+    "license": {
+      "name": "All Rights Reserved",
+      "url": "https://phaser.io/editor"
+    }
+  },
+  {
+    "type": "software",
+    "name": "Universal LPC Spritesheet Character Generator",
+    "url": "https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator",
+    "author": "Sander Frenken",
+    "license": {
+      "name": "GPL-3.0 license",
+      "url": "https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator/blob/master/LICENSE"
+    }
+  },
+  {
+    "type": "software",
+    "name": "Universal LPC Spritesheet Character Generator - Standalone Editor",
+    "url": "https://pflat.itch.io/lpc-character-generator",
+    "author": "pflat",
+    "license": {
+      "name": "GNU GPL v3.0",
+      "url": "http://www.gnu.org/licenses/gpl-3.0.html"
+    }
+  },
+  {
+    "type": "software",
+    "name": "Tiled",
+    "url": "https://github.com/mapeditor/tiled",
+    "author": "Thorbjørn Lindeijer",
+    "license": {
+      "name": "3 licenses",
+      "url": "https://github.com/mapeditor/tiled"
+    }
+  },
+  {
+    "type": "software",
+    "name": "TexturePacker",
+    "url": "https://www.codeandweb.com/texturepacker",
+    "author": "CodeAndWeb GmbH"
+  },
+  {
+    "type": "software",
+    "name": "TileSetter",
+    "url": "https://www.tilesetter.org/",
+    "author": "Led",
+    "license": {
+      "name": "Commercial license obtained via Steam order",
+      "url": ""
+    }
+  },
+  {
+    "type": "software",
+    "name": "Laigter",
+    "url": "https://azagaya.itch.io/laigter",
+    "author": "Azagaya"
+  },
+  {
+    "type": "software",
+    "name": "Angular",
+    "url": "https://angular.io/",
+    "author": "Google LLC",
+    "license": {
+      "name": "MIT License",
+      "url": "https://github.com/angular/angular/blob/master/LICENSE"
+    }
+  },
+  {
+    "type": "software",
+    "name": "NestJS",
+    "url": "https://nestjs.com/",
+    "author": "Kamil Myśliwiec and the NestJS contributors",
+    "license": {
+      "name": "MIT License",
+      "url": "https://github.com/nestjs/nest/blob/master/LICENSE"
+    }
+  },
+  {
+    "type": "software",
+    "name": "Supabase",
+    "url": "https://supabase.io/",
+    "author": "Supabase Pte. Ltd.",
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "https://github.com/supabase/supabase/blob/master/LICENSE"
+    }
+  },
+  {
+    "type": "music, sound, art and general support",
+    "name": "Manca Krivec Habjan",
+    "reason": "Composed and prepared the music for the game."
+  }
+]
