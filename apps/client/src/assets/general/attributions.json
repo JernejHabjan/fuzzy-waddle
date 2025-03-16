@@ -1,6 +1,6 @@
 [
   {
-    "type": "voice-acting",
+    "type": "Voice Acting",
     "name": "Candace V.@kissvoices",
     "url": "https://www.fiverr.com/kissvoices",
     "reason": "Voice acting for the characters Skaduwee Ranged and Skaduwee Worker Female.",
@@ -10,7 +10,7 @@
     }
   },
   {
-    "type": "voice-acting",
+    "type": "Voice Acting",
     "name": "Nick@nicks_voice",
     "url": "https://www.fiverr.com/nicks_voice",
     "reason": "Voice acting for the characters Skaduwee Warrior, Skaduwee Worker Male, Tivara Maceman, Tivara Worker Male.",
@@ -20,7 +20,7 @@
     }
   },
   {
-    "type": "voice-acting",
+    "type": "Voice Acting",
     "name": "Katarina C.@contrerasvoice",
     "url": "https://www.fiverr.com/contrerasvoice",
     "reason": "Voice acting for the characters Skaduwee Magician, Tivara Slingshot, Tivara Worker Female.",
@@ -30,19 +30,19 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Pixilart",
     "url": "https://www.pixilart.com/",
     "author": "Pixilart Inc"
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Aseprite",
     "url": "https://www.aseprite.org/",
     "author": "David Capello"
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Phaser",
     "url": "https://github.com/photonstorm/phaser",
     "author": "Phaser Studio Inc.",
@@ -52,7 +52,7 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Phaser Editor",
     "url": "https://phaser.io/editor",
     "author": "Phaser Studio Inc.",
@@ -62,7 +62,7 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Universal LPC Spritesheet Character Generator",
     "url": "https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator",
     "author": "Sander Frenken",
@@ -72,7 +72,7 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Universal LPC Spritesheet Character Generator - Standalone Editor",
     "url": "https://pflat.itch.io/lpc-character-generator",
     "author": "pflat",
@@ -82,7 +82,7 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Tiled",
     "url": "https://github.com/mapeditor/tiled",
     "author": "Thorbjørn Lindeijer",
@@ -92,13 +92,13 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "TexturePacker",
     "url": "https://www.codeandweb.com/texturepacker",
     "author": "CodeAndWeb GmbH"
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "TileSetter",
     "url": "https://www.tilesetter.org/",
     "author": "Led",
@@ -108,13 +108,13 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Laigter",
     "url": "https://azagaya.itch.io/laigter",
     "author": "Azagaya"
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Angular",
     "url": "https://angular.io/",
     "author": "Google LLC",
@@ -124,7 +124,7 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "NestJS",
     "url": "https://nestjs.com/",
     "author": "Kamil Myśliwiec and the NestJS contributors",
@@ -134,7 +134,7 @@
     }
   },
   {
-    "type": "software",
+    "type": "Software",
     "name": "Supabase",
     "url": "https://supabase.io/",
     "author": "Supabase Pte. Ltd.",
@@ -144,8 +144,538 @@
     }
   },
   {
-    "type": "music, sound, art and general support",
+    "type": "Music, sound, art and general support",
     "name": "Manca Krivec Habjan",
-    "reason": "Composed and prepared the music for the game."
+    "reason": "Composed and prepared the music, some art and sound effects for the game."
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/alonsotm/sounds/396499/",
+    "name": "IceSpell03.wav",
+    "author": "alonsotm - https://freesound.org/people/alonsotm/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/LiamG_SFX/sounds/334234/",
+    "name": "Fireball Cast 1",
+    "author": "LiamG_SFX - https://freesound.org/people/LiamG_SFX/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/HighPixel/sounds/431174/",
+    "name": "Fireball Explosion.wav",
+    "author": "HighPixel - https://freesound.org/people/HighPixel/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/lotteria001/sounds/709888/",
+    "name": "Ice Magic Arrow_type 01",
+    "author": "lotteria001 - https://freesound.org/people/lotteria001/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Lydmakeren/sounds/511489/",
+    "name": "FX_bow&arrow2.wav",
+    "author": "Lydmakeren - https://freesound.org/people/Lydmakeren/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Robinhood76/sounds/126464/",
+    "name": "02658 single arrows.wav",
+    "author": "Robinhood76 - https://freesound.org/people/Robinhood76/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "license_name": "Attribution NonCommercial 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/LiamG_SFX/sounds/322170/",
+    "name": "Axe Impact 2",
+    "author": "LiamG_SFX - https://freesound.org/people/LiamG_SFX/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "license_name": "Attribution NonCommercial 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Hitrison/sounds/216675/",
+    "name": "Stick-Swoosh Whoosh ",
+    "author": "Hitrison - https://freesound.org/people/Hitrison/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/60009/",
+    "name": "swosh-22.flac",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/60013/",
+    "name": "Whoosh",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Hybrid_V/sounds/319590/",
+    "name": "Shield Bash Impact",
+    "author": "Hybrid_V - https://freesound.org/people/Hybrid_V/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/PorkMuncher/sounds/263595/",
+    "name": "swoosh.wav",
+    "author": "PorkMuncher - https://freesound.org/people/PorkMuncher/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/InspectorJ/sounds/406048/",
+    "name": "Hammering Nails, Close, A.wav",
+    "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/kyles/sounds/637555/",
+    "name": "footsteps shoes walk hard floor stone patio nice.flac",
+    "author": "kyles - https://freesound.org/people/kyles/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/sillygrizzlies/sounds/635055/",
+    "name": "Walking Footsteps on Grass",
+    "author": "sillygrizzlies - https://freesound.org/people/sillygrizzlies/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/MDRivet/sounds/333422/",
+    "name": "Snow Walking Quiet.WAV",
+    "author": "MDRivet - https://freesound.org/people/MDRivet/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Mossy4/sounds/388289/",
+    "name": "foley_footsteps_desert_boots_sand.wav",
+    "author": "Mossy4 - https://freesound.org/people/Mossy4/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/duckduckpony/sounds/204030/",
+    "name": "Foliage_Rustling_001.wav",
+    "author": "duckduckpony - https://freesound.org/people/duckduckpony/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/philRacoIndie/sounds/551543/",
+    "name": "8-bit Deny/Error sound",
+    "author": "philRacoIndie - https://freesound.org/people/philRacoIndie/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/JanKoehl/sounds/85593/",
+    "name": "hit-wood12.wav",
+    "author": "JanKoehl - https://freesound.org/people/JanKoehl/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Baltiyar13/sounds/564046/",
+    "name": "Game Over Again.mp3",
+    "author": "Baltiyar13 - https://freesound.org/people/Baltiyar13/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Tuudurt/sounds/258142/",
+    "name": "Level win.wav",
+    "author": "Tuudurt - https://freesound.org/people/Tuudurt/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Mossy4/sounds/263133/",
+    "name": "tone beep.wav",
+    "author": "Mossy4 - https://freesound.org/people/Mossy4/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/ThompsonMan/sounds/107341/",
+    "name": "Beeps.wav",
+    "author": "ThompsonMan - https://freesound.org/people/ThompsonMan/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/original_sound/sounds/366102/",
+    "name": "Confirmation Upward",
+    "author": "original_sound - https://freesound.org/people/original_sound/",
+    "license": {
+      "url": "http://creativecommons.org/licenses/by/3.0/",
+      "license_name": "Attribution 3.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/kwahmah_02/sounds/256116/",
+    "name": "Click.wav",
+    "author": "kwahmah_02 - https://freesound.org/people/kwahmah_02/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/InspectorJ/sounds/339326/",
+    "name": "Bird Whistling, A.wav",
+    "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/DCPoke/sounds/387978/",
+    "name": "Birds Singing 03.wav",
+    "author": "DCPoke - https://freesound.org/people/DCPoke/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/spoonbender/sounds/244942/",
+    "name": "Wind Through Trees 3b",
+    "author": "spoonbender - https://freesound.org/people/spoonbender/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/jackthemurray/sounds/433589/",
+    "name": "Stream River Water Up Close",
+    "author": "jackthemurray - https://freesound.org/people/jackthemurray/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/SilverIllusionist/sounds/472688/",
+    "name": "Fire Burst.wav",
+    "author": "SilverIllusionist - https://freesound.org/people/SilverIllusionist/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Audionautics/sounds/133901/",
+    "name": "Lava loop.wav",
+    "author": "Audionautics - https://freesound.org/people/Audionautics/",
+    "license": {
+      "url": "http://creativecommons.org/licenses/by/3.0/",
+      "license_name": "Attribution 3.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/squashy555/sounds/353416/",
+    "name": "Seagull on beach",
+    "author": "squashy555 - https://freesound.org/people/squashy555/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/onteca/sounds/197772/",
+    "name": "building_collapse02_close.wav",
+    "author": "onteca - https://freesound.org/people/onteca/",
+    "license": {
+      "url": "http://creativecommons.org/licenses/by/3.0/",
+      "license_name": "Attribution 3.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/DylanTheFish/sounds/417994/",
+    "name": "Body fall.wav",
+    "author": "DylanTheFish - https://freesound.org/people/DylanTheFish/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/yatoimtop/sounds/400858/",
+    "name": "Rocks Sliding",
+    "author": "yatoimtop - https://freesound.org/people/yatoimtop/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/tomi_slav/sounds/465811/",
+    "name": "stones",
+    "author": "tomi_slav - https://freesound.org/people/tomi_slav/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/jorickhoofd/sounds/169555/",
+    "name": "Gravel sweep",
+    "author": "jorickhoofd - https://freesound.org/people/jorickhoofd/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/InspectorJ/sounds/345560/",
+    "name": "Footsteps, Stones, A.wav",
+    "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/yadronoff/sounds/320376/",
+    "name": "Axe Chopping.wav",
+    "author": "yadronoff - https://freesound.org/people/yadronoff/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/EminYILDIRIM/sounds/553391/",
+    "name": "Axe Wood Chopping",
+    "author": "EminYILDIRIM - https://freesound.org/people/EminYILDIRIM/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/tbhicba/sounds/148335/",
+    "name": "Bench Creak 2.wav",
+    "author": "tbhicba - https://freesound.org/people/tbhicba/",
+    "license": {
+      "url": "http://creativecommons.org/licenses/by/3.0/",
+      "license_name": "Attribution 3.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/falcospizaetus/sounds/489914/",
+    "name": "CrushingLeaves03",
+    "author": "falcospizaetus - https://freesound.org/people/falcospizaetus/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/zepurple/sounds/540278/",
+    "name": "tree shake.wav",
+    "author": "zepurple - https://freesound.org/people/zepurple/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Josethehedgehog/sounds/390363/",
+    "name": "Se quiebra un rama.wav",
+    "author": "Josethehedgehog - https://freesound.org/people/Josethehedgehog/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/danielrutterfilms/sounds/134025/",
+    "name": "Necksnap_build.wav",
+    "author": "danielrutterfilms - https://freesound.org/people/danielrutterfilms/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Kinoton/sounds/494071/",
+    "name": "Big Tree Fall in Forest",
+    "author": "Kinoton - https://freesound.org/people/Kinoton/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/adamwardin/sounds/244015/",
+    "name": "Hedgehog in the bathtub.wav",
+    "author": "adamwardin - https://freesound.org/people/adamwardin/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Geoff-Bremner-Audio/sounds/684174/",
+    "name": "Scissors Cut 5.wav",
+    "author": "Geoff-Bremner-Audio - https://freesound.org/people/Geoff-Bremner-Audio/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/joeyws/sounds/202815/",
+    "name": "Textile",
+    "author": "joeyws - https://freesound.org/people/joeyws/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/zachrau/sounds/362283/",
+    "name": "Sheep bleating",
+    "author": "zachrau - https://freesound.org/people/zachrau/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/n_audioman/sounds/321967/",
+    "name": "Sheep_Bleat.wav",
+    "author": "n_audioman - https://freesound.org/people/n_audioman/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/michaelperfect/sounds/710298/",
+    "name": "Sheep baaing 3 - Norwegian sheep expressing itself concisely",
+    "author": "michaelperfect - https://freesound.org/people/michaelperfect/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "license_name": "Creative Commons 0"
+    }
   }
 ]
