@@ -4,385 +4,369 @@
 
 ### Hedgehog
 
-- [ ] Select: Sfx: Squeak 1-3
+- [x] Select: Sfx: Squeak 1-3
 
 ### Sheep
 
-- [ ] Select: Sfx: Baa 1-3
-- [ ] Select: Sfx: Wool bomb 1
+- [x] Select: Sfx: Baa 1-3
+- [x] Select: Sfx: Wool bomb 1
+- [x] Scissors 1-2
 
 ### Tree
 
-- [ ] Select: Sfx 1-2
+- [x] Select: Sfx 1-2
 
 ### Minerals
 
-- [ ] Select: Sfx 1-2
+- [x] Select: Sfx 1-2
 
 ### Stone
 
-- [ ] Select: Sfx 1-2
+- [x] Select: Sfx 1-2
 
 ## Tivara Units
+
+### Olival
+- [x] Select Sfx
 
 ### TivaraMacemanMale
 
 - Select:
-  - [ ] Vocal: "Summoned for battle!"
-  - [ ] Vocal: "The curse is upon them!"
-  - [ ] Vocal: "My mace thirsts!"
-  - [ ] Vocal: "Who dares defy Tivara?"
+  - [x] Vocal: "Summoned for battle!"
+  - [x] Vocal: "The curse is upon them!"
+  - [x] Vocal: "My mace thirsts!"
+  - [x] Vocal: "Who dares defy Tivara?"
 - Move:
-  - [ ] Vocal: "Through the sands we march."
-  - [ ] Vocal: "The path is foreseen."
-  - [ ] Vocal: "The shadows guide me."
-  - [ ] Vocal: "Destiny pulls me forward."
+  - [x] Vocal: "Through the sands we march."
+  - [x] Vocal: "The path is foreseen."
+  - [x] Vocal: "The shadows guide me."
+  - [x] Vocal: "Destiny pulls me forward."
 - Location unavailable:
-  - [ ] Vocal: "The spirits deny this way."
-  - [ ] Vocal: "Fate blocks our path."
+  - [x] Vocal: "The spirits deny this way."
+  - [x] Vocal: "Fate blocks our path."
 - Attack:
-  - [ ] Vocal: "Their flesh will wither!"
-  - [ ] Vocal: "By plague and steel!"
-  - [ ] Vocal: "Suffer the wrath of Tivara!"
+  - [x] Vocal: "Their flesh will wither!"
+  - [x] Vocal: "By plague and steel!"
+  - [x] Vocal: "Suffer the wrath of Tivara!"
 - Enter building:
-  - [ ] Vocal: "Time to take shelter inside."
-  - [ ] Vocal: "The spirits await."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Time to take shelter inside."
+  - [x] Vocal: "The spirits await."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ### TivaraSlingshotFemale
 
 - Select:
-  - [ ] Vocal: "The winds whisper their doom."
-  - [ ] Vocal: "A shadow marks my target."
-  - [ ] Vocal: "Let the curse fly!"
-  - [ ] Vocal: "The Eye of Tivara watches."
+  - [x] Vocal: "The winds whisper their doom."
+  - [x] Vocal: "A shadow marks my target."
+  - [x] Vocal: "Let the curse fly!"
+  - [x] Vocal: "The Eye of Tivara watches."
 - Move:
-  - [ ] Vocal: "Drifting through the unseen."
-  - [ ] Vocal: "No eyes shall follow me."
-  - [ ] Vocal: "Like the sands, I shift."
-  - [ ] Vocal: "The spirits whisper guidance."
+  - [x] Vocal: "Drifting through the unseen."
+  - [x] Vocal: "No eyes shall follow me."
+  - [x] Vocal: "Like the sands, I shift."
+  - [x] Vocal: "The spirits whisper guidance."
 - Location unavailable:
-  - [ ] Vocal: "A forbidden path…"
-  - [ ] Vocal: "Not even the dead walk there."
+  - [x] Vocal: "A forbidden path…"
+  - [x] Vocal: "Not even the dead walk there."
 - Attack:
-  - [ ] Vocal: "A plague upon you!"
-  - [ ] Vocal: "Strike with shadow's kiss!"
-  - [ ] Vocal: "Decay claims them!"
+  - [x] Vocal: "A plague upon you!"
+  - [x] Vocal: "Strike with shadow's kiss!"
+  - [x] Vocal: "Decay claims them!"
 - Enter building:
-  - [ ] Vocal: "Quietly I enter."
-  - [ ] Vocal: "Now inside, let's get to it."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Quietly I enter."
+  - [x] Vocal: "Now inside, let's get to it."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ### TivaraWorkerFemale
 
 - Select:
-  - [ ] Vocal: "The old ways guide me."
-  - [ ] Vocal: "I serve the ancient will."
-  - [ ] Vocal: "The work must be done."
-  - [ ] Vocal: "What is decreed?"
+  - [x] Vocal: "The old ways guide me."
+  - [x] Vocal: "I serve the ancient will."
+  - [x] Vocal: "The work must be done."
+  - [x] Vocal: "What is decreed?"
 - Move:
-  - [ ] Vocal: "I walk where whispers lead."
-  - [ ] Vocal: "The sands shift beneath me."
-  - [ ] Vocal: "Time bends to my steps."
-  - [ ] Vocal: "Onward, as fated."
+  - [x] Vocal: "I walk where whispers lead."
+  - [x] Vocal: "The sands shift beneath me."
+  - [x] Vocal: "Time bends to my steps."
+  - [x] Vocal: "Onward, as fated."
 - Location unavailable:
-  - [ ] Vocal: "Even the dead fear this place."
-  - [ ] Vocal: "It is not written."
+  - [x] Vocal: "Even the dead fear this place."
+  - [x] Vocal: "It is not written."
 - Attack:
-  - [ ] Vocal: "A desperate hand strikes!"
-  - [ ] Vocal: "Tivara's curse be upon you!"
-  - [ ] Vocal: "Your body will rot!"
+  - [x] Vocal: "A desperate hand strikes!"
+  - [x] Vocal: "Tivara's curse be upon you!"
+  - [x] Vocal: "Your body will rot!"
 - Build:
-  - [ ] Vocal: "We raise monuments of eternity."
-  - [ ] Vocal: "Stone remembers."
+  - [x] Vocal: "We raise monuments of eternity."
+  - [x] Vocal: "Stone remembers."
 - Chop:
-  - [ ] Vocal: "Life must be cut down to grow anew."
-  - [ ] Vocal: "The trees whisper secrets as they fall."
+  - [x] Vocal: "Life must be cut down to grow anew."
+  - [x] Vocal: "The trees whisper secrets as they fall."
 - Mine:
-  - [ ] Vocal: "Dig deep, awaken old power."
-  - [ ] Vocal: "The earth hides ancient curses."
+  - [x] Vocal: "Dig deep, awaken old power."
+  - [x] Vocal: "The earth hides ancient curses."
 - Repair:
-  - [ ] Vocal: "Restoring what time has taken."
-  - [ ] Vocal: "The cycle turns again."
+  - [x] Vocal: "Restoring what time has taken."
+  - [x] Vocal: "The cycle turns again."
 - Enter building:
-  - [ ] Vocal: "Finding shelter"
-  - [ ] Vocal: "Gathering strength."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Finding shelter"
+  - [x] Vocal: "Gathering strength."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ### TivaraWorkerMale
 
 - Select:
-  - [ ] Vocal: "The gods watch my labor."
-  - [ ] Vocal: "I toil under their gaze."
-  - [ ] Vocal: "The old work must continue."
-  - [ ] Vocal: "What is needed?"
+  - [x] Vocal: "The gods watch my labor."
+  - [x] Vocal: "I toil under their gaze."
+  - [x] Vocal: "The old work must continue."
+  - [x] Vocal: "What is needed?"
 - Select extra:
-  - [ ] Vocal: "I have no shoes."
+  - [x] Vocal: "I have no shoes."
 - Move:
-  - [ ] Vocal: "I walk in their shadow."
-  - [ ] Vocal: "Their will guides my steps."
-  - [ ] Vocal: "The desert calls me forward."
-  - [ ] Vocal: "Through dust and time, I move."
+  - [x] Vocal: "I walk in their shadow."
+  - [x] Vocal: "Their will guides my steps."
+  - [x] Vocal: "The desert calls me forward."
+  - [x] Vocal: "Through dust and time, I move."
 - Location unavailable:
-  - [ ] Vocal: "The curse holds me back."
-  - [ ] Vocal: "Even the ancients do not tread here."
+  - [x] Vocal: "The curse holds me back."
+  - [x] Vocal: "Even the ancients do not tread here."
 - Attack:
-  - [ ] Vocal: "Tivara's judgment is upon you!"
-  - [ ] Vocal: "You shall waste away!"
-  - [ ] Vocal: "I strike in their name!"
+  - [x] Vocal: "Tivara's judgment is upon you!"
+  - [x] Vocal: "You shall waste away!"
+  - [x] Vocal: "I strike in their name!"
 - Build:
-  - [ ] Vocal: "Monuments to eternity rise!"
-  - [ ] Vocal: "Time bows to stone and will."
+  - [x] Vocal: "Monuments to eternity rise!"
+  - [x] Vocal: "Time bows to stone and will."
 - Chop:
-  - [ ] Vocal: "The trees offer their sacrifice."
-  - [ ] Vocal: "This wood shall serve the ancient ways."
+  - [x] Vocal: "The trees offer their sacrifice."
+  - [x] Vocal: "This wood shall serve the ancient ways."
 - Mine:
-  - [ ] Vocal: "The depths whisper."
-  - [ ] Vocal: "Hidden power lies beneath!"
+  - [x] Vocal: "The depths whisper."
+  - [x] Vocal: "Hidden power lies beneath!"
 - Repair:
-  - [ ] Vocal: "Restoring what once was!"
-  - [ ] Vocal: "Nothing truly fades."
+  - [x] Vocal: "Restoring what once was!"
+  - [x] Vocal: "Nothing truly fades."
 - Enter building:
-  - [ ] Vocal: "Seeking refuge."
-  - [ ] Vocal: "Moving in, ready to work."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Seeking refuge."
+  - [x] Vocal: "Moving in, ready to work."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ## Skaduwee Units
 
 ### SkaduweeOwl
 
 - Select:
-  - [ ] Sfx: "Hoot!"
-  - [ ] Sfx: "Kraa!"
-  - [ ] Sfx: "Silent flight."
-  - [ ] Sfx: "Sharp eyes."
+  - [x] Sfx
 - Move:
-  - [ ] Sfx: "Whoosh."
-  - [ ] Sfx: "Gliding."
-  - [ ] Sfx: "Shadow in the sky."
-  - [ ] Sfx: "Swooping down."
+  - [x] Sfx
 - Location unavailable:
-  - [ ] Sfx: "Screech!"
-  - [ ] Sfx: "Blocked flight."
+  - [x] Sfx
 - Attack:
-  - [ ] Sfx: "Shriek!"
-  - [ ] Sfx: "Talon strike!"
-  - [ ] Sfx: "Claws out!"
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Sfx
+- [x] Sfx: Damage grunt
+- [x] Sfx: Death grunt
 
 ### SkaduweeRangedFemale
 
 - Select:
-  - [ ] Vocal: "Silent but deadly."
-  - [ ] Vocal: "Arrow nocked."
-  - [ ] Vocal: "Shadow marks the prey."
-  - [ ] Vocal: "Let's hunt."
+  - [x] Vocal: "Silent but deadly."
+  - [x] Vocal: "Arrow nocked."
+  - [x] Vocal: "Shadow marks the prey."
+  - [x] Vocal: "Let's hunt."
 - Move:
-  - [ ] Vocal: "Swift as the wind."
-  - [ ] Vocal: "Ghost in the mist."
-  - [ ] Vocal: "Moving unseen."
-  - [ ] Vocal: "Like a whisper."
+  - [x] Vocal: "Swift as the wind."
+  - [x] Vocal: "Ghost in the mist."
+  - [x] Vocal: "Moving unseen."
+  - [x] Vocal: "Like a whisper."
 - Location unavailable:
-  - [ ] Vocal: "That way is shut."
-  - [ ] Vocal: "No path there."
+  - [x] Vocal: "That way is shut."
+  - [x] Vocal: "No path there."
 - Attack:
-  - [ ] Vocal: "One shot, one kill."
-  - [ ] Vocal: "Through the heart!"
-  - [ ] Vocal: "Strike from the dark."
+  - [x] Vocal: "One shot, one kill."
+  - [x] Vocal: "Through the heart!"
+  - [x] Vocal: "Strike from the dark."
 - Enter building:
-  - [ ] Vocal: "Into the shadows."
-  - [ ] Vocal: "Hiding in plain sight."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Into the shadows."
+  - [x] Vocal: "Hiding in plain sight."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ### SkaduweeMagicianFemale
 
 - Select:
-  - [ ] Vocal: "Dark magic calls."
-  - [ ] Vocal: "Power is mine."
-  - [ ] Vocal: "The shadows guide me."
-  - [ ] Vocal: "What do you seek?"
+  - [x] Vocal: "Dark magic calls."
+  - [x] Vocal: "Power is mine."
+  - [x] Vocal: "The shadows guide me."
+  - [x] Vocal: "What do you seek?"
 - Move:
-  - [ ] Vocal: "Floating forth."
-  - [ ] Vocal: "Shadow weave."
-  - [ ] Vocal: "Drifting through."
-  - [ ] Vocal: "Step into the abyss."
+  - [x] Vocal: "Floating forth."
+  - [x] Vocal: "Shadow weave."
+  - [x] Vocal: "Drifting through."
+  - [x] Vocal: "Step into the abyss."
 - Location unavailable:
-  - [ ] Vocal: "That place is cursed."
-  - [ ] Vocal: "The void resists me."
+  - [x] Vocal: "That place is cursed."
+  - [x] Vocal: "The void resists me."
 - Attack:
-  - [ ] Vocal: "Darkness devours!"
-  - [ ] Vocal: "Feel the void!"
-  - [ ] Vocal: "Magic consumes you!"
+  - [x] Vocal: "Darkness devours!"
+  - [x] Vocal: "Feel the void!"
+  - [x] Vocal: "Magic consumes you!"
 - Enter building:
-  - [ ] Vocal: "Quietly I enter."
-  - [ ] Vocal: "The shadows embrace me."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Quietly I enter."
+  - [x] Vocal: "The shadows embrace me."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ### SkaduweeWarriorMale
 
 - Select:
-  - [ ] Vocal: "I am the blade."
-  - [ ] Vocal: "Stealth and steel."
-  - [ ] Vocal: "You need a killer?"
-  - [ ] Vocal: "The night is mine."
+  - [x] Vocal: "I am the blade."
+  - [x] Vocal: "Stealth and steel."
+  - [x] Vocal: "You need a killer?"
+  - [x] Vocal: "The night is mine."
 - Move:
-  - [ ] Vocal: "Slipping through."
-  - [ ] Vocal: "Swift and silent."
-  - [ ] Vocal: "Dark paths await."
-  - [ ] Vocal: "No trace left."
+  - [x] Vocal: "Slipping through."
+  - [x] Vocal: "Swift and silent."
+  - [x] Vocal: "Dark paths await."
+  - [x] Vocal: "No trace left."
 - Location unavailable:
-  - [ ] Vocal: "That is forbidden."
-  - [ ] Vocal: "Shadows do not pass."
+  - [x] Vocal: "That is forbidden."
+  - [x] Vocal: "Shadows do not pass."
 - Attack:
-  - [ ] Vocal: "Death comes swiftly!"
-  - [ ] Vocal: "A clean kill."
-  - [ ] Vocal: "You won't see it coming."
+  - [x] Vocal: "Death comes swiftly!"
+  - [x] Vocal: "A clean kill."
+  - [x] Vocal: "You won't see it coming."
 - Enter building:
-  - [ ] Vocal: "Entering the shadows."
-  - [ ] Vocal: "The spirits await."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Entering the shadows."
+  - [x] Vocal: "The spirits await."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ### SkaduweeWorkerMale
 
 - Select:
-  - [ ] Vocal: "Work calls."
-  - [ ] Vocal: "What's my task?"
-  - [ ] Vocal: "The night labors on."
-  - [ ] Vocal: "I work in silence."
+  - [x] Vocal: "Work calls."
+  - [x] Vocal: "What's my task?"
+  - [x] Vocal: "The night labors on."
+  - [x] Vocal: "I work in silence."
 - Move:
-  - [ ] Vocal: "Stepping lightly."
-  - [ ] Vocal: "No footprints left."
-  - [ ] Vocal: "A whisper in the dark."
-  - [ ] Vocal: "Moving unseen."
+  - [x] Vocal: "Stepping lightly."
+  - [x] Vocal: "No footprints left."
+  - [x] Vocal: "A whisper in the dark."
+  - [x] Vocal: "Moving unseen."
 - Location unavailable:
-  - [ ] Vocal: "That way is lost."
-  - [ ] Vocal: "Shadows block me."
+  - [x] Vocal: "That way is lost."
+  - [x] Vocal: "Shadows block me."
 - Attack:
-  - [ ] Vocal: "Even builders must fight!"
-  - [ ] Vocal: "For the Skaduwee!"
-  - [ ] Vocal: "I strike with my tools!"
+  - [x] Vocal: "Even builders must fight!"
+  - [x] Vocal: "For the Skaduwee!"
+  - [x] Vocal: "I strike with my tools!"
 - Work-specific:
   - Build:
-    - [ ] Vocal: "I craft in the dark."
-    - [ ] Vocal: "Silent hands, strong work."
+    - [x] Vocal: "I craft in the dark."
+    - [x] Vocal: "Silent hands, strong work."
   - Chop:
-    - [ ] Vocal: "The trees fall quietly."
-    - [ ] Vocal: "Dark wood for our cause."
+    - [x] Vocal: "The trees fall quietly."
+    - [x] Vocal: "Dark wood for our cause."
   - Mine:
-    - [ ] Vocal: "The earth yields to us."
-    - [ ] Vocal: "Digging deep, no sound."
+    - [x] Vocal: "The earth yields to us."
+    - [x] Vocal: "Digging deep, no sound."
   - Repair:
-    - [ ] Vocal: "Patching the unseen."
-    - [ ] Vocal: "Shadow mending."
+    - [x] Vocal: "Patching the unseen."
+    - [x] Vocal: "Shadow mending."
 - Enter building:
-  - [ ] Vocal: "Entering, it's time to focus."
-  - [ ] Vocal: "Inside, I can work."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Entering, it's time to focus."
+  - [x] Vocal: "Inside, I can work."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ### SkaduweeWorkerFemale
 
 - Build:
-  - [ ] Vocal: "Constructing in silence."
-  - [ ] Vocal: "The night shapes our world."
+  - [x] Vocal: "Constructing in silence."
+  - [x] Vocal: "The night shapes our world."
 - Chop:
-  - [ ] Vocal: "The trees whisper as they fall."
-  - [ ] Vocal: "Wood for the unseen cause."
+  - [x] Vocal: "The trees whisper as they fall."
+  - [x] Vocal: "Wood for the unseen cause."
 - Mine:
-  - [ ] Vocal: "Shadow veins run deep."
-  - [ ] Vocal: "Extracting without a sound."
+  - [x] Vocal: "Shadow veins run deep."
+  - [x] Vocal: "Extracting without a sound."
 - Repair:
-  - [ ] Vocal: "Fixing with precision."
-  - [ ] Vocal: "Mending in the dark."
+  - [x] Vocal: "Fixing with precision."
+  - [x] Vocal: "Mending in the dark."
 - Select:
-  - [ ] Vocal: "A task for the shadows?"
-  - [ ] Vocal: "What needs crafting?"
-  - [ ] Vocal: "Skaduwee hands work unseen."
-  - [ ] Vocal: "Silent work, steady hands."
+  - [x] Vocal: "A task for the shadows?"
+  - [x] Vocal: "What needs crafting?"
+  - [x] Vocal: "Skaduwee hands work unseen."
+  - [x] Vocal: "Silent work, steady hands."
 - Move:
-  - [ ] Vocal: "Drifting like a shadow."
-  - [ ] Vocal: "No trail left behind."
-  - [ ] Vocal: "The night carries me."
-  - [ ] Vocal: "Moving unseen, unheard."
+  - [x] Vocal: "Drifting like a shadow."
+  - [x] Vocal: "No trail left behind."
+  - [x] Vocal: "The night carries me."
+  - [x] Vocal: "Moving unseen, unheard."
 - Location unavailable:
-  - [ ] Vocal: "That path is shrouded."
-  - [ ] Vocal: "Even shadows have limits."
+  - [x] Vocal: "That path is shrouded."
+  - [x] Vocal: "Even shadows have limits."
 - Attack:
-  - [ ] Vocal: "Even builders strike back!"
-  - [ ] Vocal: "Tools become weapons!"
-  - [ ] Vocal: "Silent, but deadly!"
+  - [x] Vocal: "Even builders strike back!"
+  - [x] Vocal: "Tools become weapons!"
+  - [x] Vocal: "Silent, but deadly!"
 - Enter building:
-  - [ ] Vocal: "Inside, ready to make progress."
-  - [ ] Vocal: "Heading in, where the work continues."
-- [ ] Sfx: Damage grunt 1-3
-- [ ] Sfx: Death grunt 1-3
+  - [x] Vocal: "Inside, ready to make progress."
+  - [x] Vocal: "Heading in, where the work continues."
+- [x] Sfx: Damage grunt 1-3
+- [x] Sfx: Death grunt 1-3
 
 ## Reusable actor actions
 
-- [ ] Sfx: move 1-4 sand
-- [ ] Sfx: move 1-4 snow
-- [ ] Sfx: move 1-4 grass
-- [ ] Sfx: move 1-4 stone
-- [ ] Sfx: building / repairing (hammer on wood) 1-4
-- [ ] Sfx: chopping (axe on wood) 1-4
-- [ ] Sfx: mining (pickaxe on stone) 1-4
-- [ ] Sfx: healing (magic sound) 1-4
+- [x] Sfx: move 1-4 sand
+- [x] Sfx: move 1-4 snow
+- [x] Sfx: move 1-4 grass
+- [x] Sfx: move 1-4 stone
+- [x] Sfx: building / repairing (hammer on wood) 1-4
+- [x] Sfx: chopping (axe on wood) 1-4
+- [x] Sfx: mining (pickaxe on stone) 1-4
+- [x] Sfx: healing (magic sound) 1-4
 - projectiles:
-  - [ ] Sfx: arrow fire
-  - [ ] Sfx: arrow hit (flesh)
-  - [ ] Sfx: arrow hit (wood)
-  - [ ] Sfx: arrow hit (stone)
-  - [ ] Sfx: fireball fire
-  - [ ] Sfx: fireball hit
-  - [ ] Sfx: frost bolt fire
-  - [ ] Sfx: frost bolt hit
-  - [ ] Sfx: furball fire
-  - [ ] Sfx: furball hit
-- [ ] Sfx: sword swing 1-2
-- [ ] Sfx: sword hit (flesh)
-- [ ] Sfx: sword hit (wood)
-- [ ] Sfx: sword hit (stone)
-- [ ] Sfx: axe swing 1-2
-- [ ] Sfx: axe hit (flesh)
-- [ ] Sfx: axe hit (wood)
-- [ ] Sfx: axe hit (stone)
-- [ ] Sfx: spell cast 1-2
-- [ ] Sfx: slingshot fire
-- [ ] Sfx: slingshot hit (flesh)
-- [ ] Sfx: slingshot hit (wood)
-- [ ] Sfx: slingshot hit (stone)
+  - [x] Sfx: arrow fire
+  - [x] Sfx: arrow hit
+  - [x] Sfx: fireball fire
+  - [x] Sfx: fireball hit
+  - [x] Sfx: frost bolt fire
+  - [x] Sfx: frost bolt hit
+  - [x] Sfx: furball fire
+  - [x] Sfx: furball hit
+- [x] Sfx: axe swing 1-2
+- [x] Sfx: axe hit
+- [x] Sfx: mace swing
+- [x] Sfx: mace hit
+- [x] Sfx: slingshot fire
+- [x] Sfx: slingshot hit
 - building:
-  - [ ] Sfx: rally point set
-  - [ ] Sfx: building selected
-  - [ ] Sfx: building destroyed
-  - [ ] Sfx: building created
-- [ ] Sfx: bush rustle 1-2
-- [ ] Sfx: tree creak 1-2
+  - [x] Sfx: rally point set
+  - [x] Sfx: building selected
+  - [x] Sfx: building destroyed
+  - [x] Sfx: building created
+- [x] Sfx: bush rustle 1-2
+- [x] Sfx: tree creak 1-2
 
 ## Environment:
 
-- [ ] Sfx: seagulls
-- [ ] Sfx: lava bubbling
-- [ ] Sfx: water flowing
-- [ ] Sfx: wind
-- [ ] Sfx: Bird chirping
-
+- [x] Sfx: seagulls
+- [x] Sfx: lava bubbling
+- [x] Sfx: water flowing
+- [x] Sfx: wind
 ## UI Feedback
 
 - [x] Vocal: "You don't have enough resources."
 - [x] Vocal: "The production queue is full."
-- [ ] Vocal: "You are under attack."
-- [ ] Sfx: Cannot build here
-- [ ] Sfx: Button click
-- [ ] Sfx: Achievement unlocked
-- [ ] Sfx: Game countdown
-- [ ] Sfx: Victory
-- [ ] Sfx: Defeat
+- [x] Vocal: "You are under attack."
+- [x] Sfx: Cannot build here
+- [x] Sfx: Button click
+- [x] Sfx: Achievement unlocked
+- [x] Sfx: Game countdown
+- [x] Sfx: Victory
+- [x] Sfx: Defeat
