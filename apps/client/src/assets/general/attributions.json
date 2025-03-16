@@ -155,7 +155,7 @@
     "author": "alonsotm - https://freesound.org/people/alonsotm/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -165,7 +165,7 @@
     "author": "LiamG_SFX - https://freesound.org/people/LiamG_SFX/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -175,7 +175,7 @@
     "author": "HighPixel - https://freesound.org/people/HighPixel/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -185,7 +185,7 @@
     "author": "lotteria001 - https://freesound.org/people/lotteria001/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -195,27 +195,288 @@
     "author": "Lydmakeren - https://freesound.org/people/Lydmakeren/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
     "type": "Free Sound",
-    "url": "https://freesound.org/people/Robinhood76/sounds/126464/",
-    "name": "02658 single arrows.wav",
-    "author": "Robinhood76 - https://freesound.org/people/Robinhood76/",
+    "url": "https://freesound.org/people/dorian.mastin/sounds/381622/",
+    "name": "snd_ImpactSmallMetal06.wav",
+    "author": "dorian.mastin - https://freesound.org/people/dorian.mastin/",
     "license": {
-      "url": "https://creativecommons.org/licenses/by-nc/4.0/",
-      "license_name": "Attribution NonCommercial 4.0"
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
     }
   },
   {
     "type": "Free Sound",
-    "url": "https://freesound.org/people/LiamG_SFX/sounds/322170/",
-    "name": "Axe Impact 2",
-    "author": "LiamG_SFX - https://freesound.org/people/LiamG_SFX/",
+    "url": "https://freesound.org/people/JustInvoke/sounds/446139/",
+    "name": "Freeze Impact",
+    "author": "JustInvoke - https://freesound.org/people/JustInvoke/",
     "license": {
-      "url": "https://creativecommons.org/licenses/by-nc/4.0/",
-      "license_name": "Attribution NonCommercial 4.0"
+      "name": "Attribution 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/jakubp.jp/sounds/557110/",
+    "name": "ICEImpt_Ice Piece Drop On Frozen Puddle_Jaku5.wav",
+    "author": "jakubp.jp - https://freesound.org/people/jakubp.jp/",
+    "license": {
+      "name": "Creative Commons 0",
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/ryanconway/sounds/240801/",
+    "name": "Pickaxe mining stone",
+    "author": "ryanconway - https://freesound.org/people/ryanconway/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Loyalty_Freak_Music/sounds/407479/",
+    "name": "heal.mp3",
+    "author": "Loyalty_Freak_Music - https://freesound.org/people/Loyalty_Freak_Music/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/potentjello/sounds/194056/",
+    "name": "Buttons and Knobs 17.wav",
+    "author": "potentjello - https://freesound.org/people/potentjello/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/DWOBoyle/sounds/144266/",
+    "name": "Impact-LeatherBelt-001.wav",
+    "author": "DWOBoyle - https://freesound.org/people/DWOBoyle/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "Attribution 4.0"
+    }
+  },
+
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/thecrow_br/sounds/574044/",
+    "name": "Arrow.mp3",
+    "author": "thecrow_br - https://freesound.org/people/thecrow_br/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/aropson/sounds/429168/",
+    "name": "heavy clang 2.wav",
+    "author": "aropson - https://freesound.org/people/aropson/",
+    "license": {
+      "url": "http://creativecommons.org/licenses/by/3.0/",
+      "name": "Attribution 3.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/marb7e/sounds/674386/",
+    "name": "IcePick_StoneHit03.wav",
+    "author": "marb7e - https://freesound.org/people/marb7e/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/751339/",
+    "name": "Slime Attack 2",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/211605/",
+    "name": "Chicken Meat Slime",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/127449/",
+    "name": "Slime",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/751338/",
+    "name": "Slime Attack 1",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/211605/",
+    "name": "Chicken Meat Slime",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/127449/",
+    "name": "Slime",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Duisterwho/sounds/641152/",
+    "name": "Dirty throat spit sound",
+    "author": "Duisterwho - https://freesound.org/people/Duisterwho/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Johnc/sounds/20684/",
+    "name": "Owl.wav",
+    "author": "Johnc - https://freesound.org/people/Johnc/",
+    "license": {
+      "url": "http://creativecommons.org/licenses/sampling+/1.0/",
+      "name": "Sampling+"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Reitanna/sounds/344055/",
+    "name": "weird bird3.wav",
+    "author": "Reitanna - https://freesound.org/people/Reitanna/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/freakinbehemoth/sounds/243400/",
+    "name": "woosh.wav",
+    "author": "freakinbehemoth - https://freesound.org/people/freakinbehemoth/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/714257/",
+    "name": "Puff of Smoke",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/CaptainYulef/sounds/641241/",
+    "name": "cloud-punch.wav",
+    "author": "CaptainYulef - https://freesound.org/people/CaptainYulef/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/puppetmaster685719/sounds/627733/",
+    "name": "Gas Cloud.wav",
+    "author": "puppetmaster685719 - https://freesound.org/people/puppetmaster685719/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Mateusz_Chenc/sounds/512217/",
+    "name": "Poof in cloud",
+    "author": "Mateusz_Chenc - https://freesound.org/people/Mateusz_Chenc/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/ryansitz/sounds/387834/",
+    "name": "Poof.wav",
+    "author": "ryansitz - https://freesound.org/people/ryansitz/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/OtisJames/sounds/249613/",
+    "name": "explosionsfx.wav",
+    "author": "OtisJames - https://freesound.org/people/OtisJames/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/50941/",
+    "name": "Stupid Falls",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Sadiquecat/sounds/738646/",
+    "name": "WD-40 Full can - Spray 2",
+    "author": "Sadiquecat - https://freesound.org/people/Sadiquecat/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -225,7 +486,7 @@
     "author": "Hitrison - https://freesound.org/people/Hitrison/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -235,7 +496,7 @@
     "author": "qubodup - https://freesound.org/people/qubodup/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -245,7 +506,7 @@
     "author": "qubodup - https://freesound.org/people/qubodup/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -255,7 +516,7 @@
     "author": "Hybrid_V - https://freesound.org/people/Hybrid_V/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -265,7 +526,7 @@
     "author": "PorkMuncher - https://freesound.org/people/PorkMuncher/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -275,7 +536,7 @@
     "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -285,7 +546,7 @@
     "author": "kyles - https://freesound.org/people/kyles/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -295,7 +556,7 @@
     "author": "sillygrizzlies - https://freesound.org/people/sillygrizzlies/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -305,7 +566,7 @@
     "author": "MDRivet - https://freesound.org/people/MDRivet/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -315,7 +576,7 @@
     "author": "Mossy4 - https://freesound.org/people/Mossy4/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -325,7 +586,7 @@
     "author": "duckduckpony - https://freesound.org/people/duckduckpony/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -335,7 +596,7 @@
     "author": "philRacoIndie - https://freesound.org/people/philRacoIndie/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -345,7 +606,7 @@
     "author": "JanKoehl - https://freesound.org/people/JanKoehl/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -355,7 +616,7 @@
     "author": "Baltiyar13 - https://freesound.org/people/Baltiyar13/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -365,7 +626,7 @@
     "author": "Tuudurt - https://freesound.org/people/Tuudurt/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -375,7 +636,7 @@
     "author": "Mossy4 - https://freesound.org/people/Mossy4/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -385,7 +646,7 @@
     "author": "ThompsonMan - https://freesound.org/people/ThompsonMan/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -395,7 +656,7 @@
     "author": "original_sound - https://freesound.org/people/original_sound/",
     "license": {
       "url": "http://creativecommons.org/licenses/by/3.0/",
-      "license_name": "Attribution 3.0"
+      "name": "Attribution 3.0"
     }
   },
   {
@@ -405,7 +666,7 @@
     "author": "kwahmah_02 - https://freesound.org/people/kwahmah_02/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -415,7 +676,7 @@
     "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -425,7 +686,7 @@
     "author": "DCPoke - https://freesound.org/people/DCPoke/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -435,7 +696,7 @@
     "author": "spoonbender - https://freesound.org/people/spoonbender/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -445,7 +706,7 @@
     "author": "jackthemurray - https://freesound.org/people/jackthemurray/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -455,7 +716,7 @@
     "author": "SilverIllusionist - https://freesound.org/people/SilverIllusionist/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -465,7 +726,7 @@
     "author": "Audionautics - https://freesound.org/people/Audionautics/",
     "license": {
       "url": "http://creativecommons.org/licenses/by/3.0/",
-      "license_name": "Attribution 3.0"
+      "name": "Attribution 3.0"
     }
   },
   {
@@ -475,7 +736,7 @@
     "author": "squashy555 - https://freesound.org/people/squashy555/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -485,7 +746,7 @@
     "author": "onteca - https://freesound.org/people/onteca/",
     "license": {
       "url": "http://creativecommons.org/licenses/by/3.0/",
-      "license_name": "Attribution 3.0"
+      "name": "Attribution 3.0"
     }
   },
   {
@@ -495,7 +756,7 @@
     "author": "DylanTheFish - https://freesound.org/people/DylanTheFish/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -505,7 +766,7 @@
     "author": "yatoimtop - https://freesound.org/people/yatoimtop/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -515,7 +776,7 @@
     "author": "tomi_slav - https://freesound.org/people/tomi_slav/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -525,7 +786,7 @@
     "author": "jorickhoofd - https://freesound.org/people/jorickhoofd/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -535,7 +796,7 @@
     "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -545,7 +806,7 @@
     "author": "yadronoff - https://freesound.org/people/yadronoff/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -555,7 +816,7 @@
     "author": "EminYILDIRIM - https://freesound.org/people/EminYILDIRIM/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -565,7 +826,7 @@
     "author": "tbhicba - https://freesound.org/people/tbhicba/",
     "license": {
       "url": "http://creativecommons.org/licenses/by/3.0/",
-      "license_name": "Attribution 3.0"
+      "name": "Attribution 3.0"
     }
   },
   {
@@ -575,7 +836,7 @@
     "author": "falcospizaetus - https://freesound.org/people/falcospizaetus/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -585,7 +846,7 @@
     "author": "zepurple - https://freesound.org/people/zepurple/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -595,7 +856,7 @@
     "author": "Josethehedgehog - https://freesound.org/people/Josethehedgehog/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -605,7 +866,7 @@
     "author": "danielrutterfilms - https://freesound.org/people/danielrutterfilms/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -615,7 +876,7 @@
     "author": "Kinoton - https://freesound.org/people/Kinoton/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -625,7 +886,7 @@
     "author": "adamwardin - https://freesound.org/people/adamwardin/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -635,7 +896,7 @@
     "author": "Geoff-Bremner-Audio - https://freesound.org/people/Geoff-Bremner-Audio/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -645,7 +906,7 @@
     "author": "joeyws - https://freesound.org/people/joeyws/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -655,7 +916,7 @@
     "author": "zachrau - https://freesound.org/people/zachrau/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
@@ -665,7 +926,7 @@
     "author": "n_audioman - https://freesound.org/people/n_audioman/",
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
-      "license_name": "Attribution 4.0"
+      "name": "Attribution 4.0"
     }
   },
   {
@@ -675,7 +936,7 @@
     "author": "michaelperfect - https://freesound.org/people/michaelperfect/",
     "license": {
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "license_name": "Creative Commons 0"
+      "name": "Creative Commons 0"
     }
   },
   {
