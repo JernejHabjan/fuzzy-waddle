@@ -677,5 +677,35 @@
       "url": "http://creativecommons.org/publicdomain/zero/1.0/",
       "license_name": "Creative Commons 0"
     }
+  },
+  {
+    "type": "Art",
+    "url": "https://opengameart.org/content/isometric-64x64-outside-tileset",
+    "name": "Isometric 64x64 Outside Tileset",
+    "author": "Yar - https://opengameart.org/users/yar",
+    "license": {
+      "name": "CC-BY 3.0"
+    },
+    "reason": "Assets for Probable Waffle"
+  },
+  {
+    "type": "Art",
+    "url": "https://opengameart.org/content/isometric-64x64-medieval-building-tileset",
+    "name": "Isometric 64x64 Medieval Building Tileset",
+    "author": "Seth Galbraith - https://opengameart.org/users/seth-galbraith",
+    "license": {
+      "name": "CC-BY 3.0"
+    },
+    "reason": "Assets for Probable Waffle"
+  },
+  {
+    "type": "Art",
+    "url": "https://0x72.itch.io/dungeontileset-ii",
+    "name": "16x16 Dungeon Tileset 2",
+    "author": "0x72 - https://0x72.itch.io/",
+    "license": {
+      "name": "CC-0"
+    },
+    "reason": "Assets for Dungeon Crawler"
   }
 ]
