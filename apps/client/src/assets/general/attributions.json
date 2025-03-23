@@ -978,5 +978,12 @@
       "name": "CC-0"
     },
     "reason": "Assets for Dungeon Crawler"
+  },
+  {
+    "type": "Art",
+    "url": "https://paperhatlizard.itch.io/cryos-mini-gui",
+    "name": "Cryo's Mini GUI",
+    "author": "https://paperhatlizard.itch.io/",
+    "reason": "GUI assets for Probable Waffle"
   }
 ]
