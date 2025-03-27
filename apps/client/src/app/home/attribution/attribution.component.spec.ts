@@ -28,7 +28,7 @@ describe("AttributionComponent", () => {
       {
         type: "voice-acting",
         name: "Test123",
-        url: "test.com"
+        url: "http://test.com"
       }
     ];
 
@@ -41,6 +41,8 @@ describe("AttributionComponent", () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector("h2 a").textContent).toContain("Test123");
+    expect(compiled.querySelector("h2").textContent).toContain("voice-acting");
+    expect(compiled.querySelector("h3 a").textContent).toContain("Test123");
+    expect(compiled.querySelector("h3 a").getAttribute("href")).toBe("http://test.com");
   });
 });
