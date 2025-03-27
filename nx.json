@@ -62,6 +62,5 @@
   },
   "defaultProject": "client",
   "defaultBase": "develop",
-  "useLegacyCache": true,
   "nxCloudId": "67a8ed1f35fa9168f97724be"
 }
