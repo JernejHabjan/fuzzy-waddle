@@ -48,32 +48,12 @@
 - Add Supabase Environmental Variables: `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`
 - Add `CORS_ORIGIN` Environmental Variable: `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io`
 
-## Other Sources
+## Other Notes
 
-- [Pixilart](https://www.pixilart.com/darkneess10)
-
-## Phaser Editor
-
-- `.skip` files are used to skip files from being processed by Phaser Editor 2D
-- Investigate Issues: `Ctrl+Shift+I`
+- Some artwork is also publicly available here: [Pixilart](https://www.pixilart.com/darkneess10)
+- Phaser Editor
+  - `.skip` files are used to skip files from being processed by Phaser Editor 2D
+  - Investigate Issues: `Ctrl+Shift+I`
 
 ## Attribution
-
-This project utilizes the following works:
-
-- [Pixilart](https://www.pixilart.com/) by Pixilart Inc
-- [Aseprite](https://www.aseprite.org/) by David Capello
-- [Phaser](https://github.com/photonstorm/phaser) by  Phaser Studio Inc. (License: [MIT License](https://github.com/photonstorm/phaser/blob/master/LICENSE.md))
-- [Phaser Editor](https://phaser.io/editor) by Phaser Studio Inc. (License: [All Rights Reserved](https://phaser.io/editor))
-- [Universal LPC Spritesheet Character Generator](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator) by Sander Frenken (License: [GPL-3.0 license](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator/blob/master/LICENSE)) with [Standalone Editor](https://pflat.itch.io/lpc-character-generator) by [pflat](https://pflat.itch.io/) (License: [GNU GPL v3.0](http://www.gnu.org/licenses/gpl-3.0.html) and/or [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/))
-- [Tiled](https://github.com/mapeditor/tiled) by Thorbjørn Lindeijer (License: [3 licenses](https://github.com/mapeditor/tiled))
-- [TexturePacker](https://www.codeandweb.com/texturepacker) by CodeAndWeb GmbH
-- [TileSetter](https://www.tilesetter.org/) by Led
-- [Laigter](https://azagaya.itch.io/laigter) by Azagaya
-- [Angular](https://angular.io/) by Google LLC (License: [MIT License](https://github.com/angular/angular/blob/master/LICENSE))
-- [NestJS](https://nestjs.com/) by Kamil Myśliwiec and the NestJS contributors (License: [MIT License](https://github.com/nestjs/nest/blob/master/LICENSE))
-- [Supabase](https://supabase.io/) by Supabase Pte. Ltd. (License: [Apache License 2.0](https://github.com/supabase/supabase/blob/master/LICENSE))
-
-Parts of this project utilize the features, code, or assets provided by these sources.
-
-Please refer to the respective sources and licenses for more details.
+Please see [attributions.json](apps/client/src/assets/general/attributions.json). They are also listed on the [Attributions Page](https://fuzzy-waddle.onrender.com/attributions).
