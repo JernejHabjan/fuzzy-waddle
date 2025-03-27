@@ -36,18 +36,30 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+  lint:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Run linter
         run: pnpm run lint
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Run tests
         run: pnpm run test
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+  build-packages:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Build Packages
         run: pnpm run build-gh-pages
         env:
