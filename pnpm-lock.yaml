@@ -170,8 +170,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       phaser:
-        specifier: 4.0.0-beta.6
-        version: 4.0.0-beta.6
+        specifier: 4.0.0-rc.1
+        version: 4.0.0-rc.1
       phaser3-rex-plugins:
         specifier: 1.80.13
         version: 1.80.13(encoding@0.1.13)(graphology-types@0.24.8)
@@ -7371,8 +7371,8 @@ packages:
   phaser3-rex-plugins@1.80.13:
     resolution: {integrity: sha512-d2P3c+0r7h/GXtOZIjB6DLjBQ2rSEeZ+AOG1D6jgGGn/Txb+PiDmFMhBF3qJ6YoPlVarSE8lw6V8Jy7K7xPnLg==}
 
-  phaser@4.0.0-beta.6:
-    resolution: {integrity: sha512-3sm6H9mMadzrT4adetUYcccbrDSG+6LFQRpph5O6D7MGCwhfttOEiCQHwfDe1pCf3gJCORY4FKbOLLjw0+fPiw==}
+  phaser@4.0.0-rc.1:
+    resolution: {integrity: sha512-OsUvqtTKSDZMjsy4qFlO7uCPklQRcoqi/ihefMnihrSYmAYTk5vqUjnM1yvTMISbNwe/J5VsADWg2stWAm7I5A==}
 
   phasereditor2d-launcher@3.67.0:
     resolution: {integrity: sha512-3urX8KX19kIgyP8VpbTeeyfU8TISsBAopYY6BMLbEd7Y3aES3vfvUdwEo4CHwIvfR5iD+9ZNZ4tQdxy/300UYA==}
@@ -17934,7 +17934,7 @@ snapshots:
       - encoding
       - graphology-types
 
-  phaser@4.0.0-beta.6:
+  phaser@4.0.0-rc.1:
     dependencies:
       eventemitter3: 5.0.1
 
