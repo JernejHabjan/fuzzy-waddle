@@ -34,3 +34,69 @@ export enum SkaduweeWorkerFemaleSfx {
   SELECT_3 = "Select 3",
   SELECT_4 = "Select 4"
 }
+
+export const SkaduweeWorkerFemaleSfxAttackSounds = [
+  SkaduweeWorkerFemaleSfx.ATTACK_1,
+  SkaduweeWorkerFemaleSfx.ATTACK_2,
+  SkaduweeWorkerFemaleSfx.ATTACK_3
+];
+
+export const SkaduweeWorkerFemaleSfxBuildSounds = [
+  SkaduweeWorkerFemaleSfx.BUILD_1,
+  SkaduweeWorkerFemaleSfx.BUILD_2
+];
+
+export const SkaduweeWorkerFemaleSfxChopSounds = [
+  SkaduweeWorkerFemaleSfx.CHOP_1,
+  SkaduweeWorkerFemaleSfx.CHOP_2
+];
+
+export const SkaduweeWorkerFemaleSfxDamageSounds = [
+  SkaduweeWorkerFemaleSfx.DAMAGE_1,
+  SkaduweeWorkerFemaleSfx.DAMAGE_2,
+  SkaduweeWorkerFemaleSfx.DAMAGE_3,
+  SkaduweeWorkerFemaleSfx.DAMAGE_4,
+  SkaduweeWorkerFemaleSfx.DAMAGE_5,
+  SkaduweeWorkerFemaleSfx.DAMAGE_6
+];
+
+export const SkaduweeWorkerFemaleSfxDeathSounds = [
+  SkaduweeWorkerFemaleSfx.DEATH_1,
+  SkaduweeWorkerFemaleSfx.DEATH_2,
+  SkaduweeWorkerFemaleSfx.DEATH_3,
+  SkaduweeWorkerFemaleSfx.DEATH_4
+];
+
+export const SkaduweeWorkerFemaleSfxEnterSounds = [
+  SkaduweeWorkerFemaleSfx.ENTER_BUILDING_1,
+  SkaduweeWorkerFemaleSfx.ENTER_BUILDING_2
+];
+
+export const SkaduweeWorkerFemaleSfxLocationSounds = [
+  SkaduweeWorkerFemaleSfx.LOCATION_UNAVAILABLE_1,
+  SkaduweeWorkerFemaleSfx.LOCATION_UNAVAILABLE_2
+];
+
+export const SkaduweeWorkerFemaleSfxMineSounds = [
+  SkaduweeWorkerFemaleSfx.MINE_1,
+  SkaduweeWorkerFemaleSfx.MINE_2
+];
+
+export const SkaduweeWorkerFemaleSfxMoveSounds = [
+  SkaduweeWorkerFemaleSfx.MOVE_1,
+  SkaduweeWorkerFemaleSfx.MOVE_2,
+  SkaduweeWorkerFemaleSfx.MOVE_3,
+  SkaduweeWorkerFemaleSfx.MOVE_4
+];
+
+export const SkaduweeWorkerFemaleSfxRepairSounds = [
+  SkaduweeWorkerFemaleSfx.REPAIR_1,
+  SkaduweeWorkerFemaleSfx.REPAIR_2
+];
+
+export const SkaduweeWorkerFemaleSfxSelectSounds = [
+  SkaduweeWorkerFemaleSfx.SELECT_1,
+  SkaduweeWorkerFemaleSfx.SELECT_2,
+  SkaduweeWorkerFemaleSfx.SELECT_3,
+  SkaduweeWorkerFemaleSfx.SELECT_4
+];

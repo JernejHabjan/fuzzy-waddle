@@ -2,3 +2,5 @@
 export enum TivaraOlivalSfx {
   SELECTION = "selection"
 }
+
+export const TivaraOlivalSfxSelectionSounds = [TivaraOlivalSfx.SELECTION];

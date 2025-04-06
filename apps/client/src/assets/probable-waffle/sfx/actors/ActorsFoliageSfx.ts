@@ -3,3 +3,8 @@ export enum ActorsFoliageSfx {
   RUSTLE_1 = "rustle 1",
   RUSTLE_2 = "rustle 2"
 }
+
+export const ActorsFoliageSfxRustleSounds = [
+  ActorsFoliageSfx.RUSTLE_1,
+  ActorsFoliageSfx.RUSTLE_2
+];

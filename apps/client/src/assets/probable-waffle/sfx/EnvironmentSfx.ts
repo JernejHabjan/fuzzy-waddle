@@ -14,3 +14,28 @@ export enum EnvironmentSfx {
   WATER_FLOWING_1 = "water flowing 1",
   WATER_FLOWING_2 = "water flowing 2"
 }
+
+export const EnvironmentSfxBirdsSounds = [
+  EnvironmentSfx.BIRDS_1,
+  EnvironmentSfx.BIRDS_2,
+  EnvironmentSfx.BIRDS_3,
+  EnvironmentSfx.BIRDS_4,
+  EnvironmentSfx.BIRDS_5,
+  EnvironmentSfx.BIRDS_6
+];
+
+export const EnvironmentSfxLavaSounds = [
+  EnvironmentSfx.LAVA_BUBBLING_1,
+  EnvironmentSfx.LAVA_BUBBLING_2,
+  EnvironmentSfx.LAVA_BUBBLING_3
+];
+
+export const EnvironmentSfxSeagullsSounds = [
+  EnvironmentSfx.SEAGULLS_1,
+  EnvironmentSfx.SEAGULLS_2
+];
+
+export const EnvironmentSfxWaterSounds = [
+  EnvironmentSfx.WATER_FLOWING_1,
+  EnvironmentSfx.WATER_FLOWING_2
+];

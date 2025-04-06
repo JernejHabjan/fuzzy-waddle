@@ -48,3 +48,70 @@ export enum SharedActorActionsSfx {
   SLINGSHOT_FIRE = "slingshot fire",
   SLINGSHOT_HIT = "slingshot hit"
 }
+
+export const SharedActorActionsSfxShootSounds = [
+  SharedActorActionsSfx.SHOOT_1,
+  SharedActorActionsSfx.SHOOT_2
+];
+
+export const SharedActorActionsSfxChoppingSounds = [
+  SharedActorActionsSfx.CHOPPING_1,
+  SharedActorActionsSfx.CHOPPING_2,
+  SharedActorActionsSfx.CHOPPING_3,
+  SharedActorActionsSfx.CHOPPING_4
+];
+
+export const SharedActorActionsSfxFireballSounds = [
+  SharedActorActionsSfx.FIREBALL_HIT,
+  SharedActorActionsSfx.FIREBALL_SHOOT
+];
+
+export const SharedActorActionsSfxFrostSounds = [
+  SharedActorActionsSfx.FROST_BOLT_FIRE,
+  SharedActorActionsSfx.FROST_BOLT_IMPACT
+];
+
+export const SharedActorActionsSfxSwingSounds = [
+  SharedActorActionsSfx.SWING_1,
+  SharedActorActionsSfx.SWING_2,
+  SharedActorActionsSfx.SWING_3
+];
+
+export const SharedActorActionsSfxGrassSounds = [
+  SharedActorActionsSfx.GRASS_1,
+  SharedActorActionsSfx.GRASS_2,
+  SharedActorActionsSfx.GRASS_3,
+  SharedActorActionsSfx.GRASS_4
+];
+
+export const SharedActorActionsSfxGravelSounds = [
+  SharedActorActionsSfx.GRAVEL_1,
+  SharedActorActionsSfx.GRAVEL_2,
+  SharedActorActionsSfx.GRAVEL_3,
+  SharedActorActionsSfx.GRAVEL_4
+];
+
+export const SharedActorActionsSfxSandSounds = [
+  SharedActorActionsSfx.SAND_1,
+  SharedActorActionsSfx.SAND_2,
+  SharedActorActionsSfx.SAND_3,
+  SharedActorActionsSfx.SAND_4
+];
+
+export const SharedActorActionsSfxSnowSounds = [
+  SharedActorActionsSfx.SNOW_1,
+  SharedActorActionsSfx.SNOW_2,
+  SharedActorActionsSfx.SNOW_3,
+  SharedActorActionsSfx.SNOW_4
+];
+
+export const SharedActorActionsSfxStoneSounds = [
+  SharedActorActionsSfx.STONE_1,
+  SharedActorActionsSfx.STONE_2,
+  SharedActorActionsSfx.STONE_3
+];
+
+export const SharedActorActionsSfxSlingshotSounds = [
+  SharedActorActionsSfx.SLINGSHOT_FIRE,
+  SharedActorActionsSfx.SLINGSHOT_HIT
+];

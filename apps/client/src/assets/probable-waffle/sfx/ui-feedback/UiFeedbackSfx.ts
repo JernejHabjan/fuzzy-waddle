@@ -11,3 +11,8 @@ export enum UiFeedbackSfx {
   VICTORY = "victory",
   YOU_ARE_UNDER_ATTACK = "you are under attack"
 }
+
+export const UiFeedbackSfxCountdownSounds = [
+  UiFeedbackSfx.COUNTDOWN_BEEP_FINAL,
+  UiFeedbackSfx.COUNTDOWN_BEEP
+];

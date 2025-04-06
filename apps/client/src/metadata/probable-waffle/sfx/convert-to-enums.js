@@ -23,6 +23,24 @@ function generateAudioSpritesEnum(fileNamesWithPrefixes) {
     `export enum AudioSprites {\n` + enumEntries.join(',\n') + '\n}\n';
 }
 
+function generateGroupedConstants(enumName, keys) {
+  const groups = keys.reduce((acc, key) => {
+    const group = key.split('_')[0];
+    if (!acc[group]) {
+      acc[group] = [];
+    }
+    acc[group].push(`${enumName}.${key}`);
+    return acc;
+  }, {});
+
+  return Object.entries(groups).map(([group, values]) => {
+    if (values.length > 1) {
+      return `export const ${enumName}${toPascalCase(group.toLowerCase())}Sounds = [\n  ${values.join(',\n  ')}\n];`;
+    }
+    return '';
+  }).filter(Boolean).join('\n\n');
+}
+
 const allFileNamesWithPrefixes = [];
 
 function processJsonFile(jsonFilePath) {
@@ -54,9 +72,10 @@ function processJsonFile(jsonFilePath) {
         (key) => `  ${toEnumKey(key)} = "${key}"`
       );
 
-      // Join enum entries with commas and add the closing curly brace
+      const groupedConstants = generateGroupedConstants(pascalCaseFilename + 'Sfx', Object.keys(jsonData.spritemap).map(toEnumKey));
+
       const tsContent = `// This file was generated from "convert-to-enums.js" script\n` +
-        `export enum ${pascalCaseFilename}Sfx {\n` + enumEntries.join(',\n') + '\n}\n';
+        `export enum ${pascalCaseFilename}Sfx {\n` + enumEntries.join(',\n') + '\n}\n\n' + groupedConstants;
       const tsFilePath = path.join(path.dirname(jsonFilePath), `${pascalCaseFilename}Sfx.ts`);
 
       fs.writeFile(tsFilePath, tsContent, (err) => {

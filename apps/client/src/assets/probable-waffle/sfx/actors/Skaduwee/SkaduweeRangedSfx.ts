@@ -28,3 +28,51 @@ export enum SkaduweeRangedSfx {
   SELECTION_3 = "Selection 3",
   SELECTION_4 = "Selection 4"
 }
+
+export const SkaduweeRangedSfxAttackSounds = [
+  SkaduweeRangedSfx.ATTACK_1,
+  SkaduweeRangedSfx.ATTACK_2,
+  SkaduweeRangedSfx.ATTACK_3
+];
+
+export const SkaduweeRangedSfxDamageSounds = [
+  SkaduweeRangedSfx.DAMAGE_1,
+  SkaduweeRangedSfx.DAMAGE_2,
+  SkaduweeRangedSfx.DAMAGE_3,
+  SkaduweeRangedSfx.DAMAGE_4,
+  SkaduweeRangedSfx.DAMAGE_5,
+  SkaduweeRangedSfx.DAMAGE_6,
+  SkaduweeRangedSfx.DAMAGE_7
+];
+
+export const SkaduweeRangedSfxDeathSounds = [
+  SkaduweeRangedSfx.DEATH_1,
+  SkaduweeRangedSfx.DEATH_2,
+  SkaduweeRangedSfx.DEATH_3,
+  SkaduweeRangedSfx.DEATH_4,
+  SkaduweeRangedSfx.DEATH_5
+];
+
+export const SkaduweeRangedSfxEnterSounds = [
+  SkaduweeRangedSfx.ENTER_BUILDING_1,
+  SkaduweeRangedSfx.ENTER_BUILDING_2
+];
+
+export const SkaduweeRangedSfxLocationSounds = [
+  SkaduweeRangedSfx.LOCATION_UNAVAILABLE_1,
+  SkaduweeRangedSfx.LOCATION_UNAVAILABLE_2
+];
+
+export const SkaduweeRangedSfxMoveSounds = [
+  SkaduweeRangedSfx.MOVE_1,
+  SkaduweeRangedSfx.MOVE_2,
+  SkaduweeRangedSfx.MOVE_3,
+  SkaduweeRangedSfx.MOVE_4
+];
+
+export const SkaduweeRangedSfxSelectionSounds = [
+  SkaduweeRangedSfx.SELECTION_1,
+  SkaduweeRangedSfx.SELECTION_2,
+  SkaduweeRangedSfx.SELECTION_3,
+  SkaduweeRangedSfx.SELECTION_4
+];

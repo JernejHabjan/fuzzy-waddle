@@ -20,3 +20,43 @@ export enum TivaraMacemanSfx {
   SELECTION_2 = "Selection 2",
   SELECTION_3 = "Selection 3"
 }
+
+export const TivaraMacemanSfxAttackSounds = [
+  TivaraMacemanSfx.ATTACK_1,
+  TivaraMacemanSfx.ATTACK_2,
+  TivaraMacemanSfx.ATTACK_3
+];
+
+export const TivaraMacemanSfxDamageSounds = [
+  TivaraMacemanSfx.DAMAGE_1,
+  TivaraMacemanSfx.DAMAGE_2,
+  TivaraMacemanSfx.DAMAGE_3
+];
+
+export const TivaraMacemanSfxDeathSounds = [
+  TivaraMacemanSfx.DEATH_1,
+  TivaraMacemanSfx.DEATH_2,
+  TivaraMacemanSfx.DEATH_3
+];
+
+export const TivaraMacemanSfxLocationSounds = [
+  TivaraMacemanSfx.LOCATION_UNAVAILABLE_1,
+  TivaraMacemanSfx.LOCATION_UNAVAILABLE_2
+];
+
+export const TivaraMacemanSfxMoveSounds = [
+  TivaraMacemanSfx.MOVE_1,
+  TivaraMacemanSfx.MOVE_2,
+  TivaraMacemanSfx.MOVE_3,
+  TivaraMacemanSfx.MOVE_4
+];
+
+export const TivaraMacemanSfxSelectionSounds = [
+  TivaraMacemanSfx.SELECTION_1,
+  TivaraMacemanSfx.SELECTION_2,
+  TivaraMacemanSfx.SELECTION_3
+];
+
+export const TivaraMacemanSfxEnterSounds = [
+  TivaraMacemanSfx.ENTER_BUILDING_1
+];

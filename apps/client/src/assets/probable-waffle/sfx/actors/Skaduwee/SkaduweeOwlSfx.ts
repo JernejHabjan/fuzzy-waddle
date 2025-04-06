@@ -10,3 +10,19 @@ export enum SkaduweeOwlSfx {
   SELECTION_1 = "Selection 1",
   SELECTION_2 = "Selection 2"
 }
+
+export const SkaduweeOwlSfxFurballSounds = [
+  SkaduweeOwlSfx.FURBALL_FIRE,
+  SkaduweeOwlSfx.FURBALL_HIT_1,
+  SkaduweeOwlSfx.FURBALL_HIT_2
+];
+
+export const SkaduweeOwlSfxSelectionSounds = [SkaduweeOwlSfx.SELECTION_1, SkaduweeOwlSfx.SELECTION_2];
+
+export const SkaduweeOwlSfxDamageSounds = [SkaduweeOwlSfx.DAMAGE];
+
+export const SkaduweeOwlSfxDeathSounds = [SkaduweeOwlSfx.DEATH];
+
+export const SkaduweeOwlSfxMoveSounds = [SkaduweeOwlSfx.MOVE];
+
+export const SkaduweeOwlSfxLocationSounds = [SkaduweeOwlSfx.CANNOT_REACH_LOCATION];

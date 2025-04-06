@@ -22,3 +22,42 @@ export enum TivaraSlingshotSfx {
   SELECTION_3 = "Selection 3",
   SELECTION_4 = "Selection 4"
 }
+
+export const TivaraSlingshotSfxAttackSounds = [
+  TivaraSlingshotSfx.ATTACK_1,
+  TivaraSlingshotSfx.ATTACK_2,
+  TivaraSlingshotSfx.ATTACK_3
+];
+
+export const TivaraSlingshotSfxDamageSounds = [
+  TivaraSlingshotSfx.DAMAGE_1,
+  TivaraSlingshotSfx.DAMAGE_2,
+  TivaraSlingshotSfx.DAMAGE_3,
+  TivaraSlingshotSfx.DAMAGE_4,
+  TivaraSlingshotSfx.DAMAGE_5,
+  TivaraSlingshotSfx.DAMAGE_6
+];
+
+export const TivaraSlingshotSfxEnterSounds = [
+  TivaraSlingshotSfx.ENTER_BUILDING_1,
+  TivaraSlingshotSfx.ENTER_BUILDING_2
+];
+
+export const TivaraSlingshotSfxLocationSounds = [
+  TivaraSlingshotSfx.LOCATION_UNAVAILABLE_1,
+  TivaraSlingshotSfx.LOCATION_UNAVAILABLE_2
+];
+
+export const TivaraSlingshotSfxMoveSounds = [
+  TivaraSlingshotSfx.MOVE_1,
+  TivaraSlingshotSfx.MOVE_2,
+  TivaraSlingshotSfx.MOVE_3,
+  TivaraSlingshotSfx.MOVE_4
+];
+
+export const TivaraSlingshotSfxSelectionSounds = [
+  TivaraSlingshotSfx.SELECTION_1,
+  TivaraSlingshotSfx.SELECTION_2,
+  TivaraSlingshotSfx.SELECTION_3,
+  TivaraSlingshotSfx.SELECTION_4
+];

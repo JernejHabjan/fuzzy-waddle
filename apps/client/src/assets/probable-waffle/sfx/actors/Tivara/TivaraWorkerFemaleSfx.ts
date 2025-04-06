@@ -30,3 +30,62 @@ export enum TivaraWorkerFemaleSfx {
   SELECTION_3 = "Selection 3",
   SELECTION_4 = "Selection 4"
 }
+
+export const TivaraWorkerFemaleSfxAttackSounds = [
+  TivaraWorkerFemaleSfx.ATTACK_1,
+  TivaraWorkerFemaleSfx.ATTACK_2,
+  TivaraWorkerFemaleSfx.ATTACK_3
+];
+
+export const TivaraWorkerFemaleSfxBuildSounds = [
+  TivaraWorkerFemaleSfx.BUILD_1,
+  TivaraWorkerFemaleSfx.BUILD_2
+];
+
+export const TivaraWorkerFemaleSfxChopSounds = [
+  TivaraWorkerFemaleSfx.CHOP_1,
+  TivaraWorkerFemaleSfx.CHOP_2
+];
+
+export const TivaraWorkerFemaleSfxDamageSounds = [
+  TivaraWorkerFemaleSfx.DAMAGE_1,
+  TivaraWorkerFemaleSfx.DAMAGE_2,
+  TivaraWorkerFemaleSfx.DAMAGE_3,
+  TivaraWorkerFemaleSfx.DAMAGE_4,
+  TivaraWorkerFemaleSfx.DAMAGE_5,
+  TivaraWorkerFemaleSfx.DAMAGE_6
+];
+
+export const TivaraWorkerFemaleSfxEnterSounds = [
+  TivaraWorkerFemaleSfx.ENTER_BUILDING_1_2,
+  TivaraWorkerFemaleSfx.ENTER_BUILDING_1
+];
+
+export const TivaraWorkerFemaleSfxLocationSounds = [
+  TivaraWorkerFemaleSfx.LOCATION_UNAVAILABLE_1,
+  TivaraWorkerFemaleSfx.LOCATION_UNAVAILABLE_2
+];
+
+export const TivaraWorkerFemaleSfxMineSounds = [
+  TivaraWorkerFemaleSfx.MINE_1,
+  TivaraWorkerFemaleSfx.MINE_2
+];
+
+export const TivaraWorkerFemaleSfxMoveSounds = [
+  TivaraWorkerFemaleSfx.MOVE_1,
+  TivaraWorkerFemaleSfx.MOVE_2,
+  TivaraWorkerFemaleSfx.MOVE_3,
+  TivaraWorkerFemaleSfx.MOVE_4
+];
+
+export const TivaraWorkerFemaleSfxRepairSounds = [
+  TivaraWorkerFemaleSfx.REPAIR_1,
+  TivaraWorkerFemaleSfx.REPAIR_2
+];
+
+export const TivaraWorkerFemaleSfxSelectionSounds = [
+  TivaraWorkerFemaleSfx.SELECTION_1,
+  TivaraWorkerFemaleSfx.SELECTION_2,
+  TivaraWorkerFemaleSfx.SELECTION_3,
+  TivaraWorkerFemaleSfx.SELECTION_4
+];

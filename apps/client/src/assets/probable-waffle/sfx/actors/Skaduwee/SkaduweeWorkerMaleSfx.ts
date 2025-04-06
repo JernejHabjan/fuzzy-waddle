@@ -30,3 +30,65 @@ export enum SkaduweeWorkerMaleSfx {
   SELECTION_3 = "Selection 3",
   SELECTION_4 = "Selection 4"
 }
+
+export const SkaduweeWorkerMaleSfxAttackSounds = [
+  SkaduweeWorkerMaleSfx.ATTACK_1,
+  SkaduweeWorkerMaleSfx.ATTACK_2,
+  SkaduweeWorkerMaleSfx.ATTACK_3
+];
+
+export const SkaduweeWorkerMaleSfxBuildSounds = [
+  SkaduweeWorkerMaleSfx.BUILD_1,
+  SkaduweeWorkerMaleSfx.BUILD_2
+];
+
+export const SkaduweeWorkerMaleSfxChopSounds = [
+  SkaduweeWorkerMaleSfx.CHOP_1,
+  SkaduweeWorkerMaleSfx.CHOP_2
+];
+
+export const SkaduweeWorkerMaleSfxDamageSounds = [
+  SkaduweeWorkerMaleSfx.DAMAGE_1,
+  SkaduweeWorkerMaleSfx.DAMAGE_2,
+  SkaduweeWorkerMaleSfx.DAMAGE_3
+];
+
+export const SkaduweeWorkerMaleSfxDeathSounds = [
+  SkaduweeWorkerMaleSfx.DEATH_1,
+  SkaduweeWorkerMaleSfx.DEATH_2,
+  SkaduweeWorkerMaleSfx.DEATH_3
+];
+
+export const SkaduweeWorkerMaleSfxEnterSounds = [
+  SkaduweeWorkerMaleSfx.ENTER_BUILDING_1,
+  SkaduweeWorkerMaleSfx.ENTER_BUILDING_2
+];
+
+export const SkaduweeWorkerMaleSfxLocationSounds = [
+  SkaduweeWorkerMaleSfx.LOCATION_UNAVAILABLE_1,
+  SkaduweeWorkerMaleSfx.LOCATION_UNAVAILABLE_2
+];
+
+export const SkaduweeWorkerMaleSfxMineSounds = [
+  SkaduweeWorkerMaleSfx.MINE_1,
+  SkaduweeWorkerMaleSfx.MINE_2
+];
+
+export const SkaduweeWorkerMaleSfxMoveSounds = [
+  SkaduweeWorkerMaleSfx.MOVE_1,
+  SkaduweeWorkerMaleSfx.MOVE_2,
+  SkaduweeWorkerMaleSfx.MOVE_3,
+  SkaduweeWorkerMaleSfx.MOVE_4
+];
+
+export const SkaduweeWorkerMaleSfxRepairSounds = [
+  SkaduweeWorkerMaleSfx.REPAIR_1,
+  SkaduweeWorkerMaleSfx.REPAIR_2
+];
+
+export const SkaduweeWorkerMaleSfxSelectionSounds = [
+  SkaduweeWorkerMaleSfx.SELECTION_1,
+  SkaduweeWorkerMaleSfx.SELECTION_2,
+  SkaduweeWorkerMaleSfx.SELECTION_3,
+  SkaduweeWorkerMaleSfx.SELECTION_4
+];
