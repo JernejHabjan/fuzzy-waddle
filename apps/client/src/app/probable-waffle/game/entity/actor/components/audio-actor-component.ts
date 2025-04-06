@@ -127,6 +127,7 @@ export class AudioActorComponent {
         this.gameObject,
         soundDefinition.key,
         soundDefinition.spriteName,
+        undefined,
         additionalConfig
       );
     } else {

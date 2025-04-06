@@ -130,18 +130,27 @@ export class AudioService {
     gameObject: Phaser.GameObjects.GameObject,
     key: string,
     spriteName: string,
+    soundConfig?: Phaser.Types.Sound.SoundConfig,
     additionalConfig?: AdditionalAudioConfig
   ) {
-    const soundConfig = this.getSpatialSfxConfig(gameObject);
-    this.playAudioSprite(key, spriteName, soundConfig, additionalConfig);
+    const adjustedSoundConfig = this.getSpatialSfxConfig(gameObject, soundConfig);
+    this.playAudioSprite(key, spriteName, adjustedSoundConfig, additionalConfig);
   }
 
-  playSpatialAudio(gameObject: Phaser.GameObjects.GameObject, key: string, additionalConfig?: AdditionalAudioConfig) {
-    const soundConfig = this.getSpatialSfxConfig(gameObject);
-    this.playAudio(key, soundConfig, additionalConfig);
+  playSpatialAudio(
+    gameObject: Phaser.GameObjects.GameObject,
+    key: string,
+    soundConfig?: Phaser.Types.Sound.SoundConfig,
+    additionalConfig?: AdditionalAudioConfig
+  ) {
+    const adjustedSoundConfig = this.getSpatialSfxConfig(gameObject, soundConfig);
+    this.playAudio(key, adjustedSoundConfig, additionalConfig);
   }
 
-  getSpatialSfxConfig(gameObject: Phaser.GameObjects.GameObject): Phaser.Types.Sound.SoundConfig | undefined {
+  getSpatialSfxConfig(
+    gameObject: Phaser.GameObjects.GameObject,
+    soundConfig?: Phaser.Types.Sound.SoundConfig
+  ): Phaser.Types.Sound.SoundConfig | undefined {
     const transform = getGameObjectTransform(gameObject);
     if (!transform) return undefined;
 
@@ -163,6 +172,10 @@ export class AudioService {
       volume = minVolume + ((cameraZoom - minZoom) / (maxZoom - minZoom)) * 100;
     }
 
+    if (soundConfig?.volume) {
+      volume = (soundConfig.volume * volume) / 100;
+    }
+
     const volumeNormalized = this.normalizeSfxVolume(volume);
     return {
       volume: volumeNormalized,
@@ -179,8 +192,14 @@ export class AudioService {
         panningModel: "HRTF",
         distanceModel: "linear",
         coneOuterGain: 0.3
-      }
-    };
+      },
+      mute: soundConfig?.mute ?? false,
+      loop: soundConfig?.loop ?? false,
+      delay: soundConfig?.delay ?? 0,
+      detune: soundConfig?.detune ?? 0,
+      seek: soundConfig?.seek ?? 0,
+      rate: soundConfig?.rate ?? 1
+    } satisfies Phaser.Types.Sound.SoundConfig;
   }
 
   stopSound(key: string) {

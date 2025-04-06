@@ -13,6 +13,15 @@ import { TilemapComponent } from "../components/tilemap.component";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { throttle } from "../../library/throttle";
 
+export enum TerrainType {
+  Grass = "grass",
+  Gravel = "gravel",
+  Water = "water",
+  Sand = "sand",
+  Snow = "snow",
+  Stone = "stone"
+}
+
 export class NavigationService {
   static UpdateNavigationEvent = "updateNavigation";
   private easyStar: EasyStar;
@@ -437,5 +446,15 @@ export class NavigationService {
 
   private destroy() {
     this.scene.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+  }
+
+  getTerrainUnderActor(gameObject: Phaser.GameObjects.GameObject): TerrainType | undefined {
+    const tile = getTileCoordsUnderObject(this.tilemap, gameObject)[0];
+    if (!tile) return undefined;
+    const tileData = this.tilemap.getTileAt(tile.x, tile.y);
+    if (!tileData) return undefined;
+    const terrainType = tileData.properties.terrainType;
+    if (!terrainType) return undefined;
+    return terrainType as TerrainType;
   }
 }

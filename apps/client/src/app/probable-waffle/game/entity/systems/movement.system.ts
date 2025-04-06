@@ -1,6 +1,6 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../scenes/components/scene-component-helpers";
-import { NavigationService } from "../../scenes/services/navigation.service";
+import { NavigationService, TerrainType } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { DepthHelper } from "../../world/map/depth.helper";
 import { getActorSystem } from "../../data/actor-system";
@@ -23,7 +23,15 @@ import { OrderType } from "../character/ai/order-type";
 import { OrderData } from "../character/ai/OrderData";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
-import { AudioActorComponent } from "../actor/components/audio-actor-component";
+import { AudioActorComponent, SoundDefinition } from "../actor/components/audio-actor-component";
+import {
+  SharedActorActionsSfxGrassSounds,
+  SharedActorActionsSfxGravelSounds,
+  SharedActorActionsSfxSandSounds,
+  SharedActorActionsSfxSnowSounds,
+  SharedActorActionsSfxStoneSounds
+} from "../../sfx/SharedActorActionsSfx";
+import { AudioSprites } from "../../sfx/AudioSprites";
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -72,7 +80,7 @@ export class MovementSystem {
           payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
             new OrderData(OrderType.Move, { targetLocation: tileVec3 })
           );
-          this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!)
+          this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
         } else {
           this.moveToLocation(tileVec3);
         }
@@ -265,7 +273,42 @@ export class MovementSystem {
 
   private onMovementStart() {
     if (!this.audioService) return;
-    this.audioService.playSpatialAudioSprite(this.gameObject, "character", "footstep");
+    const movementSoundDefinition = this.getMovementSound();
+    if (!movementSoundDefinition) return;
+    // get random from movementSoundDefinition
+    const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
+    const movementSound = movementSoundDefinition[randomIndex];
+    this.audioService.playSpatialAudioSprite(this.gameObject, movementSound.key, movementSound.spriteName, {
+      volume: 70, // make it quieter so it doesn't drown out other sounds
+    });
+  }
+
+  private getMovementSound() {
+    const navigationService = this.navigationService;
+    if (!this.audioService || !navigationService) return;
+    const terrainUnderActor = navigationService.getTerrainUnderActor(this.gameObject);
+    if (!terrainUnderActor) {
+      console.warn("No terrain under actor");
+      return SharedActorActionsSfxGravelSounds; // default to gravel
+    }
+    switch (terrainUnderActor) {
+      case TerrainType.Grass:
+        return SharedActorActionsSfxGrassSounds;
+      case TerrainType.Gravel:
+        return SharedActorActionsSfxGravelSounds;
+      case TerrainType.Water:
+        console.warn("No movement sound for water");
+        return undefined; // todo add water sound
+      case TerrainType.Sand:
+        return SharedActorActionsSfxSandSounds;
+      case TerrainType.Snow:
+        return SharedActorActionsSfxSnowSounds;
+      case TerrainType.Stone:
+        return SharedActorActionsSfxStoneSounds;
+      default:
+        console.warn("No movement sound for terrain type", terrainUnderActor);
+        return undefined;
+    }
   }
 
   private destroy() {

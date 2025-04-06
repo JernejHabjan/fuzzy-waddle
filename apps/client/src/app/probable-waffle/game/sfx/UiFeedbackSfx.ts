@@ -1,4 +1,7 @@
 // This file was generated from "convert-to-enums.js" script
+import { SoundDefinition } from "../entity/actor/components/audio-actor-component";
+import { AudioSprites } from "./AudioSprites";
+
 export enum UiFeedbackSfx {
   ACHIEVEMENT = "achievement",
   BUILD_DENIED = "build denied",
@@ -12,7 +15,7 @@ export enum UiFeedbackSfx {
   YOU_ARE_UNDER_ATTACK = "you are under attack"
 }
 
-export const UiFeedbackSfxCountdownSounds = [
-  UiFeedbackSfx.COUNTDOWN_BEEP_FINAL,
-  UiFeedbackSfx.COUNTDOWN_BEEP
+export const UiFeedbackSfxCountdownSounds: SoundDefinition[] = [
+  { key: AudioSprites.UI_FEEDBACK, spriteName: UiFeedbackSfx.COUNTDOWN_BEEP_FINAL },
+  { key: AudioSprites.UI_FEEDBACK, spriteName: UiFeedbackSfx.COUNTDOWN_BEEP }
 ];

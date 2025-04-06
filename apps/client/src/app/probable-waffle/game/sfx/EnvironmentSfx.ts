@@ -1,4 +1,7 @@
 // This file was generated from "convert-to-enums.js" script
+import { SoundDefinition } from "../entity/actor/components/audio-actor-component";
+import { AudioSprites } from "./AudioSprites";
+
 export enum EnvironmentSfx {
   BIRDS_1 = "birds 1",
   BIRDS_2 = "birds 2",
@@ -15,27 +18,27 @@ export enum EnvironmentSfx {
   WATER_FLOWING_2 = "water flowing 2"
 }
 
-export const EnvironmentSfxBirdsSounds = [
-  EnvironmentSfx.BIRDS_1,
-  EnvironmentSfx.BIRDS_2,
-  EnvironmentSfx.BIRDS_3,
-  EnvironmentSfx.BIRDS_4,
-  EnvironmentSfx.BIRDS_5,
-  EnvironmentSfx.BIRDS_6
+export const EnvironmentSfxBirdsSounds: SoundDefinition[] = [
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_1},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_2},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_3},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_4},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_5},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_6}
 ];
 
-export const EnvironmentSfxLavaSounds = [
-  EnvironmentSfx.LAVA_BUBBLING_1,
-  EnvironmentSfx.LAVA_BUBBLING_2,
-  EnvironmentSfx.LAVA_BUBBLING_3
+export const EnvironmentSfxLavaSounds: SoundDefinition[] = [
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.LAVA_BUBBLING_1},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.LAVA_BUBBLING_2},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.LAVA_BUBBLING_3}
 ];
 
-export const EnvironmentSfxSeagullsSounds = [
-  EnvironmentSfx.SEAGULLS_1,
-  EnvironmentSfx.SEAGULLS_2
+export const EnvironmentSfxSeagullsSounds: SoundDefinition[] = [
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.SEAGULLS_1},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.SEAGULLS_2}
 ];
 
-export const EnvironmentSfxWaterSounds = [
-  EnvironmentSfx.WATER_FLOWING_1,
-  EnvironmentSfx.WATER_FLOWING_2
+export const EnvironmentSfxWaterSounds: SoundDefinition[] = [
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.WATER_FLOWING_1},
+   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.WATER_FLOWING_2}
 ];
