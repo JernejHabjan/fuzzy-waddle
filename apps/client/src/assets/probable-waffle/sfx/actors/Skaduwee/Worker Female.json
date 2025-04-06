@@ -1,0 +1,172 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Skaduwee/Worker Female.mp3"
+  ],
+  "spritemap": {
+    "Attack 1": {
+      "start": 0,
+      "end": 2.081354166666667,
+      "loop": false
+    },
+    "Attack 2": {
+      "start": 4,
+      "end": 6.145395833333334,
+      "loop": false
+    },
+    "Attack 3": {
+      "start": 8,
+      "end": 9.90525,
+      "loop": false
+    },
+    "Build 1": {
+      "start": 11,
+      "end": 13.369520833333333,
+      "loop": false
+    },
+    "Build 2": {
+      "start": 15,
+      "end": 17.5776875,
+      "loop": false
+    },
+    "Chop 1": {
+      "start": 19,
+      "end": 22.186083333333332,
+      "loop": false
+    },
+    "Chop 2": {
+      "start": 24,
+      "end": 26.657729166666666,
+      "loop": false
+    },
+    "Damage 1": {
+      "start": 28,
+      "end": 28.576375,
+      "loop": false
+    },
+    "Damage 2": {
+      "start": 30,
+      "end": 30.38425,
+      "loop": false
+    },
+    "Damage 3": {
+      "start": 32,
+      "end": 32.6724375,
+      "loop": false
+    },
+    "Damage 4": {
+      "start": 34,
+      "end": 34.38425,
+      "loop": false
+    },
+    "Damage 5": {
+      "start": 36,
+      "end": 36.8805625,
+      "loop": false
+    },
+    "Damage 6": {
+      "start": 38,
+      "end": 38.416270833333336,
+      "loop": false
+    },
+    "Death 1": {
+      "start": 40,
+      "end": 41.713125,
+      "loop": false
+    },
+    "Death 2": {
+      "start": 43,
+      "end": 44.08870833333334,
+      "loop": false
+    },
+    "Death 3": {
+      "start": 46,
+      "end": 47.45695833333333,
+      "loop": false
+    },
+    "Death 4": {
+      "start": 49,
+      "end": 50.905229166666665,
+      "loop": false
+    },
+    "Enter building 1": {
+      "start": 52,
+      "end": 55.10602083333333,
+      "loop": false
+    },
+    "Enter building 2": {
+      "start": 57,
+      "end": 60.634375,
+      "loop": false
+    },
+    "Location unavailable 1": {
+      "start": 62,
+      "end": 64.2094375,
+      "loop": false
+    },
+    "Location unavailable 2": {
+      "start": 66,
+      "end": 68.72177083333334,
+      "loop": false
+    },
+    "Mine 1": {
+      "start": 70,
+      "end": 71.92125,
+      "loop": false
+    },
+    "Mine 2": {
+      "start": 73,
+      "end": 75.481625,
+      "loop": false
+    },
+    "Move 1": {
+      "start": 77,
+      "end": 78.88922916666667,
+      "loop": false
+    },
+    "Move 2": {
+      "start": 80,
+      "end": 82.68975,
+      "loop": false
+    },
+    "Move 3": {
+      "start": 84,
+      "end": 86.14539583333334,
+      "loop": false
+    },
+    "Move 4": {
+      "start": 88,
+      "end": 91.50627083333333,
+      "loop": false
+    },
+    "Repair 1": {
+      "start": 93,
+      "end": 95.2735,
+      "loop": false
+    },
+    "Repair 2": {
+      "start": 97,
+      "end": 98.85720833333333,
+      "loop": false
+    },
+    "Select 1": {
+      "start": 100,
+      "end": 102.12939583333333,
+      "loop": false
+    },
+    "Select 2": {
+      "start": 104,
+      "end": 106.0333125,
+      "loop": false
+    },
+    "Select 3": {
+      "start": 108,
+      "end": 111.58633333333333,
+      "loop": false
+    },
+    "Select 4": {
+      "start": 113,
+      "end": 116.20208333333333,
+      "loop": false
+    }
+  }
+}

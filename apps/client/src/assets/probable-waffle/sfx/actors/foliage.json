@@ -1,0 +1,17 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/foliage.mp3"
+  ],
+  "spritemap": {
+    "rustle 1": {
+      "start": 0,
+      "end": 1.7210208333333334,
+      "loop": false
+    },
+    "rustle 2": {
+      "start": 3,
+      "end": 4.189541666666667,
+      "loop": false
+    }
+  }
+}

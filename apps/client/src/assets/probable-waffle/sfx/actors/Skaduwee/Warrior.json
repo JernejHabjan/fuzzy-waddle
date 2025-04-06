@@ -1,0 +1,112 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Skaduwee/Warrior.mp3"
+  ],
+  "spritemap": {
+    "Attack 1": {
+      "start": 0,
+      "end": 1.7995416666666666,
+      "loop": false
+    },
+    "Attack 2": {
+      "start": 3,
+      "end": 5.616979166666667,
+      "loop": false
+    },
+    "Attack 3": {
+      "start": 7,
+      "end": 9.784979166666666,
+      "loop": false
+    },
+    "Damage 1": {
+      "start": 11,
+      "end": 11.804520833333333,
+      "loop": false
+    },
+    "Damage 2": {
+      "start": 13,
+      "end": 13.788104166666667,
+      "loop": false
+    },
+    "Damage 3": {
+      "start": 15,
+      "end": 16.083645833333332,
+      "loop": false
+    },
+    "Death 1": {
+      "start": 18,
+      "end": 19.5598125,
+      "loop": false
+    },
+    "Death 2": {
+      "start": 21,
+      "end": 23.28225,
+      "loop": false
+    },
+    "Death 3": {
+      "start": 25,
+      "end": 27.315083333333334,
+      "loop": false
+    },
+    "Enter building 1": {
+      "start": 29,
+      "end": 30.787937499999998,
+      "loop": false
+    },
+    "Enter building 2": {
+      "start": 32,
+      "end": 33.77633333333333,
+      "loop": false
+    },
+    "Location unavailable 1": {
+      "start": 35,
+      "end": 37.160979166666664,
+      "loop": false
+    },
+    "Location unavailable 2": {
+      "start": 39,
+      "end": 40.9853125,
+      "loop": false
+    },
+    "Move 1": {
+      "start": 42,
+      "end": 44.28097916666667,
+      "loop": false
+    },
+    "Move 2": {
+      "start": 46,
+      "end": 48.88097916666667,
+      "loop": false
+    },
+    "Move 3": {
+      "start": 50,
+      "end": 51.991625,
+      "loop": false
+    },
+    "Move 4": {
+      "start": 53,
+      "end": 55.80897916666667,
+      "loop": false
+    },
+    "Select 1": {
+      "start": 57,
+      "end": 58.75310416666667,
+      "loop": false
+    },
+    "Selection 2": {
+      "start": 60,
+      "end": 62.49697916666667,
+      "loop": false
+    },
+    "Selection 3": {
+      "start": 64,
+      "end": 65.89697916666667,
+      "loop": false
+    },
+    "Selection 4": {
+      "start": 67,
+      "end": 70.12097916666667,
+      "loop": false
+    }
+  }
+}

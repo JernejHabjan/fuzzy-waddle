@@ -1,0 +1,52 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/resources.mp3"
+  ],
+  "spritemap": {
+    "selection": {
+      "start": 0,
+      "end": 0.8962708333333333,
+      "loop": false
+    },
+    "out of resources": {
+      "start": 2,
+      "end": 3.4143541666666666,
+      "loop": false
+    },
+    "selection 1": {
+      "start": 17,
+      "end": 17.661354166666666,
+      "loop": false
+    },
+    "selection2": {
+      "start": 9,
+      "end": 10.611708333333333,
+      "loop": false
+    },
+    "resource depleted": {
+      "start": 12,
+      "end": 15.065041666666666,
+      "loop": false
+    },
+    "selection 2": {
+      "start": 19,
+      "end": 19.434854166666668,
+      "loop": false
+    },
+    "selection 3": {
+      "start": 21,
+      "end": 22.25,
+      "loop": false
+    },
+    "selection 4": {
+      "start": 24,
+      "end": 25.4148125,
+      "loop": false
+    },
+    "selection 5": {
+      "start": 27,
+      "end": 27.9288125,
+      "loop": false
+    }
+  }
+}

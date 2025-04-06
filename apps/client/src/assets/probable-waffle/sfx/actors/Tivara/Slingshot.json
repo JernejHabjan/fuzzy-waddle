@@ -1,0 +1,112 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Tivara/Slingshot.mp3"
+  ],
+  "spritemap": {
+    "Attack 1": {
+      "start": 0,
+      "end": 2.2258333333333336,
+      "loop": false
+    },
+    "Attack 2": {
+      "start": 4,
+      "end": 6.020833333333334,
+      "loop": false
+    },
+    "Attack 3": {
+      "start": 8,
+      "end": 10.0110625,
+      "loop": false
+    },
+    "Damage 1": {
+      "start": 12,
+      "end": 12.771229166666666,
+      "loop": false
+    },
+    "Damage 2": {
+      "start": 14,
+      "end": 14.751708333333333,
+      "loop": false
+    },
+    "Damage 3": {
+      "start": 16,
+      "end": 16.683375,
+      "loop": false
+    },
+    "Damage 4": {
+      "start": 18,
+      "end": 19.0348125,
+      "loop": false
+    },
+    "Damage 5": {
+      "start": 21,
+      "end": 22.1715,
+      "loop": false
+    },
+    "Damage 6": {
+      "start": 24,
+      "end": 25.064104166666667,
+      "loop": false
+    },
+    "Enter building 1": {
+      "start": 27,
+      "end": 28.503416666666666,
+      "loop": false
+    },
+    "Enter building 2": {
+      "start": 30,
+      "end": 32.801833333333335,
+      "loop": false
+    },
+    "Location unavailable 1": {
+      "start": 34,
+      "end": 35.542479166666666,
+      "loop": false
+    },
+    "Location unavailable 2": {
+      "start": 37,
+      "end": 39.147729166666664,
+      "loop": false
+    },
+    "Move 1": {
+      "start": 41,
+      "end": 43.343,
+      "loop": false
+    },
+    "Move 2": {
+      "start": 45,
+      "end": 47.186791666666664,
+      "loop": false
+    },
+    "Move 3": {
+      "start": 49,
+      "end": 51.35275,
+      "loop": false
+    },
+    "Move 4": {
+      "start": 53,
+      "end": 55.8018125,
+      "loop": false
+    },
+    "Selection 1": {
+      "start": 57,
+      "end": 59.9873125,
+      "loop": false
+    },
+    "Selection 2": {
+      "start": 61,
+      "end": 63.51872916666667,
+      "loop": false
+    },
+    "Selection 3": {
+      "start": 65,
+      "end": 66.9525,
+      "loop": false
+    },
+    "Selection 4": {
+      "start": 68,
+      "end": 70.5870625,
+      "loop": false
+    }
+  }
+}

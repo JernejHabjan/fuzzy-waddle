@@ -1,0 +1,72 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/environment.mp3"
+  ],
+  "spritemap": {
+    "birds 1": {
+      "start": 0,
+      "end": 1.4284166666666667,
+      "loop": false
+    },
+    "birds 2": {
+      "start": 3,
+      "end": 4.569875,
+      "loop": false
+    },
+    "birds 3": {
+      "start": 6,
+      "end": 8.771979166666666,
+      "loop": false
+    },
+    "birds 4": {
+      "start": 10,
+      "end": 12.673,
+      "loop": false
+    },
+    "birds 5": {
+      "start": 14,
+      "end": 16.0224375,
+      "loop": false
+    },
+    "birds 6": {
+      "start": 18,
+      "end": 20.361854166666667,
+      "loop": false
+    },
+    "lava bubbling 1": {
+      "start": 22,
+      "end": 29.743312500000002,
+      "loop": false
+    },
+    "lava bubbling 2": {
+      "start": 31,
+      "end": 38.7433125,
+      "loop": false
+    },
+    "lava bubbling 3": {
+      "start": 40,
+      "end": 47.7433125,
+      "loop": false
+    },
+    "seaguls 1": {
+      "start": 49,
+      "end": 56.30039583333333,
+      "loop": false
+    },
+    "seaguls 2": {
+      "start": 58,
+      "end": 60.209875,
+      "loop": false
+    },
+    "water flowing 1": {
+      "start": 62,
+      "end": 79.29320833333333,
+      "loop": false
+    },
+    "water flowing 2": {
+      "start": 81,
+      "end": 92.90679166666666,
+      "loop": false
+    }
+  }
+}

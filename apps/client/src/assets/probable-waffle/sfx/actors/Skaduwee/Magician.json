@@ -1,0 +1,112 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Skaduwee/Magician.mp3"
+  ],
+  "spritemap": {
+    "Attack 1": {
+      "start": 0,
+      "end": 2.4838541666666667,
+      "loop": false
+    },
+    "Attack 2": {
+      "start": 4,
+      "end": 5.911125,
+      "loop": false
+    },
+    "Attack 3": {
+      "start": 7,
+      "end": 9.583458333333333,
+      "loop": false
+    },
+    "Damage 1": {
+      "start": 11,
+      "end": 11.859083333333333,
+      "loop": false
+    },
+    "Damage 2": {
+      "start": 13,
+      "end": 14.008479166666667,
+      "loop": false
+    },
+    "Damage 3": {
+      "start": 16,
+      "end": 17.008479166666667,
+      "loop": false
+    },
+    "Damage 4": {
+      "start": 19,
+      "end": 20.41935416666667,
+      "loop": false
+    },
+    "Damage 5": {
+      "start": 22,
+      "end": 23.350854166666668,
+      "loop": false
+    },
+    "Damage 6": {
+      "start": 25,
+      "end": 26.307291666666668,
+      "loop": false
+    },
+    "Enter building 1": {
+      "start": 28,
+      "end": 29.811541666666667,
+      "loop": false
+    },
+    "Enter building 2": {
+      "start": 31,
+      "end": 33.36558333333333,
+      "loop": false
+    },
+    "Location unavailable 1": {
+      "start": 35,
+      "end": 37.166375,
+      "loop": false
+    },
+    "Location unavailable 2": {
+      "start": 39,
+      "end": 41.010729166666664,
+      "loop": false
+    },
+    "Move 1": {
+      "start": 43,
+      "end": 44.525166666666664,
+      "loop": false
+    },
+    "Move 2": {
+      "start": 46,
+      "end": 47.755520833333335,
+      "loop": false
+    },
+    "Move 3": {
+      "start": 49,
+      "end": 50.49404166666667,
+      "loop": false
+    },
+    "Move 4": {
+      "start": 52,
+      "end": 54.04185416666667,
+      "loop": false
+    },
+    "Selection 1": {
+      "start": 56,
+      "end": 58.044125,
+      "loop": false
+    },
+    "Selection 2": {
+      "start": 60,
+      "end": 61.730604166666666,
+      "loop": false
+    },
+    "Selection 3": {
+      "start": 63,
+      "end": 64.9298125,
+      "loop": false
+    },
+    "Selection 4": {
+      "start": 66,
+      "end": 67.67458333333333,
+      "loop": false
+    }
+  }
+}
