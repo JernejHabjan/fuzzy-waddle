@@ -203,12 +203,18 @@ export class ProbableWaffleListeners {
           // find actors in game state by id
           const actors = gameInstance.gameState!.data.actors.filter((a) => a.id && selectedActors.includes(a.id));
           actors.forEach((actor) => {
-            if (!actor.blackboardCommands) actor.blackboardCommands = [];
-            actor.blackboardCommands.push(actor.blackboardCurrentCommand!);
+            // todo handle storing to game state
             ProbableWaffleListeners.logDebugInfo(
               `move command issued for player ${player!.playerNumber} to actor ${actor.id} at x: ${tileVec3.x}, y: ${tileVec3.y}, z: ${tileVec3.z}`
             );
           });
+          break;
+
+        case "command.issued.actor" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          const objectIds = payload.data.data!["objectIds"];
+          // todo store commands to game state?
           break;
 
         case "resource.added" as ProbableWafflePlayerDataChangeEventProperty:

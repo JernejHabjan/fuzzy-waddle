@@ -8,6 +8,7 @@ import { getGameObjectDepth, onObjectReady } from "../../../data/game-object-hel
 import { Subscription } from "rxjs";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { ContainerComponent } from "../../building/container-component";
+import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 
 export type OwnerDefinition = {
   color: { originalColor: number; epsilon: number }[];
@@ -28,6 +29,8 @@ export class OwnerComponent {
   private ownerUiElement?: Phaser.GameObjects.Graphics;
   private actorMovedSubscription?: Subscription;
   private ready: boolean = false;
+  private healthUiVisibilitySubscription?: Subscription;
+  private constructionProgressSubscription?: Subscription;
   constructor(
     private readonly gameObject: GameObject,
     public readonly ownerDefinition: OwnerDefinition
@@ -122,12 +125,10 @@ export class OwnerComponent {
     this.removeOwnerUiElement();
     if (!this.ownerColor) return;
     if (this.colorReplacePipelinePlugin) return;
-    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
-    if (!healthComponent) {
-      console.error("HealthComponent not found");
-      return;
-    }
-    const { x, y, width, height } = healthComponent.getHealthUiComponentBounds();
+    const { healthWidth, healthHeight } = this.getHealthComponentBounds();
+    const { constructionWidth, constructionHeight } = this.getConstructionProgressBounds();
+    const width = Math.max(healthWidth, constructionWidth, 25);
+    const height = Math.max(healthHeight, constructionHeight, 0);
     this.ownerUiElement = this.gameObject.scene.add.graphics();
     this.ownerUiElement.fillStyle(this.ownerColor.color);
     this.ownerUiElement.fillRect(0, 0, width + this.borderSize * 2, height + this.borderSize * 2);
@@ -135,6 +136,39 @@ export class OwnerComponent {
     setTimeout(() => {
       this.gameObject.emit(OwnerComponent.OwnerColorAppliedEvent, this.ownerColor);
     });
+  }
+
+  private getHealthComponentBounds() {
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (!healthComponent) {
+      return { healthWidth: 0, healthHeight: 0 };
+    }
+    this.healthUiVisibilitySubscription?.unsubscribe();
+    this.healthUiVisibilitySubscription = healthComponent.uiComponentsVisibilityChanged.subscribe(() => {
+      this.createOwnerUiElement();
+    });
+    const { width, height } = healthComponent.getHealthUiComponentBounds();
+    return { healthWidth: width, healthHeight: height };
+  }
+
+  private getConstructionProgressBounds() {
+    const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
+    if (!constructionSiteComponent) {
+      return { constructionWidth: 0, constructionHeight: 0 };
+    }
+    if (constructionSiteComponent.isFinished) {
+      this.constructionProgressSubscription?.unsubscribe();
+      return { constructionWidth: 0, constructionHeight: 0 };
+    }
+    this.constructionProgressSubscription?.unsubscribe();
+    this.constructionProgressSubscription = constructionSiteComponent.constructionStateChanged.subscribe(() =>
+      this.createOwnerUiElement()
+    );
+    const { width, height } = constructionSiteComponent.constructionProgressUiComponent?.getBounds() ?? {
+      width: 0,
+      height: 0
+    };
+    return { constructionWidth: width, constructionHeight: height };
   }
 
   private get barDepth() {
@@ -176,6 +210,8 @@ export class OwnerComponent {
     this.removeAllColorPipelines();
     this.removeOwnerUiElement();
     this.actorMovedSubscription?.unsubscribe();
+    this.healthUiVisibilitySubscription?.unsubscribe();
+    this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   }
 }

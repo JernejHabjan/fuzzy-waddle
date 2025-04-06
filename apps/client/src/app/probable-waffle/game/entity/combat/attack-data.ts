@@ -5,6 +5,7 @@ export interface AttackData {
   cooldown: number;
   damage: number;
   damageType: DamageType;
+  // nr of tiles the attack can reach
   range: number;
   // Type of the projectile to spawn - if not set, damage will be dealt instantly
   projectileType?: string;

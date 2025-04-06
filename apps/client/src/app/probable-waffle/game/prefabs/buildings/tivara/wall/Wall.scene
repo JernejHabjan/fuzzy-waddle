@@ -10,8 +10,8 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 1280,
-        "borderHeight": 720
+        "borderWidth": 64,
+        "borderHeight": 96
     },
     "displayList": [
         {
@@ -47,6 +47,18 @@
                     },
                     "originY": 0.8352819626557144,
                     "visible": false
+                },
+                {
+                    "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f34",
+                    "id": "a18329a8-fd03-4c4d-bfbf-d514e7fd023b",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "editorWall",
+                    "scope": "METHOD",
+                    "x": 0,
+                    "y": 0
                 }
             ]
         }

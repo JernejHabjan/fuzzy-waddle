@@ -1,3 +1,24 @@
+/**
+ * sequence - (needs all succeeded in sequence) updates in sequence - moves to succeeded if all children have succeeded, moves to failed if any have failed
+ * selector - (any succeed in sequence) updates in sequence - moves to failed if all have failed, moves to success if any have succeeded
+ * parallel - runs multiple until all SUCCESS or any FAILURE
+ * race - runs multiple until any SUCCESS or all FAILURE
+ * all - runs multiple until all finish
+ * lotto - selects one child to run
+ * repeat - runs N times or until child returns FAILURE
+ * retry - runs N times if child returns FAILURE, if child returns SUCCESS, returns SUCCESS
+ * flip - returns SUCCESS if child returns FAILURE, returns FAILURE if child returns SUCCESS
+ * succeed - returns SUCCESS
+ * fail - returns FAILURE
+ * action - runs a function
+ * condition - checks a condition
+ * wait - waits for N ms
+ * branch - runs another tree
+ * callbacks - entry, step, exit functions
+ * guards - removes node from running state if condition is false - useful with wait
+ *   while - runs until condition is true
+ *   until - runs until condition is false
+ * */
 export const PlayerAiControllerMdsl = `
 root {
     selector {
@@ -7,13 +28,14 @@ root {
         branch [ExpandBase]
         branch [ManageEconomy]
         branch [ScoutEnemy]
+        branch [CombatTactics]
     }
 }
 
 root [AdjustStrategyBasedOnGameState] {
     selector {
         sequence {
-            condition [IsPlayerWeak]
+            condition [IsEnemyPlayerWeak]
             action [ShiftToAggressiveStrategy]
         }
         sequence {
@@ -30,22 +52,12 @@ root [AdjustStrategyBasedOnGameState] {
 root [DefendBase] {
     sequence {
         condition [IsBaseUnderAttack]
-        action [AssignDefendersToEnemies]
-        branch [AttackEnemiesAtBase]
-    }
-}
-
-root [AttackEnemiesAtBase] {
-    sequence {
-        condition [IsEnemyVisible]
-        condition [HasEnoughMilitaryPower]
-        action [AttackEnemyBase]
+        action [AssignDefenders]
     }
 }
 
 root [AttackEnemy] {
     sequence {
-        condition [IsEnemyVisible]
         condition [HasEnoughMilitaryPower]
         action [AttackEnemyBase]
     }
@@ -61,54 +73,69 @@ root [ExpandBase] {
 }
 
 root [ManageEconomy] {
-    selector {
-        branch [GatherResources]
-        branch [TrainWorkers]
-        branch [OptimizeResourceGathering]
+    fail {
+        sequence {
+            branch [GatherResources]
+            branch [TrainWorkers]
+            branch [OptimizeResourceGathering]
+        }
     }
 }
 
 root [GatherResources] {
-    sequence {
-        condition [NeedMoreResources]
-        branch [AssignWorkersToGather]
+    succeed {
+        sequence {
+            condition [NeedMoreResources]
+            branch [AssignWorkersToGather]
+        }
     }
 }
 
 root [AssignWorkersToGather] {
-    sequence {
-        action [AssignWorkersToResource]
-        action [GatherResource]
-    }
+    action [AssignWorkersToResource]
 }
 
 root [TrainWorkers] {
-    sequence {
-        condition [HasIdleTrainingBuilding]
-        condition [HasEnoughResourcesForWorker]
-        action [TrainWorker]
+    succeed {
+        sequence {
+            condition [NeedMoreWorkers]
+            condition [HasIdleTrainingBuilding]
+            condition [HasEnoughResourcesForWorker]
+            action [TrainWorker]
+        }
     }
 }
 
 root [OptimizeResourceGathering] {
-    selector {
-        sequence {
-            condition [ResourceShortage]
-            action [ReassignWorkersToResource]
+    succeed {
+        selector {
+            sequence {
+                condition [ResourceShortage]
+                action [ReassignWorkersToResource]
+            }
+            sequence {
+                condition [SufficientResourcesForUpgrade]
+                action [StartUpgrade]
+            }
+            action [ContinueNormalGathering]
         }
-        sequence {
-            condition [SufficientResourcesForUpgrade]
-            action [StartUpgrade]
-        }
-        action [ContinueNormalGathering]
     }
 }
 
 root [ChooseStructureToBuild] {
     selector {
-        condition [NeedMoreHousing]
-        condition [NeedMoreProduction]
-        condition [NeedMoreDefense]
+        sequence {
+            condition [NeedMoreHousing]
+            action [AssignHousingBuilding]
+        }
+        sequence {
+            condition [NeedMoreProduction]
+            action [AssignProductionBuilding]
+        }
+        sequence {
+            condition [NeedMoreDefense]
+            action [AssignDefenseBuilding]
+        }
     }
 }
 
@@ -160,7 +187,7 @@ root [ExecuteCombatMicro] {
 }
 
 root [AnalyzeEnemyBase] {
-    selector {
+    sequence {
         action [GatherEnemyData]
         action [DecideNextMoveBasedOnAnalysis]
     }

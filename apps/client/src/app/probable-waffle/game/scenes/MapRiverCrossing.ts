@@ -5,6 +5,7 @@
 import GameProbableWaffleScene from "./GameProbableWaffleScene";
 import Spawn from "../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../editor-components/EditorOwner";
+import Wall from "../prefabs/buildings/tivara/wall/Wall";
 import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
 import Sheep from "../prefabs/animals/Sheep";
 import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
@@ -22,21 +23,16 @@ import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
 import TallGrass1 from "../prefabs/outside/foliage/tall_grass/TallGrass1";
 import Olival from "../prefabs/buildings/tivara/Olival";
-import WallTopLeftTopRight from "../prefabs/buildings/tivara/wall/WallTopLeftTopRight";
-import WallTopRight from "../prefabs/buildings/tivara/wall/WallTopRight";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import BushDownwardsSmall from "../prefabs/outside/foliage/bushes/BushDownwardsSmall";
 import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
 import BridgeStone from "../prefabs/outside/architecture/river/BridgeStone";
 import BlockStone2 from "../prefabs/outside/nature/block_stone/BlockStone2";
 import BlockStone1 from "../prefabs/outside/nature/block_stone/BlockStone1";
-import BlockStoneTopRight from "../prefabs/outside/nature/block_stone_grass/BlockStoneTopRight";
 import BlockStoneTopRightBottomRight from "../prefabs/outside/nature/block_stone_grass/BlockStoneTopRightBottomRight";
 import TreeTrunk from "../prefabs/outside/foliage/tree_trunks/TreeTrunk";
 import RampStoneTopRight from "../prefabs/outside/nature/ramp/stone/RampStoneTopRight";
-import RampStoneTopLeft from "../prefabs/outside/nature/ramp/stone/RampStoneTopLeft";
 import RockPiles5 from "../prefabs/outside/nature/rock_piles/RockPiles5";
-import RockPiles6 from "../prefabs/outside/nature/rock_piles/RockPiles6";
 import RockPiles2 from "../prefabs/outside/nature/rock_piles/RockPiles2";
 import RockPiles3 from "../prefabs/outside/nature/rock_piles/RockPiles3";
 import Tree4 from "../prefabs/outside/foliage/trees/resources/Tree4";
@@ -72,7 +68,7 @@ import TallGrass5 from "../prefabs/outside/foliage/tall_grass/TallGrass5";
 import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
 import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
-import StairsRight from "../prefabs/buildings/tivara/wall/StairsRight";
+import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -94,18 +90,22 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], -32, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
     this.add.existing(spawn);
+
+    // wall_6
+    const wall_6 = new Wall(this, -448, 256);
+    this.add.existing(wall_6);
 
     // christmasTree
     const christmasTree = new ChristmasTree(this, -288, 1184);
     this.add.existing(christmasTree);
 
     // spawn_1
-    const spawn_1 = new Spawn(this, 1296, 816);
+    const spawn_1 = new Spawn(this, 1248, 800);
     this.add.existing(spawn_1);
 
     // christmasTree_1
@@ -132,20 +132,24 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree_11 = new Tree7(this, 160, 1328);
     this.add.existing(tree_11);
 
+    // wall_7
+    const wall_7 = new Wall(this, -416, 272);
+    this.add.existing(wall_7);
+
     // owlery
-    const owlery = new Owlery(this, 1024, 912);
+    const owlery = new Owlery(this, 992, 880);
     this.add.existing(owlery);
 
     // infantryInn
-    const infantryInn = new InfantryInn(this, 1120, 960);
+    const infantryInn = new InfantryInn(this, 1088, 928);
     this.add.existing(infantryInn);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, -48, 336);
+    const ankGuard = new AnkGuard(this, -64, 336);
     this.add.existing(ankGuard);
 
     // temple
-    const temple = new Temple(this, -192, 464);
+    const temple = new Temple(this, -128, 464);
     this.add.existing(temple);
 
     // skaduweeWorkerMale
@@ -153,7 +157,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerMale);
 
     // skaduweeWorkerFemale
-    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 960, 736);
+    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1024, 736);
     this.add.existing(skaduweeWorkerFemale);
 
     // skaduweeRangedFemale
@@ -169,7 +173,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(generalWarrior);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, -80, 704);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, -256, 528);
     this.add.existing(tivaraSlingshotFemale);
 
     // tallGrass_7
@@ -177,19 +181,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tallGrass_7);
 
     // olival
-    const olival = new Olival(this, 128, 784);
+    const olival = new Olival(this, 128, 768);
     this.add.existing(olival);
 
-    // wallTopLeftTopRight
-    const wallTopLeftTopRight = new WallTopLeftTopRight(this, -480, 256);
-    this.add.existing(wallTopLeftTopRight);
-
-    // wallTopRight
-    const wallTopRight = new WallTopRight(this, -448, 272);
-    this.add.existing(wallTopRight);
-
     // watchTower
-    const watchTower = new WatchTower(this, -400, 288);
+    const watchTower = new WatchTower(this, -352, 288);
     this.add.existing(watchTower);
 
     // bushDownwardsSmall
@@ -201,43 +197,35 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDownwardsLarge);
 
     // bridgeStone
-    const bridgeStone = new BridgeStone(this, -96, 848);
+    const bridgeStone = new BridgeStone(this, -64, 864);
     this.add.existing(bridgeStone);
 
-    // blockStone2
-    const blockStone2 = new BlockStone2(this, 0, 16);
-    this.add.existing(blockStone2);
-
     // blockStone
-    const blockStone = new BlockStone2(this, -32, 32);
+    const blockStone = new BlockStone2(this, 0, 32);
     this.add.existing(blockStone);
 
     // blockStone1
-    const blockStone1 = new BlockStone1(this, 32, 32);
+    const blockStone1 = new BlockStone1(this, 64, 32);
     this.add.existing(blockStone1);
 
     // blockStone_1
-    const blockStone_1 = new BlockStone1(this, -64, 48);
+    const blockStone_1 = new BlockStone1(this, -32, 48);
     this.add.existing(blockStone_1);
 
     // blockStone_2
-    const blockStone_2 = new BlockStone2(this, 0, 48);
+    const blockStone_2 = new BlockStone2(this, 32, 48);
     this.add.existing(blockStone_2);
 
     // blockStone_3
-    const blockStone_3 = new BlockStone2(this, -32, 64);
+    const blockStone_3 = new BlockStone2(this, 0, 64);
     this.add.existing(blockStone_3);
 
-    // blockStoneTopRight
-    const blockStoneTopRight = new BlockStoneTopRight(this, -96, 64);
-    this.add.existing(blockStoneTopRight);
-
     // blockStoneTopRightBottomRight
-    const blockStoneTopRightBottomRight = new BlockStoneTopRightBottomRight(this, -64, 80);
+    const blockStoneTopRightBottomRight = new BlockStoneTopRightBottomRight(this, -64, 64);
     this.add.existing(blockStoneTopRightBottomRight);
 
     // blockStone_4
-    const blockStone_4 = new BlockStone1(this, -32, 96);
+    const blockStone_4 = new BlockStone1(this, -32, 80);
     this.add.existing(blockStone_4);
 
     // treeTrunk
@@ -245,67 +233,55 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(treeTrunk);
 
     // rampStoneTopRight
-    const rampStoneTopRight = new RampStoneTopRight(this, -64, 96);
+    const rampStoneTopRight = new RampStoneTopRight(this, -64, 80);
     this.add.existing(rampStoneTopRight);
 
-    // rampStoneTopLeft
-    const rampStoneTopLeft = new RampStoneTopLeft(this, 0, 112);
-    this.add.existing(rampStoneTopLeft);
-
     // blockStone_5
-    const blockStone_5 = new BlockStone2(this, 0, -16);
+    const blockStone_5 = new BlockStone2(this, 32, -16);
     this.add.existing(blockStone_5);
 
     // blockStone_6
-    const blockStone_6 = new BlockStone2(this, 32, 0);
+    const blockStone_6 = new BlockStone2(this, 64, 0);
     this.add.existing(blockStone_6);
 
-    // rampStoneTopRight_1
-    const rampStoneTopRight_1 = new RampStoneTopRight(this, 0, 16);
-    this.add.existing(rampStoneTopRight_1);
-
     // rockPiles5
-    const rockPiles5 = new RockPiles5(this, -48, 160);
+    const rockPiles5 = new RockPiles5(this, 64, 160);
     this.add.existing(rockPiles5);
 
     // blockStone_7
-    const blockStone_7 = new BlockStone2(this, 0, 176);
+    const blockStone_7 = new BlockStone2(this, 128, 160);
     this.add.existing(blockStone_7);
 
-    // rockPiles6
-    const rockPiles6 = new RockPiles6(this, 48, 160);
-    this.add.existing(rockPiles6);
-
     // blockStone_8
-    const blockStone_8 = new BlockStone2(this, 0, 144);
+    const blockStone_8 = new BlockStone2(this, 128, 128);
     this.add.existing(blockStone_8);
 
     // blockStone_9
-    const blockStone_9 = new BlockStone2(this, 0, 112);
+    const blockStone_9 = new BlockStone2(this, 128, 96);
     this.add.existing(blockStone_9);
 
     // blockStone_10
-    const blockStone_10 = new BlockStone2(this, 0, 80);
+    const blockStone_10 = new BlockStone2(this, 128, 64);
     this.add.existing(blockStone_10);
 
     // blockStone_11
-    const blockStone_11 = new BlockStone2(this, 0, 48);
+    const blockStone_11 = new BlockStone2(this, 128, 32);
     this.add.existing(blockStone_11);
 
     // rockPiles2
-    const rockPiles2 = new RockPiles2(this, 32, 192);
+    const rockPiles2 = new RockPiles2(this, 160, 176);
     this.add.existing(rockPiles2);
 
     // rockPiles3
-    const rockPiles3 = new RockPiles3(this, -32, 192);
+    const rockPiles3 = new RockPiles3(this, 96, 176);
     this.add.existing(rockPiles3);
 
     // rockPiles
-    const rockPiles = new RockPiles2(this, 0, 208);
+    const rockPiles = new RockPiles2(this, 128, 192);
     this.add.existing(rockPiles);
 
     // tree4
-    const tree4 = new Tree4(this, 0, 16);
+    const tree4 = new Tree4(this, 128, 0);
     this.add.existing(tree4);
 
     // tree7
@@ -357,7 +333,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDry_2);
 
     // bushDry_3
-    const bushDry_3 = new BushDry(this, -192, 160);
+    const bushDry_3 = new BushDry(this, -224, 160);
     this.add.existing(bushDry_3);
 
     // bushUpwardsSmall
@@ -377,35 +353,35 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(bushDry_4);
 
     // tree
-    const tree = new Tree5(this, -704, 464);
+    const tree = new Tree5(this, -704, 480);
     this.add.existing(tree);
 
     // workMill
-    const workMill = new WorkMill(this, -560, 512);
+    const workMill = new WorkMill(this, -544, 512);
     this.add.existing(workMill);
 
     // blockStone_12
-    const blockStone_12 = new BlockStone1(this, 352, 976);
+    const blockStone_12 = new BlockStone1(this, 384, 976);
     this.add.existing(blockStone_12);
 
     // blockStoneWater1
-    const blockStoneWater1 = new BlockStoneWater1(this, 384, 944);
+    const blockStoneWater1 = new BlockStoneWater1(this, 416, 928);
     this.add.existing(blockStoneWater1);
 
     // blockStoneWater4
-    const blockStoneWater4 = new BlockStoneWater4(this, 352, 944);
+    const blockStoneWater4 = new BlockStoneWater4(this, 384, 944);
     this.add.existing(blockStoneWater4);
 
     // blockStoneWater3
-    const blockStoneWater3 = new BlockStoneWater3(this, 416, 976);
+    const blockStoneWater3 = new BlockStoneWater3(this, 448, 976);
     this.add.existing(blockStoneWater3);
 
     // blockStoneWater
-    const blockStoneWater = new BlockStoneWater4(this, 384, 992);
+    const blockStoneWater = new BlockStoneWater4(this, 416, 992);
     this.add.existing(blockStoneWater);
 
     // rockPiles_1
-    const rockPiles_1 = new RockPiles5(this, 320, 992);
+    const rockPiles_1 = new RockPiles5(this, 352, 992);
     this.add.existing(rockPiles_1);
 
     // tree_6
@@ -433,7 +409,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_13);
 
     // tree5
-    const tree5 = new Tree5(this, -800, 480);
+    const tree5 = new Tree5(this, -800, 464);
     this.add.existing(tree5);
 
     // skaduweeOwl
@@ -441,7 +417,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeOwl);
 
     // tree10
-    const tree10 = new Tree10(this, 672, 576);
+    const tree10 = new Tree10(this, 640, 576);
     this.add.existing(tree10);
 
     // tree9
@@ -485,7 +461,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(fenceTopLeft_1);
 
     // fenceLeft
-    const fenceLeft = new FenceLeft(this, -304, 1232);
+    const fenceLeft = new FenceLeft(this, -301, 1233);
     this.add.existing(fenceLeft);
 
     // fenceBottomLeft
@@ -513,51 +489,51 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(fenceBottom);
 
     // stonePile
-    const stonePile = new StonePile(this, -592, 784);
+    const stonePile = new StonePile(this, -608, 784);
     this.add.existing(stonePile);
 
     // stonePile_1
-    const stonePile_1 = new StonePile(this, -624, 800);
+    const stonePile_1 = new StonePile(this, -640, 800);
     this.add.existing(stonePile_1);
 
     // stonePile_2
-    const stonePile_2 = new StonePile(this, -560, 800);
+    const stonePile_2 = new StonePile(this, -576, 800);
     this.add.existing(stonePile_2);
 
     // stonePile_3
-    const stonePile_3 = new StonePile(this, -592, 816);
+    const stonePile_3 = new StonePile(this, -608, 816);
     this.add.existing(stonePile_3);
 
     // stonePile_4
-    const stonePile_4 = new StonePile(this, -656, 784);
+    const stonePile_4 = new StonePile(this, -672, 784);
     this.add.existing(stonePile_4);
 
     // stonePile_5
-    const stonePile_5 = new StonePile(this, -656, 816);
+    const stonePile_5 = new StonePile(this, -672, 816);
     this.add.existing(stonePile_5);
 
     // minerals
-    const minerals = new Minerals(this, -240, 240);
+    const minerals = new Minerals(this, -224, 240);
     this.add.existing(minerals);
 
     // minerals_1
-    const minerals_1 = new Minerals(this, -208, 224);
+    const minerals_1 = new Minerals(this, -192, 224);
     this.add.existing(minerals_1);
 
     // minerals_2
-    const minerals_2 = new Minerals(this, -208, 256);
+    const minerals_2 = new Minerals(this, -192, 256);
     this.add.existing(minerals_2);
 
     // minerals_3
-    const minerals_3 = new Minerals(this, -176, 272);
+    const minerals_3 = new Minerals(this, -160, 240);
     this.add.existing(minerals_3);
 
     // minerals_4
-    const minerals_4 = new Minerals(this, -272, 256);
+    const minerals_4 = new Minerals(this, -256, 256);
     this.add.existing(minerals_4);
 
     // minerals_5
-    const minerals_5 = new Minerals(this, -240, 272);
+    const minerals_5 = new Minerals(this, -224, 272);
     this.add.existing(minerals_5);
 
     // tallGrass_5
@@ -609,19 +585,19 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tallGrass3);
 
     // tallGrass_8
-    const tallGrass_8 = new TallGrass1(this, -16, 896);
+    const tallGrass_8 = new TallGrass1(this, 32, 896);
     this.add.existing(tallGrass_8);
 
     // tallGrass0
-    const tallGrass0 = new TallGrass0(this, 16, 912);
+    const tallGrass0 = new TallGrass0(this, 64, 912);
     this.add.existing(tallGrass0);
 
     // tallGrass5
-    const tallGrass5 = new TallGrass5(this, -96, 912);
+    const tallGrass5 = new TallGrass5(this, -32, 928);
     this.add.existing(tallGrass5);
 
     // tallGrass_6
-    const tallGrass_6 = new TallGrass3(this, -48, 880);
+    const tallGrass_6 = new TallGrass3(this, 0, 880);
     this.add.existing(tallGrass_6);
 
     // reeds1
@@ -641,7 +617,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(reeds_2);
 
     // reeds_3
-    const reeds_3 = new Reeds1(this, -16, 880);
+    const reeds_3 = new Reeds1(this, 64, 896);
     this.add.existing(reeds_3);
 
     // reeds_4
@@ -649,11 +625,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(reeds_4);
 
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -192, 704);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -224, 704);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, -352, 448);
+    const tivaraWorkerMale = new TivaraWorkerMale(this, -352, 464);
     this.add.existing(tivaraWorkerMale);
 
     // workMill_1
@@ -661,20 +637,32 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(workMill_1);
 
     // tree_15
-    const tree_15 = new Tree7(this, 1152, 608);
+    const tree_15 = new Tree7(this, 1184, 624);
     this.add.existing(tree_15);
 
     // tree_16
-    const tree_16 = new Tree7(this, 1216, 640);
+    const tree_16 = new Tree7(this, 1248, 640);
     this.add.existing(tree_16);
 
     // tree_17
-    const tree_17 = new Tree7(this, 1168, 656);
+    const tree_17 = new Tree7(this, 1152, 672);
     this.add.existing(tree_17);
 
-    // stairsRight
-    const stairsRight = new StairsRight(this, -512, 272);
-    this.add.existing(stairsRight);
+    // wall
+    const wall = new Wall(this, 512, 768);
+    this.add.existing(wall);
+
+    // stairs
+    const stairs = new Stairs(this, 480, 784);
+    this.add.existing(stairs);
+
+    // stairs_1
+    const stairs_1 = new Stairs(this, 544, 752);
+    this.add.existing(stairs_1);
+
+    // stairs_2
+    const stairs_2 = new Stairs(this, -480, 272);
+    this.add.existing(stairs_2);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -723,14 +711,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // olival (components)
     const olivalEditorOwner = new EditorOwner(olival);
     olivalEditorOwner.owner_id = "1";
-
-    // wallTopLeftTopRight (components)
-    const wallTopLeftTopRightEditorOwner = new EditorOwner(wallTopLeftTopRight);
-    wallTopLeftTopRightEditorOwner.owner_id = "1";
-
-    // wallTopRight (components)
-    const wallTopRightEditorOwner = new EditorOwner(wallTopRight);
-    wallTopRightEditorOwner.owner_id = "1";
 
     // watchTower (components)
     const watchTowerEditorOwner = new EditorOwner(watchTower);

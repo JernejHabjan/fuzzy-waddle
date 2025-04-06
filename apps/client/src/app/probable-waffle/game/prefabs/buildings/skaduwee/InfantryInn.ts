@@ -8,7 +8,8 @@ import InfantryInnFoundation2 from "./InfantryInn/InfantryInnFoundation2";
 import InfantryInnLevel1 from "./InfantryInn/InfantryInnLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
-import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class InfantryInn extends Phaser.GameObjects.Container {
@@ -54,10 +55,14 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.InfantryInn;
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.infantryInnCursor)],
+      []
+    );
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     this.infantryInnCursor.visible = progress === null;
     this.infantryInnLevel1.visible = progress === 100;
     this.infantryInnFoundation1.visible = progress !== null && progress < 50;
@@ -65,7 +70,7 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
     if (this.infantryInnLevel1.visible) {
       this.infantryInnLevel1.start();
     }
-  }
+  };
 
   /* END-USER-CODE */
 }

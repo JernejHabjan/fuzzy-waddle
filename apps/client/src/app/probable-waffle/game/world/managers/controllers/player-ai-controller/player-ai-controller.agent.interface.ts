@@ -4,7 +4,6 @@ export interface IPlayerControllerAgent {
   // Combat-related actions
   IsBaseUnderAttack(): boolean;
   IsBaseUnderHeavyAttack(): boolean;
-  IsEnemyVisible(): boolean;
   AssignDefendersToEnemies(): State;
   AttackEnemyBase(): State;
   IsInCombat(): boolean;
@@ -33,6 +32,7 @@ export interface IPlayerControllerAgent {
   AssignWorkersToResource(): State;
   ReassignWorkersToResource(): State;
   ContinueNormalGathering(): State;
+  NeedMoreWorkers(): boolean;
 
   // Building and construction
   IsBaseExpansionNeeded(): boolean;
@@ -41,6 +41,9 @@ export interface IPlayerControllerAgent {
   NeedMoreHousing(): boolean;
   NeedMoreProduction(): boolean;
   NeedMoreDefense(): boolean;
+  AssignHousingBuilding(): State;
+  AssignProductionBuilding(): State;
+  AssignDefenseBuilding(): State;
 
   // Upgrades and improvements
   StartUpgrade(): State;
@@ -58,5 +61,5 @@ export interface IPlayerControllerAgent {
   ShiftToDefensiveStrategy(): State;
   ShiftToEconomicStrategy(): State;
   DecideNextMoveBasedOnAnalysis(): State;
-  IsPlayerWeak(): boolean;
+  IsEnemyPlayerWeak(): boolean;
 }

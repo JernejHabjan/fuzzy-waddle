@@ -48,3 +48,40 @@ export function getTilesAroundGameObjectsOfShape(
   }
   return tiles;
 }
+
+export function getNeighboursByTypes(
+  gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform,
+  neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[],
+  tileWidth: number
+): {
+  topLeft: boolean;
+  topRight: boolean;
+  bottomLeft: boolean;
+  bottomRight: boolean;
+} {
+  const tileHeight = tileWidth / 2;
+
+  const allObjects = gameObject.scene.children.list.filter(
+    (child) => child !== gameObject && neighbourTypes.some((type) => child instanceof type && child.active)
+  ) as (Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform)[];
+
+  const topLeftObject = allObjects.find(
+    (wall) => wall.x === gameObject.x - tileWidth / 2 && wall.y === gameObject.y - tileHeight / 2
+  );
+  const topRightObject = allObjects.find(
+    (wall) => wall.x === gameObject.x + tileWidth / 2 && wall.y === gameObject.y - tileHeight / 2
+  );
+  const bottomLeftObject = allObjects.find(
+    (wall) => wall.x === gameObject.x - tileWidth / 2 && wall.y === gameObject.y + tileHeight / 2
+  );
+  const bottomRightObject = allObjects.find(
+    (wall) => wall.x === gameObject.x + tileWidth / 2 && wall.y === gameObject.y + tileHeight / 2
+  );
+
+  return {
+    topLeft: !!topLeftObject,
+    topRight: !!topRightObject,
+    bottomLeft: !!bottomLeftObject,
+    bottomRight: !!bottomRightObject
+  };
+}

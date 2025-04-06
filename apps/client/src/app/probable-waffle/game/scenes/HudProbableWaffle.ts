@@ -9,6 +9,7 @@ import GameActions from "../prefabs/gui/buttons/GameActions";
 import Resources from "../prefabs/gui/labels/Resources";
 import AiControllerDebugPanel from "../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
 import GameSpeedModifier from "../prefabs/gui/buttons/GameSpeedModifier";
+import HudMessages from "../prefabs/gui/labels/HudMessages";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
@@ -61,6 +62,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
     this.add.existing(gameSpeedModifier);
 
+    // hudMessages
+    const hudMessages = new HudMessages(this, 6, 472);
+    this.add.existing(hudMessages);
+    hudMessages.setStyle({});
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -71,6 +77,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
     this.gameSpeedModifier = gameSpeedModifier;
+    this.hudMessages = hudMessages;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -83,6 +90,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
   private gameSpeedModifier!: GameSpeedModifier;
+  private hudMessages!: HudMessages;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -139,6 +147,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.minimap_container.scaleX = sceneWidth > this.minimap_container.minimapSmallScreenBreakpoint ? 1.026 : 0.55;
     this.minimap_container.scaleY = sceneWidth > this.minimap_container.minimapSmallScreenBreakpoint ? 0.953 : 0.55;
     this.minimap_container.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
+    const minimapHeight = getGameObjectBounds(this.minimap_container)!.height;
+
+    // set hudMessages above minimap on left side
+    this.hudMessages.x = 10;
+    this.hudMessages.y = this.scale.height - minimapHeight - 10;
 
     // set actor actions to bottom right
     this.actor_actions_container.x = this.scale.width;
@@ -161,7 +174,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // position game speed modifier above minimap on left side
     this.gameSpeedModifier.x = 10;
-    const minimapHeight = getGameObjectBounds(this.minimap_container)!.height;
     this.gameSpeedModifier.y = this.scale.height - minimapHeight + 10;
     this.gameSpeedModifier.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     // hide if game mode is not single player

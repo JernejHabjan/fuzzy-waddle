@@ -8,7 +8,8 @@ import WorkMillFoundation2 from "./WorkMill/WorkMillFoundation2";
 import WorkMillLevel1 from "./WorkMill/WorkMillLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
-import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class WorkMill extends Phaser.GameObjects.Container {
@@ -59,15 +60,19 @@ export default class WorkMill extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.WorkMill;
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.workMillCursor)],
+      []
+    );
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     this.workMillCursor.visible = progress === null;
     this.workMillLevel1.visible = progress === 100;
     this.workMillFoundation1.visible = progress !== null && progress < 50;
     this.workMillFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
-  }
+  };
 
   /* END-USER-CODE */
 }

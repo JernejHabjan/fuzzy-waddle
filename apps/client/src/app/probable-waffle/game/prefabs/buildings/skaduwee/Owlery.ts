@@ -8,7 +8,8 @@ import OwleryFoundation2 from "./Owlery/OwleryFoundation2";
 import OwleryLevel1 from "./Owlery/OwleryLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
-import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class Owlery extends Phaser.GameObjects.Container {
@@ -59,10 +60,14 @@ export default class Owlery extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.Owlery;
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.owleryCursor)],
+      []
+    );
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     this.owleryCursor.visible = progress === null;
     this.owleryLevel1.visible = progress === 100;
     this.owleryFoundation1.visible = progress !== null && progress < 50;
@@ -70,7 +75,7 @@ export default class Owlery extends Phaser.GameObjects.Container {
     if (this.owleryLevel1.visible) {
       this.owleryLevel1.start();
     }
-  }
+  };
   /* END-USER-CODE */
 }
 

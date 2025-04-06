@@ -8,7 +8,8 @@ import WatchTowerFoundation2 from "./WatchTower/WatchTowerFoundation2";
 import WatchTowerLevel1 from "./WatchTower/WatchTowerLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../../data/object-names";
-import { ConstructionHelper } from "../../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
+import { setActorData } from "../../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class WatchTower extends Phaser.GameObjects.Container {
@@ -53,15 +54,19 @@ export default class WatchTower extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.WatchTower;
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.watchTowerCursor)],
+      []
+    );
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     this.watchTowerCursor.visible = progress === null;
     this.watchTowerLevel1.visible = progress === 100;
     this.watchTowerFoundation1.visible = progress !== null && progress < 50;
     this.watchTowerFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
-  }
+  };
   /* END-USER-CODE */
 }
 

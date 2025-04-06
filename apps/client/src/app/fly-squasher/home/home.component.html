@@ -5,13 +5,13 @@
 <div class="card-container d-flex flex-column">
   @if (!serverHealthService.serverChecking && !serverHealthService.serverAvailable) {
     <div class="alert alert-warning d-flex align-items-center" role="alert">
-      <fa-icon [icon]="faExclamationTriangle" class="me-2"></fa-icon>
+      <fa-icon [icon]="faExclamationTriangle" class="me-2" />
       Warning! Server is not available. Your score will not be saved.
     </div>
   } @else {
     @if (!authService.isAuthenticated) {
       <div class="alert alert-warning d-flex align-items-center" role="alert">
-        <fa-icon [icon]="faExclamationTriangle" class="me-2"></fa-icon>
+        <fa-icon [icon]="faExclamationTriangle" class="me-2" />
         Warning! You are not logged in. Your score will not be saved.
       </div>
     }

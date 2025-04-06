@@ -24,6 +24,7 @@ import { ObjectNames } from "../../../data/object-names";
 import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -304,7 +305,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   private showProductionIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
-    if (productionComponent) {
+    if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product) => {
         const actorDefinition = pwActorDefinitions[product];
@@ -334,9 +335,20 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             switch (errorCode) {
               case AssignProductionErrorCode.NotEnoughResources:
                 this.audioService.playAudioSprite("ui-feedback", "not_enough_resources");
+                this.scene.events.emit(
+                  HudMessages.HudVisualFeedbackMessageEventName,
+                  HudVisualFeedbackMessageType.NotEnoughResources
+                );
                 break;
               case AssignProductionErrorCode.QueueFull:
                 this.audioService.playAudioSprite("ui-feedback", "production_queue_full");
+                this.scene.events.emit(
+                  HudMessages.HudVisualFeedbackMessageEventName,
+                  HudVisualFeedbackMessageType.ProductionQueueFull
+                );
+                break;
+              case AssignProductionErrorCode.NotFinished:
+                console.error("Not finished");
                 break;
               case AssignProductionErrorCode.InvalidProduct:
                 console.error("Invalid product");

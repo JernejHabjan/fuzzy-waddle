@@ -1,0 +1,152 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Tivara/Worker Female.mp3"
+  ],
+  "spritemap": {
+    "Attack 1": {
+      "start": 0,
+      "end": 2.64075,
+      "loop": false
+    },
+    "Attack 2": {
+      "start": 4,
+      "end": 6.866458333333334,
+      "loop": false
+    },
+    "Attack 3": {
+      "start": 8,
+      "end": 9.873354166666667,
+      "loop": false
+    },
+    "Build 1": {
+      "start": 11,
+      "end": 13.565520833333334,
+      "loop": false
+    },
+    "Build 2": {
+      "start": 15,
+      "end": 16.602520833333333,
+      "loop": false
+    },
+    "Chop 1": {
+      "start": 18,
+      "end": 20.633229166666666,
+      "loop": false
+    },
+    "Chop 2": {
+      "start": 22,
+      "end": 24.633229166666666,
+      "loop": false
+    },
+    "Damage 1": {
+      "start": 26,
+      "end": 26.8953125,
+      "loop": false
+    },
+    "Damage 2": {
+      "start": 28,
+      "end": 28.835125,
+      "loop": false
+    },
+    "Damage 3": {
+      "start": 30,
+      "end": 30.609416666666668,
+      "loop": false
+    },
+    "Damage 4": {
+      "start": 32,
+      "end": 33.19622916666667,
+      "loop": false
+    },
+    "Damage 5": {
+      "start": 35,
+      "end": 36.263958333333335,
+      "loop": false
+    },
+    "Damage 6": {
+      "start": 38,
+      "end": 39.52727083333333,
+      "loop": false
+    },
+    "Enter building 1-2": {
+      "start": 41,
+      "end": 42.40691666666667,
+      "loop": false
+    },
+    "Enter building 1": {
+      "start": 44,
+      "end": 45.51975,
+      "loop": false
+    },
+    "Location unavailable 1": {
+      "start": 47,
+      "end": 49.2194375,
+      "loop": false
+    },
+    "Location unavailable 2": {
+      "start": 51,
+      "end": 52.54233333333333,
+      "loop": false
+    },
+    "Mine 1": {
+      "start": 54,
+      "end": 57.0395,
+      "loop": false
+    },
+    "Mine 2": {
+      "start": 59,
+      "end": 61.52791666666667,
+      "loop": false
+    },
+    "Move 1": {
+      "start": 63,
+      "end": 65.3335625,
+      "loop": false
+    },
+    "Move 2": {
+      "start": 67,
+      "end": 69.43010416666667,
+      "loop": false
+    },
+    "Move 3": {
+      "start": 71,
+      "end": 73.26458333333333,
+      "loop": false
+    },
+    "Move 4": {
+      "start": 75,
+      "end": 77.0163125,
+      "loop": false
+    },
+    "Repair 1": {
+      "start": 79,
+      "end": 81.36239583333334,
+      "loop": false
+    },
+    "Repair 2": {
+      "start": 83,
+      "end": 84.8131875,
+      "loop": false
+    },
+    "Selection 1": {
+      "start": 86,
+      "end": 88.00877083333333,
+      "loop": false
+    },
+    "Selection 2": {
+      "start": 90,
+      "end": 92.07570833333334,
+      "loop": false
+    },
+    "Selection 3": {
+      "start": 94,
+      "end": 96.28714583333333,
+      "loop": false
+    },
+    "Selection 4": {
+      "start": 98,
+      "end": 99.91845833333333,
+      "loop": false
+    }
+  }
+}

@@ -2,6 +2,10 @@ import { getSceneInitializers, getSceneService } from "../scenes/components/scen
 import { NavigationService } from "../scenes/services/navigation.service";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
+import { GameObjects } from "phaser";
+import { SelectableComponent } from "../entity/actor/components/selectable-component";
+import { IdComponent } from "../entity/actor/components/id-component";
+import { getActorComponent } from "./actor-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
@@ -66,6 +70,17 @@ export function getGameObjectCurrentTile(gameObject: Phaser.GameObjects.GameObje
   return navigationService.getCenterTileCoordUnderObject(gameObject);
 }
 
+export function getSelectableGameObject(
+  go: GameObjects.GameObject
+): (GameObjects.GameObject & { selectableComponent: SelectableComponent; idComponent: IdComponent }) | null {
+  const hasComp = !!getActorComponent(go, SelectableComponent) && !!getActorComponent(go, IdComponent);
+  if (hasComp) return go as any;
+
+  const parent = go.parentContainer;
+  if (!parent) return null;
+  return getSelectableGameObject(parent);
+}
+
 /**
  * Registers a callback to be executed when the scene is initialized.
  *
@@ -102,7 +117,10 @@ export function onObjectReady(
     if (delay === null) {
       callback.call(scope);
     } else {
-      setTimeout(() => callback.call(scope), delay);
+      setTimeout(() => {
+        if (!gameObject.active) return;
+        callback.call(scope);
+      }, delay);
     }
   };
   getSceneInitializers(gameObject.scene)

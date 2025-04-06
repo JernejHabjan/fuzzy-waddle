@@ -1,5 +1,9 @@
 import { State } from "mistreevous";
-import { IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.interface";
+import {
+  IPlayerPawnControllerAgent,
+  PlayerPawnCooldownType,
+  PlayerPawnRangeType
+} from "./player-pawn-ai-controller.agent.interface";
 import { getActorComponent } from "../../../../data/actor-component";
 import { VisionComponent } from "../../../../entity/actor/components/vision-component";
 import { GameplayLibrary } from "../../../../library/gameplay-library";
@@ -20,6 +24,9 @@ import { HealthComponent } from "../../../../entity/combat/components/health-com
 import { ContainableComponent } from "../../../../entity/actor/components/containable-component";
 import { ResourceDrainComponent } from "../../../../entity/economy/resource/resource-drain-component";
 import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
+import { OrderData } from "../../../../entity/character/ai/OrderData";
+import { HealingComponent } from "../../../../entity/combat/components/healing-component";
+import { ConstructionSiteComponent } from "../../../../entity/building/construction/construction-site-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -29,13 +36,20 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
 
   [propertyName: string]: unknown;
 
-  PlayerOrderExists() {
-    return !!this.blackboard.playerOrderType;
+  OrderExistsInQueue() {
+    return this.blackboard.anyOrderInQueue();
+  }
+
+  AssignNextOrderFromQueue() {
+    const playerOrder = this.blackboard.peekNextPlayerOrder();
+    if (!playerOrder) return State.FAILED;
+    this.blackboard.setCurrentOrder(playerOrder);
+    return State.SUCCEEDED;
   }
 
   PlayerOrderIs(orderType: string) {
-    // Check if the current player order matches the specified order type
-    return this.blackboard.playerOrderType === OrderLabelToTypeMap[orderType];
+    const currentOrder = this.blackboard.getCurrentOrder();
+    return currentOrder?.orderType === OrderLabelToTypeMap[orderType];
   }
 
   HasAttackComponent() {
@@ -45,58 +59,86 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   TargetIsAlive() {
-    const target = this.blackboard.targetGameObject;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
     if (!target) return false;
     const healthComponent = getActorComponent(target, HealthComponent);
     if (!healthComponent) return false;
-    return healthComponent.healthComponentData.health > 0;
+    return healthComponent.alive;
   }
 
-  HealthAboveThresholdPercentage(threshold: number) {
-    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
-    if (!healthComponent) return false;
-    const healthPercentage =
-      (healthComponent.healthComponentData.health / healthComponent.healthDefinition.maxHealth) * 100;
-    return healthPercentage > threshold;
-  }
-
-  InRange(type: "gather" | "attack" | "dropOff" | "construct") {
-    const target = this.blackboard.targetGameObject;
-    if (!target) return false;
+  async InRange(type: PlayerPawnRangeType): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const targetGameObject = currentOrder.data.targetGameObject;
+    const targetLocation = currentOrder.data.targetLocation;
     const range = this.getRangeToTarget(type);
-    if (!range) return false;
-
-    const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, target);
-    if (distance === null) return false;
-    return distance <= range;
-  }
-
-  private getRangeToTarget(type: "move" | "gather" | "attack" | "dropOff" | "construct"): number | undefined {
-    const target = this.blackboard.targetGameObject;
-    if (!target) return undefined;
-
-    switch (type) {
-      case "move":
-        return 0;
-      case "attack":
-        return getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
-      case "gather":
-        return getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(target);
-      case "dropOff":
-        return getActorComponent(target, ResourceDrainComponent)?.getDropOffRange();
-      case "construct":
-        return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange("");
-      default:
-        return undefined;
+    if (range === undefined) return State.FAILED;
+    if (targetGameObject) {
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      let distance: null | number;
+      if (movementSystem) {
+        const nrTiles = await movementSystem.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+          targetGameObject,
+          range
+        );
+        distance = nrTiles.length;
+      } else {
+        distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, targetGameObject);
+      }
+      if (distance === null) return State.FAILED;
+      return distance <= range ? State.SUCCEEDED : State.FAILED;
+    } else if (targetLocation) {
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      if (!movementSystem) return State.FAILED;
+      const distance = GameplayLibrary.getTileDistanceBetweenGameObjectAndTile(this.gameObject, targetLocation);
+      if (distance === null) return State.FAILED;
+      return distance <= range ? State.SUCCEEDED : State.FAILED;
+    } else {
+      return State.FAILED;
     }
   }
 
-  async MoveToTarget(type: "move" | "gather" | "attack" | "dropOff" | "construct"): Promise<State> {
-    const target = this.blackboard.targetGameObject;
+  private getRangeToTarget(type: PlayerPawnRangeType): number | undefined {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return undefined;
+
+    const targetGameObject = currentOrder.data.targetGameObject;
+    const targetLocation = currentOrder.data.targetLocation;
+    if (targetGameObject) {
+      switch (type) {
+        case "move":
+          return 0;
+        case "attack":
+          return getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
+        case "gather":
+          return getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(targetGameObject);
+        case "dropOff":
+          return getActorComponent(targetGameObject, ResourceDrainComponent)?.getDropOffRange();
+        case "construct":
+          return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange();
+        case "heal":
+          return getActorComponent(this.gameObject, HealingComponent)?.getHealRange();
+        case "repair":
+          return getActorComponent(this.gameObject, BuilderComponent)?.getRepairRange();
+        default:
+          throw new Error("Invalid range type");
+      }
+    } else if (targetLocation) {
+      // range to location is always 0
+      return 0;
+    }
+    return undefined;
+  }
+
+  async MoveToTarget(type: PlayerPawnRangeType): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
     const range = this.getRangeToTarget(type);
     if (range === undefined) return State.FAILED;
-    this.blackboard.aiOrderType = OrderType.Move;
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
     try {
@@ -113,23 +155,81 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     }
   }
 
-  Stop() {
-    this.blackboard.aiOrderType = OrderType.Stop;
-    this.blackboard.targetGameObject = undefined;
-    this.blackboard.targetLocation = undefined;
-
-    return State.SUCCEEDED;
+  async MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    const location = currentOrder.data.targetLocation;
+    if (target) {
+      return await this.MoveToTarget(type);
+    } else if (location) {
+      return await this.MoveToLocation();
+    } else {
+      return Promise.resolve(State.FAILED);
+    }
   }
 
+  async MoveToLocation() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const location = currentOrder.data.targetLocation;
+    if (!location) return State.FAILED;
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+    try {
+      const success = await movementSystem.moveToLocation(location);
+      return success ? State.SUCCEEDED : State.FAILED;
+    } catch (e) {
+      console.error("Error in MoveToLocation", e);
+      this.Stop();
+      return State.FAILED;
+    }
+  }
+
+  Stop = () => {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (currentOrder) {
+      // exit container
+      const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
+      if (containableComponent) {
+        containableComponent.leaveContainer();
+      }
+      switch (currentOrder.orderType) {
+        case OrderType.Move:
+          const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+          if (movementSystem) {
+            movementSystem.cancelMovement();
+          }
+          break;
+        case OrderType.Build:
+          const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+          if (builderComponent) {
+            builderComponent.leaveConstructionSite();
+          }
+          break;
+        case OrderType.Repair:
+          const builderComponent2 = getActorComponent(this.gameObject, BuilderComponent);
+          if (builderComponent2) {
+            builderComponent2.leaveRepairSite();
+          }
+          break;
+      }
+      this.blackboard.resetCurrentOrder(false);
+    }
+
+    this.blackboard.popCurrentOrderFromQueue();
+    return State.SUCCEEDED;
+  };
+
   Attack() {
-    const target = this.blackboard.targetGameObject;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
     const primaryAttack = attackComponent.primaryAttack;
     if (primaryAttack === null) return State.FAILED;
-    this.blackboard.aiOrderType = OrderType.Attack;
-    this.blackboard.targetLocation = undefined;
     attackComponent.useAttack(primaryAttack, target);
     return State.SUCCEEDED;
   }
@@ -141,11 +241,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   private async CanMoveToTarget(range: number): Promise<boolean> {
-    if (!this.blackboard.targetGameObject) return Promise.resolve(false);
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return Promise.resolve(false);
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return Promise.resolve(false);
     // noinspection UnnecessaryLocalVariableJS
-    return await movementSystem.canMoveTo(this.blackboard.targetGameObject, range);
+    return await movementSystem.canMoveTo(target, range);
   }
 
   AcquireNewResourceSource() {
@@ -159,46 +262,49 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       resourceSource = gathererComponent.getNewResourceSource();
     }
     if (!resourceSource) return State.FAILED;
-    this.blackboard.targetGameObject = resourceSource;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    currentOrder.data.targetGameObject = resourceSource;
     return State.SUCCEEDED;
   }
 
-  AssignResourceDropOff() {
+  AcquireNewResourceDrain() {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     const resourceDrain = gathererComponent.getPreferredResourceDrain();
     if (!resourceDrain) return State.FAILED;
-    this.blackboard.targetGameObject = resourceDrain;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    currentOrder.data.targetGameObject = resourceDrain;
     return State.SUCCEEDED;
   }
 
   async GatherResource(): Promise<State> {
-    const target = this.blackboard.targetGameObject;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     const successfullyStarted = gathererComponent.startGatheringResources(target);
     if (!successfullyStarted) return State.FAILED;
     await gathererComponent.gatherResources(target);
-    this.blackboard.aiOrderType = OrderType.Gather;
-    this.blackboard.targetLocation = undefined;
     return State.SUCCEEDED;
   }
 
   async DropOffResources() {
-    const target = this.blackboard.targetGameObject;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     await gathererComponent.returnResources(target);
-    this.blackboard.aiOrderType = OrderType.ReturnResources;
-    this.blackboard.targetLocation = undefined;
     return State.SUCCEEDED;
   }
 
   ContinueGathering() {
-    this.blackboard.aiOrderType = OrderType.Gather;
-    this.blackboard.targetLocation = undefined;
+    this.AcquireNewResourceSource();
     return State.SUCCEEDED;
   }
 
@@ -213,11 +319,28 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   }
 
   ConstructBuilding() {
-    // Command the agent to construct a building
-    console.log("Constructing building!");
-    this.blackboard.aiOrderType = OrderType.BeginConstruction;
-    this.blackboard.targetLocation = undefined;
+    const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+    if (!builderComponent) return State.FAILED;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+    builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
+  }
+
+  CanAssignBuilder(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return false;
+    return constructionSiteComponent.canAssignBuilder();
+  }
+
+  HasBuilderComponent(): boolean {
+    return !!getActorComponent(this.gameObject, BuilderComponent);
   }
 
   Attacked() {
@@ -229,6 +352,30 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return attacked;
   }
 
+  Heal(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+    const healingComponent = getActorComponent(this.gameObject, HealingComponent);
+    if (!healingComponent) return State.FAILED;
+    healingComponent.heal(target);
+    return State.SUCCEEDED;
+  }
+
+  CanHeal(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const healthComponent = getActorComponent(target, HealthComponent);
+    if (!healthComponent) return false;
+    return !healthComponent.healthIsFull;
+  }
+  HasHealerComponent(): boolean {
+    return !!getActorComponent(this.gameObject, HealingComponent);
+  }
+
   AssignEnemy(source: string): State {
     switch (source) {
       case "vision":
@@ -236,14 +383,16 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
         if (!visionComponent) return State.FAILED;
         const visibleEnemy = visionComponent.getClosestVisibleEnemy();
         if (!visibleEnemy) return State.FAILED;
-        this.blackboard.targetGameObject = visibleEnemy;
+        this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: visibleEnemy }));
         return State.SUCCEEDED;
       case "retaliation": // todo
         const healthComponent = getActorComponent(this.gameObject, HealthComponent);
         if (!healthComponent) return State.FAILED;
         const latestDamage = healthComponent.latestDamage;
         if (!latestDamage) return State.FAILED;
-        this.blackboard.targetGameObject = latestDamage.damageInitiator;
+        const attacker = latestDamage.damageInitiator;
+        if (!attacker) return State.FAILED;
+        this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: attacker }));
         return State.SUCCEEDED;
       default:
         console.error("Invalid source for AssignEnemy.");
@@ -254,43 +403,65 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   /**
    * Command the agent to move randomly within the specified range
    */
-  async MoveRandomlyInRange(range: number) {
+  async AssignMoveRandomlyInRange(range: number) {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
     const randomTile = await getRandomTileInNavigableRadius(this.gameObject, range);
     if (!randomTile) return State.FAILED;
-    this.blackboard.targetLocation = { x: randomTile.x, y: randomTile.y, z: 0 } satisfies Vector3Simple;
-    this.blackboard.aiOrderType = OrderType.Move;
-    this.blackboard.targetGameObject = undefined;
-    await movementSystem.moveToLocation(this.blackboard.targetLocation);
+    const targetLocation = { x: randomTile.x, y: randomTile.y, z: 0 } satisfies Vector3Simple;
+    this.blackboard.addOrder(new OrderData(OrderType.Move, { targetLocation }));
     return State.SUCCEEDED;
   }
 
   /**
    * Check if the cooldown period has passed for an action like resource gathering or attack
    */
-  CooldownReady(type: string) {
-    if (type === "attack") {
-      const attackComponent = getActorComponent(this.gameObject, AttackComponent);
-      if (!attackComponent) return false;
-      return attackComponent.remainingCooldown <= 0;
-    } else if (type === "gather") {
-      const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
-      if (!gathererComponent) return false;
-      return gathererComponent.remainingCooldown <= 0;
+  CooldownReady(type: PlayerPawnCooldownType) {
+    switch (type) {
+      case "attack":
+        const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+        if (!attackComponent) return false;
+        return attackComponent.remainingCooldown <= 0;
+      case "gather":
+        const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+        if (!gathererComponent) return false;
+        return gathererComponent.remainingCooldown <= 0;
+      case "construct":
+        const builderComponent1 = getActorComponent(this.gameObject, BuilderComponent);
+        if (!builderComponent1) return false;
+        return builderComponent1.remainingCooldown <= 0;
+      case "heal":
+        const healingComponent = getActorComponent(this.gameObject, HealingComponent);
+        if (!healingComponent) return false;
+        return healingComponent.remainingCooldown <= 0;
+      case "repair":
+        const builderComponent2 = getActorComponent(this.gameObject, BuilderComponent);
+        if (!builderComponent2) return false;
+        return builderComponent2.remainingCooldown <= 0;
+      default:
+        throw new Error("Invalid cooldown type");
     }
-    return false;
   }
 
   TargetExists() {
-    return this.blackboard.targetGameObject !== null;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    return !!currentOrder.data.targetGameObject;
+  }
+
+  TargetOrLocationExists() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    return !!currentOrder.data.targetGameObject || !!currentOrder.data.targetLocation;
   }
 
   /**
    * Check if the target still has resources to gather
    */
   TargetHasResources() {
-    const target = this.blackboard.targetGameObject;
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
     if (!target) return false;
     const resourceSourceComponent = getActorComponent(target, ResourceSourceComponent);
     if (!resourceSourceComponent) return false;
@@ -324,5 +495,86 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return false;
     return gathererComponent.isCapacityFull();
+  }
+
+  AssignDropOffResourcesOrder(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+
+    const preferredResourceDrain = gathererComponent.getPreferredResourceDrain();
+    if (!preferredResourceDrain) return State.FAILED;
+
+    currentOrder.orderType = OrderType.ReturnResources;
+    currentOrder.data.targetGameObject = preferredResourceDrain;
+    return State.SUCCEEDED;
+  }
+
+  AssignGatherResourcesOrder(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return State.FAILED;
+
+    const preferredResourceSource = gathererComponent.getPreferredResourceSource();
+    if (!preferredResourceSource) return State.FAILED;
+
+    currentOrder.orderType = OrderType.Gather;
+    currentOrder.data.targetGameObject = preferredResourceSource;
+    return State.SUCCEEDED;
+  }
+
+  ConstructionSiteFinished(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return false;
+    return constructionSiteComponent.isFinished;
+  }
+  TargetHealthFull(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const healthComponent = getActorComponent(target, HealthComponent);
+    if (!healthComponent) return false;
+    return healthComponent.healthIsFull;
+  }
+  RepairBuilding(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+    const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+    if (!builderComponent) return State.FAILED;
+    builderComponent.assignToRepairSite(target);
+    return State.SUCCEEDED;
+  }
+  CanAssignRepairer(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return false;
+    return constructionSiteComponent.canAssignRepairer();
+  }
+
+  Succeed() {
+    return State.SUCCEEDED;
+  }
+
+  Fail() {
+    return State.FAILED;
+  }
+
+  Log(message: string): State {
+    console.log(message);
+    return State.SUCCEEDED;
   }
 }

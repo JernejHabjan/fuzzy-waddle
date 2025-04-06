@@ -1,10 +1,10 @@
 import { GameObjects, Input } from "phaser";
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../../data/actor-component";
-import { SelectableComponent } from "../../../../entity/actor/components/selectable-component";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
 import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { getSelectableGameObject } from "../../../../data/game-object-helper";
 
 export class SingleSelectionHandler {
   private readonly debug = false;
@@ -56,20 +56,19 @@ export class SingleSelectionHandler {
         clickedTileXY.x = Math.ceil(clickedTileXY.x);
         clickedTileXY.y = Math.ceil(clickedTileXY.y);
 
-        if (isLeftClick && gameObjectsUnderCursor.length > 0) {
-          // An interactive object was clicked
-          const objectIds = gameObjectsUnderCursor
-            .map((go) => this.getSelectableGameObject(go))
-            .filter((go) => !!go)
-            .map((go) => getActorComponent(go, IdComponent)!.id);
+        const interactiveObjectIds = gameObjectsUnderCursor
+          .map((go) => getSelectableGameObject(go))
+          .filter((go) => !!go)
+          .map((go) => getActorComponent(go, IdComponent)!.id);
+        if (interactiveObjectIds.length > 0) {
           if (this.debug) {
-            console.log("clicked on interactive objects", gameObjectsUnderCursor.length, objectIds);
+            console.log("clicked on interactive objects", gameObjectsUnderCursor.length, interactiveObjectIds);
           }
-          // if we clicked on top of terrain object, then emit terrain selection
+          // if we clicked on top of terrain object, then emit terrain selection -- todo wall
           const clickedOnTopOfTerrain = false;
           if (clickedOnTopOfTerrain) {
             this.sendTerrainSelection(
-              "left",
+              isLeftClick ? "left" : "right",
               {
                 x: 0,
                 y: 0,
@@ -84,7 +83,7 @@ export class SingleSelectionHandler {
               isCtrlDown
             );
           } else {
-            this.sendSelection("left", objectIds, isShiftDown, isCtrlDown);
+            this.sendSelection(isLeftClick ? "left" : "right", interactiveObjectIds, isShiftDown, isCtrlDown);
           }
         } else {
           // No interactive object was clicked, handle tilemap click
@@ -112,17 +111,6 @@ export class SingleSelectionHandler {
       },
       this
     );
-  }
-
-  private getSelectableGameObject(
-    go: GameObjects.GameObject
-  ): (GameObjects.GameObject & { selectableComponent: SelectableComponent; idComponent: IdComponent }) | null {
-    const hasComp = !!getActorComponent(go, SelectableComponent) && !!getActorComponent(go, IdComponent);
-    if (hasComp) return go as any;
-
-    const parent = go.parentContainer;
-    if (!parent) return null;
-    return this.getSelectableGameObject(parent);
   }
 
   public sendSelection(

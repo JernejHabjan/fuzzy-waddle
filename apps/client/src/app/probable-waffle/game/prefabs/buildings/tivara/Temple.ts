@@ -8,7 +8,8 @@ import TempleFoundation2 from "./Temple/TempleFoundation2";
 import TempleLevel1 from "./Temple/TempleLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
-import { ConstructionHelper } from "../../../entity/building/construction/construction-helper";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class Temple extends Phaser.GameObjects.Container {
@@ -59,10 +60,14 @@ export default class Temple extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.Temple;
   private setup() {
-    new ConstructionHelper(this, this.handlePrefabVisibility.bind(this));
+    setActorData(
+      this,
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.templeCursor)],
+      []
+    );
   }
 
-  private handlePrefabVisibility(progress: number | null) {
+  private handlePrefabVisibility = (progress: number | null) => {
     this.templeCursor.visible = progress === null;
     this.templeLevel1.visible = progress === 100;
     this.templeFoundation1.visible = progress !== null && progress < 50;
@@ -70,7 +75,7 @@ export default class Temple extends Phaser.GameObjects.Container {
     if (this.templeLevel1.visible) {
       this.templeLevel1.start();
     }
-  }
+  };
 
   /* END-USER-CODE */
 }

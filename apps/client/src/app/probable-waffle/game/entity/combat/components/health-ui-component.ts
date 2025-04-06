@@ -82,7 +82,7 @@ export class HealthUiComponent {
     this.bar.setDepth(this.barDepth);
   }
 
-  private get percentage() {
+  private get progressInFraction() {
     if (!this.healthComponent) return 0;
     switch (this.type) {
       case "health":
@@ -127,7 +127,7 @@ export class HealthUiComponent {
     this.bar.clear();
 
     const bounds = this.getBounds();
-    const { x, y, width, height } = bounds;
+    const { width, height } = bounds;
 
     //  BG
     this.bar.fillStyle(0x000000);
@@ -152,17 +152,17 @@ export class HealthUiComponent {
         break;
     }
 
-    if (this.percentage < this.redThreshold) {
+    if (this.progressInFraction < this.redThreshold) {
       this.bar.fillStyle(colors.red);
-    } else if (this.percentage < this.orangeThreshold) {
+    } else if (this.progressInFraction < this.orangeThreshold) {
       this.bar.fillStyle(colors.orange);
-    } else if (this.percentage < this.yellowThreshold) {
+    } else if (this.progressInFraction < this.yellowThreshold) {
       this.bar.fillStyle(colors.yellow);
     } else {
       this.bar.fillStyle(colors.green);
     }
 
-    const barFilledWidth = Math.floor((width - 2 * HealthUiComponent.barBorder) * this.percentage);
+    const barFilledWidth = Math.floor((width - 2 * HealthUiComponent.barBorder) * this.progressInFraction);
 
     this.bar.fillRect(
       HealthUiComponent.barBorder,

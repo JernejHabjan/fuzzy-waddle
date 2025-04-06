@@ -18,6 +18,9 @@ import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
 import { HealthComponent } from "../combat/components/health-component";
+import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { OrderType } from "../character/ai/order-type";
+import { OrderData } from "../character/ai/OrderData";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -56,21 +59,20 @@ export class MovementSystem {
 
   private listenToMoveEvents() {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
-      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move")
+      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move") // todo it's actually blackboard that should replicate
       .subscribe((payload) => {
-        switch (payload.property) {
-          case "command.issued.move":
-            const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
-            const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
-            if (isSelected) {
-              this.moveToLocation(tileVec3); // todo later on, read this from the blackboard and PawnAiController
-              // todo, note that we may also navigate to object and not to the tile under the object - use this.moveToActor(gameObject)
-            }
-            break;
+        const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
+        if (!isSelected) return;
+        const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
+        const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+        if (payerPawnAiController) {
+          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
+            new OrderData(OrderType.Move, { targetLocation: tileVec3 })
+          );
+        } else {
+          this.moveToLocation(tileVec3);
         }
       });
-
-    // todo this needs to be removed from here, and add this to the pawn ai controller which will then accordingly to blackboard issue MovementSystem.moveToLocation
   }
 
   // todo this should maybe later move to component like ActorTransform which will also broadcast event for transform to game and update actors depth
@@ -136,8 +138,7 @@ export class MovementSystem {
 
     if (!this.navigationService) return false;
 
-    const path = await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
-      this.gameObject,
+    const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
       gameObject,
       pathMoveConfig?.radiusTilesAroundDestination
     );
@@ -209,7 +210,10 @@ export class MovementSystem {
   };
 
   cancelMovement() {
-    this._currentTween?.stop();
+    if (this._currentTween) {
+      this._currentTween.stop();
+      this._currentTween = undefined;
+    }
   }
 
   private moveDirectlyToLocation(vec3: Vector3Simple, pathMoveConfig: PathMoveConfig): Promise<void> {
@@ -252,7 +256,7 @@ export class MovementSystem {
 
   private onMovementStart() {
     if (!this.audioService) return;
-    this.audioService.playAudioSprite("character", "footstep");
+    this.audioService.playSpatialAudioSprite(this.gameObject, "character", "footstep");
   }
 
   private destroy() {
@@ -260,14 +264,20 @@ export class MovementSystem {
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
-    if (!this.navigationService) return false;
+    const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(targetGameObject, range);
+    return path.length > 0;
+  }
 
-    const path = await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
+  async getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+    targetGameObject: Phaser.GameObjects.GameObject,
+    range?: number
+  ): Promise<Vector2Simple[]> {
+    if (!this.navigationService) return [];
+    return await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
       this.gameObject,
       targetGameObject,
       range
     );
-    return path.length > 0;
   }
 }
 

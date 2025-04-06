@@ -27,6 +27,8 @@ import { getActorComponent } from "./actor-component";
 import { DepthHelper } from "../world/map/depth.helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
+import { ActionSystem } from "../entity/systems/action.system";
+import { HealingComponent } from "../entity/combat/components/healing-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -36,16 +38,25 @@ export class ActorData {
   ) {}
 }
 
+/**
+ * Sets the actor data - appends the components and systems to the actor.
+ */
 export function setActorData(
   actor: Phaser.GameObjects.GameObject,
   components: any[],
   systems: any[],
   actorDefinition?: Partial<ActorDefinition>
 ) {
-  const componentMap = new Map(components.map((c) => [c.constructor, c]));
-  const systemMap = new Map(systems.map((s) => [s.constructor, s]));
-  const actorData = new ActorData(componentMap, systemMap);
-  actor.setData(ActorDataKey, actorData);
+  let actorData = actor.getData(ActorDataKey) as ActorData;
+  if (actorData) {
+    components.forEach((component) => actorData.components.set(component.constructor, component));
+    systems.forEach((system) => actorData.systems.set(system.constructor, system));
+  } else {
+    const componentMap = new Map(components.map((c) => [c.constructor, c]));
+    const systemMap = new Map(systems.map((s) => [s.constructor, s]));
+    actorData = new ActorData(componentMap, systemMap);
+    actor.setData(ActorDataKey, actorData);
+  }
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -103,6 +114,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
     ...(componentDefinitions?.constructable
       ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
       : []),
+    ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
     ...(componentDefinitions?.selectable ? [new SelectableComponent(actor)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(actor, componentDefinitions.collider)] : [])
@@ -128,7 +140,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.resourceSource
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
-    ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
+    ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
     ...(componentDefinitions?.translatable
@@ -138,7 +150,10 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
   ];
 
   const systemDefinitions = definition.systems;
-  const systems = [...(systemDefinitions?.movement ? [new MovementSystem(actor)] : [])];
+  const systems = [
+    ...(systemDefinitions?.movement ? [new MovementSystem(actor)] : []),
+    ...(systemDefinitions?.action ? [new ActionSystem(actor)] : [])
+  ];
   return { components, systems };
 }
 
