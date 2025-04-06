@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ANIM_FROST_FORGE_FLAME } from "../../../../../../../assets/probable-waffle/atlas/anims/skaduwee/buildings";
+import { ANIM_FROST_FORGE_FLAME } from "../../../../animations/skaduwee-buildings";
 /* END-USER-IMPORTS */
 
 export default class FrostForgeLevel1 extends Phaser.GameObjects.Container {

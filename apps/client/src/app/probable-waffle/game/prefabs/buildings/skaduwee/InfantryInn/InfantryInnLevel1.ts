@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ANIM_SKADUWEE_BUILDINGS_INFANTRY_INN_ENTRANCE } from "../../../../../../../assets/probable-waffle/atlas/anims/skaduwee/buildings";
+import { ANIM_SKADUWEE_BUILDINGS_INFANTRY_INN_ENTRANCE } from "../../../../animations/skaduwee-buildings";
 /* END-USER-IMPORTS */
 
 export default class InfantryInnLevel1 extends Phaser.GameObjects.Container {

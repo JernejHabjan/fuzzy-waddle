@@ -1,4 +1,4 @@
-import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
+import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../animations/tivara-buildings";
 import { GameObjects } from "phaser";
 
 export class SandholdShared {

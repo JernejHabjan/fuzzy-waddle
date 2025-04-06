@@ -25,8 +25,8 @@ import { getSceneComponent, getSceneService } from "../../../scenes/components/s
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
 import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages";
-import { AudioSprites } from "../../../../../../assets/probable-waffle/sfx/AudioSprites";
-import { UiFeedbackSfx } from "../../../../../../assets/probable-waffle/sfx/ui-feedback/UiFeedbackSfx";
+import { AudioSprites } from "../../../sfx/AudioSprites";
+import { UiFeedbackSfx } from "../../../sfx/UiFeedbackSfx";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {

@@ -33,6 +33,126 @@ import { ActorTranslateDefinition } from "../entity/actor/components/actor-trans
 import { AiType, PawnAiDefinition } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { ConstructionSiteDefinition } from "../entity/building/construction/construction-site-component";
 import { HealingDefinition } from "../entity/combat/components/healing-component";
+import { AudioDefinition, SoundType } from "../entity/actor/components/audio-actor-component";
+import {
+  ActorsHedgehogSfxAngrySounds,
+  ActorsHedgehogSfxSelectionSounds,
+  ActorsSheepSfxBleatSounds,
+  ActorsSheepSfxScissorsSounds,
+  ActorsSheepSfxWoolBombSounds
+} from "../sfx/ActorsAnimalsSfx";
+import {
+  TivaraMacemanSfxAttackSounds,
+  TivaraMacemanSfxDamageSounds,
+  TivaraMacemanSfxDeathSounds,
+  TivaraMacemanSfxEnterSounds,
+  TivaraMacemanSfxLocationSounds,
+  TivaraMacemanSfxMoveSounds,
+  TivaraMacemanSfxSelectionSounds
+} from "../sfx/TivaraMacemanSfx";
+import {
+  TivaraSlingshotSfxAttackSounds,
+  TivaraSlingshotSfxDamageSounds,
+  TivaraSlingshotSfxDeathSounds,
+  TivaraSlingshotSfxEnterSounds,
+  TivaraSlingshotSfxLocationSounds,
+  TivaraSlingshotSfxMoveSounds,
+  TivaraSlingshotSfxSelectionSounds
+} from "../sfx/TivaraSlingshotSfx";
+import {
+  TivaraWorkerFemaleSfxAttackSounds,
+  TivaraWorkerFemaleSfxBuildSounds,
+  TivaraWorkerFemaleSfxChopSounds,
+  TivaraWorkerFemaleSfxDamageSounds,
+  TivaraWorkerFemaleSfxDeathSounds,
+  TivaraWorkerFemaleSfxEnterSounds,
+  TivaraWorkerFemaleSfxLocationSounds,
+  TivaraWorkerFemaleSfxMineSounds,
+  TivaraWorkerFemaleSfxMoveSounds,
+  TivaraWorkerFemaleSfxRepairSounds,
+  TivaraWorkerFemaleSfxSelectionSounds
+} from "../sfx/TivaraWorkerFemaleSfx";
+import {
+  TivaraWorkerMaleSfxAttackSounds,
+  TivaraWorkerMaleSfxBuildSounds,
+  TivaraWorkerMaleSfxChopSounds,
+  TivaraWorkerMaleSfxDamageSounds,
+  TivaraWorkerMaleSfxDeathSounds,
+  TivaraWorkerMaleSfxEnterSounds,
+  TivaraWorkerMaleSfxLocationSounds,
+  TivaraWorkerMaleSfxMineSounds,
+  TivaraWorkerMaleSfxMoveSounds,
+  TivaraWorkerMaleSfxRepairSounds,
+  TivaraWorkerMaleSfxSelectionExtraSounds,
+  TivaraWorkerMaleSfxSelectionSounds
+} from "../sfx/TivaraWorkerMaleSfx";
+import {
+  SkaduweeOwlSfxDamageSounds,
+  SkaduweeOwlSfxDeathSounds,
+  SkaduweeOwlSfxLocationSounds,
+  SkaduweeOwlSfxMoveSounds,
+  SkaduweeOwlSfxSelectionSounds
+} from "../sfx/SkaduweeOwlSfx";
+import {
+  SkaduweeRangedSfxAttackSounds,
+  SkaduweeRangedSfxDamageSounds,
+  SkaduweeRangedSfxDeathSounds,
+  SkaduweeRangedSfxEnterSounds,
+  SkaduweeRangedSfxLocationSounds,
+  SkaduweeRangedSfxMoveSounds,
+  SkaduweeRangedSfxSelectionSounds
+} from "../sfx/SkaduweeRangedSfx";
+import {
+  SkaduweeMagicianSfxAttackSounds,
+  SkaduweeMagicianSfxDamageSounds,
+  SkaduweeMagicianSfxDeathSounds,
+  SkaduweeMagicianSfxEnterSounds,
+  SkaduweeMagicianSfxLocationSounds,
+  SkaduweeMagicianSfxMoveSounds,
+  SkaduweeMagicianSfxSelectionSounds
+} from "../sfx/SkaduweeMagicianSfx";
+import {
+  SkaduweeWarriorSfxAttackSounds,
+  SkaduweeWarriorSfxDamageSounds,
+  SkaduweeWarriorSfxDeathSounds,
+  SkaduweeWarriorSfxEnterSounds,
+  SkaduweeWarriorSfxLocationSounds,
+  SkaduweeWarriorSfxMoveSounds,
+  SkaduweeWarriorSfxSelectionSounds
+} from "../sfx/SkaduweeWarriorSfx";
+import {
+  SkaduweeWorkerFemaleSfxAttackSounds,
+  SkaduweeWorkerFemaleSfxBuildSounds,
+  SkaduweeWorkerFemaleSfxChopSounds,
+  SkaduweeWorkerFemaleSfxDamageSounds,
+  SkaduweeWorkerFemaleSfxDeathSounds,
+  SkaduweeWorkerFemaleSfxEnterSounds,
+  SkaduweeWorkerFemaleSfxLocationSounds,
+  SkaduweeWorkerFemaleSfxMineSounds,
+  SkaduweeWorkerFemaleSfxMoveSounds,
+  SkaduweeWorkerFemaleSfxRepairSounds,
+  SkaduweeWorkerFemaleSfxSelectSounds
+} from "../sfx/SkaduweeWorkerFemaleSfx";
+import {
+  SkaduweeWorkerMaleSfxAttackSounds,
+  SkaduweeWorkerMaleSfxBuildSounds,
+  SkaduweeWorkerMaleSfxChopSounds,
+  SkaduweeWorkerMaleSfxDamageSounds,
+  SkaduweeWorkerMaleSfxDeathSounds,
+  SkaduweeWorkerMaleSfxEnterSounds,
+  SkaduweeWorkerMaleSfxLocationSounds,
+  SkaduweeWorkerMaleSfxMineSounds,
+  SkaduweeWorkerMaleSfxMoveSounds,
+  SkaduweeWorkerMaleSfxRepairSounds,
+  SkaduweeWorkerMaleSfxSelectionSounds
+} from "../sfx/SkaduweeWorkerMaleSfx";
+import {
+  ActorsMineralsSfxSelectionSounds,
+  ActorsStoneSfxOutOfResourcesSounds,
+  ActorsStoneSfxSelectionSounds,
+  ActorsTreeSfxResourceDepletedSounds,
+  ActorsTreeSfxSelectionSounds
+} from "../sfx/ActorsResourcesSfx";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -61,6 +181,12 @@ const treeDefinitions: ActorInfoDefinition = {
       resourceType: ResourceType.Wood,
       maximumResources: 20,
       gatheringFactor: 1
+    },
+    audio: {
+      sounds: {
+        [SoundType.Select]: ActorsTreeSfxSelectionSounds,
+        ["depleted"]: ActorsTreeSfxResourceDepletedSounds
+      }
     }
   }
 };
@@ -212,6 +338,7 @@ export type ActorInfoDefinition = Partial<{
     containable: { enabled: boolean };
     selectable: { enabled: boolean };
     collider: ColliderDefinition;
+    audio: AudioDefinition;
   }>;
   systems: Partial<{
     movement: {
@@ -232,6 +359,12 @@ export const pwActorDefinitions: {
       },
       translatable: {
         tileStepDuration: 5000
+      },
+      audio: {
+        sounds: {
+          [SoundType.Select]: ActorsHedgehogSfxSelectionSounds,
+          [SoundType.SelectExtra]: ActorsHedgehogSfxAngrySounds
+        }
       }
     },
     systems: {
@@ -245,6 +378,13 @@ export const pwActorDefinitions: {
       },
       translatable: {
         tileStepDuration: 5000
+      },
+      audio: {
+        sounds: {
+          [SoundType.Select]: ActorsSheepSfxBleatSounds,
+          ["scissors"]: ActorsSheepSfxScissorsSounds,
+          ["wool"]: ActorsSheepSfxWoolBombSounds
+        }
       }
     },
     systems: {
@@ -368,6 +508,17 @@ export const pwActorDefinitions: {
       containable: { enabled: true },
       aiControlled: {
         type: AiType.Character
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: TivaraMacemanSfxAttackSounds,
+          [SoundType.Damage]: TivaraMacemanSfxDamageSounds,
+          [SoundType.Death]: TivaraMacemanSfxDeathSounds,
+          [SoundType.Select]: TivaraMacemanSfxSelectionSounds,
+          [SoundType.Move]: TivaraMacemanSfxMoveSounds,
+          [SoundType.EnterContainer]: TivaraMacemanSfxEnterSounds,
+          [SoundType.LocationUnavailable]: TivaraMacemanSfxLocationSounds
+        }
       }
     },
     systems: {
@@ -432,6 +583,17 @@ export const pwActorDefinitions: {
       containable: { enabled: true },
       aiControlled: {
         type: AiType.Character
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: TivaraSlingshotSfxAttackSounds,
+          [SoundType.Damage]: TivaraSlingshotSfxDamageSounds,
+          [SoundType.Death]: TivaraSlingshotSfxDeathSounds,
+          [SoundType.Select]: TivaraSlingshotSfxSelectionSounds,
+          [SoundType.Move]: TivaraSlingshotSfxMoveSounds,
+          [SoundType.EnterContainer]: TivaraSlingshotSfxEnterSounds,
+          [SoundType.LocationUnavailable]: TivaraSlingshotSfxLocationSounds
+        }
       }
     },
     systems: {
@@ -451,6 +613,22 @@ export const pwActorDefinitions: {
           frame: "character_icons/tivara/worker_female.png",
           origin: { x: 0.5, y: 0.6 }
         }
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: TivaraWorkerFemaleSfxAttackSounds,
+          [SoundType.Damage]: TivaraWorkerFemaleSfxDamageSounds,
+          [SoundType.Death]: TivaraWorkerFemaleSfxDeathSounds,
+          [SoundType.Select]: TivaraWorkerFemaleSfxSelectionSounds,
+          [SoundType.Move]: TivaraWorkerFemaleSfxMoveSounds,
+          [SoundType.EnterContainer]: TivaraWorkerFemaleSfxEnterSounds,
+          [SoundType.LocationUnavailable]: TivaraWorkerFemaleSfxLocationSounds,
+          [SoundType.Repair]: TivaraWorkerFemaleSfxRepairSounds,
+          [SoundType.Heal]: TivaraWorkerFemaleSfxRepairSounds,
+          [SoundType.Build]: TivaraWorkerFemaleSfxBuildSounds,
+          [SoundType.Chop]: TivaraWorkerFemaleSfxChopSounds,
+          [SoundType.Mine]: TivaraWorkerFemaleSfxMineSounds
+        }
       }
     }
   },
@@ -465,6 +643,23 @@ export const pwActorDefinitions: {
           key: "factions",
           frame: "character_icons/tivara/worker_male.png",
           origin: { x: 0.5, y: 0.6 }
+        }
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: TivaraWorkerMaleSfxAttackSounds,
+          [SoundType.Damage]: TivaraWorkerMaleSfxDamageSounds,
+          [SoundType.Death]: TivaraWorkerMaleSfxDeathSounds,
+          [SoundType.Select]: TivaraWorkerMaleSfxSelectionSounds,
+          [SoundType.SelectExtra]: TivaraWorkerMaleSfxSelectionExtraSounds,
+          [SoundType.Move]: TivaraWorkerMaleSfxMoveSounds,
+          [SoundType.EnterContainer]: TivaraWorkerMaleSfxEnterSounds,
+          [SoundType.LocationUnavailable]: TivaraWorkerMaleSfxLocationSounds,
+          [SoundType.Repair]: TivaraWorkerMaleSfxRepairSounds,
+          [SoundType.Heal]: TivaraWorkerMaleSfxRepairSounds,
+          [SoundType.Build]: TivaraWorkerMaleSfxBuildSounds,
+          [SoundType.Chop]: TivaraWorkerMaleSfxChopSounds,
+          [SoundType.Mine]: TivaraWorkerMaleSfxMineSounds
         }
       }
     }
@@ -791,6 +986,16 @@ export const pwActorDefinitions: {
       translatable: {
         usePathfinding: false,
         tileStepDuration: 1000
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: SkaduweeOwlSfxSelectionSounds,
+          [SoundType.Damage]: SkaduweeOwlSfxDamageSounds,
+          [SoundType.Death]: SkaduweeOwlSfxDeathSounds,
+          [SoundType.Select]: SkaduweeOwlSfxSelectionSounds,
+          [SoundType.Move]: SkaduweeOwlSfxMoveSounds,
+          [SoundType.LocationUnavailable]: SkaduweeOwlSfxLocationSounds
+        }
       }
     },
     systems: {
@@ -855,6 +1060,17 @@ export const pwActorDefinitions: {
       containable: { enabled: true },
       aiControlled: {
         type: AiType.Character
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: SkaduweeRangedSfxAttackSounds,
+          [SoundType.Damage]: SkaduweeRangedSfxDamageSounds,
+          [SoundType.Death]: SkaduweeRangedSfxDeathSounds,
+          [SoundType.Select]: SkaduweeRangedSfxSelectionSounds,
+          [SoundType.Move]: SkaduweeRangedSfxMoveSounds,
+          [SoundType.EnterContainer]: SkaduweeRangedSfxEnterSounds,
+          [SoundType.LocationUnavailable]: SkaduweeRangedSfxLocationSounds
+        }
       }
     },
     systems: {
@@ -918,6 +1134,17 @@ export const pwActorDefinitions: {
       containable: { enabled: true },
       aiControlled: {
         type: AiType.Character
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: SkaduweeMagicianSfxAttackSounds,
+          [SoundType.Damage]: SkaduweeMagicianSfxDamageSounds,
+          [SoundType.Death]: SkaduweeMagicianSfxDeathSounds,
+          [SoundType.Select]: SkaduweeMagicianSfxSelectionSounds,
+          [SoundType.Move]: SkaduweeMagicianSfxMoveSounds,
+          [SoundType.EnterContainer]: SkaduweeMagicianSfxEnterSounds,
+          [SoundType.LocationUnavailable]: SkaduweeMagicianSfxLocationSounds
+        }
       }
     },
     systems: {
@@ -982,6 +1209,17 @@ export const pwActorDefinitions: {
       containable: { enabled: true },
       aiControlled: {
         type: AiType.Character
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: SkaduweeWarriorSfxAttackSounds,
+          [SoundType.Damage]: SkaduweeWarriorSfxDamageSounds,
+          [SoundType.Death]: SkaduweeWarriorSfxDeathSounds,
+          [SoundType.Select]: SkaduweeWarriorSfxSelectionSounds,
+          [SoundType.Move]: SkaduweeWarriorSfxMoveSounds,
+          [SoundType.EnterContainer]: SkaduweeWarriorSfxEnterSounds,
+          [SoundType.LocationUnavailable]: SkaduweeWarriorSfxLocationSounds
+        }
       }
     },
     systems: {
@@ -1001,6 +1239,22 @@ export const pwActorDefinitions: {
           frame: "character_icons/skaduwee/worker_male.png",
           origin: { x: 0.5, y: 0.6 }
         }
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: SkaduweeWorkerMaleSfxAttackSounds,
+          [SoundType.Damage]: SkaduweeWorkerMaleSfxDamageSounds,
+          [SoundType.Death]: SkaduweeWorkerMaleSfxDeathSounds,
+          [SoundType.Select]: SkaduweeWorkerMaleSfxSelectionSounds,
+          [SoundType.Move]: SkaduweeWorkerMaleSfxMoveSounds,
+          [SoundType.EnterContainer]: SkaduweeWorkerMaleSfxEnterSounds,
+          [SoundType.LocationUnavailable]: SkaduweeWorkerMaleSfxLocationSounds,
+          [SoundType.Repair]: SkaduweeWorkerMaleSfxRepairSounds,
+          [SoundType.Heal]: SkaduweeWorkerMaleSfxRepairSounds,
+          [SoundType.Build]: SkaduweeWorkerMaleSfxBuildSounds,
+          [SoundType.Chop]: SkaduweeWorkerMaleSfxChopSounds,
+          [SoundType.Mine]: SkaduweeWorkerMaleSfxMineSounds
+        }
       }
     }
   },
@@ -1015,6 +1269,22 @@ export const pwActorDefinitions: {
           key: "factions",
           frame: "character_icons/skaduwee/worker_female.png",
           origin: { x: 0.5, y: 0.6 }
+        }
+      },
+      audio: {
+        sounds: {
+          [SoundType.Attack]: SkaduweeWorkerFemaleSfxAttackSounds,
+          [SoundType.Damage]: SkaduweeWorkerFemaleSfxDamageSounds,
+          [SoundType.Death]: SkaduweeWorkerFemaleSfxDeathSounds,
+          [SoundType.Select]: SkaduweeWorkerFemaleSfxSelectSounds,
+          [SoundType.Move]: SkaduweeWorkerFemaleSfxMoveSounds,
+          [SoundType.EnterContainer]: SkaduweeWorkerFemaleSfxEnterSounds,
+          [SoundType.LocationUnavailable]: SkaduweeWorkerFemaleSfxLocationSounds,
+          [SoundType.Repair]: SkaduweeWorkerFemaleSfxRepairSounds,
+          [SoundType.Heal]: SkaduweeWorkerFemaleSfxRepairSounds,
+          [SoundType.Build]: SkaduweeWorkerFemaleSfxBuildSounds,
+          [SoundType.Chop]: SkaduweeWorkerFemaleSfxChopSounds,
+          [SoundType.Mine]: SkaduweeWorkerFemaleSfxMineSounds
         }
       }
     }
@@ -1430,6 +1700,12 @@ export const pwActorDefinitions: {
         resourceType: ResourceType.Minerals,
         maximumResources: 100,
         gatheringFactor: 1
+      },
+      audio: {
+        sounds: {
+          [SoundType.Select]: ActorsMineralsSfxSelectionSounds,
+          ["depleted"]: ActorsStoneSfxOutOfResourcesSounds
+        }
       }
     }
   },
@@ -1446,6 +1722,12 @@ export const pwActorDefinitions: {
         resourceType: ResourceType.Stone,
         maximumResources: 100,
         gatheringFactor: 1
+      },
+      audio: {
+        sounds: {
+          [SoundType.Select]: ActorsStoneSfxSelectionSounds,
+          ["depleted"]: ActorsStoneSfxOutOfResourcesSounds
+        }
       }
     }
   }

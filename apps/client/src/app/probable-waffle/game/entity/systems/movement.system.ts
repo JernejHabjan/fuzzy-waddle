@@ -23,6 +23,7 @@ import { OrderType } from "../character/ai/order-type";
 import { OrderData } from "../character/ai/OrderData";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
+import { AudioActorComponent } from "../actor/components/audio-actor-component";
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -44,6 +45,7 @@ export class MovementSystem {
   private playerChangedSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService: AudioService | undefined;
+  private audioActorComponent: AudioActorComponent | undefined;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -55,6 +57,7 @@ export class MovementSystem {
   private init() {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
   }
 
   private listenToMoveEvents() {
@@ -69,10 +72,16 @@ export class MovementSystem {
           payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
             new OrderData(OrderType.Move, { targetLocation: tileVec3 })
           );
+          this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!)
         } else {
           this.moveToLocation(tileVec3);
         }
       });
+  }
+
+  private playOrderSound(action: OrderData) {
+    if (!this.audioActorComponent) return;
+    this.audioActorComponent.playOrderSound(action);
   }
 
   // todo this should maybe later move to component like ActorTransform which will also broadcast event for transform to game and update actors depth

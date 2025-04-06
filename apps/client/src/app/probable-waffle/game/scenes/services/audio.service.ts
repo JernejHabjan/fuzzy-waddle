@@ -182,4 +182,8 @@ export class AudioService {
       }
     };
   }
+
+  stopSound(key: string) {
+    this.scene.sound.stopByKey(key);
+  }
 }

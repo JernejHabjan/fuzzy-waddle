@@ -15,6 +15,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class StonePile extends Phaser.GameObjects.Image {
@@ -57,7 +58,7 @@ export default class StonePile extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.Stone;
   private readonly availableRockPiles = ["stone_pile_1.png", "stone_pile_2.png"];
 
   /* END-USER-CODE */
