@@ -34,8 +34,8 @@ export interface AudioDefinition {
 
 export class AudioActorComponent {
   private audioService?: AudioService;
-  private playedSoundIndexes: { [key in (SoundType | string)]?: number[] } = {};
-  private lastPlayedSoundIndex: { [key in (SoundType | string)]?: number } = {};
+  private playedSoundIndexes: { [key in SoundType | string]?: number[] } = {};
+  private lastPlayedSoundIndex: { [key in SoundType | string]?: number } = {};
   private previousSoundType: SoundType | string | null = null;
 
   constructor(
@@ -67,10 +67,17 @@ export class AudioActorComponent {
 
   private getSound(key: SoundType | string | null) {
     if (!this.audioDefinition || !key) return null;
+
+    const extraSoundDefinitions = this.audioDefinition.sounds[SoundType.SelectExtra];
+    // adjust the key to SelectExtra if we just played the last selection sound
+    if (key === SoundType.Select && extraSoundDefinitions?.length && this.playedSoundIndexes[SoundType.Select]?.length === 0) {
+      key = SoundType.SelectExtra;
+    }
+
     const soundDefinitions = this.audioDefinition.sounds[key];
     if (!soundDefinitions) return null;
 
-    if (!this.playedSoundIndexes[key]) {
+    if (!this.playedSoundIndexes[key]?.length) {
       this.playedSoundIndexes[key] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
     }
 
@@ -78,16 +85,13 @@ export class AudioActorComponent {
     if (!playedIndexes || playedIndexes.length === 0) return null;
 
     let soundIndex = playedIndexes.pop();
-    if (playedIndexes.length === 0) {
-      this.playedSoundIndexes[key] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
+    if (soundDefinitions.length > 0 && soundIndex === this.lastPlayedSoundIndex[key]) {
+      soundIndex = playedIndexes.pop();
     }
 
-    // Ensure the last played sound is not repeated if there are multiple sounds
-    if (soundDefinitions.length > 1 && soundIndex === this.lastPlayedSoundIndex[key]) {
-      soundIndex = playedIndexes.pop();
-      if (playedIndexes.length === 0) {
-        this.playedSoundIndexes[key] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
-      }
+    if(this.playedSoundIndexes[SoundType.SelectExtra]?.length === 0){
+      // reset the played sound indexes for SelectExtra
+      this.playedSoundIndexes[SoundType.Select] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
     }
 
     this.lastPlayedSoundIndex[key] = soundIndex;
