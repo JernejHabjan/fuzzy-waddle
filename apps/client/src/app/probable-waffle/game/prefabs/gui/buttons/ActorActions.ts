@@ -25,6 +25,8 @@ import { getSceneComponent, getSceneService } from "../../../scenes/components/s
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
 import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages";
+import { AudioSprites } from "../../../../../../assets/probable-waffle/sfx/AudioSprites";
+import { UiFeedbackSfx } from "../../../../../../assets/probable-waffle/sfx/ui-feedback/UiFeedbackSfx";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -331,17 +333,17 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             });
             const sound = this.mainSceneWithActors.sound;
 
-            sound.stopByKey("ui-feedback");
+            sound.stopByKey(AudioSprites.UI_FEEDBACK);
             switch (errorCode) {
               case AssignProductionErrorCode.NotEnoughResources:
-                this.audioService.playAudioSprite("ui-feedback", "not_enough_resources");
+                this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
                 this.scene.events.emit(
                   HudMessages.HudVisualFeedbackMessageEventName,
                   HudVisualFeedbackMessageType.NotEnoughResources
                 );
                 break;
               case AssignProductionErrorCode.QueueFull:
-                this.audioService.playAudioSprite("ui-feedback", "production_queue_full");
+                this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.PRODUCTION_QUEUE_FULL);
                 this.scene.events.emit(
                   HudMessages.HudVisualFeedbackMessageEventName,
                   HudVisualFeedbackMessageType.ProductionQueueFull
