@@ -1,0 +1,52 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/animals.mp3"
+  ],
+  "spritemap": {
+    "angry": {
+      "start": 0,
+      "end": 1.0332916666666667,
+      "loop": false
+    },
+    "selection 1": {
+      "start": 3,
+      "end": 3.421895833333333,
+      "loop": false
+    },
+    "selection 2": {
+      "start": 5,
+      "end": 5.908270833333333,
+      "loop": false
+    },
+    "bleat 1": {
+      "start": 7,
+      "end": 7.757604166666667,
+      "loop": false
+    },
+    "bleat 2": {
+      "start": 9,
+      "end": 9.940166666666666,
+      "loop": false
+    },
+    "bleat 3": {
+      "start": 11,
+      "end": 12.095125,
+      "loop": false
+    },
+    "bleat 4": {
+      "start": 14,
+      "end": 15.718395833333334,
+      "loop": false
+    },
+    "scissors": {
+      "start": 17,
+      "end": 18.226666666666667,
+      "loop": false
+    },
+    "wool bomb": {
+      "start": 20,
+      "end": 46,
+      "loop": false
+    }
+  }
+}

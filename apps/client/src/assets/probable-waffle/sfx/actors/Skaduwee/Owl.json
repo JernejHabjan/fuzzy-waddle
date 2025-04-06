@@ -1,0 +1,52 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Skaduwee/Owl.mp3"
+  ],
+  "spritemap": {
+    "Cannot reach location": {
+      "start": 0,
+      "end": 0.33379166666666665,
+      "loop": false
+    },
+    "Damage": {
+      "start": 2,
+      "end": 2.65625,
+      "loop": false
+    },
+    "Death": {
+      "start": 4,
+      "end": 4.5006458333333335,
+      "loop": false
+    },
+    "furball fire": {
+      "start": 6,
+      "end": 6.527541666666667,
+      "loop": false
+    },
+    "furball hit 1": {
+      "start": 8,
+      "end": 8.444,
+      "loop": false
+    },
+    "furball hit 2": {
+      "start": 10,
+      "end": 10.312895833333334,
+      "loop": false
+    },
+    "Move": {
+      "start": 12,
+      "end": 12.8535625,
+      "loop": false
+    },
+    "Selection 1": {
+      "start": 14,
+      "end": 17.296666666666667,
+      "loop": false
+    },
+    "Selection 2": {
+      "start": 19,
+      "end": 20.773333333333333,
+      "loop": false
+    }
+  }
+}

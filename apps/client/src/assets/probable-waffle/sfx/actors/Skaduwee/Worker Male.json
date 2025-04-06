@@ -1,0 +1,152 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Skaduwee/Worker Male.mp3"
+  ],
+  "spritemap": {
+    "Attack 1": {
+      "start": 0,
+      "end": 2.544979166666667,
+      "loop": false
+    },
+    "Attack 2": {
+      "start": 4,
+      "end": 6.2569791666666665,
+      "loop": false
+    },
+    "Attack 3": {
+      "start": 8,
+      "end": 11.624979166666666,
+      "loop": false
+    },
+    "Build 1": {
+      "start": 13,
+      "end": 15.280979166666667,
+      "loop": false
+    },
+    "Build 2": {
+      "start": 17,
+      "end": 20.120979166666668,
+      "loop": false
+    },
+    "Chop 1": {
+      "start": 22,
+      "end": 25.072979166666666,
+      "loop": false
+    },
+    "Chop 2": {
+      "start": 27,
+      "end": 29.153833333333335,
+      "loop": false
+    },
+    "Damage 1": {
+      "start": 31,
+      "end": 31.52466666666667,
+      "loop": false
+    },
+    "Damage 2": {
+      "start": 33,
+      "end": 33.690333333333335,
+      "loop": false
+    },
+    "Damage 3": {
+      "start": 35,
+      "end": 35.690333333333335,
+      "loop": false
+    },
+    "Death 1": {
+      "start": 37,
+      "end": 38.40827083333333,
+      "loop": false
+    },
+    "Death 2": {
+      "start": 40,
+      "end": 41.43589583333333,
+      "loop": false
+    },
+    "Death 3": {
+      "start": 43,
+      "end": 44.712020833333334,
+      "loop": false
+    },
+    "Enter building 1": {
+      "start": 46,
+      "end": 48.208979166666666,
+      "loop": false
+    },
+    "Enter building 2": {
+      "start": 50,
+      "end": 51.9605625,
+      "loop": false
+    },
+    "Location unavailable 1": {
+      "start": 53,
+      "end": 54.848979166666666,
+      "loop": false
+    },
+    "Location unavailable 2": {
+      "start": 56,
+      "end": 58.28097916666667,
+      "loop": false
+    },
+    "Mine 1": {
+      "start": 60,
+      "end": 62.208979166666666,
+      "loop": false
+    },
+    "Mine 2": {
+      "start": 64,
+      "end": 66.347125,
+      "loop": false
+    },
+    "Move 1": {
+      "start": 68,
+      "end": 69.366875,
+      "loop": false
+    },
+    "Move 2": {
+      "start": 71,
+      "end": 72.51872916666667,
+      "loop": false
+    },
+    "Move 3": {
+      "start": 74,
+      "end": 76.01697916666667,
+      "loop": false
+    },
+    "Move 4": {
+      "start": 78,
+      "end": 80.04097916666667,
+      "loop": false
+    },
+    "Repair 1": {
+      "start": 82,
+      "end": 84.35297916666667,
+      "loop": false
+    },
+    "Repair 2": {
+      "start": 86,
+      "end": 87.38066666666667,
+      "loop": false
+    },
+    "Selection 1": {
+      "start": 89,
+      "end": 90.56204166666667,
+      "loop": false
+    },
+    "Selection 2": {
+      "start": 92,
+      "end": 93.56097916666667,
+      "loop": false
+    },
+    "Selection 3": {
+      "start": 95,
+      "end": 96.83539583333334,
+      "loop": false
+    },
+    "Selection 4": {
+      "start": 98,
+      "end": 99.83539583333334,
+      "loop": false
+    }
+  }
+}

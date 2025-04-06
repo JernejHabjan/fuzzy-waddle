@@ -3,14 +3,54 @@
     "assets/probable-waffle/sfx/ui-feedback/ui-feedback.mp3"
   ],
   "spritemap": {
-    "not_enough_resources": {
+    "achievement": {
       "start": 0,
-      "end": 2.517375,
+      "end": 2,
+      "loop": false
+    },
+    "build denied": {
+      "start": 3,
+      "end": 3.28525,
+      "loop": false
+    },
+    "button click": {
+      "start": 5,
+      "end": 5.045895833333334,
+      "loop": false
+    },
+    "countdown beep final": {
+      "start": 7,
+      "end": 7.121,
+      "loop": false
+    },
+    "countdown beep": {
+      "start": 9,
+      "end": 9.237395833333334,
+      "loop": false
+    },
+    "defeat": {
+      "start": 11,
+      "end": 14.3791875,
+      "loop": false
+    },
+    "not_enough_resources": {
+      "start": 16,
+      "end": 18.517333333333333,
       "loop": false
     },
     "production_queue_full": {
-      "start": 4,
-      "end": 6.133375,
+      "start": 20,
+      "end": 22.133333333333333,
+      "loop": false
+    },
+    "victory": {
+      "start": 24,
+      "end": 27.483895833333335,
+      "loop": false
+    },
+    "you are under attack": {
+      "start": 29,
+      "end": 30.377375,
       "loop": false
     }
   }

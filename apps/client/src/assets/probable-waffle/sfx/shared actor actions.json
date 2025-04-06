@@ -1,0 +1,242 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/shared actor actions.mp3"
+  ],
+  "spritemap": {
+    "hit": {
+      "start": 0,
+      "end": 0.735625,
+      "loop": false
+    },
+    "shoot 1": {
+      "start": 2,
+      "end": 2.6497916666666668,
+      "loop": false
+    },
+    "shoot 2": {
+      "start": 4,
+      "end": 4.540416666666666,
+      "loop": false
+    },
+    "axe hit": {
+      "start": 6,
+      "end": 6.379145833333333,
+      "loop": false
+    },
+    "body fall": {
+      "start": 8,
+      "end": 8.8105,
+      "loop": false
+    },
+    "building destroy": {
+      "start": 10,
+      "end": 11.966229166666666,
+      "loop": false
+    },
+    "hammering": {
+      "start": 13,
+      "end": 15.057166666666667,
+      "loop": false
+    },
+    "sawing": {
+      "start": 17,
+      "end": 18.702416666666668,
+      "loop": false
+    },
+    "selection": {
+      "start": 113,
+      "end": 113.55285416666666,
+      "loop": false
+    },
+    "chopping 1": {
+      "start": 22,
+      "end": 22.283875,
+      "loop": false
+    },
+    "chopping 2": {
+      "start": 24,
+      "end": 24.250416666666666,
+      "loop": false
+    },
+    "chopping 3": {
+      "start": 26,
+      "end": 26.2763125,
+      "loop": false
+    },
+    "chopping 4": {
+      "start": 28,
+      "end": 28.138145833333333,
+      "loop": false
+    },
+    "fire spell": {
+      "start": 30,
+      "end": 31,
+      "loop": false
+    },
+    "fireball hit": {
+      "start": 32,
+      "end": 33.081916666666665,
+      "loop": false
+    },
+    "fireball shoot": {
+      "start": 35,
+      "end": 35.95375,
+      "loop": false
+    },
+    "frost bolt fire": {
+      "start": 37,
+      "end": 38.59625,
+      "loop": false
+    },
+    "frost bolt impact": {
+      "start": 40,
+      "end": 41.59625,
+      "loop": false
+    },
+    "heal": {
+      "start": 43,
+      "end": 44.071020833333336,
+      "loop": false
+    },
+    "swing 1": {
+      "start": 46,
+      "end": 46.319520833333335,
+      "loop": false
+    },
+    "swing 2": {
+      "start": 48,
+      "end": 48.4261875,
+      "loop": false
+    },
+    "swing 3": {
+      "start": 50,
+      "end": 50.490625,
+      "loop": false
+    },
+    "leather nock": {
+      "start": 52,
+      "end": 52.64839583333333,
+      "loop": false
+    },
+    "mace hit": {
+      "start": 54,
+      "end": 55.00666666666667,
+      "loop": false
+    },
+    "mining": {
+      "start": 57,
+      "end": 58.31775,
+      "loop": false
+    },
+    "grass 1": {
+      "start": 60,
+      "end": 61.64714583333333,
+      "loop": false
+    },
+    "grass 2": {
+      "start": 63,
+      "end": 64.62395833333333,
+      "loop": false
+    },
+    "grass 3": {
+      "start": 66,
+      "end": 67.3455625,
+      "loop": false
+    },
+    "grass 4": {
+      "start": 69,
+      "end": 70.1135625,
+      "loop": false
+    },
+    "gravel 1": {
+      "start": 72,
+      "end": 73.23625,
+      "loop": false
+    },
+    "gravel 2": {
+      "start": 75,
+      "end": 76.0691875,
+      "loop": false
+    },
+    "gravel 3": {
+      "start": 78,
+      "end": 78.902125,
+      "loop": false
+    },
+    "gravel 4": {
+      "start": 80,
+      "end": 80.99122916666667,
+      "loop": false
+    },
+    "sand 1": {
+      "start": 82,
+      "end": 83.16197916666667,
+      "loop": false
+    },
+    "sand 2": {
+      "start": 85,
+      "end": 86.036625,
+      "loop": false
+    },
+    "sand 3": {
+      "start": 88,
+      "end": 88.91608333333333,
+      "loop": false
+    },
+    "sand 4": {
+      "start": 90,
+      "end": 91.06072916666666,
+      "loop": false
+    },
+    "snow 1": {
+      "start": 93,
+      "end": 94.66464583333334,
+      "loop": false
+    },
+    "snow 2": {
+      "start": 96,
+      "end": 97.6835625,
+      "loop": false
+    },
+    "snow 3": {
+      "start": 99,
+      "end": 100.70247916666666,
+      "loop": false
+    },
+    "snow 4": {
+      "start": 102,
+      "end": 103.09716666666667,
+      "loop": false
+    },
+    "stone 1": {
+      "start": 105,
+      "end": 105.84764583333333,
+      "loop": false
+    },
+    "stone 2": {
+      "start": 107,
+      "end": 107.8891875,
+      "loop": false
+    },
+    "stone 3": {
+      "start": 109,
+      "end": 109.73547916666666,
+      "loop": false
+    },
+    "rally point": {
+      "start": 111,
+      "end": 111.09635416666667,
+      "loop": false
+    },
+    "slingshot fire": {
+      "start": 115,
+      "end": 115.47604166666666,
+      "loop": false
+    },
+    "slingshot hit": {
+      "start": 117,
+      "end": 117.14852083333334,
+      "loop": false
+    }
+  }
+}

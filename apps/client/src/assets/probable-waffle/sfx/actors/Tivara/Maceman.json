@@ -1,0 +1,102 @@
+{
+  "resources": [
+    "assets/probable-waffle/sfx/actors/Tivara/Maceman.mp3"
+  ],
+  "spritemap": {
+    "Attack 1": {
+      "start": 0,
+      "end": 2.8329791666666666,
+      "loop": false
+    },
+    "Attack 2": {
+      "start": 4,
+      "end": 6.592979166666667,
+      "loop": false
+    },
+    "Attack 3": {
+      "start": 8,
+      "end": 11.096979166666667,
+      "loop": false
+    },
+    "Damage 1": {
+      "start": 13,
+      "end": 13.755270833333334,
+      "loop": false
+    },
+    "Damage 2": {
+      "start": 15,
+      "end": 15.591083333333334,
+      "loop": false
+    },
+    "Damage 3": {
+      "start": 17,
+      "end": 17.689604166666665,
+      "loop": false
+    },
+    "Death 1": {
+      "start": 19,
+      "end": 20.050833333333333,
+      "loop": false
+    },
+    "Death 2": {
+      "start": 22,
+      "end": 23.412041666666667,
+      "loop": false
+    },
+    "Death 3": {
+      "start": 25,
+      "end": 26.576229166666668,
+      "loop": false
+    },
+    "Enter building 1": {
+      "start": 28,
+      "end": 30.808979166666667,
+      "loop": false
+    },
+    "Location unavailable 1": {
+      "start": 32,
+      "end": 33.83891666666667,
+      "loop": false
+    },
+    "Location unavailable 2": {
+      "start": 35,
+      "end": 36.543395833333335,
+      "loop": false
+    },
+    "Move 1": {
+      "start": 38,
+      "end": 40.376979166666665,
+      "loop": false
+    },
+    "Move 2": {
+      "start": 42,
+      "end": 44.208979166666666,
+      "loop": false
+    },
+    "Move 3": {
+      "start": 46,
+      "end": 48.352979166666664,
+      "loop": false
+    },
+    "Move 4": {
+      "start": 50,
+      "end": 51.97027083333333,
+      "loop": false
+    },
+    "Selection 1": {
+      "start": 53,
+      "end": 54.94497916666667,
+      "loop": false
+    },
+    "Selection 2": {
+      "start": 56,
+      "end": 57.51054166666667,
+      "loop": false
+    },
+    "Selection 3": {
+      "start": 59,
+      "end": 60.543375,
+      "loop": false
+    }
+  }
+}

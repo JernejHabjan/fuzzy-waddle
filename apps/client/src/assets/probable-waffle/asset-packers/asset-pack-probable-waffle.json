@@ -2,6 +2,30 @@
     "section1": {
         "files": [
             {
+                "jsonURL": "assets/probable-waffle/sfx/actors/animals.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/animals.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "actors animals"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/foliage.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/foliage.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "actors foliage"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/resources.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/resources.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "actors resources"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/animals.json",
                 "path": "assets/probable-waffle/atlas",
@@ -42,6 +66,14 @@
                 "url": "assets/probable-waffle/atlas/effects.json",
                 "path": "assets/probable-waffle/atlas",
                 "key": "effects_1"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/environment.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/environment.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "environment"
             },
             {
                 "type": "multiatlas",
@@ -277,6 +309,62 @@
                 "key": "ranged_female_walk"
             },
             {
+                "jsonURL": "assets/probable-waffle/sfx/shared actor actions.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/shared actor actions.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "shared actor actions"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Skaduwee/Magician.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Skaduwee/Magician.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Skaduwee Magician"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Skaduwee/Owl.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Skaduwee/Owl.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Skaduwee Owl"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Skaduwee/Ranged.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Skaduwee/Ranged.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Skaduwee Ranged"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Skaduwee/Warrior.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Skaduwee/Warrior.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Skaduwee Warrior"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Skaduwee/Worker Female.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Skaduwee/Worker Female.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Skaduwee Worker Female"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Skaduwee/Worker Male.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Skaduwee/Worker Male.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Skaduwee Worker Male"
+            },
+            {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_anims.json",
                 "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_anims.json",
                 "type": "animation",
@@ -337,6 +425,46 @@
                 },
                 "type": "spritesheet",
                 "key": "slingshot_female_walk"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Tivara/Maceman.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Tivara/Maceman.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Tivara Maceman"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Tivara/Olival.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Tivara/Olival.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Tivara Olival"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Tivara/Slingshot.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Tivara/Slingshot.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Tivara Slingshot"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Tivara/Worker Female.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Tivara/Worker Female.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Tivara Worker Female"
+            },
+            {
+                "jsonURL": "assets/probable-waffle/sfx/actors/Tivara/Worker Male.json",
+                "audioURL": [
+                    "assets/probable-waffle/sfx/actors/Tivara/Worker Male.mp3"
+                ],
+                "type": "audioSprite",
+                "key": "Tivara Worker Male"
             },
             {
                 "jsonURL": "assets/probable-waffle/sfx/ui-feedback/ui-feedback.json",
