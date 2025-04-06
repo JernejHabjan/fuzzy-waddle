@@ -34,9 +34,9 @@ export interface AudioDefinition {
 
 export class AudioActorComponent {
   private audioService?: AudioService;
-  private playedSoundIndexes: { [key in SoundType]?: number[] } = {};
-  private lastPlayedSoundIndex: { [key in SoundType]?: number } = {};
-  private previousOrderType: OrderType | null = null;
+  private playedSoundIndexes: { [key in (SoundType | string)]?: number[] } = {};
+  private lastPlayedSoundIndex: { [key in (SoundType | string)]?: number } = {};
+  private previousSoundType: SoundType | string | null = null;
 
   constructor(
     public readonly gameObject: Phaser.GameObjects.GameObject,
@@ -46,36 +46,11 @@ export class AudioActorComponent {
   }
 
   playOrderSound(action: OrderData) {
-    if (!this.audioService) return;
-    const soundDefinition = this.getActionSound(action);
-    if (soundDefinition === null) return;
-    const orderType = action.orderType;
-    const previousOrderType = this.previousOrderType;
-    // ensure not to play the sound again if it's already being played
-    if (previousOrderType === orderType) return;
-    if (previousOrderType !== null) {
-      // order changed - stop the previous sound
-      this.audioService.stopSound(soundDefinition.key);
-    }
-    this.previousOrderType = orderType;
-    this.audioService.playAudioSprite(soundDefinition.key, soundDefinition.spriteName, undefined, {
-      // reset audio sprite when the sound is finished
-      onComplete: () => (this.previousOrderType = null)
-    });
+    this.playSound(this.getActionSound(action), this.mapOrderTypeToSoundType(action.orderType));
   }
 
   playCustomSound(key: SoundType | string) {
-    if (!this.audioService) return;
-    const sounds = this.audioDefinition?.sounds;
-    if (!sounds) return;
-    const soundDefinitions = sounds[key];
-    if (!soundDefinitions || soundDefinitions.length === 0) return;
-    // get a random sound from the array
-    const randomIndex = Math.floor(Math.random() * soundDefinitions.length); // todo adjust this later so they don't repeat
-    const soundDefinition = soundDefinitions[randomIndex];
-    // stop all sounds with the same key
-    this.stopAllSounds(soundDefinition.key);
-    this.audioService.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
+    this.playSound(this.getCustomSound(key), key);
   }
 
   private init() {
@@ -83,36 +58,56 @@ export class AudioActorComponent {
   }
 
   private getActionSound(action: OrderData) {
-    if (!this.audioDefinition) return null;
-    const sounds = this.audioDefinition.sounds;
-    const soundType = this.mapOrderTypeToSoundType(action.orderType);
-    if (!soundType) return null;
-    const soundDefinitions = sounds[soundType];
+    return this.getSound(this.mapOrderTypeToSoundType(action.orderType));
+  }
+
+  private getCustomSound(key: SoundType | string) {
+    return this.getSound(key);
+  }
+
+  private getSound(key: SoundType | string | null) {
+    if (!this.audioDefinition || !key) return null;
+    const soundDefinitions = this.audioDefinition.sounds[key];
     if (!soundDefinitions) return null;
 
-    if (!this.playedSoundIndexes[soundType]) {
-      this.playedSoundIndexes[soundType] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
+    if (!this.playedSoundIndexes[key]) {
+      this.playedSoundIndexes[key] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
     }
 
-    const playedIndexes = this.playedSoundIndexes[soundType];
+    const playedIndexes = this.playedSoundIndexes[key];
     if (!playedIndexes || playedIndexes.length === 0) return null;
 
     let soundIndex = playedIndexes.pop();
     if (playedIndexes.length === 0) {
-      this.playedSoundIndexes[soundType] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
+      this.playedSoundIndexes[key] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
     }
 
     // Ensure the last played sound is not repeated if there are multiple sounds
-    if (soundDefinitions.length > 1 && soundIndex === this.lastPlayedSoundIndex[soundType]) {
+    if (soundDefinitions.length > 1 && soundIndex === this.lastPlayedSoundIndex[key]) {
       soundIndex = playedIndexes.pop();
       if (playedIndexes.length === 0) {
-        this.playedSoundIndexes[soundType] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
+        this.playedSoundIndexes[key] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
       }
     }
 
-    this.lastPlayedSoundIndex[soundType] = soundIndex;
+    this.lastPlayedSoundIndex[key] = soundIndex;
 
     return soundDefinitions[soundIndex!];
+  }
+
+  private playSound(soundDefinition: SoundDefinition | null, key: SoundType | string | null) {
+    if (!this.audioService || !soundDefinition || !key) return;
+
+    if (this.previousSoundType === key) return;
+
+    if (this.previousSoundType !== null) {
+      this.audioService.stopSound(soundDefinition.key);
+    }
+
+    this.previousSoundType = key;
+    this.audioService.playAudioSprite(soundDefinition.key, soundDefinition.spriteName, undefined, {
+      onComplete: () => (this.previousSoundType = null)
+    });
   }
 
   private shuffleArray(array: number[]): number[] {
@@ -146,10 +141,5 @@ export class AudioActorComponent {
       default:
         return null;
     }
-  }
-
-  private stopAllSounds(key: string) {
-    if (!this.audioService) return;
-    this.audioService.stopSound(key);
   }
 }
