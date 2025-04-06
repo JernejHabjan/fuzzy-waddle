@@ -46,11 +46,15 @@ export class AudioActorComponent {
   }
 
   playOrderSound(action: OrderData) {
-    this.playSound(this.getActionSound(action), this.mapOrderTypeToSoundType(action.orderType));
+    this.playSound(this.getActionSound(action), this.mapOrderTypeToSoundType(action.orderType), false);
   }
 
   playCustomSound(key: SoundType | string) {
-    this.playSound(this.getCustomSound(key), key);
+    this.playSound(this.getCustomSound(key), key, false);
+  }
+
+  playSpatialCustomSound(key: SoundType | string) {
+    this.playSound(this.getCustomSound(key), key, true);
   }
 
   private init() {
@@ -70,7 +74,11 @@ export class AudioActorComponent {
 
     const extraSoundDefinitions = this.audioDefinition.sounds[SoundType.SelectExtra];
     // adjust the key to SelectExtra if we just played the last selection sound
-    if (key === SoundType.Select && extraSoundDefinitions?.length && this.playedSoundIndexes[SoundType.Select]?.length === 0) {
+    if (
+      key === SoundType.Select &&
+      extraSoundDefinitions?.length &&
+      this.playedSoundIndexes[SoundType.Select]?.length === 0
+    ) {
       key = SoundType.SelectExtra;
     }
 
@@ -89,7 +97,7 @@ export class AudioActorComponent {
       soundIndex = playedIndexes.pop();
     }
 
-    if(this.playedSoundIndexes[SoundType.SelectExtra]?.length === 0){
+    if (this.playedSoundIndexes[SoundType.SelectExtra]?.length === 0) {
       // reset the played sound indexes for SelectExtra
       this.playedSoundIndexes[SoundType.Select] = this.shuffleArray([...Array(soundDefinitions.length).keys()]);
     }
@@ -99,7 +107,7 @@ export class AudioActorComponent {
     return soundDefinitions[soundIndex!];
   }
 
-  private playSound(soundDefinition: SoundDefinition | null, key: SoundType | string | null) {
+  private playSound(soundDefinition: SoundDefinition | null, key: SoundType | string | null, spatial: boolean) {
     if (!this.audioService || !soundDefinition || !key) return;
 
     if (this.previousSoundType === key) return;
@@ -109,9 +117,21 @@ export class AudioActorComponent {
     }
 
     this.previousSoundType = key;
-    this.audioService.playAudioSprite(soundDefinition.key, soundDefinition.spriteName, undefined, {
-      onComplete: () => (this.previousSoundType = null)
-    });
+    const additionalConfig = {
+      onComplete: () => {
+        this.previousSoundType = null;
+      }
+    };
+    if (spatial) {
+      this.audioService.playSpatialAudioSprite(
+        this.gameObject,
+        soundDefinition.key,
+        soundDefinition.spriteName,
+        additionalConfig
+      );
+    } else {
+      this.audioService.playAudioSprite(soundDefinition.key, soundDefinition.spriteName, undefined, additionalConfig);
+    }
   }
 
   private shuffleArray(array: number[]): number[] {

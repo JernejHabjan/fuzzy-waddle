@@ -66,20 +66,20 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
       this.cancelMovement();
       if (shearedCount < maxShearedCount) {
         this.woolParticles?.emitParticleAt(this.x, this.y - 25, Phaser.Math.Between(1, 4));
-        this.actorAudioComponent?.playCustomSound("scissors");
+        this.actorAudioComponent?.playSpatialCustomSound("scissors");
       }
       shearedCount++;
       if (shearedCount === maxShearedCount) {
         this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
-        this.actorAudioComponent?.playCustomSound("wool");
-        this.actorAudioComponent?.playCustomSound(SoundType.Select);
+        this.actorAudioComponent?.playSpatialCustomSound("wool");
+        this.actorAudioComponent?.playSpatialCustomSound(SoundType.Select);
         this.sheared = true;
         this.playSheepAnimation();
         // start timer to reset sheep
         scene.time.delayedCall(5000, () => {
           shearedCount = 0;
           this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
-          this.actorAudioComponent?.playCustomSound("wool");
+          this.actorAudioComponent?.playSpatialCustomSound("wool");
           this.sheared = false;
           this.playSheepAnimation();
           this.moveSheepAfterDelay();
