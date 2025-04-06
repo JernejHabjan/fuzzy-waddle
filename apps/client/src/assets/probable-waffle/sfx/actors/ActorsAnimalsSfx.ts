@@ -1,14 +1,14 @@
 // This file was generated from "convert-to-enums.js" script
 export enum ActorsAnimalsSfx {
-  HEDGEHOG_ANGRY = "angry",
-  HEDGEHOG_SELECTION_1 = "selection 1",
-  HEDGEHOG_SELECTION_2 = "selection 2",
-  SHEEP_BLEAT_1 = "bleat 1",
-  SHEEP_BLEAT_2 = "bleat 2",
-  SHEEP_BLEAT_3 = "bleat 3",
-  SHEEP_BLEAT_4 = "bleat 4",
-  SHEEP_SCISSORS = "scissors",
-  SHEEP_WOOL_BOMB = "wool bomb"
+  HEDGEHOG_ANGRY = "hedgehog angry",
+  HEDGEHOG_SELECTION_1 = "hedgehog selection 1",
+  HEDGEHOG_SELECTION_2 = "hedgehog selection 2",
+  SHEEP_BLEAT_1 = "sheep bleat 1",
+  SHEEP_BLEAT_2 = "sheep bleat 2",
+  SHEEP_BLEAT_3 = "sheep bleat 3",
+  SHEEP_BLEAT_4 = "sheep bleat 4",
+  SHEEP_SCISSORS = "sheep scissors",
+  SHEEP_WOOL_BOMB = "sheep wool bomb"
 }
 
 export const ActorsSheepSfxBleatSounds = [
