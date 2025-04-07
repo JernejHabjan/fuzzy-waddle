@@ -23,6 +23,7 @@ export enum TerrainType {
 }
 
 export class NavigationService {
+  private readonly terrainTypes = Object.values(TerrainType);
   static UpdateNavigationEvent = "updateNavigation";
   private easyStar: EasyStar;
   private grid: number[][] = [];
@@ -455,6 +456,9 @@ export class NavigationService {
     if (!tileData) return undefined;
     const terrainType = tileData.properties.terrainType;
     if (!terrainType) return undefined;
-    return terrainType as TerrainType;
+    if (this.terrainTypes.includes(terrainType)) {
+      return terrainType as TerrainType;
+    }
+    return undefined;
   }
 }
