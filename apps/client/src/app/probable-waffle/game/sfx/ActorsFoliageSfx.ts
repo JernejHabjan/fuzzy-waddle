@@ -8,6 +8,6 @@ export enum ActorsFoliageSfx {
 }
 
 export const ActorsFoliageSfxBushSounds: SoundDefinition[] = [
-  { key: AudioSprites.ENVIRONMENT, spriteName: ActorsFoliageSfx.BUSH_RUSTLE_1 },
-  { key: AudioSprites.ENVIRONMENT, spriteName: ActorsFoliageSfx.BUSH_RUSTLE_2 }
+  { key: AudioSprites.ACTORS_FOLIAGE, spriteName: ActorsFoliageSfx.BUSH_RUSTLE_1 },
+  { key: AudioSprites.ACTORS_FOLIAGE, spriteName: ActorsFoliageSfx.BUSH_RUSTLE_2 }
 ];

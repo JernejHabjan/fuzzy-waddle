@@ -1,6 +1,6 @@
 import { OrderData } from "../../character/ai/OrderData";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { AdditionalAudioConfig, AudioService } from "../../../scenes/services/audio.service";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { OrderType } from "../../character/ai/order-type";
 
@@ -121,7 +121,7 @@ export class AudioActorComponent {
       onComplete: () => {
         this.previousSoundType = null;
       }
-    };
+    } satisfies AdditionalAudioConfig;
     if (spatial) {
       this.audioService.playSpatialAudioSprite(
         this.gameObject,

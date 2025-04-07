@@ -153,6 +153,7 @@ import {
   ActorsTreeSfxResourceDepletedSounds,
   ActorsTreeSfxSelectionSounds
 } from "../sfx/ActorsResourcesSfx";
+import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -761,6 +762,11 @@ export const pwActorDefinitions: {
       collider: { enabled: true },
       constructable: {
         ...coreConstructionSiteDefinition
+      },
+      audio: {
+        sounds: {
+          [SoundType.Select]: TivaraOlivalSfxSelectionSounds
+        }
       }
     }
   },
