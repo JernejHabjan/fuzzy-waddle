@@ -162,8 +162,8 @@ export class AudioService {
     const minZoom = 0.5;
     const maxZoom = 8;
     const minVolume = 30;
-
     let volume: number;
+
     if (cameraZoom <= minZoom) {
       volume = minVolume;
     } else if (cameraZoom >= maxZoom) {
@@ -184,21 +184,26 @@ export class AudioService {
     const offsetY = transform.y - camY;
     const offsetZ = transform.z ?? 0;
 
+    // Shrink audible range as you zoom in:
+    // World-space viewport size = camera.width / camera.zoom
+    // Use whichever dimension is larger for maxDistance
+    const viewWidthWorld = camera.width / cameraZoom;
+    const viewHeightWorld = camera.height / cameraZoom;
+    const maxAudible = Math.max(viewWidthWorld, viewHeightWorld);
+
     return {
       volume: volumeNormalized,
       source: {
-        // Position relative to listener (camera center)
         x: offsetX,
         y: offsetY,
         z: offsetZ,
-
-        // Standard HRTF settings
         orientationX: 0,
         orientationY: 0,
         orientationZ: -1,
         refDistance: 50,
         rolloffFactor: 1,
-        maxDistance: camera.width,
+        // audible out to the current viewport size
+        maxDistance: maxAudible,
         panningModel: "HRTF",
         distanceModel: "linear",
         coneOuterGain: 0.3
@@ -211,6 +216,7 @@ export class AudioService {
       rate: soundConfig?.rate ?? 1
     } satisfies Phaser.Types.Sound.SoundConfig;
   }
+
 
   stopSound(key: string) {
     this.scene.sound.stopByKey(key);
