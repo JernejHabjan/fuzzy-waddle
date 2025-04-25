@@ -59,6 +59,7 @@ export class BushRustleComponent {
   }
 
   destroy() {
+    if(!this.gameObject.scene) return;
     this.gameObject.scene.tweens.killAll();
     this.gameObject.scene.tweens.destroy();
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.gameObject.update, this);
