@@ -154,6 +154,7 @@ import {
   ActorsTreeSfxSelectionSounds
 } from "../sfx/ActorsResourcesSfx";
 import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
+import { SelectableDefinition } from "../entity/actor/components/selectable-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -177,7 +178,7 @@ const treeDefinitions: ActorInfoDefinition = {
       enabled: true,
       colliderFactorReduction: 0.5
     },
-    selectable: { enabled: true },
+    selectable: {},
     resourceSource: {
       resourceType: ResourceType.Wood,
       maximumResources: 20,
@@ -233,7 +234,7 @@ const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
         ResourceType.Stone
       ]
     },
-    selectable: { enabled: true },
+    selectable: {},
     translatable: {
       tileStepDuration: 500
     },
@@ -337,7 +338,7 @@ export type ActorInfoDefinition = Partial<{
     translatable: ActorTranslateDefinition;
     aiControlled: PawnAiDefinition;
     containable: { enabled: boolean };
-    selectable: { enabled: boolean };
+    selectable: SelectableDefinition;
     collider: ColliderDefinition;
     audio: AudioDefinition;
   }>;
@@ -439,7 +440,7 @@ export const pwActorDefinitions: {
         productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
-      selectable: { enabled: true },
+      selectable: {},
       translatable: {
         tileStepDuration: 500
       },
@@ -502,7 +503,7 @@ export const pwActorDefinitions: {
       requirements: {
         actors: [ObjectNames.AnkGuard]
       },
-      selectable: { enabled: true },
+      selectable: {},
       translatable: {
         tileStepDuration: 500
       },
@@ -577,7 +578,7 @@ export const pwActorDefinitions: {
       requirements: {
         actors: [ObjectNames.AnkGuard]
       },
-      selectable: { enabled: true },
+      selectable: {},
       translatable: {
         tileStepDuration: 500
       },
@@ -711,7 +712,7 @@ export const pwActorDefinitions: {
         capacityPerQueue: 5,
         availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
       },
-      selectable: { enabled: true },
+      selectable: {},
       collider: { enabled: true },
       constructable: {
         ...coreConstructionSiteDefinition
@@ -758,7 +759,7 @@ export const pwActorDefinitions: {
       requirements: {
         actors: [ObjectNames.Sandhold]
       },
-      selectable: { enabled: true },
+      selectable: {},
       collider: { enabled: true },
       constructable: {
         ...coreConstructionSiteDefinition
@@ -823,7 +824,7 @@ export const pwActorDefinitions: {
         capacityPerQueue: 5,
         availableProduceActors: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
       },
-      selectable: { enabled: true },
+      selectable: {},
       collider: { enabled: true },
       constructable: {
         ...coreConstructionSiteDefinition
@@ -879,7 +880,7 @@ export const pwActorDefinitions: {
         capacityPerQueue: 5,
         availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
       },
-      selectable: { enabled: true },
+      selectable: {},
       collider: { enabled: true },
       constructable: {
         ...coreConstructionSiteDefinition
@@ -926,7 +927,7 @@ export const pwActorDefinitions: {
       resourceDrain: {
         resourceTypes: [ResourceType.Wood]
       },
-      selectable: { enabled: true },
+      selectable: {},
       collider: { enabled: true },
       container: {
         capacity: 2
@@ -974,9 +975,7 @@ export const pwActorDefinitions: {
           }
         ]
       },
-      selectable: {
-        enabled: true
-      },
+      selectable: {},
       productionCost: {
         resources: {
           [ResourceType.Wood]: 10,
@@ -1059,7 +1058,7 @@ export const pwActorDefinitions: {
       requirements: {
         actors: [ObjectNames.InfantryInn]
       },
-      selectable: { enabled: true },
+      selectable: {},
       translatable: {
         tileStepDuration: 500
       },
@@ -1133,7 +1132,7 @@ export const pwActorDefinitions: {
       requirements: {
         actors: [ObjectNames.InfantryInn]
       },
-      selectable: { enabled: true },
+      selectable: {},
       translatable: {
         tileStepDuration: 500
       },
@@ -1208,7 +1207,7 @@ export const pwActorDefinitions: {
       requirements: {
         actors: [ObjectNames.InfantryInn]
       },
-      selectable: { enabled: true },
+      selectable: {},
       translatable: {
         tileStepDuration: 500
       },
@@ -1336,7 +1335,7 @@ export const pwActorDefinitions: {
         productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
-      selectable: { enabled: true },
+      selectable: {},
       container: {
         capacity: 2
       },
@@ -1404,7 +1403,7 @@ export const pwActorDefinitions: {
           ObjectNames.SkaduweeWarriorMale
         ]
       },
-      selectable: { enabled: true },
+      selectable: {},
       collider: { enabled: true },
       constructable: {
         ...coreConstructionSiteDefinition
@@ -1457,7 +1456,7 @@ export const pwActorDefinitions: {
         capacityPerQueue: 5,
         availableProduceActors: [ObjectNames.SkaduweeOwl]
       },
-      selectable: { enabled: true },
+      selectable: {},
       collider: { enabled: true },
       constructable: {
         ...coreConstructionSiteDefinition
@@ -1569,7 +1568,7 @@ export const pwActorDefinitions: {
       vision: {
         range: 5
       },
-      selectable: { enabled: true },
+      selectable: {},
       health: {
         maxHealth: 300,
         healthDisplayBehavior: "onDamage"
@@ -1614,7 +1613,7 @@ export const pwActorDefinitions: {
           origin: { x: 0.5, y: 0.5 }
         }
       },
-      selectable: { enabled: true },
+      selectable: {},
       health: {
         maxHealth: 1000,
         healthDisplayBehavior: "onDamage"
@@ -1672,7 +1671,7 @@ export const pwActorDefinitions: {
           origin: { x: 0.5, y: 0.5 }
         }
       },
-      selectable: { enabled: true },
+      selectable: {},
       health: {
         maxHealth: 300,
         healthDisplayBehavior: "onDamage"
@@ -1701,7 +1700,7 @@ export const pwActorDefinitions: {
       collider: {
         enabled: true
       },
-      selectable: { enabled: true },
+      selectable: { offsetY: 16 },
       resourceSource: {
         resourceType: ResourceType.Minerals,
         maximumResources: 100,
@@ -1723,7 +1722,7 @@ export const pwActorDefinitions: {
       collider: {
         enabled: true
       },
-      selectable: { enabled: true },
+      selectable: { offsetY: 16 },
       resourceSource: {
         resourceType: ResourceType.Stone,
         maximumResources: 100,

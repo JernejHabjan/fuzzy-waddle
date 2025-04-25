@@ -95,7 +95,7 @@ export class BuilderComponent {
     // notify listeners
     this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
 
-    console.log("builder left building site");
+    // console.log("builder left building site");
     if (this.builderComponentDefinition.enterConstructionSite) {
       // leave building site
       const containerComponent = getActorComponent(constructionSite, ContainerComponent);

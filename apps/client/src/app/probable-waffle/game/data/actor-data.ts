@@ -117,7 +117,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
       ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
       : []),
     ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
-    ...(componentDefinitions?.selectable ? [new SelectableComponent(actor)] : []),
+    ...(componentDefinitions?.selectable ? [new SelectableComponent(actor, componentDefinitions.selectable)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(actor, componentDefinitions.collider)] : [])
   ];

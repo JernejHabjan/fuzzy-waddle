@@ -4,7 +4,6 @@
 
 import Platform from "./Platform";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../../probable-waffle/game/data/object-names";
 /* END-USER-IMPORTS */
 
 export default class Stone extends Platform {
@@ -20,7 +19,6 @@ export default class Stone extends Platform {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Stone;
   /* END-USER-CODE */
 }
 
