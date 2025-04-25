@@ -13,8 +13,8 @@ import { getGameObjectBounds, getGameObjectTransform, onObjectReady } from "../.
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ProductionQueueItem = {
   actorName: ObjectNames;

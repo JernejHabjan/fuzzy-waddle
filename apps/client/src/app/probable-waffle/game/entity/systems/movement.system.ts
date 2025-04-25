@@ -21,9 +21,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { OrderType } from "../character/ai/order-type";
 import { OrderData } from "../character/ai/OrderData";
-import Tween = Phaser.Tweens.Tween;
-import GameObject = Phaser.GameObjects.GameObject;
-import { AudioActorComponent, SoundDefinition } from "../actor/components/audio-actor-component";
+import { AudioActorComponent } from "../actor/components/audio-actor-component";
 import {
   SharedActorActionsSfxGrassSounds,
   SharedActorActionsSfxGravelSounds,
@@ -31,7 +29,8 @@ import {
   SharedActorActionsSfxSnowSounds,
   SharedActorActionsSfxStoneSounds
 } from "../../sfx/SharedActorActionsSfx";
-import { AudioSprites } from "../../sfx/AudioSprites";
+import Tween = Phaser.Tweens.Tween;
+import GameObject = Phaser.GameObjects.GameObject;
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -279,7 +278,7 @@ export class MovementSystem {
     const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
     const movementSound = movementSoundDefinition[randomIndex];
     this.audioService.playSpatialAudioSprite(this.gameObject, movementSound.key, movementSound.spriteName, {
-      volume: 70, // make it quieter so it doesn't drown out other sounds
+      volume: 70 // make it quieter so it doesn't drown out other sounds
     });
   }
 

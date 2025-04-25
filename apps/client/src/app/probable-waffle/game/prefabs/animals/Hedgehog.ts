@@ -51,7 +51,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
   private currentDelay: Phaser.Time.TimerEvent | null = null;
 
   private postSceneCreate() {
-    this.actorAudioComponent = getActorComponent(this,AudioActorComponent);
+    this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
     this.moveHedgehog();
     this.handleClick();
   }

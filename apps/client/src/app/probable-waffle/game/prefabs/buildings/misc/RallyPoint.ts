@@ -14,6 +14,9 @@ import { SelectableComponent } from "../../../entity/actor/components/selectable
 import { Subscription } from "rxjs";
 import { getGameObjectTransform } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
+import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
 
 export default class RallyPoint extends Phaser.GameObjects.Image {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
@@ -39,6 +42,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
 
   private selectionChangedSubscription?: Subscription;
   private selectionComponent: SelectableComponent | undefined;
+  private audioService?: AudioService;
 
   init(owner: GameObjects.GameObject) {
     this.owner = owner;
@@ -56,6 +60,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
         this.handleVisibility();
       });
     }
+    this.audioService = getSceneService(this.owner.scene, AudioService);
   }
 
   private handleVisibility() {
@@ -88,6 +93,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     this.y = worldVec3.y;
     this.z = worldVec3.z;
     this.handleVisibility();
+    this.playRallyPointSetSound();
   }
 
   setActor(gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform) {
@@ -142,6 +148,12 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
 
       currentLength += dashLength + gapLength;
     }
+  }
+
+  private playRallyPointSetSound(){
+    if(!this.audioService) return;
+    const sound = SharedActorActionsRallyPointSound;
+    this.audioService.playSpatialAudioSprite(this, sound.key, sound.spriteName);
   }
 
   destroy(fromScene?: boolean) {

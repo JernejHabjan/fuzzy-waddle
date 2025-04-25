@@ -19,26 +19,26 @@ export enum EnvironmentSfx {
 }
 
 export const EnvironmentSfxBirdsSounds: SoundDefinition[] = [
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_1},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_2},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_3},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_4},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_5},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.BIRDS_6}
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.BIRDS_1 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.BIRDS_2 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.BIRDS_3 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.BIRDS_4 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.BIRDS_5 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.BIRDS_6 }
 ];
 
 export const EnvironmentSfxLavaSounds: SoundDefinition[] = [
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.LAVA_BUBBLING_1},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.LAVA_BUBBLING_2},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.LAVA_BUBBLING_3}
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.LAVA_BUBBLING_1 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.LAVA_BUBBLING_2 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.LAVA_BUBBLING_3 }
 ];
 
 export const EnvironmentSfxSeagullsSounds: SoundDefinition[] = [
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.SEAGULLS_1},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.SEAGULLS_2}
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.SEAGULLS_1 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.SEAGULLS_2 }
 ];
 
 export const EnvironmentSfxWaterSounds: SoundDefinition[] = [
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.WATER_FLOWING_1},
-   { key: AudioSprites.ENVIRONMENT, spriteName:EnvironmentSfx.WATER_FLOWING_2}
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.WATER_FLOWING_1 },
+  { key: AudioSprites.ENVIRONMENT, spriteName: EnvironmentSfx.WATER_FLOWING_2 }
 ];

@@ -10,6 +10,9 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
 import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
 import { ObjectNames } from "../../../data/object-names";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import { SkaduweeOwlSfxFurballFireSounds, SkaduweeOwlSfxMoveSounds } from "../../../sfx/SkaduweeOwlSfx";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -39,8 +42,10 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
   private furballEvent?: Phaser.Time.TimerEvent;
+  private audioService?: AudioService;
 
   private postSceneCreate() {
+    this.audioService = getSceneService(this.scene, AudioService);
     this.drawFlyingUnitVerticalLine();
     this.moveOwl();
     this.startSpittingFurBalls();
@@ -72,12 +77,31 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     if (!this.active) return;
 
     try {
+      this.playMoveSound();
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
     } catch (e) {
       console.error(e);
     }
 
     this.moveAfterDelay();
+  }
+
+  private playMoveSound() {
+    if (!this.audioService) return;
+    const movementSoundDefinition = SkaduweeOwlSfxMoveSounds;
+    const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
+    const movementSound = movementSoundDefinition[randomIndex];
+    this.audioService.playSpatialAudioSprite(this, movementSound.key, movementSound.spriteName, {
+      volume: 70 // make it quieter so it doesn't drown out other sounds
+    });
+  }
+
+  private playFurballSound() {
+    if (!this.audioService) return;
+    const fireSoundDefinition = SkaduweeOwlSfxFurballFireSounds;
+    const randomIndex = Math.floor(Math.random() * fireSoundDefinition.length);
+    const fireSound = fireSoundDefinition[randomIndex];
+    this.audioService.playSpatialAudioSprite(this, fireSound.key, fireSound.spriteName);
   }
 
   private moveAfterDelay() {
@@ -124,11 +148,12 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
         furball.destroy();
       }
     });
+    this.playFurballSound();
   }
 
   private startSpittingFurBalls() {
     this.furballEvent = this.scene.time.addEvent({
-      delay: 2000,
+      delay: 20000,
       callback: this.randomlySpitFurBall,
       callbackScope: this,
       loop: true

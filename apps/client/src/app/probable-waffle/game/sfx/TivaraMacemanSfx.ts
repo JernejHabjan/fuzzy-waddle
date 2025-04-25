@@ -25,41 +25,41 @@ export enum TivaraMacemanSfx {
 }
 
 export const TivaraMacemanSfxAttackSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ATTACK_1},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ATTACK_2},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ATTACK_3}
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ATTACK_1 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ATTACK_2 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ATTACK_3 }
 ];
 
 export const TivaraMacemanSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_1},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_2},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_3}
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_1 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_2 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_3 }
 ];
 
 export const TivaraMacemanSfxDeathSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DEATH_1},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DEATH_2},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DEATH_3}
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DEATH_1 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DEATH_2 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DEATH_3 }
 ];
 
 export const TivaraMacemanSfxLocationSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.LOCATION_UNAVAILABLE_1},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.LOCATION_UNAVAILABLE_2}
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.LOCATION_UNAVAILABLE_1 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.LOCATION_UNAVAILABLE_2 }
 ];
 
 export const TivaraMacemanSfxMoveSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_1},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_2},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_3},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_4}
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_1 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_2 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_3 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.MOVE_4 }
 ];
 
 export const TivaraMacemanSfxSelectionSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.SELECTION_1},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.SELECTION_2},
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.SELECTION_3}
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.SELECTION_1 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.SELECTION_2 },
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.SELECTION_3 }
 ];
 
 export const TivaraMacemanSfxEnterSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ENTER_BUILDING_1}
+  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.ENTER_BUILDING_1 }
 ];
