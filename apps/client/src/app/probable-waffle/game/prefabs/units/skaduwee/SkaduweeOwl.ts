@@ -12,7 +12,13 @@ import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
 import { ObjectNames } from "../../../data/object-names";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
-import { SkaduweeOwlSfxFurballFireSounds, SkaduweeOwlSfxMoveSounds } from "../../../sfx/SkaduweeOwlSfx";
+import {
+  SkaduweeOwlSfxFurballFireSounds,
+  SkaduweeOwlSfxFurballHitSounds,
+  SkaduweeOwlSfxMoveSounds
+} from "../../../sfx/SkaduweeOwlSfx";
+import { SoundDefinition } from "../../../entity/actor/components/audio-actor-component";
+import { EffectsAnims } from "../../../animations/effects";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -96,12 +102,17 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
     });
   }
 
-  private playFurballSound() {
+  private playFurballSound(definitions: SoundDefinition[]) {
     if (!this.audioService) return;
-    const fireSoundDefinition = SkaduweeOwlSfxFurballFireSounds;
-    const randomIndex = Math.floor(Math.random() * fireSoundDefinition.length);
-    const fireSound = fireSoundDefinition[randomIndex];
+    const randomIndex = Math.floor(Math.random() * definitions.length);
+    const fireSound = definitions[randomIndex];
     this.audioService.playSpatialAudioSprite(this, fireSound.key, fireSound.spriteName);
+  }
+
+  private playHitAnimation(x: number, y: number, depth: number) {
+    const impactSprite = EffectsAnims.createAndPlayAnimation(this.scene, EffectsAnims.ANIM_IMPACT_1, x, y);
+    impactSprite.setDepth(depth);
+    impactSprite.setTint(0x006600);
   }
 
   private moveAfterDelay() {
@@ -145,15 +156,17 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       y,
       duration: 1000,
       onComplete: () => {
+        this.playFurballSound(SkaduweeOwlSfxFurballHitSounds);
+        this.playHitAnimation(furball.x, furball.y, furball.depth);
         furball.destroy();
       }
     });
-    this.playFurballSound();
+    this.playFurballSound(SkaduweeOwlSfxFurballFireSounds);
   }
 
   private startSpittingFurBalls() {
     this.furballEvent = this.scene.time.addEvent({
-      delay: 20000,
+      delay: 20_000,
       callback: this.randomlySpitFurBall,
       callbackScope: this,
       loop: true
