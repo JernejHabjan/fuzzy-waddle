@@ -155,15 +155,15 @@ export class AudioService {
     if (!transform) return undefined;
 
     const camera = gameObject.scene.cameras.main;
-
-    const cameraCenter = camera.midPoint;
+    const { x: camX, y: camY } = camera.midPoint;
     const cameraZoom = camera.zoom;
-    // Adjust volume based on zoom level
+
+    // Adjust volume based on the zoom level
     const minZoom = 0.5;
     const maxZoom = 8;
     const minVolume = 30;
 
-    let volume;
+    let volume: number;
     if (cameraZoom <= minZoom) {
       volume = minVolume;
     } else if (cameraZoom >= maxZoom) {
@@ -172,17 +172,27 @@ export class AudioService {
       volume = minVolume + ((cameraZoom - minZoom) / (maxZoom - minZoom)) * 100;
     }
 
-    if (soundConfig?.volume) {
+    // Apply any override in soundConfig
+    if (soundConfig?.volume !== undefined) {
       volume = (soundConfig.volume * volume) / 100;
     }
 
     const volumeNormalized = this.normalizeSfxVolume(volume);
+
+    // Compute source position relative to the camera center
+    const offsetX = transform.x - camX;
+    const offsetY = transform.y - camY;
+    const offsetZ = transform.z ?? 0;
+
     return {
       volume: volumeNormalized,
       source: {
-        x: transform.x - cameraCenter.x,
-        y: transform.y - cameraCenter.y,
-        z: transform.z,
+        // Position relative to listener (camera center)
+        x: offsetX,
+        y: offsetY,
+        z: offsetZ,
+
+        // Standard HRTF settings
         orientationX: 0,
         orientationY: 0,
         orientationZ: -1,
