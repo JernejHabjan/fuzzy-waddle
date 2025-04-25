@@ -58,15 +58,21 @@ export class AudioService {
     );
   }
 
+  /**
+   * Adding new audio so it does not interfere with other sounds of same key
+   */
   playAudio(key: string, soundConfig?: Phaser.Types.Sound.SoundConfig, additionalConfig?: AdditionalAudioConfig) {
     this.playSound(
-      (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => this.scene.sound.play(key, adjustedSoundConfig),
+      (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => this.scene.sound.add(key, adjustedSoundConfig),
       key,
       soundConfig,
       additionalConfig
     );
   }
 
+  /**
+   * Adding new audio so it does not interfere with other sounds of same key
+   */
   playAudioSprite(
     key: string,
     spriteName: string,
@@ -75,29 +81,32 @@ export class AudioService {
   ) {
     this.playSound(
       (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) =>
-        this.scene.sound.playAudioSprite(key, spriteName, adjustedSoundConfig),
-      key,
+        this.scene.sound.addAudioSprite(key, adjustedSoundConfig),
+      spriteName,
       soundConfig,
       additionalConfig
     );
   }
 
   private playSound(
-    playFn: (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => void,
+    addFn: (
+      adjustedSoundConfig: Phaser.Types.Sound.SoundConfig
+    ) => Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound,
     key: string,
     soundConfig?: Phaser.Types.Sound.SoundConfig,
     additionalConfig?: AdditionalAudioConfig
   ) {
-    const sound = this.scene.sound;
     soundConfig = soundConfig ?? {};
     soundConfig.volume = soundConfig.volume ?? this.sfxVolumeNormalized;
     additionalConfig = additionalConfig ?? {};
     additionalConfig.waitIfLockedOrGameLostFocus = additionalConfig.waitIfLockedOrGameLostFocus ?? false;
 
     const play = () => {
-      playFn(soundConfig);
-      sound.get(key).once(Phaser.Sound.Events.COMPLETE, () => {
+      const sound = addFn(soundConfig);
+      sound.play(key);
+      sound.once(Phaser.Sound.Events.COMPLETE, () => {
         additionalConfig?.onComplete?.();
+        sound.destroy();
       });
     };
 
@@ -216,7 +225,6 @@ export class AudioService {
       rate: soundConfig?.rate ?? 1
     } satisfies Phaser.Types.Sound.SoundConfig;
   }
-
 
   stopSound(key: string) {
     this.scene.sound.stopByKey(key);

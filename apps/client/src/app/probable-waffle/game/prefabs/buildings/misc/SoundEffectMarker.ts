@@ -63,7 +63,6 @@ export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
     const soundDefinitions = this.getSoundDefinitions();
     if (!soundDefinitions) return;
     const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
-    console.warn("TODO - this onComplete is not working");
     this.audioService.playSpatialAudioSprite(this, soundDefinition.key, soundDefinition.spriteName, undefined, {
       onComplete: () => {
         this.playSound();
