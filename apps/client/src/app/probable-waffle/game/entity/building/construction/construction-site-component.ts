@@ -16,7 +16,8 @@ import { getSceneService } from "../../../scenes/components/scene-component-help
 import { AudioService } from "../../../scenes/services/audio.service";
 import {
   SharedActorActionsSfxHammeringSounds,
-  SharedActorActionsSfxSawingSounds, SharedActorActionsSfxSelectionSounds
+  SharedActorActionsSfxSawingSounds,
+  SharedActorActionsSfxSelectionSounds
 } from "../../../sfx/SharedActorActionsSfx";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -274,6 +275,7 @@ export class ConstructionSiteComponent {
     if (!healthComponent) return;
 
     if (this.assignedRepairers.length === 0) return;
+    if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) return;
 
     const repairAmount = delta * this.constructionSiteDefinition.repairFactor * this.assignedRepairers.length;
     healthComponent.healthComponentData.health += repairAmount;
@@ -281,6 +283,8 @@ export class ConstructionSiteComponent {
       healthComponent.healthComponentData.health,
       healthComponent.healthDefinition.maxHealth
     );
+
+    this.playBuildSound();
 
     if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) {
       this.assignedRepairers.forEach((repairer) => {
@@ -298,10 +302,7 @@ export class ConstructionSiteComponent {
 
     const soundDefinitions = SharedActorActionsSfxSelectionSounds;
     const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
-    this.audioService?.playSpatialAudioSprite(
-      this.gameObject,
-      soundDefinition.key,
-      soundDefinition.spriteName);
+    this.audioService?.playSpatialAudioSprite(this.gameObject, soundDefinition.key, soundDefinition.spriteName);
 
     if (this.constructionSiteDefinition.consumesBuilders) {
       this.assignedBuilders.forEach((builder) => {
