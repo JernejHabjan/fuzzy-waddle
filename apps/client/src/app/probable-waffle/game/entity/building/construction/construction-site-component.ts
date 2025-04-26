@@ -11,8 +11,14 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { BuilderComponent } from "../../actor/components/builder-component";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import {
+  SharedActorActionsSfxHammeringSounds,
+  SharedActorActionsSfxSawingSounds, SharedActorActionsSfxSelectionSounds
+} from "../../../sfx/SharedActorActionsSfx";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished
@@ -50,6 +56,8 @@ export class ConstructionSiteComponent {
   constructionProgressUiComponent: ConstructionProgressUiComponent = new ConstructionProgressUiComponent(
     this.gameObject
   );
+  private audioService?: AudioService;
+  private playingBuildSound: boolean = false;
   constructor(
     private readonly gameObject: GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
@@ -68,6 +76,7 @@ export class ConstructionSiteComponent {
       this.progressPercentage = 100;
       this.constructionProgressPercentageChanged.next(this.progressPercentage);
     }
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
   }
 
   private get productionDefinition(): ProductionCostDefinition | null {
@@ -130,6 +139,8 @@ export class ConstructionSiteComponent {
       }
     }
 
+    this.playBuildSound();
+
     // Check if finished.
     if (this.remainingConstructionTime <= 0) {
       this.finishConstruction();
@@ -137,6 +148,25 @@ export class ConstructionSiteComponent {
 
     this.progressPercentage = this.getProgressFraction() * 100;
     this.constructionProgressPercentageChanged.next(this.progressPercentage);
+  }
+
+  private playBuildSound() {
+    if (!this.audioService) return;
+    if (this.playingBuildSound) return;
+    this.playingBuildSound = true;
+    const soundDefinitions = [...SharedActorActionsSfxHammeringSounds, ...SharedActorActionsSfxSawingSounds];
+    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+    this.audioService.playSpatialAudioSprite(
+      this.gameObject,
+      soundDefinition.key,
+      soundDefinition.spriteName,
+      undefined,
+      {
+        onComplete: () => {
+          this.playingBuildSound = false;
+        }
+      }
+    );
   }
 
   startConstruction() {
@@ -265,7 +295,13 @@ export class ConstructionSiteComponent {
   private finishConstruction() {
     this.constructionSiteData.state = ConstructionStateEnum.Finished;
     this.constructionStateChanged.next(this.constructionSiteData.state);
-    // todo play sound
+
+    const soundDefinitions = SharedActorActionsSfxSelectionSounds;
+    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+    this.audioService?.playSpatialAudioSprite(
+      this.gameObject,
+      soundDefinition.key,
+      soundDefinition.spriteName);
 
     if (this.constructionSiteDefinition.consumesBuilders) {
       this.assignedBuilders.forEach((builder) => {

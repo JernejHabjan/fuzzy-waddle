@@ -4,13 +4,15 @@ import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ObjectNames } from "../../../data/object-names";
 import { HealthComponent } from "../../combat/components/health-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
 import { onSceneInitialized } from "../../../data/game-object-helper";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
 import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/labels/HudMessages";
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
+import { OwnerComponent } from "./owner-component";
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce
@@ -150,6 +152,13 @@ export class BuilderComponent {
   }
 
   private reportDeniedAction(action: HudVisualFeedbackMessageType) {
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    if (!ownerComponent) return;
+    const owner = ownerComponent.getOwner();
+    if (!owner) return;
+    const player = getCurrentPlayerNumber(this.gameObject.scene);
+    if (!player) return;
+    if (player !== owner) return;
     const soundDefinition = UiFeedbackBuildDeniedSound;
     this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
     const crossSceneCommunicationService = getSceneService(this.gameObject.scene, CrossSceneCommunicationService);
