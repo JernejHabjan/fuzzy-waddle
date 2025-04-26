@@ -67,7 +67,7 @@
  "nextobjectid":88,
  "orientation":"isometric",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.2",
  "tileheight":32,
  "tilesets":[
         {
@@ -95,6 +95,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -104,6 +110,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -113,6 +125,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -122,6 +140,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -131,6 +155,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -140,6 +170,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -149,6 +185,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -158,6 +200,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -167,6 +215,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -176,6 +230,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -185,6 +245,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad7a8"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -194,6 +260,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffbcd780"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -203,6 +275,22 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -212,6 +300,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -221,6 +315,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -230,6 +330,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -239,6 +345,22 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -248,6 +370,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -257,6 +385,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -266,6 +400,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -275,6 +415,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffddc6a6"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -303,6 +449,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -312,6 +464,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -321,6 +479,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -330,6 +494,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -339,6 +509,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -348,6 +524,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#fffad29f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"sand"
                         }]
                 }, 
                 {
@@ -357,6 +539,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -366,6 +554,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -375,6 +569,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -384,6 +584,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -393,6 +599,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -421,6 +633,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -449,6 +667,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -458,6 +682,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -467,6 +697,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -476,6 +712,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -485,6 +727,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -494,6 +742,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -503,6 +757,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -512,6 +772,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -521,6 +787,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -530,6 +802,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -539,6 +817,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -548,6 +832,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -563,6 +853,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -572,8 +868,25 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
+                {
+                 "id":49,
+                 "properties":[
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
+                        }]
+                },
+            
                 {
                  "id":50,
                  "properties":[
@@ -581,6 +894,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -590,6 +909,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -599,9 +924,14 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
-                },
-            
+                }, 
                 {
                  "id":53,
                  "properties":[
@@ -609,6 +939,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -618,6 +954,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -627,6 +969,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -636,6 +984,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -645,6 +999,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -654,6 +1014,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -663,6 +1029,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe2e8f5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -672,6 +1044,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -681,6 +1059,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -690,6 +1074,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -699,6 +1089,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -708,6 +1104,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdac09f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -717,6 +1119,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -726,6 +1134,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -735,6 +1149,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -744,6 +1164,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -753,6 +1179,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -762,6 +1194,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -771,6 +1209,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffc3d5f2"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -786,6 +1230,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -801,6 +1251,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -816,6 +1272,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -831,6 +1293,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -846,6 +1314,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -855,6 +1329,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -864,6 +1344,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -873,6 +1359,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -882,6 +1374,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -891,6 +1389,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -900,6 +1404,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -915,6 +1425,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -925,6 +1441,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":""
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -940,6 +1462,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -955,6 +1483,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -970,6 +1504,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -979,6 +1519,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -988,6 +1534,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -997,6 +1549,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1006,6 +1564,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1015,6 +1579,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1024,6 +1594,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1039,6 +1615,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1054,6 +1636,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1069,6 +1657,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1084,6 +1678,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1099,6 +1699,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1108,8 +1714,15 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
-                }, 
+                },
+            
                 {
                  "id":102,
                  "properties":[
@@ -1117,6 +1730,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1126,6 +1745,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1135,9 +1760,14 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
-                },
-            
+                }, 
                 {
                  "id":105,
                  "properties":[
@@ -1145,6 +1775,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1154,6 +1790,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffe8cba5"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"gravel"
                         }]
                 }, 
                 {
@@ -1169,6 +1811,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1184,6 +1832,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1199,6 +1853,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1214,6 +1874,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1229,6 +1895,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1244,6 +1916,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1259,6 +1937,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1274,6 +1958,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1289,6 +1979,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1304,6 +2000,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1319,6 +2021,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1334,6 +2042,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1344,6 +2058,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":""
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1359,6 +2079,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1374,6 +2100,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1389,6 +2121,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1404,6 +2142,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1419,6 +2163,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1434,6 +2184,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1449,6 +2205,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1464,6 +2226,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1479,6 +2247,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1494,6 +2268,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1509,6 +2289,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1524,6 +2310,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1539,6 +2331,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1554,6 +2352,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1569,6 +2373,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1584,6 +2394,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1599,6 +2415,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1614,6 +2436,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1629,6 +2457,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1644,6 +2478,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1653,6 +2493,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1662,6 +2508,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1671,6 +2523,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1680,6 +2538,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1689,6 +2553,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1704,6 +2574,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1719,6 +2595,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1734,6 +2616,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1749,6 +2637,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1764,6 +2658,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1779,6 +2679,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1788,6 +2694,23 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
+                        }]
+                },
+            
+                {
+                 "id":157,
+                 "properties":[
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1797,6 +2720,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1806,6 +2735,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1815,9 +2750,14 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
-                },
-            
+                }, 
                 {
                  "id":161,
                  "properties":[
@@ -1831,6 +2771,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1846,6 +2792,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1861,6 +2813,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1876,6 +2834,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1891,6 +2855,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1906,6 +2876,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1915,6 +2891,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1924,6 +2906,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1933,6 +2921,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1942,6 +2936,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1951,6 +2951,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffdbd894"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -1966,6 +2972,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1981,6 +2993,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -1996,6 +3014,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2011,6 +3035,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2026,6 +3056,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2041,6 +3077,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2056,6 +3098,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2071,6 +3119,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2086,6 +3140,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2101,6 +3161,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2116,6 +3182,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2131,6 +3203,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2146,6 +3224,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2161,6 +3245,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2176,6 +3266,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2191,6 +3287,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2206,6 +3308,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2221,6 +3329,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2231,6 +3345,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":""
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2246,6 +3366,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2261,6 +3387,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2276,6 +3408,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2291,6 +3429,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2306,6 +3450,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2321,6 +3471,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2336,6 +3492,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2351,6 +3513,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2366,6 +3534,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2381,6 +3555,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2396,6 +3576,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2411,6 +3597,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2426,6 +3618,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2441,6 +3639,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2456,6 +3660,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2471,8 +3681,15 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
-                }, 
+                },
+            
                 {
                  "id":211,
                  "properties":[
@@ -2486,6 +3703,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2501,6 +3724,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2516,6 +3745,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2531,9 +3766,14 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
-                },
-            
+                }, 
                 {
                  "id":216,
                  "properties":[
@@ -2541,6 +3781,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2550,6 +3796,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2559,6 +3811,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2568,6 +3826,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2577,6 +3841,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2592,6 +3862,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2607,6 +3883,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2622,6 +3904,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2637,6 +3925,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2652,6 +3946,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2667,6 +3967,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2676,6 +3982,22 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
+                        }]
+                }, 
+                {
+                 "id":229,
+                 "properties":[
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2685,6 +4007,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2694,6 +4022,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2703,6 +4037,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2718,6 +4058,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2733,6 +4079,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2748,6 +4100,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2763,6 +4121,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2778,6 +4142,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2793,6 +4163,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2802,6 +4178,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2811,6 +4193,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2820,6 +4208,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2829,6 +4223,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2838,6 +4238,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffd4dff3"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"snow"
                         }]
                 }, 
                 {
@@ -2853,6 +4259,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2868,6 +4280,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2883,6 +4301,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2898,6 +4322,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2913,6 +4343,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2928,6 +4364,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2943,6 +4385,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2958,6 +4406,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2973,6 +4427,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -2988,6 +4448,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3003,6 +4469,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3018,6 +4490,22 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
+                        }]
+                }, 
+                {
+                 "id":265,
+                 "properties":[
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3033,6 +4521,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3048,6 +4542,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3063,6 +4563,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3078,6 +4584,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3093,6 +4605,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3108,8 +4626,15 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
-                }, 
+                },
+            
                 {
                  "id":279,
                  "properties":[
@@ -3123,6 +4648,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }, 
                 {
@@ -3138,6 +4669,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"west,east"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"water"
                         }]
                 }],
          "tilewidth":64,
@@ -4187,6 +5724,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff97a286"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4196,6 +5739,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff97a286"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4205,6 +5754,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff97a286"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4214,6 +5769,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff87685b"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4223,6 +5784,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff93725d"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4232,6 +5799,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff93725d"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4247,6 +5820,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4262,6 +5841,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4277,6 +5862,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4292,6 +5883,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4307,6 +5904,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4322,6 +5925,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4337,6 +5946,12 @@
                          "propertytype":"navigationRestriction",
                          "type":"string",
                          "value":"north,west,east,south"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4346,6 +5961,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff3a382f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4355,6 +5976,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff3a382f"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4364,6 +5991,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff413e35"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4373,6 +6006,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff423b2d"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4382,6 +6021,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff4e4b40"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"stone"
                         }]
                 }, 
                 {
@@ -4391,6 +6036,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff378a0b"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -4400,6 +6051,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff6ba847"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -4409,6 +6066,12 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ffa4933c"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }, 
                 {
@@ -4418,12 +6081,18 @@
                          "name":"color",
                          "type":"color",
                          "value":"#ff8d8164"
+                        }, 
+                        {
+                         "name":"terrainType",
+                         "propertytype":"terrainType",
+                         "type":"string",
+                         "value":"grass"
                         }]
                 }],
          "tilewidth":64
         }],
  "tilewidth":64,
  "type":"map",
- "version":"1.10",
+ "version":"1.11",
  "width":50
 }

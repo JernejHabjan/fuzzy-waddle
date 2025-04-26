@@ -27,6 +27,8 @@ import { getActorSystem } from "../../data/actor-system";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectCurrentTile, onObjectReady } from "../../data/game-object-helper";
 import { ObjectNames } from "../../data/object-names";
+import { getActorComponent } from "../../data/actor-component";
+import { AudioActorComponent, SoundType } from "../../entity/actor/components/audio-actor-component";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -43,11 +45,13 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
   /* START-USER-CODE */
   name = ObjectNames.Hedgehog;
+  private actorAudioComponent?: AudioActorComponent;
   private readonly actionDelay = 5000;
   private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
 
   private postSceneCreate() {
+    this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
     this.moveHedgehog();
     this.handleClick();
   }
@@ -83,6 +87,11 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     const { walkAnim, ballAnim, idleAnim } = anim;
     const animToPlay = animType === "walk" ? walkAnim : animType === "ball" ? ballAnim : idleAnim;
     this.play(animToPlay);
+
+    if (animType === "ball") {
+      const sound = Math.random() < 0.8 ? SoundType.Select : SoundType.SelectExtra;
+      this.actorAudioComponent?.playSpatialCustomSound(sound);
+    }
   }
 
   private async startMovement() {

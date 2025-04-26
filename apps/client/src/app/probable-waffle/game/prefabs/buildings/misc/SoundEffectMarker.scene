@@ -1,0 +1,51 @@
+{
+    "id": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Ellipse",
+            "id": "e055deaf-8f9e-4057-80e7-dd8dc6680afc",
+            "label": "ellipse_1",
+            "x": 64,
+            "y": 32,
+            "isStroked": true,
+            "width": 128,
+            "height": 64
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "prefabProperties": [
+        {
+            "name": "sfxType",
+            "label": "SFX Type",
+            "tooltip": "",
+            "defValue": "birds",
+            "customDefinition": false,
+            "type": {
+                "id": "option",
+                "options": [
+                    "birds",
+                    "seagulls",
+                    "water_flowing",
+                    "lava"
+                ]
+            }
+        }
+    ]
+}

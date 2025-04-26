@@ -13,7 +13,17 @@ import { TilemapComponent } from "../components/tilemap.component";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { throttle } from "../../library/throttle";
 
+export enum TerrainType {
+  Grass = "grass",
+  Gravel = "gravel",
+  Water = "water",
+  Sand = "sand",
+  Snow = "snow",
+  Stone = "stone"
+}
+
 export class NavigationService {
+  private readonly terrainTypes = Object.values(TerrainType);
   static UpdateNavigationEvent = "updateNavigation";
   private easyStar: EasyStar;
   private grid: number[][] = [];
@@ -411,7 +421,7 @@ export class NavigationService {
 
     // Step 2: Find the closest walkable tile to the fromTile
     if (walkableTilesArray.length === 0) {
-      console.warn("No walkable tiles found around the blocked tiles.");
+      // console.warn("No walkable tiles found around the blocked tiles.");
       return undefined;
     }
 
@@ -437,5 +447,18 @@ export class NavigationService {
 
   private destroy() {
     this.scene.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+  }
+
+  getTerrainUnderActor(gameObject: Phaser.GameObjects.GameObject): TerrainType | undefined {
+    const tile = getTileCoordsUnderObject(this.tilemap, gameObject)[0];
+    if (!tile) return undefined;
+    const tileData = this.tilemap.getTileAt(tile.x, tile.y);
+    if (!tileData) return undefined;
+    const terrainType = tileData.properties.terrainType;
+    if (!terrainType) return undefined;
+    if (this.terrainTypes.includes(terrainType)) {
+      return terrainType as TerrainType;
+    }
+    return undefined;
   }
 }

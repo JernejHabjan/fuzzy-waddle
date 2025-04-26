@@ -4,6 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
+import { EffectsAnims } from "../../../animations/effects";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -38,22 +39,13 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
   private skaduwee_magician_female_idle_down: Phaser.GameObjects.Sprite;
 
   private playTestAttackAnim() {
-    // create a sprite
-    const animAttack = this.scene.add.sprite(
-      this.x,
-      this.y - this.skaduwee_magician_female_idle_down.height / 4,
-      "effects_1",
-      "impact/1/1/0.png"
-    );
-    animAttack.depth = this.depth + 1;
+    const x = this.x;
+    const y = this.y - this.skaduwee_magician_female_idle_down.height / 4;
+
     // get 0-23 random number
     const randomFrame = Math.floor(Math.random() * 24);
-    animAttack.play("impact_" + randomFrame);
-
-    // remove sprite after anim complete
-    animAttack.once("animationcomplete", () => {
-      animAttack.destroy();
-    });
+    const impactSprite = EffectsAnims.createAndPlayAnimation(this.scene, "impact_" + randomFrame, x, y);
+    impactSprite.depth = this.depth + 1;
   }
 
   /* END-USER-CODE */

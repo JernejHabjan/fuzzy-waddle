@@ -30,14 +30,10 @@ export class AuthenticatedSocketService implements IAuthenticatedSocketService {
   private createAuthSocket(): Promise<Socket> {
     return new Promise((resolve, reject) => {
       const socket = new Socket({
-        ...environment.socketIoConfig,
-        options: {
-          auth: {
-            token: this.authService.accessToken
-          }
-        }
+        ...environment.socketIoConfig
       });
 
+      socket.auth = { token: this.authService.accessToken };
       socket.connect();
       socket.on("connect", () => resolve(socket));
       socket.on("connect_error", (err: any) => reject(err));

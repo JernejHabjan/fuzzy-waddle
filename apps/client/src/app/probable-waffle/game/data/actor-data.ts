@@ -29,6 +29,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
 import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/combat/components/healing-component";
+import { AudioActorComponent } from "../entity/actor/components/audio-actor-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -94,7 +95,8 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
       : []),
     ...(componentDefinitions?.productionCost
       ? [new ProductionCostComponent(actor, componentDefinitions.productionCost)]
-      : [])
+      : []),
+    ...(componentDefinitions?.audio ? [new AudioActorComponent(actor, componentDefinitions.audio)] : [])
   ];
 
   return { components, systems: [] };
@@ -115,7 +117,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
       ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
       : []),
     ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
-    ...(componentDefinitions?.selectable ? [new SelectableComponent(actor)] : []),
+    ...(componentDefinitions?.selectable ? [new SelectableComponent(actor, componentDefinitions.selectable)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(actor, componentDefinitions.collider)] : [])
   ];

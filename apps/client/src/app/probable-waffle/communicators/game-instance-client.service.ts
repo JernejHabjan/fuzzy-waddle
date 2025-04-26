@@ -473,7 +473,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async getGameFoundListener(): Promise<Observable<ProbableWaffleGameFoundEvent>> {
     const socket = await this.authenticatedSocketService.getSocket();
-    return socket!.fromEvent<ProbableWaffleGameFoundEvent>(ProbableWaffleGameInstanceEvent.GameFound).pipe(
+    return socket!.fromEvent<ProbableWaffleGameFoundEvent, any>(ProbableWaffleGameInstanceEvent.GameFound).pipe(
       filter((data) => data.userIds.includes(this.authService.userId!)),
       map((data) => data)
     );

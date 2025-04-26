@@ -80,7 +80,7 @@ export class TwoWayCommunicator<T, K> {
     // listen from server
     if (socket && gameInstanceId) {
       this.subscriptions.push(
-        socket.fromEvent<CommunicatorEvent<T, unknown>>(eventName).subscribe((event) => {
+        socket.fromEvent<CommunicatorEvent<T, unknown>, any>(eventName).subscribe((event) => {
           if (event.communicator === undefined) {
             console.error("Communicator received from socket event is undefined", event);
           }

@@ -7,7 +7,7 @@ import {
   ANIM_TIVARA_BUILDINGS_AKNGUARD_FLAME,
   ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAG,
   ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK
-} from "../../../../../../../assets/probable-waffle/atlas/anims/tivara/buildings";
+} from "../../../../animations/tivara-buildings";
 /* END-USER-IMPORTS */
 
 export default class AnkGuardLevel1 extends Phaser.GameObjects.Container {

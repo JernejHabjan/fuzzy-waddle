@@ -6,7 +6,7 @@
 import {
   ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL,
   ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL_FLAP
-} from "../../../../../../../assets/probable-waffle/atlas/anims/skaduwee/buildings";
+} from "../../../../animations/skaduwee-buildings";
 /* END-USER-IMPORTS */
 
 export default class OwleryLevel1 extends Phaser.GameObjects.Container {
