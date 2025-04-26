@@ -5,7 +5,12 @@
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import ActorAction, { ActorActionSetup } from "./ActorAction";
-import { getSelectedActors, listenToSelectionEvents, sortActorsByPriority } from "../../../data/scene-data";
+import {
+  getCurrentPlayerNumber,
+  getSelectedActors,
+  listenToSelectionEvents,
+  sortActorsByPriority
+} from "../../../data/scene-data";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -28,6 +33,7 @@ import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages
 import { AudioSprites } from "../../../sfx/AudioSprites";
 import { UiFeedbackSfx } from "../../../sfx/UiFeedbackSfx";
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -276,6 +282,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private showActorActions(actor: Phaser.GameObjects.GameObject) {
     this.hideAllIcons();
     let index = 0;
+
+    if (!this.canShowIcons(actor)) return;
+
     if (this.buildingMode) {
       this.showBuildableIcons(actor, index);
     } else {
@@ -284,6 +293,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showProductionIcons(actor, index);
       this.showBuilderIcons(actor, index);
     }
+  }
+
+  private canShowIcons(actor: Phaser.GameObjects.GameObject) {
+    const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 
   private showAttackIcons(actor: Phaser.GameObjects.GameObject, index: number): number {

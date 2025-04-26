@@ -7,6 +7,7 @@ import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
   emitEventSelection,
+  getCurrentPlayerNumber,
   getPlayer,
   getSelectableSceneChildren
 } from "../../../../data/scene-data";
@@ -18,6 +19,7 @@ import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
 import { AudioActorComponent, SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;
@@ -206,6 +208,14 @@ export class GameObjectSelectionHandler {
     if (!firstActor) return;
     const audioActorComponent = getActorComponent(firstActor, AudioActorComponent);
     if (!audioActorComponent) return;
+    const selectionIsForCurrentPlayer = this.selectionIsForCurrentPlayer(firstActor);
+    if (!selectionIsForCurrentPlayer) return;
     audioActorComponent.playCustomSound(SoundType.Select);
+  }
+
+  private selectionIsForCurrentPlayer(actor: GameObject) {
+    const currentPlayerNr = getCurrentPlayerNumber(actor.scene);
+    const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 }

@@ -3,7 +3,7 @@ import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionCostDefinition } from "./production-cost-component";
-import { emitResource, getCommunicator, getPlayer } from "../../../data/scene-data";
+import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import { ActorDefinition, ConstructionStateEnum, ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
@@ -134,7 +134,7 @@ export class ProductionComponent {
             const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
             const worldVec3 = payload.data.data!["worldVec3"] as Vector3Simple;
             const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
-            if (isSelected) {
+            if (isSelected && this.canIssueCommand()) {
               this.rallyPoint.setLocation(tileVec3, worldVec3);
             }
             break;
@@ -411,6 +411,12 @@ export class ProductionComponent {
         break;
     }
     emitResource(this.gameObject.scene, "resource.added", refundedResources);
+  }
+
+  private canIssueCommand() {
+    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
+    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 }
 

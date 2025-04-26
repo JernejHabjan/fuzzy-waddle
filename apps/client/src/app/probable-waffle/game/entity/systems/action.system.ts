@@ -1,6 +1,6 @@
 import { onObjectReady } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
-import { getCommunicator } from "../../data/scene-data";
+import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../combat/components/health-component";
@@ -51,6 +51,9 @@ export class ActionSystem {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.actor") // todo it's actually blackboard that should replicate
       .subscribe((payload) => {
+        const canIssueCommand = this.canIssueCommand();
+        if (!canIssueCommand) return;
+
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
@@ -185,6 +188,12 @@ export class ActionSystem {
     }
 
     return null;
+  }
+
+  private canIssueCommand() {
+    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
+    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 
   private playOrderSound(action: OrderData) {

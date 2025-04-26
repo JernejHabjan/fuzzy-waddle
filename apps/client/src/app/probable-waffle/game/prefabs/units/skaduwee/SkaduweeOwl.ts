@@ -156,8 +156,10 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
       y,
       duration: 1000,
       onComplete: () => {
-        this.playFurballSound(SkaduweeOwlSfxFurballHitSounds);
-        this.playHitAnimation(furball.x, furball.y, furball.depth);
+        if (this.active) {
+          this.playFurballSound(SkaduweeOwlSfxFurballHitSounds);
+          this.playHitAnimation(furball.x, furball.y, furball.depth);
+        }
         furball.destroy();
       }
     });

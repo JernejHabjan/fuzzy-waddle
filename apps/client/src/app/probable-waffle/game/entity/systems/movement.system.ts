@@ -13,7 +13,7 @@ import {
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { AudioService } from "../../scenes/services/audio.service";
-import { getCommunicator } from "../../data/scene-data";
+import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
@@ -31,6 +31,7 @@ import {
 } from "../../sfx/SharedActorActionsSfx";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
+import { OwnerComponent } from "../actor/components/owner-component";
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -73,6 +74,8 @@ export class MovementSystem {
       .subscribe((payload) => {
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
+        const canIssueCommand = this.canIssueCommand();
+        if (!canIssueCommand) return;
         const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (payerPawnAiController) {
@@ -329,6 +332,11 @@ export class MovementSystem {
       targetGameObject,
       range
     );
+  }
+  private canIssueCommand() {
+    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
+    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 }
 

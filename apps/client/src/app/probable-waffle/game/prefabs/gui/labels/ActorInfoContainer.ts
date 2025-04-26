@@ -11,12 +11,13 @@ import ActorInfoLabels from "./ActorInfoLabels";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
+import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
 import { ActorInfoDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "../../../data/object-names";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -114,8 +115,10 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   private setActorDetailLabels(actor: Phaser.GameObjects.GameObject) {
     const definition = pwActorDefinitions[actor.name as ObjectNames];
     this.actorDetails.showActorAttributes(actor, definition);
-    this.progress_bar.setProgressBar(actor);
-    this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
+    if (this.canShowIcons(actor)) {
+      this.progress_bar.setProgressBar(actor);
+      this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
+    }
   }
 
   private setActorInfoLabel(actorDefinition: ActorInfoDefinition) {
@@ -164,6 +167,12 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
         this.setActorDetailLabels(actor);
       }
     });
+  }
+
+  private canShowIcons(actor: Phaser.GameObjects.GameObject) {
+    const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 
   destroy(fromScene?: boolean) {
