@@ -99,8 +99,6 @@ export class HudGameState {
         this.scene.scene.stop();
         this.scene.destroy();
         break;
-      case GameSessionState.Stopped:
-        throw new Error("HUD should be destroyed at this point");
     }
   }
 

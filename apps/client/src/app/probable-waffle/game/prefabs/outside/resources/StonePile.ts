@@ -15,6 +15,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
+import { ObjectNames } from "../../../data/object-names";
 /* END-USER-IMPORTS */
 
 export default class StonePile extends Phaser.GameObjects.Image {
@@ -30,22 +31,6 @@ export default class StonePile extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.7378671494275097);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0x7e7c78
-        } satisfies ObjectDescriptorDefinition),
-        new IdComponent(),
-        new SelectableComponent(this, { offsetY: 16 } satisfies SelectableDefinition),
-        new ResourceSourceComponent(this, {
-          resourceType: ResourceType.Stone,
-          maximumResources: 100,
-          gatheringFactor: 1
-        } satisfies ResourceSourceDefinition)
-      ],
-      []
-    );
     this.setFrame(
       `nature/resources/${this.availableRockPiles[Math.floor(Math.random() * this.availableRockPiles.length)]}`
     );
@@ -57,7 +42,7 @@ export default class StonePile extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-
+  name = ObjectNames.Stone;
   private readonly availableRockPiles = ["stone_pile_1.png", "stone_pile_2.png"];
 
   /* END-USER-CODE */

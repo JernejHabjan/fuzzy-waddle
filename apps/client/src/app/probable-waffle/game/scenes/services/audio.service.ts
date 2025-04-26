@@ -58,68 +58,93 @@ export class AudioService {
     );
   }
 
+  /**
+   * Adding new audio so it does not interfere with other sounds of same key
+   */
   playAudio(key: string, soundConfig?: Phaser.Types.Sound.SoundConfig, additionalConfig?: AdditionalAudioConfig) {
-    this.playSound(
-      (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => this.scene.sound.play(key, adjustedSoundConfig),
+    return this.playSound(
+      (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => {
+        this.scene.sound.play(key, adjustedSoundConfig);
+        return null;
+      },
       key,
       soundConfig,
       additionalConfig
     );
   }
 
+  /**
+   * Adding new audio so it does not interfere with other sounds of same key
+   */
   playAudioSprite(
     key: string,
     spriteName: string,
     soundConfig?: Phaser.Types.Sound.SoundConfig,
     additionalConfig?: AdditionalAudioConfig
   ) {
-    this.playSound(
+    return this.playSound(
       (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) =>
-        this.scene.sound.playAudioSprite(key, spriteName, adjustedSoundConfig),
-      key,
+        this.scene.sound.addAudioSprite(key, adjustedSoundConfig),
+      spriteName,
       soundConfig,
       additionalConfig
     );
   }
 
   private playSound(
-    playFn: (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => void,
+    addOrPlayFn: (
+      adjustedSoundConfig: Phaser.Types.Sound.SoundConfig
+    ) => Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null,
     key: string,
     soundConfig?: Phaser.Types.Sound.SoundConfig,
     additionalConfig?: AdditionalAudioConfig
-  ) {
-    const sound = this.scene.sound;
+  ): Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null {
     soundConfig = soundConfig ?? {};
     soundConfig.volume = soundConfig.volume ?? this.sfxVolumeNormalized;
     additionalConfig = additionalConfig ?? {};
     additionalConfig.waitIfLockedOrGameLostFocus = additionalConfig.waitIfLockedOrGameLostFocus ?? false;
 
-    const play = () => {
-      playFn(soundConfig);
-      sound.get(key).once(Phaser.Sound.Events.COMPLETE, () => {
-        additionalConfig?.onComplete?.();
-      });
+    const play = (): Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null => {
+      const sound = addOrPlayFn(soundConfig);
+      if (!sound) {
+        const soundManger = this.scene.sound;
+        soundManger.get(key).once(Phaser.Sound.Events.COMPLETE, () => {
+          additionalConfig?.onComplete?.();
+        });
+        return null;
+      } else {
+        sound.play(key);
+        sound.once(Phaser.Sound.Events.COMPLETE, () => {
+          additionalConfig?.onComplete?.();
+          sound.destroy();
+        });
+        return sound;
+      }
     };
 
-    this.playWithConfig(play, additionalConfig);
+    return this.playWithConfig(play, additionalConfig);
   }
 
-  private playWithConfig(play: () => void, additionalConfig?: AdditionalAudioConfig) {
+  private playWithConfig(
+    play: () => Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null,
+    additionalConfig?: AdditionalAudioConfig
+  ): Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null {
     const sound = this.scene.sound;
     if (!sound.locked) {
       if (sound.gameLostFocus && !this.playAudioAlsoOnBlur) {
         const canStartPlaying = additionalConfig?.waitIfLockedOrGameLostFocus !== false;
         if (canStartPlaying) {
-          play();
+          return play();
         }
       } else {
-        play();
+        return play();
       }
     } else {
       if (additionalConfig?.waitIfLockedOrGameLostFocus !== false) {
         sound.once(Phaser.Sound.Events.UNLOCKED, () => play());
       }
     }
+    return null;
   }
 
   private normalizeSfxVolume(volumePercentage: number) {
@@ -130,31 +155,40 @@ export class AudioService {
     gameObject: Phaser.GameObjects.GameObject,
     key: string,
     spriteName: string,
+    soundConfig?: Phaser.Types.Sound.SoundConfig,
     additionalConfig?: AdditionalAudioConfig
   ) {
-    const soundConfig = this.getSpatialSfxConfig(gameObject);
-    this.playAudioSprite(key, spriteName, soundConfig, additionalConfig);
+    const adjustedSoundConfig = this.getSpatialSfxConfig(gameObject, soundConfig);
+    return this.playAudioSprite(key, spriteName, adjustedSoundConfig, additionalConfig);
   }
 
-  playSpatialAudio(gameObject: Phaser.GameObjects.GameObject, key: string, additionalConfig?: AdditionalAudioConfig) {
-    const soundConfig = this.getSpatialSfxConfig(gameObject);
-    this.playAudio(key, soundConfig, additionalConfig);
+  playSpatialAudio(
+    gameObject: Phaser.GameObjects.GameObject,
+    key: string,
+    soundConfig?: Phaser.Types.Sound.SoundConfig,
+    additionalConfig?: AdditionalAudioConfig
+  ) {
+    const adjustedSoundConfig = this.getSpatialSfxConfig(gameObject, soundConfig);
+    return this.playAudio(key, adjustedSoundConfig, additionalConfig);
   }
 
-  getSpatialSfxConfig(gameObject: Phaser.GameObjects.GameObject): Phaser.Types.Sound.SoundConfig | undefined {
+  getSpatialSfxConfig(
+    gameObject: Phaser.GameObjects.GameObject,
+    soundConfig?: Phaser.Types.Sound.SoundConfig
+  ): Phaser.Types.Sound.SoundConfig | undefined {
     const transform = getGameObjectTransform(gameObject);
     if (!transform) return undefined;
 
     const camera = gameObject.scene.cameras.main;
-
-    const cameraCenter = camera.midPoint;
+    const { x: camX, y: camY } = camera.midPoint;
     const cameraZoom = camera.zoom;
-    // Adjust volume based on zoom level
+
+    // Adjust volume based on the zoom level
     const minZoom = 0.5;
     const maxZoom = 8;
     const minVolume = 30;
+    let volume: number;
 
-    let volume;
     if (cameraZoom <= minZoom) {
       volume = minVolume;
     } else if (cameraZoom >= maxZoom) {
@@ -163,23 +197,52 @@ export class AudioService {
       volume = minVolume + ((cameraZoom - minZoom) / (maxZoom - minZoom)) * 100;
     }
 
+    // Apply any override in soundConfig
+    if (soundConfig?.volume !== undefined) {
+      volume = (soundConfig.volume * volume) / 100;
+    }
+
     const volumeNormalized = this.normalizeSfxVolume(volume);
+
+    // Compute source position relative to the camera center
+    const offsetX = transform.x - camX;
+    const offsetY = transform.y - camY;
+    const offsetZ = transform.z ?? 0;
+
+    // Shrink audible range as you zoom in:
+    // World-space viewport size = camera.width / camera.zoom
+    // Use whichever dimension is larger for maxDistance
+    const viewWidthWorld = camera.width / cameraZoom;
+    const viewHeightWorld = camera.height / cameraZoom;
+    const maxAudible = Math.max(viewWidthWorld, viewHeightWorld);
+
     return {
       volume: volumeNormalized,
       source: {
-        x: transform.x - cameraCenter.x,
-        y: transform.y - cameraCenter.y,
-        z: transform.z,
+        x: offsetX,
+        y: offsetY,
+        z: offsetZ,
         orientationX: 0,
         orientationY: 0,
         orientationZ: -1,
         refDistance: 50,
         rolloffFactor: 1,
-        maxDistance: camera.width,
+        // audible out to the current viewport size
+        maxDistance: maxAudible,
         panningModel: "HRTF",
         distanceModel: "linear",
         coneOuterGain: 0.3
-      }
-    };
+      },
+      mute: soundConfig?.mute ?? false,
+      loop: soundConfig?.loop ?? false,
+      delay: soundConfig?.delay ?? 0,
+      detune: soundConfig?.detune ?? 0,
+      seek: soundConfig?.seek ?? 0,
+      rate: soundConfig?.rate ?? 1
+    } satisfies Phaser.Types.Sound.SoundConfig;
+  }
+
+  stopSound(key: string) {
+    this.scene.sound.stopByKey(key);
   }
 }

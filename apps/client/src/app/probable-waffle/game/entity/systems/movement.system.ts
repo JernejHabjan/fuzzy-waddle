@@ -1,6 +1,6 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../scenes/components/scene-component-helpers";
-import { NavigationService } from "../../scenes/services/navigation.service";
+import { NavigationService, TerrainType } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { DepthHelper } from "../../world/map/depth.helper";
 import { getActorSystem } from "../../data/actor-system";
@@ -13,7 +13,7 @@ import {
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { AudioService } from "../../scenes/services/audio.service";
-import { getCommunicator } from "../../data/scene-data";
+import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
@@ -21,8 +21,17 @@ import { HealthComponent } from "../combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { OrderType } from "../character/ai/order-type";
 import { OrderData } from "../character/ai/OrderData";
+import { AudioActorComponent } from "../actor/components/audio-actor-component";
+import {
+  SharedActorActionsSfxGrassSounds,
+  SharedActorActionsSfxGravelSounds,
+  SharedActorActionsSfxSandSounds,
+  SharedActorActionsSfxSnowSounds,
+  SharedActorActionsSfxStoneSounds
+} from "../../sfx/SharedActorActionsSfx";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
+import { OwnerComponent } from "../actor/components/owner-component";
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -44,6 +53,7 @@ export class MovementSystem {
   private playerChangedSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService: AudioService | undefined;
+  private audioActorComponent: AudioActorComponent | undefined;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -55,6 +65,7 @@ export class MovementSystem {
   private init() {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
   }
 
   private listenToMoveEvents() {
@@ -63,16 +74,24 @@ export class MovementSystem {
       .subscribe((payload) => {
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
+        const canIssueCommand = this.canIssueCommand();
+        if (!canIssueCommand) return;
         const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (payerPawnAiController) {
           payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
             new OrderData(OrderType.Move, { targetLocation: tileVec3 })
           );
+          this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
         } else {
           this.moveToLocation(tileVec3);
         }
       });
+  }
+
+  private playOrderSound(action: OrderData) {
+    if (!this.audioActorComponent) return;
+    this.audioActorComponent.playOrderSound(action);
   }
 
   // todo this should maybe later move to component like ActorTransform which will also broadcast event for transform to game and update actors depth
@@ -256,7 +275,42 @@ export class MovementSystem {
 
   private onMovementStart() {
     if (!this.audioService) return;
-    this.audioService.playSpatialAudioSprite(this.gameObject, "character", "footstep");
+    const movementSoundDefinition = this.getMovementSound();
+    if (!movementSoundDefinition) return;
+    // get random from movementSoundDefinition
+    const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
+    const movementSound = movementSoundDefinition[randomIndex];
+    this.audioService.playSpatialAudioSprite(this.gameObject, movementSound.key, movementSound.spriteName, {
+      volume: 70 // make it quieter so it doesn't drown out other sounds
+    });
+  }
+
+  private getMovementSound() {
+    const navigationService = this.navigationService;
+    if (!this.audioService || !navigationService) return;
+    const terrainUnderActor = navigationService.getTerrainUnderActor(this.gameObject);
+    if (!terrainUnderActor) {
+      console.warn("No terrain under actor");
+      return SharedActorActionsSfxGravelSounds; // default to gravel
+    }
+    switch (terrainUnderActor) {
+      case TerrainType.Grass:
+        return SharedActorActionsSfxGrassSounds;
+      case TerrainType.Gravel:
+        return SharedActorActionsSfxGravelSounds;
+      case TerrainType.Water:
+        console.warn("No movement sound for water");
+        return undefined; // todo add water sound
+      case TerrainType.Sand:
+        return SharedActorActionsSfxSandSounds;
+      case TerrainType.Snow:
+        return SharedActorActionsSfxSnowSounds;
+      case TerrainType.Stone:
+        return SharedActorActionsSfxStoneSounds;
+      default:
+        console.warn("No movement sound for terrain type", terrainUnderActor);
+        return undefined;
+    }
   }
 
   private destroy() {
@@ -278,6 +332,11 @@ export class MovementSystem {
       targetGameObject,
       range
     );
+  }
+  private canIssueCommand() {
+    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
+    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 }
 

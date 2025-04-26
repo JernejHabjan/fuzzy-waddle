@@ -21,6 +21,7 @@ import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
 import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
+import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -132,6 +133,18 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     const workMill_2 = new WorkMill(this, -80, 864);
     this.add.existing(workMill_2);
 
+    // lavaSfx
+    const lavaSfx = new SoundEffectMarker(this, -640, 656);
+    this.add.existing(lavaSfx);
+
+    // lavaSfx_1
+    const lavaSfx_1 = new SoundEffectMarker(this, -608, 912);
+    this.add.existing(lavaSfx_1);
+
+    // lavaSfx_2
+    const lavaSfx_2 = new SoundEffectMarker(this, -1056, 816);
+    this.add.existing(lavaSfx_2);
+
     // spawn_2 (components)
     const spawn_2EditorOwner = new EditorOwner(spawn_2);
     spawn_2EditorOwner.owner_id = "3";
@@ -191,6 +204,15 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     // workMill_2 (components)
     const workMill_2EditorOwner = new EditorOwner(workMill_2);
     workMill_2EditorOwner.owner_id = "3";
+
+    // lavaSfx (prefab fields)
+    lavaSfx.sfxType = "lava";
+
+    // lavaSfx_1 (prefab fields)
+    lavaSfx_1.sfxType = "lava";
+
+    // lavaSfx_2 (prefab fields)
+    lavaSfx_2.sfxType = "lava";
 
     this.tilemap = tilemap;
 

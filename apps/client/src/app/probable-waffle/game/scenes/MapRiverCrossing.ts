@@ -69,6 +69,7 @@ import Reeds1 from "../prefabs/outside/nature/grass/Reeds1";
 import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
+import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -664,6 +665,30 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const stairs_2 = new Stairs(this, -480, 272);
     this.add.existing(stairs_2);
 
+    // seagulls
+    const seagulls = new SoundEffectMarker(this, 576, 336);
+    this.add.existing(seagulls);
+
+    // water flowing
+    const water_flowing = new SoundEffectMarker(this, 704, 896);
+    this.add.existing(water_flowing);
+
+    // water flowing_1
+    const water_flowing_1 = new SoundEffectMarker(this, -32, 896);
+    this.add.existing(water_flowing_1);
+
+    // water flowing_2
+    const water_flowing_2 = new SoundEffectMarker(this, -704, 672);
+    this.add.existing(water_flowing_2);
+
+    // birds
+    const birds = new SoundEffectMarker(this, 192, 1376);
+    this.add.existing(birds);
+
+    // birds_1
+    const birds_1 = new SoundEffectMarker(this, -640, 368);
+    this.add.existing(birds_1);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -759,6 +784,24 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // workMill_1 (components)
     const workMill_1EditorOwner = new EditorOwner(workMill_1);
     workMill_1EditorOwner.owner_id = "2";
+
+    // seagulls (prefab fields)
+    seagulls.sfxType = "seagulls";
+
+    // water_flowing (prefab fields)
+    water_flowing.sfxType = "water_flowing";
+
+    // water_flowing_1 (prefab fields)
+    water_flowing_1.sfxType = "water_flowing";
+
+    // water_flowing_2 (prefab fields)
+    water_flowing_2.sfxType = "water_flowing";
+
+    // birds (prefab fields)
+    birds.sfxType = "birds";
+
+    // birds_1 (prefab fields)
+    birds_1.sfxType = "birds";
 
     this.tilemap = tilemap;
 

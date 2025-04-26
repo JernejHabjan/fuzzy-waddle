@@ -7,6 +7,7 @@ import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
   emitEventSelection,
+  getCurrentPlayerNumber,
   getPlayer,
   getSelectableSceneChildren
 } from "../../../../data/scene-data";
@@ -16,7 +17,9 @@ import { HealthComponent } from "../../../../entity/combat/components/health-com
 import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
+import { AudioActorComponent, SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;
@@ -55,6 +58,7 @@ export class GameObjectSelectionHandler {
                 emitEventSelection(this.scene, "selection.added", data.objectIds!);
               } else {
                 emitEventSelection(this.scene, "selection.set", data.objectIds!);
+                this.playAudio(data.objectIds!);
               }
             } else {
               emitEventIssueActorCommandToSelectedActors(this.scene, data.objectIds!);
@@ -87,6 +91,7 @@ export class GameObjectSelectionHandler {
               emitEventSelection(this.scene, "selection.added", actorsWithHighestPriorityIds);
             } else {
               emitEventSelection(this.scene, "selection.set", actorsWithHighestPriorityIds);
+              this.playAudio(actorsWithHighestPriorityIds);
             }
             break;
           case "selection.multiSelectPreview":
@@ -194,5 +199,23 @@ export class GameObjectSelectionHandler {
 
   private destroy() {
     this.sub.unsubscribe();
+  }
+
+  private playAudio(actorIds: string[]) {
+    if (!actorIds.length) return;
+    const firstActorId = actorIds[0];
+    const firstActor = this.getActorsByIds([firstActorId])[0];
+    if (!firstActor) return;
+    const audioActorComponent = getActorComponent(firstActor, AudioActorComponent);
+    if (!audioActorComponent) return;
+    const selectionIsForCurrentPlayer = this.selectionIsForCurrentPlayer(firstActor);
+    if (!selectionIsForCurrentPlayer) return;
+    audioActorComponent.playCustomSound(SoundType.Select);
+  }
+
+  private selectionIsForCurrentPlayer(actor: GameObject) {
+    const currentPlayerNr = getCurrentPlayerNumber(actor.scene);
+    const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
   }
 }

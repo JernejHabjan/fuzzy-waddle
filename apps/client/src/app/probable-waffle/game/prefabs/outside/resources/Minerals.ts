@@ -37,22 +37,6 @@ export default class Minerals extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.7446013024804341);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0x2b8acd
-        } satisfies ObjectDescriptorDefinition),
-        new IdComponent(),
-        new SelectableComponent(this, { offsetY: 16 } satisfies SelectableDefinition),
-        new ResourceSourceComponent(this, {
-          resourceType: ResourceType.Minerals,
-          maximumResources: 100,
-          gatheringFactor: 1
-        } satisfies ResourceSourceDefinition)
-      ],
-      []
-    );
     this.setFrame(
       `nature/resources/${this.availableMinerals[Math.floor(Math.random() * this.availableMinerals.length)]}`
     );

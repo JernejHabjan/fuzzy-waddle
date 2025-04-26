@@ -4,6 +4,14 @@ import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ObjectNames } from "../../../data/object-names";
 import { HealthComponent } from "../../combat/components/health-component";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import { onSceneInitialized } from "../../../data/game-object-helper";
+import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
+import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/labels/HudMessages";
+import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
+import { OwnerComponent } from "./owner-component";
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
@@ -11,7 +19,7 @@ export type BuilderDefinition = {
   constructableBuildings: ObjectNames[];
   // Whether the builder enters the building site while working on it, or not.
   enterConstructionSite: boolean;
-  // from how far builder builds building site
+  // from how far a builder builds building site
   constructionSiteOffset: number;
 };
 
@@ -24,10 +32,11 @@ export class BuilderComponent {
   // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   onConstructionSiteEntered: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onAssignedToConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
-  onConstructionStarted: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  // onConstructionStarted: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   remainingCooldown = 0;
+  private audioService?: AudioService;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -36,6 +45,11 @@ export class BuilderComponent {
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    onSceneInitialized(this.gameObject.scene, this.sceneInit, this);
+  }
+
+  private sceneInit() {
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
   }
 
   private update(_: number, delta: number): void {
@@ -65,7 +79,7 @@ export class BuilderComponent {
     if (!constructionSiteComponent) return;
 
     if (!constructionSiteComponent.canAssignBuilder()) {
-      // todo play sound and show notification on screen - same as "the production queue is full"
+      this.reportDeniedAction(HudVisualFeedbackMessageType.CannotAssignBuilder);
       return;
     }
     this.assignedConstructionSite = constructionSite;
@@ -95,7 +109,7 @@ export class BuilderComponent {
     // notify listeners
     this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
 
-    console.log("builder left building site");
+    // console.log("builder left building site");
     if (this.builderComponentDefinition.enterConstructionSite) {
       // leave building site
       const containerComponent = getActorComponent(constructionSite, ContainerComponent);
@@ -121,7 +135,7 @@ export class BuilderComponent {
     if (!constructionSiteComponent) return;
 
     if (!constructionSiteComponent.canAssignRepairer()) {
-      // todo play sound and show notification on screen - same as "the production queue is full"
+      this.reportDeniedAction(HudVisualFeedbackMessageType.CannotAssignRepairer);
       return;
     }
     this.assignedConstructionSite = target;
@@ -135,6 +149,20 @@ export class BuilderComponent {
         this.onConstructionSiteEntered.next([this.gameObject, target]);
       }
     }
+  }
+
+  private reportDeniedAction(action: HudVisualFeedbackMessageType) {
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    if (!ownerComponent) return;
+    const owner = ownerComponent.getOwner();
+    if (!owner) return;
+    const player = getCurrentPlayerNumber(this.gameObject.scene);
+    if (!player) return;
+    if (player !== owner) return;
+    const soundDefinition = UiFeedbackBuildDeniedSound;
+    this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
+    const crossSceneCommunicationService = getSceneService(this.gameObject.scene, CrossSceneCommunicationService);
+    crossSceneCommunicationService?.emit(HudMessages.HudVisualFeedbackMessageEventName, action);
   }
 
   leaveRepairSite() {

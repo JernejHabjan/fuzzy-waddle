@@ -1,6 +1,12 @@
+import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
+
 export enum HudVisualFeedbackMessageType {
   NotEnoughResources,
-  ProductionQueueFull
+  ProductionQueueFull,
+  CannotAssignRepairer,
+  CannotAssignBuilder
 }
 /* START OF COMPILED CODE */
 
@@ -24,21 +30,21 @@ export default class HudMessages extends Phaser.GameObjects.Text {
     this.setWordWrapWidth(256);
 
     /* START-USER-CTR-CODE */
-    this.setup();
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   private delayedCall?: Phaser.Time.TimerEvent;
+  private crossSceneCommunicationService?: CrossSceneCommunicationService;
 
-  private setup() {
+  setup(probableWaffleScene: ProbableWaffleScene) {
     this.setText("");
     if (this.scene.game.scale.width < 1200) {
       this.setStyle({ fontSize: "16px" });
     }
-    this.scene.events.on(HudMessages.HudVisualFeedbackMessageEventName, (messageType: HudVisualFeedbackMessageType) => {
-      this.displayMessage(messageType);
-    });
+    const crossSceneCommunicationService = getSceneService(probableWaffleScene, CrossSceneCommunicationService);
+    this.crossSceneCommunicationService = crossSceneCommunicationService;
+    crossSceneCommunicationService?.on(HudMessages.HudVisualFeedbackMessageEventName, this.messageEvent);
   }
 
   static HudVisualFeedbackMessageEventName = "hud-visual-feedback-message";
@@ -51,8 +57,20 @@ export default class HudMessages extends Phaser.GameObjects.Text {
     [HudVisualFeedbackMessageType.ProductionQueueFull]: {
       text: "Production queue full",
       severity: "warning"
+    },
+    [HudVisualFeedbackMessageType.CannotAssignRepairer]: {
+      text: "Cannot assign repairer",
+      severity: "warning"
+    },
+    [HudVisualFeedbackMessageType.CannotAssignBuilder]: {
+      text: "Cannot assign builder",
+      severity: "warning"
     }
   } as const;
+
+  private messageEvent = (messageType: HudVisualFeedbackMessageType) => {
+    this.displayMessage(messageType);
+  };
 
   private displayMessage(messageType: HudVisualFeedbackMessageType) {
     this.setText(HudMessages.messageTexts[messageType].text);
@@ -64,6 +82,13 @@ export default class HudMessages extends Phaser.GameObjects.Text {
       this.setText("");
     });
   }
+
+  destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    if (this.delayedCall) this.delayedCall.destroy();
+    this.crossSceneCommunicationService?.off(HudMessages.HudVisualFeedbackMessageEventName, this.messageEvent);
+  }
+
   /* END-USER-CODE */
 }
 

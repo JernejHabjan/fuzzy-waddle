@@ -4,6 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
+import { EffectsAnims } from "../../../animations/effects";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
@@ -24,29 +25,28 @@ export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
         this.play("tivara_worker_male_idle_down", true);
       });
 
-      // spawn blood
-      // get random blood splatter 1-5
-      const randomBloodSplatter = Math.floor(Math.random() * 5) + 1;
-      const blood_splatter_small_1 = this.scene.add.sprite(
-        this.x,
-        this.y - this.height / 4,
-        "effects_1",
-        "blood-splatter-small/" + randomBloodSplatter + "/1_0.png"
-      );
-      blood_splatter_small_1.depth = this.depth + 1;
-      blood_splatter_small_1.scaleX = 0.5;
-      blood_splatter_small_1.scaleY = 0.5;
-      blood_splatter_small_1.play("blood_splatter_small_" + randomBloodSplatter);
-      blood_splatter_small_1.once("animationcomplete", () => {
-        blood_splatter_small_1.destroy();
-      });
+      this.testSpawnBlood();
     });
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   name = ObjectNames.TivaraWorkerMale;
-  // Write your code here.
+
+  private testSpawnBlood() {
+    const x = this.x;
+    const y = this.y - this.height / 4;
+    const randomBloodSplatter = Math.floor(Math.random() * 5) + 1;
+    const impactSprite = EffectsAnims.createAndPlayAnimation(
+      this.scene,
+      "blood_splatter_small_" + randomBloodSplatter,
+      x,
+      y
+    );
+    impactSprite.depth = this.depth + 1;
+    impactSprite.scaleX = 0.5;
+    impactSprite.scaleY = 0.5;
+  }
 
   /* END-USER-CODE */
 }

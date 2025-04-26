@@ -19,7 +19,7 @@ import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackb
 import { Agent } from "mistreevous/dist/Agent";
 import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
 import { ResourceSourceComponent } from "../../../../entity/economy/resource/resource-source-component";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import { ContainableComponent } from "../../../../entity/actor/components/containable-component";
 import { ResourceDrainComponent } from "../../../../entity/economy/resource/resource-drain-component";
@@ -180,7 +180,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       const success = await movementSystem.moveToLocation(location);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
-      console.error("Error in MoveToLocation", e);
+      // console.error("Error in MoveToLocation", e);
       this.Stop();
       return State.FAILED;
     }
@@ -406,8 +406,13 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   async AssignMoveRandomlyInRange(range: number) {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
-    const randomTile = await getRandomTileInNavigableRadius(this.gameObject, range);
-    if (!randomTile) return State.FAILED;
+    let randomTile: Vector2Simple | undefined = undefined;
+    try {
+      randomTile = await getRandomTileInNavigableRadius(this.gameObject, range);
+      if (!randomTile) return State.FAILED;
+    } catch (e) {
+      return State.FAILED;
+    }
     const targetLocation = { x: randomTile.x, y: randomTile.y, z: 0 } satisfies Vector3Simple;
     this.blackboard.addOrder(new OrderData(OrderType.Move, { targetLocation }));
     return State.SUCCEEDED;

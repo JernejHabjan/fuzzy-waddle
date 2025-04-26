@@ -329,6 +329,45 @@
             "EditorOwner.owner_id": "3",
             "x": -80,
             "y": 864
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "61115db3-7ed9-4fb7-9a95-53793ed2887d",
+            "unlock": [
+                "x",
+                "y",
+                "sfxType"
+            ],
+            "label": "lavaSfx",
+            "sfxType": "lava",
+            "x": -640,
+            "y": 656
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "c3197d0c-c64e-4647-b819-da94f6ab5dae",
+            "unlock": [
+                "x",
+                "y",
+                "sfxType"
+            ],
+            "label": "lavaSfx_1",
+            "sfxType": "lava",
+            "x": -608,
+            "y": 912
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "dcbe1f03-89ea-4a53-9320-e2230e161c8c",
+            "unlock": [
+                "x",
+                "y",
+                "sfxType"
+            ],
+            "label": "lavaSfx_2",
+            "sfxType": "lava",
+            "x": -1056,
+            "y": 816
         }
     ],
     "plainObjects": [

@@ -1690,6 +1690,96 @@
             "label": "stairs_2",
             "x": -480,
             "y": 272
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "798a4d38-72ce-471d-b171-f9bc0890ca90",
+            "unlock": [
+                "x",
+                "y",
+                "sfxKey",
+                "type",
+                "sfxType"
+            ],
+            "label": "seagulls",
+            "sfxType": "seagulls",
+            "x": 576,
+            "y": 336
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "462a1899-04b8-44c7-be00-73657ac10a26",
+            "unlock": [
+                "x",
+                "y",
+                "sfxKey",
+                "type",
+                "sfxType"
+            ],
+            "label": "water flowing",
+            "sfxType": "water_flowing",
+            "x": 704,
+            "y": 896
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "9cf7569e-8470-4e88-b71e-37b9af2dac76",
+            "unlock": [
+                "x",
+                "y",
+                "sfxKey",
+                "type",
+                "sfxType"
+            ],
+            "label": "water flowing_1",
+            "sfxType": "water_flowing",
+            "x": -32,
+            "y": 896
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "99d30470-3994-480e-94f4-c4e99f9d0477",
+            "unlock": [
+                "x",
+                "y",
+                "sfxKey",
+                "type",
+                "sfxType"
+            ],
+            "label": "water flowing_2",
+            "sfxType": "water_flowing",
+            "x": -704,
+            "y": 672
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "83514468-ab3d-40ae-acba-b178e0fa302d",
+            "unlock": [
+                "x",
+                "y",
+                "sfxKey",
+                "type",
+                "sfxType"
+            ],
+            "label": "birds",
+            "sfxType": "birds",
+            "x": 192,
+            "y": 1376
+        },
+        {
+            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+            "id": "98fb8c80-bbd1-4ee9-bf49-14b9175a5b8e",
+            "unlock": [
+                "x",
+                "y",
+                "sfxKey",
+                "type",
+                "sfxType"
+            ],
+            "label": "birds_1",
+            "sfxType": "birds",
+            "x": -640,
+            "y": 368
         }
     ],
     "plainObjects": [

@@ -14,6 +14,8 @@ import { getGameObjectCurrentTile, onObjectReady } from "../../data/game-object-
 import { ANIM_SHEEP_IDLE_DOWN, ANIM_SHEEP_IDLE_LEFT, ANIM_SHEEP_IDLE_RIGHT, ANIM_SHEEP_IDLE_UP } from "./anims/animals";
 import { getActorSystem } from "../../data/actor-system";
 import { ObjectNames } from "../../data/object-names";
+import { getActorComponent } from "../../data/actor-component";
+import { AudioActorComponent, SoundType } from "../../entity/actor/components/audio-actor-component";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
@@ -32,10 +34,12 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   /* START-USER-CODE */
   name = ObjectNames.Sheep;
   private postSceneCreate() {
+    this.actorAudioComponent = getActorComponent(this,AudioActorComponent);
     this.handleWoolParticles(this.scene);
     this.startMovement();
   }
   private nextTile?: Vector2Simple;
+  private actorAudioComponent?: AudioActorComponent;
   private readonly actionDelay = 5000;
   private readonly radius = 5;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
@@ -62,16 +66,20 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
       this.cancelMovement();
       if (shearedCount < maxShearedCount) {
         this.woolParticles?.emitParticleAt(this.x, this.y - 25, Phaser.Math.Between(1, 4));
+        this.actorAudioComponent?.playSpatialCustomSound("scissors");
       }
       shearedCount++;
       if (shearedCount === maxShearedCount) {
         this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
+        this.actorAudioComponent?.playSpatialCustomSound("wool");
+        this.actorAudioComponent?.playSpatialCustomSound(SoundType.Select);
         this.sheared = true;
         this.playSheepAnimation();
         // start timer to reset sheep
         scene.time.delayedCall(5000, () => {
           shearedCount = 0;
           this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
+          this.actorAudioComponent?.playSpatialCustomSound("wool");
           this.sheared = false;
           this.playSheepAnimation();
           this.moveSheepAfterDelay();

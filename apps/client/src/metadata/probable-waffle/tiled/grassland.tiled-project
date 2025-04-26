@@ -22,6 +22,21 @@
                 "south"
             ],
             "valuesAsFlags": true
+        },
+        {
+            "id": 3,
+            "name": "terrainType",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "grass",
+                "gravel",
+                "water",
+                "sand",
+                "snow",
+                "stone"
+            ],
+            "valuesAsFlags": false
         }
     ]
 }

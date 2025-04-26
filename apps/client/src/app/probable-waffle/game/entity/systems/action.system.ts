@@ -1,6 +1,6 @@
 import { onObjectReady } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
-import { getCommunicator } from "../../data/scene-data";
+import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../combat/components/health-component";
@@ -22,11 +22,13 @@ import { environment } from "../../../../../environments/environment";
 import { getSceneService } from "../../scenes/components/scene-component-helpers";
 import { DebuggingService } from "../../scenes/services/DebuggingService";
 import { ContainableComponent } from "../actor/components/containable-component";
+import { AudioActorComponent } from "../actor/components/audio-actor-component";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
   private aiDebuggingSubscription?: Subscription;
   private displayDebugInfo: boolean = false;
+  private audioActorComponent?: AudioActorComponent;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToActorActionEvents();
@@ -41,6 +43,7 @@ export class ActionSystem {
       this.aiDebuggingSubscription = aiDebuggingService.debugChanged.subscribe((debug) => {
         this.displayDebugInfo = debug;
       });
+      this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     }
   }
 
@@ -48,6 +51,9 @@ export class ActionSystem {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.actor") // todo it's actually blackboard that should replicate
       .subscribe((payload) => {
+        const canIssueCommand = this.canIssueCommand();
+        if (!canIssueCommand) return;
+
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
@@ -65,6 +71,7 @@ export class ActionSystem {
 
         if (this.displayDebugInfo && !environment.production) console.log("ActionSystem: action", action);
         payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(action);
+        this.playOrderSound(action);
       });
   }
 
@@ -181,6 +188,17 @@ export class ActionSystem {
     }
 
     return null;
+  }
+
+  private canIssueCommand() {
+    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
+    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
+  }
+
+  private playOrderSound(action: OrderData) {
+    if (!this.audioActorComponent) return;
+    this.audioActorComponent.playOrderSound(action);
   }
 
   private destroy() {

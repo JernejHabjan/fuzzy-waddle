@@ -9,8 +9,15 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
-import { EventEmitter } from "@angular/core";
 import { HealthComponent } from "../../combat/components/health-component";
+import { onSceneInitialized } from "../../../data/game-object-helper";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import {
+  SharedActorActionsSfxChoppingSounds,
+  SharedActorActionsSfxMiningSounds
+} from "../../../sfx/SharedActorActionsSfx";
+import { SoundDefinition } from "./audio-actor-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type GathererDefinition = {
@@ -70,6 +77,7 @@ export class GathererComponent {
     [GameObject, GameObject, GatherData, number]
   >();
   onResourcesReturned: Subject<[GameObject, ResourceType, number]> = new Subject<[GameObject, ResourceType, number]>();
+  private audioService?: AudioService;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -78,6 +86,11 @@ export class GathererComponent {
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    onSceneInitialized(this.gameObject.scene, this.sceneInit, this);
+  }
+
+  private sceneInit() {
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
   }
 
   private update(_: number, delta: number): void {
@@ -268,6 +281,9 @@ export class GathererComponent {
     }
     const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
     this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
+
+    this.playGatherSound();
+
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
 
@@ -381,5 +397,26 @@ export class GathererComponent {
     this.previousResourceSource = this.currentResourceSource;
     this.previousResourceType = this.carriedResourceType;
     this.currentResourceSource = null;
+  }
+
+  private playGatherSound() {
+    if (!this.audioService) return;
+    const resourceType = this.carriedResourceType;
+    if (!resourceType) return;
+    let sounds: SoundDefinition[] = [];
+    switch (resourceType) {
+      case ResourceType.Ambrosia:
+        break;
+      case ResourceType.Wood:
+        sounds = SharedActorActionsSfxChoppingSounds;
+        break;
+      case ResourceType.Stone:
+      case ResourceType.Minerals:
+        sounds = SharedActorActionsSfxMiningSounds;
+        break;
+    }
+
+    const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+    this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
   }
 }

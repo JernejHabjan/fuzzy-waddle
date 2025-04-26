@@ -1,5 +1,9 @@
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "./health-component";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import { SharedActorActionsSfxHealSounds } from "../../../sfx/SharedActorActionsSfx";
 
 export type HealingDefinition = {
   healPerCooldown: number;
@@ -10,6 +14,7 @@ export type HealingDefinition = {
 export class HealingComponent {
   // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   remainingCooldown = 0;
+  private audioService?: AudioService;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly healingDefinition: HealingDefinition
@@ -17,6 +22,11 @@ export class HealingComponent {
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    onObjectReady(gameObject, this.init, this);
+  }
+
+  private init() {
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
   }
 
   private update(_: number, delta: number): void {
@@ -31,10 +41,18 @@ export class HealingComponent {
   }
 
   heal(target: Phaser.GameObjects.GameObject) {
+    if (this.remainingCooldown > 0) return;
     const targetHealthComponent = getActorComponent(target, HealthComponent);
     if (!targetHealthComponent) return;
     targetHealthComponent.heal(this.healingDefinition.healPerCooldown);
     this.remainingCooldown = this.healingDefinition.cooldown;
+    this.playHealSound();
+  }
+
+  private playHealSound() {
+    const soundDefinitions = SharedActorActionsSfxHealSounds;
+    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+    this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
   }
 
   getHealRange() {
