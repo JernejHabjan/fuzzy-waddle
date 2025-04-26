@@ -19,6 +19,7 @@ import { RestartGame } from "../data/restart-game";
 import { AiPlayerHandler } from "./components/ai-player-handler";
 import { BuildingCursor } from "../world/managers/controllers/building-cursor";
 import { DebuggingService } from "./services/DebuggingService";
+import { CrossSceneCommunicationService } from "./services/CrossSceneCommunicationService";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -59,7 +60,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new NavigationService(this, this.tilemap),
       audioService,
       creator,
-      new DebuggingService()
+      new DebuggingService(),
+      new CrossSceneCommunicationService()
     );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
 

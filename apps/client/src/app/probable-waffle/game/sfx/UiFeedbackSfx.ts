@@ -19,3 +19,8 @@ export const UiFeedbackSfxCountdownSounds: SoundDefinition[] = [
   { key: AudioSprites.UI_FEEDBACK, spriteName: UiFeedbackSfx.COUNTDOWN_BEEP_FINAL },
   { key: AudioSprites.UI_FEEDBACK, spriteName: UiFeedbackSfx.COUNTDOWN_BEEP }
 ];
+
+export const UiFeedbackBuildDeniedSound: SoundDefinition = {
+  key: AudioSprites.UI_FEEDBACK,
+  spriteName: UiFeedbackSfx.BUILD_DENIED
+};

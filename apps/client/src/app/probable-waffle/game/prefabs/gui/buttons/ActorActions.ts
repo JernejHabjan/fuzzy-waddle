@@ -27,6 +27,7 @@ import { ConstructionSiteComponent } from "../../../entity/building/construction
 import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages";
 import { AudioSprites } from "../../../sfx/AudioSprites";
 import { UiFeedbackSfx } from "../../../sfx/UiFeedbackSfx";
+import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -334,17 +335,22 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             const sound = this.mainSceneWithActors.sound;
 
             sound.stopByKey(AudioSprites.UI_FEEDBACK);
+
+            const crossSceneCommunicationService = getSceneService(
+              this.mainSceneWithActors,
+              CrossSceneCommunicationService
+            );
             switch (errorCode) {
               case AssignProductionErrorCode.NotEnoughResources:
                 this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
-                this.scene.events.emit(
+                crossSceneCommunicationService?.emit(
                   HudMessages.HudVisualFeedbackMessageEventName,
                   HudVisualFeedbackMessageType.NotEnoughResources
                 );
                 break;
               case AssignProductionErrorCode.QueueFull:
                 this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.PRODUCTION_QUEUE_FULL);
-                this.scene.events.emit(
+                crossSceneCommunicationService?.emit(
                   HudMessages.HudVisualFeedbackMessageEventName,
                   HudVisualFeedbackMessageType.ProductionQueueFull
                 );
