@@ -114,7 +114,7 @@ export class RoomsService implements RoomsServiceInterface {
   private async getRoomEvent(): Promise<Observable<ProbableWaffleRoomEvent> | undefined> {
     const socket = await this.authenticatedSocketService.getSocket();
     return socket
-      ?.fromEvent<ProbableWaffleRoomEvent>(ProbableWaffleGatewayEvent.ProbableWaffleRoom)
+      ?.fromEvent<ProbableWaffleRoomEvent, any>(ProbableWaffleGatewayEvent.ProbableWaffleRoom)
       .pipe(map((roomEvent: ProbableWaffleRoomEvent) => roomEvent));
   }
 

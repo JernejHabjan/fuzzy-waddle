@@ -80,7 +80,7 @@ export class SpectateService implements SpectateServiceInterface {
   async getRoomEvent(): Promise<Observable<LittleMuncherRoomEvent> | undefined> {
     const socket = await this.authenticatedSocketService.getSocket();
     return socket
-      ?.fromEvent<LittleMuncherRoomEvent>(LittleMuncherGatewayEvent.LittleMuncherRoom)
+      ?.fromEvent<LittleMuncherRoomEvent, any>(LittleMuncherGatewayEvent.LittleMuncherRoom)
       .pipe(map((data: LittleMuncherRoomEvent) => data));
   }
 

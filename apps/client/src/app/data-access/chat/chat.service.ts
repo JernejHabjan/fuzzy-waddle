@@ -18,6 +18,6 @@ export class ChatService implements IChatService {
 
   async getMessageListener(): Promise<Observable<ChatMessage> | undefined> {
     const socket = await this.authenticatedSocketService.getSocket();
-    return socket?.fromEvent<ChatMessage>(GatewayChatEvent.CHAT_MESSAGE).pipe(map((data: ChatMessage) => data));
+    return socket?.fromEvent<ChatMessage, any>(GatewayChatEvent.CHAT_MESSAGE).pipe(map((data: ChatMessage) => data));
   }
 }
