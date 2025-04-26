@@ -421,7 +421,7 @@ export class NavigationService {
 
     // Step 2: Find the closest walkable tile to the fromTile
     if (walkableTilesArray.length === 0) {
-      console.warn("No walkable tiles found around the blocked tiles.");
+      // console.warn("No walkable tiles found around the blocked tiles.");
       return undefined;
     }
 
