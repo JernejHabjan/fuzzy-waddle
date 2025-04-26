@@ -63,7 +63,10 @@ export class AudioService {
    */
   playAudio(key: string, soundConfig?: Phaser.Types.Sound.SoundConfig, additionalConfig?: AdditionalAudioConfig) {
     return this.playSound(
-      (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => this.scene.sound.add(key, adjustedSoundConfig),
+      (adjustedSoundConfig: Phaser.Types.Sound.SoundConfig) => {
+        this.scene.sound.play(key, adjustedSoundConfig);
+        return null;
+      },
       key,
       soundConfig,
       additionalConfig
@@ -89,9 +92,9 @@ export class AudioService {
   }
 
   private playSound(
-    addFn: (
+    addOrPlayFn: (
       adjustedSoundConfig: Phaser.Types.Sound.SoundConfig
-    ) => Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound,
+    ) => Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null,
     key: string,
     soundConfig?: Phaser.Types.Sound.SoundConfig,
     additionalConfig?: AdditionalAudioConfig
@@ -101,21 +104,29 @@ export class AudioService {
     additionalConfig = additionalConfig ?? {};
     additionalConfig.waitIfLockedOrGameLostFocus = additionalConfig.waitIfLockedOrGameLostFocus ?? false;
 
-    const play = (): Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound => {
-      const sound = addFn(soundConfig);
-      sound.play(key);
-      sound.once(Phaser.Sound.Events.COMPLETE, () => {
-        additionalConfig?.onComplete?.();
-        sound.destroy();
-      });
-      return sound;
+    const play = (): Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null => {
+      const sound = addOrPlayFn(soundConfig);
+      if (!sound) {
+        const soundManger = this.scene.sound;
+        soundManger.get(key).once(Phaser.Sound.Events.COMPLETE, () => {
+          additionalConfig?.onComplete?.();
+        });
+        return null;
+      } else {
+        sound.play(key);
+        sound.once(Phaser.Sound.Events.COMPLETE, () => {
+          additionalConfig?.onComplete?.();
+          sound.destroy();
+        });
+        return sound;
+      }
     };
 
     return this.playWithConfig(play, additionalConfig);
   }
 
   private playWithConfig(
-    play: () => Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound,
+    play: () => Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null,
     additionalConfig?: AdditionalAudioConfig
   ): Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null {
     const sound = this.scene.sound;
