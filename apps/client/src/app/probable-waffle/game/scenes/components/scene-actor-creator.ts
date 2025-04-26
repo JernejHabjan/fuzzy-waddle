@@ -35,10 +35,12 @@ export class SceneActorCreator {
   }
 
   private spawnFromSpawnList() {
-    this.scene.children.getChildren().forEach((gameObject: Phaser.GameObjects.GameObject) => {
+    const list = this.scene.children.getChildren();
+    const toDestroy: Phaser.GameObjects.GameObject[] = [];
+    list.forEach((gameObject: Phaser.GameObjects.GameObject) => {
       if (gameObject instanceof Spawn) {
         this.spawnActorsFromSpawnList(gameObject);
-        gameObject.destroy();
+        toDestroy.push(gameObject);
       }
       // ensure that game objects are fully created
       const definition = pwActorDefinitions[gameObject.name as ObjectNames];
@@ -57,6 +59,7 @@ export class SceneActorCreator {
         }
       }
     });
+    toDestroy.forEach((gameObject) => gameObject.destroy());
   }
 
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
