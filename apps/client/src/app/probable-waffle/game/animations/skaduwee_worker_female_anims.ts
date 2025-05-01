@@ -61,6 +61,18 @@ export const ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_SKADUWEE_WORKER_FEMALE_THRUST_LEFT },
     east: { key: ANIM_SKADUWEE_WORKER_FEMALE_THRUST_RIGHT }
   },
+  [AnimationType.Chop]: {
+    north: { key: ANIM_SKADUWEE_WORKER_FEMALE_SLASH_UP },
+    south: { key: ANIM_SKADUWEE_WORKER_FEMALE_SLASH_DOWN },
+    west: { key: ANIM_SKADUWEE_WORKER_FEMALE_SLASH_LEFT },
+    east: { key: ANIM_SKADUWEE_WORKER_FEMALE_SLASH_RIGHT }
+  },
+  [AnimationType.Mine]: {
+    north: { key: ANIM_SKADUWEE_WORKER_FEMALE_THRUST_UP },
+    south: { key: ANIM_SKADUWEE_WORKER_FEMALE_THRUST_DOWN },
+    west: { key: ANIM_SKADUWEE_WORKER_FEMALE_THRUST_LEFT },
+    east: { key: ANIM_SKADUWEE_WORKER_FEMALE_THRUST_RIGHT }
+  },
   [AnimationType.Death]: {
     north: { key: ANIM_SKADUWEE_WORKER_FEMALE_HURT },
     south: { key: ANIM_SKADUWEE_WORKER_FEMALE_HURT },

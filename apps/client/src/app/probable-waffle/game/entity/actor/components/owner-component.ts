@@ -144,8 +144,10 @@ export class OwnerComponent {
       return { healthWidth: 0, healthHeight: 0 };
     }
     this.healthUiVisibilitySubscription?.unsubscribe();
-    this.healthUiVisibilitySubscription = healthComponent.uiComponentsVisibilityChanged.subscribe(() => {
-      this.createOwnerUiElement();
+    this.healthUiVisibilitySubscription = healthComponent.uiComponentsVisibilityChanged.subscribe((visible) => {
+      if (visible) {
+        this.createOwnerUiElement();
+      }
     });
     const { width, height } = healthComponent.getHealthUiComponentBounds();
     return { healthWidth: width, healthHeight: height };

@@ -5,6 +5,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { HealthComponent } from "../../combat/components/health-component";
 import { AttackComponent } from "../../combat/components/attack-component";
+import { GathererComponent } from "./gatherer-component";
 
 export enum AnimationType {
   Idle = "idle",
@@ -33,7 +34,9 @@ const oneTimeAnimations: AnimationType[] = [
   AnimationType.Smash,
   AnimationType.Thrust,
   AnimationType.LargeSlash,
-  AnimationType.LargeThrust
+  AnimationType.LargeThrust,
+  AnimationType.Chop,
+  AnimationType.Mine
 ];
 
 type AnimationDefinition = {
@@ -120,7 +123,10 @@ export class AnimationActorComponent {
     if (!this.sprite || !this.animationsDefinition || !type) return;
 
     const animationsByType = this.animationsDefinition.animations[type];
-    if (!animationsByType) return;
+    if (!animationsByType) {
+      console.warn(`AnimationActorComponent: No animation found for type ${type} in animations definition`);
+      return;
+    }
 
     let animationDef = animationsByType[this.currentDirection];
     if (!animationDef) {
@@ -182,7 +188,7 @@ export class AnimationActorComponent {
       case OrderType.Build:
         return AnimationType.Build;
       case OrderType.Gather:
-        return AnimationType.Chop;
+        return this.getGatherAnimationType();
       case OrderType.Move:
         return AnimationType.Walk;
       case OrderType.ReturnResources:
@@ -207,6 +213,12 @@ export class AnimationActorComponent {
     if (currentAttack === null) return null;
     const attackAnimation = attackComponent.getAttackAnimation(currentAttack);
     return attackAnimation || null;
+  }
+
+  private getGatherAnimationType(): AnimationType | null {
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return null;
+    return gathererComponent.getGatherAnimation();
   }
 
   private destroy() {

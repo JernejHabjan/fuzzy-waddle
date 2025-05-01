@@ -181,10 +181,14 @@ export class HealthComponent {
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
-    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
-      this.setVisibilityUiComponent(true);
+    if (visible) {
+      if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
+        this.setVisibilityUiComponent(true);
+      } else {
+        this.setVisibilityUiComponent(visible);
+      }
     } else {
-      this.setVisibilityUiComponent(visible);
+      this.setVisibilityUiComponent(false);
     }
   }
 
