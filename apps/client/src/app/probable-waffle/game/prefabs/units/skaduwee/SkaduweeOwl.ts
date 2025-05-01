@@ -110,7 +110,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   }
 
   private playHitAnimation(x: number, y: number, depth: number) {
-    const impactSprite = EffectsAnims.createAndPlayAnimation(this.scene, EffectsAnims.ANIM_IMPACT_1, x, y);
+    const impactSprite = EffectsAnims.createAndPlayEffectAnimation(this.scene, EffectsAnims.ANIM_IMPACT_1, x, y);
     impactSprite.setDepth(depth);
     impactSprite.setTint(0x006600);
   }

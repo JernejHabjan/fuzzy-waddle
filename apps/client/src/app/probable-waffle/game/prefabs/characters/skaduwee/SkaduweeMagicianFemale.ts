@@ -44,7 +44,7 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
 
     // get 0-23 random number
     const randomFrame = Math.floor(Math.random() * 24);
-    const impactSprite = EffectsAnims.createAndPlayAnimation(this.scene, "impact_" + randomFrame, x, y);
+    const impactSprite = EffectsAnims.createAndPlayEffectAnimation(this.scene, "impact_" + randomFrame, x, y);
     impactSprite.depth = this.depth + 1;
   }
 

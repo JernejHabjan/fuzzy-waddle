@@ -37,7 +37,7 @@ export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
     const x = this.x;
     const y = this.y - this.height / 4;
     const randomBloodSplatter = Math.floor(Math.random() * 5) + 1;
-    const impactSprite = EffectsAnims.createAndPlayAnimation(
+    const impactSprite = EffectsAnims.createAndPlayEffectAnimation(
       this.scene,
       "blood_splatter_small_" + randomBloodSplatter,
       x,

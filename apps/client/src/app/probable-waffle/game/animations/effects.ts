@@ -39,7 +39,7 @@ export class EffectsAnims {
   static readonly ANIM_IMPACT_22 = "impact_22";
   static readonly ANIM_IMPACT_23 = "impact_23";
 
-  static readonly createAndPlayAnimation = (
+  static readonly createAndPlayEffectAnimation = (
     scene: Phaser.Scene,
     anim: string,
     x: number,
