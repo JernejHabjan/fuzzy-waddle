@@ -13,8 +13,6 @@ export enum TivaraWorkerMaleSfx {
   DAMAGE1 = "Damage1",
   DAMAGE2 = "Damage2",
   DAMAGE3 = "Damage3",
-  DEATH_1 = "Death 1",
-  DEATH_2 = "Death 2",
   DEATH1 = "Death1",
   DEATH2 = "Death2",
   DEATH3 = "Death3",
@@ -53,8 +51,9 @@ export const TivaraWorkerMaleSfxChopSounds: SoundDefinition[] = [
 ];
 
 export const TivaraWorkerMaleSfxDeathSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH_1 },
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH_2 }
+  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH1 },
+  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH2 },
+  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH3 }
 ];
 
 export const TivaraWorkerMaleSfxEnterSounds: SoundDefinition[] = [
@@ -94,12 +93,6 @@ export const TivaraWorkerMaleSfxDamageSounds: SoundDefinition[] = [
   { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE1 },
   { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE2 },
   { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE3 }
-];
-
-export const TivaraWorkerMaleSfxDeathSounds2: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH1 },
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH2 },
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DEATH3 }
 ];
 
 export const TivaraWorkerMaleSfxMineSounds: SoundDefinition[] = [

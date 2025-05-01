@@ -17,7 +17,7 @@ import {
   SharedActorActionsSfxChoppingSounds,
   SharedActorActionsSfxMiningSounds
 } from "../../../sfx/SharedActorActionsSfx";
-import { SoundDefinition } from "./audio-actor-component";
+import { SoundDefinition, SoundType } from "./audio-actor-component";
 import { AnimationActorComponent, AnimationType } from "./animation-actor-component";
 import { OrderType } from "../../character/ai/order-type";
 import GameObject = Phaser.GameObjects.GameObject;
@@ -433,7 +433,6 @@ export class GathererComponent {
   }
 
   getGatherAnimation(): AnimationType | null {
-    if (!this.animationActorComponent) return null;
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
@@ -445,6 +444,21 @@ export class GathererComponent {
         return AnimationType.Mine;
       case ResourceType.Minerals:
         return AnimationType.Mine;
+    }
+  }
+
+  getGatherSound(): SoundType | null {
+    const resourceType = this.carriedResourceType;
+    if (!resourceType) return null;
+    switch (resourceType) {
+      case ResourceType.Ambrosia:
+        return SoundType.Mine;
+      case ResourceType.Wood:
+        return SoundType.Chop;
+      case ResourceType.Stone:
+        return SoundType.Mine;
+      case ResourceType.Minerals:
+        return SoundType.Mine;
     }
   }
 }

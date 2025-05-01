@@ -4,8 +4,12 @@ import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { AnimationActorComponent, AnimationType } from "../../actor/components/animation-actor-component";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { AudioActorComponent, SoundType } from "../../actor/components/audio-actor-component";
 import { OrderType } from "../../character/ai/order-type";
+import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import { AudioSprites } from "../../../sfx/AudioSprites";
+import { SharedActorActionsSfx } from "../../../sfx/SharedActorActionsSfx";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type AttackDefinition = {
@@ -19,7 +23,8 @@ export class AttackComponent {
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
   private animationActorComponent?: AnimationActorComponent;
-  private audioActorComponent?: AudioActorComponent;
+  private actorTranslateComponent?: ActorTranslateComponent;
+  private audioService?: AudioService;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -32,8 +37,9 @@ export class AttackComponent {
   }
 
   private init() {
+    this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
-    this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
   }
   private destroy() {
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
@@ -83,8 +89,9 @@ export class AttackComponent {
       if (!enemyHealthComponent) return;
       enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
 
+      if (this.actorTranslateComponent) this.actorTranslateComponent.turnTowardsGameObject(enemy);
       if (this.animationActorComponent) this.animationActorComponent.playOrderAnimation(OrderType.Attack, true);
-      if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Attack); // todo this should be based on attack type
+      this.playAttackSound(attack);
     }
 
     this.remainingCooldown = attack.cooldown;
@@ -122,5 +129,11 @@ export class AttackComponent {
     }
     const attack = this.attackDefinition.attacks[attackIndex];
     return attack.animationType;
+  }
+
+  private playAttackSound(attack: AttackData) {
+    if (!this.audioService) return;
+
+    this.audioService.playAudioSprite(AudioSprites.SHARED_ACTOR_ACTIONS, SharedActorActionsSfx.AXE_HIT); // TODO - SHOULD BE ATTACK-SPECIFIC
   }
 }
