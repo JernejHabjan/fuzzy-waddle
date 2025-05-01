@@ -155,6 +155,16 @@ import {
 } from "../sfx/ActorsResourcesSfx";
 import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
 import { SelectableDefinition } from "../entity/actor/components/selectable-component";
+import { ActorAnimationsDefinition } from "../entity/actor/components/animation-actor-component";
+import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "../animations/tivara_maceman_male_anims";
+import { ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION } from "../animations/tivara_slingshot_female_anims";
+import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
+import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "../animations/skaduwee_ranged_female_anim";
+import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "../animations/skaduwee_magician_female_anim";
+import { ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION } from "../animations/skaduwee_warrior_male_anims";
+import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "../animations/skaduwee_worker_female_anims";
+import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../animations/warrior_anim";
+import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../animations/tivara_worker_male_anims";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -336,6 +346,7 @@ export type ActorInfoDefinition = Partial<{
     production: ProductionDefinition;
     healing: HealingDefinition;
     translatable: ActorTranslateDefinition;
+    animatable: ActorAnimationsDefinition;
     aiControlled: PawnAiDefinition;
     containable: { enabled: boolean };
     selectable: SelectableDefinition;
@@ -367,6 +378,11 @@ export const pwActorDefinitions: {
           [SoundType.Select]: ActorsHedgehogSfxSelectionSounds,
           [SoundType.SelectExtra]: ActorsHedgehogSfxAngrySounds
         }
+      },
+      animatable: {
+        animations: {
+          // todo
+        }
       }
     },
     systems: {
@@ -386,6 +402,11 @@ export const pwActorDefinitions: {
           [SoundType.Select]: ActorsSheepSfxBleatSounds,
           ["scissors"]: ActorsSheepSfxScissorsSounds,
           ["wool"]: ActorsSheepSfxWoolBombSounds
+        }
+      },
+      animatable: {
+        animations: {
+          // todo
         }
       }
     },
@@ -447,7 +468,8 @@ export const pwActorDefinitions: {
       containable: { enabled: true },
       aiControlled: {
         type: AiType.Character
-      }
+      },
+      animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
     },
     systems: {
       movement: { enabled: true }
@@ -521,7 +543,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: TivaraMacemanSfxEnterSounds,
           [SoundType.LocationUnavailable]: TivaraMacemanSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_MACEMAN_MALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -596,7 +619,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: TivaraSlingshotSfxEnterSounds,
           [SoundType.LocationUnavailable]: TivaraSlingshotSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -631,7 +655,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: TivaraWorkerFemaleSfxChopSounds,
           [SoundType.Mine]: TivaraWorkerFemaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION }
     }
   },
   [ObjectNames.TivaraWorkerMale]: {
@@ -663,7 +688,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: TivaraWorkerMaleSfxChopSounds,
           [SoundType.Mine]: TivaraWorkerMaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_WORKER_MALE_DEFINITION }
     }
   },
   [ObjectNames.AnkGuard]: {
@@ -1001,6 +1027,11 @@ export const pwActorDefinitions: {
           [SoundType.Move]: SkaduweeOwlSfxMoveSounds,
           [SoundType.LocationUnavailable]: SkaduweeOwlSfxLocationSounds
         }
+      },
+      animatable: {
+        animations: {
+          // todo
+        }
       }
     },
     systems: {
@@ -1076,7 +1107,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: SkaduweeRangedSfxEnterSounds,
           [SoundType.LocationUnavailable]: SkaduweeRangedSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -1150,7 +1182,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: SkaduweeMagicianSfxEnterSounds,
           [SoundType.LocationUnavailable]: SkaduweeMagicianSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -1225,7 +1258,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: SkaduweeWarriorSfxEnterSounds,
           [SoundType.LocationUnavailable]: SkaduweeWarriorSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -1260,7 +1294,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: SkaduweeWorkerMaleSfxChopSounds,
           [SoundType.Mine]: SkaduweeWorkerMaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION }
     }
   },
   [ObjectNames.SkaduweeWorkerFemale]: {
@@ -1291,7 +1326,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: SkaduweeWorkerFemaleSfxChopSounds,
           [SoundType.Mine]: SkaduweeWorkerFemaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION }
     }
   },
   [ObjectNames.FrostForge]: {

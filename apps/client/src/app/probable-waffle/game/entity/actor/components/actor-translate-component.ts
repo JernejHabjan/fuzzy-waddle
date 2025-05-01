@@ -3,16 +3,7 @@ import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectDirectionBetweenTiles } from "../../systems/movement.system";
 import { getGameObjectTransform } from "../../../data/game-object-helper";
 
-export type MoveDirection =
-  | "north"
-  | "south"
-  | "east"
-  | "west"
-  | "northeast"
-  | "northwest"
-  | "southeast"
-  | "southwest"
-  | undefined;
+export type IsoDirection = "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest";
 
 export interface ActorTranslateDefinition {
   usePathfinding?: boolean;
@@ -24,8 +15,8 @@ export interface ActorTranslateDefinition {
 
 export class ActorTranslateComponent {
   private _actorMoved: Subject<Vector3Simple> = new Subject<Vector3Simple>();
-  currentDirection?: MoveDirection;
-  private onDirectionChanged: Subject<MoveDirection> = new Subject<MoveDirection>();
+  currentDirection?: IsoDirection;
+  onDirectionChanged: Subject<IsoDirection> = new Subject<IsoDirection>();
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly actorTranslateDefinition: ActorTranslateDefinition
@@ -52,7 +43,7 @@ export class ActorTranslateComponent {
     this.directionChanged(newDirection);
   }
 
-  private directionChanged(newDirection: MoveDirection) {
+  private directionChanged(newDirection: IsoDirection | undefined) {
     if (!newDirection) newDirection = "south";
     this.currentDirection = newDirection;
     this.onDirectionChanged.next(newDirection);

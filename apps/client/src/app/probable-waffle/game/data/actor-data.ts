@@ -30,6 +30,7 @@ import Transform = Phaser.GameObjects.Components.Transform;
 import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/combat/components/healing-component";
 import { AudioActorComponent } from "../entity/actor/components/audio-actor-component";
+import { AnimationActorComponent } from "../entity/actor/components/animation-actor-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -148,6 +149,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.translatable
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
       : []),
+    ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
   ];
 

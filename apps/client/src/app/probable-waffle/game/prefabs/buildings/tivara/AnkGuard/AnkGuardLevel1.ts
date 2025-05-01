@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import {
-  ANIM_TIVARA_BUILDINGS_AKNGUARD_FLAME,
+  ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME,
   ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAG,
   ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK
 } from "../../../../animations/tivara-buildings";
@@ -37,7 +37,7 @@ export default class AnkGuardLevel1 extends Phaser.GameObjects.Container {
       "factions",
       "buildings/tivara/ankguard/ankguard-flame/ankguard-flame-0.png"
     );
-    tivara_buildings_ankguard_flame.play("tivara-buildings-aknguard-flame");
+    tivara_buildings_ankguard_flame.play("tivara-buildings-ankguard-flame");
     this.add(tivara_buildings_ankguard_flame);
 
     // tivara_buildings_ankguard_flame_stick_right
@@ -90,7 +90,7 @@ export default class AnkGuardLevel1 extends Phaser.GameObjects.Container {
     this.tivara_buildings_ankguard_flame_stick_left.play(ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK);
     this.tivara_buildings_ankguard_flame_stick_right.play(ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK);
     this.tivara_buildings_ankguard_flag.play(ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAG);
-    this.tivara_buildings_ankguard_flame.play(ANIM_TIVARA_BUILDINGS_AKNGUARD_FLAME);
+    this.tivara_buildings_ankguard_flame.play(ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME);
   }
   /* END-USER-CODE */
 }

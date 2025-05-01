@@ -53,4 +53,20 @@ export class EffectsAnims {
     });
     return impactSprite;
   };
+
+  static readonly createAndPlayBloodAnimation = (
+    scene: Phaser.Scene,
+    x: number,
+    y: number
+  ): Phaser.GameObjects.Sprite => {
+    const bloodAnims = [
+      EffectsAnims.ANIM_BLOOD_SPLATTER_SMALL_1,
+      EffectsAnims.ANIM_BLOOD_SPLATTER_SMALL_2,
+      EffectsAnims.ANIM_BLOOD_SPLATTER_SMALL_3,
+      EffectsAnims.ANIM_BLOOD_SPLATTER_SMALL_4,
+      EffectsAnims.ANIM_BLOOD_SPLATTER_SMALL_5
+    ];
+    const randomBloodAnim = bloodAnims[Math.floor(Math.random() * bloodAnims.length)];
+    return this.createAndPlayEffectAnimation(scene, randomBloodAnim, x, y);
+  };
 }

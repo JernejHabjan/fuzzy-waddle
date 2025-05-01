@@ -16,7 +16,7 @@ import { AudioService } from "../../scenes/services/audio.service";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { ActorTranslateComponent, MoveDirection } from "../actor/components/actor-translate-component";
+import { ActorTranslateComponent, IsoDirection } from "../actor/components/actor-translate-component";
 import { HealthComponent } from "../combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { OrderType } from "../character/ai/order-type";
@@ -29,9 +29,10 @@ import {
   SharedActorActionsSfxSnowSounds,
   SharedActorActionsSfxStoneSounds
 } from "../../sfx/SharedActorActionsSfx";
+import { OwnerComponent } from "../actor/components/owner-component";
+import { AnimationActorComponent } from "../actor/components/animation-actor-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
-import { OwnerComponent } from "../actor/components/owner-component";
 
 export interface PathMoveConfig {
   usePathfinding?: boolean;
@@ -54,6 +55,7 @@ export class MovementSystem {
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService: AudioService | undefined;
   private audioActorComponent: AudioActorComponent | undefined;
+  private animationActorComponent?: AnimationActorComponent;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -64,6 +66,7 @@ export class MovementSystem {
 
   private init() {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
   }
@@ -201,6 +204,7 @@ export class MovementSystem {
           try {
             await this.moveAlongPath(path, config);
             config?.onComplete?.();
+            this.playMovementAnimation(false);
             resolve();
           } catch (e) {
             // console.error("Error moving along path", e);
@@ -210,6 +214,7 @@ export class MovementSystem {
         onStop: () => {
           reject("Movement stopped");
           config?.onStop?.();
+          this.playMovementAnimation(false);
         },
         onUpdate: () => {
           this.tweenUpdate();
@@ -262,10 +267,12 @@ export class MovementSystem {
         duration: pathMoveConfig?.tileStepDuration ?? this.defaultTileStepDuration,
         onComplete: async () => {
           pathMoveConfig?.onComplete?.();
+          this.playMovementAnimation(false);
           resolve();
         },
         onStop: () => {
           pathMoveConfig?.onStop?.();
+          this.playMovementAnimation(false);
           reject("Movement stopped");
         },
         onUpdate: () => {
@@ -280,7 +287,7 @@ export class MovementSystem {
   private onMovementStart(newTileWorldXY: Vector2Simple) {
     this.playMovementSound();
     if (this.actorTranslateComponent) this.actorTranslateComponent.updateDirection(newTileWorldXY);
-    this.playMovementAnimation();
+    this.playMovementAnimation(true);
   }
 
   private playMovementSound() {
@@ -295,12 +302,9 @@ export class MovementSystem {
     });
   }
 
-  private playMovementAnimation() {
-    if (!this.actorTranslateComponent) return;
-    const direction = this.actorTranslateComponent.currentDirection;
-    if (!direction) return;
-    const animationKey = `move-${direction}`;
-    console.log(`Playing animation ${animationKey}`);
+  private playMovementAnimation(isMoving: boolean) {
+    if (!this.animationActorComponent) return;
+    this.animationActorComponent.playOrderAnimation(isMoving ? OrderType.Move : OrderType.Stop);
   }
 
   private getMovementSound() {
@@ -410,7 +414,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
 export function getGameObjectDirection(
   gameObject: Phaser.GameObjects.GameObject,
   newTile: Vector2Simple
-): MoveDirection {
+): IsoDirection | undefined {
   const currentTile = getGameObjectCurrentTile(gameObject);
   if (!currentTile) return;
 
@@ -426,7 +430,7 @@ export function getGameObjectDirection(
 export function getGameObjectDirectionBetweenTiles(
   oldTileWorldXY: Vector2Simple | undefined,
   newTileWorldXY: Vector2Simple | undefined
-): MoveDirection {
+): IsoDirection | undefined {
   if (!newTileWorldXY) return;
   if (!oldTileWorldXY) return;
 
@@ -437,7 +441,7 @@ export function getGameObjectDirectionBetweenTiles(
   return getIsoDirectionFromDirectionalVector(directionX, directionY);
 }
 
-export function getIsoDirectionFromDirectionalVector(directionX: number, directionY: number): MoveDirection {
+export function getIsoDirectionFromDirectionalVector(directionX: number, directionY: number): IsoDirection {
   if (directionX === 0 && directionY === 0) return "south"; // default fallback
 
   // Adjust for isometric scaling: in a 2:1 isometric projection, Y axis is compressed
