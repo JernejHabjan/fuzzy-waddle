@@ -47,7 +47,7 @@ export const ANIM_GENERAL_WARRIOR_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_GENERAL_WARRIOR_THRUST_LEFT },
     east: { key: ANIM_GENERAL_WARRIOR_THRUST_RIGHT }
   },
-  [AnimationType.Hurt]: {
+  [AnimationType.Death]: {
     north: { key: ANIM_GENERAL_WARRIOR_HURT },
     south: { key: ANIM_GENERAL_WARRIOR_HURT },
     west: { key: ANIM_GENERAL_WARRIOR_HURT },

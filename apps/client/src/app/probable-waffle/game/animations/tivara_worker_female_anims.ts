@@ -60,7 +60,7 @@ export const ANIM_TIVARA_WORKER_FEMALE_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_TIVARA_WORKER_FEMALE_THRUST_LEFT },
     east: { key: ANIM_TIVARA_WORKER_FEMALE_THRUST_RIGHT }
   },
-  [AnimationType.Hurt]: {
+  [AnimationType.Death]: {
     north: { key: ANIM_TIVARA_WORKER_FEMALE_HURT },
     south: { key: ANIM_TIVARA_WORKER_FEMALE_HURT },
     west: { key: ANIM_TIVARA_WORKER_FEMALE_HURT },

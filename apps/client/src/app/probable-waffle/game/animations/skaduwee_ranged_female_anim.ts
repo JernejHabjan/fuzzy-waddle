@@ -41,13 +41,13 @@ export const ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_SKADUWEE_RANGED_FEMALE_WALK_LEFT },
     east: { key: ANIM_SKADUWEE_RANGED_FEMALE_WALK_RIGHT }
   },
-  [AnimationType.Hurt]: {
+  [AnimationType.Death]: {
     north: { key: ANIM_SKADUWEE_RANGED_FEMALE_HURT },
     south: { key: ANIM_SKADUWEE_RANGED_FEMALE_HURT },
     west: { key: ANIM_SKADUWEE_RANGED_FEMALE_HURT },
     east: { key: ANIM_SKADUWEE_RANGED_FEMALE_HURT }
   },
-  ["shoot" as AnimationType]: {
+  [AnimationType.Shoot]: {
     north: { key: ANIM_SKADUWEE_RANGED_FEMALE_SHOOT_UP },
     south: { key: ANIM_SKADUWEE_RANGED_FEMALE_SHOOT_DOWN },
     west: { key: ANIM_SKADUWEE_RANGED_FEMALE_SHOOT_LEFT },

@@ -41,13 +41,13 @@ export const ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_WALK_LEFT },
     east: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_WALK_RIGHT }
   },
-  [AnimationType.Attack]: {
+  [AnimationType.Shoot]: {
     north: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_SHOOT_UP },
     south: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_SHOOT_DOWN },
     west: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_SHOOT_LEFT },
     east: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_SHOOT_RIGHT }
   },
-  [AnimationType.Hurt]: {
+  [AnimationType.Death]: {
     north: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_HURT },
     south: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_HURT },
     west: { key: ANIM_TIVARA_SLINGSHOT_FEMALE_HURT },

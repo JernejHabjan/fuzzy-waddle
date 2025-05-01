@@ -18,15 +18,6 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
     this.add(tivara_maceman_male_idle_down);
 
     /* START-USER-CTR-CODE */
-    this.on("pointerdown", () => {
-      // and play anim skaduwee_worker_male_slash_down
-      tivara_maceman_male_idle_down.play("tivara_maceman_male_large_slash_down", true);
-      // after anim complete, remove tint
-      tivara_maceman_male_idle_down.once("animationcomplete", () => {
-        tivara_maceman_male_idle_down.clearTint();
-        tivara_maceman_male_idle_down.play("tivara_maceman_male_idle_down", true);
-      });
-    });
     /* END-USER-CTR-CODE */
   }
 

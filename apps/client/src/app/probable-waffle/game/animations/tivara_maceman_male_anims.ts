@@ -49,13 +49,13 @@ export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_TIVARA_MACEMAN_MALE_WALK_LEFT },
     east: { key: ANIM_TIVARA_MACEMAN_MALE_WALK_RIGHT }
   },
-  [AnimationType.Attack]: {
+  [AnimationType.Slash]: {
     north: { key: ANIM_TIVARA_MACEMAN_MALE_LARGE_SLASH_UP },
     south: { key: ANIM_TIVARA_MACEMAN_MALE_LARGE_SLASH_DOWN },
     west: { key: ANIM_TIVARA_MACEMAN_MALE_LARGE_SLASH_LEFT },
     east: { key: ANIM_TIVARA_MACEMAN_MALE_LARGE_SLASH_RIGHT }
   },
-  [AnimationType.Slash]: {
+  [AnimationType.InvertedSlash]: {
     north: { key: ANIM_TIVARA_MACEMAN_MALE_ISLASH_UP },
     south: { key: ANIM_TIVARA_MACEMAN_MALE_ISLASH_DOWN },
     west: { key: ANIM_TIVARA_MACEMAN_MALE_ISLASH_LEFT },
@@ -67,7 +67,7 @@ export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_TIVARA_MACEMAN_MALE_LARGE_SLASH_LEFT },
     east: { key: ANIM_TIVARA_MACEMAN_MALE_LARGE_SLASH_RIGHT }
   },
-  [AnimationType.Hurt]: {
+  [AnimationType.Death]: {
     north: { key: ANIM_TIVARA_MACEMAN_MALE_HURT },
     south: { key: ANIM_TIVARA_MACEMAN_MALE_HURT },
     west: { key: ANIM_TIVARA_MACEMAN_MALE_HURT },

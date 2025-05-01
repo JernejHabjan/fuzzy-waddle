@@ -21,15 +21,7 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
     /* START-USER-CTR-CODE */
     this.skaduwee_magician_female_idle_down = skaduwee_magician_female_idle_down;
     this.on("pointerdown", () => {
-      // and play anim skaduwee_worker_male_slash_down
-      skaduwee_magician_female_idle_down.play("skaduwee_magician_female_cast_down", true);
       this.playTestAttackAnim();
-
-      // after anim complete, remove tint
-      skaduwee_magician_female_idle_down.once("animationcomplete", () => {
-        skaduwee_magician_female_idle_down.clearTint();
-        skaduwee_magician_female_idle_down.play("skaduwee_magician_female_idle_down", true);
-      });
     });
     /* END-USER-CTR-CODE */
   }

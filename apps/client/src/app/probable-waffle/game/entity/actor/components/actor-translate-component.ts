@@ -22,6 +22,12 @@ export class ActorTranslateComponent {
     public readonly actorTranslateDefinition: ActorTranslateDefinition
   ) {}
 
+  get currentTileWorldXY(): Vector2Simple {
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!transform) return { x: 0, y: 0 };
+    return { x: transform.x, y: transform.y };
+  }
+
   get actorMoved(): Observable<Vector3Simple> {
     return this._actorMoved.asObservable();
   }

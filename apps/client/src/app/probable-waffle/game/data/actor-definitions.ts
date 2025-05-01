@@ -155,16 +155,17 @@ import {
 } from "../sfx/ActorsResourcesSfx";
 import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
 import { SelectableDefinition } from "../entity/actor/components/selectable-component";
-import { ActorAnimationsDefinition } from "../entity/actor/components/animation-actor-component";
+import { ActorAnimationsDefinition, AnimationType } from "../entity/actor/components/animation-actor-component";
 import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "../animations/tivara_maceman_male_anims";
 import { ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION } from "../animations/tivara_slingshot_female_anims";
-import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
 import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "../animations/skaduwee_ranged_female_anim";
 import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "../animations/skaduwee_magician_female_anim";
 import { ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION } from "../animations/skaduwee_warrior_male_anims";
 import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "../animations/skaduwee_worker_female_anims";
 import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../animations/warrior_anim";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../animations/tivara_worker_male_anims";
+import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../animations/skaduwee_worker_male_anims";
+import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -217,7 +218,15 @@ const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
           damage: 1,
           damageType: DamageType.Physical,
           cooldown: 1000,
-          range: 1
+          range: 1,
+          animationType: AnimationType.Thrust
+        },
+        {
+          damage: 1,
+          damageType: DamageType.Physical,
+          cooldown: 1000,
+          range: 1,
+          animationType: AnimationType.Slash
         }
       ]
     },
@@ -448,7 +457,8 @@ export const pwActorDefinitions: {
             damage: 10,
             damageType: DamageType.Physical,
             cooldown: 1000,
-            range: 1
+            range: 1,
+            animationType: AnimationType.Thrust
           }
         ]
       },
@@ -509,7 +519,22 @@ export const pwActorDefinitions: {
             damage: 10,
             damageType: DamageType.Physical,
             cooldown: 1000,
-            range: 1
+            range: 1,
+            animationType: AnimationType.Slash
+          },
+          {
+            damage: 10,
+            damageType: DamageType.Physical,
+            cooldown: 1000,
+            range: 1,
+            animationType: AnimationType.InvertedSlash
+          },
+          {
+            damage: 10,
+            damageType: DamageType.Physical,
+            cooldown: 1000,
+            range: 1,
+            animationType: AnimationType.LargeSlash
           }
         ]
       },
@@ -585,7 +610,8 @@ export const pwActorDefinitions: {
             damage: 10,
             damageType: DamageType.Physical,
             cooldown: 1000,
-            range: 3
+            range: 3,
+            animationType: AnimationType.Shoot
           }
         ]
       },
@@ -656,7 +682,7 @@ export const pwActorDefinitions: {
           [SoundType.Mine]: TivaraWorkerFemaleSfxMineSounds
         }
       },
-      animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION }
+      animatable: { animations: ANIM_TIVARA_WORKER_FEMALE_DEFINITION }
     }
   },
   [ObjectNames.TivaraWorkerMale]: {
@@ -997,7 +1023,8 @@ export const pwActorDefinitions: {
             damage: 10,
             damageType: DamageType.Physical,
             cooldown: 1000,
-            range: 3
+            range: 3,
+            animationType: AnimationType.Shoot
           }
         ]
       },
@@ -1073,7 +1100,8 @@ export const pwActorDefinitions: {
             damage: 10,
             damageType: DamageType.Physical,
             cooldown: 1000,
-            range: 3
+            range: 3,
+            animationType: AnimationType.Shoot
           }
         ]
       },
@@ -1148,7 +1176,15 @@ export const pwActorDefinitions: {
             damage: 20,
             damageType: DamageType.Magical,
             cooldown: 3000,
-            range: 10
+            range: 10,
+            animationType: AnimationType.Cast
+          },
+          {
+            damage: 10,
+            damageType: DamageType.Physical,
+            cooldown: 3000,
+            range: 2,
+            animationType: AnimationType.LargeThrust
           }
         ]
       },
@@ -1224,7 +1260,22 @@ export const pwActorDefinitions: {
             damage: 10,
             damageType: DamageType.Physical,
             cooldown: 1000,
-            range: 1
+            range: 1,
+            animationType: AnimationType.Slash
+          },
+          {
+            damage: 10,
+            damageType: DamageType.Physical,
+            cooldown: 1000,
+            range: 1,
+            animationType: AnimationType.InvertedSlash
+          },
+          {
+            damage: 10,
+            damageType: DamageType.Physical,
+            cooldown: 1000,
+            range: 1,
+            animationType: AnimationType.Smash
           }
         ]
       },
@@ -1295,7 +1346,7 @@ export const pwActorDefinitions: {
           [SoundType.Mine]: SkaduweeWorkerMaleSfxMineSounds
         }
       },
-      animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION }
+      animatable: { animations: ANIM_SKADUWEE_WORKER_MALE_DEFINITION }
     }
   },
   [ObjectNames.SkaduweeWorkerFemale]: {
@@ -1672,7 +1723,8 @@ export const pwActorDefinitions: {
             damage: 10,
             damageType: DamageType.Physical,
             cooldown: 1000,
-            range: 10
+            range: 10,
+            animationType: AnimationType.Shoot
           }
         ]
       },

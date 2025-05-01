@@ -228,9 +228,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!target) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
-    const primaryAttack = attackComponent.primaryAttack;
-    if (primaryAttack === null) return State.FAILED;
-    attackComponent.useAttack(primaryAttack, target);
+    const currentAttack = attackComponent.currentAttack;
+    if (currentAttack === null) return State.FAILED;
+    attackComponent.useAttack(currentAttack, target);
     return State.SUCCEEDED;
   }
 

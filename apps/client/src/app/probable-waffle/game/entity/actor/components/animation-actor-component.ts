@@ -4,18 +4,18 @@ import { ActorTranslateComponent, IsoDirection } from "./actor-translate-compone
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { HealthComponent } from "../../combat/components/health-component";
+import { AttackComponent } from "../../combat/components/attack-component";
 
 export enum AnimationType {
   Idle = "idle",
   Walk = "walk",
-  Attack = "attack",
+  Shoot = "shoot",
   Build = "build",
   Chop = "chop",
   Mine = "mine",
   Repair = "repair",
   Heal = "heal",
   Cast = "cast",
-  Hurt = "hurt",
   Death = "death",
   Slash = "slash",
   InvertedSlash = "invertedSlash",
@@ -26,7 +26,7 @@ export enum AnimationType {
 }
 
 const oneTimeAnimations: AnimationType[] = [
-  AnimationType.Attack,
+  AnimationType.Shoot,
   AnimationType.Cast,
   AnimationType.Slash,
   AnimationType.InvertedSlash,
@@ -91,6 +91,7 @@ export class AnimationActorComponent {
       const sprite = this.gameObject.getAll().find((child) => child instanceof Phaser.GameObjects.Sprite);
       if (sprite instanceof Phaser.GameObjects.Sprite) {
         this.sprite = sprite;
+        console.warn("chosen random sprite", sprite); // todo
       }
     }
 
@@ -177,7 +178,7 @@ export class AnimationActorComponent {
   private mapOrderTypeToAnimationType(orderType: OrderType): AnimationType | null {
     switch (orderType) {
       case OrderType.Attack:
-        return AnimationType.Attack;
+        return this.getAttackAnimationType();
       case OrderType.Build:
         return AnimationType.Build;
       case OrderType.Gather:
@@ -197,6 +198,15 @@ export class AnimationActorComponent {
       default:
         return AnimationType.Idle;
     }
+  }
+
+  private getAttackAnimationType(): AnimationType | null {
+    const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+    if (!attackComponent) return null;
+    const currentAttack = attackComponent.currentAttack; // todo in the future this should be current attack against enemy
+    if (currentAttack === null) return null;
+    const attackAnimation = attackComponent.getAttackAnimation(currentAttack);
+    return attackAnimation || null;
   }
 
   private destroy() {

@@ -63,7 +63,7 @@ export const ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_SKADUWEE_WARRIOR_MALE_SLASH_LEFT },
     east: { key: ANIM_SKADUWEE_WARRIOR_MALE_SLASH_RIGHT }
   },
-  [AnimationType.Hurt]: {
+  [AnimationType.Death]: {
     north: { key: ANIM_SKADUWEE_WARRIOR_MALE_HURT },
     south: { key: ANIM_SKADUWEE_WARRIOR_MALE_HURT },
     west: { key: ANIM_SKADUWEE_WARRIOR_MALE_HURT },

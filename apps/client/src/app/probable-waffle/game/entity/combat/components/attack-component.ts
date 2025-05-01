@@ -2,6 +2,10 @@ import { AttackData } from "../attack-data";
 import { EventEmitter } from "@angular/core";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
+import { AnimationActorComponent, AnimationType } from "../../actor/components/animation-actor-component";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { AudioActorComponent, SoundType } from "../../actor/components/audio-actor-component";
+import { OrderType } from "../../character/ai/order-type";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type AttackDefinition = {
@@ -14,18 +18,25 @@ export class AttackComponent {
   // gameObject used an attack
   onAttackUsed: EventEmitter<AttackData> = new EventEmitter<AttackData>();
   remainingCooldown = 0;
+  private animationActorComponent?: AnimationActorComponent;
+  private audioActorComponent?: AudioActorComponent;
 
   constructor(
-    private readonly owner: GameObject,
+    private readonly gameObject: GameObject,
     private readonly attackDefinition: AttackDefinition
   ) {
-    owner.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
-    owner.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    owner.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    onObjectReady(this.gameObject, this.init, this);
   }
 
+  private init() {
+    this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+    this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
+  }
   private destroy() {
-    this.owner.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
   private update(_: number, delta: number): void {
     if (this.remainingCooldown <= 0) {
@@ -34,13 +45,23 @@ export class AttackComponent {
     this.remainingCooldown -= delta;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
     // if (this.remainingCooldown <= 0) {
-    //   this.onCooldownReady.emit(this.owner);
+    //   this.onCooldownReady.emit(this.gameObject);
     // }
   }
 
-  get primaryAttack(): number | null {
+  private get primaryAttack(): number | null {
     if (this.getAttacks().length > 0) return 0; // by default use first attack
     return null;
+  }
+
+  /**
+   * Todo in the future this should be an attack for current target - if target is close, use melee attack, if far away use ranged attack
+   */
+  get currentAttack(): number | null {
+    const attacks = this.getAttacks();
+    // get random
+    if (attacks.length === 0) return null;
+    return Math.floor(Math.random() * attacks.length);
   }
 
   useAttack(attackIndex: number, enemy: GameObject) {
@@ -54,13 +75,16 @@ export class AttackComponent {
     const attack = this.attackDefinition.attacks[attackIndex];
 
     if (attack.projectileType) {
-      // todo   const projectile = new attack.projectileClass(this.owner.scene, this.owner); // todo here it should be getWorld.SpawnGameObject<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
+      // todo   const projectile = new attack.projectileClass(this.gameObject.scene, this.gameObject); // todo here it should be getWorld.SpawnGameObject<ProjectileClass>(attack.projectileClass, transform, spawnInfo)
       // todo   projectile.registerGameObject(); // todo should be called by registration engine
       // todo   projectile.fireAtGameObject(enemy);
     } else {
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
       if (!enemyHealthComponent) return;
-      enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.owner);
+      enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+
+      if (this.animationActorComponent) this.animationActorComponent.playOrderAnimation(OrderType.Attack, true);
+      if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Attack); // todo this should be based on attack type
     }
 
     this.remainingCooldown = attack.cooldown;
@@ -90,5 +114,13 @@ export class AttackComponent {
 
   getMaximumRange(): number {
     return Math.max(...this.attackDefinition.attacks.map((attack) => attack.range));
+  }
+
+  getAttackAnimation(attackIndex: number): AnimationType {
+    if (attackIndex < 0 || attackIndex >= this.attackDefinition.attacks.length) {
+      throw new Error("Invalid attack index");
+    }
+    const attack = this.attackDefinition.attacks[attackIndex];
+    return attack.animationType;
   }
 }
