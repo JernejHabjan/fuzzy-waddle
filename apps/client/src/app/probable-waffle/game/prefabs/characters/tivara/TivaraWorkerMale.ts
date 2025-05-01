@@ -9,7 +9,7 @@ import { EffectsAnims } from "../../../animations/effects";
 
 export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 56.45402439680805, texture || "worker_male_idle_1", frame ?? 4);
+    super(scene, x ?? 32, y ?? 56.45402439680805, texture || "tivara_worker_male_idle", frame ?? 4);
 
     this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
     this.setOrigin(0.5, 0.8820941312001258);

@@ -8,7 +8,7 @@ import { ObjectNames } from "../../../data/object-names";
 
 export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 58.00236660260104, texture || "worker_female_idle", frame ?? 4);
+    super(scene, x ?? 32, y ?? 58.00236660260104, texture || "skaduwee_worker_female_idle", frame ?? 4);
 
     this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
     this.setOrigin(0.5, 0.9062870143450004);

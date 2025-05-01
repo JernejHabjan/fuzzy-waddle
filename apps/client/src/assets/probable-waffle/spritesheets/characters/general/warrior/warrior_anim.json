@@ -36,7 +36,8 @@
                 }
             ],
             "frameRate": 5,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_idle_up",
@@ -57,7 +58,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_idle_left",
@@ -78,7 +80,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_idle_down",
@@ -99,7 +102,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_idle_right",
@@ -120,7 +124,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_thrust_up",
@@ -170,7 +175,8 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_thrust_left",
@@ -220,7 +226,8 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_thrust_down",
@@ -270,7 +277,8 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_thrust_right",
@@ -320,7 +328,8 @@
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_walk_up",
@@ -377,7 +386,8 @@
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_walk_left",
@@ -434,7 +444,8 @@
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_walk_down",
@@ -491,7 +502,8 @@
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "general_warrior_walk_right",
@@ -548,7 +560,8 @@
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         }
     ],
     "globalTimeScale": 1,
@@ -559,6 +572,7 @@
     "settings": {
         "sourceLang": "TYPE_SCRIPT",
         "esModule": true,
-        "generateCode": true
+        "generateCode": true,
+        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/animations"
     }
 }
