@@ -16,7 +16,7 @@ import { AudioService } from "../../scenes/services/audio.service";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
+import { ActorTranslateComponent, MoveDirection } from "../actor/components/actor-translate-component";
 import { HealthComponent } from "../combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { OrderType } from "../character/ai/order-type";
@@ -191,7 +191,7 @@ export class MovementSystem {
       : undefined;
 
     return new Promise<void>((resolve, reject) => {
-      this.onMovementStart();
+      this.onMovementStart(tileWorldXY);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
@@ -225,7 +225,11 @@ export class MovementSystem {
     const transform = getGameObjectTransform(this.gameObject);
     if (!transform) return;
     if (!this.actorTranslateComponent) return;
-    this.actorTranslateComponent.moveActorToPosition(transform);
+    this.actorTranslateComponent.moveActorToPosition({
+      x: transform.x,
+      y: transform.y,
+      z: transform.z
+    });
   };
 
   cancelMovement() {
@@ -250,7 +254,7 @@ export class MovementSystem {
         return;
       }
 
-      this.onMovementStart();
+      this.onMovementStart(tileWorldXY);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
@@ -273,7 +277,13 @@ export class MovementSystem {
     });
   }
 
-  private onMovementStart() {
+  private onMovementStart(newTileWorldXY: Vector2Simple) {
+    this.playMovementSound();
+    if (this.actorTranslateComponent) this.actorTranslateComponent.updateDirection(newTileWorldXY);
+    this.playMovementAnimation();
+  }
+
+  private playMovementSound() {
     if (!this.audioService) return;
     const movementSoundDefinition = this.getMovementSound();
     if (!movementSoundDefinition) return;
@@ -283,6 +293,14 @@ export class MovementSystem {
     this.audioService.playSpatialAudioSprite(this.gameObject, movementSound.key, movementSound.spriteName, {
       volume: 70 // make it quieter so it doesn't drown out other sounds
     });
+  }
+
+  private playMovementAnimation() {
+    if (!this.actorTranslateComponent) return;
+    const direction = this.actorTranslateComponent.currentDirection;
+    if (!direction) return;
+    const animationKey = `move-${direction}`;
+    console.log(`Playing animation ${animationKey}`);
   }
 
   private getMovementSound() {
@@ -333,6 +351,7 @@ export class MovementSystem {
       range
     );
   }
+
   private canIssueCommand() {
     const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
     const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
@@ -391,7 +410,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
 export function getGameObjectDirection(
   gameObject: Phaser.GameObjects.GameObject,
   newTile: Vector2Simple
-): "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest" | undefined {
+): MoveDirection {
   const currentTile = getGameObjectCurrentTile(gameObject);
   if (!currentTile) return;
 
@@ -400,44 +419,44 @@ export function getGameObjectDirection(
 
   const currentTileWorldXY = navigationService.getTileWorldCenter(currentTile);
   const newTileWorldXY = navigationService.getTileWorldCenter(newTile);
-  if (!newTileWorldXY) return;
-  if (!currentTileWorldXY) return;
 
-  // here we're comparing world coordinates to determine the direction. Iso tile coordinates produce different results
-  const directionX = newTileWorldXY.x - currentTileWorldXY.x;
-  const directionY = newTileWorldXY.y - currentTileWorldXY.y;
-
-  return getDirectionFromDirectionVector(directionX, directionY);
+  return getGameObjectDirectionBetweenTiles(currentTileWorldXY, newTileWorldXY);
 }
 
-export function getDirectionFromDirectionVector(
-  directionX: number,
-  directionY: number
-): "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest" | undefined {
-  if (directionX === 0 && directionY === 0) return "south"; // default to south if no direction
+export function getGameObjectDirectionBetweenTiles(
+  oldTileWorldXY: Vector2Simple | undefined,
+  newTileWorldXY: Vector2Simple | undefined
+): MoveDirection {
+  if (!newTileWorldXY) return;
+  if (!oldTileWorldXY) return;
 
-  const absX = Math.abs(directionX);
-  const absY = Math.abs(directionY);
+  // here we're comparing world coordinates to determine the direction. Iso tile coordinates produce different results
+  const directionX = newTileWorldXY.x - oldTileWorldXY.x;
+  const directionY = newTileWorldXY.y - oldTileWorldXY.y;
+
+  return getIsoDirectionFromDirectionalVector(directionX, directionY);
+}
+
+export function getIsoDirectionFromDirectionalVector(directionX: number, directionY: number): MoveDirection {
+  if (directionX === 0 && directionY === 0) return "south"; // default fallback
+
+  // Adjust for isometric scaling: in a 2:1 isometric projection, Y axis is compressed
+  const isoAdjustedX = directionX;
+  const isoAdjustedY = directionY * 2;
+
+  const absX = Math.abs(isoAdjustedX);
+  const absY = Math.abs(isoAdjustedY);
 
   if (absX > absY) {
-    if (directionX > 0) {
-      return "east";
-    } else {
-      return "west";
-    }
-  } else if (absX < absY) {
-    if (directionY > 0) {
-      return "south";
-    } else {
-      return "north";
-    }
+    return isoAdjustedX > 0 ? "east" : "west";
+  } else if (absY > absX) {
+    return isoAdjustedY > 0 ? "south" : "north";
   } else {
-    // absX === absY (diagonal)
-    if (directionX > 0 && directionY > 0) {
+    if (isoAdjustedX > 0 && isoAdjustedY > 0) {
       return "southeast";
-    } else if (directionX < 0 && directionY > 0) {
+    } else if (isoAdjustedX < 0 && isoAdjustedY > 0) {
       return "southwest";
-    } else if (directionX > 0 && directionY < 0) {
+    } else if (isoAdjustedX > 0 && isoAdjustedY < 0) {
       return "northeast";
     } else {
       return "northwest";
