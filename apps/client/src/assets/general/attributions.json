@@ -950,6 +950,86 @@
     }
   },
   {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Mixedupmoviestuff/sounds/179222/",
+    "name": "Knife Stab.wav",
+    "author": "Mixedupmoviestuff - https://freesound.org/people/Mixedupmoviestuff/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/thefsoundman/sounds/118513/",
+    "name": "Punch_02.wav",
+    "author_url": "thefsoundman - https://freesound.org/people/thefsoundman/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Huminaatio/sounds/390462/",
+    "name": "Punch in the face",
+    "author": "Huminaatio - https://freesound.org/people/Huminaatio/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Rudmer_Rotteveel/sounds/330997/",
+    "name": "Stick Hitting a Dreadlock (Small thud)",
+    "author": "Rudmer_Rotteveel - https://freesound.org/people/Rudmer_Rotteveel/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/copyc4t/sounds/222608/",
+    "name": "Archers-shooting.wav",
+    "author": "copyc4t - https://freesound.org/people/copyc4t/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Benboncan/sounds/85019/",
+    "name": "Bow Releases.wav",
+    "author": "Benboncan - https://freesound.org/people/Benboncan/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "Attribution 4.0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/qubodup/sounds/60030/",
+    "name": "Swosh / Whoosh / Air Cut",
+    "author": "qubodup - https://freesound.org/people/qubodup/",
+    "license": {
+      "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "Creative Commons 0"
+    }
+  },
+  {
+    "type": "Free Sound",
+    "url": "https://freesound.org/people/Anton/sounds/54/",
+    "name": "bow_sound.wav",
+    "author": "Anton - https://freesound.org/people/Anton/",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "Attribution 4.0"
+    }
+  },
+  {
     "type": "Art",
     "url": "https://opengameart.org/content/isometric-64x64-outside-tileset",
     "name": "Isometric 64x64 Outside Tileset",

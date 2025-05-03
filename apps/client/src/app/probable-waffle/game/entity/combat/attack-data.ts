@@ -2,7 +2,9 @@ import { DamageType } from "./damage-type";
 import { AnimationType } from "../actor/components/animation-actor-component";
 import { SoundDefinition } from "../actor/components/audio-actor-component";
 import {
+  SharedActorActionsFurballHitSounds,
   SharedActorActionsSfxArrowHitSounds,
+  SharedActorActionsSfxArrowShootMultipleSounds,
   SharedActorActionsSfxArrowShootSounds,
   SharedActorActionsSfxAxeHitSounds,
   SharedActorActionsSfxFireballFireSounds,
@@ -13,8 +15,11 @@ import {
   SharedActorActionsSfxHeavyWeaponSwingSounds,
   SharedActorActionsSfxLeatherNockSounds,
   SharedActorActionsSfxMaceHitSounds,
+  SharedActorActionsSfxPunchHitSounds,
   SharedActorActionsSfxSlingshotFireSounds,
-  SharedActorActionsSfxSlingshotHitSounds
+  SharedActorActionsSfxSlingshotHitSounds,
+  SharedActorActionsSfxSpearStabHitSounds,
+  SharedActorActionsSfxStaffHitSounds
 } from "../../sfx/SharedActorActionsSfx";
 import { EffectsAnims } from "../../animations/effects";
 
@@ -92,7 +97,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
         pointingOrientation: 0
       },
       impactAnimation: {
-        anims: EffectsAnims.fireImpacts // todo add debris animation
+        anims: EffectsAnims.fireImpacts // todo add debris visual animation
       }
     },
     damage: 5,
@@ -248,8 +253,8 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     animationType: AnimationType.LargeThrust,
     sounds: {
       preparing: null,
-      fire: null, // todo
-      hit: null // todo
+      fire: null,
+      hit: SharedActorActionsSfxSpearStabHitSounds
     },
     delays: {
       fire: 200,
@@ -267,8 +272,8 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     animationType: AnimationType.Thrust,
     sounds: {
       preparing: null,
-      fire: null, // todo
-      hit: null // todo
+      fire: null,
+      hit: SharedActorActionsSfxStaffHitSounds
     },
     delays: {
       fire: 200,
@@ -286,8 +291,8 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     animationType: AnimationType.Thrust,
     sounds: {
       preparing: null,
-      fire: null, // todo
-      hit: null // todo
+      fire: null,
+      hit: SharedActorActionsSfxPunchHitSounds
     },
     delays: {
       fire: 200,
@@ -305,8 +310,8 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     animationType: AnimationType.Shoot,
     sounds: {
       preparing: null,
-      fire: null, // todo
-      hit: null // todo
+      fire: null,
+      hit: SharedActorActionsFurballHitSounds
     },
     delays: {
       fire: 200,
@@ -323,9 +328,9 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     minRange: 0,
     animationType: AnimationType.Shoot,
     sounds: {
-      preparing: SharedActorActionsSfxLeatherNockSounds, // TODO
-      fire: SharedActorActionsSfxSlingshotFireSounds, // TODO
-      hit: SharedActorActionsSfxSlingshotHitSounds // TODO
+      preparing: SharedActorActionsSfxLeatherNockSounds,
+      fire: SharedActorActionsSfxArrowShootMultipleSounds,
+      hit: SharedActorActionsSfxArrowHitSounds
     },
     delays: {
       fire: 1000,
