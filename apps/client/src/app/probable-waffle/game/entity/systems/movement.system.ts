@@ -60,7 +60,6 @@ export class MovementSystem {
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
     onObjectReady(gameObject, this.init, this);
-    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
@@ -336,6 +335,7 @@ export class MovementSystem {
   }
 
   private destroy() {
+    this.cancelMovement();
     this.playerChangedSubscription?.unsubscribe();
   }
 

@@ -209,9 +209,9 @@ export class AnimationActorComponent {
   private getAttackAnimationType(): AnimationType | null {
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return null;
-    const currentAttack = attackComponent.currentAttack; // todo in the future this should be current attack against enemy
+    const currentAttack = attackComponent.currentAttack;
     if (currentAttack === null) return null;
-    const attackAnimation = attackComponent.getAttackAnimation(currentAttack);
+    const attackAnimation = currentAttack.animationType;
     return attackAnimation || null;
   }
 

@@ -13,17 +13,30 @@ import { environment } from "../../../../../../environments/environment";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
-import { AudioActorComponent, SoundType } from "../../actor/components/audio-actor-component";
+import { AudioActorComponent, SoundDefinition, SoundType } from "../../actor/components/audio-actor-component";
 import { AnimationActorComponent, AnimationType } from "../../actor/components/animation-actor-component";
 import { EffectsAnims } from "../../../animations/effects";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import {
+  SharedActorActionsSfxBodyFallSounds,
+  SharedActorActionsSfxBuildingDestroySounds
+} from "../../../sfx/SharedActorActionsSfx";
 
 export type HealthDefinition = {
   maxHealth: number;
   maxArmour?: number;
   regenerateHealthRate?: number;
   healthDisplayBehavior?: "always" | "onDamage";
+  physicalState: ActorPhysicalType;
 };
+
+export enum ActorPhysicalType {
+  Biological = "biological",
+  Structural = "structural",
+  Organic = "organic"
+}
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -57,14 +70,22 @@ export class HealthComponent {
     hooks: {
       health: (value: number, previousValue: number) => {
         if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
-        const isBiological = true; // todo later
-        if (isBiological && this.actorTranslateComponent) {
-          const transform = this.actorTranslateComponent.currentTileWorldXY;
-          const effect = EffectsAnims.createAndPlayBloodAnimation(this.gameObject.scene, transform.x, transform.y);
-          const gameObjectDepth = getGameObjectDepth(this.gameObject);
-          if (gameObjectDepth) {
-            effect.setDepth(gameObjectDepth + 1);
-          }
+        switch (this.healthDefinition.physicalState) {
+          case ActorPhysicalType.Biological:
+            if (this.actorTranslateComponent) {
+              const transform = this.actorTranslateComponent.currentTileWorldXY;
+              const effect = EffectsAnims.createAndPlayBloodAnimation(this.gameObject.scene, transform.x, transform.y);
+              const gameObjectDepth = getGameObjectDepth(this.gameObject);
+              if (gameObjectDepth) {
+                effect.setDepth(gameObjectDepth + 1);
+              }
+            }
+            break;
+          case ActorPhysicalType.Structural:
+          case ActorPhysicalType.Organic:
+            const asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+            if (asTint.setTint) asTint.setTint(0xff0000);
+            break;
         }
 
         if (value <= 0) {
@@ -88,6 +109,8 @@ export class HealthComponent {
   private animationActorComponent?: AnimationActorComponent;
   private audioActorComponent?: AudioActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
+  private audioService?: AudioService;
+
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly healthDefinition: HealthDefinition
@@ -126,6 +149,7 @@ export class HealthComponent {
   private init() {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
     if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
@@ -241,6 +265,7 @@ export class HealthComponent {
   killActor() {
     this.healthComponentData.health = 0;
     this.gameObject.emit(HealthComponent.KilledEvent);
+    this.playDeathSound();
     this.playDeathAnimation();
     this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
       this.gameObject.destroy();
@@ -248,7 +273,6 @@ export class HealthComponent {
   }
 
   private playDeathAnimation() {
-    if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Death);
     if (this.animationActorComponent) {
       this.animationActorComponent.playCustomAnimation(AnimationType.Death);
     } else {
@@ -256,6 +280,27 @@ export class HealthComponent {
       const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible;
       if (visibleComponent.setVisible === undefined) return;
       visibleComponent.setVisible(false);
+    }
+  }
+
+  private playDeathSound() {
+    let randomSound: SoundDefinition;
+    let randomSoundIndex: number;
+    switch (this.healthDefinition.physicalState) {
+      case ActorPhysicalType.Organic:
+      case ActorPhysicalType.Biological:
+        randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBodyFallSounds.length);
+        randomSound = SharedActorActionsSfxBodyFallSounds[randomSoundIndex];
+        if (this.audioService)
+          this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
+        if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Death);
+        break;
+      case ActorPhysicalType.Structural:
+        randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBuildingDestroySounds.length);
+        randomSound = SharedActorActionsSfxBuildingDestroySounds[randomSoundIndex];
+        if (this.audioService)
+          this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
+        break;
     }
   }
 

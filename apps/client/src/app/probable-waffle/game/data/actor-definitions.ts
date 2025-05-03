@@ -6,11 +6,10 @@ import { InfoDefinition } from "../entity/actor/components/info-component";
 import { RequirementsDefinition } from "../entity/actor/components/requirements-component";
 import { BuilderDefinition } from "../entity/actor/components/builder-component";
 import { GathererDefinition } from "../entity/actor/components/gatherer-component";
-import { DamageType } from "../entity/combat/damage-type";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../entity/building/payment-type";
 import { AttackDefinition } from "../entity/combat/components/attack-component";
-import { HealthDefinition } from "../entity/combat/components/health-component";
+import { ActorPhysicalType, HealthDefinition } from "../entity/combat/components/health-component";
 import { ProductionCostDefinition } from "../entity/building/production/production-cost-component";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE,
@@ -155,7 +154,7 @@ import {
 } from "../sfx/ActorsResourcesSfx";
 import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
 import { SelectableDefinition } from "../entity/actor/components/selectable-component";
-import { ActorAnimationsDefinition, AnimationType } from "../entity/actor/components/animation-actor-component";
+import { ActorAnimationsDefinition } from "../entity/actor/components/animation-actor-component";
 import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "../animations/tivara_maceman_male_anims";
 import { ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION } from "../animations/tivara_slingshot_female_anims";
 import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "../animations/skaduwee_ranged_female_anim";
@@ -166,6 +165,7 @@ import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../animations/warrior_anim";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../animations/tivara_worker_male_anims";
 import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../animations/skaduwee_worker_male_anims";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
+import { weaponDefinitions } from "../entity/combat/attack-data";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -210,25 +210,11 @@ const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
       range: 5
     },
     health: {
+      physicalState: ActorPhysicalType.Biological,
       maxHealth: 100
     },
     attack: {
-      attacks: [
-        {
-          damage: 1,
-          damageType: DamageType.Physical,
-          cooldown: 1000,
-          range: 1,
-          animationType: AnimationType.Thrust
-        },
-        {
-          damage: 1,
-          damageType: DamageType.Physical,
-          cooldown: 1000,
-          range: 1,
-          animationType: AnimationType.Slash
-        }
-      ]
+      attacks: [weaponDefinitions.hands]
     },
     productionCost: {
       resources: {
@@ -449,18 +435,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1,
-            animationType: AnimationType.Thrust
-          }
-        ]
+        attacks: [weaponDefinitions.spear]
       },
       productionCost: {
         resources: {
@@ -511,32 +490,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1,
-            animationType: AnimationType.Slash
-          },
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1,
-            animationType: AnimationType.InvertedSlash
-          },
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1,
-            animationType: AnimationType.LargeSlash
-          }
-        ]
+        attacks: [weaponDefinitions.mace]
       },
       productionCost: {
         resources: {
@@ -602,18 +560,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 3,
-            animationType: AnimationType.Shoot
-          }
-        ]
+        attacks: [weaponDefinitions.slingshot]
       },
       productionCost: {
         resources: {
@@ -748,6 +699,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -797,6 +749,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -853,6 +806,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100,
         maxArmour: 50
       },
@@ -913,6 +867,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -965,6 +920,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -1015,18 +971,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 3,
-            animationType: AnimationType.Shoot
-          }
-        ]
+        attacks: [weaponDefinitions.furball]
       },
       selectable: {},
       productionCost: {
@@ -1092,18 +1041,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 3,
-            animationType: AnimationType.Shoot
-          }
-        ]
+        attacks: [weaponDefinitions.bow]
       },
       productionCost: {
         resources: {
@@ -1168,25 +1110,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 50
       },
       attack: {
-        attacks: [
-          {
-            damage: 20,
-            damageType: DamageType.Magical,
-            cooldown: 3000,
-            range: 10,
-            animationType: AnimationType.Cast
-          },
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 3000,
-            range: 2,
-            animationType: AnimationType.LargeThrust
-          }
-        ]
+        attacks: [weaponDefinitions.fireSpell, weaponDefinitions.staff]
       },
       productionCost: {
         resources: {
@@ -1252,32 +1180,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1,
-            animationType: AnimationType.Slash
-          },
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1,
-            animationType: AnimationType.InvertedSlash
-          },
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1,
-            animationType: AnimationType.Smash
-          }
-        ]
+        attacks: [weaponDefinitions.axe]
       },
       productionCost: {
         resources: {
@@ -1411,6 +1318,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -1470,6 +1378,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -1527,6 +1436,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -1657,6 +1567,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 300,
         healthDisplayBehavior: "onDamage"
       },
@@ -1702,6 +1613,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 1000,
         healthDisplayBehavior: "onDamage"
       },
@@ -1718,15 +1630,7 @@ export const pwActorDefinitions: {
         capacity: 2
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 10,
-            animationType: AnimationType.Shoot
-          }
-        ]
+        attacks: [weaponDefinitions.bowTower]
       },
       collider: { enabled: true },
       constructable: {
@@ -1761,6 +1665,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 300,
         healthDisplayBehavior: "onDamage"
       },

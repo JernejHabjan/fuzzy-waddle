@@ -108,7 +108,11 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
 
       const primaryDamageType = primaryAttack?.damageType;
       const primaryAttackDamage = primaryAttack?.damage;
-      if (primaryDamageType === DamageType.Magical) {
+      if (
+        primaryDamageType === DamageType.Fire ||
+        primaryDamageType === DamageType.Frost ||
+        primaryDamageType === DamageType.Poison
+      ) {
         iconsAndTexts.push({
           icon: { key: "gui", frame: "actor_info_icons/element.png" },
           text: primaryAttackDamage?.toString()

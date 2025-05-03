@@ -1,0 +1,36 @@
+{
+    "id": "0756aa6a-f02e-4059-b8c0-e8bc320e9f0c",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "a6cc7d13-1236-4bd1-8b2d-cfb7ca3eab5b",
+            "label": "weapons_arrow_png",
+            "texture": {
+                "key": "factions",
+                "frame": "weapons/arrow.png"
+            },
+            "x": 427,
+            "y": 232
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -69,4 +69,31 @@ export class EffectsAnims {
     const randomBloodAnim = bloodAnims[Math.floor(Math.random() * bloodAnims.length)];
     return this.createAndPlayEffectAnimation(scene, randomBloodAnim, x, y);
   };
+
+  static readonly fireImpacts = [
+    EffectsAnims.ANIM_IMPACT_0,
+    EffectsAnims.ANIM_IMPACT_1,
+    EffectsAnims.ANIM_IMPACT_2,
+    EffectsAnims.ANIM_IMPACT_3,
+    EffectsAnims.ANIM_IMPACT_4,
+    EffectsAnims.ANIM_IMPACT_5,
+    EffectsAnims.ANIM_IMPACT_6,
+    EffectsAnims.ANIM_IMPACT_7,
+    EffectsAnims.ANIM_IMPACT_8,
+    EffectsAnims.ANIM_IMPACT_9,
+    EffectsAnims.ANIM_IMPACT_10,
+    EffectsAnims.ANIM_IMPACT_11,
+    EffectsAnims.ANIM_IMPACT_12,
+    EffectsAnims.ANIM_IMPACT_13,
+    EffectsAnims.ANIM_IMPACT_14,
+    EffectsAnims.ANIM_IMPACT_15,
+    EffectsAnims.ANIM_IMPACT_16,
+    EffectsAnims.ANIM_IMPACT_17,
+    EffectsAnims.ANIM_IMPACT_18,
+    EffectsAnims.ANIM_IMPACT_19,
+    EffectsAnims.ANIM_IMPACT_20,
+    EffectsAnims.ANIM_IMPACT_21,
+    EffectsAnims.ANIM_IMPACT_22,
+    EffectsAnims.ANIM_IMPACT_23
+  ];
 }

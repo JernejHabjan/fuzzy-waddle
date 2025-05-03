@@ -21,6 +21,7 @@ import { AttackComponent } from "../entity/combat/components/attack-component";
 import { ProductionComponent } from "../entity/building/production/production-component";
 import { GathererComponent } from "../entity/actor/components/gatherer-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
+import { HealthComponent } from "../entity/combat/components/health-component";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
@@ -198,12 +199,15 @@ export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameO
   if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleScene");
   const selectionGuids = getPlayer(scene)?.getSelection();
   if (!selectionGuids) return [];
-  return scene.children
-    .getChildren()
-    .filter(
-      (child) =>
-        getActorComponent(child, IdComponent)?.id && selectionGuids.includes(getActorComponent(child, IdComponent)!.id)
-    );
+  return scene.children.getChildren().filter((child) => {
+    const idComponent = getActorComponent(child, IdComponent);
+    if (!idComponent || !idComponent.id) return false;
+    if (!selectionGuids.includes(idComponent.id)) return false;
+    const healthComponent = getActorComponent(child, HealthComponent);
+    // noinspection RedundantIfStatementJS
+    if (healthComponent && healthComponent.killed) return false;
+    return true;
+  });
 }
 
 export function getSelectableSceneChildren(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
