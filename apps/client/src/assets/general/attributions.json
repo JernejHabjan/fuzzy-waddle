@@ -1061,6 +1061,25 @@
   },
   {
     "type": "Art",
+    "url": "https://eduardscarpato.itch.io/toxic-frog-animations-pixel-art-2d-free",
+    "name": "Toxic Frog Animations Pixel Art 2D FREE",
+    "author": "Eduardo Scarpato - https://eduardscarpato.itch.io/",
+    "license": {
+      "name": "CC-0"
+    },
+    "reason": "Assets for Probable Waffle - Frog"
+  },  {
+    "type": "Art",
+    "url": "https://scrabling.itch.io/pixel-isometric-tiles",
+    "name": "32 x 32 Pixel Isometric Tiles",
+    "author": "scrabling - https://scrabling.itch.io/",
+    "license": {
+      "name": "CC-0"
+    },
+    "reason": "Assets for Probable Waffle - Animals"
+  },
+  {
+    "type": "Art",
     "url": "https://paperhatlizard.itch.io/cryos-mini-gui",
     "name": "Cryo's Mini GUI",
     "author": "https://paperhatlizard.itch.io/",
