@@ -15,15 +15,6 @@ export default class TivaraSlingshotFemale extends Phaser.GameObjects.Sprite {
     this.play("tivara_slingshot_female_idle_down");
 
     /* START-USER-CTR-CODE */
-    this.on("pointerdown", () => {
-      // and play anim skaduwee_worker_male_slash_down
-      this.play("tivara_slingshot_female_shoot_down", true);
-      // after anim complete, remove tint
-      this.once("animationcomplete", () => {
-        this.clearTint();
-        this.play("tivara_slingshot_female_idle_down", true);
-      });
-    });
     /* END-USER-CTR-CODE */
   }
 

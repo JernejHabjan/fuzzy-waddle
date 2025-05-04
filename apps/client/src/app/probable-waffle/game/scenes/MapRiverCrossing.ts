@@ -70,6 +70,7 @@ import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale"
 import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
+import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -158,7 +159,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerMale);
 
     // skaduweeWorkerFemale
-    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 1024, 736);
+    const skaduweeWorkerFemale = new SkaduweeWorkerFemale(this, 512, 864);
     this.add.existing(skaduweeWorkerFemale);
 
     // skaduweeRangedFemale
@@ -666,7 +667,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(stairs_2);
 
     // seagulls
-    const seagulls = new SoundEffectMarker(this, 576, 336);
+    const seagulls = new SoundEffectMarker(this, 928, 448);
     this.add.existing(seagulls);
 
     // water flowing
@@ -688,6 +689,30 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // birds_1
     const birds_1 = new SoundEffectMarker(this, -640, 368);
     this.add.existing(birds_1);
+
+    // skaduweeRangedFemale_1
+    const skaduweeRangedFemale_1 = new SkaduweeRangedFemale(this, -116, 698);
+    this.add.existing(skaduweeRangedFemale_1);
+
+    // skaduweeMagicianFemale
+    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, -256, 608);
+    this.add.existing(skaduweeMagicianFemale);
+
+    // skaduweeWarriorMale_1
+    const skaduweeWarriorMale_1 = new SkaduweeWarriorMale(this, -582, 597);
+    this.add.existing(skaduweeWarriorMale_1);
+
+    // skaduweeWorkerFemale_1
+    const skaduweeWorkerFemale_1 = new SkaduweeWorkerFemale(this, -480, 608);
+    this.add.existing(skaduweeWorkerFemale_1);
+
+    // skaduweeWorkerMale_1
+    const skaduweeWorkerMale_1 = new SkaduweeWorkerMale(this, -728, 557);
+    this.add.existing(skaduweeWorkerMale_1);
+
+    // skaduweeOwl_1
+    const skaduweeOwl_1 = new SkaduweeOwl(this, -832, 528);
+    this.add.existing(skaduweeOwl_1);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -802,6 +827,30 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // birds_1 (prefab fields)
     birds_1.sfxType = "birds";
+
+    // skaduweeRangedFemale_1 (components)
+    const skaduweeRangedFemale_1EditorOwner = new EditorOwner(skaduweeRangedFemale_1);
+    skaduweeRangedFemale_1EditorOwner.owner_id = "1";
+
+    // skaduweeMagicianFemale (components)
+    const skaduweeMagicianFemaleEditorOwner = new EditorOwner(skaduweeMagicianFemale);
+    skaduweeMagicianFemaleEditorOwner.owner_id = "1";
+
+    // skaduweeWarriorMale_1 (components)
+    const skaduweeWarriorMale_1EditorOwner = new EditorOwner(skaduweeWarriorMale_1);
+    skaduweeWarriorMale_1EditorOwner.owner_id = "1";
+
+    // skaduweeWorkerFemale_1 (components)
+    const skaduweeWorkerFemale_1EditorOwner = new EditorOwner(skaduweeWorkerFemale_1);
+    skaduweeWorkerFemale_1EditorOwner.owner_id = "1";
+
+    // skaduweeWorkerMale_1 (components)
+    const skaduweeWorkerMale_1EditorOwner = new EditorOwner(skaduweeWorkerMale_1);
+    skaduweeWorkerMale_1EditorOwner.owner_id = "1";
+
+    // skaduweeOwl_1 (components)
+    const skaduweeOwl_1EditorOwner = new EditorOwner(skaduweeOwl_1);
+    skaduweeOwl_1EditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

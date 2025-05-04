@@ -17,8 +17,11 @@ import {
   SharedActorActionsSfxChoppingSounds,
   SharedActorActionsSfxMiningSounds
 } from "../../../sfx/SharedActorActionsSfx";
-import { SoundDefinition } from "./audio-actor-component";
+import { SoundDefinition, SoundType } from "./audio-actor-component";
+import { AnimationActorComponent, AnimationType } from "./animation-actor-component";
+import { OrderType } from "../../character/ai/order-type";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ActorTranslateComponent } from "./actor-translate-component";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -78,6 +81,8 @@ export class GathererComponent {
   >();
   onResourcesReturned: Subject<[GameObject, ResourceType, number]> = new Subject<[GameObject, ResourceType, number]>();
   private audioService?: AudioService;
+  private animationActorComponent?: AnimationActorComponent;
+  private actorTranslateComponent?: ActorTranslateComponent;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -91,6 +96,8 @@ export class GathererComponent {
 
   private sceneInit() {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+    this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
   }
 
   private update(_: number, delta: number): void {
@@ -283,6 +290,8 @@ export class GathererComponent {
     this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
 
     this.playGatherSound();
+    if (this.actorTranslateComponent) this.actorTranslateComponent.turnTowardsGameObject(resourceSource);
+    this.playGatherAnimation();
 
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
@@ -418,5 +427,42 @@ export class GathererComponent {
 
     const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
     this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
+  }
+
+  private playGatherAnimation() {
+    if (!this.animationActorComponent) return;
+    const resourceType = this.carriedResourceType;
+    if (!resourceType) return;
+    this.animationActorComponent.playOrderAnimation(OrderType.Gather);
+  }
+
+  getGatherAnimation(): AnimationType | null {
+    const resourceType = this.carriedResourceType;
+    if (!resourceType) return null;
+    switch (resourceType) {
+      case ResourceType.Ambrosia:
+        return AnimationType.Mine;
+      case ResourceType.Wood:
+        return AnimationType.Chop;
+      case ResourceType.Stone:
+        return AnimationType.Mine;
+      case ResourceType.Minerals:
+        return AnimationType.Mine;
+    }
+  }
+
+  getGatherSound(): SoundType | null {
+    const resourceType = this.carriedResourceType;
+    if (!resourceType) return null;
+    switch (resourceType) {
+      case ResourceType.Ambrosia:
+        return SoundType.Mine;
+      case ResourceType.Wood:
+        return SoundType.Chop;
+      case ResourceType.Stone:
+        return SoundType.Mine;
+      case ResourceType.Minerals:
+        return SoundType.Mine;
+    }
   }
 }

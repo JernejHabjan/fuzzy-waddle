@@ -5,6 +5,7 @@ import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
 import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSelectableGameObject } from "../../../../data/game-object-helper";
+import { IsoHelper } from "../../../map/tile/iso-helper";
 
 export class SingleSelectionHandler {
   private readonly debug = false;
@@ -41,18 +42,8 @@ export class SingleSelectionHandler {
 
         // convert pointerXY to worldXY including camera zoom
         const worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
-
-        const clickedTileXY = new Phaser.Math.Vector2();
-        Phaser.Tilemaps.Components.IsometricWorldToTileXY(
-          worldPosition.x,
-          worldPosition.y,
-          false,
-          clickedTileXY,
-          this.scene.cameras.main,
-          this.tilemap.layer
-        );
-
-        // for some reason we need to ceil the clicked tile
+        const clickedTileXY = IsoHelper.isometricWorldToTileXY(this.scene, worldPosition.x, worldPosition.y, false);
+        // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
         clickedTileXY.x = Math.ceil(clickedTileXY.x);
         clickedTileXY.y = Math.ceil(clickedTileXY.y);
 

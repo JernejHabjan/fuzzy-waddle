@@ -1,4 +1,6 @@
 export enum DamageType {
   Physical,
-  Magical
+  Frost,
+  Fire,
+  Poison
 }

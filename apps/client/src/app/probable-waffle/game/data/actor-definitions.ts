@@ -6,11 +6,10 @@ import { InfoDefinition } from "../entity/actor/components/info-component";
 import { RequirementsDefinition } from "../entity/actor/components/requirements-component";
 import { BuilderDefinition } from "../entity/actor/components/builder-component";
 import { GathererDefinition } from "../entity/actor/components/gatherer-component";
-import { DamageType } from "../entity/combat/damage-type";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../entity/building/payment-type";
 import { AttackDefinition } from "../entity/combat/components/attack-component";
-import { HealthDefinition } from "../entity/combat/components/health-component";
+import { ActorPhysicalType, HealthDefinition } from "../entity/combat/components/health-component";
 import { ProductionCostDefinition } from "../entity/building/production/production-cost-component";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE,
@@ -155,6 +154,18 @@ import {
 } from "../sfx/ActorsResourcesSfx";
 import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
 import { SelectableDefinition } from "../entity/actor/components/selectable-component";
+import { ActorAnimationsDefinition } from "../entity/actor/components/animation-actor-component";
+import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "../animations/tivara_maceman_male_anims";
+import { ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION } from "../animations/tivara_slingshot_female_anims";
+import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "../animations/skaduwee_ranged_female_anim";
+import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "../animations/skaduwee_magician_female_anim";
+import { ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION } from "../animations/skaduwee_warrior_male_anims";
+import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "../animations/skaduwee_worker_female_anims";
+import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../animations/warrior_anim";
+import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../animations/tivara_worker_male_anims";
+import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../animations/skaduwee_worker_male_anims";
+import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
+import { weaponDefinitions } from "../entity/combat/attack-data";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -199,17 +210,11 @@ const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
       range: 5
     },
     health: {
+      physicalState: ActorPhysicalType.Biological,
       maxHealth: 100
     },
     attack: {
-      attacks: [
-        {
-          damage: 1,
-          damageType: DamageType.Physical,
-          cooldown: 1000,
-          range: 1
-        }
-      ]
+      attacks: [weaponDefinitions.hands]
     },
     productionCost: {
       resources: {
@@ -336,6 +341,7 @@ export type ActorInfoDefinition = Partial<{
     production: ProductionDefinition;
     healing: HealingDefinition;
     translatable: ActorTranslateDefinition;
+    animatable: ActorAnimationsDefinition;
     aiControlled: PawnAiDefinition;
     containable: { enabled: boolean };
     selectable: SelectableDefinition;
@@ -367,6 +373,11 @@ export const pwActorDefinitions: {
           [SoundType.Select]: ActorsHedgehogSfxSelectionSounds,
           [SoundType.SelectExtra]: ActorsHedgehogSfxAngrySounds
         }
+      },
+      animatable: {
+        animations: {
+          // todo
+        }
       }
     },
     systems: {
@@ -386,6 +397,11 @@ export const pwActorDefinitions: {
           [SoundType.Select]: ActorsSheepSfxBleatSounds,
           ["scissors"]: ActorsSheepSfxScissorsSounds,
           ["wool"]: ActorsSheepSfxWoolBombSounds
+        }
+      },
+      animatable: {
+        animations: {
+          // todo
         }
       }
     },
@@ -419,17 +435,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1
-          }
-        ]
+        attacks: [weaponDefinitions.spear]
       },
       productionCost: {
         resources: {
@@ -447,7 +457,8 @@ export const pwActorDefinitions: {
       containable: { enabled: true },
       aiControlled: {
         type: AiType.Character
-      }
+      },
+      animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
     },
     systems: {
       movement: { enabled: true }
@@ -479,17 +490,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1
-          }
-        ]
+        attacks: [weaponDefinitions.mace]
       },
       productionCost: {
         resources: {
@@ -521,7 +526,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: TivaraMacemanSfxEnterSounds,
           [SoundType.LocationUnavailable]: TivaraMacemanSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_MACEMAN_MALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -554,17 +560,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 3
-          }
-        ]
+        attacks: [weaponDefinitions.slingshot]
       },
       productionCost: {
         resources: {
@@ -596,7 +596,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: TivaraSlingshotSfxEnterSounds,
           [SoundType.LocationUnavailable]: TivaraSlingshotSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -631,7 +632,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: TivaraWorkerFemaleSfxChopSounds,
           [SoundType.Mine]: TivaraWorkerFemaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_WORKER_FEMALE_DEFINITION }
     }
   },
   [ObjectNames.TivaraWorkerMale]: {
@@ -663,7 +665,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: TivaraWorkerMaleSfxChopSounds,
           [SoundType.Mine]: TivaraWorkerMaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_TIVARA_WORKER_MALE_DEFINITION }
     }
   },
   [ObjectNames.AnkGuard]: {
@@ -696,6 +699,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -745,6 +749,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -801,6 +806,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100,
         maxArmour: 50
       },
@@ -861,6 +867,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -913,6 +920,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -963,17 +971,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 3
-          }
-        ]
+        attacks: [weaponDefinitions.furball]
       },
       selectable: {},
       productionCost: {
@@ -1000,6 +1002,11 @@ export const pwActorDefinitions: {
           [SoundType.Select]: SkaduweeOwlSfxSelectionSounds,
           [SoundType.Move]: SkaduweeOwlSfxMoveSounds,
           [SoundType.LocationUnavailable]: SkaduweeOwlSfxLocationSounds
+        }
+      },
+      animatable: {
+        animations: {
+          // todo
         }
       }
     },
@@ -1034,17 +1041,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 3
-          }
-        ]
+        attacks: [weaponDefinitions.bow]
       },
       productionCost: {
         resources: {
@@ -1076,7 +1077,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: SkaduweeRangedSfxEnterSounds,
           [SoundType.LocationUnavailable]: SkaduweeRangedSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -1108,17 +1110,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 50
       },
       attack: {
-        attacks: [
-          {
-            damage: 20,
-            damageType: DamageType.Magical,
-            cooldown: 3000,
-            range: 10
-          }
-        ]
+        attacks: [weaponDefinitions.fireSpell, weaponDefinitions.staff]
       },
       productionCost: {
         resources: {
@@ -1150,7 +1146,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: SkaduweeMagicianSfxEnterSounds,
           [SoundType.LocationUnavailable]: SkaduweeMagicianSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -1183,17 +1180,11 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Biological,
         maxHealth: 100
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 1
-          }
-        ]
+        attacks: [weaponDefinitions.axe]
       },
       productionCost: {
         resources: {
@@ -1225,7 +1216,8 @@ export const pwActorDefinitions: {
           [SoundType.EnterContainer]: SkaduweeWarriorSfxEnterSounds,
           [SoundType.LocationUnavailable]: SkaduweeWarriorSfxLocationSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
@@ -1260,7 +1252,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: SkaduweeWorkerMaleSfxChopSounds,
           [SoundType.Mine]: SkaduweeWorkerMaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_WORKER_MALE_DEFINITION }
     }
   },
   [ObjectNames.SkaduweeWorkerFemale]: {
@@ -1291,7 +1284,8 @@ export const pwActorDefinitions: {
           [SoundType.Chop]: SkaduweeWorkerFemaleSfxChopSounds,
           [SoundType.Mine]: SkaduweeWorkerFemaleSfxMineSounds
         }
-      }
+      },
+      animatable: { animations: ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION }
     }
   },
   [ObjectNames.FrostForge]: {
@@ -1324,6 +1318,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -1383,6 +1378,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -1440,6 +1436,7 @@ export const pwActorDefinitions: {
         }
       },
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 100
       },
       productionCost: {
@@ -1570,6 +1567,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 300,
         healthDisplayBehavior: "onDamage"
       },
@@ -1615,6 +1613,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 1000,
         healthDisplayBehavior: "onDamage"
       },
@@ -1631,14 +1630,7 @@ export const pwActorDefinitions: {
         capacity: 2
       },
       attack: {
-        attacks: [
-          {
-            damage: 10,
-            damageType: DamageType.Physical,
-            cooldown: 1000,
-            range: 10
-          }
-        ]
+        attacks: [weaponDefinitions.bowTower]
       },
       collider: { enabled: true },
       constructable: {
@@ -1673,6 +1665,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       health: {
+        physicalState: ActorPhysicalType.Structural,
         maxHealth: 300,
         healthDisplayBehavior: "onDamage"
       },

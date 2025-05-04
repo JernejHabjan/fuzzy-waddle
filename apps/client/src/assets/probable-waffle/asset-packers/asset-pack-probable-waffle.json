@@ -89,8 +89,8 @@
                 "key": "land-of-ice"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_anims.json",
-                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/maceman_male_anims.json",
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/tivara_maceman_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/maceman_male/tivara_maceman_male_anims.json",
                 "type": "animation",
                 "key": "maceman_male_anims"
             },
@@ -165,8 +165,8 @@
                 "key": "maceman_male_walk"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_anim.json",
-                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/magician_female_anim.json",
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/skaduwee_magician_female_anim.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/magician_female/skaduwee_magician_female_anim.json",
                 "type": "animation",
                 "key": "magician_female_anim"
             },
@@ -247,8 +247,8 @@
                 "key": "outside"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_anim.json",
-                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/ranged_female_anim.json",
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/skaduwee_ranged_female_anim.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/ranged_female/skaduwee_ranged_female_anim.json",
                 "type": "animation",
                 "key": "ranged_female_anim"
             },
@@ -365,8 +365,8 @@
                 "key": "Skaduwee Worker Male"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_anims.json",
-                "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/slingshot_female_anims.json",
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/tivara_slingshot_female_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/tivara_slingshot_female_anims.json",
                 "type": "animation",
                 "key": "slingshot_female_anims"
             },
@@ -520,8 +520,8 @@
                 "key": "warrior_idle"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_anims.json",
-                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_anims.json",
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/skaduwee_warrior_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/skaduwee_warrior_male_anims.json",
                 "type": "animation",
                 "key": "warrior_male_anims"
             },
@@ -565,7 +565,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "warrior_male_islash"
+                "key": "warrior_male_slash"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/warrior_male_large_smash.png",
@@ -645,16 +645,16 @@
                 "key": "winter-tale"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_anims.json",
-                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_anims.json",
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/skaduwee_worker_female_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/skaduwee_worker_female_anims.json",
                 "type": "animation",
-                "key": "worker_female_anims"
+                "key": "skaduwee_worker_female_anims"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_anims.json",
-                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_anims.json",
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/tivara_worker_female_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/tivara_worker_female_anims.json",
                 "type": "animation",
-                "key": "worker_female_anims_1"
+                "key": "tivara_worker_female_anims"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_hurt.png",
@@ -668,7 +668,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_hurt"
+                "key": "skaduwee_worker_female_hurt"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_hurt.png",
@@ -682,7 +682,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_hurt_1"
+                "key": "tivara_worker_female_hurt"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_idle.png",
@@ -696,7 +696,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_idle"
+                "key": "skaduwee_worker_female_idle"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_idle.png",
@@ -710,7 +710,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_idle_1"
+                "key": "tivara_worker_female_idle"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_slash.png",
@@ -724,7 +724,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_slash"
+                "key": "skaduwee_worker_female_slash"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_slash.png",
@@ -738,7 +738,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_slash_1"
+                "key": "tivara_worker_female_slash"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_thrust.png",
@@ -752,7 +752,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_thrust"
+                "key": "skaduwee_worker_female_thrust"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_thrust.png",
@@ -766,7 +766,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_thrust_1"
+                "key": "tivara_worker_female_thrust"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/worker_female_walk.png",
@@ -780,7 +780,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_walk"
+                "key": "skaduwee_worker_female_walk"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_female/worker_female_walk.png",
@@ -794,19 +794,19 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_female_walk_1"
+                "key": "tivara_worker_female_walk"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_anims.json",
-                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_anims.json",
+                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/skaduwee_worker_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/skaduwee_worker_male_anims.json",
                 "type": "animation",
-                "key": "worker_male_anims"
+                "key": "skaduwee_worker_male_anims"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_anims.json",
-                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_anims.json",
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/tivara_worker_male_anims.json",
+                "path": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/tivara_worker_male_anims.json",
                 "type": "animation",
-                "key": "worker_male_anims_1"
+                "key": "tivara_worker_male_anims"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_hurt.png",
@@ -820,7 +820,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_hurt"
+                "key": "skaduwee_worker_male_hurt"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_hurt.png",
@@ -834,7 +834,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_hurt_1"
+                "key": "tivara_worker_male_hurt"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_idle.png",
@@ -848,7 +848,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_idle"
+                "key": "skaduwee_worker_male_idle"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_idle.png",
@@ -862,7 +862,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_idle_1"
+                "key": "tivara_worker_male_idle"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_slash.png",
@@ -876,7 +876,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_slash"
+                "key": "skaduwee_worker_male_slash"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_slash.png",
@@ -890,7 +890,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_slash_1"
+                "key": "tivara_worker_male_slash"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_thrust.png",
@@ -904,7 +904,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_thrust"
+                "key": "skaduwee_worker_male_thrust"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_thrust.png",
@@ -918,7 +918,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_thrust_1"
+                "key": "tivara_worker_male_thrust"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_male/worker_male_walk.png",
@@ -932,7 +932,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_walk"
+                "key": "skaduwee_worker_male_walk"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/worker_male/worker_male_walk.png",
@@ -946,7 +946,7 @@
                     "margin": 0
                 },
                 "type": "spritesheet",
-                "key": "worker_male_walk_1"
+                "key": "tivara_worker_male_walk"
             }
         ]
     },

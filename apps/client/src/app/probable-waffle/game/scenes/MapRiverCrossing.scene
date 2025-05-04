@@ -245,8 +245,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "2",
-            "x": 1024,
-            "y": 736
+            "x": 512,
+            "y": 864
         },
         {
             "prefabId": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
@@ -1703,8 +1703,8 @@
             ],
             "label": "seagulls",
             "sfxType": "seagulls",
-            "x": 576,
-            "y": 336
+            "x": 928,
+            "y": 448
         },
         {
             "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
@@ -1780,6 +1780,96 @@
             "sfxType": "birds",
             "x": -640,
             "y": 368
+        },
+        {
+            "prefabId": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
+            "id": "47ad6020-9cee-433c-b4d7-f31cce8d9fe5",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeRangedFemale_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -116,
+            "y": 698
+        },
+        {
+            "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
+            "id": "c433e7a4-c123-4a88-b0eb-d7ec6606a00c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeMagicianFemale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -256,
+            "y": 608
+        },
+        {
+            "prefabId": "6b5df2a7-6f41-4fc7-a3bb-96dc39de0188",
+            "id": "fe178e1e-84ac-4333-a6eb-5df2233b6fac",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWarriorMale_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -582,
+            "y": 597
+        },
+        {
+            "prefabId": "415773de-cdc9-4a20-afd1-61fd57044e8a",
+            "id": "8dc7135e-0ec2-4aae-b36f-8aac5d597ea1",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWorkerFemale_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -480,
+            "y": 608
+        },
+        {
+            "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
+            "id": "471f3d9b-af6e-49c2-b977-cc7246c5886f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeWorkerMale_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -728,
+            "y": 557
+        },
+        {
+            "prefabId": "c06632b7-0afd-49c5-8129-a5051bf0f87d",
+            "id": "4cc4dbad-bfa9-4aa5-87fa-88ca0dcf18ee",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skaduweeOwl_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -832,
+            "y": 528
         }
     ],
     "plainObjects": [

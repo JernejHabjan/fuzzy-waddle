@@ -21,7 +21,7 @@
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "worker_female_idle_1",
+                "key": "tivara_worker_female_idle",
                 "frame": 4
             },
             "x": 32,

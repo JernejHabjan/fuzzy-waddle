@@ -1,55 +1,56 @@
 {
     "anims": [
         {
-            "key": "tivara_maceman_male_hurt",
+            "key": "tivara_worker_male_hurt",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_hurt",
+                    "key": "tivara_worker_male_hurt",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_hurt",
+                    "key": "tivara_worker_male_hurt",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_hurt",
+                    "key": "tivara_worker_male_hurt",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_hurt",
+                    "key": "tivara_worker_male_hurt",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_hurt",
+                    "key": "tivara_worker_male_hurt",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
             "frameRate": 5,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_idle_up",
+            "key": "tivara_worker_male_idle_up",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
@@ -57,20 +58,21 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_idle_left",
+            "key": "tivara_worker_male_idle_left",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
@@ -78,20 +80,21 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_idle_down",
+            "key": "tivara_worker_male_idle_down",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
@@ -99,20 +102,21 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_idle_right",
+            "key": "tivara_worker_male_idle_right",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_idle",
+                    "key": "tivara_worker_male_idle",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
@@ -120,474 +124,533 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_islash_up",
+            "key": "tivara_worker_male_slash_up",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_islash_left",
+            "key": "tivara_worker_male_slash_left",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 8,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 9,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
             "frameRate": 10,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_islash_down",
+            "key": "tivara_worker_male_slash_down",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 10,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 11,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 12,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 13,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_islash",
+                    "key": "tivara_worker_male_slash",
                     "frame": 14,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "tivara_maceman_male_islash_right",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "maceman_male_islash",
-                    "frame": 15,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_islash",
-                    "frame": 16,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_islash",
-                    "frame": 17,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_islash",
-                    "frame": 18,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_islash",
-                    "frame": 19,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "tivara_maceman_male_large_slash_up",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 0,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 1,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 2,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 3,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 4,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "tivara_maceman_male_large_slash_left",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 5,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 6,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 7,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 8,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 9,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "tivara_maceman_male_large_slash_down",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 10,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 11,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 12,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 13,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 14,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "tivara_maceman_male_large_slash_right",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 15,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 16,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 17,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 18,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_large_slash",
-                    "frame": 19,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "tivara_maceman_male_walk_up",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 0,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 1,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 2,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 3,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 4,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 5,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 6,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 7,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_walk_left",
+            "key": "tivara_worker_male_slash_right",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_walk",
-                    "frame": 8,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 9,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 10,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 11,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 12,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 13,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
-                    "frame": 14,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_slash",
                     "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_slash",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_slash",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_slash",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_slash",
+                    "frame": 19,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_walk_down",
+            "key": "tivara_worker_male_thrust_up",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_male_thrust_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_male_thrust_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
                     "frame": 16,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
                     "frame": 17,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
                     "frame": 18,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
                     "frame": 19,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
                     "frame": 20,
                     "duration": 0,
                     "keyframe": false
-                },
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_male_thrust_right",
+            "type": "frame",
+            "frames": [
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
                     "frame": 21,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
                     "frame": 22,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 23,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 24,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 25,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 26,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_thrust",
+                    "frame": 27,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_male_walk_up",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_male_walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_male_walk_down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 20,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 21,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
+                    "frame": 22,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "tivara_worker_male_walk",
                     "frame": 23,
                     "duration": 0,
                     "keyframe": false
@@ -595,56 +658,57 @@
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-            "key": "tivara_maceman_male_walk_right",
+            "key": "tivara_worker_male_walk_right",
             "type": "frame",
             "frames": [
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 24,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 25,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 26,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 27,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 28,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 29,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 30,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "maceman_male_walk",
+                    "key": "tivara_worker_male_walk",
                     "frame": 31,
                     "duration": 0,
                     "keyframe": false
@@ -652,7 +716,8 @@
             ],
             "frameRate": 10,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         }
     ],
     "globalTimeScale": 1,
@@ -663,6 +728,7 @@
     "settings": {
         "sourceLang": "TYPE_SCRIPT",
         "esModule": true,
-        "generateCode": true
+        "generateCode": true,
+        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/animations"
     }
 }

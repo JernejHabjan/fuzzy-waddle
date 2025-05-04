@@ -210,6 +210,8 @@ export class GameObjectSelectionHandler {
     if (!audioActorComponent) return;
     const selectionIsForCurrentPlayer = this.selectionIsForCurrentPlayer(firstActor);
     if (!selectionIsForCurrentPlayer) return;
+    const healthComponent = getActorComponent(firstActor, HealthComponent);
+    if (healthComponent && healthComponent.killed) return;
     audioActorComponent.playCustomSound(SoundType.Select);
   }
 
