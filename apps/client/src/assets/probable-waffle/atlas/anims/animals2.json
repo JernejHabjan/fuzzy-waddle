@@ -1,0 +1,397 @@
+{
+    "anims": [
+        {
+            "key": "stag/idle/sw/critter_stag_SW_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/critter_stag_SW_idle-9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/idle/sw/wolf-idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/wolf-idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/wolf-idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/wolf-idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/wolf-idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 3,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/idle/sw/boar_SW_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/boar_SW_idle_0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/boar_SW_idle_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/boar_SW_idle_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/boar_SW_idle_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/boar_SW_idle_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/boar_SW_idle_5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/boar_SW_idle_6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/idle/sw/critter_badger_SW_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/critter_badger_SW_idle-9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true,
+        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/animations"
+    }
+}

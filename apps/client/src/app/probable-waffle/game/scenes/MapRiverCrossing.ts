@@ -71,6 +71,7 @@ import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
 import FenceRightCorner from "../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../prefabs/outside/architecture/obstruction/FenceLeftCorner";
+import ToxicFrog from "../prefabs/animals/ToxicFrog";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -626,18 +627,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const workMill_1 = new WorkMill(this, 608, 1184);
     this.add.existing(workMill_1);
 
-    // tree_15
-    const tree_15 = new Tree7(this, 1184, 624);
-    this.add.existing(tree_15);
-
-    // tree_16
-    const tree_16 = new Tree7(this, 1248, 640);
-    this.add.existing(tree_16);
-
-    // tree_17
-    const tree_17 = new Tree7(this, 1152, 672);
-    this.add.existing(tree_17);
-
     // wall
     const wall = new Wall(this, 512, 768);
     this.add.existing(wall);
@@ -709,6 +698,112 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // fenceLeft_1
     const fenceLeft_1 = new FenceLeftCorner(this, -296, 1248);
     this.add.existing(fenceLeft_1);
+
+    // foliage_trees_resources_tree7_snow_png
+    this.add.image(1152, 624, "outside", "foliage/trees/resources/tree7_snow.png");
+
+    // foliage_trees_resources_tree8_snow_png
+    this.add.image(1208, 592, "outside", "foliage/trees/resources/tree8_snow.png");
+
+    // foliage_trees_large_no_leaves_snow_png
+    this.add.image(1016, 648, "outside", "foliage/trees/large/no_leaves_snow.png");
+
+    // foliage_tree_trunks_tree_trunk_snow_png
+    this.add.image(1192, 656, "outside", "foliage/tree_trunks/tree_trunk_snow.png");
+
+    // foliage_tree_trunks_tree_trunk_snow_png_1
+    this.add.image(1120, 672, "outside", "foliage/tree_trunks/tree_trunk_snow.png");
+
+    // foliage_tree_trunks_tree_fallen_snow_png
+    this.add.image(1208, 936, "outside", "foliage/tree_trunks/tree_fallen_snow.png");
+
+    // nature_rock_piles_6_snow_png
+    this.add.image(1096, 1040, "outside", "nature/rock_piles/6_snow.png");
+
+    // nature_rock_piles_1_snow_covered_png
+    this.add.image(1176, 992, "outside", "nature/rock_piles/1_snow_covered.png");
+
+    // nature_rock_piles_1_snow_png
+    this.add.image(1128, 1016, "outside", "nature/rock_piles/1_snow.png");
+
+    // nature_rock_piles_2_snow_png
+    this.add.image(1064, 1024, "outside", "nature/rock_piles/2_snow.png");
+
+    // nature_rock_piles_3_snow_covered_png
+    this.add.image(1144, 976, "outside", "nature/rock_piles/3_snow_covered.png");
+
+    // nature_rock_piles_5_snow_covered_png
+    this.add.image(1208, 976, "outside", "nature/rock_piles/5_snow_covered.png");
+
+    // nature_rock_piles_6_snow_covered_png
+    this.add.image(1184, 960, "outside", "nature/rock_piles/6_snow_covered.png");
+
+    // nature_rock_piles_1_snow_covered_png_1
+    this.add.image(1096, 968, "outside", "nature/rock_piles/1_snow_covered.png");
+
+    // foliage_trees_resources_tree7_snow_png_1
+    this.add.image(1256, 928, "outside", "foliage/trees/resources/tree7_snow.png");
+
+    // foliage_river_water_lily_png
+    const foliage_river_water_lily_png = this.add.image(96, 960, "outside", "foliage/river/water lily.png");
+    foliage_river_water_lily_png.scaleX = 0.5;
+    foliage_river_water_lily_png.scaleY = 0.5;
+
+    // foliage_river_water_lily_png_1
+    const foliage_river_water_lily_png_1 = this.add.image(32, 928, "outside", "foliage/river/water lily.png");
+    foliage_river_water_lily_png_1.scaleX = 0.5;
+    foliage_river_water_lily_png_1.scaleY = 0.5;
+    foliage_river_water_lily_png_1.flipX = true;
+
+    // toxicFrog
+    const toxicFrog = new ToxicFrog(this, 32, 928);
+    this.add.existing(toxicFrog);
+
+    // toxicFrog_1
+    const toxicFrog_1 = new ToxicFrog(this, 96, 960);
+    this.add.existing(toxicFrog_1);
+    toxicFrog_1.flipX = true;
+    toxicFrog_1.flipY = false;
+
+    // toxicFrog_2
+    const toxicFrog_2 = new ToxicFrog(this, -184, 848);
+    this.add.existing(toxicFrog_2);
+
+    // toxicFrog_3
+    const toxicFrog_3 = new ToxicFrog(this, -224, 808);
+    this.add.existing(toxicFrog_3);
+    toxicFrog_3.flipX = true;
+    toxicFrog_3.flipY = false;
+
+    // _0_png
+    this.add.image(-400, 536, "animals", "0.png");
+
+    // _2_png
+    this.add.image(256, 224, "animals", "2.png");
+
+    // stag_idle_sw_critter_stag_SW_idle
+    const stag_idle_sw_critter_stag_SW_idle = this.add.sprite(632, 1232, "animals_2", "stag/idle/sw/critter_stag_SW_idle-0.png");
+    stag_idle_sw_critter_stag_SW_idle.scaleX = 2;
+    stag_idle_sw_critter_stag_SW_idle.scaleY = 2;
+    stag_idle_sw_critter_stag_SW_idle.play("stag/idle/sw/critter_stag_SW_idle");
+
+    // boar_idle_sw_boar_SW_idle
+    const boar_idle_sw_boar_SW_idle = this.add.sprite(232, 1192, "animals_2", "boar/idle/sw/boar_SW_idle_0.png");
+    boar_idle_sw_boar_SW_idle.scaleX = 2;
+    boar_idle_sw_boar_SW_idle.scaleY = 2;
+    boar_idle_sw_boar_SW_idle.play("boar/idle/sw/boar_SW_idle");
+
+    // wolf_idle_sw_wolf_idle
+    const wolf_idle_sw_wolf_idle = this.add.sprite(-64, 1176, "animals_2", "wolf/idle/sw/wolf-idle-0.png");
+    wolf_idle_sw_wolf_idle.scaleX = 2;
+    wolf_idle_sw_wolf_idle.scaleY = 2;
+    wolf_idle_sw_wolf_idle.play("wolf/idle/sw/wolf-idle");
+
+    // badger_idle_sw_critter_badger_SW_idle
+    const badger_idle_sw_critter_badger_SW_idle = this.add.sprite(344, 1408, "animals_2", "badger/idle/sw/critter_badger_SW_idle-0.png");
+    badger_idle_sw_critter_badger_SW_idle.scaleX = 2;
+    badger_idle_sw_critter_badger_SW_idle.scaleY = 2;
+    badger_idle_sw_critter_badger_SW_idle.play("badger/idle/sw/critter_badger_SW_idle");
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

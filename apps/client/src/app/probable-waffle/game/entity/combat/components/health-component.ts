@@ -70,6 +70,7 @@ export class HealthComponent {
     hooks: {
       health: (value: number, previousValue: number) => {
         if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
+        let asTint;
         switch (this.healthDefinition.physicalState) {
           case ActorPhysicalType.Biological:
             if (this.actorTranslateComponent) {
@@ -82,9 +83,27 @@ export class HealthComponent {
             }
             break;
           case ActorPhysicalType.Structural:
-          case ActorPhysicalType.Organic:
-            const asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
             if (asTint.setTint) asTint.setTint(0xff0000);
+            console.warn("this tint is not working "); // todo
+            if (this.actorTranslateComponent) {
+              const transform = this.actorTranslateComponent.currentTileWorldXY;
+              const effect = EffectsAnims.createAndPlayEffectAnimation(
+                this.gameObject.scene,
+                EffectsAnims.ANIM_IMPACT_DEBRIS,
+                transform.x,
+                transform.y
+              );
+              const gameObjectDepth = getGameObjectDepth(this.gameObject);
+              if (gameObjectDepth) {
+                effect.setDepth(gameObjectDepth + 1);
+              }
+            }
+            break;
+          case ActorPhysicalType.Organic:
+            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+            if (asTint.setTint) asTint.setTint(0xff0000);
+            console.warn("this tint is not working "); // todo
             break;
         }
 

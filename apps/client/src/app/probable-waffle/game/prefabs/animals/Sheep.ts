@@ -11,7 +11,16 @@ import {
 } from "../../entity/systems/movement.system";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectCurrentTile, onObjectReady } from "../../data/game-object-helper";
-import { ANIM_SHEEP_IDLE_DOWN, ANIM_SHEEP_IDLE_LEFT, ANIM_SHEEP_IDLE_RIGHT, ANIM_SHEEP_IDLE_UP } from "./anims/animals";
+import {
+  ANIM_SHEEP_DOWN_WALK,
+  ANIM_SHEEP_IDLE_DOWN,
+  ANIM_SHEEP_IDLE_LEFT,
+  ANIM_SHEEP_IDLE_RIGHT,
+  ANIM_SHEEP_IDLE_UP,
+  ANIM_SHEEP_LEFT_WALK,
+  ANIM_SHEEP_RIGHT_WALK,
+  ANIM_SHEEP_UP_WALK
+} from "./anims/animals";
 import { getActorSystem } from "../../data/actor-system";
 import { ObjectNames } from "../../data/object-names";
 import { getActorComponent } from "../../data/actor-component";
@@ -34,7 +43,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   /* START-USER-CODE */
   name = ObjectNames.Sheep;
   private postSceneCreate() {
-    this.actorAudioComponent = getActorComponent(this,AudioActorComponent);
+    this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
     this.handleWoolParticles(this.scene);
     this.startMovement();
   }
@@ -135,24 +144,24 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
 
     switch (direction) {
       case "north":
-        walkAnim = ANIM_SHEEP_IDLE_UP; // todo ANIM_SHEEP_WALK_TOP;
+        walkAnim = ANIM_SHEEP_UP_WALK;
         idleAnim = ANIM_SHEEP_IDLE_UP;
         break;
       case "south":
-        walkAnim = ANIM_SHEEP_IDLE_DOWN; // todo ANIM_SHEEP_WALK_DOWN;
+        walkAnim = ANIM_SHEEP_DOWN_WALK;
         idleAnim = ANIM_SHEEP_IDLE_DOWN;
         break;
       case "east":
       case "northeast":
       case "southeast":
-        walkAnim = ANIM_SHEEP_IDLE_RIGHT; // todo ANIM_SHEEP_WALK_RIGHT;
+        walkAnim = ANIM_SHEEP_RIGHT_WALK;
         idleAnim = ANIM_SHEEP_IDLE_RIGHT;
         break;
 
       case "west":
       case "northwest":
       case "southwest":
-        walkAnim = ANIM_SHEEP_IDLE_LEFT; // todo ANIM_SHEEP_WALK_LEFT;
+        walkAnim = ANIM_SHEEP_LEFT_WALK;
         idleAnim = ANIM_SHEEP_IDLE_LEFT;
         break;
       default:

@@ -1583,39 +1583,6 @@
             "y": 1184
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "48d6f605-a66f-4959-abd9-0b0aed8e2f07",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_15",
-            "x": 1184,
-            "y": 624
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "d746fb0e-a453-4683-819f-e3129ed0fcb6",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_16",
-            "x": 1248,
-            "y": 640
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "dc94db04-b78a-4251-a500-9f0f451857e2",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_17",
-            "x": 1152,
-            "y": 672
-        },
-        {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
             "id": "3296e7c3-239b-4be9-a762-b5e270df871c",
             "unlock": [
@@ -1860,6 +1827,332 @@
             "label": "fenceLeft_1",
             "x": -296,
             "y": 1248
+        },
+        {
+            "type": "Image",
+            "id": "cc55ad9c-dfcb-48fa-9212-f41a397be81c",
+            "label": "foliage_trees_resources_tree7_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/tree7_snow.png"
+            },
+            "x": 1152,
+            "y": 624
+        },
+        {
+            "type": "Image",
+            "id": "7956c426-bb17-42d7-ab6d-8c3bf30f89f5",
+            "label": "foliage_trees_resources_tree8_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/tree8_snow.png"
+            },
+            "x": 1208,
+            "y": 592
+        },
+        {
+            "type": "Image",
+            "id": "8ba9a4cb-1c2b-42e7-9c3a-f25bf7076eed",
+            "label": "foliage_trees_large_no_leaves_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/large/no_leaves_snow.png"
+            },
+            "x": 1016,
+            "y": 648
+        },
+        {
+            "type": "Image",
+            "id": "fbb1e005-dffd-48ac-88a1-1ff22d618660",
+            "label": "foliage_tree_trunks_tree_trunk_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tree_trunks/tree_trunk_snow.png"
+            },
+            "x": 1192,
+            "y": 656
+        },
+        {
+            "type": "Image",
+            "id": "8d5e4175-287a-46f7-a55a-54c149232749",
+            "label": "foliage_tree_trunks_tree_trunk_snow_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tree_trunks/tree_trunk_snow.png"
+            },
+            "x": 1120,
+            "y": 672
+        },
+        {
+            "type": "Image",
+            "id": "b5a808e2-bee9-4dbb-8e14-0da156a80827",
+            "label": "foliage_tree_trunks_tree_fallen_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tree_trunks/tree_fallen_snow.png"
+            },
+            "x": 1208,
+            "y": 936
+        },
+        {
+            "type": "Image",
+            "id": "be1ab8d6-a3b5-4e18-add4-38062dd2c89d",
+            "label": "nature_rock_piles_6_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/6_snow.png"
+            },
+            "x": 1096,
+            "y": 1040
+        },
+        {
+            "type": "Image",
+            "id": "3e435e34-715a-46ae-aa7e-39605d7ab7cb",
+            "label": "nature_rock_piles_1_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/1_snow_covered.png"
+            },
+            "x": 1176,
+            "y": 992
+        },
+        {
+            "type": "Image",
+            "id": "7de62e04-debf-4a8b-a8df-06d56a9ce111",
+            "label": "nature_rock_piles_1_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/1_snow.png"
+            },
+            "x": 1128,
+            "y": 1016
+        },
+        {
+            "type": "Image",
+            "id": "5d77abc6-2a19-4fd7-bbe8-71e28fa9a860",
+            "label": "nature_rock_piles_2_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/2_snow.png"
+            },
+            "x": 1064,
+            "y": 1024
+        },
+        {
+            "type": "Image",
+            "id": "24d211ea-762d-4b46-8e67-fd8ac857c470",
+            "label": "nature_rock_piles_3_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/3_snow_covered.png"
+            },
+            "x": 1144,
+            "y": 976
+        },
+        {
+            "type": "Image",
+            "id": "9b6135ad-e0b8-40b4-8638-2eec42a5da92",
+            "label": "nature_rock_piles_5_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/5_snow_covered.png"
+            },
+            "x": 1208,
+            "y": 976
+        },
+        {
+            "type": "Image",
+            "id": "a21c28d1-639d-48e4-bc67-5a3517db4cea",
+            "label": "nature_rock_piles_6_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/6_snow_covered.png"
+            },
+            "x": 1184,
+            "y": 960
+        },
+        {
+            "type": "Image",
+            "id": "f8aed425-ff9a-40f5-928d-88d1891f180b",
+            "label": "nature_rock_piles_1_snow_covered_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/1_snow_covered.png"
+            },
+            "x": 1096,
+            "y": 968
+        },
+        {
+            "type": "Image",
+            "id": "7ccd386a-a62f-453c-9af7-9082290efbfd",
+            "label": "foliage_trees_resources_tree7_snow_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/tree7_snow.png"
+            },
+            "x": 1256,
+            "y": 928
+        },
+        {
+            "type": "Image",
+            "id": "19c7a21e-60a3-44bf-9704-3be2ee4a6dd9",
+            "label": "foliage_river_water_lily_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/river/water lily.png"
+            },
+            "x": 96,
+            "y": 960,
+            "scaleX": 0.5,
+            "scaleY": 0.5
+        },
+        {
+            "type": "Image",
+            "id": "228309b6-ae42-46c3-b278-4b89b758ea75",
+            "label": "foliage_river_water_lily_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/river/water lily.png"
+            },
+            "x": 32,
+            "y": 928,
+            "scaleX": 0.5,
+            "scaleY": 0.5,
+            "flipX": true
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "4df8acbc-4748-4b0e-9a2e-6d5a0f3210f5",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "toxicFrog",
+            "x": 32,
+            "y": 928
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "233d402a-b366-4664-8ef5-b0061732e9ae",
+            "unlock": [
+                "x",
+                "y",
+                "flipX",
+                "flipY"
+            ],
+            "label": "toxicFrog_1",
+            "x": 96,
+            "y": 960,
+            "flipX": true,
+            "flipY": false
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "d1bc3651-d306-4ea3-8a41-f8e54c676125",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "toxicFrog_2",
+            "x": -184,
+            "y": 848
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "e9827794-b03b-4fb5-8ece-34e2a30b8bbb",
+            "unlock": [
+                "x",
+                "y",
+                "flipX",
+                "flipY"
+            ],
+            "label": "toxicFrog_3",
+            "x": -224,
+            "y": 808,
+            "flipX": true,
+            "flipY": false
+        },
+        {
+            "type": "Image",
+            "id": "3acc33f1-175c-485d-83d7-928f3465af8a",
+            "label": "_0_png",
+            "texture": {
+                "key": "animals",
+                "frame": "0.png"
+            },
+            "x": -400,
+            "y": 536
+        },
+        {
+            "type": "Image",
+            "id": "2f7d04a3-e5fb-46d9-84c8-cbac952dddae",
+            "label": "_2_png",
+            "texture": {
+                "key": "animals",
+                "frame": "2.png"
+            },
+            "x": 256,
+            "y": 224
+        },
+        {
+            "type": "Sprite",
+            "id": "5c0bad15-4b9c-4ec2-99bc-de1f8c2e61c6",
+            "label": "stag_idle_sw_critter_stag_SW_idle",
+            "texture": {
+                "key": "animals_2",
+                "frame": "stag/idle/sw/critter_stag_SW_idle-0.png"
+            },
+            "x": 632,
+            "y": 1232,
+            "scaleX": 2,
+            "scaleY": 2,
+            "animationPlayMethod": 1,
+            "animationKey": "stag/idle/sw/critter_stag_SW_idle"
+        },
+        {
+            "type": "Sprite",
+            "id": "d7227fb6-fdf1-462a-9444-ae17e9fc8d21",
+            "label": "boar_idle_sw_boar_SW_idle",
+            "texture": {
+                "key": "animals_2",
+                "frame": "boar/idle/sw/boar_SW_idle_0.png"
+            },
+            "x": 232,
+            "y": 1192,
+            "scaleX": 2,
+            "scaleY": 2,
+            "animationPlayMethod": 1,
+            "animationKey": "boar/idle/sw/boar_SW_idle"
+        },
+        {
+            "type": "Sprite",
+            "id": "14903dd5-ef9b-4b5e-bf5b-d60d386c7477",
+            "label": "wolf_idle_sw_wolf_idle",
+            "texture": {
+                "key": "animals_2",
+                "frame": "wolf/idle/sw/wolf-idle-0.png"
+            },
+            "x": -64,
+            "y": 1176,
+            "scaleX": 2,
+            "scaleY": 2,
+            "animationPlayMethod": 1,
+            "animationKey": "wolf/idle/sw/wolf-idle"
+        },
+        {
+            "type": "Sprite",
+            "id": "ecf319e7-f02d-4ee9-8bf5-d1770c3a8910",
+            "label": "badger_idle_sw_critter_badger_SW_idle",
+            "texture": {
+                "key": "animals_2",
+                "frame": "badger/idle/sw/critter_badger_SW_idle-0.png"
+            },
+            "x": 344,
+            "y": 1408,
+            "scaleX": 2,
+            "scaleY": 2,
+            "animationPlayMethod": 1,
+            "animationKey": "badger/idle/sw/critter_badger_SW_idle"
         }
     ],
     "plainObjects": [

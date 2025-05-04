@@ -9,7 +9,7 @@
 export default class FireBall extends Phaser.GameObjects.Image {
 
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 427, y ?? 232, texture || "factions", frame ?? "weapons/arrow.png");
+    super(scene, x ?? 16, y ?? 16, texture || "factions", frame ?? "weapons/fireball.png");
 
     /* START-USER-CTR-CODE */
     // Write your code here.

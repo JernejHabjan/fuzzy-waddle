@@ -1,0 +1,43 @@
+{
+    "id": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 48,
+        "borderHeight": 48
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "6f8ec161-d7b2-411f-92f2-d49f7de386c8",
+            "label": "toxicFrogBlueBlue_Idle",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 24,
+            "hitArea.y": 24,
+            "hitArea.radius": 16.15349097742945,
+            "texture": {
+                "key": "animals",
+                "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-0.png"
+            },
+            "x": 24,
+            "y": 47,
+            "originY": 0.6793875931157105,
+            "animationPlayMethod": 1,
+            "animationKey": "ToxicFrogBlueBlue_Idle"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
