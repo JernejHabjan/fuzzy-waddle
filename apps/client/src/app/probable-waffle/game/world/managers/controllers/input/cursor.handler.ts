@@ -76,7 +76,7 @@ export class CursorHandler {
     settingsYellow: "Cursor Settings Yellow",
     shieldGreen: "Cursor Shield Green",
     shieldRed: "Cursor Shield Red",
-    substract: "Cursor Substract",
+    subtract: "Cursor Subtract",
     targetMoveA: "Cursor Target Move A",
     targetMoveB: "Cursor Target Move B"
   };
