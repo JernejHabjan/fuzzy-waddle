@@ -319,6 +319,8 @@
             <key type="filename">../sprites/outside/effects/ember/1.png</key>
             <key type="filename">../sprites/outside/effects/ember/2.png</key>
             <key type="filename">../sprites/outside/effects/ember/3.png</key>
+            <key type="filename">../sprites/outside/foliage/fruits/blue-fruit.png</key>
+            <key type="filename">../sprites/outside/foliage/fruits/red-fruit.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -333,23 +335,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_fallen.png</key>
-            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk.png</key>
-            <key type="filename">../sprites/outside/nature/stone_water/1.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>16,8,32,16</rect>
-                <key>scale9Paddings</key>
-                <rect>16,8,32,16</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
+            <key type="filename">../sprites/outside/foliage/bushes/bush_dry_snow.png</key>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_left.png</key>
             <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_right.png</key>
             <key type="filename">../sprites/outside/nature/block_obsidian/1.png</key>
@@ -366,6 +352,16 @@
             <key type="filename">../sprites/outside/nature/resources/minerals_pile_2.png</key>
             <key type="filename">../sprites/outside/nature/resources/stone_pile_1.png</key>
             <key type="filename">../sprites/outside/nature/resources/stone_pile_2.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/1_snow.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/1_snow_covered.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/2_snow.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/2_snow_covered.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/3_snow.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/3_snow_covered.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/5_snow.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/5_snow_covered.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/6_snow.png</key>
+            <key type="filename">../sprites/outside/nature/rock_piles/6_snow_covered.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -380,10 +376,59 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/outside/foliage/river/water lily.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>20,10,40,20</rect>
+                <key>scale9Paddings</key>
+                <rect>20,10,40,20</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_fallen.png</key>
+            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_fallen_snow.png</key>
+            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk.png</key>
+            <key type="filename">../sprites/outside/foliage/tree_trunks/tree_trunk_snow.png</key>
+            <key type="filename">../sprites/outside/nature/stone_water/1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,8,32,16</rect>
+                <key>scale9Paddings</key>
+                <rect>16,8,32,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/outside/foliage/trees/large/no_leaves.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.851563</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>48,32,96,64</rect>
+                <key>scale9Paddings</key>
+                <rect>48,32,96,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/foliage/trees/large/no_leaves_snow.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>
@@ -411,6 +456,8 @@
                 <false/>
             </struct>
             <key type="filename">../sprites/outside/foliage/trees/resources/special/tree_christmas.png</key>
+            <key type="filename">../sprites/outside/foliage/trees/resources/tree7_snow.png</key>
+            <key type="filename">../sprites/outside/foliage/trees/resources/tree8_snow.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

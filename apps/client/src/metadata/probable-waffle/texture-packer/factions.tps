@@ -173,6 +173,28 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../sprites/factions/actions/impact-debris/impact-debris1.png</key>
+            <key type="filename">../sprites/factions/actions/impact-debris/impact-debris2.png</key>
+            <key type="filename">../sprites/factions/actions/impact-debris/impact-debris3.png</key>
+            <key type="filename">../sprites/factions/actions/impact-debris/impact-debris4.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/olival_small/olival_small-0.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/olival_small/olival_small-1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/olival_small/olival_small-2.png</key>
+            <key type="filename">../sprites/factions/weapons/frost-bolt.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9Paddings</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/factions/building_icon_anims/skaduwee/frost_forge/1.png</key>
             <key type="filename">../sprites/factions/building_icon_anims/skaduwee/frost_forge/2.png</key>
             <struct type="IndividualSpriteSettings">
@@ -583,23 +605,6 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/factions/buildings/tivara/olival_small/olival_small-0.png</key>
-            <key type="filename">../sprites/factions/buildings/tivara/olival_small/olival_small-1.png</key>
-            <key type="filename">../sprites/factions/buildings/tivara/olival_small/olival_small-2.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>8,8,16,16</rect>
-                <key>scale9Paddings</key>
-                <rect>8,8,16,16</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
             <key type="filename">../sprites/factions/buildings/tivara/sandhold/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/sandhold/foundation/foundation_2.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/sandhold/sandhold.png</key>
@@ -752,6 +757,21 @@
                 <rect>8,1,15,2</rect>
                 <key>scale9Paddings</key>
                 <rect>8,1,15,2</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/factions/weapons/rock.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,4,8,8</rect>
+                <key>scale9Paddings</key>
+                <rect>4,4,8,8</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
