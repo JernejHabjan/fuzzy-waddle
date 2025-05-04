@@ -5,7 +5,8 @@
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
         "snapEnabled": true,
-        "snapWidth": 32,
+        "snapWidth": 8,
+        "snapHeight": 8,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -99,19 +100,8 @@
                 "y"
             ],
             "label": "sheep_2",
-            "x": -144,
-            "y": 1264
-        },
-        {
-            "prefabId": "fdf8e2c2-f0e4-45f6-98b5-25a0be5ecb93",
-            "id": "8adadf79-08c8-4964-bbec-83e2af597a89",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "fenceRight",
-            "x": -48,
-            "y": 1248
+            "x": -184,
+            "y": 1272
         },
         {
             "prefabId": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
@@ -123,17 +113,6 @@
             "label": "hedgehog",
             "x": 96,
             "y": 1360
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "f13d64e4-bb69-443f-9fc2-c69fdd6a360e",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_12",
-            "x": -32,
-            "y": 1376
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -1038,8 +1017,8 @@
                 "y"
             ],
             "label": "sheep",
-            "x": -224,
-            "y": 1232
+            "x": -152,
+            "y": 1248
         },
         {
             "prefabId": "33eba8e6-5b92-4639-8c95-37073f210ca1",
@@ -1050,7 +1029,7 @@
             ],
             "label": "fenceTop",
             "x": -192,
-            "y": 1168
+            "y": 1184
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1061,7 +1040,7 @@
             ],
             "label": "fenceTopRight",
             "x": -160,
-            "y": 1184
+            "y": 1200
         },
         {
             "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
@@ -1071,8 +1050,8 @@
                 "y"
             ],
             "label": "sheep_1",
-            "x": -176,
-            "y": 1216
+            "x": -192,
+            "y": 1232
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1083,7 +1062,7 @@
             ],
             "label": "fenceTopRight_1",
             "x": -128,
-            "y": 1200
+            "y": 1216
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1094,7 +1073,7 @@
             ],
             "label": "fenceTopRight_2",
             "x": -96,
-            "y": 1216
+            "y": 1232
         },
         {
             "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
@@ -1105,7 +1084,7 @@
             ],
             "label": "fenceTopLeft",
             "x": -224,
-            "y": 1184
+            "y": 1200
         },
         {
             "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
@@ -1116,18 +1095,7 @@
             ],
             "label": "fenceTopLeft_1",
             "x": -256,
-            "y": 1200
-        },
-        {
-            "prefabId": "d3b57804-cd8e-45fa-95de-8558ed83120b",
-            "id": "943712df-c0b4-4c72-8086-74bd995545de",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "fenceLeft",
-            "x": -301,
-            "y": 1233
+            "y": 1216
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1138,7 +1106,7 @@
             ],
             "label": "fenceBottomLeft",
             "x": -256,
-            "y": 1264
+            "y": 1280
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1149,7 +1117,7 @@
             ],
             "label": "fenceBottomLeft_1",
             "x": -224,
-            "y": 1280
+            "y": 1296
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1160,7 +1128,7 @@
             ],
             "label": "fenceBottomLeft_2",
             "x": -192,
-            "y": 1296
+            "y": 1312
         },
         {
             "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
@@ -1171,7 +1139,7 @@
             ],
             "label": "fenceBottomRight",
             "x": -96,
-            "y": 1280
+            "y": 1296
         },
         {
             "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
@@ -1182,7 +1150,7 @@
             ],
             "label": "fenceBottomRight_1",
             "x": -128,
-            "y": 1296
+            "y": 1312
         },
         {
             "prefabId": "c5a01cf8-4a85-4704-834d-9cb28cf1048d",
@@ -1193,7 +1161,7 @@
             ],
             "label": "fenceBottom",
             "x": -160,
-            "y": 1312
+            "y": 1328
         },
         {
             "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
@@ -1870,6 +1838,28 @@
             "EditorOwner.owner_id": "1",
             "x": -832,
             "y": 528
+        },
+        {
+            "prefabId": "fdf8e2c2-f0e4-45f6-98b5-25a0be5ecb93",
+            "id": "1eb8ac45-2a47-4d1b-a4c2-eefc8b53cd9b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceRight_2",
+            "x": -48,
+            "y": 1264
+        },
+        {
+            "prefabId": "d3b57804-cd8e-45fa-95de-8558ed83120b",
+            "id": "e88f38af-5b0e-4443-ae58-f1e913a76a9c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceLeft_1",
+            "x": -296,
+            "y": 1248
         }
     ],
     "plainObjects": [

@@ -8,7 +8,6 @@ import EditorOwner from "../editor-components/EditorOwner";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
 import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
 import Sheep from "../prefabs/animals/Sheep";
-import FenceRight from "../prefabs/outside/architecture/obstruction/FenceRight";
 import Hedgehog from "../prefabs/animals/Hedgehog";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -52,7 +51,6 @@ import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import FenceTop from "../prefabs/outside/architecture/obstruction/FenceTop";
 import FenceTopRight from "../prefabs/outside/architecture/obstruction/FenceTopRight";
 import FenceTopLeft from "../prefabs/outside/architecture/obstruction/FenceTopLeft";
-import FenceLeft from "../prefabs/outside/architecture/obstruction/FenceLeft";
 import FenceBottomLeft from "../prefabs/outside/architecture/obstruction/FenceBottomLeft";
 import FenceBottomRight from "../prefabs/outside/architecture/obstruction/FenceBottomRight";
 import FenceBottom from "../prefabs/outside/architecture/obstruction/FenceBottom";
@@ -71,6 +69,8 @@ import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
+import FenceRightCorner from "../prefabs/outside/architecture/obstruction/FenceRightCorner";
+import FenceLeftCorner from "../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -115,20 +115,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(christmasTree_1);
 
     // sheep_2
-    const sheep_2 = new Sheep(this, -144, 1264);
+    const sheep_2 = new Sheep(this, -184, 1272);
     this.add.existing(sheep_2);
-
-    // fenceRight
-    const fenceRight = new FenceRight(this, -48, 1248);
-    this.add.existing(fenceRight);
 
     // hedgehog
     const hedgehog = new Hedgehog(this, 96, 1360);
     this.add.existing(hedgehog);
-
-    // tree_12
-    const tree_12 = new Tree7(this, -32, 1376);
-    this.add.existing(tree_12);
 
     // tree_11
     const tree_11 = new Tree7(this, 160, 1328);
@@ -431,63 +423,59 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_14);
 
     // sheep
-    const sheep = new Sheep(this, -224, 1232);
+    const sheep = new Sheep(this, -152, 1248);
     this.add.existing(sheep);
 
     // fenceTop
-    const fenceTop = new FenceTop(this, -192, 1168);
+    const fenceTop = new FenceTop(this, -192, 1184);
     this.add.existing(fenceTop);
 
     // fenceTopRight
-    const fenceTopRight = new FenceTopRight(this, -160, 1184);
+    const fenceTopRight = new FenceTopRight(this, -160, 1200);
     this.add.existing(fenceTopRight);
 
     // sheep_1
-    const sheep_1 = new Sheep(this, -176, 1216);
+    const sheep_1 = new Sheep(this, -192, 1232);
     this.add.existing(sheep_1);
 
     // fenceTopRight_1
-    const fenceTopRight_1 = new FenceTopRight(this, -128, 1200);
+    const fenceTopRight_1 = new FenceTopRight(this, -128, 1216);
     this.add.existing(fenceTopRight_1);
 
     // fenceTopRight_2
-    const fenceTopRight_2 = new FenceTopRight(this, -96, 1216);
+    const fenceTopRight_2 = new FenceTopRight(this, -96, 1232);
     this.add.existing(fenceTopRight_2);
 
     // fenceTopLeft
-    const fenceTopLeft = new FenceTopLeft(this, -224, 1184);
+    const fenceTopLeft = new FenceTopLeft(this, -224, 1200);
     this.add.existing(fenceTopLeft);
 
     // fenceTopLeft_1
-    const fenceTopLeft_1 = new FenceTopLeft(this, -256, 1200);
+    const fenceTopLeft_1 = new FenceTopLeft(this, -256, 1216);
     this.add.existing(fenceTopLeft_1);
 
-    // fenceLeft
-    const fenceLeft = new FenceLeft(this, -301, 1233);
-    this.add.existing(fenceLeft);
-
     // fenceBottomLeft
-    const fenceBottomLeft = new FenceBottomLeft(this, -256, 1264);
+    const fenceBottomLeft = new FenceBottomLeft(this, -256, 1280);
     this.add.existing(fenceBottomLeft);
 
     // fenceBottomLeft_1
-    const fenceBottomLeft_1 = new FenceBottomLeft(this, -224, 1280);
+    const fenceBottomLeft_1 = new FenceBottomLeft(this, -224, 1296);
     this.add.existing(fenceBottomLeft_1);
 
     // fenceBottomLeft_2
-    const fenceBottomLeft_2 = new FenceBottomLeft(this, -192, 1296);
+    const fenceBottomLeft_2 = new FenceBottomLeft(this, -192, 1312);
     this.add.existing(fenceBottomLeft_2);
 
     // fenceBottomRight
-    const fenceBottomRight = new FenceBottomRight(this, -96, 1280);
+    const fenceBottomRight = new FenceBottomRight(this, -96, 1296);
     this.add.existing(fenceBottomRight);
 
     // fenceBottomRight_1
-    const fenceBottomRight_1 = new FenceBottomRight(this, -128, 1296);
+    const fenceBottomRight_1 = new FenceBottomRight(this, -128, 1312);
     this.add.existing(fenceBottomRight_1);
 
     // fenceBottom
-    const fenceBottom = new FenceBottom(this, -160, 1312);
+    const fenceBottom = new FenceBottom(this, -160, 1328);
     this.add.existing(fenceBottom);
 
     // stonePile
@@ -713,6 +701,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeOwl_1
     const skaduweeOwl_1 = new SkaduweeOwl(this, -832, 528);
     this.add.existing(skaduweeOwl_1);
+
+    // fenceRight_2
+    const fenceRight_2 = new FenceRightCorner(this, -48, 1264);
+    this.add.existing(fenceRight_2);
+
+    // fenceLeft_1
+    const fenceLeft_1 = new FenceLeftCorner(this, -296, 1248);
+    this.add.existing(fenceLeft_1);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

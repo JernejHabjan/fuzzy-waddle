@@ -11,23 +11,23 @@ import {
 } from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
-export default class FenceRight extends Phaser.GameObjects.Image {
+export default class FenceLeftCorner extends Phaser.GameObjects.Image {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(
       scene,
-      x ?? 46.771659868606356,
-      y ?? 62.465232849121094,
+      x ?? 21.6000919342041,
+      y ?? 61.27981453126563,
       texture || "outside",
-      frame ?? "architecture/obstruction/fence/right.png"
+      frame ?? "architecture/obstruction/fence/left.png"
     );
 
     this.setInteractive(
       new Phaser.Geom.Polygon(
-        "27.862018517515452 79.87111429667429 27.986828979456853 18.963608869270807 35.60026715788229 19.712471640919212 36.22431946758929 28.07477259099305 55.32032014462359 37.685178160480895 57.941339845392996 33.81605384029748 64.05705248052162 35.18896892165289 64.05705248052162 65.39310071147182 57.31728753568599 66.51639486894443 55.69475153044779 62.647270548761014 36.72356131535489 71.75843427048325 35.849888081765094 80.1207352205571"
+        "-0.14241405393368467 35.29668990639772 4.871301540532258 32.993090849480936 9.07198217373346 37.32927730955959 27.63628045594521 28.11488108189245 28.042797936577585 19.71351981549005 33.056513531043535 17.951944066083094 36.30865337610253 19.71351981549005 35.7666300685927 80.01361277595888 27.77178628282267 79.87810694908141 27.500774629067752 71.61225150955647 8.800970519978542 62.53336110876679 7.445912251203964 66.32752426133561 0.12859759982122654 65.64999512694833"
       ),
       Phaser.Geom.Polygon.Contains
     );
-    this.setOrigin(0.7308071854469743, 0.7808154089604854);
+    this.setOrigin(0.337501427689055, 0.7659976629828391);
 
     /* START-USER-CTR-CODE */
     setActorData(
@@ -36,7 +36,10 @@ export default class FenceRight extends Phaser.GameObjects.Image {
         new ObjectDescriptorComponent({
           color: 0x6e4b1e
         } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent(this)
+        new ColliderComponent(this, {
+          enabled: true,
+          colliderFactorReduction: 2
+        })
       ],
       []
     );
