@@ -86,19 +86,8 @@ export class HealthComponent {
             asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
             if (asTint.setTint) asTint.setTint(0xff0000);
             console.warn("this tint is not working "); // todo
-            if (this.actorTranslateComponent) {
-              const transform = this.actorTranslateComponent.currentTileWorldXY;
-              const effect = EffectsAnims.createAndPlayEffectAnimation(
-                this.gameObject.scene,
-                EffectsAnims.ANIM_IMPACT_DEBRIS,
-                transform.x,
-                transform.y
-              );
-              const gameObjectDepth = getGameObjectDepth(this.gameObject);
-              if (gameObjectDepth) {
-                effect.setDepth(gameObjectDepth + 1);
-              }
-            }
+
+            // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
             break;
           case ActorPhysicalType.Organic:
             asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
