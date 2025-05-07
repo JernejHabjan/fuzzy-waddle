@@ -120,7 +120,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(sheep_2);
 
     // hedgehog
-    const hedgehog = new Hedgehog(this, 96, 1360);
+    const hedgehog = new Hedgehog(this, 256, 1376);
     this.add.existing(hedgehog);
 
     // tree_11

@@ -26,7 +26,9 @@ export class AttackComponent {
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
   private projectileTween?: Phaser.Tweens.Tween;
+  private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
+  private projectileSprite?: Phaser.GameObjects.Image;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -48,7 +50,7 @@ export class AttackComponent {
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
-    this.stopProjectileTween();
+    this.stopProjectile();
   }
 
   private update(_: number, delta: number): void {
@@ -147,6 +149,7 @@ export class AttackComponent {
           console.error("Unknown projectile type", projectile.type);
           return;
       }
+      this.projectileSprite = projectileSprite;
       this.gameObject.scene.add.existing(projectileSprite);
       projectileSprite.setPosition(position.centerX, position.centerY);
       projectileSprite.setOrigin(0.5, 0.5);
@@ -170,9 +173,7 @@ export class AttackComponent {
         y: targetY,
         duration: duration,
         ease: "Linear",
-        onComplete: () => {
-          if (projectileSprite.active) projectileSprite.destroy();
-        },
+        onComplete: () => this.stopProjectile(),
         onUpdate: () => {
           // compare overlap of projectile and enemy
           const projectileBounds = getGameObjectBounds(projectileSprite);
@@ -186,6 +187,16 @@ export class AttackComponent {
           }
         }
       });
+
+      // spin projectile
+      if (projectile.orientation.randomizeOrientation && projectile.orientation.rotationSpeed) {
+        this.rotationTween = this.gameObject.scene.tweens.add({
+          targets: projectileSprite,
+          angle: 360,
+          duration: projectile.orientation.rotationSpeed,
+          repeat: -1
+        });
+      }
     }, attack.delays.fire);
   }
 
@@ -210,8 +221,7 @@ export class AttackComponent {
         randomHitSound.spriteName
       );
     }
-    projectileSprite.destroy();
-    this.stopProjectileTween();
+    this.stopProjectile();
     if (projectile.impactAnimation) {
       const anims = projectile.impactAnimation.anims;
       const randomImpactAnim = anims[Math.floor(Math.random() * anims.length)];
@@ -227,11 +237,16 @@ export class AttackComponent {
     }
   }
 
-  private stopProjectileTween() {
+  private stopProjectile() {
     if (this.projectileTween) {
       this.projectileTween.stop();
       this.projectileTween = undefined;
     }
+    if (this.rotationTween) {
+      this.rotationTween.stop();
+      this.rotationTween = undefined;
+    }
+    this.projectileSprite?.destroy();
   }
 
   // gameObject will automatically select and attack targets

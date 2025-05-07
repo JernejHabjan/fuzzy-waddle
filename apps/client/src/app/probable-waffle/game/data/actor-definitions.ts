@@ -166,6 +166,8 @@ import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../animations/tivara_worker_
 import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../animations/skaduwee_worker_male_anims";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
 import { weaponDefinitions } from "../entity/combat/attack-data";
+import { ANIM_HEDGEHOG_DEFINITION, ANIM_SHEEP_DEFINITION } from "../animations/animals";
+import { ANIM_SKADUWEE_OWL_DEFINITION } from "../prefabs/units/skaduwee/SkaduweeOwlAnims";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -374,11 +376,7 @@ export const pwActorDefinitions: {
           [SoundType.SelectExtra]: ActorsHedgehogSfxAngrySounds
         }
       },
-      animatable: {
-        animations: {
-          // todo
-        }
-      }
+      animatable: { animations: ANIM_HEDGEHOG_DEFINITION }
     },
     systems: {
       movement: { enabled: true }
@@ -399,11 +397,7 @@ export const pwActorDefinitions: {
           ["wool"]: ActorsSheepSfxWoolBombSounds
         }
       },
-      animatable: {
-        animations: {
-          // todo
-        }
-      }
+      animatable: { animations: ANIM_SHEEP_DEFINITION }
     },
     systems: {
       movement: { enabled: true }
@@ -1004,11 +998,7 @@ export const pwActorDefinitions: {
           [SoundType.LocationUnavailable]: SkaduweeOwlSfxLocationSounds
         }
       },
-      animatable: {
-        animations: {
-          // todo
-        }
-      }
+      animatable: { animations: ANIM_SKADUWEE_OWL_DEFINITION }
     },
     systems: {
       movement: { enabled: true },
