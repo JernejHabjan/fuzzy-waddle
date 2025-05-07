@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 256,
+        "borderWidth": 320,
         "borderHeight": 56
     },
     "displayList": [
@@ -37,7 +37,7 @@
                                 "key": "gui",
                                 "frame": "cryos_mini_gui/surfaces/surface_dark.png"
                             },
-                            "scaleX": 3.2166350536822605,
+                            "scaleX": 3.9745690975308436,
                             "scaleY": 2.8023638778148445,
                             "originX": 0,
                             "originY": 0,
@@ -47,6 +47,41 @@
                             "bottomHeight": 1,
                             "width": 40,
                             "height": 10
+                        },
+                        {
+                            "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
+                            "id": "503abec4-a5b5-448b-b4ba-3e5b291164b1",
+                            "unlock": [
+                                "x",
+                                "y",
+                                "scaleX",
+                                "scaleY",
+                                "type"
+                            ],
+                            "label": "food",
+                            "type": "food",
+                            "x": 156,
+                            "y": 21,
+                            "scaleX": 0.5,
+                            "scaleY": 0.5,
+                            "nestedPrefabs": [
+                                {
+                                    "prefabId": "a8db547c-2d98-4566-9764-46cedcab42e6",
+                                    "id": "9f20183d-7df1-4dbf-aad2-abbb6a711b65",
+                                    "unlock": [
+                                        "texture",
+                                        "scaleX",
+                                        "scaleY"
+                                    ],
+                                    "label": "resource_icon",
+                                    "texture": {
+                                        "key": "gui",
+                                        "frame": "resource_icons/food.png"
+                                    },
+                                    "scaleX": 1,
+                                    "scaleY": 1
+                                }
+                            ]
                         },
                         {
                             "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
