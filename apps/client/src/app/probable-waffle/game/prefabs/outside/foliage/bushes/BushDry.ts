@@ -4,6 +4,8 @@
 
 /* START-USER-IMPORTS */
 import { BushRustleComponent } from "./bush-rustle.component";
+import { BushComponent } from "./bush.component";
+import { SpawnBerryComponent } from "./spawn-berry.component";
 /* END-USER-IMPORTS */
 
 export default class BushDry extends Phaser.GameObjects.Image {
@@ -14,7 +16,8 @@ export default class BushDry extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    new BushRustleComponent(this, 0x666666);
+    new BushComponent(this, 0x666666);
+    new BushRustleComponent(this);
     /* END-USER-CTR-CODE */
   }
 
