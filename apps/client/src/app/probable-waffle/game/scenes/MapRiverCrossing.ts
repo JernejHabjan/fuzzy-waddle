@@ -72,6 +72,7 @@ import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagic
 import FenceRightCorner from "../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 import ToxicFrog from "../prefabs/animals/ToxicFrog";
+import TreeBird from "../prefabs/animals/TreeBird";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -775,12 +776,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     toxicFrog_3.flipX = true;
     toxicFrog_3.flipY = false;
 
-    // _0_png
-    this.add.image(-400, 536, "animals", "0.png");
-
-    // _2_png
-    this.add.image(256, 224, "animals", "2.png");
-
     // stag_idle_sw_critter_stag_SW_idle
     const stag_idle_sw_critter_stag_SW_idle = this.add.sprite(632, 1232, "animals_2", "stag/idle/sw/critter_stag_SW_idle-0.png");
     stag_idle_sw_critter_stag_SW_idle.scaleX = 2;
@@ -804,6 +799,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     badger_idle_sw_critter_badger_SW_idle.scaleX = 2;
     badger_idle_sw_critter_badger_SW_idle.scaleY = 2;
     badger_idle_sw_critter_badger_SW_idle.play("badger/idle/sw/critter_badger_SW_idle");
+
+    // treeBird
+    const treeBird = new TreeBird(this, -424, 640);
+    this.add.existing(treeBird);
+
+    // treeBird_1
+    const treeBird_1 = new TreeBird(this, 264, 440);
+    this.add.existing(treeBird_1);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -942,6 +945,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeOwl_1 (components)
     const skaduweeOwl_1EditorOwner = new EditorOwner(skaduweeOwl_1);
     skaduweeOwl_1EditorOwner.owner_id = "1";
+
+    // treeBird (prefab fields)
+    treeBird.z = 64;
+
+    // treeBird_1 (prefab fields)
+    treeBird_1.z = 64;
 
     this.tilemap = tilemap;
 

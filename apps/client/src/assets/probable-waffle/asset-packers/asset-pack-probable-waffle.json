@@ -53,6 +53,13 @@
                 "key": "animals2"
             },
             {
+                "url": [
+                    "assets/little-muncher/sfx/bird.mp3"
+                ],
+                "type": "audio",
+                "key": "bird"
+            },
+            {
                 "url": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "path": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "type": "animation",

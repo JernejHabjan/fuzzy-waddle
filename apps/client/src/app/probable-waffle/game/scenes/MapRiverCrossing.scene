@@ -2073,28 +2073,6 @@
             "flipY": false
         },
         {
-            "type": "Image",
-            "id": "3acc33f1-175c-485d-83d7-928f3465af8a",
-            "label": "_0_png",
-            "texture": {
-                "key": "animals",
-                "frame": "0.png"
-            },
-            "x": -400,
-            "y": 536
-        },
-        {
-            "type": "Image",
-            "id": "2f7d04a3-e5fb-46d9-84c8-cbac952dddae",
-            "label": "_2_png",
-            "texture": {
-                "key": "animals",
-                "frame": "2.png"
-            },
-            "x": 256,
-            "y": 224
-        },
-        {
             "type": "Sprite",
             "id": "5c0bad15-4b9c-4ec2-99bc-de1f8c2e61c6",
             "label": "stag_idle_sw_critter_stag_SW_idle",
@@ -2153,6 +2131,32 @@
             "scaleY": 2,
             "animationPlayMethod": 1,
             "animationKey": "badger/idle/sw/critter_badger_SW_idle"
+        },
+        {
+            "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
+            "id": "5a95c24b-83fe-4d3c-8166-c19138749895",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "treeBird",
+            "z": 64,
+            "x": -424,
+            "y": 640
+        },
+        {
+            "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
+            "id": "08255594-dbd0-49ad-b30a-981ea76a91e5",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "treeBird_1",
+            "z": 64,
+            "x": 264,
+            "y": 440
         }
     ],
     "plainObjects": [

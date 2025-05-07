@@ -1,5 +1,7 @@
 // The constants with the animation keys.
 
+export const ANIM_BIRD_IDLE = "bird-idle";
+
 export const ANIM_HEDGEHOG_IDLE_RIGHT = "hedgehog_idle_right";
 
 export const ANIM_HEDGEHOG_IDLE_DOWN = "hedgehog_idle_down";
@@ -83,3 +85,9 @@ export const ANIM_TOXICFROGPURPLEWHITE_ATTACK = "ToxicFrogPurpleWhite_Attack";
 export const ANIM_TOXICFROGPURPLEWHITE_HOP = "ToxicFrogPurpleWhite_Hop";
 
 export const ANIM_TOXICFROGPURPLEWHITE_IDLE = "ToxicFrogPurpleWhite_Idle";
+
+export const ANIM_BIRD_IDLE_FLAP = "bird-idle-flap";
+
+export const ANIM_BIRD_FLY_OFF = "bird-fly-off";
+
+export const ANIM_BIRD_FLY = "bird-fly";

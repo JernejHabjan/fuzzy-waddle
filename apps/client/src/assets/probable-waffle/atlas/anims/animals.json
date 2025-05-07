@@ -1,6 +1,40 @@
 {
     "anims": [
         {
+            "key": "bird-idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
             "key": "hedgehog_idle_right",
             "type": "frame",
             "frames": [
@@ -1480,6 +1514,106 @@
                 }
             ],
             "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "bird-idle-flap",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "bird-fly-off",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "bird-fly",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
