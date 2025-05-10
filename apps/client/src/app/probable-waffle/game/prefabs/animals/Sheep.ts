@@ -3,24 +3,8 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import {
-  getGameObjectDirection,
-  moveGameObjectToRandomTileInNavigableRadius,
-  MovementSystem,
-  PathMoveConfig
-} from "../../entity/systems/movement.system";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectCurrentTile, onObjectReady } from "../../data/game-object-helper";
-import {
-  ANIM_SHEEP_DOWN_WALK,
-  ANIM_SHEEP_IDLE_DOWN,
-  ANIM_SHEEP_IDLE_LEFT,
-  ANIM_SHEEP_IDLE_RIGHT,
-  ANIM_SHEEP_IDLE_UP,
-  ANIM_SHEEP_LEFT_WALK,
-  ANIM_SHEEP_RIGHT_WALK,
-  ANIM_SHEEP_UP_WALK
-} from "./anims/animals";
+import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../entity/systems/movement.system";
+import { onObjectReady } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { ObjectNames } from "../../data/object-names";
 import { getActorComponent } from "../../data/actor-component";
@@ -49,6 +33,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
     this.animationActorComponent = getActorComponent(this, AnimationActorComponent);
     this.handleWoolParticles(this.scene);
+    this.on(Phaser.Input.Events.POINTER_DOWN, this.onClick, this);
     this.moveSheepAfterDelay();
   }
 
@@ -58,6 +43,8 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   private currentDelay: Phaser.Time.TimerEvent | null = null;
   private woolParticles?: Phaser.GameObjects.Particles.ParticleEmitter;
   private sheared = false;
+  private shearedCount = 0;
+  private readonly maxShearedCount = 5;
 
   private handleWoolParticles(scene: Phaser.Scene) {
     // Add wool particle emitter to the scene
@@ -72,35 +59,36 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
       frequency: 1,
       emitting: false
     });
+  }
 
-    let shearedCount = 0;
-    const maxShearedCount = 5;
+  private onClick() {
+    this.cancelMovement();
+    if (this.shearedCount < this.maxShearedCount) {
+      this.woolParticles?.emitParticleAt(this.x, this.y - 25, Phaser.Math.Between(1, 4));
+      this.actorAudioComponent?.playSpatialCustomSound("scissors");
+    }
+    this.shearedCount++;
+    if (this.shearedCount === this.maxShearedCount) {
+      this.setSheared();
+    } else {
+      this.moveSheepAfterDelay();
+    }
+  }
 
-    this.on(Phaser.Input.Events.POINTER_DOWN, () => {
-      this.cancelMovement();
-      if (shearedCount < maxShearedCount) {
-        this.woolParticles?.emitParticleAt(this.x, this.y - 25, Phaser.Math.Between(1, 4));
-        this.actorAudioComponent?.playSpatialCustomSound("scissors");
-      }
-      shearedCount++;
-      if (shearedCount === maxShearedCount) {
-        this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
-        this.actorAudioComponent?.playSpatialCustomSound("wool");
-        this.actorAudioComponent?.playSpatialCustomSound(SoundType.Select);
-        this.sheared = true;
-        this.animationActorComponent?.playCustomAnimation("sheared");
-        // start timer to reset sheep
-        scene.time.delayedCall(5000, () => {
-          shearedCount = 0;
-          this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
-          this.actorAudioComponent?.playSpatialCustomSound("wool");
-          this.sheared = false;
-          this.animationActorComponent?.playOrderAnimation(OrderType.Stop);
-          this.moveSheepAfterDelay();
-        });
-      } else {
-        this.moveSheepAfterDelay();
-      }
+  private setSheared() {
+    this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
+    this.actorAudioComponent?.playSpatialCustomSound("wool");
+    this.actorAudioComponent?.playSpatialCustomSound(SoundType.Select);
+    this.sheared = true;
+    this.animationActorComponent?.playCustomAnimation("sheared");
+    // start timer to reset sheep
+    this.scene.time.delayedCall(5000, () => {
+      this.shearedCount = 0;
+      this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);
+      this.actorAudioComponent?.playSpatialCustomSound("wool");
+      this.sheared = false;
+      this.animationActorComponent?.playOrderAnimation(OrderType.Stop);
+      this.moveSheepAfterDelay();
     });
   }
 
@@ -140,6 +128,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
 
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
+    this.off(Phaser.Input.Events.POINTER_DOWN, this.onClick, this);
     this.woolParticles?.destroy();
     this.currentDelay?.remove(false);
   }

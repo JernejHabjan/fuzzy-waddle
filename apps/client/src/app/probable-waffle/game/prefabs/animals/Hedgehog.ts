@@ -39,10 +39,12 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
   }
 
   private handleClick() {
-    this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-      this.curlUp();
-      this.moveHedgehogAfterDelay(4000);
-    });
+    this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
+  }
+
+  private onClick() {
+    this.curlUp();
+    this.moveHedgehogAfterDelay(4000);
   }
 
   async moveHedgehog() {
@@ -84,6 +86,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
+    this.off(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
     this.removeDelay();
     this.cancelMovement();
   }
