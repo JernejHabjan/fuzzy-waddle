@@ -801,7 +801,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(boar);
 
     // badger
-    const badger = new Badger(this, 352, 1368);
+    const badger = new Badger(this, 24, 1072);
     this.add.existing(badger);
 
     // spawn (components)

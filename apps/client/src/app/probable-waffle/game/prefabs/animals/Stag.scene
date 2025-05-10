@@ -29,8 +29,8 @@
             },
             "x": 16,
             "y": 40.204036014919424,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "scaleX": 2,
+            "scaleY": 2,
             "originY": 0.8122607482100719,
             "animationPlayMethod": 1,
             "animationKey": "stag/idle/se"

@@ -73,12 +73,12 @@ export class AnimationActorComponent {
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
-  playOrderAnimation(orderType: OrderType, forceRestart: boolean = false) {
-    this.playAnimation(this.mapOrderTypeToAnimationType(orderType), forceRestart);
+  playOrderAnimation(orderType: OrderType, animationOptions?: AnimationOptions) {
+    this.playAnimation(this.mapOrderTypeToAnimationType(orderType), animationOptions);
   }
 
-  playCustomAnimation(key: AnimationType | string, forceRestart: boolean = false) {
-    this.playAnimation(key, forceRestart);
+  playCustomAnimation(key: AnimationType | string, animationOptions?: AnimationOptions) {
+    this.playAnimation(key, animationOptions);
   }
 
   private init() {
@@ -115,11 +115,11 @@ export class AnimationActorComponent {
     this.currentDirection = direction;
     // If there's a current animation playing, update it with the new direction
     if (this.currentAnimation && this.sprite) {
-      this.playAnimation(this.currentAnimation, true);
+      this.playAnimation(this.currentAnimation, { forceRestart: true });
     }
   }
 
-  private playAnimation(type: AnimationType | string | null, forceRestart: boolean = false) {
+  private playAnimation(type: AnimationType | string | null, animationOptions?: AnimationOptions) {
     if (!this.sprite || !this.animationsDefinition || !type) return;
 
     const animationsByType = this.animationsDefinition.animations[type];
@@ -170,8 +170,14 @@ export class AnimationActorComponent {
       return;
     }
 
+    if (!animationOptions) {
+      animationOptions = {
+        forceRestart: false
+      } satisfies AnimationOptions;
+    }
+
     // Don't restart the animation if it's already playing unless forced
-    if (!forceRestart && this.currentAnimation === type && this.sprite.anims.isPlaying) {
+    if (!animationOptions.forceRestart && this.currentAnimation === type && this.sprite.anims.isPlaying) {
       return;
     }
 
@@ -196,9 +202,11 @@ export class AnimationActorComponent {
     this.sprite.once("animationcomplete", () => {
       this.isAnimating = false;
 
+      animationOptions?.onComplete?.();
+
       // If this was a one-time animation like attack, return to idle
       if (oneTimeAnimations.includes(type as AnimationType)) {
-        this.playAnimation(AnimationType.Idle);
+        this.playAnimation(AnimationType.Idle, animationOptions);
       }
     });
   }
@@ -246,4 +254,9 @@ export class AnimationActorComponent {
   private destroy() {
     this.directionChangedSubscription?.unsubscribe();
   }
+}
+
+export interface AnimationOptions {
+  forceRestart?: boolean;
+  onComplete?: () => void;
 }

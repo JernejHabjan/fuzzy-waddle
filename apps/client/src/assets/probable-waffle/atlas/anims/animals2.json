@@ -157,7 +157,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -317,7 +316,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -477,7 +475,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -637,7 +634,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -1245,7 +1241,7 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
+            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1285,7 +1281,7 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
+            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1325,7 +1321,7 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
+            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1365,7 +1361,7 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
+            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1453,7 +1449,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -1541,7 +1536,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -1629,7 +1623,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -1717,7 +1710,6 @@
             ],
             "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -3617,7 +3609,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -3717,7 +3708,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -3817,7 +3807,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -3917,7 +3906,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -3999,7 +3987,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -4081,7 +4068,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -4163,7 +4149,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -4245,7 +4230,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -4309,7 +4293,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -4373,7 +4356,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -4437,7 +4419,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {
@@ -4501,7 +4482,6 @@
             ],
             "frameRate": 6,
             "skipMissedFrames": true,
-            "repeat": 1,
             "randomFrame": false
         },
         {

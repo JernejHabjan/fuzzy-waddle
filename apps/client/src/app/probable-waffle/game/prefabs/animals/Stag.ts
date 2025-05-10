@@ -4,25 +4,87 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../data/object-names";
+import { AudioActorComponent } from "../../entity/actor/components/audio-actor-component";
+import { AnimationActorComponent } from "../../entity/actor/components/animation-actor-component";
+import { getActorComponent } from "../../data/actor-component";
+import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../entity/systems/movement.system";
+import { getActorSystem } from "../../data/actor-system";
+import { onObjectReady } from "../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class Stag extends Phaser.GameObjects.Sprite {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 16, y ?? 40.204036014919424, texture || "animals_2", frame ?? "stag/idle/se/00.png");
 
     this.setInteractive(new Phaser.Geom.Ellipse(16, 20.5, 32, 41), Phaser.Geom.Ellipse.Contains);
-    this.scaleX = 1.5;
-    this.scaleY = 1.5;
+    this.scaleX = 2;
+    this.scaleY = 2;
     this.setOrigin(0.5, 0.8122607482100719);
     this.play("stag/idle/se");
 
     /* START-USER-CTR-CODE */
+    onObjectReady(this, this.postSceneCreate, this);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   name = ObjectNames.Stag;
+  private actorAudioComponent?: AudioActorComponent;
+  private animationActorComponent?: AnimationActorComponent;
+  private readonly radius = 2;
+  private currentDelay: Phaser.Time.TimerEvent | null = null;
+  private curledUp = false;
+
+  private postSceneCreate() {
+    this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
+    this.animationActorComponent = getActorComponent(this, AnimationActorComponent);
+    this.moveAfterDelay();
+    this.handleClick();
+  }
+
+  private handleClick() {
+    this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
+  }
+
+  private onClick() {
+    // todo
+  }
+
+  async move() {
+    if (!this.active) return;
+
+    try {
+      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
+      this.moveAfterDelay();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private moveAfterDelay() {
+    if (!this.active) return;
+    if (this.curledUp) return;
+    this.removeDelay();
+    const randomDelay = Phaser.Math.Between(1000, 5000);
+    this.currentDelay = this.scene.time.delayedCall(randomDelay, this.move, [], this);
+  }
+
+  private removeDelay() {
+    this.currentDelay?.remove(false);
+    this.currentDelay = null;
+  }
+
+  private cancelMovement = () => {
+    const movementSystem = getActorSystem<MovementSystem>(this, MovementSystem);
+    if (movementSystem) movementSystem.cancelMovement();
+  };
+
+  override destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.off(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
+    this.removeDelay();
+    this.cancelMovement();
+  }
   /* END-USER-CODE */
 }
 

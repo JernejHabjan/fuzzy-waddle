@@ -44,6 +44,7 @@ export interface PathMoveConfig {
   onUpdateThrottled?: () => void;
   onUpdate?: () => void;
   onStop?: () => void;
+  ignoreAnimations?: boolean;
 }
 
 export class MovementSystem {
@@ -112,19 +113,19 @@ export class MovementSystem {
     return this._navigationService;
   }
 
-  async moveToLocation(vec3: Vector3Simple, pathMoveConfig?: PathMoveConfig): Promise<boolean> {
+  async moveToLocation(tileVec3: Vector3Simple, pathMoveConfig?: PathMoveConfig): Promise<boolean> {
     if (pathMoveConfig?.usePathfinding === false) {
-      return this.moveDirectlyToLocation(vec3, pathMoveConfig)
+      return this.moveDirectlyToLocation(tileVec3, pathMoveConfig)
         .then(() => true)
         .catch(() => false);
     }
 
     if (!this.navigationService) return false;
 
-    const path = await this.navigationService.findAndUsePathFromGameObjectToTile(this.gameObject, vec3);
+    const path = await this.navigationService.findAndUsePathFromGameObjectToTile(this.gameObject, tileVec3);
     if (!path.length) return false;
 
-    if (this.DEBUG) console.log(`Moving to tile ${vec3.x}, ${vec3.y}`);
+    if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
 
     if (this.DEBUG) this.navigationService.drawDebugPath(path);
 
@@ -193,7 +194,7 @@ export class MovementSystem {
       : undefined;
 
     return new Promise<void>((resolve, reject) => {
-      this.onMovementStart(tileWorldXY);
+      this.onMovementStart(tileWorldXY, config);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
@@ -203,7 +204,7 @@ export class MovementSystem {
           try {
             await this.moveAlongPath(path, config);
             config?.onComplete?.();
-            this.playMovementAnimation(false);
+            this.playMovementAnimation(false, config);
             resolve();
           } catch (e) {
             // console.error("Error moving along path", e);
@@ -213,7 +214,7 @@ export class MovementSystem {
         onStop: () => {
           reject("Movement stopped");
           config?.onStop?.();
-          this.playMovementAnimation(false);
+          this.playMovementAnimation(false, config);
         },
         onUpdate: () => {
           this.tweenUpdate();
@@ -258,7 +259,7 @@ export class MovementSystem {
         return;
       }
 
-      this.onMovementStart(tileWorldXY);
+      this.onMovementStart(tileWorldXY, pathMoveConfig);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
@@ -266,12 +267,12 @@ export class MovementSystem {
         duration: pathMoveConfig?.tileStepDuration ?? this.defaultTileStepDuration,
         onComplete: async () => {
           pathMoveConfig?.onComplete?.();
-          this.playMovementAnimation(false);
+          this.playMovementAnimation(false, pathMoveConfig);
           resolve();
         },
         onStop: () => {
           pathMoveConfig?.onStop?.();
-          this.playMovementAnimation(false);
+          if (!pathMoveConfig?.ignoreAnimations) this.playMovementAnimation(false, pathMoveConfig);
           reject("Movement stopped");
         },
         onUpdate: () => {
@@ -283,10 +284,10 @@ export class MovementSystem {
     });
   }
 
-  private onMovementStart(newTileWorldXY: Vector2Simple) {
+  private onMovementStart(newTileWorldXY: Vector2Simple, config?: PathMoveConfig) {
     this.playMovementSound();
     if (this.actorTranslateComponent) this.actorTranslateComponent.updateDirection(newTileWorldXY);
-    this.playMovementAnimation(true);
+    this.playMovementAnimation(true, config);
   }
 
   private playMovementSound() {
@@ -301,8 +302,9 @@ export class MovementSystem {
     });
   }
 
-  private playMovementAnimation(isMoving: boolean) {
+  private playMovementAnimation(isMoving: boolean, config?: PathMoveConfig) {
     if (!this.animationActorComponent) return;
+    if (config?.ignoreAnimations) return;
     this.animationActorComponent.playOrderAnimation(isMoving ? OrderType.Move : OrderType.Stop);
   }
 

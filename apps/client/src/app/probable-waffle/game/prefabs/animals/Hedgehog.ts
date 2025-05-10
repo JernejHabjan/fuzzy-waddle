@@ -30,6 +30,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
   private animationActorComponent?: AnimationActorComponent;
   private readonly radius = 2;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
+  private curledUp = false;
 
   private postSceneCreate() {
     this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
@@ -44,7 +45,6 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
   private onClick() {
     this.curlUp();
-    this.moveHedgehogAfterDelay(4000);
   }
 
   async moveHedgehog() {
@@ -52,6 +52,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
+      this.moveHedgehogAfterDelay();
     } catch (e) {
       console.error(e);
     }
@@ -59,18 +60,27 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
 
   private curlUp() {
     if (!this.active) return;
+    if (this.curledUp) return;
     this.removeDelay();
     this.cancelMovement();
 
-    this.animationActorComponent?.playCustomAnimation("ball");
+    this.curledUp = true;
+
+    this.animationActorComponent?.playCustomAnimation("ball", {
+      onComplete: () => {
+        this.curledUp = false;
+        this.moveHedgehogAfterDelay();
+      }
+    });
     const sound = Math.random() < 0.8 ? SoundType.Select : SoundType.SelectExtra;
     this.actorAudioComponent?.playSpatialCustomSound(sound);
   }
 
-  private moveHedgehogAfterDelay(additionalDelay: number = 0) {
+  private moveHedgehogAfterDelay() {
     if (!this.active) return;
+    if (this.curledUp) return;
     this.removeDelay();
-    const randomDelay = Phaser.Math.Between(1000, 5000) + additionalDelay;
+    const randomDelay = Phaser.Math.Between(1000, 5000);
     this.currentDelay = this.scene.time.delayedCall(randomDelay, this.moveHedgehog, [], this);
   }
 
@@ -90,7 +100,6 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     this.removeDelay();
     this.cancelMovement();
   }
-
   /* END-USER-CODE */
 }
 

@@ -1,7 +1,7 @@
 import { AttackData, ProjectileData, ProjectileType } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { AnimationActorComponent } from "../../actor/components/animation-actor-component";
+import { AnimationActorComponent, AnimationOptions } from "../../actor/components/animation-actor-component";
 import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
 import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
@@ -109,7 +109,10 @@ export class AttackComponent {
 
   private playSharedAttackLogic(attack: AttackData, enemy: GameObject) {
     if (this.actorTranslateComponent) this.actorTranslateComponent.turnTowardsGameObject(enemy);
-    if (this.animationActorComponent) this.animationActorComponent.playOrderAnimation(OrderType.Attack, true);
+    if (this.animationActorComponent)
+      this.animationActorComponent.playOrderAnimation(OrderType.Attack, {
+        forceRestart: true
+      } satisfies AnimationOptions);
     this.playAttackSound(attack, enemy);
   }
 
