@@ -697,8 +697,8 @@
                 "y"
             ],
             "label": "tree_5",
-            "x": 32,
-            "y": 1424
+            "x": 40,
+            "y": 1432
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
@@ -2073,66 +2073,6 @@
             "flipY": false
         },
         {
-            "type": "Sprite",
-            "id": "5c0bad15-4b9c-4ec2-99bc-de1f8c2e61c6",
-            "label": "stag_idle_sw_critter_stag_SW_idle",
-            "texture": {
-                "key": "animals_2",
-                "frame": "stag/idle/sw/critter_stag_SW_idle-0.png"
-            },
-            "x": 632,
-            "y": 1232,
-            "scaleX": 2,
-            "scaleY": 2,
-            "animationPlayMethod": 1,
-            "animationKey": "stag/idle/sw/critter_stag_SW_idle"
-        },
-        {
-            "type": "Sprite",
-            "id": "d7227fb6-fdf1-462a-9444-ae17e9fc8d21",
-            "label": "boar_idle_sw_boar_SW_idle",
-            "texture": {
-                "key": "animals_2",
-                "frame": "boar/idle/sw/boar_SW_idle_0.png"
-            },
-            "x": 232,
-            "y": 1192,
-            "scaleX": 2,
-            "scaleY": 2,
-            "animationPlayMethod": 1,
-            "animationKey": "boar/idle/sw/boar_SW_idle"
-        },
-        {
-            "type": "Sprite",
-            "id": "14903dd5-ef9b-4b5e-bf5b-d60d386c7477",
-            "label": "wolf_idle_sw_wolf_idle",
-            "texture": {
-                "key": "animals_2",
-                "frame": "wolf/idle/sw/wolf-idle-0.png"
-            },
-            "x": -64,
-            "y": 1176,
-            "scaleX": 2,
-            "scaleY": 2,
-            "animationPlayMethod": 1,
-            "animationKey": "wolf/idle/sw/wolf-idle"
-        },
-        {
-            "type": "Sprite",
-            "id": "ecf319e7-f02d-4ee9-8bf5-d1770c3a8910",
-            "label": "badger_idle_sw_critter_badger_SW_idle",
-            "texture": {
-                "key": "animals_2",
-                "frame": "badger/idle/sw/critter_badger_SW_idle-0.png"
-            },
-            "x": 344,
-            "y": 1408,
-            "scaleX": 2,
-            "scaleY": 2,
-            "animationPlayMethod": 1,
-            "animationKey": "badger/idle/sw/critter_badger_SW_idle"
-        },
-        {
             "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
             "id": "5a95c24b-83fe-4d3c-8166-c19138749895",
             "unlock": [
@@ -2157,6 +2097,50 @@
             "z": 64,
             "x": 264,
             "y": 440
+        },
+        {
+            "prefabId": "2f74d672-6d97-4e2a-8913-3eefd7aa3471",
+            "id": "62113924-7a9d-4c00-b677-5771ccaf8d99",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wolf",
+            "x": -320,
+            "y": 1216
+        },
+        {
+            "prefabId": "1e8584c9-7cd3-47cb-9a38-bc5231b9edee",
+            "id": "28f1041a-8bc0-4cf0-9f35-c5081d09fdb2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stag",
+            "x": 80,
+            "y": 1400
+        },
+        {
+            "prefabId": "f1948055-893a-4764-b370-93162f6d36c4",
+            "id": "b879a52e-d720-4390-a08e-812256ae78b9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "boar",
+            "x": 224,
+            "y": 1264
+        },
+        {
+            "prefabId": "b5c41cfb-09e7-4fb9-8b5c-a2c9e167b4ee",
+            "id": "99f71537-7be6-4a38-ac9a-09760b5f685f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "badger",
+            "x": 352,
+            "y": 1368
         }
     ],
     "plainObjects": [

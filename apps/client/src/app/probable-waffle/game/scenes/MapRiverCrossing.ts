@@ -73,6 +73,10 @@ import FenceRightCorner from "../prefabs/outside/architecture/obstruction/FenceR
 import FenceLeftCorner from "../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 import ToxicFrog from "../prefabs/animals/ToxicFrog";
 import TreeBird from "../prefabs/animals/TreeBird";
+import Wolf from "../prefabs/animals/Wolf";
+import Stag from "../prefabs/animals/Stag";
+import Boar from "../prefabs/animals/Boar";
+import Badger from "../prefabs/animals/Badger";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -313,7 +317,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_4);
 
     // tree_5
-    const tree_5 = new Tree6(this, 32, 1424);
+    const tree_5 = new Tree6(this, 40, 1432);
     this.add.existing(tree_5);
 
     // bushDry
@@ -776,30 +780,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     toxicFrog_3.flipX = true;
     toxicFrog_3.flipY = false;
 
-    // stag_idle_sw_critter_stag_SW_idle
-    const stag_idle_sw_critter_stag_SW_idle = this.add.sprite(632, 1232, "animals_2", "stag/idle/sw/critter_stag_SW_idle-0.png");
-    stag_idle_sw_critter_stag_SW_idle.scaleX = 2;
-    stag_idle_sw_critter_stag_SW_idle.scaleY = 2;
-    stag_idle_sw_critter_stag_SW_idle.play("stag/idle/sw/critter_stag_SW_idle");
-
-    // boar_idle_sw_boar_SW_idle
-    const boar_idle_sw_boar_SW_idle = this.add.sprite(232, 1192, "animals_2", "boar/idle/sw/boar_SW_idle_0.png");
-    boar_idle_sw_boar_SW_idle.scaleX = 2;
-    boar_idle_sw_boar_SW_idle.scaleY = 2;
-    boar_idle_sw_boar_SW_idle.play("boar/idle/sw/boar_SW_idle");
-
-    // wolf_idle_sw_wolf_idle
-    const wolf_idle_sw_wolf_idle = this.add.sprite(-64, 1176, "animals_2", "wolf/idle/sw/wolf-idle-0.png");
-    wolf_idle_sw_wolf_idle.scaleX = 2;
-    wolf_idle_sw_wolf_idle.scaleY = 2;
-    wolf_idle_sw_wolf_idle.play("wolf/idle/sw/wolf-idle");
-
-    // badger_idle_sw_critter_badger_SW_idle
-    const badger_idle_sw_critter_badger_SW_idle = this.add.sprite(344, 1408, "animals_2", "badger/idle/sw/critter_badger_SW_idle-0.png");
-    badger_idle_sw_critter_badger_SW_idle.scaleX = 2;
-    badger_idle_sw_critter_badger_SW_idle.scaleY = 2;
-    badger_idle_sw_critter_badger_SW_idle.play("badger/idle/sw/critter_badger_SW_idle");
-
     // treeBird
     const treeBird = new TreeBird(this, -424, 640);
     this.add.existing(treeBird);
@@ -807,6 +787,22 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // treeBird_1
     const treeBird_1 = new TreeBird(this, 264, 440);
     this.add.existing(treeBird_1);
+
+    // wolf
+    const wolf = new Wolf(this, -320, 1216);
+    this.add.existing(wolf);
+
+    // stag
+    const stag = new Stag(this, 80, 1400);
+    this.add.existing(stag);
+
+    // boar
+    const boar = new Boar(this, 224, 1264);
+    this.add.existing(boar);
+
+    // badger
+    const badger = new Badger(this, 352, 1368);
+    this.add.existing(badger);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

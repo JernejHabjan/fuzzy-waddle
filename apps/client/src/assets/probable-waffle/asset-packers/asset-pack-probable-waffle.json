@@ -37,20 +37,15 @@
                 "key": "animals_1"
             },
             {
+                "url": "assets/probable-waffle/atlas/anims/animals2.json",
+                "type": "animation",
+                "key": "animals2"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/animals_2.json",
                 "path": "assets/probable-waffle/atlas",
                 "key": "animals_2"
-            },
-            {
-                "url": "assets/probable-waffle/atlas/anims/animals_2.json",
-                "type": "animation",
-                "key": "animals_3"
-            },
-            {
-                "url": "assets/probable-waffle/atlas/anims/animals2.json",
-                "type": "animation",
-                "key": "animals2"
             },
             {
                 "url": [

@@ -1,150 +1,4534 @@
 {
     "anims": [
         {
-            "key": "stag/idle/sw/critter_stag_SW_idle",
+            "key": "badger/burrow/ne",
             "type": "frame",
             "frames": [
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-0.png",
+                    "frame": "badger/burrow/ne/00.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-1.png",
+                    "frame": "badger/burrow/ne/01.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-10.png",
+                    "frame": "badger/burrow/ne/02.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-11.png",
+                    "frame": "badger/burrow/ne/03.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-12.png",
+                    "frame": "badger/burrow/ne/04.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-13.png",
+                    "frame": "badger/burrow/ne/05.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-14.png",
+                    "frame": "badger/burrow/ne/06.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-15.png",
+                    "frame": "badger/burrow/ne/07.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-16.png",
+                    "frame": "badger/burrow/ne/08.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-17.png",
+                    "frame": "badger/burrow/ne/09.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-18.png",
+                    "frame": "badger/burrow/ne/10.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-19.png",
+                    "frame": "badger/burrow/ne/11.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-2.png",
+                    "frame": "badger/burrow/ne/12.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-20.png",
+                    "frame": "badger/burrow/ne/13.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-21.png",
+                    "frame": "badger/burrow/ne/14.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-22.png",
+                    "frame": "badger/burrow/ne/15.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-23.png",
+                    "frame": "badger/burrow/ne/16.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-3.png",
+                    "frame": "badger/burrow/ne/17.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-4.png",
+                    "frame": "badger/burrow/ne/18.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-5.png",
+                    "frame": "badger/burrow/ne/19.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-6.png",
+                    "frame": "badger/burrow/ne/20.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-7.png",
+                    "frame": "badger/burrow/ne/21.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-8.png",
+                    "frame": "badger/burrow/ne/22.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "stag/idle/sw/critter_stag_SW_idle-9.png",
+                    "frame": "badger/burrow/ne/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/ne/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/burrow/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/nw/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/burrow/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/se/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/burrow/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/burrow/sw/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/idle/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/ne/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/idle/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/nw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/idle/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/se/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/idle/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/idle/sw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/tunnel/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/tunnel/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/tunnel/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/tunnel/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/tunnel/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/unborrow/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/ne/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/unborrow/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/nw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/unborrow/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/se/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/unborrow/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/unborrow/sw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/walk/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/ne/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/walk/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/nw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/walk/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "badger/walk/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "badger/walk/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/idle/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/ne/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/ne/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/idle/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/idle/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/idle/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/idle/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/run/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/run/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/run/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "boar/run/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "boar/run/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/idle/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/ne/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/idle/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/nw/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/idle/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/se/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/idle/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/idle/sw/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/run/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/ne/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/run/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/nw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/run/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/run/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/run/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/walk/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/ne/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/walk/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/nw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/walk/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "stag/walk/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "stag/walk/sw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/bite/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/45.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/46.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/47.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/48.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/49.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/50.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/51.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/52.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/53.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/54.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/55.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/56.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/57.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/58.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/ne/59.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/bite/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/40.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/41.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/42.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/43.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/nw/44.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/bite/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/se/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/bite/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/bite/sw/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/death/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/40.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/41.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/42.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/43.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/44.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/45.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/46.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/ne/47.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/death/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/nw/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/death/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/se/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/death/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/death/sw/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/howl/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/ne/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/howl/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/nw/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/howl/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/se/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/howl/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/howl/sw/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": 1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/idle/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/ne/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/ne/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/ne/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/ne/15.png",
                     "duration": 0,
                     "keyframe": false
                 }
@@ -155,82 +4539,30 @@
             "randomFrame": false
         },
         {
-            "key": "wolf/idle/sw/wolf-idle",
+            "key": "wolf/idle/nw",
             "type": "frame",
             "frames": [
                 {
                     "key": "animals_2",
-                    "frame": "wolf/idle/sw/wolf-idle-0.png",
+                    "frame": "wolf/idle/nw/08.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "wolf/idle/sw/wolf-idle-1.png",
+                    "frame": "wolf/idle/nw/09.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "wolf/idle/sw/wolf-idle-2.png",
+                    "frame": "wolf/idle/nw/10.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "wolf/idle/sw/wolf-idle-3.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 3,
-            "skipMissedFrames": true,
-            "repeat": -1,
-            "randomFrame": false
-        },
-        {
-            "key": "boar/idle/sw/boar_SW_idle",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "animals_2",
-                    "frame": "boar/idle/sw/boar_SW_idle_0.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "boar/idle/sw/boar_SW_idle_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "boar/idle/sw/boar_SW_idle_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "boar/idle/sw/boar_SW_idle_3.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "boar/idle/sw/boar_SW_idle_4.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "boar/idle/sw/boar_SW_idle_5.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "boar/idle/sw/boar_SW_idle_6.png",
+                    "frame": "wolf/idle/nw/11.png",
                     "duration": 0,
                     "keyframe": false
                 }
@@ -241,143 +4573,301 @@
             "randomFrame": false
         },
         {
-            "key": "badger/idle/sw/critter_badger_SW_idle",
+            "key": "wolf/idle/se",
             "type": "frame",
             "frames": [
                 {
                     "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-0.png",
+                    "frame": "wolf/idle/se/04.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-1.png",
+                    "frame": "wolf/idle/se/05.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-10.png",
+                    "frame": "wolf/idle/se/06.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-11.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-12.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-13.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-14.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-15.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-16.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-17.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-18.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-19.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-2.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-20.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-21.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-3.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-4.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-5.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-6.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-7.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-8.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "animals_2",
-                    "frame": "badger/idle/sw/critter_badger_SW_idle-9.png",
+                    "frame": "wolf/idle/se/07.png",
                     "duration": 0,
                     "keyframe": false
                 }
             ],
             "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/idle/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/idle/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/run/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/ne/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/run/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/nw/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/run/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/08.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/09.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/se/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "wolf/run/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/00.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/01.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/02.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/03.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/04.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/05.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/06.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals_2",
+                    "frame": "wolf/run/sw/07.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false

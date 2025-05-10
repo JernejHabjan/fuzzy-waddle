@@ -130,7 +130,7 @@ export class AnimationActorComponent {
 
     let animationDef = animationsByType[this.currentDirection];
     if (!animationDef) {
-      // try to obtain animation by non-iso directions:
+      // try to get animation by non-iso directions (in case only orthogonal directions are defined):
       let nonIsoDirection: IsoDirection | null = null;
       if (this.currentDirection === "northeast" || this.currentDirection === "southeast") {
         nonIsoDirection = "east";
@@ -141,6 +141,28 @@ export class AnimationActorComponent {
         animationDef = animationsByType[nonIsoDirection];
       }
     }
+    if (!animationDef) {
+      // try to get animation by iso directions (in case only iso directions are defined):
+      let isoDirection: IsoDirection | null = null;
+      switch (this.currentDirection) {
+        case "east":
+          isoDirection = "northeast";
+          break;
+        case "west":
+          isoDirection = "northwest";
+          break;
+        case "south":
+          isoDirection = "southwest";
+          break;
+        case "north":
+          isoDirection = "northeast";
+          break;
+      }
+      if (isoDirection) {
+        animationDef = animationsByType[isoDirection];
+      }
+    }
+
     if (!animationDef) {
       console.warn(
         `AnimationActorComponent: No animation found for type ${type} and direction ${this.currentDirection}`

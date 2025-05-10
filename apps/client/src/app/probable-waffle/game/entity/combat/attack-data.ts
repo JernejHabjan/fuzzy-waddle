@@ -83,7 +83,8 @@ export enum WeaponType {
   Staff = "staff",
   Hands = "hands",
   Furball = "furball",
-  BowTower = "bowTower"
+  BowTower = "bowTower",
+  WolfBite = "wolfBite"
 }
 
 export const weaponDefinitions: Record<WeaponType, AttackData> = {
@@ -336,6 +337,25 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     },
     delays: {
       fire: 1000,
+      hit: 500
+    }
+  },
+  [WeaponType.WolfBite]: {
+    weaponType: WeaponType.WolfBite,
+    canTargetAir: false,
+    damage: 5,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    animationType: AnimationType.LargeSlash,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds, // todo
+      hit: SharedActorActionsSfxMaceHitSounds // todo
+    },
+    delays: {
+      fire: 200,
       hit: 500
     }
   }
