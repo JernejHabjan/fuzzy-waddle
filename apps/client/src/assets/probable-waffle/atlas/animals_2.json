@@ -10,7 +10,7 @@
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "wolf/bite/se/wolf-bite-25.png",
+					"filename": "wolf/bite/se/25.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -31,7 +31,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-10.png",
+					"filename": "wolf/bite/sw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -52,7 +52,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-26.png",
+					"filename": "wolf/bite/se/26.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -73,7 +73,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-11.png",
+					"filename": "wolf/bite/sw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -94,7 +94,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-55.png",
+					"filename": "wolf/bite/ne/55.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -115,7 +115,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-56.png",
+					"filename": "wolf/bite/ne/56.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -136,7 +136,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-40.png",
+					"filename": "wolf/bite/nw/40.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -157,7 +157,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-41.png",
+					"filename": "wolf/bite/nw/41.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -178,7 +178,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-2.png",
+					"filename": "stag/run/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -199,7 +199,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-2.png",
+					"filename": "stag/run/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -220,7 +220,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-1.png",
+					"filename": "stag/run/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -241,7 +241,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-2.png",
+					"filename": "stag/run/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -262,7 +262,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-1.png",
+					"filename": "stag/run/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -283,7 +283,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-2.png",
+					"filename": "stag/run/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -304,7 +304,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-1.png",
+					"filename": "stag/run/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -325,7 +325,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-3.png",
+					"filename": "stag/run/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -346,7 +346,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-1.png",
+					"filename": "stag/run/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -367,7 +367,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-3.png",
+					"filename": "stag/run/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -388,7 +388,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-3.png",
+					"filename": "stag/run/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -409,7 +409,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-3.png",
+					"filename": "stag/run/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -430,7 +430,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-8.png",
+					"filename": "wolf/run/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -451,7 +451,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-15.png",
+					"filename": "wolf/run/se/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -472,7 +472,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-7.png",
+					"filename": "wolf/run/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -493,7 +493,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/ne/boar_NE_idle_0.png",
+					"filename": "boar/idle/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -514,7 +514,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/nw/boar_NW_idle_0.png",
+					"filename": "boar/idle/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -535,7 +535,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-0.png",
+					"filename": "stag/run/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -556,7 +556,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-0.png",
+					"filename": "stag/run/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -577,7 +577,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-5.png",
+					"filename": "stag/walk/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -598,7 +598,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-6.png",
+					"filename": "stag/walk/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -619,7 +619,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-7.png",
+					"filename": "stag/walk/ne/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -640,7 +640,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-5.png",
+					"filename": "stag/walk/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -661,7 +661,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-6.png",
+					"filename": "stag/walk/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -682,7 +682,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-7.png",
+					"filename": "stag/walk/nw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -703,7 +703,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-4.png",
+					"filename": "stag/run/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -724,7 +724,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-4.png",
+					"filename": "stag/run/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -745,7 +745,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-14.png",
+					"filename": "wolf/run/se/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -766,7 +766,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/ne/boar_NE_idle_6.png",
+					"filename": "boar/idle/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -787,7 +787,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/nw/boar_NW_idle_6.png",
+					"filename": "boar/idle/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -808,7 +808,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-45.png",
+					"filename": "wolf/bite/ne/45.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -829,7 +829,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-30.png",
+					"filename": "wolf/bite/nw/30.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -850,7 +850,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-42.png",
+					"filename": "wolf/death/ne/42.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -871,7 +871,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-30.png",
+					"filename": "wolf/death/nw/30.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -892,7 +892,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-0.png",
+					"filename": "badger/unborrow/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -913,7 +913,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-0.png",
+					"filename": "badger/unborrow/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -934,7 +934,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-5.png",
+					"filename": "stag/idle/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -955,7 +955,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-6.png",
+					"filename": "stag/idle/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -976,7 +976,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-7.png",
+					"filename": "stag/idle/ne/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -997,7 +997,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-8.png",
+					"filename": "stag/idle/ne/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1018,7 +1018,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-11.png",
+					"filename": "stag/idle/se/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1039,7 +1039,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-0.png",
+					"filename": "stag/idle/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1060,7 +1060,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-5.png",
+					"filename": "stag/run/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1081,7 +1081,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-5.png",
+					"filename": "stag/run/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1102,7 +1102,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-0.png",
+					"filename": "stag/run/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1123,7 +1123,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-4.png",
+					"filename": "stag/run/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1144,7 +1144,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-4.png",
+					"filename": "stag/idle/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1165,7 +1165,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-0.png",
+					"filename": "wolf/run/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1186,7 +1186,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-1.png",
+					"filename": "stag/idle/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1207,7 +1207,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-0.png",
+					"filename": "stag/run/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1228,7 +1228,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-1.png",
+					"filename": "stag/idle/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1249,7 +1249,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-4.png",
+					"filename": "stag/run/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1270,7 +1270,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-0.png",
+					"filename": "stag/walk/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1291,7 +1291,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-11.png",
+					"filename": "stag/idle/ne/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1312,7 +1312,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-9.png",
+					"filename": "stag/idle/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1333,7 +1333,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-32.png",
+					"filename": "wolf/howl/ne/32.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1354,7 +1354,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-23.png",
+					"filename": "wolf/howl/nw/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1375,7 +1375,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-33.png",
+					"filename": "wolf/howl/ne/33.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1396,7 +1396,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-24.png",
+					"filename": "wolf/howl/nw/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1417,7 +1417,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-27.png",
+					"filename": "wolf/run/ne/27.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1438,7 +1438,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-28.png",
+					"filename": "wolf/run/ne/28.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1459,7 +1459,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-13.png",
+					"filename": "stag/idle/ne/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1480,7 +1480,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-10.png",
+					"filename": "stag/walk/ne/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1501,7 +1501,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-10.png",
+					"filename": "stag/walk/nw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1522,7 +1522,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-6.png",
+					"filename": "stag/walk/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1543,7 +1543,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-7.png",
+					"filename": "stag/walk/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1564,7 +1564,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-6.png",
+					"filename": "stag/walk/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1585,7 +1585,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-20.png",
+					"filename": "wolf/run/nw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1606,7 +1606,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-2.png",
+					"filename": "stag/idle/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1627,7 +1627,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-10.png",
+					"filename": "stag/idle/se/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1648,7 +1648,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-7.png",
+					"filename": "stag/walk/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1669,7 +1669,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-4.png",
+					"filename": "stag/idle/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1690,7 +1690,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-6.png",
+					"filename": "badger/walk/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1711,7 +1711,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-3.png",
+					"filename": "stag/idle/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1732,7 +1732,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-0.png",
+					"filename": "stag/walk/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1753,7 +1753,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-6.png",
+					"filename": "badger/walk/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1774,7 +1774,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-4.png",
+					"filename": "badger/walk/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1795,7 +1795,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-3.png",
+					"filename": "badger/burrow/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1816,7 +1816,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-17.png",
+					"filename": "stag/idle/ne/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1837,7 +1837,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-14.png",
+					"filename": "stag/idle/ne/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1858,7 +1858,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-3.png",
+					"filename": "badger/burrow/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1879,7 +1879,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-17.png",
+					"filename": "stag/idle/nw/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1900,7 +1900,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-15.png",
+					"filename": "stag/idle/ne/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1921,7 +1921,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-16.png",
+					"filename": "stag/idle/ne/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1942,7 +1942,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-18.png",
+					"filename": "stag/idle/ne/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1963,7 +1963,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-19.png",
+					"filename": "badger/burrow/ne/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1984,7 +1984,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-19.png",
+					"filename": "stag/idle/ne/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2005,7 +2005,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-20.png",
+					"filename": "stag/idle/ne/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2026,7 +2026,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-19.png",
+					"filename": "badger/burrow/nw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2047,7 +2047,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-5.png",
+					"filename": "stag/idle/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2068,7 +2068,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-21.png",
+					"filename": "wolf/bite/se/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2089,7 +2089,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-6.png",
+					"filename": "stag/idle/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2110,7 +2110,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-5.png",
+					"filename": "badger/burrow/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2131,7 +2131,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-7.png",
+					"filename": "stag/idle/nw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2152,7 +2152,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-0.png",
+					"filename": "stag/idle/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2173,7 +2173,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-5.png",
+					"filename": "badger/walk/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2194,7 +2194,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-4.png",
+					"filename": "badger/walk/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2215,7 +2215,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-8.png",
+					"filename": "stag/idle/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2236,7 +2236,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-14.png",
+					"filename": "stag/idle/nw/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2257,7 +2257,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-15.png",
+					"filename": "stag/idle/nw/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2278,7 +2278,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-16.png",
+					"filename": "stag/idle/nw/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2299,7 +2299,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-18.png",
+					"filename": "stag/idle/nw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2320,7 +2320,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-1.png",
+					"filename": "stag/idle/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2341,7 +2341,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-1.png",
+					"filename": "stag/walk/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2362,7 +2362,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-2.png",
+					"filename": "stag/walk/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2383,7 +2383,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-8.png",
+					"filename": "stag/walk/ne/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2404,7 +2404,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-9.png",
+					"filename": "stag/walk/ne/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2425,7 +2425,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-8.png",
+					"filename": "stag/walk/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2446,7 +2446,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-9.png",
+					"filename": "stag/walk/nw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2467,7 +2467,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/se/critter_badger_SE_tunnel-0.png",
+					"filename": "badger/tunnel/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2488,7 +2488,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-6.png",
+					"filename": "stag/run/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2509,7 +2509,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-9.png",
+					"filename": "stag/run/ne/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2530,7 +2530,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-6.png",
+					"filename": "stag/run/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2551,7 +2551,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-9.png",
+					"filename": "stag/run/nw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2572,7 +2572,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-1.png",
+					"filename": "stag/idle/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2593,7 +2593,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-1.png",
+					"filename": "stag/walk/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2614,7 +2614,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-2.png",
+					"filename": "stag/walk/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2635,7 +2635,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-9.png",
+					"filename": "stag/idle/ne/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2656,7 +2656,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-11.png",
+					"filename": "stag/idle/nw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2677,7 +2677,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-13.png",
+					"filename": "stag/idle/nw/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2698,7 +2698,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-19.png",
+					"filename": "stag/idle/nw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2719,7 +2719,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/ne/boar_NE_run_0.png",
+					"filename": "boar/run/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2740,7 +2740,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-34.png",
+					"filename": "wolf/howl/ne/34.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2761,7 +2761,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-0.png",
+					"filename": "badger/burrow/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2782,7 +2782,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-5.png",
+					"filename": "stag/walk/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2803,7 +2803,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-5.png",
+					"filename": "stag/walk/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2824,7 +2824,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-6.png",
+					"filename": "wolf/run/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2845,7 +2845,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-4.png",
+					"filename": "badger/burrow/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2866,7 +2866,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-4.png",
+					"filename": "badger/burrow/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2887,7 +2887,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-25.png",
+					"filename": "wolf/howl/nw/25.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2908,7 +2908,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-29.png",
+					"filename": "wolf/run/ne/29.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2929,7 +2929,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-10.png",
+					"filename": "stag/idle/ne/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2950,7 +2950,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-2.png",
+					"filename": "badger/burrow/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2971,7 +2971,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-5.png",
+					"filename": "badger/burrow/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2992,7 +2992,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-30.png",
+					"filename": "wolf/run/ne/30.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3013,7 +3013,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-19.png",
+					"filename": "wolf/run/nw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3034,7 +3034,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/nw/boar_NW_run_0.png",
+					"filename": "boar/run/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3055,7 +3055,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-21.png",
+					"filename": "wolf/run/nw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3076,7 +3076,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/se/boar_SE_idle_0.png",
+					"filename": "boar/idle/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3097,7 +3097,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/ne/critter_badger_NE_tunnel-4.png",
+					"filename": "badger/tunnel/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3118,7 +3118,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-12.png",
+					"filename": "badger/burrow/ne/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3139,7 +3139,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-12.png",
+					"filename": "stag/idle/ne/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3160,7 +3160,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/nw/critter_badger_NW_tunnel-4.png",
+					"filename": "badger/tunnel/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3181,7 +3181,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-2.png",
+					"filename": "badger/unborrow/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3202,7 +3202,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-5.png",
+					"filename": "badger/burrow/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3223,7 +3223,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-2.png",
+					"filename": "stag/idle/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3244,7 +3244,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-12.png",
+					"filename": "stag/idle/nw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3265,7 +3265,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-12.png",
+					"filename": "badger/burrow/nw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3286,7 +3286,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/se/boar_SE_idle_2.png",
+					"filename": "boar/idle/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3307,7 +3307,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-4.png",
+					"filename": "badger/unborrow/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3328,7 +3328,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/sw/boar_SW_idle_0.png",
+					"filename": "boar/idle/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3349,7 +3349,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/ne/boar_NE_run_1.png",
+					"filename": "boar/run/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3370,7 +3370,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/ne/boar_NE_run_2.png",
+					"filename": "boar/run/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3391,7 +3391,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/nw/boar_NW_run_1.png",
+					"filename": "boar/run/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3412,7 +3412,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/nw/boar_NW_run_2.png",
+					"filename": "boar/run/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3433,7 +3433,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-3.png",
+					"filename": "stag/idle/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3454,7 +3454,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-10.png",
+					"filename": "stag/idle/nw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3475,7 +3475,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-20.png",
+					"filename": "stag/idle/nw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3496,7 +3496,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-4.png",
+					"filename": "stag/idle/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3517,7 +3517,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-9.png",
+					"filename": "stag/idle/nw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3538,7 +3538,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-10.png",
+					"filename": "badger/burrow/se/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3559,7 +3559,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-46.png",
+					"filename": "wolf/bite/ne/46.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3580,7 +3580,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-0.png",
+					"filename": "stag/idle/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3601,7 +3601,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-2.png",
+					"filename": "stag/idle/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3622,7 +3622,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-20.png",
+					"filename": "stag/idle/se/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3643,7 +3643,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-12.png",
+					"filename": "stag/idle/se/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3664,7 +3664,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-19.png",
+					"filename": "stag/idle/se/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3685,7 +3685,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-0.png",
+					"filename": "stag/idle/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3706,7 +3706,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-17.png",
+					"filename": "badger/burrow/ne/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3727,7 +3727,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-50.png",
+					"filename": "wolf/bite/ne/50.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3748,7 +3748,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-7.png",
+					"filename": "stag/run/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3769,7 +3769,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-5.png",
+					"filename": "stag/idle/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3790,7 +3790,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/se/boar_SE_idle_6.png",
+					"filename": "boar/idle/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3811,7 +3811,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/sw/boar_SW_idle_6.png",
+					"filename": "boar/idle/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3832,7 +3832,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-31.png",
+					"filename": "wolf/run/ne/31.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3853,7 +3853,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-23.png",
+					"filename": "wolf/run/nw/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3874,7 +3874,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/ne/boar_NE_idle_5.png",
+					"filename": "boar/idle/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3895,7 +3895,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-2.png",
+					"filename": "stag/idle/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3916,7 +3916,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-20.png",
+					"filename": "stag/idle/sw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3937,7 +3937,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-19.png",
+					"filename": "stag/idle/sw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3958,7 +3958,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-12.png",
+					"filename": "stag/idle/sw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3979,7 +3979,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-5.png",
+					"filename": "stag/run/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4000,7 +4000,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-5.png",
+					"filename": "stag/run/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4021,7 +4021,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-18.png",
+					"filename": "badger/burrow/ne/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4042,7 +4042,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-53.png",
+					"filename": "wolf/bite/ne/53.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4063,7 +4063,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-2.png",
+					"filename": "badger/burrow/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4084,7 +4084,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-18.png",
+					"filename": "wolf/death/se/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4105,7 +4105,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-6.png",
+					"filename": "wolf/death/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4126,7 +4126,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/nw/boar_NW_idle_5.png",
+					"filename": "boar/idle/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4147,7 +4147,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-17.png",
+					"filename": "wolf/death/se/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4168,7 +4168,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-5.png",
+					"filename": "wolf/death/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4189,7 +4189,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/ne/critter_badger_NE_tunnel-0.png",
+					"filename": "badger/tunnel/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4210,7 +4210,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-12.png",
+					"filename": "badger/burrow/se/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4231,7 +4231,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-12.png",
+					"filename": "badger/burrow/sw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4252,7 +4252,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/nw/critter_badger_NW_tunnel-0.png",
+					"filename": "badger/tunnel/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4273,7 +4273,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-43.png",
+					"filename": "wolf/death/ne/43.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4294,7 +4294,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-31.png",
+					"filename": "wolf/death/nw/31.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4315,7 +4315,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-22.png",
+					"filename": "wolf/run/nw/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4336,7 +4336,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-9.png",
+					"filename": "wolf/run/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4357,7 +4357,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-1.png",
+					"filename": "wolf/run/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4378,7 +4378,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-4.png",
+					"filename": "badger/unborrow/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4399,7 +4399,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-20.png",
+					"filename": "wolf/death/se/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4420,7 +4420,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-21.png",
+					"filename": "wolf/death/se/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4441,7 +4441,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-22.png",
+					"filename": "wolf/death/se/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4462,7 +4462,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-23.png",
+					"filename": "wolf/death/se/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4483,7 +4483,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-8.png",
+					"filename": "wolf/death/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4504,7 +4504,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-9.png",
+					"filename": "wolf/death/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4525,7 +4525,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-10.png",
+					"filename": "wolf/death/sw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4546,7 +4546,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-11.png",
+					"filename": "wolf/death/sw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4567,7 +4567,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/ne/boar_NE_idle_4.png",
+					"filename": "boar/idle/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4588,7 +4588,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/nw/boar_NW_idle_4.png",
+					"filename": "boar/idle/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4609,7 +4609,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-12.png",
+					"filename": "wolf/run/se/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4630,7 +4630,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-5.png",
+					"filename": "badger/unborrow/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4651,7 +4651,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-24.png",
+					"filename": "wolf/run/ne/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4672,7 +4672,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-16.png",
+					"filename": "wolf/run/nw/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4693,7 +4693,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-13.png",
+					"filename": "wolf/run/se/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4714,7 +4714,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-4.png",
+					"filename": "wolf/run/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4735,7 +4735,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-5.png",
+					"filename": "wolf/run/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4756,7 +4756,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-4.png",
+					"filename": "badger/unborrow/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4777,7 +4777,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-13.png",
+					"filename": "badger/burrow/se/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4798,7 +4798,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-13.png",
+					"filename": "badger/burrow/sw/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4819,7 +4819,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/ne/critter_badger_NE_tunnel-3.png",
+					"filename": "badger/tunnel/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4840,7 +4840,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/nw/critter_badger_NW_tunnel-3.png",
+					"filename": "badger/tunnel/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4861,7 +4861,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/se/boar_SE_idle_5.png",
+					"filename": "boar/idle/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4882,7 +4882,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-3.png",
+					"filename": "stag/walk/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4903,7 +4903,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/ne/critter_stag_NE_walk-4.png",
+					"filename": "stag/walk/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4924,7 +4924,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/ne/boar_NE_run_3.png",
+					"filename": "boar/run/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4945,7 +4945,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/nw/boar_NW_run_3.png",
+					"filename": "boar/run/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4966,7 +4966,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/se/boar_SE_idle_3.png",
+					"filename": "boar/idle/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4987,7 +4987,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-3.png",
+					"filename": "stag/walk/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5008,7 +5008,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/nw/critter_stag_NW_walk-4.png",
+					"filename": "stag/walk/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5029,7 +5029,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/se/critter_badger_SE_tunnel-3.png",
+					"filename": "badger/tunnel/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5050,7 +5050,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/se/critter_badger_SE_tunnel-4.png",
+					"filename": "badger/tunnel/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5071,7 +5071,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-27.png",
+					"filename": "wolf/bite/se/27.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5092,7 +5092,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-28.png",
+					"filename": "wolf/bite/se/28.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5113,7 +5113,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-0.png",
+					"filename": "stag/walk/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5134,7 +5134,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-1.png",
+					"filename": "stag/walk/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5155,7 +5155,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/sw/critter_badger_SW_tunnel-0.png",
+					"filename": "badger/tunnel/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5176,7 +5176,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/sw/critter_badger_SW_tunnel-3.png",
+					"filename": "badger/tunnel/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5197,7 +5197,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-12.png",
+					"filename": "wolf/bite/sw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5218,7 +5218,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-2.png",
+					"filename": "stag/walk/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5239,7 +5239,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-0.png",
+					"filename": "stag/walk/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5260,7 +5260,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/sw/critter_badger_SW_tunnel-4.png",
+					"filename": "badger/tunnel/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5281,7 +5281,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-10.png",
+					"filename": "stag/idle/sw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5302,7 +5302,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/sw/boar_SW_idle_5.png",
+					"filename": "boar/idle/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5323,7 +5323,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-27.png",
+					"filename": "wolf/howl/ne/27.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5344,7 +5344,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-0.png",
+					"filename": "badger/burrow/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5365,7 +5365,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-0.png",
+					"filename": "badger/burrow/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5386,7 +5386,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-1.png",
+					"filename": "badger/burrow/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5407,7 +5407,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-1.png",
+					"filename": "badger/burrow/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5428,7 +5428,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-1.png",
+					"filename": "badger/unborrow/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5449,7 +5449,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-7.png",
+					"filename": "badger/unborrow/ne/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5470,7 +5470,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/sw/boar_SW_idle_2.png",
+					"filename": "boar/idle/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5491,7 +5491,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/sw/boar_SW_idle_3.png",
+					"filename": "boar/idle/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5512,7 +5512,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-13.png",
+					"filename": "wolf/bite/sw/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5533,7 +5533,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-41.png",
+					"filename": "wolf/death/ne/41.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5554,7 +5554,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-29.png",
+					"filename": "wolf/death/nw/29.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5575,7 +5575,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-26.png",
+					"filename": "wolf/run/ne/26.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5596,7 +5596,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-18.png",
+					"filename": "wolf/run/nw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5617,7 +5617,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-21.png",
+					"filename": "stag/idle/ne/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5638,7 +5638,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-18.png",
+					"filename": "wolf/howl/nw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5659,7 +5659,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-21.png",
+					"filename": "stag/idle/nw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5680,7 +5680,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-40.png",
+					"filename": "wolf/death/ne/40.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5701,7 +5701,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-35.png",
+					"filename": "wolf/howl/ne/35.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5722,7 +5722,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/ne/wolf-idle-13.png",
+					"filename": "wolf/idle/ne/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5743,7 +5743,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/se/boar_SE_run_1.png",
+					"filename": "boar/run/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5764,7 +5764,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-26.png",
+					"filename": "wolf/howl/nw/26.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5785,7 +5785,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-1.png",
+					"filename": "badger/unborrow/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5806,7 +5806,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/sw/boar_SW_run_1.png",
+					"filename": "boar/run/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5827,7 +5827,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-7.png",
+					"filename": "badger/unborrow/nw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5848,7 +5848,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-9.png",
+					"filename": "badger/unborrow/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5869,7 +5869,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-22.png",
+					"filename": "badger/burrow/se/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5890,7 +5890,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-31.png",
+					"filename": "wolf/howl/ne/31.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5911,7 +5911,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-22.png",
+					"filename": "wolf/howl/nw/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5932,7 +5932,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-44.png",
+					"filename": "wolf/death/ne/44.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5953,7 +5953,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-45.png",
+					"filename": "wolf/death/ne/45.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5974,7 +5974,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-46.png",
+					"filename": "wolf/death/ne/46.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5995,7 +5995,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-47.png",
+					"filename": "wolf/death/ne/47.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6016,7 +6016,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-49.png",
+					"filename": "wolf/bite/ne/49.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6037,7 +6037,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-9.png",
+					"filename": "badger/unborrow/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6058,7 +6058,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-0.png",
+					"filename": "badger/walk/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6079,7 +6079,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-0.png",
+					"filename": "badger/walk/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6100,7 +6100,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-22.png",
+					"filename": "badger/burrow/sw/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6121,7 +6121,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-1.png",
+					"filename": "stag/walk/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6142,7 +6142,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-7.png",
+					"filename": "stag/run/ne/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6163,7 +6163,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/ne/critter_stag_NE_run-8.png",
+					"filename": "stag/run/ne/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6184,7 +6184,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-7.png",
+					"filename": "stag/run/nw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6205,7 +6205,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/nw/critter_stag_NW_run-8.png",
+					"filename": "stag/run/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6226,7 +6226,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-10.png",
+					"filename": "stag/walk/se/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6247,7 +6247,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-10.png",
+					"filename": "stag/walk/sw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6268,7 +6268,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-4.png",
+					"filename": "stag/idle/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6289,7 +6289,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-2.png",
+					"filename": "stag/walk/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6310,7 +6310,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-11.png",
+					"filename": "stag/idle/sw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6331,7 +6331,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-6.png",
+					"filename": "stag/run/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6352,7 +6352,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-9.png",
+					"filename": "stag/run/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6373,7 +6373,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-6.png",
+					"filename": "stag/run/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6394,7 +6394,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-9.png",
+					"filename": "stag/run/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6415,7 +6415,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-9.png",
+					"filename": "stag/walk/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6436,7 +6436,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-3.png",
+					"filename": "stag/walk/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6457,7 +6457,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-4.png",
+					"filename": "stag/walk/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6478,7 +6478,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-3.png",
+					"filename": "stag/walk/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6499,7 +6499,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-4.png",
+					"filename": "badger/unborrow/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6520,7 +6520,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-4.png",
+					"filename": "stag/walk/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6541,7 +6541,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-9.png",
+					"filename": "stag/walk/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6562,7 +6562,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-3.png",
+					"filename": "stag/idle/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6583,7 +6583,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-6.png",
+					"filename": "stag/idle/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6604,7 +6604,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-7.png",
+					"filename": "stag/idle/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6625,7 +6625,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-8.png",
+					"filename": "stag/idle/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6646,7 +6646,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-13.png",
+					"filename": "stag/idle/se/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6667,7 +6667,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-14.png",
+					"filename": "stag/idle/se/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6688,7 +6688,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-15.png",
+					"filename": "stag/idle/se/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6709,7 +6709,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-16.png",
+					"filename": "stag/idle/se/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6730,7 +6730,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-17.png",
+					"filename": "stag/idle/se/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6751,7 +6751,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-18.png",
+					"filename": "stag/idle/se/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6772,7 +6772,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/ne/critter_badger_NE_tunnel-2.png",
+					"filename": "badger/tunnel/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6793,7 +6793,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/ne/critter_badger_NE_tunnel-1.png",
+					"filename": "badger/tunnel/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6814,7 +6814,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-3.png",
+					"filename": "stag/idle/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6835,7 +6835,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/nw/critter_badger_NW_tunnel-2.png",
+					"filename": "badger/tunnel/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6856,7 +6856,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-5.png",
+					"filename": "stag/idle/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6877,7 +6877,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-6.png",
+					"filename": "stag/idle/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6898,7 +6898,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-7.png",
+					"filename": "stag/idle/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6919,7 +6919,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-8.png",
+					"filename": "stag/idle/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6940,7 +6940,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-13.png",
+					"filename": "stag/idle/sw/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6961,7 +6961,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-14.png",
+					"filename": "stag/idle/sw/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6982,7 +6982,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-15.png",
+					"filename": "stag/idle/sw/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7003,7 +7003,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-16.png",
+					"filename": "stag/idle/sw/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7024,7 +7024,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-17.png",
+					"filename": "stag/idle/sw/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7045,7 +7045,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-18.png",
+					"filename": "stag/idle/sw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7066,7 +7066,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/se/critter_stag_SE_run-8.png",
+					"filename": "stag/run/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7087,7 +7087,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-8.png",
+					"filename": "stag/run/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7108,7 +7108,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/se/critter_stag_SE_walk-8.png",
+					"filename": "stag/walk/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7129,7 +7129,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/ne/wolf-idle-12.png",
+					"filename": "wolf/idle/ne/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7150,7 +7150,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-6.png",
+					"filename": "wolf/bite/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7171,7 +7171,7 @@
 					}
 				},
 				{
-					"filename": "stag/walk/sw/critter_stag_SW_walk-8.png",
+					"filename": "stag/walk/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7192,7 +7192,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-38.png",
+					"filename": "wolf/death/ne/38.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7213,7 +7213,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-26.png",
+					"filename": "wolf/death/nw/26.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7234,7 +7234,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-14.png",
+					"filename": "wolf/death/se/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7255,7 +7255,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-2.png",
+					"filename": "wolf/death/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7276,7 +7276,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-9.png",
+					"filename": "stag/idle/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7297,7 +7297,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/nw/wolf-idle-8.png",
+					"filename": "wolf/idle/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7318,7 +7318,7 @@
 					}
 				},
 				{
-					"filename": "stag/run/sw/critter_stag_SW_run-7.png",
+					"filename": "stag/run/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7339,7 +7339,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-23.png",
+					"filename": "stag/idle/ne/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7360,7 +7360,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-28.png",
+					"filename": "wolf/howl/ne/28.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7381,7 +7381,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-19.png",
+					"filename": "wolf/howl/nw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7402,7 +7402,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/ne/wolf-idle-15.png",
+					"filename": "wolf/idle/ne/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7423,7 +7423,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-1.png",
+					"filename": "badger/burrow/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7444,7 +7444,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/nw/wolf-idle-9.png",
+					"filename": "wolf/idle/nw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7465,7 +7465,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/nw/wolf-idle-11.png",
+					"filename": "wolf/idle/nw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7486,7 +7486,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-28.png",
+					"filename": "wolf/death/nw/28.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7507,7 +7507,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-10.png",
+					"filename": "wolf/run/se/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7528,7 +7528,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-11.png",
+					"filename": "badger/burrow/se/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7549,7 +7549,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-2.png",
+					"filename": "wolf/run/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7570,7 +7570,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/ne/wolf-idle-14.png",
+					"filename": "wolf/idle/ne/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7591,7 +7591,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-23.png",
+					"filename": "stag/idle/nw/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7612,7 +7612,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-39.png",
+					"filename": "wolf/death/ne/39.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7633,7 +7633,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-27.png",
+					"filename": "wolf/death/nw/27.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7654,7 +7654,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/ne/boar_NE_idle_1.png",
+					"filename": "boar/idle/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7675,7 +7675,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-15.png",
+					"filename": "wolf/death/se/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7696,7 +7696,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-3.png",
+					"filename": "wolf/death/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7717,7 +7717,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/nw/wolf-idle-10.png",
+					"filename": "wolf/idle/nw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7738,7 +7738,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-30.png",
+					"filename": "wolf/howl/ne/30.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7759,7 +7759,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-21.png",
+					"filename": "wolf/howl/nw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7780,7 +7780,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-5.png",
+					"filename": "badger/unborrow/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7801,7 +7801,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-5.png",
+					"filename": "badger/unborrow/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7822,7 +7822,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/ne/boar_NE_idle_2.png",
+					"filename": "boar/idle/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7843,7 +7843,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/nw/critter_badger_NW_tunnel-1.png",
+					"filename": "badger/tunnel/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7864,7 +7864,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/se/wolf-idle-4.png",
+					"filename": "wolf/idle/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7885,7 +7885,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/sw/wolf-idle-0.png",
+					"filename": "wolf/idle/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7906,7 +7906,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/ne/boar_NE_idle_3.png",
+					"filename": "boar/idle/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7927,7 +7927,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/nw/boar_NW_idle_1.png",
+					"filename": "boar/idle/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7948,7 +7948,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/nw/boar_NW_idle_2.png",
+					"filename": "boar/idle/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7969,7 +7969,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/nw/boar_NW_idle_3.png",
+					"filename": "boar/idle/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -7990,7 +7990,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-59.png",
+					"filename": "wolf/bite/ne/59.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8011,7 +8011,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-44.png",
+					"filename": "wolf/bite/nw/44.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8032,7 +8032,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-4.png",
+					"filename": "badger/burrow/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8053,7 +8053,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-31.png",
+					"filename": "wolf/bite/nw/31.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8074,7 +8074,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-23.png",
+					"filename": "badger/burrow/se/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8095,7 +8095,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-35.png",
+					"filename": "wolf/bite/nw/35.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8116,7 +8116,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-38.png",
+					"filename": "wolf/bite/nw/38.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8137,7 +8137,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-15.png",
+					"filename": "wolf/bite/se/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8158,7 +8158,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-0.png",
+					"filename": "wolf/bite/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8179,7 +8179,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/ne/wolf-howl-29.png",
+					"filename": "wolf/howl/ne/29.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8200,7 +8200,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/nw/wolf-howl-20.png",
+					"filename": "wolf/howl/nw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8221,7 +8221,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/se/wolf-idle-5.png",
+					"filename": "wolf/idle/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8242,7 +8242,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/se/wolf-idle-7.png",
+					"filename": "wolf/idle/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8263,7 +8263,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/sw/wolf-idle-1.png",
+					"filename": "wolf/idle/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8284,7 +8284,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-12.png",
+					"filename": "badger/idle/se/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8305,7 +8305,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/sw/wolf-idle-3.png",
+					"filename": "wolf/idle/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8326,7 +8326,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-11.png",
+					"filename": "badger/burrow/sw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8347,7 +8347,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-16.png",
+					"filename": "wolf/death/se/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8368,7 +8368,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-19.png",
+					"filename": "wolf/death/se/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8389,7 +8389,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-32.png",
+					"filename": "wolf/death/nw/32.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8410,7 +8410,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-33.png",
+					"filename": "wolf/death/nw/33.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8431,7 +8431,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-34.png",
+					"filename": "wolf/death/nw/34.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8452,7 +8452,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-35.png",
+					"filename": "wolf/death/nw/35.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8473,7 +8473,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-48.png",
+					"filename": "wolf/bite/ne/48.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8494,7 +8494,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-7.png",
+					"filename": "wolf/death/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8515,7 +8515,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/se/boar_SE_idle_4.png",
+					"filename": "boar/idle/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8536,7 +8536,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-34.png",
+					"filename": "wolf/bite/nw/34.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8557,7 +8557,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-5.png",
+					"filename": "badger/burrow/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8578,7 +8578,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-6.png",
+					"filename": "badger/burrow/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8599,7 +8599,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-4.png",
+					"filename": "badger/burrow/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8620,7 +8620,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/se/critter_badger_SE_tunnel-2.png",
+					"filename": "badger/tunnel/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8641,7 +8641,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-7.png",
+					"filename": "badger/burrow/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8662,7 +8662,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/se/wolf-idle-6.png",
+					"filename": "wolf/idle/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8683,7 +8683,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-10.png",
+					"filename": "badger/burrow/sw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8704,7 +8704,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-4.png",
+					"filename": "wolf/death/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8725,7 +8725,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-15.png",
+					"filename": "wolf/howl/se/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8746,7 +8746,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-6.png",
+					"filename": "wolf/howl/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8767,7 +8767,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-33.png",
+					"filename": "wolf/bite/nw/33.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8788,7 +8788,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-2.png",
+					"filename": "badger/unborrow/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8809,7 +8809,7 @@
 					}
 				},
 				{
-					"filename": "wolf/idle/sw/wolf-idle-2.png",
+					"filename": "wolf/idle/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8830,7 +8830,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/sw/boar_SW_idle_4.png",
+					"filename": "boar/idle/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8851,7 +8851,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/se/boar_SE_run_2.png",
+					"filename": "boar/run/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8872,7 +8872,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/sw/boar_SW_run_2.png",
+					"filename": "boar/run/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8893,7 +8893,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-21.png",
+					"filename": "stag/idle/se/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8914,7 +8914,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-22.png",
+					"filename": "stag/idle/se/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8935,7 +8935,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/se/critter_stag_SE_idle-23.png",
+					"filename": "stag/idle/se/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8956,7 +8956,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-21.png",
+					"filename": "stag/idle/sw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8977,7 +8977,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-22.png",
+					"filename": "stag/idle/sw/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -8998,7 +8998,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-2.png",
+					"filename": "badger/burrow/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9019,7 +9019,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/sw/critter_badger_SW_tunnel-2.png",
+					"filename": "badger/tunnel/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9040,7 +9040,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-6.png",
+					"filename": "badger/burrow/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9061,7 +9061,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-21.png",
+					"filename": "badger/burrow/se/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9082,7 +9082,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/sw/critter_stag_SW_idle-23.png",
+					"filename": "stag/idle/sw/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9103,7 +9103,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-24.png",
+					"filename": "wolf/bite/se/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9124,7 +9124,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-9.png",
+					"filename": "wolf/bite/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9145,7 +9145,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-12.png",
+					"filename": "wolf/death/se/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9166,7 +9166,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-14.png",
+					"filename": "wolf/howl/se/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9187,7 +9187,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-0.png",
+					"filename": "wolf/death/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9208,7 +9208,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-16.png",
+					"filename": "wolf/howl/se/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9229,7 +9229,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-12.png",
+					"filename": "wolf/howl/se/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9250,7 +9250,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-3.png",
+					"filename": "wolf/howl/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9271,7 +9271,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-6.png",
+					"filename": "badger/unborrow/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9292,7 +9292,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-5.png",
+					"filename": "wolf/howl/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9313,7 +9313,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-13.png",
+					"filename": "wolf/howl/se/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9334,7 +9334,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-4.png",
+					"filename": "wolf/howl/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9355,7 +9355,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-5.png",
+					"filename": "badger/unborrow/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9376,7 +9376,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-3.png",
+					"filename": "badger/burrow/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9397,7 +9397,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-3.png",
+					"filename": "badger/unborrow/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9418,7 +9418,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-20.png",
+					"filename": "badger/burrow/ne/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9439,7 +9439,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-20.png",
+					"filename": "badger/burrow/se/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9460,7 +9460,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-3.png",
+					"filename": "badger/unborrow/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9481,7 +9481,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-2.png",
+					"filename": "badger/unborrow/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9502,7 +9502,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-18.png",
+					"filename": "badger/burrow/nw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9523,7 +9523,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-6.png",
+					"filename": "badger/burrow/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9544,7 +9544,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-6.png",
+					"filename": "badger/burrow/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9565,7 +9565,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-7.png",
+					"filename": "wolf/howl/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9586,7 +9586,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/se/critter_badger_SE_tunnel-1.png",
+					"filename": "badger/tunnel/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9607,7 +9607,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-29.png",
+					"filename": "wolf/bite/se/29.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9628,7 +9628,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-3.png",
+					"filename": "badger/burrow/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9649,7 +9649,7 @@
 					}
 				},
 				{
-					"filename": "badger/tunnel/sw/critter_badger_SW_tunnel-1.png",
+					"filename": "badger/tunnel/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9670,7 +9670,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-14.png",
+					"filename": "wolf/bite/sw/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9691,7 +9691,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-9.png",
+					"filename": "badger/burrow/ne/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9712,7 +9712,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-3.png",
+					"filename": "badger/unborrow/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9733,7 +9733,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-2.png",
+					"filename": "badger/burrow/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9754,7 +9754,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-7.png",
+					"filename": "badger/unborrow/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9775,7 +9775,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-17.png",
+					"filename": "badger/burrow/se/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9796,7 +9796,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-47.png",
+					"filename": "wolf/bite/ne/47.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9817,7 +9817,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-10.png",
+					"filename": "wolf/howl/se/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9838,7 +9838,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-51.png",
+					"filename": "wolf/bite/ne/51.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9859,7 +9859,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-36.png",
+					"filename": "wolf/death/ne/36.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9880,7 +9880,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-24.png",
+					"filename": "wolf/death/nw/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9901,7 +9901,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-32.png",
+					"filename": "wolf/bite/nw/32.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9922,7 +9922,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-36.png",
+					"filename": "wolf/bite/nw/36.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9943,7 +9943,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/ne/wolf-run-25.png",
+					"filename": "wolf/run/ne/25.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9964,7 +9964,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/ne/critter_stag_NE_idle-22.png",
+					"filename": "stag/idle/ne/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -9985,7 +9985,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/nw/wolf-run-17.png",
+					"filename": "wolf/run/nw/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10006,7 +10006,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-16.png",
+					"filename": "wolf/bite/se/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10027,7 +10027,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-8.png",
+					"filename": "badger/unborrow/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10048,7 +10048,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-17.png",
+					"filename": "wolf/bite/se/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10069,7 +10069,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-3.png",
+					"filename": "badger/walk/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10090,7 +10090,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-10.png",
+					"filename": "badger/burrow/ne/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10111,7 +10111,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-18.png",
+					"filename": "wolf/bite/se/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10132,7 +10132,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-7.png",
+					"filename": "badger/walk/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10153,7 +10153,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-19.png",
+					"filename": "wolf/bite/se/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10174,7 +10174,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-7.png",
+					"filename": "badger/burrow/ne/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10195,7 +10195,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-8.png",
+					"filename": "badger/burrow/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10216,7 +10216,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-20.png",
+					"filename": "wolf/bite/se/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10237,7 +10237,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-22.png",
+					"filename": "wolf/bite/se/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10258,7 +10258,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-11.png",
+					"filename": "badger/burrow/ne/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10279,7 +10279,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-16.png",
+					"filename": "badger/burrow/ne/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10300,7 +10300,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/se/wolf-bite-23.png",
+					"filename": "wolf/bite/se/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10321,7 +10321,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-0.png",
+					"filename": "badger/burrow/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10342,7 +10342,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-6.png",
+					"filename": "badger/unborrow/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10363,7 +10363,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-1.png",
+					"filename": "wolf/bite/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10384,7 +10384,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-1.png",
+					"filename": "wolf/howl/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10405,7 +10405,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-2.png",
+					"filename": "wolf/bite/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10426,7 +10426,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/se/wolf-run-11.png",
+					"filename": "wolf/run/se/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10447,7 +10447,7 @@
 					}
 				},
 				{
-					"filename": "wolf/run/sw/wolf-run-3.png",
+					"filename": "wolf/run/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10468,7 +10468,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/se/wolf-death-13.png",
+					"filename": "wolf/death/se/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10489,7 +10489,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/sw/wolf-death-1.png",
+					"filename": "wolf/death/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10510,7 +10510,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-52.png",
+					"filename": "wolf/bite/ne/52.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10531,7 +10531,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-37.png",
+					"filename": "wolf/bite/nw/37.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10552,7 +10552,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-21.png",
+					"filename": "badger/burrow/ne/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10573,7 +10573,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-7.png",
+					"filename": "badger/unborrow/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10594,7 +10594,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-15.png",
+					"filename": "badger/burrow/ne/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10615,7 +10615,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-1.png",
+					"filename": "badger/burrow/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10636,7 +10636,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-3.png",
+					"filename": "wolf/bite/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10657,7 +10657,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-14.png",
+					"filename": "badger/burrow/se/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10678,7 +10678,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/se/boar_SE_idle_1.png",
+					"filename": "boar/idle/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10699,7 +10699,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-4.png",
+					"filename": "wolf/bite/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10720,7 +10720,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-1.png",
+					"filename": "badger/unborrow/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10741,7 +10741,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-18.png",
+					"filename": "badger/burrow/se/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10762,7 +10762,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-20.png",
+					"filename": "badger/burrow/nw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10783,7 +10783,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-9.png",
+					"filename": "wolf/howl/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10804,7 +10804,7 @@
 					}
 				},
 				{
-					"filename": "boar/idle/sw/boar_SW_idle_1.png",
+					"filename": "boar/idle/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10825,7 +10825,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-5.png",
+					"filename": "wolf/bite/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10846,7 +10846,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-17.png",
+					"filename": "badger/burrow/sw/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10867,7 +10867,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-57.png",
+					"filename": "wolf/bite/ne/57.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10888,7 +10888,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-42.png",
+					"filename": "wolf/bite/nw/42.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10909,7 +10909,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-11.png",
+					"filename": "wolf/howl/se/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10930,7 +10930,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-0.png",
+					"filename": "wolf/howl/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10951,7 +10951,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/se/wolf-howl-17.png",
+					"filename": "wolf/howl/se/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10972,7 +10972,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/ne/wolf-death-37.png",
+					"filename": "wolf/death/ne/37.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -10993,7 +10993,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-2.png",
+					"filename": "wolf/howl/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11014,7 +11014,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-2.png",
+					"filename": "badger/unborrow/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11035,7 +11035,7 @@
 					}
 				},
 				{
-					"filename": "wolf/howl/sw/wolf-howl-8.png",
+					"filename": "wolf/howl/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11056,7 +11056,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-7.png",
+					"filename": "wolf/bite/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11077,7 +11077,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-3.png",
+					"filename": "badger/unborrow/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11098,7 +11098,7 @@
 					}
 				},
 				{
-					"filename": "wolf/death/nw/wolf-death-25.png",
+					"filename": "wolf/death/nw/25.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11119,7 +11119,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-9.png",
+					"filename": "badger/burrow/nw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11140,7 +11140,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/sw/wolf-bite-8.png",
+					"filename": "wolf/bite/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11161,7 +11161,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-8.png",
+					"filename": "badger/unborrow/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11182,7 +11182,7 @@
 					}
 				},
 				{
-					"filename": "stag/idle/nw/critter_stag_NW_idle-22.png",
+					"filename": "stag/idle/nw/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11203,7 +11203,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/se/boar_SE_run_0.png",
+					"filename": "boar/run/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11224,7 +11224,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/se/boar_SE_run_3.png",
+					"filename": "boar/run/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11245,7 +11245,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/sw/boar_SW_run_3.png",
+					"filename": "boar/run/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11266,7 +11266,7 @@
 					}
 				},
 				{
-					"filename": "boar/run/sw/boar_SW_run_0.png",
+					"filename": "boar/run/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11287,7 +11287,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-1.png",
+					"filename": "badger/unborrow/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11308,7 +11308,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-54.png",
+					"filename": "wolf/bite/ne/54.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11329,7 +11329,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/ne/wolf-bite-58.png",
+					"filename": "wolf/bite/ne/58.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11350,7 +11350,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-43.png",
+					"filename": "wolf/bite/nw/43.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11371,7 +11371,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-20.png",
+					"filename": "badger/burrow/sw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11392,7 +11392,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-7.png",
+					"filename": "badger/burrow/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11413,7 +11413,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-4.png",
+					"filename": "badger/walk/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11434,7 +11434,7 @@
 					}
 				},
 				{
-					"filename": "wolf/bite/nw/wolf-bite-39.png",
+					"filename": "wolf/bite/nw/39.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11455,7 +11455,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-10.png",
+					"filename": "badger/burrow/nw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11476,7 +11476,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-17.png",
+					"filename": "badger/burrow/nw/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11497,7 +11497,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-21.png",
+					"filename": "badger/burrow/nw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11518,7 +11518,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-7.png",
+					"filename": "badger/walk/ne/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11539,7 +11539,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-19.png",
+					"filename": "badger/burrow/se/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11560,7 +11560,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-19.png",
+					"filename": "badger/burrow/sw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11581,7 +11581,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-18.png",
+					"filename": "badger/burrow/sw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11602,7 +11602,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-16.png",
+					"filename": "badger/burrow/nw/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11623,7 +11623,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-4.png",
+					"filename": "badger/walk/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11644,7 +11644,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-7.png",
+					"filename": "badger/walk/nw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11665,7 +11665,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-10.png",
+					"filename": "badger/idle/ne/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11686,7 +11686,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-8.png",
+					"filename": "badger/burrow/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11707,7 +11707,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-11.png",
+					"filename": "badger/idle/ne/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11728,7 +11728,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-1.png",
+					"filename": "badger/walk/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11749,7 +11749,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-1.png",
+					"filename": "badger/walk/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11770,7 +11770,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-2.png",
+					"filename": "badger/walk/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11791,7 +11791,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-8.png",
+					"filename": "badger/walk/ne/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11812,7 +11812,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-8.png",
+					"filename": "badger/walk/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11833,7 +11833,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-5.png",
+					"filename": "badger/walk/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11854,7 +11854,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-5.png",
+					"filename": "badger/walk/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11875,7 +11875,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-24.png",
+					"filename": "badger/burrow/ne/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11896,7 +11896,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-0.png",
+					"filename": "badger/unborrow/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11917,7 +11917,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-0.png",
+					"filename": "badger/unborrow/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11938,7 +11938,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-23.png",
+					"filename": "badger/burrow/sw/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11959,7 +11959,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-13.png",
+					"filename": "badger/burrow/ne/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -11980,7 +11980,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-23.png",
+					"filename": "badger/burrow/ne/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12001,7 +12001,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-14.png",
+					"filename": "badger/burrow/ne/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12022,7 +12022,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-12.png",
+					"filename": "badger/idle/ne/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12043,7 +12043,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-2.png",
+					"filename": "badger/walk/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12064,7 +12064,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-15.png",
+					"filename": "badger/burrow/se/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12085,7 +12085,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-16.png",
+					"filename": "badger/burrow/se/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12106,7 +12106,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-16.png",
+					"filename": "badger/burrow/sw/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12127,7 +12127,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-13.png",
+					"filename": "badger/idle/ne/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12148,7 +12148,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-10.png",
+					"filename": "badger/unborrow/ne/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12169,7 +12169,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-12.png",
+					"filename": "badger/unborrow/ne/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12190,7 +12190,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-10.png",
+					"filename": "badger/unborrow/nw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12211,7 +12211,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-24.png",
+					"filename": "badger/burrow/se/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12232,7 +12232,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-14.png",
+					"filename": "badger/idle/ne/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12253,7 +12253,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-10.png",
+					"filename": "badger/idle/nw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12274,7 +12274,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-19.png",
+					"filename": "badger/idle/ne/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12295,7 +12295,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-20.png",
+					"filename": "badger/idle/ne/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12316,7 +12316,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-21.png",
+					"filename": "badger/idle/ne/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12337,7 +12337,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-11.png",
+					"filename": "badger/idle/nw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12358,7 +12358,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-12.png",
+					"filename": "badger/idle/nw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12379,7 +12379,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-15.png",
+					"filename": "badger/burrow/sw/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12400,7 +12400,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-12.png",
+					"filename": "badger/unborrow/nw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12421,7 +12421,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-13.png",
+					"filename": "badger/idle/nw/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12442,7 +12442,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-3.png",
+					"filename": "badger/walk/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12463,7 +12463,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-7.png",
+					"filename": "badger/walk/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12484,7 +12484,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-16.png",
+					"filename": "badger/idle/se/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12505,7 +12505,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-8.png",
+					"filename": "badger/burrow/ne/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12526,7 +12526,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-14.png",
+					"filename": "badger/idle/nw/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12547,7 +12547,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-8.png",
+					"filename": "badger/unborrow/ne/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12568,7 +12568,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-8.png",
+					"filename": "badger/unborrow/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12589,7 +12589,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-13.png",
+					"filename": "badger/idle/se/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12610,7 +12610,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-14.png",
+					"filename": "badger/idle/se/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12631,7 +12631,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-7.png",
+					"filename": "badger/burrow/nw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12652,7 +12652,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-3.png",
+					"filename": "badger/idle/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12673,7 +12673,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-15.png",
+					"filename": "badger/idle/se/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12694,7 +12694,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-8.png",
+					"filename": "badger/burrow/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12715,7 +12715,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-19.png",
+					"filename": "badger/idle/nw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12736,7 +12736,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-20.png",
+					"filename": "badger/idle/nw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12757,7 +12757,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-21.png",
+					"filename": "badger/idle/nw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12778,7 +12778,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-14.png",
+					"filename": "badger/burrow/sw/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12799,7 +12799,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-0.png",
+					"filename": "badger/walk/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12820,7 +12820,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-2.png",
+					"filename": "badger/walk/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12841,7 +12841,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-8.png",
+					"filename": "badger/walk/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12862,7 +12862,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-2.png",
+					"filename": "badger/walk/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12883,7 +12883,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-15.png",
+					"filename": "badger/idle/ne/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12904,7 +12904,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-16.png",
+					"filename": "badger/idle/ne/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12925,7 +12925,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-17.png",
+					"filename": "badger/idle/ne/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12946,7 +12946,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-18.png",
+					"filename": "badger/idle/ne/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12967,7 +12967,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-15.png",
+					"filename": "badger/idle/nw/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -12988,7 +12988,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-16.png",
+					"filename": "badger/idle/nw/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13009,7 +13009,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-17.png",
+					"filename": "badger/idle/nw/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13030,7 +13030,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-18.png",
+					"filename": "badger/idle/nw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13051,7 +13051,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-6.png",
+					"filename": "badger/unborrow/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13072,7 +13072,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-9.png",
+					"filename": "badger/unborrow/ne/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13093,7 +13093,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-0.png",
+					"filename": "badger/walk/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13114,7 +13114,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-9.png",
+					"filename": "badger/idle/ne/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13135,7 +13135,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-11.png",
+					"filename": "badger/burrow/nw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13156,7 +13156,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-6.png",
+					"filename": "badger/unborrow/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13177,7 +13177,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-12.png",
+					"filename": "badger/idle/sw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13198,7 +13198,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-9.png",
+					"filename": "badger/idle/nw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13219,7 +13219,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-8.png",
+					"filename": "badger/walk/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13240,7 +13240,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-9.png",
+					"filename": "badger/unborrow/nw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13261,7 +13261,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-17.png",
+					"filename": "badger/idle/se/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13282,7 +13282,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-18.png",
+					"filename": "badger/idle/se/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13303,7 +13303,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-19.png",
+					"filename": "badger/idle/se/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13324,7 +13324,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-20.png",
+					"filename": "badger/idle/se/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13345,7 +13345,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-21.png",
+					"filename": "badger/idle/se/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13366,7 +13366,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-24.png",
+					"filename": "badger/burrow/sw/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13387,7 +13387,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-15.png",
+					"filename": "badger/burrow/nw/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13408,7 +13408,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-0.png",
+					"filename": "badger/idle/ne/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13429,7 +13429,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-2.png",
+					"filename": "badger/idle/se/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13450,7 +13450,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-2.png",
+					"filename": "badger/idle/sw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13471,7 +13471,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-3.png",
+					"filename": "badger/walk/ne/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13492,7 +13492,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/ne/critter_badger_NE_walk-6.png",
+					"filename": "badger/walk/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13513,7 +13513,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-3.png",
+					"filename": "badger/walk/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13534,7 +13534,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-6.png",
+					"filename": "badger/walk/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13555,7 +13555,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-14.png",
+					"filename": "badger/burrow/nw/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13576,7 +13576,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-13.png",
+					"filename": "badger/idle/sw/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13597,7 +13597,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-14.png",
+					"filename": "badger/idle/sw/14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13618,7 +13618,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-15.png",
+					"filename": "badger/idle/sw/15.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13639,7 +13639,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-0.png",
+					"filename": "badger/idle/nw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13660,7 +13660,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-5.png",
+					"filename": "badger/idle/se/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13681,7 +13681,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-6.png",
+					"filename": "badger/idle/se/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13702,7 +13702,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-1.png",
+					"filename": "badger/idle/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13723,7 +13723,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-7.png",
+					"filename": "badger/idle/se/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13744,7 +13744,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-8.png",
+					"filename": "badger/idle/se/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13765,7 +13765,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-5.png",
+					"filename": "badger/idle/sw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13786,7 +13786,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/se/critter_badger_SE_walk-1.png",
+					"filename": "badger/walk/se/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13807,7 +13807,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-1.png",
+					"filename": "badger/idle/ne/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13828,7 +13828,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-6.png",
+					"filename": "badger/idle/sw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13849,7 +13849,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-11.png",
+					"filename": "badger/idle/se/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13870,7 +13870,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/sw/critter_badger_SW_walk-1.png",
+					"filename": "badger/walk/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13891,7 +13891,7 @@
 					}
 				},
 				{
-					"filename": "badger/walk/nw/critter_badger_NW_walk-5.png",
+					"filename": "badger/walk/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13912,7 +13912,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-3.png",
+					"filename": "badger/idle/se/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13933,7 +13933,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-4.png",
+					"filename": "badger/idle/se/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13954,7 +13954,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-1.png",
+					"filename": "badger/idle/sw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13975,7 +13975,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-3.png",
+					"filename": "badger/idle/sw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -13996,7 +13996,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-4.png",
+					"filename": "badger/idle/sw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14017,7 +14017,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-16.png",
+					"filename": "badger/idle/sw/16.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14038,7 +14038,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-7.png",
+					"filename": "badger/idle/sw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14059,7 +14059,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-8.png",
+					"filename": "badger/idle/sw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14080,7 +14080,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-11.png",
+					"filename": "badger/unborrow/se/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14101,7 +14101,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-11.png",
+					"filename": "badger/unborrow/sw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14122,7 +14122,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/se/critter_badger_SE_burrow-9.png",
+					"filename": "badger/burrow/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14143,7 +14143,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-9.png",
+					"filename": "badger/burrow/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14164,7 +14164,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-13.png",
+					"filename": "badger/burrow/nw/13.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14185,7 +14185,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-17.png",
+					"filename": "badger/idle/sw/17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14206,7 +14206,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-18.png",
+					"filename": "badger/idle/sw/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14227,7 +14227,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-5.png",
+					"filename": "badger/idle/ne/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14248,7 +14248,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-7.png",
+					"filename": "badger/idle/ne/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14269,7 +14269,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-19.png",
+					"filename": "badger/idle/sw/19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14290,7 +14290,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-20.png",
+					"filename": "badger/idle/sw/20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14311,7 +14311,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-21.png",
+					"filename": "badger/idle/sw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14332,7 +14332,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-2.png",
+					"filename": "badger/idle/ne/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14353,7 +14353,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-4.png",
+					"filename": "badger/idle/ne/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14374,7 +14374,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-6.png",
+					"filename": "badger/idle/ne/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14395,7 +14395,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/sw/critter_badger_SW_burrow-21.png",
+					"filename": "badger/burrow/sw/21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14416,7 +14416,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/ne/critter_badger_NE_idle-8.png",
+					"filename": "badger/idle/ne/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14437,7 +14437,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-1.png",
+					"filename": "badger/idle/nw/01.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14458,7 +14458,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-23.png",
+					"filename": "badger/burrow/nw/23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14479,7 +14479,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-2.png",
+					"filename": "badger/idle/nw/02.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14500,7 +14500,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-3.png",
+					"filename": "badger/idle/nw/03.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14521,7 +14521,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-4.png",
+					"filename": "badger/idle/nw/04.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14542,7 +14542,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-6.png",
+					"filename": "badger/idle/nw/06.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14563,7 +14563,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-5.png",
+					"filename": "badger/idle/nw/05.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14584,7 +14584,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-7.png",
+					"filename": "badger/idle/nw/07.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14605,7 +14605,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/nw/critter_badger_NW_idle-8.png",
+					"filename": "badger/idle/nw/08.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14626,7 +14626,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-0.png",
+					"filename": "badger/idle/se/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14647,7 +14647,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-9.png",
+					"filename": "badger/idle/se/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14668,7 +14668,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/se/critter_badger_SE_idle-10.png",
+					"filename": "badger/idle/se/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14689,7 +14689,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-0.png",
+					"filename": "badger/idle/sw/00.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14710,7 +14710,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-9.png",
+					"filename": "badger/idle/sw/09.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14731,7 +14731,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-10.png",
+					"filename": "badger/idle/sw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14752,7 +14752,7 @@
 					}
 				},
 				{
-					"filename": "badger/idle/sw/critter_badger_SW_idle-11.png",
+					"filename": "badger/idle/sw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14773,7 +14773,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/ne/critter_badger_NE_unburrow-11.png",
+					"filename": "badger/unborrow/ne/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14794,7 +14794,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/nw/critter_badger_NW_unburrow-11.png",
+					"filename": "badger/unborrow/nw/11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14815,7 +14815,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-10.png",
+					"filename": "badger/unborrow/se/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14836,7 +14836,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-24.png",
+					"filename": "badger/burrow/nw/24.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14857,7 +14857,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/se/critter_badger_SE_unburrow-12.png",
+					"filename": "badger/unborrow/se/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14878,7 +14878,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-10.png",
+					"filename": "badger/unborrow/sw/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14899,7 +14899,7 @@
 					}
 				},
 				{
-					"filename": "badger/unborrow/sw/critter_badger_SW_unburrow-12.png",
+					"filename": "badger/unborrow/sw/12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14920,7 +14920,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/ne/critter_badger_NE_burrow-22.png",
+					"filename": "badger/burrow/ne/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14941,7 +14941,7 @@
 					}
 				},
 				{
-					"filename": "badger/burrow/nw/critter_badger_NW_burrow-22.png",
+					"filename": "badger/burrow/nw/22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -14967,6 +14967,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:3ffa3a41a1045216a66ee09021b7cba1:d7d4191edd6537c4d22a3ad2531d9ae6:69582e75f51d7e73ccb7add6693a14cb$"
+		"smartupdate": "$TexturePacker:SmartUpdate:b4884720b6e77a8c864a5b07c1766292:dea0451c9d5a746bf18571f1109cad0a:69582e75f51d7e73ccb7add6693a14cb$"
 	}
 }
