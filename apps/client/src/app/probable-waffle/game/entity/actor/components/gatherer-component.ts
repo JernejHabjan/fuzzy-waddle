@@ -112,7 +112,7 @@ export class GathererComponent {
   }
 
   private destroy() {
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
   canGatherFrom(gameObject: GameObject): boolean {

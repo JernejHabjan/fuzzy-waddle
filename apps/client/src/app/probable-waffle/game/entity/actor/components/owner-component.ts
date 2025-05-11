@@ -227,6 +227,6 @@ export class OwnerComponent {
     this.healthUiVisibilitySubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
   }
 }

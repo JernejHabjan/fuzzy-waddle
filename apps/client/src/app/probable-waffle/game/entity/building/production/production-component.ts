@@ -348,7 +348,7 @@ export class ProductionComponent {
   }
 
   private destroy() {
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.playerChangedSubscription?.unsubscribe();
     this.rallyPoint.destroy();
   }

@@ -331,6 +331,6 @@ export class ConstructionSiteComponent {
 
   private onDestroy() {
     this.cancelConstruction();
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 }

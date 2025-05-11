@@ -348,7 +348,7 @@ export class HealthComponent {
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     this.killKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.killSelected, this);
     this.damageKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
   }
 
   get alive(): boolean {
