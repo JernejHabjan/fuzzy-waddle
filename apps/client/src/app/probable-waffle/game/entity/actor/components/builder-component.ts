@@ -12,6 +12,8 @@ import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "./owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { AnimationActorComponent, AnimationOptions } from "./animation-actor-component";
+import { OrderType } from "../../character/ai/order-type";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
@@ -37,6 +39,7 @@ export class BuilderComponent {
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   remainingCooldown = 0;
   private audioService?: AudioService;
+  private animationActorComponent?: AnimationActorComponent;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -50,6 +53,7 @@ export class BuilderComponent {
 
   private sceneInit() {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
   }
 
   private update(_: number, delta: number): void {
@@ -86,12 +90,12 @@ export class BuilderComponent {
     constructionSiteComponent.assignBuilder(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
 
-    if (this.builderComponentDefinition.enterConstructionSite) {
-      const containerComponent = getActorComponent(constructionSite, ContainerComponent);
-      if (containerComponent) {
-        containerComponent.loadGameObject(this.gameObject);
-        this.onConstructionSiteEntered.next([this.gameObject, constructionSite]);
-      }
+    const containerComponent = getActorComponent(constructionSite, ContainerComponent);
+    if (this.builderComponentDefinition.enterConstructionSite && containerComponent) {
+      containerComponent.loadGameObject(this.gameObject);
+      this.onConstructionSiteEntered.next([this.gameObject, constructionSite]);
+    } else {
+      this.animationActorComponent?.playOrderAnimation(OrderType.Build, { repeat: -1 } satisfies AnimationOptions);
     }
   }
 
@@ -142,12 +146,12 @@ export class BuilderComponent {
     constructionSiteComponent.assignRepairer(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, target]);
 
-    if (this.builderComponentDefinition.enterConstructionSite) {
-      const containerComponent = getActorComponent(target, ContainerComponent);
-      if (containerComponent) {
-        containerComponent.loadGameObject(this.gameObject);
-        this.onConstructionSiteEntered.next([this.gameObject, target]);
-      }
+    const containerComponent = getActorComponent(target, ContainerComponent);
+    if (this.builderComponentDefinition.enterConstructionSite && containerComponent) {
+      containerComponent.loadGameObject(this.gameObject);
+      this.onConstructionSiteEntered.next([this.gameObject, target]);
+    } else {
+      this.animationActorComponent?.playOrderAnimation(OrderType.Repair, { repeat: -1 } satisfies AnimationOptions);
     }
   }
 

@@ -27,6 +27,7 @@ import { BuilderComponent } from "../../../../entity/actor/components/builder-co
 import { OrderData } from "../../../../entity/character/ai/OrderData";
 import { HealingComponent } from "../../../../entity/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../../../entity/building/construction/construction-site-component";
+import { AnimationActorComponent } from "../../../../entity/actor/components/animation-actor-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -215,6 +216,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
           break;
       }
       this.blackboard.resetCurrentOrder(false);
+      const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+      if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
     }
 
     this.blackboard.popCurrentOrderFromQueue();

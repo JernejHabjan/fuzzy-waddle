@@ -195,6 +195,11 @@ export class AnimationActorComponent {
       config.repeat = animationDef.repeat;
     }
 
+    if (animationOptions.repeat !== undefined) {
+      // Override the repeat value if provided in animationOptions
+      config.repeat = animationOptions.repeat;
+    }
+
     this.isAnimating = true;
     this.sprite.play(config);
 
@@ -259,4 +264,5 @@ export class AnimationActorComponent {
 export interface AnimationOptions {
   forceRestart?: boolean;
   onComplete?: () => void;
+  repeat?: number;
 }

@@ -6,14 +6,15 @@ import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../../data/actor-data";
-import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } from "../../../data/scene-data";
 import { EventEmitter } from "@angular/core";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
 import { TilemapComponent } from "../../../scenes/components/tilemap.component";
-import Vector2 = Phaser.Math.Vector2;
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { IdComponent } from "../../../entity/actor/components/id-component";
+import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -42,6 +43,10 @@ export class BuildingCursor {
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
+  }
+
+  get placingBuilding() {
+    return !!this.building;
   }
 
   private spawn(name: ObjectNames) {
@@ -401,6 +406,10 @@ export class BuildingCursor {
 
     upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
     // todo Save to game state
+
+    // instruct the builder to start building
+    const idComponent = getActorComponent(gameObject, IdComponent)!;
+    emitEventIssueActorCommandToSelectedActors(this.scene, [idComponent.id]);
   }
 
   static spawnBuildingForPlayer(
