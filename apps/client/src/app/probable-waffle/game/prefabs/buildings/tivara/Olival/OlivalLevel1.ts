@@ -59,7 +59,7 @@ export default class OlivalLevel1 extends Phaser.GameObjects.Container {
   };
 
   private tintTilemapAroundTransform = (scene: Phaser.Scene, tint: number, radius: number) => {
-    const tiles = getTilesAroundGameObjectsOfShape(this.parentContainer, scene, radius, "circle");
+    const { tiles } = getTilesAroundGameObjectsOfShape(this.parentContainer, scene, radius, "circle");
     tiles.forEach((tile) => {
       tile.tint = tint;
     });

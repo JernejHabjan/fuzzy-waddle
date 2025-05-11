@@ -13,7 +13,7 @@ export enum FogOfWarMode {
 }
 
 export class FogOfWarComponent {
-  private fowMode: FogOfWarMode = FogOfWarMode.PRE_EXPLORED;
+  private fowMode: FogOfWarMode = FogOfWarMode.FULL_EXPLORATION;
   private readonly fowLayer: Phaser.GameObjects.Graphics;
   private exploredTiles: Set<string> = new Set();
   private visibleTiles: Set<string> = new Set();
@@ -96,10 +96,10 @@ export class FogOfWarComponent {
       const visionComponent = getActorComponent(obj, VisionComponent);
       if (visionComponent) {
         const radius = visionComponent.range;
-        const visibleTilesForObj = getTilesAroundGameObjectsOfShape(obj, this.scene, radius, "circle");
+        const { tilesWithOutBounds } = getTilesAroundGameObjectsOfShape(obj, this.scene, radius, "circle");
 
         // Add to visible and explored tiles
-        visibleTilesForObj.forEach((tile) => {
+        tilesWithOutBounds.forEach((tile) => {
           const tileKey = `${tile.x},${tile.y}`;
           this.visibleTiles.add(tileKey);
           this.exploredTiles.add(tileKey);
