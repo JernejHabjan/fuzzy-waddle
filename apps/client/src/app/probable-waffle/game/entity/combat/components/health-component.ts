@@ -280,6 +280,7 @@ export class HealthComponent {
   killActor() {
     this.healthComponentData.health = 0;
     this.gameObject.emit(HealthComponent.KilledEvent);
+    this.gameObject.scene?.events.emit(HealthComponent.KilledEvent, this.gameObject);
     this.playDeathSound();
     this.playDeathAnimation();
     this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {

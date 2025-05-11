@@ -1,0 +1,149 @@
+{
+    "id": "20ff71f1-47d6-4bbe-89d7-2ecd728804fc",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 440,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "73307442-9e60-4455-8a08-6eb54f366d50",
+            "label": "container_1",
+            "y": 16,
+            "list": [
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "b47d6c5a-a5df-4a4b-a327-d9e0dcdc9f04",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup",
+                    "x": 0,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "a00a062d-1402-4cb4-a12c-0acdacce578a",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_1",
+                    "x": 49,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "e0179fd7-d254-49a5-993c-b9e861fe39d2",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_2",
+                    "x": 98,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "c5d63b9e-770c-4eb5-afc6-9b7aaef07739",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_3",
+                    "x": 147,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "37835878-fd6b-4509-8262-4ed06d0419b7",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_4",
+                    "x": 196,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "b0207df1-697d-4214-a85a-a7997f6ee82c",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_5",
+                    "x": 245,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "21171889-f637-4652-b3f4-4d19c2ebd3fc",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_6",
+                    "x": 294,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "c7977759-d4ee-4864-97ab-c2795d81fcd9",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_7",
+                    "x": 343,
+                    "y": -16
+                },
+                {
+                    "prefabId": "41cbcb0a-7000-4f47-a91b-0a7a5893f965",
+                    "id": "a77994bc-0dbd-4c15-b6a9-0edea28afbf2",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "playerGroup_8",
+                    "x": 392,
+                    "y": -16
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "lists": [
+        {
+            "id": "ba163e67-06d1-4bba-89c2-01b0acfa5c48",
+            "label": "buttons",
+            "objectIds": [
+                "b47d6c5a-a5df-4a4b-a327-d9e0dcdc9f04",
+                "a00a062d-1402-4cb4-a12c-0acdacce578a",
+                "e0179fd7-d254-49a5-993c-b9e861fe39d2",
+                "c5d63b9e-770c-4eb5-afc6-9b7aaef07739",
+                "37835878-fd6b-4509-8262-4ed06d0419b7",
+                "b0207df1-697d-4214-a85a-a7997f6ee82c",
+                "21171889-f637-4652-b3f4-4d19c2ebd3fc",
+                "c7977759-d4ee-4864-97ab-c2795d81fcd9",
+                "a77994bc-0dbd-4c15-b6a9-0edea28afbf2"
+            ]
+        }
+    ]
+}
