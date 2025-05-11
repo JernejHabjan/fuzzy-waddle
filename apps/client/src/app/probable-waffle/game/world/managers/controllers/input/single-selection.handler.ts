@@ -6,6 +6,8 @@ import { MULTI_SELECTING } from "./multi-selection.handler";
 import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSelectableGameObject } from "../../../../data/game-object-helper";
 import { IsoHelper } from "../../../map/tile/iso-helper";
+import { getSceneComponent } from "../../../../scenes/components/scene-component-helpers";
+import { BuildingCursor } from "../building-cursor";
 
 export class SingleSelectionHandler {
   private readonly debug = false;
@@ -35,6 +37,10 @@ export class SingleSelectionHandler {
       Phaser.Input.Events.POINTER_UP,
       (pointer: Input.Pointer, gameObjectsUnderCursor: GameObjects.GameObject[]) => {
         if (this.multiSelecting) return;
+
+        const buildingCursor = getSceneComponent(this.scene, BuildingCursor);
+        if (buildingCursor && buildingCursor.placingBuilding) return; // don't allow selection while placing a building
+
         // Check if an interactive object was clicked
         const isLeftClick = pointer.leftButtonReleased();
         const isShiftDown = pointer.event.shiftKey; // shift removes from selection

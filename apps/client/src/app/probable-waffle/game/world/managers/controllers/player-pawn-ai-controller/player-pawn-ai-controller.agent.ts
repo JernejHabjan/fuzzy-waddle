@@ -27,6 +27,7 @@ import { BuilderComponent } from "../../../../entity/actor/components/builder-co
 import { OrderData } from "../../../../entity/character/ai/OrderData";
 import { HealingComponent } from "../../../../entity/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../../../entity/building/construction/construction-site-component";
+import { AnimationActorComponent } from "../../../../entity/actor/components/animation-actor-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -215,6 +216,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
           break;
       }
       this.blackboard.resetCurrentOrder(false);
+      const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+      if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
     }
 
     this.blackboard.popCurrentOrderFromQueue();
@@ -313,6 +316,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
     if (!containableComponent) return State.SUCCEEDED;
     containableComponent.leaveContainer();
+    return State.SUCCEEDED;
+  }
+
+  AssignNextBuildOrder(): State {
+    const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+    if (!builderComponent) return State.FAILED;
+    const range = builderComponent.getConstructionSeekRange();
+    const target = builderComponent.getClosestConstructionSite(range);
+    if (!target) return State.FAILED;
+    this.blackboard.addOrder(new OrderData(OrderType.Build, { targetGameObject: target }));
+
     return State.SUCCEEDED;
   }
 

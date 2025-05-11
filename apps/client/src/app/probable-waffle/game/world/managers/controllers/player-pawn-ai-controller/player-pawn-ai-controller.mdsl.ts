@@ -374,8 +374,15 @@ root [Build] {
                     }
                 }
 
-                /* cooldown ready, construct */
-                action [ConstructBuilding]
+                succeed {
+                    sequence {
+                      /* cooldown ready, construct */
+                      action [ConstructBuilding]
+
+                      condition [ConstructionSiteFinished]
+                      action [AssignNextBuildOrder]
+                    }
+                }
             }
         }
     }
