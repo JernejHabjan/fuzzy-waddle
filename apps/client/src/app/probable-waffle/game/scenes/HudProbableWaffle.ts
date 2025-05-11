@@ -199,14 +199,17 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     return this.probableWaffleScene.communicator.allScenes
       .pipe(filter((value) => value.name === eventName))
       .subscribe(() => {
-        const text = this.add.text(this.scale.width / 2, this.scale.height / 2, displayText, {
-          fontSize: "32px",
-          color: "#ffffff",
-          backgroundColor: "#000000",
-          padding: { x: 20, y: 10 }
+        // wait so saving is done
+        setTimeout(() => {
+          const text = this.add.text(this.scale.width / 2, this.scale.height / 2, displayText, {
+            fontSize: "32px",
+            color: "#ffffff",
+            backgroundColor: "#000000",
+            padding: { x: 20, y: 10 }
+          });
+          text.setOrigin(0.5);
+          this.time.delayedCall(500, () => text.destroy());
         });
-        text.setOrigin(0.5);
-        this.time.delayedCall(500, () => text.destroy());
       });
   }
 

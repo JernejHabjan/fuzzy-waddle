@@ -112,12 +112,6 @@ export class SceneActorCreator {
     }
   }
 
-  private saveAllKnownActorsToSaveGame() {
-    if (!(this.scene instanceof GameProbableWaffleScene)) return;
-    // this.saveAllKnownActorsToGameState();
-    this.scene.communicator.utilityEvents.emit({ name: "save-game" });
-  }
-
   private destroy() {}
 
   private spawnActorsFromSpawnList(spawn: Spawn) {
