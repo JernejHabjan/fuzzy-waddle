@@ -360,7 +360,7 @@ export class HealthComponent {
   }
 
   getData(): HealthComponentData {
-    return this.healthComponentData;
+    return { ...this.healthComponentData }; // need to clone it so it's not a proxy object
   }
 
   setData(data: Partial<HealthComponentData>) {

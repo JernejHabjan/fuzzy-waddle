@@ -41,6 +41,7 @@ import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicato
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
+import { SaveGamePayload } from "../game/data/save-game";
 
 @Injectable({
   providedIn: "root"
@@ -129,8 +130,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.communicatorSubscriptions.push(
       this.probableWaffleCommunicatorService.utilityEvents
         .pipe(filter((config) => config.name === "save-game"))
-        .subscribe(async () => {
-          await this.saveGameInstance("test" + Math.random());
+        .subscribe(async (payload) => {
+          await this.saveGameInstance(payload.data);
         })
     );
   }
@@ -506,13 +507,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.navigateToLobbyOrDirectlyToGame();
   }
 
-  async saveGameInstance(saveName: string): Promise<void> {
+  async saveGameInstance(data: SaveGamePayload): Promise<void> {
+    const gameInstanceData = this.gameInstance!.data;
+    const name = gameInstanceData.gameInstanceMetadataData!.name;
     await this.gameInstanceStorageService.saveToStorage({
-      saveName,
-      created: Date.now(),
-      gameInstanceData: this.gameInstance!.data
+      saveName: name + " " + new Date().toLocaleString(),
+      created: new Date(),
+      gameInstanceData,
+      thumbnail: data.thumbnail
     });
-    console.log("Saved game");
   }
 
   /**
