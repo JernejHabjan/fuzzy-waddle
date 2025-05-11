@@ -14,7 +14,8 @@ import { HealthComponent } from "../../entity/combat/components/health-component
 
 export enum FogOfWarMode {
   FULL_EXPLORATION = "fullExploration",
-  PRE_EXPLORED = "preExplored"
+  PRE_EXPLORED = "preExplored",
+  ALL_VISIBLE = "allVisible"
 }
 
 export class FogOfWarComponent {
@@ -158,6 +159,11 @@ export class FogOfWarComponent {
         return;
       }
 
+      if (this.fowMode === FogOfWarMode.ALL_VISIBLE) {
+        this.setActorVisibleByFow(actor, true);
+        return;
+      }
+
       // Check if actor should be visible
       const bounds = getGameObjectBounds(actor);
       if (!bounds) return;
@@ -176,15 +182,19 @@ export class FogOfWarComponent {
       const tileKey = `${tilePos.x},${tilePos.y}`;
       const isVisible = this.visibleTiles.has(tileKey);
 
-      const visionComponent = getActorComponent(actor, VisionComponent);
-      if (visionComponent) {
-        visionComponent.visibilityByCurrentPlayer = isVisible;
-        const visibilityComponent = getGameObjectVisibility(actor);
-        if (visibilityComponent) {
-          visibilityComponent.setVisible(isVisible);
-        }
-      }
+      this.setActorVisibleByFow(actor, isVisible);
     });
+  }
+
+  private setActorVisibleByFow(actor: GameObject, visible: boolean): void {
+    const visionComponent = getActorComponent(actor, VisionComponent);
+    if (visionComponent) {
+      visionComponent.visibilityByCurrentPlayer = visible;
+      const visibilityComponent = getGameObjectVisibility(actor);
+      if (visibilityComponent) {
+        visibilityComponent.setVisible(visible);
+      }
+    }
   }
 
   /**
@@ -210,10 +220,18 @@ export class FogOfWarComponent {
   private redrawFogOfWar(): void {
     this.fowLayer.clear();
 
-    const alphaUnexplored =
-      this.fowMode === FogOfWarMode.FULL_EXPLORATION
-        ? this.ALPHA_UNEXPLORED_FULL_EXPLORATION_MODE
-        : this.ALPHA_UNEXPLORED_PE_EXPLORED_MODE;
+    let alphaUnexplored = 0;
+    switch (this.fowMode) {
+      case FogOfWarMode.FULL_EXPLORATION:
+        alphaUnexplored = this.ALPHA_UNEXPLORED_FULL_EXPLORATION_MODE;
+        break;
+      case FogOfWarMode.PRE_EXPLORED:
+        alphaUnexplored = this.ALPHA_UNEXPLORED_PE_EXPLORED_MODE;
+        break;
+      case FogOfWarMode.ALL_VISIBLE:
+        alphaUnexplored = 0; // No fog
+        break;
+    }
 
     // Draw fog for the entire map
     for (let y = this.startY; y < this.gridHeight; y++) {
@@ -269,11 +287,7 @@ export class FogOfWarComponent {
   }
 
   public revealEntireMap(): void {
-    for (let y = this.startY; y < this.gridHeight; y++) {
-      for (let x = this.startX; x < this.gridWidth; x++) {
-        this.exploredTiles.add(`${x},${y}`);
-      }
-    }
+    this.setMode(FogOfWarMode.ALL_VISIBLE);
     this.updateFogOfWar();
   }
 
