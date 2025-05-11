@@ -106,6 +106,26 @@ export class FogOfWarComponent {
     this.redrawFogOfWar();
   }
 
+  /**
+   * Draws an isometric diamond shape at the specified world coordinates
+   */
+  private drawIsometricTile(x: number, y: number, width: number, height: number, color: number, alpha: number): void {
+    this.fowLayer.fillStyle(color, alpha);
+
+    // Calculate the four points of the diamond
+    const halfWidth = width / 2;
+    const halfHeight = height / 2;
+
+    // Draw diamond shape
+    this.fowLayer.beginPath();
+    this.fowLayer.moveTo(x + halfWidth, y); // Top point
+    this.fowLayer.lineTo(x + width, y + halfHeight); // Right point
+    this.fowLayer.lineTo(x + halfWidth, y + height); // Bottom point
+    this.fowLayer.lineTo(x, y + halfHeight); // Left point
+    this.fowLayer.closePath();
+    this.fowLayer.fillPath();
+  }
+
   private redrawFogOfWar(): void {
     this.fowLayer.clear();
 
@@ -125,12 +145,24 @@ export class FogOfWarComponent {
             // Currently visible - no fog
           } else if (this.exploredTiles.has(tileKey)) {
             // Explored but not currently visible
-            this.fowLayer.fillStyle(this.COLOR_EXPLORED, this.ALPHA_EXPLORED);
-            this.fowLayer.fillRect(worldPos.x, worldPos.y, this.tileWidth, this.tileHeight);
+            this.drawIsometricTile(
+              worldPos.x,
+              worldPos.y,
+              this.tileWidth,
+              this.tileHeight,
+              this.COLOR_EXPLORED,
+              this.ALPHA_EXPLORED
+            );
           } else {
             // Unexplored
-            this.fowLayer.fillStyle(this.COLOR_UNEXPLORED, alphaUnexplored);
-            this.fowLayer.fillRect(worldPos.x, worldPos.y, this.tileWidth, this.tileHeight);
+            this.drawIsometricTile(
+              worldPos.x,
+              worldPos.y,
+              this.tileWidth,
+              this.tileHeight,
+              this.COLOR_UNEXPLORED,
+              alphaUnexplored
+            );
           }
         }
       }
