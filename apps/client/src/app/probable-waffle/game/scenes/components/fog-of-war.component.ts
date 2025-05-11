@@ -14,13 +14,16 @@ export enum FogOfWarMode {
 
 export class FogOfWarComponent {
   private fowMode: FogOfWarMode = FogOfWarMode.PRE_EXPLORED;
-  private fowLayer!: Phaser.GameObjects.Graphics;
+  private readonly fowLayer: Phaser.GameObjects.Graphics;
   private exploredTiles: Set<string> = new Set();
   private visibleTiles: Set<string> = new Set();
-  private tileWidth: number;
-  private tileHeight: number;
-  private gridWidth: number;
-  private gridHeight: number;
+  private readonly tileWidth: number;
+  private readonly tileHeight: number;
+  private readonly gridWidth: number;
+  private readonly gridHeight: number;
+  private readonly startX: number;
+  private readonly startY: number;
+  private readonly margin: number = 20; // Margin for the fog of war grid
 
   // Colors for different FOW states
   private readonly COLOR_UNEXPLORED = 0x333333;
@@ -35,8 +38,10 @@ export class FogOfWarComponent {
   ) {
     this.tileWidth = this.tilemap.tileWidth;
     this.tileHeight = this.tilemap.tileHeight;
-    this.gridWidth = this.tilemap.width;
-    this.gridHeight = this.tilemap.height;
+    this.startX = -this.margin;
+    this.startY = -this.margin;
+    this.gridWidth = this.tilemap.width + this.margin;
+    this.gridHeight = this.tilemap.height + this.margin;
 
     // Create graphics layer for fog of war
     this.fowLayer = this.scene.add.graphics();
@@ -135,8 +140,8 @@ export class FogOfWarComponent {
         : this.ALPHA_UNEXPLORED_PE_EXPLORED_MODE;
 
     // Draw fog for the entire map
-    for (let y = 0; y < this.gridHeight; y++) {
-      for (let x = 0; x < this.gridWidth; x++) {
+    for (let y = this.startY; y < this.gridHeight; y++) {
+      for (let x = this.startX; x < this.gridWidth; x++) {
         const tileKey = `${x},${y}`;
         const worldPos = this.tilemap.tileToWorldXY(x, y);
 
@@ -188,8 +193,8 @@ export class FogOfWarComponent {
   }
 
   public revealEntireMap(): void {
-    for (let y = 0; y < this.gridHeight; y++) {
-      for (let x = 0; x < this.gridWidth; x++) {
+    for (let y = this.startY; y < this.gridHeight; y++) {
+      for (let x = this.startX; x < this.gridWidth; x++) {
         this.exploredTiles.add(`${x},${y}`);
       }
     }
