@@ -29,6 +29,7 @@ export class BuildingCursor {
   private readonly startPlacingSubscription: Subscription;
   private readonly stopPlacingSubscription: Subscription;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
+  private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private downPointerLocation?: Vector2Simple;
   private spawnedCursorGameObjects: GameObjects.GameObject[] = [];
   private isDragging: boolean = false;
@@ -43,6 +44,7 @@ export class BuildingCursor {
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
+    this.subscribeToShiftKey();
   }
 
   get placingBuilding() {
@@ -249,6 +251,15 @@ export class BuildingCursor {
       return;
     }
 
+    const shiftKeyDown = this.shiftKey?.isDown || false;
+
+    if (!this.canBeDragPlaced && shiftKeyDown) {
+      const buildingName = this.building.name as ObjectNames;
+      this.placeBuildings();
+      this.startPlacingBuilding.emit(buildingName);
+      return;
+    }
+
     this.placeBuildings();
   }
 
@@ -436,6 +447,10 @@ export class BuildingCursor {
     this.escKey.on(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
   }
 
+  private subscribeToShiftKey() {
+    this.shiftKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+  }
+
   stop() {
     this.building?.destroy();
     this.building = undefined;
@@ -453,6 +468,7 @@ export class BuildingCursor {
     this.scene.input.off(Input.Events.POINTER_UP, this.onPointerUp, this);
     this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
     this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
+    this.shiftKey?.destroy();
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
   }
