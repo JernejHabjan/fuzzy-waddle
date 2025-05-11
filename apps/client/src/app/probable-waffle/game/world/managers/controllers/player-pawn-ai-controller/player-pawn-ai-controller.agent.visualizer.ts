@@ -244,4 +244,8 @@ class PlayerPawnAiControllerAgentVisualizer implements IPlayerPawnControllerAgen
   CanAssignRepairer() {
     return getBooleanValue("Can the agent be assigned as a repairer?");
   }
+
+  AssignNextBuildOrder(): State {
+    return State.SUCCEEDED;
+  }
 }
