@@ -138,21 +138,18 @@ export const ANIM_BADGER_DEFINITION: AnimationDefinitionMap = {
   },
   // Custom badger animations
   burrow: {
-    // todo
     northeast: { key: ANIM_BADGER_BURROW_NE },
     northwest: { key: ANIM_BADGER_BURROW_NW },
     southeast: { key: ANIM_BADGER_BURROW_SE },
     southwest: { key: ANIM_BADGER_BURROW_SW }
   },
   unburrow: {
-    // todo
     northeast: { key: ANIM_BADGER_UNBORROW_NE },
     northwest: { key: ANIM_BADGER_UNBORROW_NW },
     southeast: { key: ANIM_BADGER_UNBORROW_SE },
     southwest: { key: ANIM_BADGER_UNBORROW_SW }
   },
   tunnel: {
-    // todo
     northeast: { key: ANIM_BADGER_TUNNEL_NE },
     northwest: { key: ANIM_BADGER_TUNNEL_NW },
     southeast: { key: ANIM_BADGER_TUNNEL_SE },
