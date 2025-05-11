@@ -82,12 +82,6 @@ export default class Minimap extends Phaser.GameObjects.Container {
   private hudProbableWaffle?: HudProbableWaffle;
   private fogOfWarComponent?: FogOfWarComponent;
 
-  // Colors for different FOW states
-  private readonly COLOR_UNEXPLORED = 0x333333;
-  private readonly COLOR_EXPLORED = 0x777777;
-  private readonly ALPHA_UNEXPLORED = 0.7;
-  private readonly ALPHA_EXPLORED = 0.5;
-
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, hudProbableWaffle: HudProbableWaffle) {
     this.probableWaffleScene = probableWaffleScene;
     this.hudProbableWaffle = hudProbableWaffle;

@@ -30,6 +30,7 @@ export class FogOfWarComponent {
   private readonly startX: number;
   private readonly startY: number;
   private readonly margin: number = 20; // Margin for the fog of war grid
+  private static depth: number = 10000000000; // High depth to ensure it's drawn above most game elements
 
   // Track actors with ID components for visibility management
   private playerActors: Map<string, GameObject> = new Map();
@@ -54,7 +55,7 @@ export class FogOfWarComponent {
 
     // Create graphics layer for fog of war
     this.fowLayer = this.scene.add.graphics();
-    this.fowLayer.setDepth(10000000000); // High depth to ensure it's drawn above most game elements // TODO HARDCODE
+    this.fowLayer.setDepth(FogOfWarComponent.depth);
 
     // Initialize actor tracking
     this.scanForPlayerActors();
