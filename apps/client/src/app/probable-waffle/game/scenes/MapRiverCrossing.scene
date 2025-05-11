@@ -1830,25 +1830,14 @@
         },
         {
             "type": "Image",
-            "id": "cc55ad9c-dfcb-48fa-9212-f41a397be81c",
-            "label": "foliage_trees_resources_tree7_snow_png",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/trees/resources/tree7_snow.png"
-            },
-            "x": 1152,
-            "y": 624
-        },
-        {
-            "type": "Image",
             "id": "7956c426-bb17-42d7-ab6d-8c3bf30f89f5",
             "label": "foliage_trees_resources_tree8_snow_png",
             "texture": {
                 "key": "outside",
                 "frame": "foliage/trees/resources/tree8_snow.png"
             },
-            "x": 1208,
-            "y": 592
+            "x": 1120,
+            "y": 968
         },
         {
             "type": "Image",
@@ -1858,19 +1847,8 @@
                 "key": "outside",
                 "frame": "foliage/trees/large/no_leaves_snow.png"
             },
-            "x": 1016,
-            "y": 648
-        },
-        {
-            "type": "Image",
-            "id": "fbb1e005-dffd-48ac-88a1-1ff22d618660",
-            "label": "foliage_tree_trunks_tree_trunk_snow_png",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/tree_trunks/tree_trunk_snow.png"
-            },
-            "x": 1192,
-            "y": 656
+            "x": 1296,
+            "y": 904
         },
         {
             "type": "Image",
@@ -1880,8 +1858,8 @@
                 "key": "outside",
                 "frame": "foliage/tree_trunks/tree_trunk_snow.png"
             },
-            "x": 1120,
-            "y": 672
+            "x": 1072,
+            "y": 992
         },
         {
             "type": "Image",
@@ -2141,6 +2119,50 @@
             "label": "badger",
             "x": 24,
             "y": 1072
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "1589b185-a64c-4afc-abd6-e463f5f5cea9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_12",
+            "x": 1032,
+            "y": 703
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "8f3c1e1b-aa3a-4983-ae0e-f5b55e9c25be",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_15",
+            "x": 1096,
+            "y": 688
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f36",
+            "id": "9cbf9023-7828-4acf-a831-f25d9eda7054",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_16",
+            "x": 1168,
+            "y": 648
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+            "id": "2d290c62-9641-4f20-9252-7a055b6e389f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_17",
+            "x": 976,
+            "y": 728
         }
     ],
     "plainObjects": [

@@ -94,7 +94,7 @@ export class AnimationActorComponent {
       const sprite = this.gameObject.getAll().find((child) => child instanceof Phaser.GameObjects.Sprite);
       if (sprite instanceof Phaser.GameObjects.Sprite) {
         this.sprite = sprite;
-        console.warn("chosen random sprite", sprite); // todo
+        // console.warn("chosen random sprite", sprite); // todo
       }
     }
 

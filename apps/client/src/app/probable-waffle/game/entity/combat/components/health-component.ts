@@ -85,14 +85,14 @@ export class HealthComponent {
           case ActorPhysicalType.Structural:
             asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
             if (asTint.setTint) asTint.setTint(0xff0000);
-            console.warn("this tint is not working "); // todo
+            // console.warn("this tint is not working "); // todo
 
             // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
             break;
           case ActorPhysicalType.Organic:
             asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
             if (asTint.setTint) asTint.setTint(0xff0000);
-            console.warn("this tint is not working "); // todo
+            // console.warn("this tint is not working "); // todo
             break;
         }
 

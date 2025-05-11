@@ -25,7 +25,7 @@ root {
         branch [AdjustStrategyBasedOnGameState]
         branch [DefendBase]
         branch [AttackEnemy]
-        branch [ExpandBase]
+        /* TODO branch [ExpandBase] */
         branch [ManageEconomy]
         branch [ScoutEnemy]
         branch [CombatTactics]

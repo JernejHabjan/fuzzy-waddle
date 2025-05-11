@@ -704,20 +704,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const fenceLeft_1 = new FenceLeftCorner(this, -296, 1248);
     this.add.existing(fenceLeft_1);
 
-    // foliage_trees_resources_tree7_snow_png
-    this.add.image(1152, 624, "outside", "foliage/trees/resources/tree7_snow.png");
-
     // foliage_trees_resources_tree8_snow_png
-    this.add.image(1208, 592, "outside", "foliage/trees/resources/tree8_snow.png");
+    this.add.image(1120, 968, "outside", "foliage/trees/resources/tree8_snow.png");
 
     // foliage_trees_large_no_leaves_snow_png
-    this.add.image(1016, 648, "outside", "foliage/trees/large/no_leaves_snow.png");
-
-    // foliage_tree_trunks_tree_trunk_snow_png
-    this.add.image(1192, 656, "outside", "foliage/tree_trunks/tree_trunk_snow.png");
+    this.add.image(1296, 904, "outside", "foliage/trees/large/no_leaves_snow.png");
 
     // foliage_tree_trunks_tree_trunk_snow_png_1
-    this.add.image(1120, 672, "outside", "foliage/tree_trunks/tree_trunk_snow.png");
+    this.add.image(1072, 992, "outside", "foliage/tree_trunks/tree_trunk_snow.png");
 
     // foliage_tree_trunks_tree_fallen_snow_png
     this.add.image(1208, 936, "outside", "foliage/tree_trunks/tree_fallen_snow.png");
@@ -803,6 +797,22 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // badger
     const badger = new Badger(this, 24, 1072);
     this.add.existing(badger);
+
+    // tree_12
+    const tree_12 = new Tree7(this, 1032, 703);
+    this.add.existing(tree_12);
+
+    // tree_15
+    const tree_15 = new Tree7(this, 1096, 688);
+    this.add.existing(tree_15);
+
+    // tree_16
+    const tree_16 = new Tree1(this, 1168, 648);
+    this.add.existing(tree_16);
+
+    // tree_17
+    const tree_17 = new Tree4(this, 976, 728);
+    this.add.existing(tree_17);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
