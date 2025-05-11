@@ -779,7 +779,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Ank Guard",
@@ -833,7 +833,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Olival",
@@ -886,7 +886,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 15
       },
       info: {
         name: "Sandhold",
@@ -947,7 +947,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Temple",
@@ -1004,7 +1004,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 8
       },
       info: {
         name: "Work Mill",
@@ -1055,7 +1055,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Skaduwee Owl",
@@ -1394,7 +1394,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 15
       },
       info: {
         name: "Frost Forge",
@@ -1454,7 +1454,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Infantry Inn",
@@ -1512,7 +1512,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 12
       },
       info: {
         name: "Owlery",
@@ -1655,7 +1655,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       selectable: {},
       health: {
@@ -1692,7 +1692,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 8
+        range: 15
       },
       info: {
         name: "Watch Tower",
@@ -1744,7 +1744,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 8
+        range: 10
       },
       info: {
         name: "Wall",
