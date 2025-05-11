@@ -141,31 +141,40 @@ export default class Minimap extends Phaser.GameObjects.Container {
     return diamond;
   }
 
-  private getTileVisibilityColor(
-    tileX: number,
-    tileY: number,
-    baseColor: Phaser.Display.Color
-  ): { color: Phaser.Display.Color; alpha: number } {
+  /**
+   * Phaser darken doesn't work as desired
+   */
+  private darken(color: Phaser.Display.Color): Phaser.Display.Color {
+    return new Phaser.Display.Color(
+      Math.floor(color.red * 0.6 + 40),
+      Math.floor(color.green * 0.6 + 40),
+      Math.floor(color.blue * 0.6 + 40)
+    );
+  }
+
+  private getTileVisibilityColor(tileX: number, tileY: number, baseColor: Phaser.Display.Color): Phaser.Display.Color {
     if (!this.fogOfWarComponent || this.fogOfWarComponent.getMode() === FogOfWarMode.ALL_VISIBLE) {
-      return { color: baseColor, alpha: 1 };
+      return baseColor;
     }
 
     const visibility = this.fogOfWarComponent.getTileVisibility(tileX, tileY);
 
     switch (visibility) {
       case "visible":
-        return { color: baseColor, alpha: 1 };
+        return baseColor;
       case "explored":
-        return {
-          color: Phaser.Display.Color.ValueToColor(this.COLOR_EXPLORED),
-          alpha: this.ALPHA_EXPLORED
-        };
+        return this.darken(baseColor);
       case "unexplored":
       default:
-        return {
-          color: Phaser.Display.Color.ValueToColor(this.COLOR_UNEXPLORED),
-          alpha: this.ALPHA_UNEXPLORED
-        };
+        const mode = this.fogOfWarComponent.getMode();
+        if (mode === FogOfWarMode.PRE_EXPLORED) {
+          return this.darken(baseColor);
+        } else if (mode === FogOfWarMode.FULL_EXPLORATION) {
+          // return black
+          return new Phaser.Display.Color(51, 51, 51);
+        } else {
+          return baseColor;
+        }
     }
   }
 
@@ -195,11 +204,11 @@ export default class Minimap extends Phaser.GameObjects.Container {
         const baseColor = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
 
         // Get tile visibility and apply appropriate color/alpha
-        const { color, alpha } = this.getTileVisibilityColor(j, i, baseColor);
+        const color = this.getTileVisibilityColor(j, i, baseColor);
 
         const isoX = offsetX + (j - i) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
-        const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color, alpha);
+        const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
 
         diamond.on(Phaser.Input.Events.POINTER_OVER, (pointer: Phaser.Input.Pointer) => {
           if (multiSelectionHandler?.multiSelecting) return;
@@ -298,19 +307,23 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
       if (color) {
         for (const tile of tilesUnderObject) {
-          // Only add if the tile is visible in fog-of-war
-          if (
-            this.fogOfWarComponent &&
-            this.fogOfWarComponent.getMode() !== FogOfWarMode.ALL_VISIBLE &&
-            this.fogOfWarComponent.getTileVisibility(tile.x, tile.y) !== "visible"
-          ) {
-            continue;
+          let shouldShow = true;
+
+          // Apply visibility rules based on fog of war mode
+          if (this.fogOfWarComponent && this.fogOfWarComponent.getMode() === FogOfWarMode.FULL_EXPLORATION) {
+            const tileVisibility = this.fogOfWarComponent.getTileVisibility(tile.x, tile.y);
+
+            if (tileVisibility === "unexplored") {
+              shouldShow = false;
+            }
           }
 
-          const isoX = offsetX + (tile.x - tile.y) * (pixelWidth / 2);
-          const isoY = (tile.x + tile.y) * (pixelHeight / 2);
-          const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
-          this.actorDiamonds.push(diamond);
+          if (shouldShow) {
+            const isoX = offsetX + (tile.x - tile.y) * (pixelWidth / 2);
+            const isoY = (tile.x + tile.y) * (pixelHeight / 2);
+            const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+            this.actorDiamonds.push(diamond);
+          }
         }
       }
     });
