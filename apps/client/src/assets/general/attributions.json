@@ -1080,6 +1080,16 @@
   },
   {
     "type": "Art",
+    "url": "https://wenrexa.itch.io/cursors4",
+    "name": "32 x 32 Pixel Isometric Tiles",
+    "author": "wenrexa - https://wenrexa.itch.io/",
+    "license": {
+      "name": "CC-1"
+    },
+    "reason": "Assets for Probable Waffle - Cursors"
+  },
+  {
+    "type": "Art",
     "url": "https://paperhatlizard.itch.io/cryos-mini-gui",
     "name": "Cryo's Mini GUI",
     "author": "https://paperhatlizard.itch.io/",

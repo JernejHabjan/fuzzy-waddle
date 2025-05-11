@@ -5,7 +5,8 @@
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
         "snapEnabled": true,
-        "snapWidth": 32,
+        "snapWidth": 8,
+        "snapHeight": 8,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -99,19 +100,8 @@
                 "y"
             ],
             "label": "sheep_2",
-            "x": -144,
-            "y": 1264
-        },
-        {
-            "prefabId": "fdf8e2c2-f0e4-45f6-98b5-25a0be5ecb93",
-            "id": "8adadf79-08c8-4964-bbec-83e2af597a89",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "fenceRight",
-            "x": -48,
-            "y": 1248
+            "x": -184,
+            "y": 1272
         },
         {
             "prefabId": "5c78ee6f-43a6-47f4-ac21-0e536a65936a",
@@ -121,18 +111,7 @@
                 "y"
             ],
             "label": "hedgehog",
-            "x": 96,
-            "y": 1360
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "f13d64e4-bb69-443f-9fc2-c69fdd6a360e",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_12",
-            "x": -32,
+            "x": 256,
             "y": 1376
         },
         {
@@ -718,8 +697,8 @@
                 "y"
             ],
             "label": "tree_5",
-            "x": 32,
-            "y": 1424
+            "x": 40,
+            "y": 1432
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
@@ -1038,8 +1017,8 @@
                 "y"
             ],
             "label": "sheep",
-            "x": -224,
-            "y": 1232
+            "x": -152,
+            "y": 1248
         },
         {
             "prefabId": "33eba8e6-5b92-4639-8c95-37073f210ca1",
@@ -1050,7 +1029,7 @@
             ],
             "label": "fenceTop",
             "x": -192,
-            "y": 1168
+            "y": 1184
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1061,7 +1040,7 @@
             ],
             "label": "fenceTopRight",
             "x": -160,
-            "y": 1184
+            "y": 1200
         },
         {
             "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
@@ -1071,8 +1050,8 @@
                 "y"
             ],
             "label": "sheep_1",
-            "x": -176,
-            "y": 1216
+            "x": -192,
+            "y": 1232
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1083,7 +1062,7 @@
             ],
             "label": "fenceTopRight_1",
             "x": -128,
-            "y": 1200
+            "y": 1216
         },
         {
             "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
@@ -1094,7 +1073,7 @@
             ],
             "label": "fenceTopRight_2",
             "x": -96,
-            "y": 1216
+            "y": 1232
         },
         {
             "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
@@ -1105,7 +1084,7 @@
             ],
             "label": "fenceTopLeft",
             "x": -224,
-            "y": 1184
+            "y": 1200
         },
         {
             "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
@@ -1116,18 +1095,7 @@
             ],
             "label": "fenceTopLeft_1",
             "x": -256,
-            "y": 1200
-        },
-        {
-            "prefabId": "d3b57804-cd8e-45fa-95de-8558ed83120b",
-            "id": "943712df-c0b4-4c72-8086-74bd995545de",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "fenceLeft",
-            "x": -301,
-            "y": 1233
+            "y": 1216
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1138,7 +1106,7 @@
             ],
             "label": "fenceBottomLeft",
             "x": -256,
-            "y": 1264
+            "y": 1280
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1149,7 +1117,7 @@
             ],
             "label": "fenceBottomLeft_1",
             "x": -224,
-            "y": 1280
+            "y": 1296
         },
         {
             "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
@@ -1160,7 +1128,7 @@
             ],
             "label": "fenceBottomLeft_2",
             "x": -192,
-            "y": 1296
+            "y": 1312
         },
         {
             "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
@@ -1171,7 +1139,7 @@
             ],
             "label": "fenceBottomRight",
             "x": -96,
-            "y": 1280
+            "y": 1296
         },
         {
             "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
@@ -1182,7 +1150,7 @@
             ],
             "label": "fenceBottomRight_1",
             "x": -128,
-            "y": 1296
+            "y": 1312
         },
         {
             "prefabId": "c5a01cf8-4a85-4704-834d-9cb28cf1048d",
@@ -1193,7 +1161,7 @@
             ],
             "label": "fenceBottom",
             "x": -160,
-            "y": 1312
+            "y": 1328
         },
         {
             "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
@@ -1615,39 +1583,6 @@
             "y": 1184
         },
         {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "48d6f605-a66f-4959-abd9-0b0aed8e2f07",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_15",
-            "x": 1184,
-            "y": 624
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "d746fb0e-a453-4683-819f-e3129ed0fcb6",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_16",
-            "x": 1248,
-            "y": 640
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
-            "id": "dc94db04-b78a-4251-a500-9f0f451857e2",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree_17",
-            "x": 1152,
-            "y": 672
-        },
-        {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
             "id": "3296e7c3-239b-4be9-a762-b5e270df871c",
             "unlock": [
@@ -1870,6 +1805,364 @@
             "EditorOwner.owner_id": "1",
             "x": -832,
             "y": 528
+        },
+        {
+            "prefabId": "fdf8e2c2-f0e4-45f6-98b5-25a0be5ecb93",
+            "id": "1eb8ac45-2a47-4d1b-a4c2-eefc8b53cd9b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceRight_2",
+            "x": -48,
+            "y": 1264
+        },
+        {
+            "prefabId": "d3b57804-cd8e-45fa-95de-8558ed83120b",
+            "id": "e88f38af-5b0e-4443-ae58-f1e913a76a9c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fenceLeft_1",
+            "x": -296,
+            "y": 1248
+        },
+        {
+            "type": "Image",
+            "id": "7956c426-bb17-42d7-ab6d-8c3bf30f89f5",
+            "label": "foliage_trees_resources_tree8_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/tree8_snow.png"
+            },
+            "x": 1120,
+            "y": 968
+        },
+        {
+            "type": "Image",
+            "id": "8ba9a4cb-1c2b-42e7-9c3a-f25bf7076eed",
+            "label": "foliage_trees_large_no_leaves_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/large/no_leaves_snow.png"
+            },
+            "x": 1296,
+            "y": 904
+        },
+        {
+            "type": "Image",
+            "id": "8d5e4175-287a-46f7-a55a-54c149232749",
+            "label": "foliage_tree_trunks_tree_trunk_snow_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tree_trunks/tree_trunk_snow.png"
+            },
+            "x": 1072,
+            "y": 992
+        },
+        {
+            "type": "Image",
+            "id": "b5a808e2-bee9-4dbb-8e14-0da156a80827",
+            "label": "foliage_tree_trunks_tree_fallen_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/tree_trunks/tree_fallen_snow.png"
+            },
+            "x": 1208,
+            "y": 936
+        },
+        {
+            "type": "Image",
+            "id": "be1ab8d6-a3b5-4e18-add4-38062dd2c89d",
+            "label": "nature_rock_piles_6_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/6_snow.png"
+            },
+            "x": 1096,
+            "y": 1040
+        },
+        {
+            "type": "Image",
+            "id": "3e435e34-715a-46ae-aa7e-39605d7ab7cb",
+            "label": "nature_rock_piles_1_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/1_snow_covered.png"
+            },
+            "x": 1176,
+            "y": 992
+        },
+        {
+            "type": "Image",
+            "id": "7de62e04-debf-4a8b-a8df-06d56a9ce111",
+            "label": "nature_rock_piles_1_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/1_snow.png"
+            },
+            "x": 1128,
+            "y": 1016
+        },
+        {
+            "type": "Image",
+            "id": "5d77abc6-2a19-4fd7-bbe8-71e28fa9a860",
+            "label": "nature_rock_piles_2_snow_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/2_snow.png"
+            },
+            "x": 1064,
+            "y": 1024
+        },
+        {
+            "type": "Image",
+            "id": "24d211ea-762d-4b46-8e67-fd8ac857c470",
+            "label": "nature_rock_piles_3_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/3_snow_covered.png"
+            },
+            "x": 1144,
+            "y": 976
+        },
+        {
+            "type": "Image",
+            "id": "9b6135ad-e0b8-40b4-8638-2eec42a5da92",
+            "label": "nature_rock_piles_5_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/5_snow_covered.png"
+            },
+            "x": 1208,
+            "y": 976
+        },
+        {
+            "type": "Image",
+            "id": "a21c28d1-639d-48e4-bc67-5a3517db4cea",
+            "label": "nature_rock_piles_6_snow_covered_png",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/6_snow_covered.png"
+            },
+            "x": 1184,
+            "y": 960
+        },
+        {
+            "type": "Image",
+            "id": "f8aed425-ff9a-40f5-928d-88d1891f180b",
+            "label": "nature_rock_piles_1_snow_covered_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "nature/rock_piles/1_snow_covered.png"
+            },
+            "x": 1096,
+            "y": 968
+        },
+        {
+            "type": "Image",
+            "id": "7ccd386a-a62f-453c-9af7-9082290efbfd",
+            "label": "foliage_trees_resources_tree7_snow_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/trees/resources/tree7_snow.png"
+            },
+            "x": 1256,
+            "y": 928
+        },
+        {
+            "type": "Image",
+            "id": "19c7a21e-60a3-44bf-9704-3be2ee4a6dd9",
+            "label": "foliage_river_water_lily_png",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/river/water lily.png"
+            },
+            "x": 96,
+            "y": 960,
+            "scaleX": 0.5,
+            "scaleY": 0.5
+        },
+        {
+            "type": "Image",
+            "id": "228309b6-ae42-46c3-b278-4b89b758ea75",
+            "label": "foliage_river_water_lily_png_1",
+            "texture": {
+                "key": "outside",
+                "frame": "foliage/river/water lily.png"
+            },
+            "x": 32,
+            "y": 928,
+            "scaleX": 0.5,
+            "scaleY": 0.5,
+            "flipX": true
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "4df8acbc-4748-4b0e-9a2e-6d5a0f3210f5",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "toxicFrog",
+            "x": 32,
+            "y": 928
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "233d402a-b366-4664-8ef5-b0061732e9ae",
+            "unlock": [
+                "x",
+                "y",
+                "flipX",
+                "flipY"
+            ],
+            "label": "toxicFrog_1",
+            "x": 96,
+            "y": 960,
+            "flipX": true,
+            "flipY": false
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "d1bc3651-d306-4ea3-8a41-f8e54c676125",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "toxicFrog_2",
+            "x": -184,
+            "y": 848
+        },
+        {
+            "prefabId": "9e91c299-36c1-4f20-bef9-b3c27ee4673a",
+            "id": "e9827794-b03b-4fb5-8ece-34e2a30b8bbb",
+            "unlock": [
+                "x",
+                "y",
+                "flipX",
+                "flipY"
+            ],
+            "label": "toxicFrog_3",
+            "x": -224,
+            "y": 808,
+            "flipX": true,
+            "flipY": false
+        },
+        {
+            "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
+            "id": "5a95c24b-83fe-4d3c-8166-c19138749895",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "treeBird",
+            "z": 64,
+            "x": -424,
+            "y": 640
+        },
+        {
+            "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
+            "id": "08255594-dbd0-49ad-b30a-981ea76a91e5",
+            "unlock": [
+                "x",
+                "y",
+                "z"
+            ],
+            "label": "treeBird_1",
+            "z": 64,
+            "x": 264,
+            "y": 440
+        },
+        {
+            "prefabId": "2f74d672-6d97-4e2a-8913-3eefd7aa3471",
+            "id": "62113924-7a9d-4c00-b677-5771ccaf8d99",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wolf",
+            "x": -320,
+            "y": 1216
+        },
+        {
+            "prefabId": "1e8584c9-7cd3-47cb-9a38-bc5231b9edee",
+            "id": "28f1041a-8bc0-4cf0-9f35-c5081d09fdb2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stag",
+            "x": 80,
+            "y": 1400
+        },
+        {
+            "prefabId": "f1948055-893a-4764-b370-93162f6d36c4",
+            "id": "b879a52e-d720-4390-a08e-812256ae78b9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "boar",
+            "x": 224,
+            "y": 1264
+        },
+        {
+            "prefabId": "b5c41cfb-09e7-4fb9-8b5c-a2c9e167b4ee",
+            "id": "99f71537-7be6-4a38-ac9a-09760b5f685f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "badger",
+            "x": 24,
+            "y": 1072
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "1589b185-a64c-4afc-abd6-e463f5f5cea9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_12",
+            "x": 1032,
+            "y": 703
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+            "id": "8f3c1e1b-aa3a-4983-ae0e-f5b55e9c25be",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_15",
+            "x": 1096,
+            "y": 688
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f36",
+            "id": "9cbf9023-7828-4acf-a831-f25d9eda7054",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_16",
+            "x": 1168,
+            "y": 648
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+            "id": "2d290c62-9641-4f20-9252-7a055b6e389f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tree_17",
+            "x": 976,
+            "y": 728
         }
     ],
     "plainObjects": [

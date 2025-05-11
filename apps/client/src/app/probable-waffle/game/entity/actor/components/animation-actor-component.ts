@@ -73,12 +73,12 @@ export class AnimationActorComponent {
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
-  playOrderAnimation(orderType: OrderType, forceRestart: boolean = false) {
-    this.playAnimation(this.mapOrderTypeToAnimationType(orderType), forceRestart);
+  playOrderAnimation(orderType: OrderType, animationOptions?: AnimationOptions) {
+    this.playAnimation(this.mapOrderTypeToAnimationType(orderType), animationOptions);
   }
 
-  playCustomAnimation(key: AnimationType | string, forceRestart: boolean = false) {
-    this.playAnimation(key, forceRestart);
+  playCustomAnimation(key: AnimationType | string, animationOptions?: AnimationOptions) {
+    this.playAnimation(key, animationOptions);
   }
 
   private init() {
@@ -94,7 +94,7 @@ export class AnimationActorComponent {
       const sprite = this.gameObject.getAll().find((child) => child instanceof Phaser.GameObjects.Sprite);
       if (sprite instanceof Phaser.GameObjects.Sprite) {
         this.sprite = sprite;
-        console.warn("chosen random sprite", sprite); // todo
+        // console.warn("chosen random sprite", sprite); // todo
       }
     }
 
@@ -115,11 +115,11 @@ export class AnimationActorComponent {
     this.currentDirection = direction;
     // If there's a current animation playing, update it with the new direction
     if (this.currentAnimation && this.sprite) {
-      this.playAnimation(this.currentAnimation, true);
+      this.playAnimation(this.currentAnimation, { forceRestart: true });
     }
   }
 
-  private playAnimation(type: AnimationType | string | null, forceRestart: boolean = false) {
+  private playAnimation(type: AnimationType | string | null, animationOptions?: AnimationOptions) {
     if (!this.sprite || !this.animationsDefinition || !type) return;
 
     const animationsByType = this.animationsDefinition.animations[type];
@@ -130,7 +130,7 @@ export class AnimationActorComponent {
 
     let animationDef = animationsByType[this.currentDirection];
     if (!animationDef) {
-      // try to obtain animation by non-iso directions:
+      // try to get animation by non-iso directions (in case only orthogonal directions are defined):
       let nonIsoDirection: IsoDirection | null = null;
       if (this.currentDirection === "northeast" || this.currentDirection === "southeast") {
         nonIsoDirection = "east";
@@ -142,14 +142,42 @@ export class AnimationActorComponent {
       }
     }
     if (!animationDef) {
+      // try to get animation by iso directions (in case only iso directions are defined):
+      let isoDirection: IsoDirection | null = null;
+      switch (this.currentDirection) {
+        case "east":
+          isoDirection = "northeast";
+          break;
+        case "west":
+          isoDirection = "northwest";
+          break;
+        case "south":
+          isoDirection = "southwest";
+          break;
+        case "north":
+          isoDirection = "northeast";
+          break;
+      }
+      if (isoDirection) {
+        animationDef = animationsByType[isoDirection];
+      }
+    }
+
+    if (!animationDef) {
       console.warn(
         `AnimationActorComponent: No animation found for type ${type} and direction ${this.currentDirection}`
       );
       return;
     }
 
+    if (!animationOptions) {
+      animationOptions = {
+        forceRestart: false
+      } satisfies AnimationOptions;
+    }
+
     // Don't restart the animation if it's already playing unless forced
-    if (!forceRestart && this.currentAnimation === type && this.sprite.anims.isPlaying) {
+    if (!animationOptions.forceRestart && this.currentAnimation === type && this.sprite.anims.isPlaying) {
       return;
     }
 
@@ -174,9 +202,11 @@ export class AnimationActorComponent {
     this.sprite.once("animationcomplete", () => {
       this.isAnimating = false;
 
+      animationOptions?.onComplete?.();
+
       // If this was a one-time animation like attack, return to idle
       if (oneTimeAnimations.includes(type as AnimationType)) {
-        this.playAnimation(AnimationType.Idle);
+        this.playAnimation(AnimationType.Idle, animationOptions);
       }
     });
   }
@@ -224,4 +254,9 @@ export class AnimationActorComponent {
   private destroy() {
     this.directionChangedSubscription?.unsubscribe();
   }
+}
+
+export interface AnimationOptions {
+  forceRestart?: boolean;
+  onComplete?: () => void;
 }

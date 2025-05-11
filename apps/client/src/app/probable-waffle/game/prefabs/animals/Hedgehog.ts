@@ -3,32 +3,13 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import {
-  ANIM_HEDGEHOG_BALL_DOWN,
-  ANIM_HEDGEHOG_BALL_LEFT,
-  ANIM_HEDGEHOG_BALL_RIGHT,
-  ANIM_HEDGEHOG_BALL_TOP,
-  ANIM_HEDGEHOG_IDLE_DOWN,
-  ANIM_HEDGEHOG_IDLE_LEFT,
-  ANIM_HEDGEHOG_IDLE_RIGHT,
-  ANIM_HEDGEHOG_IDLE_TOP,
-  ANIM_HEDGEHOG_WALK_DOWN,
-  ANIM_HEDGEHOG_WALK_LEFT,
-  ANIM_HEDGEHOG_WALK_RIGHT,
-  ANIM_HEDGEHOG_WALK_TOP
-} from "./anims/animals";
-import {
-  getGameObjectDirection,
-  moveGameObjectToRandomTileInNavigableRadius,
-  MovementSystem,
-  PathMoveConfig
-} from "../../entity/systems/movement.system";
+import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../entity/systems/movement.system";
 import { getActorSystem } from "../../data/actor-system";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectCurrentTile, onObjectReady } from "../../data/game-object-helper";
+import { onObjectReady } from "../../data/game-object-helper";
 import { ObjectNames } from "../../data/object-names";
 import { getActorComponent } from "../../data/actor-component";
 import { AudioActorComponent, SoundType } from "../../entity/actor/components/audio-actor-component";
+import { AnimationActorComponent } from "../../entity/actor/components/animation-actor-component";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -46,72 +27,61 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
   /* START-USER-CODE */
   name = ObjectNames.Hedgehog;
   private actorAudioComponent?: AudioActorComponent;
-  private readonly actionDelay = 5000;
-  private readonly radius = 5;
+  private animationActorComponent?: AnimationActorComponent;
+  private readonly radius = 2;
   private currentDelay: Phaser.Time.TimerEvent | null = null;
+  private curledUp = false;
 
   private postSceneCreate() {
     this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
-    this.moveHedgehog();
+    this.animationActorComponent = getActorComponent(this, AnimationActorComponent);
+    this.moveHedgehogAfterDelay();
     this.handleClick();
   }
 
   private handleClick() {
-    this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-      this.playAnimation("ball");
-      this.moveHedgehogAfterDelay();
-    });
+    this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
+  }
+
+  private onClick() {
+    this.curlUp();
   }
 
   async moveHedgehog() {
-    // Randomly decide if the hedgehog should pause and play an idle animation
-    if (Phaser.Math.Between(0, 10) < 3) {
-      this.playAnimation("idle");
-    } else {
-      await this.startMovement();
-      this.playAnimation("ball");
-    }
-    this.moveHedgehogAfterDelay();
-  }
-
-  private playAnimation(animType: "walk" | "ball" | "idle", tile?: Vector2Simple) {
-    if (!this.active) return;
-    this.removeDelay();
-    this.cancelMovement();
-
-    const currentTile = tile ?? getGameObjectCurrentTile(this);
-    if (!currentTile) return;
-    const anim = this.getAnim(currentTile);
-    if (!anim) return;
-
-    const { walkAnim, ballAnim, idleAnim } = anim;
-    const animToPlay = animType === "walk" ? walkAnim : animType === "ball" ? ballAnim : idleAnim;
-    this.play(animToPlay);
-
-    if (animType === "ball") {
-      const sound = Math.random() < 0.8 ? SoundType.Select : SoundType.SelectExtra;
-      this.actorAudioComponent?.playSpatialCustomSound(sound);
-    }
-  }
-
-  private async startMovement() {
     if (!this.active) return;
 
     try {
-      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius, {
-        onPathUpdate: (newTileXY) => {
-          this.playAnimation("walk", newTileXY);
-        }
-      } satisfies PathMoveConfig);
+      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
+      this.moveHedgehogAfterDelay();
     } catch (e) {
       console.error(e);
     }
   }
 
-  private moveHedgehogAfterDelay() {
-    this.removeDelay();
+  private curlUp() {
     if (!this.active) return;
-    this.currentDelay = this.scene.time.delayedCall(this.actionDelay, this.moveHedgehog, [], this);
+    if (this.curledUp) return;
+    this.removeDelay();
+    this.cancelMovement();
+
+    this.curledUp = true;
+
+    this.animationActorComponent?.playCustomAnimation("ball", {
+      onComplete: () => {
+        this.curledUp = false;
+        this.moveHedgehogAfterDelay();
+      }
+    });
+    const sound = Math.random() < 0.8 ? SoundType.Select : SoundType.SelectExtra;
+    this.actorAudioComponent?.playSpatialCustomSound(sound);
+  }
+
+  private moveHedgehogAfterDelay() {
+    if (!this.active) return;
+    if (this.curledUp) return;
+    this.removeDelay();
+    const randomDelay = Phaser.Math.Between(1000, 5000);
+    this.currentDelay = this.scene.time.delayedCall(randomDelay, this.moveHedgehog, [], this);
   }
 
   private removeDelay() {
@@ -124,51 +94,12 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     if (movementSystem) movementSystem.cancelMovement();
   };
 
-  private getAnim(newTile: Vector2Simple): { walkAnim: string; ballAnim: string; idleAnim: string } | undefined {
-    const direction = getGameObjectDirection(this, newTile);
-
-    let walkAnim: string;
-    let ballAnim: string;
-    let idleAnim: string;
-
-    switch (direction) {
-      case "north":
-        walkAnim = ANIM_HEDGEHOG_WALK_TOP;
-        ballAnim = ANIM_HEDGEHOG_BALL_TOP;
-        idleAnim = ANIM_HEDGEHOG_IDLE_TOP;
-        break;
-      case "south":
-        walkAnim = ANIM_HEDGEHOG_WALK_DOWN;
-        ballAnim = ANIM_HEDGEHOG_BALL_DOWN;
-        idleAnim = ANIM_HEDGEHOG_IDLE_DOWN;
-        break;
-      case "east":
-      case "northeast":
-      case "southeast":
-        walkAnim = ANIM_HEDGEHOG_WALK_RIGHT;
-        ballAnim = ANIM_HEDGEHOG_BALL_RIGHT;
-        idleAnim = ANIM_HEDGEHOG_IDLE_RIGHT;
-        break;
-
-      case "west":
-      case "northwest":
-      case "southwest":
-        walkAnim = ANIM_HEDGEHOG_WALK_LEFT;
-        ballAnim = ANIM_HEDGEHOG_BALL_LEFT;
-        idleAnim = ANIM_HEDGEHOG_IDLE_LEFT;
-        break;
-      default:
-        return;
-    }
-    return { walkAnim, ballAnim, idleAnim };
-  }
-
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
+    this.off(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
     this.removeDelay();
     this.cancelMovement();
   }
-
   /* END-USER-CODE */
 }
 

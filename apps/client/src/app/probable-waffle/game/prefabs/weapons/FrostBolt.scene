@@ -4,26 +4,28 @@
     "settings": {
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
+        "snapWidth": 32,
+        "snapHeight": 32,
         "exportClass": true,
         "autoImport": true,
         "preloadMethodName": "",
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 1280,
-        "borderHeight": 720
+        "borderWidth": 32,
+        "borderHeight": 32
     },
     "displayList": [
         {
             "type": "Image",
-            "id": "91ade2b1-6aee-4efe-a51a-de82744331ef",
-            "label": "weapons_arrow_png",
+            "id": "048f9c50-3f4e-4b52-a611-c591c3755097",
+            "label": "weapons_frost_bolt_png",
             "texture": {
                 "key": "factions",
-                "frame": "weapons/arrow.png"
+                "frame": "weapons/frost-bolt.png"
             },
-            "x": 259,
-            "y": 155
+            "x": 16,
+            "y": 16
         }
     ],
     "plainObjects": [],

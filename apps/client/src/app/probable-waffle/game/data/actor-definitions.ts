@@ -166,6 +166,14 @@ import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../animations/tivara_worker_
 import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../animations/skaduwee_worker_male_anims";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
 import { weaponDefinitions } from "../entity/combat/attack-data";
+import { ANIM_HEDGEHOG_DEFINITION, ANIM_SHEEP_DEFINITION } from "../animations/animals";
+import { ANIM_SKADUWEE_OWL_DEFINITION } from "../prefabs/units/skaduwee/SkaduweeOwlAnims";
+import {
+  ANIM_BADGER_DEFINITION,
+  ANIM_BOAR_DEFINITION,
+  ANIM_STAG_DEFINITION,
+  ANIM_WOLF_DEFINITION
+} from "../animations/animals2";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -374,11 +382,7 @@ export const pwActorDefinitions: {
           [SoundType.SelectExtra]: ActorsHedgehogSfxAngrySounds
         }
       },
-      animatable: {
-        animations: {
-          // todo
-        }
-      }
+      animatable: { animations: ANIM_HEDGEHOG_DEFINITION }
     },
     systems: {
       movement: { enabled: true }
@@ -399,16 +403,108 @@ export const pwActorDefinitions: {
           ["wool"]: ActorsSheepSfxWoolBombSounds
         }
       },
-      animatable: {
-        animations: {
+      animatable: { animations: ANIM_SHEEP_DEFINITION }
+    },
+    systems: {
+      movement: { enabled: true }
+    }
+  },
+  Badger: {
+    components: {
+      objectDescriptor: {
+        color: 0x222e37
+      },
+      translatable: {
+        tileStepDuration: 800
+      },
+      audio: {
+        sounds: {
           // todo
         }
+      },
+      animatable: { animations: ANIM_BADGER_DEFINITION }
+    },
+    systems: {
+      movement: { enabled: true }
+    }
+  },
+  Boar: {
+    components: {
+      objectDescriptor: {
+        color: 0x222e37
+      },
+      translatable: {
+        tileStepDuration: 400
+      },
+      audio: {
+        sounds: {
+          // todo
+        }
+      },
+      animatable: { animations: ANIM_BOAR_DEFINITION }
+    },
+    systems: {
+      movement: { enabled: true }
+    }
+  },
+  Stag: {
+    components: {
+      objectDescriptor: {
+        color: 0xc75841
+      },
+      translatable: {
+        tileStepDuration: 800
+      },
+      audio: {
+        sounds: {
+          // todo
+        }
+      },
+      animatable: { animations: ANIM_STAG_DEFINITION }
+    },
+    systems: {
+      movement: { enabled: true }
+    }
+  },
+  Wolf: {
+    components: {
+      objectDescriptor: {
+        color: 0x3b4a50
+      },
+      vision: {
+        range: 5
+      },
+      info: {
+        name: "Grey Wolf",
+        description: "A wolf",
+        smallImage: {
+          key: "animals_2",
+          frame: "wolf/idle/se/04.png",
+          origin: { x: 0.5, y: 0.5 }
+        }
+      },
+      health: {
+        physicalState: ActorPhysicalType.Biological,
+        maxHealth: 100
+      },
+      translatable: {
+        tileStepDuration: 300
+      },
+      audio: {
+        sounds: {
+          // todo
+        }
+      },
+      animatable: { animations: ANIM_WOLF_DEFINITION },
+      attack: {
+        attacks: [weaponDefinitions.wolfBite]
       }
     },
     systems: {
       movement: { enabled: true }
     }
   },
+
   [ObjectNames.GeneralWarrior]: {
     components: {
       objectDescriptor: {
@@ -1004,11 +1100,7 @@ export const pwActorDefinitions: {
           [SoundType.LocationUnavailable]: SkaduweeOwlSfxLocationSounds
         }
       },
-      animatable: {
-        animations: {
-          // todo
-        }
-      }
+      animatable: { animations: ANIM_SKADUWEE_OWL_DEFINITION }
     },
     systems: {
       movement: { enabled: true },

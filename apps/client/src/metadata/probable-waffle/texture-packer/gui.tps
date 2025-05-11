@@ -50,7 +50,7 @@
         <key>dxtCompressionMode</key>
         <enum type="SettingsBase::DxtCompressionMode">DXT_PERCEPTUAL</enum>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -74,7 +74,7 @@
         <key>textureSubPath</key>
         <string></string>
         <key>textureFormat</key>
-        <enum type="SettingsBase::TextureFormat">png</enum>
+        <enum type="SettingsBase::TextureFormat">png8</enum>
         <key>borderPadding</key>
         <uint>0</uint>
         <key>maxTextureSize</key>
@@ -184,6 +184,7 @@
             <key type="filename">../sprites/gui/actor_info_icons/shield.png</key>
             <key type="filename">../sprites/gui/actor_info_icons/speed_attack.png</key>
             <key type="filename">../sprites/gui/actor_info_icons/sword.png</key>
+            <key type="filename">../sprites/gui/resource_icons/food.png</key>
             <key type="filename">../sprites/gui/resource_icons/minerals.png</key>
             <key type="filename">../sprites/gui/resource_icons/stone.png</key>
             <key type="filename">../sprites/gui/resource_icons/wood.png</key>

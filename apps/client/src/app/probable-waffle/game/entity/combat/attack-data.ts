@@ -57,6 +57,7 @@ export interface ProjectileData {
     randomizeOrientation: boolean;
     // 0 means right - 90 means up - 180 means left - 270 means down
     pointingOrientation: number;
+    rotationSpeed?: number;
   };
   impactAnimation?: {
     anims: string[];
@@ -82,7 +83,8 @@ export enum WeaponType {
   Staff = "staff",
   Hands = "hands",
   Furball = "furball",
-  BowTower = "bowTower"
+  BowTower = "bowTower",
+  WolfBite = "wolfBite"
 }
 
 export const weaponDefinitions: Record<WeaponType, AttackData> = {
@@ -91,13 +93,14 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     canTargetAir: true,
     projectile: {
       type: ProjectileType.SlingshotProjectile,
-      speed: 1000,
+      speed: 700,
       orientation: {
         randomizeOrientation: true,
-        pointingOrientation: 0
+        pointingOrientation: 0,
+        rotationSpeed: 400
       },
       impactAnimation: {
-        anims: EffectsAnims.fireImpacts // todo add debris visual animation
+        anims: EffectsAnims.debrisAnimations
       }
     },
     damage: 5,
@@ -148,7 +151,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     canTargetAir: true,
     projectile: {
       type: ProjectileType.FrostBoltProjectile,
-      speed: 1000,
+      speed: 800,
       orientation: {
         randomizeOrientation: false,
         pointingOrientation: 0
@@ -170,7 +173,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
       hit: SharedActorActionsSfxFrostImpactSounds
     },
     delays: {
-      fire: 1000,
+      fire: 500,
       hit: 0
     }
   },
@@ -179,9 +182,9 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     canTargetAir: true,
     projectile: {
       type: ProjectileType.FireballProjectile,
-      speed: 1000,
+      speed: 800,
       orientation: {
-        randomizeOrientation: true,
+        randomizeOrientation: false,
         pointingOrientation: 0
       },
       impactAnimation: {
@@ -200,7 +203,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
       hit: SharedActorActionsSfxFireballHitSounds
     },
     delays: {
-      fire: 1000,
+      fire: 500,
       hit: 0
     }
   },
@@ -334,6 +337,25 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     },
     delays: {
       fire: 1000,
+      hit: 500
+    }
+  },
+  [WeaponType.WolfBite]: {
+    weaponType: WeaponType.WolfBite,
+    canTargetAir: false,
+    damage: 5,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    animationType: AnimationType.LargeSlash,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds, // todo
+      hit: SharedActorActionsSfxMaceHitSounds // todo
+    },
+    delays: {
+      fire: 200,
       hit: 500
     }
   }

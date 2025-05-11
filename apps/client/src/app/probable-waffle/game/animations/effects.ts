@@ -38,6 +38,7 @@ export class EffectsAnims {
   static readonly ANIM_IMPACT_21 = "impact_21";
   static readonly ANIM_IMPACT_22 = "impact_22";
   static readonly ANIM_IMPACT_23 = "impact_23";
+  static readonly ANIM_IMPACT_DEBRIS = "impact-debris";
 
   static readonly createAndPlayEffectAnimation = (
     scene: Phaser.Scene,
@@ -96,4 +97,6 @@ export class EffectsAnims {
     EffectsAnims.ANIM_IMPACT_22,
     EffectsAnims.ANIM_IMPACT_23
   ];
+
+  static readonly debrisAnimations = [EffectsAnims.ANIM_IMPACT_DEBRIS];
 }

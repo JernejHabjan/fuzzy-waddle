@@ -2,6 +2,8 @@ import { Observable, Subject } from "rxjs";
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectDirectionBetweenTiles } from "../../systems/movement.system";
 import { getGameObjectTransform } from "../../../data/game-object-helper";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { NavigationService } from "../../../scenes/services/navigation.service";
 
 export type IsoDirection = "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest";
 
@@ -45,8 +47,22 @@ export class ActorTranslateComponent {
     if (!transform) return;
     const targetTransform = getGameObjectTransform(targetGameObject);
     if (!targetTransform) return;
-    const newDirection = getGameObjectDirectionBetweenTiles(transform, targetTransform);
+    this.turnTowardsPosition({ x: targetTransform.x, y: targetTransform.y });
+  }
+
+  turnTowardsPosition(targetWorldXY: Vector2Simple) {
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!transform) return;
+    const newDirection = getGameObjectDirectionBetweenTiles(transform, targetWorldXY);
     this.directionChanged(newDirection);
+  }
+
+  turnTowardsTile(targetTileXY: Vector2Simple) {
+    const navigationService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navigationService) return;
+    const tileWorldXY = navigationService.getTileWorldCenter(targetTileXY);
+    if (!tileWorldXY) return;
+    this.turnTowardsPosition(tileWorldXY);
   }
 
   private directionChanged(newDirection: IsoDirection | undefined) {

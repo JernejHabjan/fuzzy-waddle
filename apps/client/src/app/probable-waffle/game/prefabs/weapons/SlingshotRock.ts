@@ -9,7 +9,7 @@
 export default class SlingshotRock extends Phaser.GameObjects.Image {
 
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 6, y ?? -37, texture || "factions", frame ?? "weapons/arrow.png");
+    super(scene, x ?? 8, y ?? 8, texture || "factions", frame ?? "weapons/rock.png");
 
     /* START-USER-CTR-CODE */
     // Write your code here.

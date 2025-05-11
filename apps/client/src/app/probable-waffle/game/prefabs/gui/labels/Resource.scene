@@ -37,8 +37,8 @@
                     "label": "resource_icon",
                     "scope": "NESTED_PREFAB",
                     "texture": {
-                        "key": "factions",
-                        "frame": "character_icons/general/warrior.png"
+                        "key": "gui",
+                        "frame": "resource_icons/food.png"
                     },
                     "x": -56,
                     "y": -4,
@@ -69,6 +69,7 @@
                     "wood",
                     "stone",
                     "minerals",
+                    "food",
                     ""
                 ]
             }

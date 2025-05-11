@@ -449,6 +449,7 @@ export class GathererComponent {
       case ResourceType.Minerals:
         return AnimationType.Mine;
     }
+    return null;
   }
 
   getGatherSound(): SoundType | null {
@@ -464,5 +465,6 @@ export class GathererComponent {
       case ResourceType.Minerals:
         return SoundType.Mine;
     }
+    return null;
   }
 }

@@ -70,6 +70,7 @@ export class HealthComponent {
     hooks: {
       health: (value: number, previousValue: number) => {
         if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
+        let asTint;
         switch (this.healthDefinition.physicalState) {
           case ActorPhysicalType.Biological:
             if (this.actorTranslateComponent) {
@@ -82,9 +83,16 @@ export class HealthComponent {
             }
             break;
           case ActorPhysicalType.Structural:
-          case ActorPhysicalType.Organic:
-            const asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
             if (asTint.setTint) asTint.setTint(0xff0000);
+            // console.warn("this tint is not working "); // todo
+
+            // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
+            break;
+          case ActorPhysicalType.Organic:
+            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+            if (asTint.setTint) asTint.setTint(0xff0000);
+            // console.warn("this tint is not working "); // todo
             break;
         }
 

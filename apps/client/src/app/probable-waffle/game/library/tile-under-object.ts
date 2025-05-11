@@ -24,11 +24,11 @@ export function getTileCoordsUnderObject(
     y: transform.y
   };
 
-  if (DEBUG) drawDebugPoint(gameObject.scene, origin, 0x00ff00);
+  if (DEBUG) drawDebugPoint(gameObject.scene, origin, 0x0000ff);
 
   const tileUnderOrigin = tilemap.getTileAtWorldXY(origin.x, origin.y + 32)!;
   if (DEBUG && tileUnderOrigin && !environment.production) {
-    tileUnderOrigin.tint = 0x00ff00;
+    tileUnderOrigin.tint = 0x0000ff;
   }
   const nrOfTiles = (reduction ? bounds.width * reduction : bounds.width) / tilemap.tileWidth;
   const onEachSide = Math.floor(nrOfTiles / 2);
@@ -38,6 +38,12 @@ export function getTileCoordsUnderObject(
     for (let j = -onEachSide; j <= onEachSide; j++) {
       if (tileUnderOrigin) {
         tileIndexes1.push({ x: tileUnderOrigin.x + i, y: tileUnderOrigin.y + j });
+        if (DEBUG && !environment.production) {
+          const tile = tilemap.getTileAt(tileUnderOrigin.x + i, tileUnderOrigin.y + j);
+          if (tile) {
+            tile.tint = 0x0000ff;
+          }
+        }
       }
     }
   }
