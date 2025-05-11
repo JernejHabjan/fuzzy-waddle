@@ -10,6 +10,7 @@ export interface VisionDefinition {
 
 export class VisionComponent {
   private visibleEnemies?: GameObject[]; // todo
+  public visibilityByCurrentPlayer: boolean = false;
 
   constructor(
     private readonly gameObject: GameObject,

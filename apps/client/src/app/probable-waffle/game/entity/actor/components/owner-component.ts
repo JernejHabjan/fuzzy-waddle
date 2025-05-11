@@ -9,6 +9,7 @@ import { Subscription } from "rxjs";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { ContainerComponent } from "../../building/container-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
+import { VisionComponent } from "./vision-component";
 
 export type OwnerDefinition = {
   color: { originalColor: number; epsilon: number }[];
@@ -31,6 +32,7 @@ export class OwnerComponent {
   private ready: boolean = false;
   private healthUiVisibilitySubscription?: Subscription;
   private constructionProgressSubscription?: Subscription;
+  private gameObjectVisible: boolean = true;
   constructor(
     private readonly gameObject: GameObject,
     public readonly ownerDefinition: OwnerDefinition
@@ -42,6 +44,8 @@ export class OwnerComponent {
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
+    // Todo - now calling refreshOwnerUiVisibility on tick to update visibility due to FOW changes
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
   }
 
   private init() {
@@ -58,6 +62,14 @@ export class OwnerComponent {
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
+    this.gameObjectVisible = visible;
+    this.refreshOwnerUiVisibility();
+  }
+
+  private refreshOwnerUiVisibility() {
+    let visible = this.gameObjectVisible;
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
     this.ownerUiElement?.setVisible(visible);
   }
 
@@ -215,5 +227,6 @@ export class OwnerComponent {
     this.healthUiVisibilitySubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
   }
 }

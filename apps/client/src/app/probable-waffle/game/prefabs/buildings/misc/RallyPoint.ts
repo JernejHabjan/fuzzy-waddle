@@ -150,8 +150,8 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     }
   }
 
-  private playRallyPointSetSound(){
-    if(!this.audioService) return;
+  private playRallyPointSetSound() {
+    if (!this.audioService) return;
     const sound = SharedActorActionsRallyPointSound;
     this.audioService.playSpatialAudioSprite(this, sound.key, sound.spriteName);
   }

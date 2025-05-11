@@ -13,6 +13,7 @@ import { IdComponent } from "./id-component";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { HealthComponent } from "../../combat/components/health-component";
 import { ContainerComponent } from "../../building/container-component";
+import { VisionComponent } from "./vision-component";
 
 export type SelectableDefinition = {
   offsetY?: number;
@@ -61,6 +62,8 @@ export class SelectableComponent {
   setSelected(selected: boolean) {
     if (this.selected === selected) return;
     this.selected = selected;
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (visionComponent && !visionComponent.visibilityByCurrentPlayer) selected = false;
     this.selectionCircle.visible = selected;
     if (selected) this.update();
     this.selectionChanged.next(selected);

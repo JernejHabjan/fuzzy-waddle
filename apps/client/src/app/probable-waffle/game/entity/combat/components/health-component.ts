@@ -23,6 +23,7 @@ import {
   SharedActorActionsSfxBodyFallSounds,
   SharedActorActionsSfxBuildingDestroySounds
 } from "../../../sfx/SharedActorActionsSfx";
+import { VisionComponent } from "../../actor/components/vision-component";
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -165,15 +166,21 @@ export class HealthComponent {
       this.setVisibilityUiComponent(false);
       this.shouldUiElementsBeVisible = shouldBeVisible;
       this.constructionProgressSubscription = constructionSiteComponent.constructionStateChanged.subscribe(() =>
-        this.setVisibilityUiComponent(this.shouldUiElementsBeVisible)
+        this.refreshVisibility()
       );
     }
+    // Todo - now calling refreshVisibility on tick to update visibility due to FOW changes
+    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
 
     this.bindKillKey();
 
     if (!environment.production) {
       this.bindDamageKey();
     }
+  }
+
+  private refreshVisibility() {
+    this.setVisibilityUiComponent(this.shouldUiElementsBeVisible);
   }
 
   private bindKillKey() {
@@ -320,17 +327,19 @@ export class HealthComponent {
     this.healthComponentData.armour = this.healthDefinition.maxArmour ?? 0;
   }
 
-  setVisibilityUiComponent(visibility: boolean) {
+  setVisibilityUiComponent(visible: boolean) {
     if (!this.gameObject.active) return;
-    this.shouldUiElementsBeVisible = visibility;
+    this.shouldUiElementsBeVisible = visible;
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
-    if (constructionSiteComponent && !constructionSiteComponent.isFinished) visibility = false;
+    if (constructionSiteComponent && !constructionSiteComponent.isFinished) visible = false;
     const previousVisibility = this.uiComponentsVisible;
-    if (visibility === previousVisibility) return;
-    this.healthUiComponent.setVisibility(visibility);
-    this.armorUiComponent?.setVisibility(visibility);
-    this.uiComponentsVisible = visibility;
-    this.uiComponentsVisibilityChanged.next(visibility);
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
+    if (visible === previousVisibility) return;
+    this.healthUiComponent.setVisibility(visible);
+    this.armorUiComponent?.setVisibility(visible);
+    this.uiComponentsVisible = visible;
+    this.uiComponentsVisibilityChanged.next(visible);
   }
 
   private destroy() {
@@ -339,6 +348,7 @@ export class HealthComponent {
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     this.killKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.killSelected, this);
     this.damageKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
   }
 
   get alive(): boolean {

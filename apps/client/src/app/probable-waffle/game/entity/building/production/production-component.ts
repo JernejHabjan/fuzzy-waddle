@@ -9,7 +9,12 @@ import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
 import { ObjectNames } from "../../../data/object-names";
-import { getGameObjectBounds, getGameObjectTransform, onObjectReady } from "../../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectTransform,
+  getGameObjectVisibility,
+  onObjectReady
+} from "../../../data/game-object-helper";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
@@ -279,8 +284,14 @@ export class ProductionComponent {
     const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
     if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
     const newGameObject = sceneActorCreator.createActorFromDefinition(actorDefinition);
-    if (newGameObject && this.rallyPoint.isSet()) {
-      this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
+    if (newGameObject) {
+      // hide by default - fog-of-war will show it if visible for player
+      const visibilityComponent = getGameObjectVisibility(newGameObject);
+      if (visibilityComponent) visibilityComponent.setVisible(false);
+
+      if (this.rallyPoint.isSet()) {
+        this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
+      }
     }
   }
 

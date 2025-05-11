@@ -5,7 +5,12 @@ import { throttle } from "../../library/throttle";
 import { VisionComponent } from "../../entity/actor/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
+import { IdComponent } from "../../entity/actor/components/id-component";
+import { getGameObjectBounds, getGameObjectVisibility } from "../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
+import { IsoHelper } from "../../world/map/tile/iso-helper";
+import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
+import { HealthComponent } from "../../entity/combat/components/health-component";
 
 export enum FogOfWarMode {
   FULL_EXPLORATION = "fullExploration",
@@ -13,7 +18,7 @@ export enum FogOfWarMode {
 }
 
 export class FogOfWarComponent {
-  private fowMode: FogOfWarMode = FogOfWarMode.FULL_EXPLORATION;
+  private fowMode: FogOfWarMode = FogOfWarMode.PRE_EXPLORED;
   private readonly fowLayer: Phaser.GameObjects.Graphics;
   private exploredTiles: Set<string> = new Set();
   private visibleTiles: Set<string> = new Set();
@@ -24,6 +29,9 @@ export class FogOfWarComponent {
   private readonly startX: number;
   private readonly startY: number;
   private readonly margin: number = 20; // Margin for the fog of war grid
+
+  // Track actors with ID components for visibility management
+  private playerActors: Map<string, GameObject> = new Map();
 
   // Colors for different FOW states
   private readonly COLOR_UNEXPLORED = 0x333333;
@@ -47,6 +55,9 @@ export class FogOfWarComponent {
     this.fowLayer = this.scene.add.graphics();
     this.fowLayer.setDepth(10000000000); // High depth to ensure it's drawn above most game elements // TODO HARDCODE
 
+    // Initialize actor tracking
+    this.scanForPlayerActors();
+
     // Subscribe to navigation updates
     this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this); // todo this is very expensive
@@ -54,6 +65,22 @@ export class FogOfWarComponent {
 
     // Initial draw of fog
     this.drawInitialFog();
+  }
+
+  private scanForPlayerActors(): void {
+    this.scene.children.getChildren().forEach(this.registerActors, this);
+  }
+
+  private registerActors(obj: GameObject): void {
+    const idComponent = getActorComponent(obj, IdComponent);
+    const resourceSourceComponent = getActorComponent(obj, ResourceSourceComponent);
+
+    if (idComponent && !resourceSourceComponent) {
+      const id = idComponent.id;
+      if (id && !this.playerActors.has(id)) {
+        this.playerActors.set(id, obj);
+      }
+    }
   }
 
   public setMode(mode: FogOfWarMode): void {
@@ -75,21 +102,27 @@ export class FogOfWarComponent {
     // Clear previous visible tiles
     this.visibleTiles.clear();
 
+    // Scan for any new actors with IdComponent
+    this.scanForPlayerActors();
+
     // Get player-owned game objects with vision
     const playerOwnedObjects: GameObject[] = [];
-    this.scene.children.getChildren().forEach((child) => {
-      const ownerComponent = getActorComponent(child, OwnerComponent);
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
 
-      if (ownerComponent) {
-        const owner = ownerComponent.getOwner();
-        if (!owner) return;
-        const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
-        if (currentPlayerNumber === undefined) return;
-        if (owner === currentPlayerNumber) {
-          playerOwnedObjects.push(child);
+    if (currentPlayerNumber !== undefined) {
+      this.scene.children.getChildren().forEach((child) => {
+        const ownerComponent = getActorComponent(child, OwnerComponent);
+        if (ownerComponent) {
+          const owner = ownerComponent.getOwner();
+          if (owner !== undefined && owner === currentPlayerNumber) {
+            const healthComponent = getActorComponent(child, HealthComponent);
+            if (healthComponent && healthComponent.killed) return; // Skip dead actors
+
+            playerOwnedObjects.push(child);
+          }
         }
-      }
-    });
+      });
+    }
 
     // Calculate visible tiles for all player-owned objects
     playerOwnedObjects.forEach((obj) => {
@@ -107,8 +140,51 @@ export class FogOfWarComponent {
       }
     });
 
+    // Update actor visibility based on fog of war
+    this.updateActorsVisibility();
+
     // Redraw fog-of-war
     this.redrawFogOfWar();
+  }
+
+  /**
+   * Updates the visibility of actors with IdComponent based on fog of war
+   */
+  private updateActorsVisibility(): void {
+    this.playerActors.forEach((actor, id) => {
+      // Skip if actor is no longer valid
+      if (!actor.active || !actor.scene) {
+        this.playerActors.delete(id);
+        return;
+      }
+
+      // Check if actor should be visible
+      const bounds = getGameObjectBounds(actor);
+      if (!bounds) return;
+
+      // Get tile position from the center of the actor
+      const centerX = bounds.centerX;
+      const centerY = bounds.centerY;
+
+      const tilePos = IsoHelper.isometricWorldToTileXY(this.scene, centerX, centerY, false);
+      // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
+      tilePos.x = Math.ceil(tilePos.x);
+      tilePos.y = Math.ceil(tilePos.y);
+
+      if (!tilePos) return;
+
+      const tileKey = `${tilePos.x},${tilePos.y}`;
+      const isVisible = this.visibleTiles.has(tileKey);
+
+      const visionComponent = getActorComponent(actor, VisionComponent);
+      if (visionComponent) {
+        visionComponent.visibilityByCurrentPlayer = isVisible;
+        const visibilityComponent = getGameObjectVisibility(actor);
+        if (visibilityComponent) {
+          visibilityComponent.setVisible(isVisible);
+        }
+      }
+    });
   }
 
   /**
@@ -203,6 +279,7 @@ export class FogOfWarComponent {
 
   private destroy(): void {
     this.scene.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this);
 
     if (this.fowLayer) {
       this.fowLayer.destroy();

@@ -1,6 +1,9 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import Phaser from "phaser";
 import { HealthComponent } from "../combat/components/health-component";
+import { getActorComponent } from "../../data/actor-component";
+import { VisionComponent } from "../actor/components/vision-component";
+import { getGameObjectVisibility } from "../../data/game-object-helper";
 
 export type ContainerDefinition = {
   capacity: number;
@@ -61,9 +64,11 @@ export class ContainerComponent {
   }
 
   setGameObjectVisible(gameObject: GameObject, visible: boolean) {
-    const visibleComponent = gameObject as unknown as Phaser.GameObjects.Components.Visible; // todo this is used on multiple places
-    if (visibleComponent.setVisible === undefined) return;
-    visibleComponent.setVisible(visible);
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
+
+    const visibilityComponent = getGameObjectVisibility(gameObject);
+    if (visibilityComponent) visibilityComponent.setVisible(visible);
     gameObject.emit(ContainerComponent.GameObjectVisibilityChanged, visible);
   }
 }
