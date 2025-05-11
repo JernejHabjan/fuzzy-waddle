@@ -18,7 +18,6 @@
             "type": "Container",
             "id": "4ceef8d2-a76d-4c6e-a69b-de95cce725be",
             "label": "container_1",
-            "blendMode": -1,
             "list": [
                 {
                     "prefabId": "dd5e5e80-e664-45d6-9ce1-f899d9b2ae03",

@@ -21,6 +21,7 @@ import { BuildingCursor } from "../world/managers/controllers/building-cursor";
 import { DebuggingService } from "./services/DebuggingService";
 import { CrossSceneCommunicationService } from "./services/CrossSceneCommunicationService";
 import { FogOfWarComponent } from "./components/fog-of-war.component";
+import { SelectionGroupsComponent } from "./components/selection-groups.component";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -56,7 +57,11 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const creator = new SceneActorCreator(this);
     const audioService = new AudioService(this);
 
-    this.sceneGameData.components.push(new TilemapComponent(this.tilemap), new BuildingCursor(this));
+    this.sceneGameData.components.push(
+      new TilemapComponent(this.tilemap),
+      new BuildingCursor(this),
+      new SelectionGroupsComponent(this)
+    );
     this.sceneGameData.services.push(
       new NavigationService(this, this.tilemap),
       audioService,
