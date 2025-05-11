@@ -20,6 +20,7 @@ import { AiPlayerHandler } from "./components/ai-player-handler";
 import { BuildingCursor } from "../world/managers/controllers/building-cursor";
 import { DebuggingService } from "./services/DebuggingService";
 import { CrossSceneCommunicationService } from "./services/CrossSceneCommunicationService";
+import { FogOfWarComponent } from "./components/fog-of-war.component";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -64,6 +65,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new CrossSceneCommunicationService()
     );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
+    this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
 
     creator.initInitialActors();
 
