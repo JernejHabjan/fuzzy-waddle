@@ -5,7 +5,7 @@ import { TilemapComponent } from "../../../scenes/components/tilemap.component";
 
 export class IsoHelper {
   /**
-   * @deprecated USE RATHER Phaser.Tilemaps.Components.IsometricWorldToTileXY
+   * @deprecated USE RATHER IsoHelper.IsometricWorldToTileXY
    */
   static DEPRECATED_isometricWorldToTileXY(worldX: number, worldY: number, snapToFloor: boolean): Vector2Simple {
     const tileWidthHalf = MapSizeInfo_old.info.tileWidthHalf;

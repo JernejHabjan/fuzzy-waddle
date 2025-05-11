@@ -22,6 +22,7 @@ import { ProductionComponent } from "../entity/building/production/production-co
 import { GathererComponent } from "../entity/actor/components/gatherer-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
+import { VisionComponent } from "../entity/actor/components/vision-component";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
@@ -204,8 +205,11 @@ export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameO
     if (!idComponent || !idComponent.id) return false;
     if (!selectionGuids.includes(idComponent.id)) return false;
     const healthComponent = getActorComponent(child, HealthComponent);
-    // noinspection RedundantIfStatementJS
     if (healthComponent && healthComponent.killed) return false;
+    const visionComponent = getActorComponent(child, VisionComponent);
+    // noinspection RedundantIfStatementJS
+    if (visionComponent && !visionComponent.visibilityByCurrentPlayer) return false;
+
     return true;
   });
 }

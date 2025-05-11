@@ -15,6 +15,8 @@ import HudProbableWaffle from "../../scenes/HudProbableWaffle";
 import { MultiSelectionHandler } from "../../world/managers/controllers/input/multi-selection.handler";
 import { NavigationService } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
+import { FogOfWarComponent, FogOfWarMode } from "../../scenes/components/fog-of-war.component";
+import { VisionComponent } from "../../entity/actor/components/vision-component";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -78,12 +80,15 @@ export default class Minimap extends Phaser.GameObjects.Container {
   private readonly minimapMargin = 20;
   private probableWaffleScene?: ProbableWaffleScene;
   private hudProbableWaffle?: HudProbableWaffle;
+  private fogOfWarComponent?: FogOfWarComponent;
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, hudProbableWaffle: HudProbableWaffle) {
     this.probableWaffleScene = probableWaffleScene;
     this.hudProbableWaffle = hudProbableWaffle;
+    this.fogOfWarComponent = getSceneComponent(probableWaffleScene, FogOfWarComponent);
     this.redrawMinimap();
     this.probableWaffleScene.events.on(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
+    this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimap, this); // TODO FOR SOME REASON UpdateNavigationEvent doesnt get triggered
   }
 
   private throttleRedrawMinimap = throttle(this.redrawMinimap.bind(this), 1000);
@@ -109,7 +114,8 @@ export default class Minimap extends Phaser.GameObjects.Container {
     isoY: number,
     pixelWidth: number,
     pixelHeight: number,
-    color: Phaser.Display.Color
+    color: Phaser.Display.Color,
+    alpha: number = 1
   ): Phaser.GameObjects.Polygon {
     const diamondPoints = [
       { x: isoX, y: isoY + pixelHeight / 2 },
@@ -122,10 +128,48 @@ export default class Minimap extends Phaser.GameObjects.Container {
       x + pixelWidth / 2,
       y + pixelHeight / 2,
       diamondPoints,
-      color.color
+      color.color,
+      alpha
     );
     diamond.setInteractive(new Phaser.Geom.Polygon(diamondPoints), Phaser.Geom.Polygon.Contains);
     return diamond;
+  }
+
+  /**
+   * Phaser darken doesn't work as desired
+   */
+  private darken(color: Phaser.Display.Color): Phaser.Display.Color {
+    return new Phaser.Display.Color(
+      Math.floor(color.red * 0.6 + 40),
+      Math.floor(color.green * 0.6 + 40),
+      Math.floor(color.blue * 0.6 + 40)
+    );
+  }
+
+  private getTileVisibilityColor(tileX: number, tileY: number, baseColor: Phaser.Display.Color): Phaser.Display.Color {
+    if (!this.fogOfWarComponent || this.fogOfWarComponent.getMode() === FogOfWarMode.ALL_VISIBLE) {
+      return baseColor;
+    }
+
+    const visibility = this.fogOfWarComponent.getTileVisibility(tileX, tileY);
+
+    switch (visibility) {
+      case "visible":
+        return baseColor;
+      case "explored":
+        return this.darken(baseColor);
+      case "unexplored":
+      default:
+        const mode = this.fogOfWarComponent.getMode();
+        if (mode === FogOfWarMode.PRE_EXPLORED) {
+          return this.darken(baseColor);
+        } else if (mode === FogOfWarMode.FULL_EXPLORATION) {
+          // return black
+          return new Phaser.Display.Color(51, 51, 51);
+        } else {
+          return baseColor;
+        }
+    }
   }
 
   private createIsometricMinimap(
@@ -151,15 +195,19 @@ export default class Minimap extends Phaser.GameObjects.Container {
     for (let i = 0; i < widthInTiles; i++) {
       for (let j = 0; j < widthInTiles; j++) {
         const tile = layerData[i][j];
-        const color = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
+        const baseColor = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
+
+        // Get tile visibility and apply appropriate color/alpha
+        const color = this.getTileVisibilityColor(j, i, baseColor);
+
         const isoX = offsetX + (j - i) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
         const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+
         diamond.on(Phaser.Input.Events.POINTER_OVER, (pointer: Phaser.Input.Pointer) => {
           if (multiSelectionHandler?.multiSelecting) return;
           if (pointer.rightButtonDown()) {
             this.assignActorActionToTileCoordinates({ x: i, y: j });
-            // Handle right-click logic here
           } else if (pointer.leftButtonDown()) {
             this.moveCameraToTileCoordinates({ x: i, y: j });
           }
@@ -204,6 +252,23 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.probableWaffleScene.events.emit("assignActorActionToTileCoordinates", { x: isoX, y: isoY }); // todo - use this event to move actor to X, Y tile or attack move or set rally etc...
   }
 
+  private shouldShowActorOnMinimap(actor: Phaser.GameObjects.GameObject): boolean {
+    if (!this.fogOfWarComponent) return true;
+
+    // If fog-of-war is set to ALL_VISIBLE, always show actors
+    if (this.fogOfWarComponent.getMode() === FogOfWarMode.ALL_VISIBLE) {
+      return true;
+    }
+
+    // Get the vision component to check if the actor is visible
+    const visionComponent = getActorComponent(actor, VisionComponent);
+    if (visionComponent) {
+      return visionComponent.visibilityByCurrentPlayer;
+    }
+
+    return true; // Default to showing if no visibility logic applies
+  }
+
   private fillMinimapWithActors(widthInPixels: number, widthInTiles: number, x: number, y: number) {
     if (!this.probableWaffleScene) throw new Error("Parent scene not set");
     const tileMapComponent = getSceneComponent(this.probableWaffleScene, TilemapComponent);
@@ -217,16 +282,16 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds = [];
+
     this.probableWaffleScene.scene.scene.children.each((child) => {
       const objectDescriptor = getActorComponent(child, ObjectDescriptorComponent);
       if (!objectDescriptor) return;
 
-      // const colliderComponent = getActorComponent(child, ColliderComponent);
-      // if (!colliderComponent) return;
+      // Skip actors that shouldn't be visible due to fog-of-war
+      if (!this.shouldShowActorOnMinimap(child)) return;
 
       const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(tileMapComponent.tilemap, child);
       const ownerColor = getActorComponent(child, OwnerComponent)?.ownerColor;
-      // example of default color is 13025801 which is 0xc6c209
       const defaultColor = objectDescriptor.objectDescriptorDefinition?.color;
 
       const black = new Phaser.Display.Color(0, 0, 0);
@@ -236,10 +301,23 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
       if (color) {
         for (const tile of tilesUnderObject) {
-          const isoX = offsetX + (tile.x - tile.y) * (pixelWidth / 2);
-          const isoY = (tile.x + tile.y) * (pixelHeight / 2);
-          const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
-          this.actorDiamonds.push(diamond);
+          let shouldShow = true;
+
+          // Apply visibility rules based on fog of war mode
+          if (this.fogOfWarComponent && this.fogOfWarComponent.getMode() === FogOfWarMode.FULL_EXPLORATION) {
+            const tileVisibility = this.fogOfWarComponent.getTileVisibility(tile.x, tile.y);
+
+            if (tileVisibility === "unexplored") {
+              shouldShow = false;
+            }
+          }
+
+          if (shouldShow) {
+            const isoX = offsetX + (tile.x - tile.y) * (pixelWidth / 2);
+            const isoY = (tile.x + tile.y) * (pixelHeight / 2);
+            const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+            this.actorDiamonds.push(diamond);
+          }
         }
       }
     });
