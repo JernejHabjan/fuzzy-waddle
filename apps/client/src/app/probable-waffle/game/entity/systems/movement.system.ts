@@ -57,6 +57,7 @@ export class MovementSystem {
   private audioService: AudioService | undefined;
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
+  private targetGameObject?: GameObject;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -158,6 +159,13 @@ export class MovementSystem {
         .catch(() => false);
     }
 
+    return this.calculateAndFollowPath(gameObject, pathMoveConfig);
+  }
+
+  private async calculateAndFollowPath(
+    gameObject: GameObject,
+    pathMoveConfig?: Partial<PathMoveConfig>
+  ): Promise<boolean> {
     if (!this.navigationService) return false;
 
     const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
@@ -168,17 +176,64 @@ export class MovementSystem {
 
     if (this.DEBUG) this.navigationService.drawDebugPath(path);
 
+    // Cancel any ongoing movement before starting new path
+    this.cancelMovement();
+
     try {
       if (!path.length) return false;
       // Remove the first tile, as it's the current tile
       path.shift();
-      await this.moveAlongPath(path, pathMoveConfig);
+
+      // Start moving along the first step of the path
+      if (path.length > 0) {
+        const nextTile = path[0];
+        const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
+        if (!tileWorldXY) return false;
+
+        const throttledTweenUpdate = pathMoveConfig?.onUpdateThrottled
+          ? throttle(pathMoveConfig.onUpdateThrottled, pathMoveConfig.onUpdateThrottle ?? 360)
+          : undefined;
+
+        this.onMovementStart(tileWorldXY, pathMoveConfig);
+
+        // Only move one step at a time when following
+        this._currentTween = this.gameObject.scene.tweens.add({
+          targets: this.gameObject,
+          x: tileWorldXY.x,
+          y: tileWorldXY.y,
+          duration: pathMoveConfig?.tileStepDuration ?? this.defaultTileStepDuration,
+          onComplete: () => {
+            // After completing one step, call the callback
+            pathMoveConfig?.onComplete?.();
+
+            // If still following, calculate a new path from the current position
+            if (this.targetGameObject) {
+              this.calculateAndFollowPath(this.targetGameObject, pathMoveConfig);
+            } else if (path.length > 1) {
+              // If not following but there are more steps, continue the path
+              path.shift(); // Remove the step we just completed
+              this.moveAlongPath(path, pathMoveConfig);
+            } else {
+              // End of path and not following
+              this.playMovementAnimation(false, pathMoveConfig);
+            }
+          },
+          onStop: () => {
+            pathMoveConfig?.onStop?.();
+            // no need to stop animation, otherwise it's not smooth
+          },
+          onUpdate: () => {
+            this.tweenUpdate();
+            throttledTweenUpdate?.();
+            pathMoveConfig?.onUpdate?.();
+          }
+        });
+      }
+
+      return true;
     } catch (e) {
-      // console.error("Error moving along path", e);
       return false;
     }
-
-    return true;
   }
 
   private async moveAlongPath(path: Vector2Simple[], config?: PathMoveConfig): Promise<void> {
