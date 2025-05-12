@@ -2,7 +2,7 @@ import { GameObjects, Input } from "phaser";
 import { ActorDefinition, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
 import { ObjectNames } from "../../../data/object-names";
-import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../../data/actor-data";
@@ -14,6 +14,12 @@ import { TilemapComponent } from "../../../scenes/components/tilemap.component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
+import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
+import { NavigationService } from "../../../scenes/services/navigation.service";
+import { AudioService } from "../../../scenes/services/audio.service";
+import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
+import { FogOfWarComponent } from "../../../scenes/components/fog-of-war.component";
 import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
@@ -28,12 +34,18 @@ export class BuildingCursor {
   private readonly tileSize = TilemapComponent.tileWidth;
   private readonly startPlacingSubscription: Subscription;
   private readonly stopPlacingSubscription: Subscription;
+  private tileMapComponent?: TilemapComponent;
+  private navigationService?: NavigationService;
+  private audioService?: AudioService;
+  private fogOfWarComponent?: FogOfWarComponent;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private downPointerLocation?: Vector2Simple;
   private spawnedCursorGameObjects: GameObjects.GameObject[] = [];
   private isDragging: boolean = false;
   private canBeDragPlaced: boolean = false;
+  private canConstructBuildingAt: boolean = false;
+  private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
 
   constructor(private scene: GameProbableWaffleScene) {
     this.startPlacingSubscription = this.startPlacingBuilding.subscribe((name) => this.spawn(name));
@@ -42,9 +54,17 @@ export class BuildingCursor {
     this.scene.input.on(Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.scene.input.on(Input.Events.GAME_OUT, this.stop, this);
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
+    onSceneInitialized(scene, this.init, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
     this.subscribeToShiftKey();
+  }
+
+  private init() {
+    this.tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
+    this.navigationService = getSceneService(this.scene, NavigationService);
+    this.audioService = getSceneService(this.scene, AudioService);
+    this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
   }
 
   get placingBuilding() {
@@ -108,27 +128,103 @@ export class BuildingCursor {
 
     DepthHelper.setActorDepth(this.building);
 
+    // Check if the current building can be placed
+    this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
+
     this.clearGraphics();
     if (!this.isDragging) {
       this.drawPlacementGrid(worldPosition);
       this.drawAttackRange(worldPosition);
     }
 
-    // if dragging, then tint spawnedCursorGameObjects and set to semi-transparent, if not dragging, do this for building
-    const tint = this.canConstructBuildingAt(worldPosition) ? undefined : 0xff0000;
-    const gameObjects = this.isDragging ? this.spawnedCursorGameObjects : [this.building!];
-    for (const gameObject of gameObjects) {
-      const constructionGameObjectInterfaceComponent = getActorComponent(
-        gameObject,
-        ConstructionGameObjectInterfaceComponent
-      );
-      if (!constructionGameObjectInterfaceComponent) continue;
-      constructionGameObjectInterfaceComponent.tintAndAlphaCursor(tint, 0.7);
+    // Update all objects for proper visual feedback
+    this.updateObjectVisuals();
+  }
+
+  private updateObjectVisuals() {
+    // First, check and update all spawned cursor game objects
+    if (this.isDragging) {
+      // Reset invalid positions set
+      this.invalidCursorPositions.clear();
+
+      // Check each spawned object individually and track which ones can't be placed
+      for (const gameObject of this.spawnedCursorGameObjects) {
+        const transform = getGameObjectTransform(gameObject);
+        if (!transform) continue;
+
+        const canPlace = this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!]);
+
+        if (!canPlace) {
+          // Track this position as invalid
+          this.invalidCursorPositions.add(`${transform.x},${transform.y}`);
+        }
+
+        // Apply visual treatment to each object based on whether it can be placed
+        const constructionInterface = getActorComponent(gameObject, ConstructionGameObjectInterfaceComponent);
+        if (constructionInterface) {
+          constructionInterface.tintAndAlphaCursor(canPlace ? undefined : 0xff0000, 0.7);
+        }
+      }
+    } else if (this.building) {
+      // If not dragging, just update the main building cursor
+      const constructionInterface = getActorComponent(this.building, ConstructionGameObjectInterfaceComponent);
+      if (constructionInterface) {
+        constructionInterface.tintAndAlphaCursor(this.canConstructBuildingAt ? undefined : 0xff0000, 0.7);
+      }
     }
   }
 
-  canConstructBuildingAt(location: Vector2Simple): boolean {
-    return true; // todo Replace with actual placement check.
+  getCanConstructBuildingAt(
+    building?: GameObjects.GameObject,
+    ignoreGameObjects: GameObjects.GameObject[] = []
+  ): boolean {
+    if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent || !building) return false;
+
+    const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
+    if (!tilesUnderBuilding.length) return false;
+
+    const isAreaBeneathGameObjectWalkable = this.navigationService.isAreaBeneathGameObjectWalkable(building);
+    if (!isAreaBeneathGameObjectWalkable) return false;
+
+    const bounds = getGameObjectBounds(building);
+    if (!bounds) return false;
+
+    const minX = Math.floor(bounds.x);
+    const minY = Math.floor(bounds.y);
+    const maxX = Math.floor(bounds.x + bounds.width);
+    const maxY = Math.floor(bounds.y + bounds.height);
+
+    const allTileVisible = tilesUnderBuilding.every((tile) => {
+      const tileVisible = this.fogOfWarComponent!.getTileVisibility(tile.x, tile.y);
+      return tileVisible === "visible";
+    });
+
+    if (!allTileVisible) return false;
+
+    // Create the list of objects to ignore (don't collide with self or with objects in the ignore list)
+    const objectsToIgnore = new Set<GameObjects.GameObject>([building, ...ignoreGameObjects]);
+
+    // Check for collisions with existing game objects (excluding those in the ignore list)
+    const children = this.scene.children.list.filter((c) => {
+      if (objectsToIgnore.has(c)) return false;
+      if (c instanceof Phaser.GameObjects.Graphics) return false;
+
+      const transform = getGameObjectTransform(c);
+      if (!transform) return false;
+
+      // Quick bounds check
+      if (transform.x < minX || transform.x > maxX || transform.y < minY || transform.y > maxY) return false;
+
+      // More precise tile-based collision check
+      const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
+      if (!tilesUnderChild.length) return false;
+
+      return tilesUnderBuilding.some((tile) =>
+        tilesUnderChild.some((childTile) => childTile.x === tile.x && childTile.y === tile.y)
+      );
+    });
+
+    return children.length === 0;
   }
 
   private drawPlacementGrid(location: Vector2Simple) {
@@ -137,38 +233,52 @@ export class BuildingCursor {
     const bounds = getGameObjectBounds(this.building);
     if (!bounds) return;
 
-    const gridGraphics = this.scene.add.graphics();
+    const gridGraphics = this.placementGrid ?? this.scene.add.graphics();
     const tileSize = this.tileSize;
     const xPos = location.x;
     const yPos = location.y;
 
-    const canConstruct = this.canConstructBuildingAt(location);
+    gridGraphics.clear();
+
+    const canConstruct = this.canConstructBuildingAt;
 
     gridGraphics.lineStyle(2, canConstruct ? 0x00ff00 : 0xff0000, 1);
     gridGraphics.fillStyle(canConstruct ? 0x00ff00 : 0xff0000, 0.3);
 
-    function moveLineTo(isoX: number, isoY: number) {
+    function drawIsoDiamond(isoX: number, isoY: number, fill: boolean) {
+      gridGraphics.beginPath();
       gridGraphics.moveTo(isoX, isoY - tileSize / 4);
       gridGraphics.lineTo(isoX + tileSize / 2, isoY);
       gridGraphics.lineTo(isoX, isoY + tileSize / 4);
       gridGraphics.lineTo(isoX - tileSize / 2, isoY);
+      gridGraphics.closePath();
+
+      if (fill) {
+        gridGraphics.fillPath();
+      } else {
+        gridGraphics.stroke();
+      }
     }
 
-    for (let i = -3; i <= 3; i++) {
-      for (let j = -3; j <= 3; j++) {
+    const buildingWidth = Math.floor(bounds.width / tileSize);
+    const buildingHeight = Math.floor(bounds.width / tileSize);
+
+    // Determine the range for inner and outer grid
+    const innerRangeX = Math.floor(buildingWidth / 2);
+    const innerRangeY = Math.floor(buildingHeight / 2);
+    const outerRangeX = innerRangeX + 2; // 2 tiles beyond
+    const outerRangeY = innerRangeY + 2; // 2 tiles beyond
+
+    // Draw the entire grid
+    for (let i = -outerRangeX; i <= outerRangeX; i++) {
+      for (let j = -outerRangeY; j <= outerRangeY; j++) {
         const isoX = xPos + (i - j) * (tileSize / 2);
         const isoY = yPos + (i + j) * (tileSize / 4);
 
-        if (Math.abs(i) > 2 || Math.abs(j) > 2) {
-          moveLineTo(isoX, isoY);
-          gridGraphics.closePath();
-          gridGraphics.stroke();
-        } else {
-          gridGraphics.beginPath();
-          moveLineTo(isoX, isoY);
-          gridGraphics.closePath();
-          gridGraphics.fillPath();
-        }
+        // Determine if this is part of the inner area (building footprint)
+        const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
+
+        drawIsoDiamond(isoX, isoY, isInnerTile);
       }
     }
 
@@ -249,6 +359,26 @@ export class BuildingCursor {
     if (pointer.rightButtonReleased()) {
       this.stop();
       return;
+    }
+
+    if (this.isDragging) {
+      // For drag operations, check if all buildings can be placed
+      const allValid = this.spawnedCursorGameObjects.length === 0 || this.invalidCursorPositions.size === 0;
+
+      if (!allValid) {
+        const soundDefinition = UiFeedbackBuildDeniedSound;
+        this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
+        this.stop();
+        return;
+      }
+    } else {
+      // For single placement, check the main cursor
+      if (!this.canConstructBuildingAt) {
+        const soundDefinition = UiFeedbackBuildDeniedSound;
+        this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
+        this.stop();
+        return;
+      }
     }
 
     const shiftKeyDown = this.shiftKey?.isDown || false;
@@ -366,6 +496,9 @@ export class BuildingCursor {
 
       this.spawnCursorGameObjectAt(point.x, point.y);
     }
+
+    // After spawning all objects, check their placement validity
+    this.updateObjectVisuals();
   }
 
   private spawnCursorGameObjectAt(x: number, y: number) {
@@ -385,14 +518,21 @@ export class BuildingCursor {
       gameObject.destroy();
     }
     this.spawnedCursorGameObjects = [];
+    this.invalidCursorPositions.clear();
   }
 
   private placeBuildings() {
-    this.allCellsAreValid = true; // Placeholder logic
+    // Filter out any objects at invalid positions when in drag mode
+    const objectsToPlace = this.isDragging
+      ? this.spawnedCursorGameObjects.filter((obj) => {
+          const transform = getGameObjectTransform(obj);
+          return transform && !this.invalidCursorPositions.has(`${transform.x},${transform.y}`);
+        })
+      : [];
 
-    if (this.spawnedCursorGameObjects.length) {
+    if (this.isDragging && objectsToPlace.length) {
       this.building?.destroy();
-      for (const gameObject of this.spawnedCursorGameObjects) {
+      for (const gameObject of objectsToPlace) {
         this.spawnConstructionSite(gameObject);
       }
     } else if (this.building) {
@@ -406,6 +546,7 @@ export class BuildingCursor {
     this.downPointerLocation = undefined;
     this.clearGraphics();
     this.spawnedCursorGameObjects = [];
+    this.invalidCursorPositions.clear();
     this.isDragging = false;
   }
 

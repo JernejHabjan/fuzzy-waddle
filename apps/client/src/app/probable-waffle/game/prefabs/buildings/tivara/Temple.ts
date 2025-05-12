@@ -24,22 +24,22 @@ export default class Temple extends Phaser.GameObjects.Container {
     );
 
     // templeCursor
-    const templeCursor = new TempleCursor(scene, 0, 0);
+    const templeCursor = new TempleCursor(scene, 0, -8);
     templeCursor.visible = false;
     this.add(templeCursor);
 
     // templeFoundation1
-    const templeFoundation1 = new TempleFoundation1(scene, 0, 0);
+    const templeFoundation1 = new TempleFoundation1(scene, 0, -8);
     templeFoundation1.visible = false;
     this.add(templeFoundation1);
 
     // templeFoundation2
-    const templeFoundation2 = new TempleFoundation2(scene, 0, 0);
+    const templeFoundation2 = new TempleFoundation2(scene, 0, -8);
     templeFoundation2.visible = false;
     this.add(templeFoundation2);
 
     // templeLevel1
-    const templeLevel1 = new TempleLevel1(scene, 0, 0);
+    const templeLevel1 = new TempleLevel1(scene, 0, -8);
     this.add(templeLevel1);
 
     this.templeCursor = templeCursor;

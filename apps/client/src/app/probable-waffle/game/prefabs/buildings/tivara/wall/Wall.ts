@@ -34,8 +34,6 @@ export default class Wall extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 32, y ?? 80.06815881041706);
 
-    this.blendMode = Phaser.BlendModes.SKIP_CHECK;
-
     // foundation
     const foundation = scene.add.image(0, 0, "factions", "buildings/tivara/wall/foundation/foundation_1.png");
     foundation.setInteractive(
@@ -49,13 +47,13 @@ export default class Wall extends Phaser.GameObjects.Container {
     this.add(foundation);
 
     // cursor
-    const cursor = scene.add.image(0, 0, "factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
+    const cursor = scene.add.image(0, -8, "factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
     cursor.setOrigin(0.5, 0.8352819626557144);
     cursor.visible = false;
     this.add(cursor);
 
     // editorWall
-    const editorWall = new WallTopRightBottomLeft(scene, 0, 0);
+    const editorWall = new WallTopRightBottomLeft(scene, 0, -8);
     this.add(editorWall);
 
     this.foundation = foundation;
@@ -129,9 +127,10 @@ export default class Wall extends Phaser.GameObjects.Container {
   private refreshWallType() {
     if (!this.active) return;
     const wallType = this.getWallTypeAccordingToNeighbors();
+    const wall = this.wall as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
       this.updateCursor(wallType);
-    } else if (this.wall) {
+    } else if (wall.visible) {
       this.updateWall(wallType);
     }
   }
