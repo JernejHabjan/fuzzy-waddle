@@ -57,6 +57,7 @@ export class MovementSystem {
   private audioService: AudioService | undefined;
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
+  private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private targetGameObject?: GameObject;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
@@ -70,6 +71,11 @@ export class MovementSystem {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
+    this.subscribeToShiftKey();
+  }
+
+  private subscribeToShiftKey() {
+    this.shiftKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
   }
 
   private listenToMoveEvents() {
@@ -83,9 +89,13 @@ export class MovementSystem {
         const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (payerPawnAiController) {
-          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(
-            new OrderData(OrderType.Move, { targetLocation: tileVec3 })
-          );
+          const newOrder = new OrderData(OrderType.Move, { targetLocation: tileVec3 });
+          if (this.shiftKey?.isDown) {
+            payerPawnAiController.blackboard.addOrder(newOrder);
+          } else {
+            payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
+          }
+
           this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
         } else {
           this.moveToLocation(tileVec3);
@@ -393,6 +403,7 @@ export class MovementSystem {
 
   private destroy() {
     this.cancelMovement();
+    this.shiftKey?.destroy();
     this.playerChangedSubscription?.unsubscribe();
   }
 
