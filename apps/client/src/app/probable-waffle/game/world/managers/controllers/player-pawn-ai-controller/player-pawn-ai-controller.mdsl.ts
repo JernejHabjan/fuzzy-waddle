@@ -379,7 +379,6 @@ root [Build] {
                       /* cooldown ready, construct */
                       action [ConstructBuilding]
 
-                      condition [ConstructionSiteFinished]
                       action [AssignNextBuildOrder]
                     }
                 }

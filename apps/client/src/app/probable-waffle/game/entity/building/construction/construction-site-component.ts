@@ -20,6 +20,7 @@ import {
   SharedActorActionsSfxSelectionSounds
 } from "../../../sfx/SharedActorActionsSfx";
 import GameObject = Phaser.GameObjects.GameObject;
+import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished
@@ -58,6 +59,7 @@ export class ConstructionSiteComponent {
     this.gameObject
   );
   private audioService?: AudioService;
+  private healthComponent?: HealthComponent;
   private playingBuildSound: boolean = false;
   constructor(
     private readonly gameObject: GameObject,
@@ -78,6 +80,7 @@ export class ConstructionSiteComponent {
       this.constructionProgressPercentageChanged.next(this.progressPercentage);
     }
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.healthComponent = getActorComponent(this.gameObject, HealthComponent);
   }
 
   private get productionDefinition(): ProductionCostDefinition | null {
@@ -109,6 +112,8 @@ export class ConstructionSiteComponent {
 
     if (this.constructionSiteData.state !== ConstructionStateEnum.Constructing) return;
 
+    if (this.healthComponent?.killed) return;
+
     const speedBoost = 1.0;
     const constructionProgress =
       delta * this.constructionSiteDefinition.progressMadeAutomatically * speedBoost +
@@ -118,7 +123,7 @@ export class ConstructionSiteComponent {
     if (!productionDefinition) throw new Error("Production definition not found");
 
     this.remainingConstructionTime -= constructionProgress;
-    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    const healthComponent = this.healthComponent;
     if (healthComponent) {
       const maxHealth = healthComponent.healthDefinition.maxHealth;
       const initialHealth = maxHealth * this.constructionSiteDefinition.initialHealthPercentage;
@@ -224,13 +229,16 @@ export class ConstructionSiteComponent {
     // refund costs
     const refundCosts: Partial<Record<ResourceType, number>> = {};
     Object.entries(productionDefinition.resources).forEach(([key, value]) => {
-      refundCosts[key as ResourceType] = value * actualRefundFactor;
+      refundCosts[key as ResourceType] = Math.floor(value * actualRefundFactor);
     });
 
     emitResource(this.gameObject.scene, "resource.added", refundCosts);
 
-    // destroy building
-    // this.gameObject.destroy();
+    // stop action on builders
+    this.assignedBuilders.forEach((builder) => {
+      const payerPawnAiController = getActorComponent(builder, PawnAiController);
+      payerPawnAiController?.blackboard.resetCurrentOrder();
+    });
   }
 
   get isFinished() {
@@ -238,7 +246,11 @@ export class ConstructionSiteComponent {
   }
 
   canAssignBuilder() {
-    return this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders && !this.isFinished;
+    return (
+      this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders &&
+      !this.isFinished &&
+      (this.healthComponent === undefined || !this.healthComponent.killed)
+    );
   }
 
   assignBuilder(gameObject: GameObject) {

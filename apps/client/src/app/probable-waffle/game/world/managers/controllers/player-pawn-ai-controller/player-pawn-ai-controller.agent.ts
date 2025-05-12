@@ -197,10 +197,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       }
       switch (currentOrder.orderType) {
         case OrderType.Move:
-          const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-          if (movementSystem) {
-            movementSystem.cancelMovement();
-          }
+          // movement cancelled below
           break;
         case OrderType.Build:
           const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
@@ -218,6 +215,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       this.blackboard.resetCurrentOrder(false);
       const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
       if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      // todo - this doesn't really stop the movement in case where character is moving towards construction site, but that construction site is cancelled
+      movementSystem?.cancelMovement();
     }
 
     this.blackboard.popCurrentOrderFromQueue();
@@ -337,6 +337,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+    if (!this.CanAssignBuilder()) return State.FAILED;
     builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
   }

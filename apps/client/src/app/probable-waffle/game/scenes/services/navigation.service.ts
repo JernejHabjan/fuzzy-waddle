@@ -454,7 +454,7 @@ export class NavigationService {
   }
 
   private destroy() {
-    this.scene.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+    this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
   }
 
   getTerrainUnderActor(gameObject: Phaser.GameObjects.GameObject): TerrainType | undefined {

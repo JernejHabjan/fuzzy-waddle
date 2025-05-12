@@ -119,6 +119,7 @@ export class HealthComponent {
   private audioActorComponent?: AudioActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
+  hidden: boolean = false;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -297,6 +298,7 @@ export class HealthComponent {
       const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible;
       if (visibleComponent.setVisible === undefined) return;
       visibleComponent.setVisible(false);
+      this.hidden = true;
     }
   }
 

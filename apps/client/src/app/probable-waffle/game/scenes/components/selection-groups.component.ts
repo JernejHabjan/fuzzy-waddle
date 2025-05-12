@@ -155,8 +155,8 @@ export class SelectionGroupsComponent {
   }
 
   destroy(): void {
-    this.scene.input.keyboard?.off("keydown", this.handleKeyDown, this);
-    this.scene.events.off(HealthComponent.KilledEvent, this.handleActorKilled, this);
+    this.scene?.input.keyboard?.off("keydown", this.handleKeyDown, this);
+    this.scene?.events.off(HealthComponent.KilledEvent, this.handleActorKilled, this);
     this.groups.clear();
     this.lastTapTimestamp.clear();
   }

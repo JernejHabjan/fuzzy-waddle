@@ -7,10 +7,10 @@ import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { IdComponent } from "../../entity/actor/components/id-component";
 import { getGameObjectBounds, getGameObjectVisibility } from "../../data/game-object-helper";
-import GameObject = Phaser.GameObjects.GameObject;
 import { IsoHelper } from "../../world/map/tile/iso-helper";
 import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
 import { HealthComponent } from "../../entity/combat/components/health-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export enum FogOfWarMode {
   FULL_EXPLORATION = "fullExploration",
@@ -189,13 +189,16 @@ export class FogOfWarComponent {
 
   private setActorVisibleByFow(actor: GameObject, visible: boolean): void {
     const visionComponent = getActorComponent(actor, VisionComponent);
-    if (visionComponent) {
-      visionComponent.visibilityByCurrentPlayer = visible;
-      const visibilityComponent = getGameObjectVisibility(actor);
-      if (visibilityComponent) {
-        visibilityComponent.setVisible(visible);
-      }
+    if (!visionComponent) return;
+    visionComponent.visibilityByCurrentPlayer = visible;
+    const visibilityComponent = getGameObjectVisibility(actor);
+    if (!visibilityComponent) return;
+
+    const healthComponent = getActorComponent(actor, HealthComponent);
+    if (healthComponent && healthComponent.hidden) {
+      visible = false;
     }
+    visibilityComponent.setVisible(visible);
   }
 
   /**
@@ -293,8 +296,8 @@ export class FogOfWarComponent {
   }
 
   private destroy(): void {
-    this.scene.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this);
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this);
+    this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this);
 
     if (this.fowLayer) {
       this.fowLayer.destroy();
