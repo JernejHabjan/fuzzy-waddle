@@ -127,9 +127,10 @@ export default class Wall extends Phaser.GameObjects.Container {
   private refreshWallType() {
     if (!this.active) return;
     const wallType = this.getWallTypeAccordingToNeighbors();
+    const wall = this.wall as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
       this.updateCursor(wallType);
-    } else if (this.wall) {
+    } else if (wall.visible) {
       this.updateWall(wallType);
     }
   }

@@ -101,9 +101,10 @@ export default class Stairs extends Phaser.GameObjects.Container {
   private refreshStairsType() {
     if (!this.active) return;
     const stairsType = this.getStairsTypeAccordingToNeighbors();
+    const stairs = this.stairs as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
       this.updateCursor(stairsType);
-    } else if (this.stairs) {
+    } else if (stairs.visible) {
       this.updateStairs(stairsType);
     }
   }
