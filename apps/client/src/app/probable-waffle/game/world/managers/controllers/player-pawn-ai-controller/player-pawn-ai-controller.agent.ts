@@ -147,7 +147,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       if (!canMoveToTarget) return State.FAILED;
       // console.log("Moving to target!");
       const success = await movementSystem.moveToActor(target, {
-        radiusTilesAroundDestination: range
+        radiusTilesAroundDestination: range,
+        onUpdateThrottled: () => {
+          // if the target is not alive, stop moving
+          const healthComponent = getActorComponent(target, HealthComponent);
+          if (healthComponent && healthComponent.killed) {
+            this.Stop();
+          }
+        }
       } satisfies Partial<PathMoveConfig>);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
@@ -216,7 +223,6 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
       if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-      // todo - this doesn't really stop the movement in case where character is moving towards construction site, but that construction site is cancelled
       movementSystem?.cancelMovement();
     }
 
