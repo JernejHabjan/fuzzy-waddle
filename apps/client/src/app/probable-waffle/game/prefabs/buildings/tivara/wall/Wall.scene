@@ -18,7 +18,6 @@
             "type": "Container",
             "id": "0190717c-e09b-40fe-9e2f-58224b172129",
             "label": "container_1",
-            "blendMode": -1,
             "x": 32,
             "y": 80.06815881041706,
             "list": [
@@ -45,6 +44,7 @@
                         "key": "factions",
                         "frame": "buildings/tivara/wall/wall_top_right_bottom_left.png"
                     },
+                    "y": -8,
                     "originY": 0.8352819626557144,
                     "visible": false
                 },
@@ -58,7 +58,7 @@
                     "label": "editorWall",
                     "scope": "METHOD",
                     "x": 0,
-                    "y": 0
+                    "y": -8
                 }
             ]
         }
