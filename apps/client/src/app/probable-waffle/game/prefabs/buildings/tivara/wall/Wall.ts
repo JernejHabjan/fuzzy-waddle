@@ -216,7 +216,7 @@ export default class Wall extends Phaser.GameObjects.Container {
   }
 
   destroy(fromScene?: boolean) {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this);
     super.destroy(fromScene);
   }
 

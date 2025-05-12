@@ -119,6 +119,7 @@ export class HealthComponent {
   private audioActorComponent?: AudioActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
+  hidden: boolean = false;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -280,13 +281,14 @@ export class HealthComponent {
   killActor() {
     if (!this.gameObject.active || !this.gameObject.scene) return;
     this.healthComponentData.health = 0;
-    this.gameObject.emit(HealthComponent.KilledEvent);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
     this.playDeathSound();
     this.playDeathAnimation();
     this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
       this.gameObject.destroy();
     });
+    // emit last
+    this.gameObject.emit(HealthComponent.KilledEvent);
   }
 
   private playDeathAnimation() {
@@ -297,6 +299,7 @@ export class HealthComponent {
       const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible;
       if (visibleComponent.setVisible === undefined) return;
       visibleComponent.setVisible(false);
+      this.hidden = true;
     }
   }
 

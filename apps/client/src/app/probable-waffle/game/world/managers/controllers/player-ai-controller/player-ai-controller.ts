@@ -34,6 +34,6 @@ export class PlayerAiController {
   }
 
   private onShutdown() {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 }

@@ -147,7 +147,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       if (!canMoveToTarget) return State.FAILED;
       // console.log("Moving to target!");
       const success = await movementSystem.moveToActor(target, {
-        radiusTilesAroundDestination: range
+        radiusTilesAroundDestination: range,
+        onUpdateThrottled: () => {
+          // if the target is not alive, stop moving
+          const healthComponent = getActorComponent(target, HealthComponent);
+          if (healthComponent && healthComponent.killed) {
+            this.Stop();
+          }
+        }
       } satisfies Partial<PathMoveConfig>);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
@@ -197,10 +204,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       }
       switch (currentOrder.orderType) {
         case OrderType.Move:
-          const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-          if (movementSystem) {
-            movementSystem.cancelMovement();
-          }
+          // movement cancelled below
           break;
         case OrderType.Build:
           const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
@@ -218,6 +222,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       this.blackboard.resetCurrentOrder(false);
       const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
       if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      movementSystem?.cancelMovement();
     }
 
     this.blackboard.popCurrentOrderFromQueue();
@@ -337,6 +343,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+    if (!this.CanAssignBuilder()) return State.FAILED;
     builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
   }
