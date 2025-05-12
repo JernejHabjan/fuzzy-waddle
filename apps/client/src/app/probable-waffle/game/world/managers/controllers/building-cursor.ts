@@ -20,6 +20,7 @@ import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { NavigationService } from "../../../scenes/services/navigation.service";
 import { AudioService } from "../../../scenes/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
+import { FogOfWarComponent } from "../../../scenes/components/fog-of-war.component";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -36,6 +37,7 @@ export class BuildingCursor {
   private tileMapComponent?: TilemapComponent;
   private navigationService?: NavigationService;
   private audioService?: AudioService;
+  private fogOfWarComponent?: FogOfWarComponent;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private downPointerLocation?: Vector2Simple;
@@ -61,6 +63,7 @@ export class BuildingCursor {
     this.tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
     this.navigationService = getSceneService(this.scene, NavigationService);
     this.audioService = getSceneService(this.scene, AudioService);
+    this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
   }
 
   get placingBuilding() {
@@ -146,7 +149,7 @@ export class BuildingCursor {
   }
 
   getCanConstructBuildingAt(building?: GameObjects.GameObject): boolean {
-    if (!this.tileMapComponent || !this.navigationService || !building) return false;
+    if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent || !building) return false;
     const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
     if (!tilesUnderBuilding.length) return false;
 
@@ -159,8 +162,12 @@ export class BuildingCursor {
     const maxX = Math.floor(bounds.x + bounds.width);
     const maxY = Math.floor(bounds.y + bounds.height);
 
-    let fullChecks = 0;
-    const partialChecks: GameObjects.GameObject[] = [];
+    const allTileVisible = tilesUnderBuilding.every((tile) => {
+      const tileVisible = this.fogOfWarComponent!.getTileVisibility(tile.x, tile.y);
+      return tileVisible === "visible";
+    });
+    if (!allTileVisible) return false;
+
     const children = this.scene.children.list.filter((c) => {
       if (c === building) return false;
       if (c instanceof Phaser.GameObjects.Graphics) return false;
@@ -168,22 +175,20 @@ export class BuildingCursor {
       if (!transform) return false;
 
       // quickly check if the child is within the bounds of the building
-      if (transform.x < minX || transform.x > maxX || transform.y < minY || transform.y > maxY) {
-        partialChecks.push(c);
-        return false;
-      }
+      if (transform.x < minX || transform.x > maxX || transform.y < minY || transform.y > maxY) return false;
 
       // do more complex check if the child is within the bounds of the building
-      fullChecks++;
       const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
       if (!tilesUnderChild.length) return false;
-      return tilesUnderBuilding.some((tile) => tile.x === tilesUnderChild[0].x && tile.y === tilesUnderChild[0].y);
-    });
+      const overlapsWithAny = tilesUnderBuilding.some(
+        (tile) => tile.x === tilesUnderChild[0].x && tile.y === tilesUnderChild[0].y
+      );
+      if (overlapsWithAny) {
+        return true;
+      }
 
-    console.log(
-      `Full checks: ${fullChecks}, Partial checks: ${partialChecks.length}, Children: ${children.length}`,
-      partialChecks
-    );
+      return overlapsWithAny;
+    });
 
     return children.length === 0;
   }
