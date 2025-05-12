@@ -112,7 +112,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
         case "move":
           return 0;
         case "attack":
-          return getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
+          return getActorComponent(this.gameObject, AttackComponent)?.getAttackRange(targetGameObject);
         case "gather":
           return getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(targetGameObject);
         case "dropOff":

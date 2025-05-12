@@ -64,25 +64,50 @@ export class AttackComponent {
     // }
   }
 
+  /**
+   * Determine if target is a flying unit
+   * @param target The target to check
+   * @returns Whether the target is flying or not
+   */
+  private isTargetFlying(target: GameObject): boolean {
+    const actorTranslateComponent = getActorComponent(target, ActorTranslateComponent);
+    return actorTranslateComponent?.actorTranslateDefinition.isFlying ?? false;
+  }
+
+  /**
+   * Gets the best attack for a specific enemy based on various criteria
+   * including whether the enemy is flying and attack range
+   */
   getAttack(enemy: GameObject): AttackData | null {
     const attacks = this.getAttacks();
-    // get random
     if (attacks.length === 0) return null;
 
     const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, enemy);
     if (distance === null) return null;
-    const filteredAttacks = attacks
-      // .filter((attack) => { // here we can limit also by min range - but then behavior tree neds to also be changed
-      //   return distance >= attack.minRange;
-      // })
-      .sort(
-        (a, b) =>
-          // sort by damage
-          b.damage - a.damage
-      );
 
-    if (attacks.length === 0) return null;
-    return filteredAttacks[0];
+    const isFlying = this.isTargetFlying(enemy);
+
+    // Filter attacks based on:
+    // 1. Range - attack can reach the target
+    // 2. Flying capability - if target is flying, we need weapons that can focus air targets
+    const availableAttacks = attacks
+      .filter((attack) => {
+        // Check if target is in range
+        // const inRange = distance <= attack.range && distance >= attack.minRange;
+
+        // Check if we can hit flying targets if target is flying
+        // noinspection UnnecessaryLocalVariableJS
+        const canHitTarget = !isFlying || attack.canTargetAir;
+
+        return /*inRange &&*/ canHitTarget;
+      })
+      .sort((a, b) => {
+        // Sort by damage (highest first)
+        return b.damage - a.damage;
+      });
+
+    if (availableAttacks.length === 0) return null;
+    return availableAttacks[0];
   }
 
   useAttack(enemy: GameObject) {
@@ -90,6 +115,7 @@ export class AttackComponent {
       return;
     }
 
+    // Get appropriate attack based on enemy type (flying/ground) and range
     const attack = this.getAttack(enemy);
     if (!attack) return;
     this.currentAttack = attack;
@@ -186,7 +212,7 @@ export class AttackComponent {
           const intersection = Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds);
           if (intersection) {
             // we hit
-            this.projectileHitEnemy(projectile, targetX, targetY, projectileSprite, attack, enemy);
+            this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
           }
         }
       });
@@ -207,7 +233,6 @@ export class AttackComponent {
     projectile: ProjectileData,
     targetX: number,
     targetY: number,
-    projectileSprite: Phaser.GameObjects.Image,
     attack: AttackData,
     enemy: GameObject
   ) {
@@ -309,5 +334,34 @@ export class AttackComponent {
         }
       }, attack.delays.hit);
     }
+  }
+
+  /**
+   * Returns the optimal attack range for a specific target
+   * This is useful for AI to position units at the right distance
+   */
+  getAttackRange(targetGameObject: GameObject): number | undefined {
+    if (!targetGameObject) return undefined;
+
+    const isFlying = this.isTargetFlying(targetGameObject);
+    const attacks = this.getAttacks();
+
+    // Filter attacks that can hit the target type (flying/ground)
+    const availableAttacks = attacks.filter((attack) => !isFlying || attack.canTargetAir);
+
+    if (availableAttacks.length === 0) return undefined;
+
+    // Sort by damage (highest first) and then by range (prefer longer range)
+    availableAttacks.sort((a, b) => {
+      // Prioritize damage first
+      const damageDiff = b.damage - a.damage;
+      if (damageDiff !== 0) return damageDiff;
+
+      // If damage is the same, prefer longer range
+      return b.range - a.range;
+    });
+
+    // Return the range of the best attack
+    return availableAttacks[0].range;
   }
 }

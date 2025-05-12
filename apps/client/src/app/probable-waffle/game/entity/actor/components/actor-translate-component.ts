@@ -13,6 +13,7 @@ export interface ActorTranslateDefinition {
    * Tile step duration specifies how long (in ms) unit requires to cross 1 tile
    */
   tileStepDuration?: number;
+  isFlying?: boolean;
 }
 
 export class ActorTranslateComponent {
