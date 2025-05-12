@@ -1088,7 +1088,8 @@ export const pwActorDefinitions: {
       },
       translatable: {
         usePathfinding: false,
-        tileStepDuration: 1000
+        tileStepDuration: 1000,
+        isFlying: true
       },
       audio: {
         sounds: {
