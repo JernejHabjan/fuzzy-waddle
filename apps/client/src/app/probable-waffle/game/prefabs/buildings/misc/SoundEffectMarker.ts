@@ -24,6 +24,8 @@ export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
     /* START-USER-CTR-CODE */
     onSceneInitialized(scene, this.sceneInit, this);
     this.setVisible(false);
+    this.removeFromUpdateList();
+    this.removeFromDisplayList();
     /* END-USER-CTR-CODE */
   }
 

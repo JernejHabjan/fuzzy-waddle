@@ -2,7 +2,7 @@ import { GameObjects, Input } from "phaser";
 import { ActorDefinition, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
 import { ObjectNames } from "../../../data/object-names";
-import { getGameObjectBounds, getGameObjectTransform } from "../../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../../data/actor-data";
@@ -15,6 +15,11 @@ import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
 import Vector2 = Phaser.Math.Vector2;
+import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
+import { NavigationService } from "../../../scenes/services/navigation.service";
+import { AudioService } from "../../../scenes/services/audio.service";
+import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -28,12 +33,16 @@ export class BuildingCursor {
   private readonly tileSize = TilemapComponent.tileWidth;
   private readonly startPlacingSubscription: Subscription;
   private readonly stopPlacingSubscription: Subscription;
+  private tileMapComponent?: TilemapComponent;
+  private navigationService?: NavigationService;
+  private audioService?: AudioService;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private downPointerLocation?: Vector2Simple;
   private spawnedCursorGameObjects: GameObjects.GameObject[] = [];
   private isDragging: boolean = false;
   private canBeDragPlaced: boolean = false;
+  private canConstructBuildingAt: boolean = false;
 
   constructor(private scene: GameProbableWaffleScene) {
     this.startPlacingSubscription = this.startPlacingBuilding.subscribe((name) => this.spawn(name));
@@ -42,9 +51,16 @@ export class BuildingCursor {
     this.scene.input.on(Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.scene.input.on(Input.Events.GAME_OUT, this.stop, this);
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
+    onSceneInitialized(scene, this.init, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
     this.subscribeToShiftKey();
+  }
+
+  private init() {
+    this.tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
+    this.navigationService = getSceneService(this.scene, NavigationService);
+    this.audioService = getSceneService(this.scene, AudioService);
   }
 
   get placingBuilding() {
@@ -108,6 +124,8 @@ export class BuildingCursor {
 
     DepthHelper.setActorDepth(this.building);
 
+    this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
+
     this.clearGraphics();
     if (!this.isDragging) {
       this.drawPlacementGrid(worldPosition);
@@ -115,7 +133,7 @@ export class BuildingCursor {
     }
 
     // if dragging, then tint spawnedCursorGameObjects and set to semi-transparent, if not dragging, do this for building
-    const tint = this.canConstructBuildingAt(worldPosition) ? undefined : 0xff0000;
+    const tint = this.canConstructBuildingAt ? undefined : 0xff0000;
     const gameObjects = this.isDragging ? this.spawnedCursorGameObjects : [this.building!];
     for (const gameObject of gameObjects) {
       const constructionGameObjectInterfaceComponent = getActorComponent(
@@ -127,8 +145,47 @@ export class BuildingCursor {
     }
   }
 
-  canConstructBuildingAt(location: Vector2Simple): boolean {
-    return true; // todo Replace with actual placement check.
+  getCanConstructBuildingAt(building?: GameObjects.GameObject): boolean {
+    if (!this.tileMapComponent || !this.navigationService || !building) return false;
+    const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
+    if (!tilesUnderBuilding.length) return false;
+
+    const isAreaBeneathGameObjectWalkable = this.navigationService.isAreaBeneathGameObjectWalkable(building);
+    if (!isAreaBeneathGameObjectWalkable) return false;
+    const bounds = getGameObjectBounds(building);
+    if (!bounds) return false;
+    const minX = Math.floor(bounds.x);
+    const minY = Math.floor(bounds.y);
+    const maxX = Math.floor(bounds.x + bounds.width);
+    const maxY = Math.floor(bounds.y + bounds.height);
+
+    let fullChecks = 0;
+    const partialChecks: GameObjects.GameObject[] = [];
+    const children = this.scene.children.list.filter((c) => {
+      if (c === building) return false;
+      if (c instanceof Phaser.GameObjects.Graphics) return false;
+      const transform = getGameObjectTransform(c);
+      if (!transform) return false;
+
+      // quickly check if the child is within the bounds of the building
+      if (transform.x < minX || transform.x > maxX || transform.y < minY || transform.y > maxY) {
+        partialChecks.push(c);
+        return false;
+      }
+
+      // do more complex check if the child is within the bounds of the building
+      fullChecks++;
+      const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
+      if (!tilesUnderChild.length) return false;
+      return tilesUnderBuilding.some((tile) => tile.x === tilesUnderChild[0].x && tile.y === tilesUnderChild[0].y);
+    });
+
+    console.log(
+      `Full checks: ${fullChecks}, Partial checks: ${partialChecks.length}, Children: ${children.length}`,
+      partialChecks
+    );
+
+    return children.length === 0;
   }
 
   private drawPlacementGrid(location: Vector2Simple) {
@@ -137,38 +194,52 @@ export class BuildingCursor {
     const bounds = getGameObjectBounds(this.building);
     if (!bounds) return;
 
-    const gridGraphics = this.scene.add.graphics();
+    const gridGraphics = this.placementGrid ?? this.scene.add.graphics();
     const tileSize = this.tileSize;
     const xPos = location.x;
     const yPos = location.y;
 
-    const canConstruct = this.canConstructBuildingAt(location);
+    gridGraphics.clear();
+
+    const canConstruct = this.canConstructBuildingAt;
 
     gridGraphics.lineStyle(2, canConstruct ? 0x00ff00 : 0xff0000, 1);
     gridGraphics.fillStyle(canConstruct ? 0x00ff00 : 0xff0000, 0.3);
 
-    function moveLineTo(isoX: number, isoY: number) {
+    function drawIsoDiamond(isoX: number, isoY: number, fill: boolean) {
+      gridGraphics.beginPath();
       gridGraphics.moveTo(isoX, isoY - tileSize / 4);
       gridGraphics.lineTo(isoX + tileSize / 2, isoY);
       gridGraphics.lineTo(isoX, isoY + tileSize / 4);
       gridGraphics.lineTo(isoX - tileSize / 2, isoY);
+      gridGraphics.closePath();
+
+      if (fill) {
+        gridGraphics.fillPath();
+      } else {
+        gridGraphics.stroke();
+      }
     }
 
-    for (let i = -3; i <= 3; i++) {
-      for (let j = -3; j <= 3; j++) {
+    const buildingWidth = Math.floor(bounds.width / tileSize);
+    const buildingHeight = Math.floor(bounds.width / tileSize);
+
+    // Determine the range for inner and outer grid
+    const innerRangeX = Math.floor(buildingWidth / 2);
+    const innerRangeY = Math.floor(buildingHeight / 2);
+    const outerRangeX = innerRangeX + 2; // 2 tiles beyond
+    const outerRangeY = innerRangeY + 2; // 2 tiles beyond
+
+    // Draw the entire grid
+    for (let i = -outerRangeX; i <= outerRangeX; i++) {
+      for (let j = -outerRangeY; j <= outerRangeY; j++) {
         const isoX = xPos + (i - j) * (tileSize / 2);
         const isoY = yPos + (i + j) * (tileSize / 4);
 
-        if (Math.abs(i) > 2 || Math.abs(j) > 2) {
-          moveLineTo(isoX, isoY);
-          gridGraphics.closePath();
-          gridGraphics.stroke();
-        } else {
-          gridGraphics.beginPath();
-          moveLineTo(isoX, isoY);
-          gridGraphics.closePath();
-          gridGraphics.fillPath();
-        }
+        // Determine if this is part of the inner area (building footprint)
+        const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
+
+        drawIsoDiamond(isoX, isoY, isInnerTile);
       }
     }
 
@@ -247,6 +318,12 @@ export class BuildingCursor {
   private onPointerUp(pointer: Input.Pointer) {
     if (!this.pointerLocation || !this.building || !this.downPointerLocation) return;
     if (pointer.rightButtonReleased()) {
+      this.stop();
+      return;
+    }
+    if (!this.canConstructBuildingAt) {
+      const soundDefinition = UiFeedbackBuildDeniedSound;
+      this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
       this.stop();
       return;
     }

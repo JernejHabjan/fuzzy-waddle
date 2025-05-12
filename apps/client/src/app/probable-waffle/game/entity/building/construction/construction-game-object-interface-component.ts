@@ -59,7 +59,10 @@ export class ConstructionGameObjectInterfaceComponent {
       const asAlpha = gameObject as any as Phaser.GameObjects.Components.Alpha;
       const asTint = gameObject as any as Phaser.GameObjects.Components.Tint;
       if (asAlpha.setAlpha && config.alpha !== undefined) asAlpha.setAlpha(config.alpha);
-      if (asTint.setTint && config.tint !== undefined) asTint.setTint(config.tint);
+      if (asTint.setTint) {
+        if (config.tint === undefined) asTint.clearTint();
+        else asTint.setTint(config.tint);
+      }
     }
   }
 

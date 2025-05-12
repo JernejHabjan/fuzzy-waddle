@@ -439,6 +439,14 @@ export class NavigationService {
     return this.grid[tile.y][tile.x] === 0; // Check if the tile is walkable (0 means walkable)
   }
 
+  isAreaBeneathGameObjectWalkable(gameObject: Phaser.GameObjects.GameObject): boolean {
+    const tileIndexesUnderObject = getTileCoordsUnderObject(this.tilemap, gameObject);
+    const actualTilesUnderObject = tileIndexesUnderObject.map((tileIndex) =>
+      this.tilemap.getTileAt(tileIndex.x, tileIndex.y)
+    );
+    return actualTilesUnderObject.every((tile) => tile && this.isTileWalkable({ x: tile.x, y: tile.y }));
+  }
+
   private getTileDistance(tile1: Vector2Simple, tile2: Vector2Simple): number {
     const dx = tile1.x - tile2.x;
     const dy = tile1.y - tile2.y;
