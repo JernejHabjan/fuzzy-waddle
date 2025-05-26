@@ -178,7 +178,7 @@ export class AudioService {
   ): Phaser.Types.Sound.SoundConfig | undefined {
     const transform = getGameObjectTransform(gameObject);
     if (!transform) return undefined;
-
+    if (!gameObject.active || !gameObject.scene) return undefined;
     const camera = gameObject.scene.cameras.main;
     const { x: camX, y: camY } = camera.midPoint;
     const cameraZoom = camera.zoom;

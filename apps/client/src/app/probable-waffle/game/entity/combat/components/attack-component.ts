@@ -204,6 +204,7 @@ export class AttackComponent {
         ease: "Linear",
         onComplete: () => this.stopProjectile(),
         onUpdate: () => {
+          if (!this.gameObject.active || !enemy.active) return;
           // compare overlap of projectile and enemy
           const projectileBounds = getGameObjectBounds(projectileSprite);
           if (!projectileBounds) return;
