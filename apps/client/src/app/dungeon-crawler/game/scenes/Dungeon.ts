@@ -27,6 +27,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     right: Phaser.Input.Keyboard.Key;
   };
   private isMobile = false;
+  private victoryText?: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: DungeonCrawlerScenes.MainSceneDungeon });
@@ -186,6 +187,42 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     // Remove both from collision as this one still exists
     this.knives.remove(knife, true, true);
     this.lizards.remove(lizard, true, true);
+
+    // Check if all lizards are dead
+    if (this.lizards.countActive(true) === 0) {
+      this.onAllLizardsKilled();
+    }
+  }
+
+  private onAllLizardsKilled() {
+    // Pause the game and display "Victory"
+    this.victoryText = this.add
+      .text(this.cameras.main.centerX, this.cameras.main.centerY, "Victory", {
+        fontSize: "18px",
+        color: "#fff",
+        backgroundColor: "#222",
+        padding: { x: 20, y: 10 }
+      })
+      .setOrigin(0.5);
+    this.victoryText.setScrollFactor(0); // Make sure it doesn't scroll with the camera
+
+    // Listen for any input to restart the scene
+    const restartScene = () => {
+      this.input.keyboard?.off("keydown", restartScene);
+      this.input.off("pointerdown", restartScene);
+      this.input.off("gamepaddown", restartScene);
+      this.victoryText?.destroy();
+      this.scene.restart();
+    };
+
+    setTimeout(() => {
+      if (!this.victoryText) return; // If victory text was destroyed, do not add listeners
+      // set Victory text to "click to restart"
+      this.victoryText.setText("Click or press any key to restart");
+      this.input.keyboard?.on("keydown", restartScene);
+      this.input.on("pointerdown", restartScene);
+      this.input.on("gamepaddown", restartScene);
+    }, 1000);
   }
 
   private handlePlayerLizardCollision(_obj1: any, obj2: any) {
