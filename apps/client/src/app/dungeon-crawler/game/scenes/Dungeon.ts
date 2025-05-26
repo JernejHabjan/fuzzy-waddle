@@ -11,6 +11,7 @@ import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/s
 import { Scene } from "phaser";
 
 export default class Dungeon extends Scene implements CreateSceneFromObjectConfig {
+  private readonly DEBUG = false;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private faune!: Faune;
   private playerLizardsCollider?: Phaser.Physics.Arcade.Collider;
@@ -40,7 +41,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     wallsLayer.setCollisionByProperty({ collides: true });
 
-    // this.renderDebugCollision(wallsLayer);
+    this.renderDebugCollision(wallsLayer);
 
     this.knives = this.physics.add.group({
       classType: Phaser.Physics.Arcade.Image
@@ -91,38 +92,41 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
   }
 
   /**
-   * todo update speed by delta
+   * Update speed by delta
    */
   update(t: number, dt: number) {
     if (this.faune && this.cursors) {
-      this.faune.update(this.cursors);
+      // Pass delta time to faune's update for frame-rate independent movement
+      this.faune.update(this.cursors, t, dt);
     }
   }
 
-  renderDebugCollision(layer: Phaser.Tilemaps.TilemapLayer) {
+  renderDebugCollision(layer: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer) {
+    if (!this.DEBUG) return;
     const debugGraphics = this.add.graphics().setAlpha(0.7);
     layer.renderDebug(debugGraphics, {
-      tileColor: null, // color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // color of colliding face edges
+      tileColor: null, // colour of non-colliding tiles
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // colour of colliding tiles
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // colour of colliding face edges
     });
   }
 
-  // noinspection JSUnusedLocalSymbols
-  private handleKnifeWallCollision(knife: any, obj2: any) {
+  private handleKnifeWallCollision(knife: any, _obj2: any) {
     this.knives.killAndHide(knife);
-    // todo remove from collision as this one still exists
+    // Remove from collision as this one still exists
+    this.knives.remove(knife, true, true);
   }
 
   private handleKnifeLizardCollision(knife: any, lizard: any) {
     this.knives.killAndHide(knife);
     this.lizards.killAndHide(lizard);
 
-    // todo remove both from collision as this one still exists
+    // Remove both from collision as this one still exists
+    this.knives.remove(knife, true, true);
+    this.lizards.remove(lizard, true, true);
   }
 
-  // noinspection JSUnusedLocalSymbols
-  private handlePlayerLizardCollision(obj1: any, obj2: any) {
+  private handlePlayerLizardCollision(_obj1: any, obj2: any) {
     const lizard = obj2 as Lizard;
     const dx = this.faune.x - lizard.x;
     const dy = this.faune.y - lizard.y;

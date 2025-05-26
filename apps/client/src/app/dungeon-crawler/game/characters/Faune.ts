@@ -94,8 +94,8 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
-    super.update();
+  update(cursors: Phaser.Types.Input.Keyboard.CursorKeys, t: number, dt: number) {
+    super.update(t, dt);
     if (this.healthState === HealthState.DAMAGE || this.healthState === HealthState.DEAD) {
       // dont do movement if damaged
       return;
@@ -110,7 +110,10 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    const speed = 100;
+    // Use dt to make speed frame-rate independent
+    const baseSpeed = 8000;
+    const speed = baseSpeed * (dt / 1000);
+
     const hasMovedByKeys = this.moveByKeys(cursors, speed);
     const hasMovedByClick = this.moveByClick(speed);
 
@@ -129,16 +132,12 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
       this.anims.play(AnimationsFaune.runSide, true);
       this.setVelocity(-speed, 0);
       this.scaleX = -1;
-      // so collision is working ok
-      // because of half of width of character
       this.body!.offset.x = 24;
       movedByKeys = true;
     } else if (cursors.right?.isDown) {
       this.anims.play(AnimationsFaune.runSide, true);
       this.setVelocity(speed, 0);
       this.scaleX = 1;
-      // so collision is working ok
-      // because of half of width of character
       this.body!.offset.x = 8;
       movedByKeys = true;
     } else if (cursors.up?.isDown) {
@@ -148,6 +147,7 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     } else if (cursors.down?.isDown) {
       this.anims.play(AnimationsFaune.runDown, true);
       this.setVelocity(0, speed);
+      movedByKeys = true;
     }
     return movedByKeys;
   }
@@ -266,7 +266,7 @@ Phaser.GameObjects.GameObjectFactory.register(
     this.updateList.add(sprite);
     this.scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
 
-    // half width
+    // half the width and height for better collision
     sprite.body!.setSize(sprite.width * 0.5, sprite.height * 0.8);
 
     return sprite;
