@@ -8,6 +8,8 @@ import { createTreasureAnims } from "../anims/TreasureAnims";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
 import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
 import { Scene } from "phaser";
+import Phaser from "phaser";
+import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
 
 export default class Dungeon extends Scene implements CreateSceneFromObjectConfig {
   private readonly DEBUG = false;
@@ -16,12 +18,25 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
   private playerLizardsCollider?: Phaser.Physics.Arcade.Collider;
   private knives!: Phaser.Physics.Arcade.Group;
   private lizards!: Phaser.Physics.Arcade.Group;
+  private joystick?: any;
+  private joystickRight?: any;
+  private wasd?: {
+    up: Phaser.Input.Keyboard.Key;
+    down: Phaser.Input.Keyboard.Key;
+    left: Phaser.Input.Keyboard.Key;
+    right: Phaser.Input.Keyboard.Key;
+  };
+  private isMobile = false;
 
   constructor() {
     super({ key: DungeonCrawlerScenes.MainSceneDungeon });
   }
 
   preload() {
+    this.cursors = this.input.keyboard?.createCursorKeys();
+    // Detect mobile
+    this.isMobile = this.sys.game.device.os.android || this.sys.game.device.os.iOS;
+    // Always create cursors for Faune.update signature
     this.cursors = this.input.keyboard?.createCursorKeys();
   }
 
@@ -77,9 +92,57 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     this.cameras.main.startFollow(this.faune, true);
 
+    // Setup controls
+    if (this.isMobile) {
+      // Virtual joystick (left for movement, right for action)
+      this.joystick = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+        x: 80,
+        y: this.cameras.main.height - 80,
+        radius: 50,
+        base: this.add.circle(0, 0, 50, 0x888888, 0.3),
+        thumb: this.add.circle(0, 0, 25, 0xcccccc, 0.7),
+        dir: "8dir",
+        forceMin: 10,
+        enable: true
+      });
+
+      this.joystickRight = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+        x: this.cameras.main.width - 80,
+        y: this.cameras.main.height - 80,
+        radius: 40,
+        base: this.add.circle(0, 0, 40, 0x888888, 0.3),
+        thumb: this.add.circle(0, 0, 20, 0xcccccc, 0.7),
+        dir: "8dir",
+        forceMin: 10,
+        enable: true
+      });
+    } else {
+      // WASD keys for desktop
+      this.wasd = {
+        up: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+        down: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+        left: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+        right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+      };
+
+      // Fire projectile in direction of click
+      this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
+        const dx = pointer.worldX - this.faune.x;
+        const dy = pointer.worldY - this.faune.y;
+        const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
+        // Use knife cooldown for click as well
+        const t = this.time.now;
+        if (t - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
+          this.faune.throwKnife(angle);
+          this.faune.lastKnifeTime = t;
+        }
+      });
+    }
+
     // remember to clean up on Scene shutdown
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.input.off(Phaser.Input.Events.POINTER_UP);
+      this.input.off(Phaser.Input.Events.POINTER_DOWN);
     });
   }
 
@@ -87,9 +150,16 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
    * Update speed by delta
    */
   update(t: number, dt: number) {
-    if (this.faune && this.cursors) {
-      // Pass delta time to faune's update for frame-rate independent movement
-      this.faune.update(this.cursors, t, dt);
+    if (this.faune) {
+      if (this.isMobile) {
+        // Pass dummy cursors (required by Faune.update signature)
+        const joystick = this.joystick;
+        const joystickRight = this.joystickRight;
+        this.faune.update(this.cursors!, t, dt, joystick, joystickRight);
+      } else {
+        // WASD for movement, no joystick
+        this.faune.updateWASD(this.wasd!, t, dt);
+      }
     }
   }
 
