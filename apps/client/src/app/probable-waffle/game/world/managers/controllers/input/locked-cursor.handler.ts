@@ -1,19 +1,21 @@
-import { Cameras, Input } from "phaser";
+import { Input } from "phaser";
+import { CursorHandler } from "./cursor.handler";
 
 export class LockedCursorHandler {
-  private readonly lockToScreen = false; // todo could be enabled later - need to move cursor manually in phaser
+  private readonly lockToScreen = true; // Set to true to enable pointer lock
   private readonly input: Input.InputPlugin;
-  private readonly mainCamera: Cameras.Scene2D.Camera;
-
-  constructor(private readonly scene: Phaser.Scene) {
-    this.mainCamera = scene.cameras.main;
-    this.input = scene.input;
-    this.lockCursorToScreen();
-    this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-  }
 
   private customCursor: Phaser.GameObjects.Graphics | null = null;
   private cursorPosition = { x: 0, y: 0 };
+
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly cursorHandler: CursorHandler
+  ) {
+    this.input = scene.input;
+    this.lockCursorToScreen();
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+  }
 
   /**
    * https://phaser.io/examples/v3/view/input/mouse/pointer-lock
@@ -22,41 +24,94 @@ export class LockedCursorHandler {
   private lockCursorToScreen() {
     if (!this.lockToScreen) return;
 
-    if (this.input.keyboard && this.input.mouse) {
-      this.input.on("pointerdown", () => {
-        if (this.input.mouse && !this.input.mouse.locked) {
-          this.input.mouse?.requestPointerLock();
-        }
-      });
+    if (!this.input.keyboard || !this.input.mouse) return;
+    this.input.on("pointerdown", this.onPointerDown, this);
+    this.input.on("pointermove", this.onPointerMove, this);
+    this.input.manager.events.on("pointerlockchange", this.pointerLockChangeHandler, this);
+    this.input.keyboard.on("keydown_ESC", this.onEscKeyDown, this);
+  }
 
-      // Listen for pointer lock change event
-      this.input.manager.events.on("pointerlockchange", (event: any) => {
-        const pointerIsLocked = this.input.mouse?.locked;
-        console.log("pointerIsLocked", pointerIsLocked);
+  /**
+   * On Esc, release pointer lock (browsers handle this automatically, but you can also use Q)
+   */
+  private onEscKeyDown() {
+    if (!this.input.mouse?.locked) return;
+    this.input.mouse.releasePointerLock();
+  }
 
-        if (pointerIsLocked) {
-          this.scene.input.manager.game.canvas.addEventListener("mousemove", this.handleLockedPointerMove);
-          this.createCustomCursor(); // Create the custom cursor when pointer is locked
-        } else {
-          this.scene.input.manager.game.canvas.removeEventListener("mousemove", this.handleLockedPointerMove);
-          if (this.customCursor) this.customCursor.destroy(); // Destroy cursor when unlocked
-        }
-      });
+  /**
+   * Request pointer lock on pointer down
+   */
+  private onPointerDown() {
+    if (!this.input.mouse || this.input.mouse.locked) return;
+    this.input.mouse.requestPointerLock();
+  }
 
-      // On Esc, release pointer lock
-      this.input.keyboard.on("keydown_ESC", () => {
-        if (this.input.mouse?.locked) {
-          this.input.mouse.releasePointerLock();
-        }
-      });
+  /**
+   * Handle pointer movement while the mouse is locked
+   * This updates the custom cursor position based on pointer movement deltas
+   */
+  private onPointerMove(pointer: Phaser.Input.Pointer) {
+    if (!this.input.mouse?.locked || !this.customCursor) return;
+    // Update cursor position using movement deltas
+    this.cursorPosition.x += pointer.movementX;
+    this.cursorPosition.y += pointer.movementY;
+
+    // Clamp cursor position to screen bounds
+    const gameWidth = this.scene.scale.width;
+    const gameHeight = this.scene.scale.height;
+
+    this.cursorPosition.x = Phaser.Math.Clamp(this.cursorPosition.x, 0, gameWidth);
+    this.cursorPosition.y = Phaser.Math.Clamp(this.cursorPosition.y, 0, gameHeight);
+
+    // Update the visual cursor position
+    this.customCursor.setPosition(this.cursorPosition.x, this.cursorPosition.y);
+
+    this.updateInputPointerPosition();
+  }
+
+  /**
+   * Update the active pointer position so Phaser's input system knows where the cursor is
+   */
+  private updateInputPointerPosition() {
+    if (!this.customCursor) return;
+    this.input.activePointer.x = this.cursorPosition.x;
+    this.input.activePointer.y = this.cursorPosition.y;
+    this.input.activePointer.worldX = this.cursorPosition.x;
+    this.input.activePointer.worldY = this.cursorPosition.y;
+  }
+
+  /**
+   * Listen for pointer lock change event
+   */
+  private pointerLockChangeHandler() {
+    const pointerIsLocked = this.input.mouse?.locked;
+    console.log("pointerIsLocked", pointerIsLocked);
+
+    if (pointerIsLocked) {
+      this.createCustomCursor(); // Create the custom cursor when pointer is locked
+    } else {
+      this.destroyCustomCursor(); // Destroy the custom cursor when pointer is unlocked
     }
   }
 
+  private destroyCustomCursor() {
+    if (!this.customCursor) return;
+    this.customCursor.destroy();
+    this.customCursor = null;
+  }
+
   private createCustomCursor() {
+    if (!this.cursorHandler) return;
+    this.destroyCustomCursor(); // Ensure we don't create multiple cursors
+
+    const url = this.cursorHandler.getCurrentCursorUrl(); // todo - use this cursor instead - maybe you need to convert it to png first
+
     this.customCursor = this.scene.add.graphics({ fillStyle: { color: 0xffffff } });
     this.customCursor.fillCircle(0, 0, 5); // Draw a small white circle as the cursor
-    this.customCursor.setDepth(100); // Make sure the cursor is on top of other game elements
+    this.customCursor.setDepth(100); // Ensure it's on top
 
+    // Initialize cursor position to current pointer position
     const pointerX = this.input.activePointer.x;
     const pointerY = this.input.activePointer.y;
 
@@ -64,31 +119,16 @@ export class LockedCursorHandler {
     this.customCursor.setPosition(this.cursorPosition.x, this.cursorPosition.y);
   }
 
-  // Handle pointer movement and update cursor position
-  // Handle pointer movement and update cursor position
-  private handleLockedPointerMove = (event: MouseEvent) => {
-    // Update the cursor's position based on mouse movement
-    this.cursorPosition.x += event.movementX;
-    this.cursorPosition.y += event.movementY;
-
-    // Clamp cursor within screen bounds
-    this.cursorPosition.x = Phaser.Math.Clamp(this.cursorPosition.x, 0, this.mainCamera.width);
-    this.cursorPosition.y = Phaser.Math.Clamp(this.cursorPosition.y, 0, this.mainCamera.height);
-
-    // Update the custom cursor position
-    if (this.customCursor) {
-      this.customCursor.setPosition(this.cursorPosition.x, this.cursorPosition.y);
-
-      // Update activePointer position
-      // todo - this now only sets the position of the cursor as we initially lock the screen with (for example when clicking on the canvas), but it doesn't change x,y coords when moving the cursor
-    }
-  };
-
   destroy() {
-    this.customCursor?.destroy();
-    this.scene.input.manager.game.canvas.removeEventListener("mousemove", this.handleLockedPointerMove);
+    this.destroyCustomCursor();
     this.input.off("pointerdown");
+    this.input.off("pointermove");
     this.input.keyboard?.off("keydown_ESC");
     this.input.manager.events.off("pointerlockchange");
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.input.manager.events.off("pointerlockchange", this.pointerLockChangeHandler, this);
+    this.input.keyboard?.off("keydown_ESC", this.onEscKeyDown, this);
+    this.input.off("pointermove", this.onPointerMove, this);
+    this.input.off("pointerdown", this.onPointerDown, this);
   }
 }
