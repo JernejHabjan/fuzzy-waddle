@@ -12,7 +12,9 @@ import { RouterLink } from "@angular/router";
 })
 export class HomePageNavComponent {
   protected readonly enabledInstantDemoGame = !environment.production;
-  protected readonly enabledCampaign = !environment.production; // todo
-  protected readonly enabledProgress = !environment.production; // todo
-  protected readonly enabledOptions: boolean = !environment.production; // todo
+  protected readonly enabledMultiplayer = !environment.production;
+  protected readonly enabledReplay = !environment.production;
+  protected readonly enabledCampaign = !environment.production;
+  protected readonly enabledProgress = !environment.production;
+  protected readonly enabledOptions = true;
 }

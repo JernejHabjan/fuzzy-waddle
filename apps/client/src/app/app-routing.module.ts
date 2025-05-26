@@ -38,7 +38,8 @@ const probableWaffleRoutes = [
           },
           {
             path: "online",
-            loadComponent: () => import("./probable-waffle/gui/online/online.component").then((m) => m.OnlineComponent)
+            loadComponent: () => import("./probable-waffle/gui/online/online.component").then((m) => m.OnlineComponent),
+            canActivate: [() => !environment.production]
           },
           {
             path: "skirmish",
