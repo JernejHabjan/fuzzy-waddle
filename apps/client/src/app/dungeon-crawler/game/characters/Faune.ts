@@ -20,8 +20,6 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
   private knives?: Phaser.Physics.Arcade.Group;
   private healthState = HealthState.HEALTHY;
   private damageTime = 0;
-  private movePath: Phaser.Math.Vector2[] = [];
-  private moveToTarget?: Phaser.Math.Vector2;
 
   constructor(scene: Phaser.Scene, x: number, y: number, frame?: string | number) {
     super(scene, x, y, AssetsDungeon.faune, frame);
@@ -65,19 +63,6 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  moveAlong(path: Phaser.Math.Vector2[]) {
-    if (!path || path.length <= 0) {
-      return;
-    }
-
-    this.movePath = path;
-    this.moveTo(this.movePath.shift()!);
-  }
-
-  moveTo(target: Phaser.Math.Vector2) {
-    this.moveToTarget = target;
-  }
-
   preUpdate(t: number, dt: number) {
     super.preUpdate(t, dt);
     switch (this.healthState) {
@@ -115,9 +100,8 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     const speed = baseSpeed * (dt / 1000);
 
     const hasMovedByKeys = this.moveByKeys(cursors, speed);
-    const hasMovedByClick = this.moveByClick(speed);
 
-    if (!hasMovedByKeys && !hasMovedByClick) {
+    if (!hasMovedByKeys) {
       // update direction we're facing by anim key name
       const parts = this.anims.currentAnim!.key.split("-");
       parts[1] = "idle";
@@ -197,64 +181,6 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     knife.y += vec.y * 16;
 
     knife.setVelocity(vec.x * 300, vec.y * 300);
-  }
-
-  private moveByClick(speed: number): boolean {
-    let dx = 0;
-    let dy = 0;
-    let movedByClick = false;
-
-    if (this.moveToTarget) {
-      dx = this.moveToTarget.x - this.x;
-      dy = this.moveToTarget.y - this.y;
-
-      if (Math.abs(dx) < 5) {
-        dx = 0;
-      }
-      if (Math.abs(dy) < 5) {
-        dy = 0;
-      }
-
-      if (dx === 0 && dy === 0) {
-        if (this.movePath.length > 0) {
-          this.moveTo(this.movePath.shift()!);
-          movedByClick = true;
-          return movedByClick;
-        }
-
-        this.moveToTarget = undefined;
-      }
-    }
-
-    // this logic is the same except we determine
-    // if a key is down based on dx and dy
-    const leftDown = dx < 0;
-    const rightDown = dx > 0;
-    const upDown = dy < 0;
-    const downDown = dy > 0;
-
-    if (leftDown) {
-      this.anims.play("faune-run-side", true);
-      this.setVelocity(-speed, 0);
-
-      this.flipX = true;
-      movedByClick = true;
-    } else if (rightDown) {
-      this.anims.play("faune-run-side", true);
-      this.setVelocity(speed, 0);
-
-      this.flipX = false;
-      movedByClick = true;
-    } else if (upDown) {
-      this.anims.play("faune-run-up", true);
-      this.setVelocity(0, -speed);
-      movedByClick = true;
-    } else if (downDown) {
-      this.anims.play("faune-run-down", true);
-      this.setVelocity(0, speed);
-      movedByClick = true;
-    }
-    return movedByClick;
   }
 }
 

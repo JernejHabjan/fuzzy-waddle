@@ -17,7 +17,8 @@ export enum DungeonTilesetNames {
 // layers of tile map (visible in tiled)
 export enum DungeonTilesetLayers {
   "Walls" = "Walls",
-  "Ground" = "Ground"
+  "Ground" = "Ground",
+  "Assets" = "Assets"
 }
 
 // custom names for animations

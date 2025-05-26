@@ -5,7 +5,6 @@ import Lizard from "../enemies/Lizard";
 import "../characters/Faune";
 import Faune from "../characters/Faune";
 import { createTreasureAnims } from "../anims/TreasureAnims";
-import findPath from "../utils/findPath";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
 import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
 import { Scene } from "phaser";
@@ -38,16 +37,19 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     const tileset = map.addTilesetImage(DungeonTilesetNames.dungeon, AssetsDungeon.tiles)!;
     const groundLayer = map.createLayer(DungeonTilesetLayers.Ground, tileset);
     const wallsLayer = map.createLayer(DungeonTilesetLayers.Walls, tileset)!;
+    const assetsLayer = map.createLayer(DungeonTilesetLayers.Assets, tileset)!;
 
     wallsLayer.setCollisionByProperty({ collides: true });
+    assetsLayer.setCollisionByProperty({ collides: true });
 
     this.renderDebugCollision(wallsLayer);
+    this.renderDebugCollision(assetsLayer);
 
     this.knives = this.physics.add.group({
       classType: Phaser.Physics.Arcade.Image
     });
 
-    this.faune = this.add.faune(220, 128);
+    this.faune = this.add.faune(100, 128);
     this.faune.setKnives(this.knives);
 
     this.lizards = this.physics.add.group({
@@ -61,6 +63,9 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     this.physics.add.collider(this.faune, wallsLayer);
     this.physics.add.collider(this.lizards, wallsLayer);
     this.physics.add.collider(this.knives, wallsLayer, this.handleKnifeWallCollision, undefined, this);
+    this.physics.add.collider(this.faune, assetsLayer);
+    this.physics.add.collider(this.lizards, assetsLayer);
+    this.physics.add.collider(this.knives, assetsLayer);
     this.physics.add.collider(this.knives, this.lizards, this.handleKnifeLizardCollision, undefined, this);
     this.playerLizardsCollider = this.physics.add.collider(
       this.lizards,
@@ -71,19 +76,6 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     );
 
     this.cameras.main.startFollow(this.faune, true);
-
-    this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
-      const { worldX, worldY } = pointer;
-
-      const startVec = groundLayer!.worldToTileXY(this.faune.x, this.faune.y);
-      const targetVec = groundLayer!.worldToTileXY(worldX, worldY);
-
-      // generate the path
-      const path = findPath(startVec, targetVec, groundLayer!, wallsLayer);
-
-      // give it to the player to use
-      this.faune.moveAlong(path);
-    });
 
     // remember to clean up on Scene shutdown
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
