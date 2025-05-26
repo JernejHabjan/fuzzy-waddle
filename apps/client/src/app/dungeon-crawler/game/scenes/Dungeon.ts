@@ -34,7 +34,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     createTreasureAnims(this.anims);
 
     const map = this.make.tilemap({ key: AssetsDungeon.dungeon });
-    const tileset = map.addTilesetImage(DungeonTilesetNames.dungeion, AssetsDungeon.tiles)!;
+    const tileset = map.addTilesetImage(DungeonTilesetNames.dungeon, AssetsDungeon.tiles)!;
     const groundLayer = map.createLayer(DungeonTilesetLayers.Ground, tileset);
     const wallsLayer = map.createLayer(DungeonTilesetLayers.Walls, tileset)!;
 

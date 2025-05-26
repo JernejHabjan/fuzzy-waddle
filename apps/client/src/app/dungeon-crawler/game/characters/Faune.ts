@@ -4,7 +4,6 @@ import { sceneEvents } from "../events/EventCenter";
 
 declare global {
   namespace Phaser.GameObjects {
-    // todo eslint
     interface GameObjectFactory {
       faune(x: number, y: number, frame?: string | number): Faune;
     }

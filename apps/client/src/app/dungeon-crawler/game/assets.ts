@@ -11,7 +11,7 @@ export enum AssetsDungeon {
 
 // visible in tiled (tileset name)
 export enum DungeonTilesetNames {
-  "dungeion" = "dungeion"
+  "dungeon" = "dungeon"
 }
 
 // layers of tile map (visible in tiled)
