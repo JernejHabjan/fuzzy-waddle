@@ -1,6 +1,9 @@
 import Phaser, { GameObjects, Geom, Input } from "phaser";
 import HudProbableWaffle from "../../../../scenes/HudProbableWaffle";
 import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
+import { getSceneComponent } from "../../../../scenes/components/scene-component-helpers";
+import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
+import { BuildingCursor } from "../building-cursor";
 
 export const MULTI_SELECTING = "multiSelecting";
 
@@ -22,7 +25,10 @@ export class MultiSelectionHandler {
    */
   private pointerWithinGame = false;
 
-  constructor(private readonly hudScene: HudProbableWaffle) {
+  constructor(
+    private readonly hudScene: HudProbableWaffle,
+    private readonly probableWaffleScene: ProbableWaffleScene
+  ) {
     this.selection = hudScene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5);
     this.selection.depth = -1;
     this.hudScene.onShutdown.subscribe(() => this.destroy());
@@ -67,6 +73,9 @@ export class MultiSelectionHandler {
   private handlePointerDown(pointer: Input.Pointer) {
     if (!pointer.leftButtonDown()) return;
 
+    const buildingCursor = getSceneComponent(this.probableWaffleScene, BuildingCursor);
+    if (buildingCursor && buildingCursor.placingBuilding) return;
+
     this.selection.x = pointer.worldX;
     this.selection.y = pointer.worldY;
     this.selectionRect = null;
@@ -82,6 +91,9 @@ export class MultiSelectionHandler {
 
   private handlePointerUp(pointer: Input.Pointer) {
     if (!this.pointerWithinGame) return;
+    const buildingCursor = getSceneComponent(this.probableWaffleScene, BuildingCursor);
+    if (buildingCursor && buildingCursor.placingBuilding) return;
+
     const isShiftDown = pointer.event.shiftKey;
     const isCtrlDown = pointer.event.ctrlKey;
     if (!pointer.rightButtonReleased()) {

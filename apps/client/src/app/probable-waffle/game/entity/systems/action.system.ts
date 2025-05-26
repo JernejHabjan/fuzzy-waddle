@@ -29,6 +29,7 @@ export class ActionSystem {
   private aiDebuggingSubscription?: Subscription;
   private displayDebugInfo: boolean = false;
   private audioActorComponent?: AudioActorComponent;
+  private shiftKey: Phaser.Input.Keyboard.Key | undefined;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToActorActionEvents();
@@ -45,8 +46,11 @@ export class ActionSystem {
       });
       this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     }
+    this.subscribeToShiftKey();
   }
-
+  private subscribeToShiftKey() {
+    this.shiftKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+  }
   private listenToActorActionEvents() {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.actor") // todo it's actually blackboard that should replicate
@@ -70,7 +74,11 @@ export class ActionSystem {
         if (!action) return;
 
         if (this.displayDebugInfo && !environment.production) console.log("ActionSystem: action", action);
-        payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(action);
+        if (this.shiftKey?.isDown) {
+          payerPawnAiController.blackboard.addOrder(action);
+        } else {
+          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(action);
+        }
         this.playOrderSound(action);
       });
   }
@@ -204,5 +212,6 @@ export class ActionSystem {
   private destroy() {
     this.playerChangedSubscription?.unsubscribe();
     this.aiDebuggingSubscription?.unsubscribe();
+    this.shiftKey?.destroy();
   }
 }

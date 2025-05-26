@@ -61,6 +61,7 @@ export interface PendingMatchmakingGameInstance {
 
 export interface ProbableWaffleGameInstanceSaveData {
   saveName: string;
-  created: number;
+  created: Date;
   gameInstanceData: ProbableWaffleGameInstanceData;
+  thumbnail: string;
 }

@@ -4,7 +4,6 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "../../../data/object-names";
-import { EffectsAnims } from "../../../animations/effects";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container {
@@ -19,35 +18,11 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
     this.add(skaduwee_magician_female_idle_down);
 
     /* START-USER-CTR-CODE */
-    this.skaduwee_magician_female_idle_down = skaduwee_magician_female_idle_down;
-    this.on("pointerdown", () => {
-      // and play anim skaduwee_worker_male_slash_down
-      skaduwee_magician_female_idle_down.play("skaduwee_magician_female_cast_down", true);
-      this.playTestAttackAnim();
-
-      // after anim complete, remove tint
-      skaduwee_magician_female_idle_down.once("animationcomplete", () => {
-        skaduwee_magician_female_idle_down.clearTint();
-        skaduwee_magician_female_idle_down.play("skaduwee_magician_female_idle_down", true);
-      });
-    });
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   name = ObjectNames.SkaduweeMagicianFemale;
-  private skaduwee_magician_female_idle_down: Phaser.GameObjects.Sprite;
-
-  private playTestAttackAnim() {
-    const x = this.x;
-    const y = this.y - this.skaduwee_magician_female_idle_down.height / 4;
-
-    // get 0-23 random number
-    const randomFrame = Math.floor(Math.random() * 24);
-    const impactSprite = EffectsAnims.createAndPlayAnimation(this.scene, "impact_" + randomFrame, x, y);
-    impactSprite.depth = this.depth + 1;
-  }
-
   /* END-USER-CODE */
 }
 

@@ -34,6 +34,9 @@ import { AudioSprites } from "../../../sfx/AudioSprites";
 import { UiFeedbackSfx } from "../../../sfx/UiFeedbackSfx";
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { getActorSystem } from "../../../data/actor-system";
+import { getRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
+import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -187,9 +190,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         const actorsByPriority = sortActorsByPriority(selectedActors);
         const actor = actorsByPriority[0];
         this.buildingMode = false;
-        this.showActorActions(actor);
+        this.showActorActions(actor, actorsByPriority);
         this.subscribeToActorKillEvent(actor);
-        this.subscribeToActorConstructionEvent(actor);
+        this.subscribeToActorConstructionEvent(actor, actorsByPriority);
       }
     });
   }
@@ -209,7 +212,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     });
   }
 
-  private subscribeToActorConstructionEvent(actor: Phaser.GameObjects.GameObject) {
+  private subscribeToActorConstructionEvent(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[]
+  ) {
     this.actorConstructionSubscription?.unsubscribe();
     this.actorConstructionSubscription = getActorComponent(
       actor,
@@ -217,81 +223,126 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     )?.constructionProgressPercentageChanged.subscribe((progress) => {
       if (progress === 100) {
         // show actions again
-        this.showActorActions(actor);
+        this.showActorActions(actor, allActors);
       }
     });
   }
 
-  private readonly attackAction = {
-    icon: {
-      key: "gui",
-      frame: "actor_info_icons/sword.png",
-      origin: { x: 0.5, y: 0.5 }
-    },
-    visible: true,
-    action: () => {
-      console.log("Attack");
-    },
-    tooltipInfo: {
-      title: "Attack",
-      description: "Attack an enemy or start attack-move to certain location",
-      iconKey: "gui",
-      iconFrame: "actor_info_icons/sword.png",
-      iconOrigin: { x: 0.5, y: 0.5 }
-    }
-  } satisfies ActorActionSetup;
+  private readonly attackAction = (actors: Phaser.GameObjects.GameObject[]) =>
+    ({
+      icon: {
+        key: "gui",
+        frame: "actor_info_icons/sword.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: () => {
+        console.log("Attack"); // todo attack move with all actors
+      },
+      tooltipInfo: {
+        title: "Attack",
+        description: "Attack an enemy or start attack-move to certain location",
+        iconKey: "gui",
+        iconFrame: "actor_info_icons/sword.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      }
+    }) satisfies ActorActionSetup;
 
-  private readonly stopAction = {
-    icon: {
-      key: "gui",
-      frame: "action_icons/hand.png",
-      origin: { x: 0.5, y: 0.5 }
-    },
-    visible: true,
-    action: () => {
-      console.log("Stop");
-    },
-    tooltipInfo: {
-      title: "Stop",
-      description: "Stop current action",
-      iconKey: "gui",
-      iconFrame: "action_icons/hand.png",
-      iconOrigin: { x: 0.5, y: 0.5 }
-    }
-  } satisfies ActorActionSetup;
+  private readonly stopAction = (actors: Phaser.GameObjects.GameObject[]) =>
+    ({
+      icon: {
+        key: "gui",
+        frame: "action_icons/hand.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: () => {
+        actors.forEach((actor) => {
+          const pawnAiController = getActorComponent(actor, PawnAiController);
+          if (!pawnAiController) return;
+          pawnAiController?.blackboard.resetCurrentOrder();
+        });
+      },
+      tooltipInfo: {
+        title: "Stop",
+        description: "Stop current action",
+        iconKey: "gui",
+        iconFrame: "action_icons/hand.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      }
+    }) satisfies ActorActionSetup;
 
-  private readonly moveAction = {
-    icon: {
-      key: "gui",
-      frame: "action_icons/arrow.png",
-      origin: { x: 0.5, y: 0.5 }
-    },
-    visible: true,
-    action: () => {
-      console.log("Move");
-    },
-    tooltipInfo: {
-      title: "Move",
-      description: "Move to a location",
-      iconKey: "gui",
-      iconFrame: "action_icons/arrow.png",
-      iconOrigin: { x: 0.5, y: 0.5 }
-    }
-  } satisfies ActorActionSetup;
+  private readonly moveAction = (actors: Phaser.GameObjects.GameObject[]) =>
+    ({
+      icon: {
+        key: "gui",
+        frame: "action_icons/arrow.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: () => {
+        actors.forEach((actor) => {
+          setTimeout(async () => {
+            const movementSystem = getActorSystem(actor, MovementSystem);
+            if (!movementSystem) return;
+            const tileXY = await getRandomTileInNavigableRadius(actor, 10);
+            if (!tileXY) return;
+            await movementSystem.moveToLocation({
+              x: tileXY.x,
+              y: tileXY.y,
+              z: 0
+            }); // todo initiate action differently
+          });
+        });
+      },
+      tooltipInfo: {
+        title: "Move",
+        description: "Move to a location",
+        iconKey: "gui",
+        iconFrame: "action_icons/arrow.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      }
+    }) satisfies ActorActionSetup;
 
-  private showActorActions(actor: Phaser.GameObjects.GameObject) {
+  private showActorActions(actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) {
     this.hideAllIcons();
     let index = 0;
 
     if (!this.canShowIcons(actor)) return;
 
+    // Add this block for ConstructionSiteComponent unfinished state
+    const constructionSiteComponent = getActorComponent(actor, ConstructionSiteComponent);
+    if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
+      // Show sword icon as 9th (bottom right) icon
+      this.actor_actions[8].setup({
+        icon: {
+          key: "gui",
+          frame: "action_icons/hand.png",
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        action: () => {
+          const healthComponent = getActorComponent(actor, HealthComponent);
+          healthComponent?.killActor();
+        },
+        tooltipInfo: {
+          title: "Cancel construction",
+          description: "This action will destroy the building",
+          iconKey: "gui",
+          iconFrame: "action_icons/hand.png",
+          iconOrigin: { x: 0.5, y: 0.5 }
+        }
+      });
+      return;
+    }
+
     if (this.buildingMode) {
-      this.showBuildableIcons(actor, index);
+      this.showBuildableIcons(actor, allActors, index);
     } else {
-      index = this.showAttackIcons(actor, index);
-      index = this.showMoveIcons(actor, index);
+      index = this.showAttackIcons(actor, allActors, index);
+      index = this.showMoveIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, index);
-      this.showBuilderIcons(actor, index);
+      this.showBuilderIcons(actor, allActors, index);
     }
   }
 
@@ -301,21 +352,29 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return actorPlayerNr === currentPlayerNr;
   }
 
-  private showAttackIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+  private showAttackIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
     const attackComponent = getActorComponent(actor, AttackComponent);
     if (attackComponent) {
-      this.actor_actions[index].setup(this.attackAction);
+      this.actor_actions[index].setup(this.attackAction(allActors));
       index++;
     }
     return index;
   }
 
-  private showMoveIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+  private showMoveIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
     const actorTranslateComponent = getActorComponent(actor, ActorTranslateComponent);
     if (actorTranslateComponent) {
-      this.actor_actions[index].setup(this.moveAction);
+      this.actor_actions[index].setup(this.moveAction(allActors));
       index++;
-      this.actor_actions[index].setup(this.stopAction);
+      this.actor_actions[index].setup(this.stopAction(allActors));
       index++;
     }
     return index;
@@ -395,7 +454,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  private showBuilderIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+  private showBuilderIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
     const builderComponent = getActorComponent(actor, BuilderComponent);
     if (builderComponent) {
       this.actor_actions[index].setup({
@@ -407,7 +470,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         visible: true,
         action: () => {
           this.buildingMode = true;
-          this.showActorActions(actor);
+          this.showActorActions(actor, allActors);
         },
         tooltipInfo: {
           title: "Build",
@@ -428,7 +491,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
-  private showBuildableIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+  private showBuildableIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
     const builderComponent = getActorComponent(actor, BuilderComponent);
     if (!builderComponent) throw new Error("BuilderComponent not found");
     const buildable: ObjectNames[] = builderComponent.constructableBuildings;
@@ -484,7 +551,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       visible: true,
       action: () => {
         this.buildingMode = false;
-        this.showActorActions(actor);
+        this.showActorActions(actor, allActors);
         const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
         buildingCursor?.stopPlacingBuilding.emit();
       },

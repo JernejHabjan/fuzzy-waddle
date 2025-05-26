@@ -10,7 +10,6 @@ export class CameraMovementHandler {
   private readonly cameraEdgeMargin = 30;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
-  private readonly cameraZoomFactor = 0.1;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -18,7 +17,7 @@ export class CameraMovementHandler {
       cameraEdgeMovementSpeed: number;
       cameraKeyboardMovementSpeed: number;
     } = {
-      cameraEdgeMovementSpeed: 5,
+      cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2
     }
   ) {
@@ -120,21 +119,32 @@ export class CameraMovementHandler {
   }
 
   private screenEdgeMovementUpdate() {
-    if (!this.enabledMouseCornerMovement) return;
-    if (!this.cursorOverGameInstance) return;
+    if (!this.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;
 
     const pointer = this.input.activePointer;
-    if (pointer.x < this.cameraEdgeMargin) {
-      this.mainCamera.scrollX -= this.config.cameraEdgeMovementSpeed;
+    const margin = this.cameraEdgeMargin;
+    const speed = this.config.cameraEdgeMovementSpeed;
+    const { width, height } = this.mainCamera;
+
+    // Left
+    if (pointer.x < margin) {
+      const factor = 1 - pointer.x / margin;
+      this.mainCamera.scrollX -= speed * factor;
     }
-    if (pointer.x > this.mainCamera.width - this.cameraEdgeMargin) {
-      this.mainCamera.scrollX += this.config.cameraEdgeMovementSpeed;
+    // Right
+    if (pointer.x > width - margin) {
+      const factor = (pointer.x - (width - margin)) / margin;
+      this.mainCamera.scrollX += speed * factor;
     }
-    if (pointer.y < this.cameraEdgeMargin) {
-      this.mainCamera.scrollY -= this.config.cameraEdgeMovementSpeed;
+    // Top
+    if (pointer.y < margin) {
+      const factor = 1 - pointer.y / margin;
+      this.mainCamera.scrollY -= speed * factor;
     }
-    if (pointer.y > this.mainCamera.height - this.cameraEdgeMargin) {
-      this.mainCamera.scrollY += this.config.cameraEdgeMovementSpeed;
+    // Bottom
+    if (pointer.y > height - margin) {
+      const factor = (pointer.y - (height - margin)) / margin;
+      this.mainCamera.scrollY += speed * factor;
     }
   }
 

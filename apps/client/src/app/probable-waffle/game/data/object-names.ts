@@ -1,6 +1,10 @@
 export enum ObjectNames {
   Hedgehog = "Hedgehog",
   Sheep = "Sheep",
+  Wolf = "Wolf",
+  Boar = "Boar",
+  Stag = "Stag",
+  Badger = "Badger",
   GeneralWarrior = "GeneralWarrior",
   TivaraMacemanMale = "TivaraMacemanMale",
   TivaraSlingshotFemale = "TivaraSlingshotFemale",

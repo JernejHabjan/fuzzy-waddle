@@ -27,6 +27,7 @@ import { BuilderComponent } from "../../../../entity/actor/components/builder-co
 import { OrderData } from "../../../../entity/character/ai/OrderData";
 import { HealingComponent } from "../../../../entity/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../../../entity/building/construction/construction-site-component";
+import { AnimationActorComponent } from "../../../../entity/actor/components/animation-actor-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
   constructor(
@@ -111,7 +112,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
         case "move":
           return 0;
         case "attack":
-          return getActorComponent(this.gameObject, AttackComponent)?.getMaximumRange();
+          return getActorComponent(this.gameObject, AttackComponent)?.getAttackRange(targetGameObject);
         case "gather":
           return getActorComponent(this.gameObject, GathererComponent)?.getGatherRange(targetGameObject);
         case "dropOff":
@@ -146,7 +147,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       if (!canMoveToTarget) return State.FAILED;
       // console.log("Moving to target!");
       const success = await movementSystem.moveToActor(target, {
-        radiusTilesAroundDestination: range
+        radiusTilesAroundDestination: range,
+        onUpdateThrottled: () => {
+          // if the target is not alive, stop moving
+          const healthComponent = getActorComponent(target, HealthComponent);
+          if (healthComponent && healthComponent.killed) {
+            this.Stop();
+          }
+        }
       } satisfies Partial<PathMoveConfig>);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
@@ -196,10 +204,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       }
       switch (currentOrder.orderType) {
         case OrderType.Move:
-          const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-          if (movementSystem) {
-            movementSystem.cancelMovement();
-          }
+          // movement cancelled below
           break;
         case OrderType.Build:
           const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
@@ -215,6 +220,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
           break;
       }
       this.blackboard.resetCurrentOrder(false);
+      const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+      if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      movementSystem?.cancelMovement();
     }
 
     this.blackboard.popCurrentOrderFromQueue();
@@ -228,9 +237,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!target) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
-    const primaryAttack = attackComponent.primaryAttack;
-    if (primaryAttack === null) return State.FAILED;
-    attackComponent.useAttack(primaryAttack, target);
+    attackComponent.useAttack(target);
     return State.SUCCEEDED;
   }
 
@@ -318,6 +325,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     return State.SUCCEEDED;
   }
 
+  AssignNextBuildOrder(): State {
+    const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+    if (!builderComponent) return State.FAILED;
+    const range = builderComponent.getConstructionSeekRange();
+    const target = builderComponent.getClosestConstructionSite(range);
+    if (!target) return State.FAILED;
+    this.blackboard.addOrder(new OrderData(OrderType.Build, { targetGameObject: target }));
+
+    return State.SUCCEEDED;
+  }
+
   ConstructBuilding() {
     const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
     if (!builderComponent) return State.FAILED;
@@ -325,6 +343,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+    if (!this.CanAssignBuilder()) return State.FAILED;
     builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
   }

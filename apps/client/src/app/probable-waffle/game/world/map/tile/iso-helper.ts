@@ -1,9 +1,11 @@
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { MapSizeInfo_old } from "../../const/map-size.info_old";
+import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
+import { TilemapComponent } from "../../../scenes/components/tilemap.component";
 
 export class IsoHelper {
   /**
-   * @deprecated USE RATHER Phaser.Tilemaps.Components.IsometricWorldToTileXY
+   * @deprecated USE RATHER IsoHelper.IsometricWorldToTileXY
    */
   static DEPRECATED_isometricWorldToTileXY(worldX: number, worldY: number, snapToFloor: boolean): Vector2Simple {
     const tileWidthHalf = MapSizeInfo_old.info.tileWidthHalf;
@@ -17,6 +19,27 @@ export class IsoHelper {
       : (worldY / tileHeightHalf - worldX / tileWidthHalf) / 2;
 
     return { x, y };
+  }
+
+  static isometricWorldToTileXY(
+    scene: Phaser.Scene,
+    worldX: number,
+    worldY: number,
+    snapToFloor: boolean = true
+  ): Vector2Simple {
+    const tileMapComponent = getSceneComponent(scene, TilemapComponent);
+    if (!tileMapComponent) throw new Error("TilemapComponent not found in scene");
+
+    const clickedTileXY = new Phaser.Math.Vector2();
+    Phaser.Tilemaps.Components.IsometricWorldToTileXY(
+      worldX,
+      worldY,
+      snapToFloor,
+      clickedTileXY,
+      scene.cameras.main,
+      tileMapComponent.tilemap.layer
+    );
+    return { x: clickedTileXY.x, y: clickedTileXY.y };
   }
 
   static isometricTileToWorldXY(tileXY: Vector2Simple): Vector2Simple {

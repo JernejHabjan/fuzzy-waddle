@@ -73,7 +73,8 @@ apps/client/src/app/shared/services
 apps/client/src/app/shared/loader
 apps/client/src/assets/dungeon-crawler
 apps/client/src/assets/fly-squasher/sound
-apps/client/src/assets/little-muncher
+apps/client/src/assets/little-muncher/ost
+apps/client/src/assets/little-muncher/spritesheets
 apps/client/src/assets/games
 apps/client/src/environments
 apps/client/src/styles

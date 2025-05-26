@@ -98,7 +98,7 @@ export const gameInstanceClientServiceStub = {
   async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     return Promise.resolve();
   },
-  async saveGameInstance(saveName: string): Promise<void> {
+  async saveGameInstance(data: Record<string, any>): Promise<void> {
     return Promise.resolve();
   },
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {

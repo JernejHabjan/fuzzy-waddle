@@ -9,7 +9,7 @@ import { AngularHost } from "../../../shared/consts";
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
   imports: [FormsModule, RouterLink],
-  host: AngularHost.contentFlexFullHeight
+  host: AngularHost.contentFlexFullHeightCenter
 })
 export class OptionsComponent implements OnInit {
   protected volumeSettings = new VolumeSettings();

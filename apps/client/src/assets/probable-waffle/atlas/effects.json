@@ -4,8 +4,8 @@
 			"image": "effects.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 252,
-				"h": 1710
+				"w": 255,
+				"h": 1700
 			},
 			"scale": 1,
 			"frames": [
@@ -598,27 +598,6 @@
 					}
 				},
 				{
-					"filename": "impact/1/15/92.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 2,
-						"y": 22,
-						"w": 60,
-						"h": 18
-					},
-					"frame": {
-						"x": 1,
-						"y": 1691,
-						"w": 60,
-						"h": 18
-					}
-				},
-				{
 					"filename": "impact/1/2/7.png",
 					"rotated": false,
 					"trimmed": true,
@@ -721,27 +700,6 @@
 						"y": 111,
 						"w": 58,
 						"h": 56
-					}
-				},
-				{
-					"filename": "impact/1/16/99.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 23,
-						"y": 21,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 219,
-						"y": 111,
-						"w": 32,
-						"h": 32
 					}
 				},
 				{
@@ -913,7 +871,7 @@
 					}
 				},
 				{
-					"filename": "impact/1/15/91.png",
+					"filename": "impact/1/13/76.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -921,16 +879,16 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 5,
-						"y": 22,
-						"w": 54,
-						"h": 18
+						"x": 17,
+						"y": 25,
+						"w": 35,
+						"h": 24
 					},
 					"frame": {
-						"x": 63,
-						"y": 1691,
-						"w": 54,
-						"h": 18
+						"x": 219,
+						"y": 111,
+						"w": 35,
+						"h": 24
 					}
 				},
 				{
@@ -955,6 +913,48 @@
 					}
 				},
 				{
+					"filename": "impact-debris/impact-debris3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 31,
+						"h": 26
+					},
+					"frame": {
+						"x": 126,
+						"y": 231,
+						"w": 31,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 31,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 124,
+						"y": 259,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
 					"filename": "impact/1/10/59.png",
 					"rotated": false,
 					"trimmed": true,
@@ -969,52 +969,10 @@
 						"h": 48
 					},
 					"frame": {
-						"x": 124,
+						"x": 159,
 						"y": 266,
 						"w": 64,
 						"h": 48
-					}
-				},
-				{
-					"filename": "impact/1/10/57.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 9,
-						"w": 61,
-						"h": 46
-					},
-					"frame": {
-						"x": 190,
-						"y": 266,
-						"w": 61,
-						"h": 46
-					}
-				},
-				{
-					"filename": "impact/1/13/78.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 6,
-						"w": 61,
-						"h": 44
-					},
-					"frame": {
-						"x": 190,
-						"y": 314,
-						"w": 61,
-						"h": 44
 					}
 				},
 				{
@@ -1074,157 +1032,10 @@
 						"h": 48
 					},
 					"frame": {
-						"x": 187,
-						"y": 360,
-						"w": 64,
-						"h": 48
-					}
-				},
-				{
-					"filename": "impact/1/20/135.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 16,
-						"w": 64,
-						"h": 46
-					},
-					"frame": {
-						"x": 187,
-						"y": 410,
-						"w": 64,
-						"h": 46
-					}
-				},
-				{
-					"filename": "impact/1/24/165.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 5,
-						"w": 62,
-						"h": 45
-					},
-					"frame": {
 						"x": 123,
 						"y": 416,
-						"w": 62,
-						"h": 45
-					}
-				},
-				{
-					"filename": "impact/1/13/80.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
 						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 2,
-						"w": 64,
-						"h": 45
-					},
-					"frame": {
-						"x": 187,
-						"y": 458,
-						"w": 64,
-						"h": 45
-					}
-				},
-				{
-					"filename": "impact/1/19/124.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 11,
-						"w": 58,
-						"h": 43
-					},
-					"frame": {
-						"x": 127,
-						"y": 463,
-						"w": 58,
-						"h": 43
-					}
-				},
-				{
-					"filename": "impact/1/13/81.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 2,
-						"w": 64,
-						"h": 45
-					},
-					"frame": {
-						"x": 187,
-						"y": 505,
-						"w": 64,
-						"h": 45
-					}
-				},
-				{
-					"filename": "impact/1/14/83.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 19,
-						"w": 58,
-						"h": 40
-					},
-					"frame": {
-						"x": 127,
-						"y": 508,
-						"w": 58,
-						"h": 40
-					}
-				},
-				{
-					"filename": "impact/1/9/50.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 16,
-						"w": 59,
-						"h": 35
-					},
-					"frame": {
-						"x": 66,
-						"y": 520,
-						"w": 59,
-						"h": 35
+						"h": 48
 					}
 				},
 				{
@@ -1242,115 +1053,10 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 65,
-						"y": 557,
+						"x": 127,
+						"y": 466,
 						"w": 63,
 						"h": 47
-					}
-				},
-				{
-					"filename": "impact/1/16/101.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 7,
-						"w": 53,
-						"h": 52
-					},
-					"frame": {
-						"x": 130,
-						"y": 550,
-						"w": 53,
-						"h": 52
-					}
-				},
-				{
-					"filename": "impact/1/19/125.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 9,
-						"w": 63,
-						"h": 46
-					},
-					"frame": {
-						"x": 185,
-						"y": 552,
-						"w": 63,
-						"h": 46
-					}
-				},
-				{
-					"filename": "impact/1/7/37.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 10,
-						"y": 10,
-						"w": 54,
-						"h": 44
-					},
-					"frame": {
-						"x": 63,
-						"y": 606,
-						"w": 54,
-						"h": 44
-					}
-				},
-				{
-					"filename": "impact/1/17/107.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 6,
-						"w": 52,
-						"h": 52
-					},
-					"frame": {
-						"x": 64,
-						"y": 652,
-						"w": 52,
-						"h": 52
-					}
-				},
-				{
-					"filename": "impact/1/6/28.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 12,
-						"y": 4,
-						"w": 44,
-						"h": 51
-					},
-					"frame": {
-						"x": 67,
-						"y": 706,
-						"w": 44,
-						"h": 51
 					}
 				},
 				{
@@ -1368,8 +1074,8 @@
 						"h": 48
 					},
 					"frame": {
-						"x": 67,
-						"y": 759,
+						"x": 184,
+						"y": 316,
 						"w": 46,
 						"h": 48
 					}
@@ -1389,14 +1095,14 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 67,
-						"y": 809,
+						"x": 187,
+						"y": 366,
 						"w": 48,
 						"h": 47
 					}
 				},
 				{
-					"filename": "impact/1/16/100.png",
+					"filename": "impact/1/23/156.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1404,16 +1110,58 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 9,
-						"y": 10,
-						"w": 48,
-						"h": 46
+						"x": 10,
+						"y": 5,
+						"w": 46,
+						"h": 47
 					},
 					"frame": {
-						"x": 67,
-						"y": 858,
-						"w": 48,
-						"h": 46
+						"x": 189,
+						"y": 415,
+						"w": 46,
+						"h": 47
+					}
+				},
+				{
+					"filename": "impact/1/24/165.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 5,
+						"w": 62,
+						"h": 45
+					},
+					"frame": {
+						"x": 192,
+						"y": 464,
+						"w": 62,
+						"h": 45
+					}
+				},
+				{
+					"filename": "impact/1/24/166.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 2,
+						"w": 62,
+						"h": 36
+					},
+					"frame": {
+						"x": 192,
+						"y": 511,
+						"w": 62,
+						"h": 36
 					}
 				},
 				{
@@ -1431,14 +1179,14 @@
 						"h": 45
 					},
 					"frame": {
-						"x": 67,
-						"y": 906,
+						"x": 127,
+						"y": 515,
 						"w": 63,
 						"h": 45
 					}
 				},
 				{
-					"filename": "impact/1/17/106.png",
+					"filename": "impact/1/24/167.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1446,16 +1194,247 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 20,
-						"y": 15,
-						"w": 27,
-						"h": 33
+						"x": 1,
+						"y": 0,
+						"w": 62,
+						"h": 26
 					},
 					"frame": {
-						"x": 126,
-						"y": 231,
-						"w": 27,
-						"h": 33
+						"x": 192,
+						"y": 549,
+						"w": 62,
+						"h": 26
+					}
+				},
+				{
+					"filename": "impact/1/14/83.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 19,
+						"w": 58,
+						"h": 40
+					},
+					"frame": {
+						"x": 67,
+						"y": 520,
+						"w": 58,
+						"h": 40
+					}
+				},
+				{
+					"filename": "impact/1/13/80.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 2,
+						"w": 64,
+						"h": 45
+					},
+					"frame": {
+						"x": 65,
+						"y": 562,
+						"w": 64,
+						"h": 45
+					}
+				},
+				{
+					"filename": "impact/1/9/50.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 16,
+						"w": 59,
+						"h": 35
+					},
+					"frame": {
+						"x": 131,
+						"y": 562,
+						"w": 59,
+						"h": 35
+					}
+				},
+				{
+					"filename": "impact/1/24/168.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 62,
+						"h": 23
+					},
+					"frame": {
+						"x": 192,
+						"y": 577,
+						"w": 62,
+						"h": 23
+					}
+				},
+				{
+					"filename": "impact/1/24/164.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 14,
+						"w": 60,
+						"h": 39
+					},
+					"frame": {
+						"x": 63,
+						"y": 609,
+						"w": 60,
+						"h": 39
+					}
+				},
+				{
+					"filename": "impact/1/10/57.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 9,
+						"w": 61,
+						"h": 46
+					},
+					"frame": {
+						"x": 64,
+						"y": 650,
+						"w": 61,
+						"h": 46
+					}
+				},
+				{
+					"filename": "impact/1/16/101.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 7,
+						"w": 53,
+						"h": 52
+					},
+					"frame": {
+						"x": 67,
+						"y": 698,
+						"w": 53,
+						"h": 52
+					}
+				},
+				{
+					"filename": "impact/1/17/107.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 6,
+						"w": 52,
+						"h": 52
+					},
+					"frame": {
+						"x": 67,
+						"y": 752,
+						"w": 52,
+						"h": 52
+					}
+				},
+				{
+					"filename": "impact/1/19/125.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 9,
+						"w": 63,
+						"h": 46
+					},
+					"frame": {
+						"x": 67,
+						"y": 806,
+						"w": 63,
+						"h": 46
+					}
+				},
+				{
+					"filename": "impact/1/20/135.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 16,
+						"w": 64,
+						"h": 46
+					},
+					"frame": {
+						"x": 67,
+						"y": 854,
+						"w": 64,
+						"h": 46
+					}
+				},
+				{
+					"filename": "impact/1/13/81.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 2,
+						"w": 64,
+						"h": 45
+					},
+					"frame": {
+						"x": 67,
+						"y": 902,
+						"w": 64,
+						"h": 45
 					}
 				},
 				{
@@ -1474,13 +1453,13 @@
 					},
 					"frame": {
 						"x": 67,
-						"y": 953,
+						"y": 949,
 						"w": 62,
 						"h": 17
 					}
 				},
 				{
-					"filename": "impact/1/24/164.png",
+					"filename": "impact/1/13/78.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1488,20 +1467,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 2,
-						"y": 14,
-						"w": 60,
-						"h": 39
+						"x": 3,
+						"y": 6,
+						"w": 61,
+						"h": 44
 					},
 					"frame": {
 						"x": 65,
-						"y": 972,
-						"w": 60,
-						"h": 39
+						"y": 968,
+						"w": 61,
+						"h": 44
 					}
 				},
 				{
-					"filename": "impact/1/7/36.png",
+					"filename": "impact/1/19/124.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1509,15 +1488,15 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 9,
+						"x": 6,
 						"y": 11,
-						"w": 55,
+						"w": 58,
 						"h": 43
 					},
 					"frame": {
 						"x": 65,
-						"y": 1013,
-						"w": 55,
+						"y": 1014,
+						"w": 58,
 						"h": 43
 					}
 				},
@@ -1537,9 +1516,72 @@
 					},
 					"frame": {
 						"x": 65,
-						"y": 1058,
+						"y": 1059,
 						"w": 58,
 						"h": 30
+					}
+				},
+				{
+					"filename": "impact/1/7/36.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 11,
+						"w": 55,
+						"h": 43
+					},
+					"frame": {
+						"x": 66,
+						"y": 1091,
+						"w": 55,
+						"h": 43
+					}
+				},
+				{
+					"filename": "impact/1/18/119.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 45,
+						"w": 30,
+						"h": 8
+					},
+					"frame": {
+						"x": 1,
+						"y": 1691,
+						"w": 30,
+						"h": 8
+					}
+				},
+				{
+					"filename": "impact/1/18/120.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 45,
+						"w": 30,
+						"h": 8
+					},
+					"frame": {
+						"x": 33,
+						"y": 1691,
+						"w": 30,
+						"h": 8
 					}
 				},
 				{
@@ -1558,7 +1600,7 @@
 					},
 					"frame": {
 						"x": 66,
-						"y": 1090,
+						"y": 1136,
 						"w": 55,
 						"h": 42
 					}
@@ -1578,14 +1620,14 @@
 						"h": 30
 					},
 					"frame": {
-						"x": 66,
-						"y": 1134,
+						"x": 59,
+						"y": 1180,
 						"w": 58,
 						"h": 30
 					}
 				},
 				{
-					"filename": "impact/1/24/166.png",
+					"filename": "impact/1/7/37.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1593,16 +1635,37 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 1,
-						"y": 2,
-						"w": 62,
-						"h": 36
+						"x": 10,
+						"y": 10,
+						"w": 54,
+						"h": 44
 					},
 					"frame": {
-						"x": 59,
-						"y": 1166,
-						"w": 62,
-						"h": 36
+						"x": 63,
+						"y": 1212,
+						"w": 54,
+						"h": 44
+					}
+				},
+				{
+					"filename": "impact/1/2/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 20,
+						"w": 54,
+						"h": 26
+					},
+					"frame": {
+						"x": 63,
+						"y": 1258,
+						"w": 54,
+						"h": 26
 					}
 				},
 				{
@@ -1620,14 +1683,14 @@
 						"h": 43
 					},
 					"frame": {
-						"x": 63,
-						"y": 1204,
+						"x": 62,
+						"y": 1286,
 						"w": 54,
 						"h": 43
 					}
 				},
 				{
-					"filename": "impact/1/8/42.png",
+					"filename": "impact/1/6/28.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1635,79 +1698,16 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 8,
-						"y": 7,
-						"w": 54,
-						"h": 38
-					},
-					"frame": {
-						"x": 63,
-						"y": 1249,
-						"w": 54,
-						"h": 38
-					}
-				},
-				{
-					"filename": "impact/1/23/156.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 10,
-						"y": 5,
-						"w": 46,
-						"h": 47
+						"x": 12,
+						"y": 4,
+						"w": 44,
+						"h": 51
 					},
 					"frame": {
 						"x": 62,
-						"y": 1289,
-						"w": 46,
-						"h": 47
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_17.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 24,
-						"y": 31,
-						"w": 48,
-						"h": 44
-					},
-					"frame": {
-						"x": 62,
-						"y": 1338,
-						"w": 48,
-						"h": 44
-					}
-				},
-				{
-					"filename": "blood-splatter/0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 125,
-						"h": 111
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 42,
-						"w": 50,
-						"h": 42
-					},
-					"frame": {
-						"x": 62,
-						"y": 1384,
-						"w": 50,
-						"h": 42
+						"y": 1331,
+						"w": 44,
+						"h": 51
 					}
 				},
 				{
@@ -1725,14 +1725,14 @@
 						"h": 30
 					},
 					"frame": {
-						"x": 61,
-						"y": 1428,
+						"x": 131,
+						"y": 599,
 						"w": 58,
 						"h": 30
 					}
 				},
 				{
-					"filename": "impact/1/8/43.png",
+					"filename": "impact/1/23/159.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1740,16 +1740,142 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 12,
-						"y": 3,
-						"w": 51,
-						"h": 39
+						"x": 2,
+						"y": 5,
+						"w": 56,
+						"h": 26
+					},
+					"frame": {
+						"x": 191,
+						"y": 602,
+						"w": 56,
+						"h": 26
+					}
+				},
+				{
+					"filename": "impact/1/15/93.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 23,
+						"w": 60,
+						"h": 17
+					},
+					"frame": {
+						"x": 125,
+						"y": 631,
+						"w": 60,
+						"h": 17
+					}
+				},
+				{
+					"filename": "impact/1/16/100.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 10,
+						"w": 48,
+						"h": 46
+					},
+					"frame": {
+						"x": 127,
+						"y": 650,
+						"w": 48,
+						"h": 46
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 31,
+						"w": 48,
+						"h": 44
+					},
+					"frame": {
+						"x": 122,
+						"y": 698,
+						"w": 48,
+						"h": 44
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 30,
+						"w": 44,
+						"h": 42
+					},
+					"frame": {
+						"x": 62,
+						"y": 1384,
+						"w": 44,
+						"h": 42
+					}
+				},
+				{
+					"filename": "impact/1/9/49.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 19,
+						"w": 52,
+						"h": 29
+					},
+					"frame": {
+						"x": 61,
+						"y": 1428,
+						"w": 52,
+						"h": 29
+					}
+				},
+				{
+					"filename": "blood-splatter/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 125,
+						"h": 111
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 42,
+						"w": 50,
+						"h": 42
 					},
 					"frame": {
 						"x": 65,
-						"y": 1460,
-						"w": 51,
-						"h": 39
+						"y": 1459,
+						"w": 50,
+						"h": 42
 					}
 				},
 				{
@@ -1768,7 +1894,7 @@
 					},
 					"frame": {
 						"x": 65,
-						"y": 1501,
+						"y": 1503,
 						"w": 46,
 						"h": 43
 					}
@@ -1789,7 +1915,7 @@
 					},
 					"frame": {
 						"x": 65,
-						"y": 1546,
+						"y": 1548,
 						"w": 45,
 						"h": 43
 					}
@@ -1810,13 +1936,13 @@
 					},
 					"frame": {
 						"x": 65,
-						"y": 1591,
+						"y": 1593,
 						"w": 45,
 						"h": 42
 					}
 				},
 				{
-					"filename": "blood-splatter-small/1/1_15.png",
+					"filename": "blood-splatter-small/1/1_18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1824,20 +1950,20 @@
 						"h": 100
 					},
 					"spriteSourceSize": {
-						"x": 26,
-						"y": 30,
-						"w": 44,
-						"h": 42
+						"x": 32,
+						"y": 31,
+						"w": 41,
+						"h": 45
 					},
 					"frame": {
 						"x": 65,
-						"y": 1635,
-						"w": 44,
-						"h": 42
+						"y": 1637,
+						"w": 41,
+						"h": 45
 					}
 				},
 				{
-					"filename": "impact/1/15/95.png",
+					"filename": "impact/1/15/90.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1845,16 +1971,79 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 1,
-						"y": 24,
-						"w": 62,
-						"h": 16
+						"x": 11,
+						"y": 23,
+						"w": 42,
+						"h": 15
 					},
 					"frame": {
-						"x": 185,
-						"y": 600,
-						"w": 62,
-						"h": 16
+						"x": 65,
+						"y": 1684,
+						"w": 42,
+						"h": 15
+					}
+				},
+				{
+					"filename": "impact/1/5/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 17,
+						"w": 33,
+						"h": 27
+					},
+					"frame": {
+						"x": 219,
+						"y": 137,
+						"w": 33,
+						"h": 27
+					}
+				},
+				{
+					"filename": "impact/1/12/74.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 41,
+						"y": 13,
+						"w": 16,
+						"h": 51
+					},
+					"frame": {
+						"x": 223,
+						"y": 166,
+						"w": 16,
+						"h": 51
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 33,
+						"y": 32,
+						"w": 29,
+						"h": 29
+					},
+					"frame": {
+						"x": 225,
+						"y": 219,
+						"w": 29,
+						"h": 29
 					}
 				},
 				{
@@ -1873,13 +2062,13 @@
 					},
 					"frame": {
 						"x": 225,
-						"y": 145,
+						"y": 250,
 						"w": 26,
 						"h": 37
 					}
 				},
 				{
-					"filename": "impact/1/10/54.png",
+					"filename": "impact/1/6/27.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1887,41 +2076,41 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 21,
-						"y": 20,
-						"w": 28,
-						"h": 24
+						"x": 24,
+						"y": 23,
+						"w": 22,
+						"h": 20
 					},
 					"frame": {
-						"x": 223,
-						"y": 184,
-						"w": 28,
-						"h": 24
+						"x": 124,
+						"y": 294,
+						"w": 22,
+						"h": 20
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_12.png",
+					"filename": "impact/1/16/103.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 100,
-						"h": 100
+						"w": 64,
+						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 35,
-						"y": 36,
-						"w": 26,
-						"h": 28
+						"x": 3,
+						"y": 7,
+						"w": 27,
+						"h": 25
 					},
 					"frame": {
 						"x": 225,
-						"y": 210,
-						"w": 26,
-						"h": 28
+						"y": 289,
+						"w": 27,
+						"h": 25
 					}
 				},
 				{
-					"filename": "blood-splatter-small/1/1_3.png",
+					"filename": "blood-splatter-small/2/1_11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1930,288 +2119,15 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
-						"y": 33,
-						"w": 23,
-						"h": 24
+						"y": 37,
+						"w": 22,
+						"h": 25
 					},
 					"frame": {
-						"x": 225,
-						"y": 240,
-						"w": 23,
-						"h": 24
-					}
-				},
-				{
-					"filename": "impact/1/8/44.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 13,
-						"y": 3,
-						"w": 51,
-						"h": 37
-					},
-					"frame": {
-						"x": 132,
-						"y": 604,
-						"w": 51,
-						"h": 37
-					}
-				},
-				{
-					"filename": "impact/1/24/167.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 0,
-						"w": 62,
-						"h": 26
-					},
-					"frame": {
-						"x": 185,
-						"y": 618,
-						"w": 62,
-						"h": 26
-					}
-				},
-				{
-					"filename": "impact/1/22/151.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 53,
-						"y": 15,
-						"w": 11,
-						"h": 29
-					},
-					"frame": {
-						"x": 119,
-						"y": 606,
-						"w": 11,
-						"h": 29
-					}
-				},
-				{
-					"filename": "impact/1/15/89.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 20,
-						"y": 25,
-						"w": 24,
-						"h": 10
-					},
-					"frame": {
-						"x": 65,
-						"y": 1679,
-						"w": 24,
-						"h": 10
-					}
-				},
-				{
-					"filename": "impact/1/12/74.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 41,
-						"y": 13,
-						"w": 16,
-						"h": 51
-					},
-					"frame": {
-						"x": 113,
-						"y": 706,
-						"w": 16,
-						"h": 51
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_19.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 39,
-						"y": 32,
-						"w": 34,
-						"h": 46
-					},
-					"frame": {
-						"x": 115,
-						"y": 759,
-						"w": 34,
-						"h": 46
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_18.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 32,
-						"y": 31,
-						"w": 41,
-						"h": 45
-					},
-					"frame": {
-						"x": 117,
-						"y": 807,
-						"w": 41,
-						"h": 45
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_13.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 27,
-						"y": 30,
-						"w": 42,
-						"h": 43
-					},
-					"frame": {
-						"x": 117,
-						"y": 854,
-						"w": 42,
-						"h": 43
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_12.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 28,
-						"y": 30,
-						"w": 40,
-						"h": 41
-					},
-					"frame": {
-						"x": 132,
-						"y": 899,
-						"w": 40,
-						"h": 41
-					}
-				},
-				{
-					"filename": "impact/1/24/168.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 0,
-						"w": 62,
-						"h": 23
-					},
-					"frame": {
-						"x": 119,
-						"y": 643,
-						"w": 62,
-						"h": 23
-					}
-				},
-				{
-					"filename": "impact/1/10/55.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 11,
-						"y": 15,
-						"w": 47,
-						"h": 36
-					},
-					"frame": {
-						"x": 118,
-						"y": 668,
-						"w": 47,
-						"h": 36
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_14.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 27,
-						"y": 30,
-						"w": 43,
-						"h": 41
-					},
-					"frame": {
-						"x": 131,
-						"y": 706,
-						"w": 43,
-						"h": 41
-					}
-				},
-				{
-					"filename": "impact/1/15/93.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 2,
-						"y": 23,
-						"w": 60,
-						"h": 17
-					},
-					"frame": {
-						"x": 183,
-						"y": 646,
-						"w": 60,
-						"h": 17
+						"x": 232,
+						"y": 316,
+						"w": 22,
+						"h": 25
 					}
 				},
 				{
@@ -2229,14 +2145,98 @@
 						"h": 13
 					},
 					"frame": {
-						"x": 183,
-						"y": 665,
+						"x": 191,
+						"y": 630,
 						"w": 61,
 						"h": 13
 					}
 				},
 				{
-					"filename": "impact/1/21/139.png",
+					"filename": "impact/1/15/95.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 24,
+						"w": 62,
+						"h": 16
+					},
+					"frame": {
+						"x": 187,
+						"y": 645,
+						"w": 62,
+						"h": 16
+					}
+				},
+				{
+					"filename": "impact/1/8/42.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 54,
+						"h": 38
+					},
+					"frame": {
+						"x": 177,
+						"y": 663,
+						"w": 54,
+						"h": 38
+					}
+				},
+				{
+					"filename": "impact/1/8/43.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 3,
+						"w": 51,
+						"h": 39
+					},
+					"frame": {
+						"x": 172,
+						"y": 703,
+						"w": 51,
+						"h": 39
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 36,
+						"w": 21,
+						"h": 25
+					},
+					"frame": {
+						"x": 233,
+						"y": 663,
+						"w": 21,
+						"h": 25
+					}
+				},
+				{
+					"filename": "impact/1/15/92.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2245,15 +2245,141 @@
 					},
 					"spriteSourceSize": {
 						"x": 2,
-						"y": 23,
-						"w": 58,
-						"h": 17
+						"y": 22,
+						"w": 60,
+						"h": 18
 					},
 					"frame": {
-						"x": 167,
-						"y": 680,
-						"w": 58,
-						"h": 17
+						"x": 122,
+						"y": 744,
+						"w": 60,
+						"h": 18
+					}
+				},
+				{
+					"filename": "impact/1/8/45.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 2,
+						"w": 51,
+						"h": 38
+					},
+					"frame": {
+						"x": 121,
+						"y": 764,
+						"w": 51,
+						"h": 38
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 30,
+						"w": 42,
+						"h": 43
+					},
+					"frame": {
+						"x": 132,
+						"y": 804,
+						"w": 42,
+						"h": 43
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 30,
+						"w": 43,
+						"h": 41
+					},
+					"frame": {
+						"x": 133,
+						"y": 849,
+						"w": 43,
+						"h": 41
+					}
+				},
+				{
+					"filename": "impact/1/7/35.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 12,
+						"w": 44,
+						"h": 41
+					},
+					"frame": {
+						"x": 133,
+						"y": 892,
+						"w": 44,
+						"h": 41
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 36,
+						"w": 21,
+						"h": 24
+					},
+					"frame": {
+						"x": 233,
+						"y": 690,
+						"w": 21,
+						"h": 24
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 30,
+						"w": 40,
+						"h": 41
+					},
+					"frame": {
+						"x": 184,
+						"y": 744,
+						"w": 40,
+						"h": 41
 					}
 				},
 				{
@@ -2272,471 +2398,9 @@
 					},
 					"frame": {
 						"x": 176,
-						"y": 699,
+						"y": 787,
 						"w": 47,
 						"h": 41
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_17.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 40,
-						"w": 24,
-						"h": 28
-					},
-					"frame": {
-						"x": 227,
-						"y": 680,
-						"w": 24,
-						"h": 28
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_19.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 42,
-						"w": 26,
-						"h": 28
-					},
-					"frame": {
-						"x": 225,
-						"y": 710,
-						"w": 26,
-						"h": 28
-					}
-				},
-				{
-					"filename": "impact/1/18/119.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 45,
-						"w": 30,
-						"h": 8
-					},
-					"frame": {
-						"x": 131,
-						"y": 749,
-						"w": 30,
-						"h": 8
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_20.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 43,
-						"w": 26,
-						"h": 28
-					},
-					"frame": {
-						"x": 225,
-						"y": 740,
-						"w": 26,
-						"h": 28
-					}
-				},
-				{
-					"filename": "impact/1/1/0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 8,
-						"y": 18,
-						"w": 47,
-						"h": 38
-					},
-					"frame": {
-						"x": 176,
-						"y": 742,
-						"w": 47,
-						"h": 38
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_21.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 44,
-						"w": 26,
-						"h": 28
-					},
-					"frame": {
-						"x": 225,
-						"y": 770,
-						"w": 26,
-						"h": 28
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_14.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 38,
-						"w": 23,
-						"h": 27
-					},
-					"frame": {
-						"x": 151,
-						"y": 759,
-						"w": 23,
-						"h": 27
-					}
-				},
-				{
-					"filename": "impact/1/4/18.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 17,
-						"y": 18,
-						"w": 47,
-						"h": 28
-					},
-					"frame": {
-						"x": 176,
-						"y": 782,
-						"w": 47,
-						"h": 28
-					}
-				},
-				{
-					"filename": "impact/1/8/45.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 13,
-						"y": 2,
-						"w": 51,
-						"h": 38
-					},
-					"frame": {
-						"x": 160,
-						"y": 812,
-						"w": 51,
-						"h": 38
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_11.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 29,
-						"y": 30,
-						"w": 38,
-						"h": 39
-					},
-					"frame": {
-						"x": 213,
-						"y": 812,
-						"w": 38,
-						"h": 39
-					}
-				},
-				{
-					"filename": "impact/1/8/46.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 14,
-						"y": 1,
-						"w": 50,
-						"h": 38
-					},
-					"frame": {
-						"x": 161,
-						"y": 852,
-						"w": 50,
-						"h": 38
-					}
-				},
-				{
-					"filename": "impact/1/22/149.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 26,
-						"y": 15,
-						"w": 38,
-						"h": 36
-					},
-					"frame": {
-						"x": 213,
-						"y": 853,
-						"w": 38,
-						"h": 36
-					}
-				},
-				{
-					"filename": "impact/1/7/35.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 12,
-						"w": 44,
-						"h": 41
-					},
-					"frame": {
-						"x": 174,
-						"y": 892,
-						"w": 44,
-						"h": 41
-					}
-				},
-				{
-					"filename": "impact/1/3/11.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 19,
-						"y": 25,
-						"w": 23,
-						"h": 17
-					},
-					"frame": {
-						"x": 151,
-						"y": 788,
-						"w": 23,
-						"h": 17
-					}
-				},
-				{
-					"filename": "impact/1/22/150.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 15,
-						"w": 27,
-						"h": 36
-					},
-					"frame": {
-						"x": 220,
-						"y": 891,
-						"w": 27,
-						"h": 36
-					}
-				},
-				{
-					"filename": "impact/1/2/5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 2,
-						"y": 20,
-						"w": 54,
-						"h": 26
-					},
-					"frame": {
-						"x": 132,
-						"y": 942,
-						"w": 54,
-						"h": 26
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_8.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 31,
-						"y": 31,
-						"w": 33,
-						"h": 33
-					},
-					"frame": {
-						"x": 188,
-						"y": 935,
-						"w": 33,
-						"h": 33
-					}
-				},
-				{
-					"filename": "impact/1/2/4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 22,
-						"w": 28,
-						"h": 22
-					},
-					"frame": {
-						"x": 223,
-						"y": 929,
-						"w": 28,
-						"h": 22
-					}
-				},
-				{
-					"filename": "impact/1/15/96.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 25,
-						"w": 62,
-						"h": 4
-					},
-					"frame": {
-						"x": 131,
-						"y": 970,
-						"w": 62,
-						"h": 4
-					}
-				},
-				{
-					"filename": "impact/1/23/159.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 2,
-						"y": 5,
-						"w": 56,
-						"h": 26
-					},
-					"frame": {
-						"x": 127,
-						"y": 976,
-						"w": 56,
-						"h": 26
-					}
-				},
-				{
-					"filename": "impact/1/9/49.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 19,
-						"w": 52,
-						"h": 29
-					},
-					"frame": {
-						"x": 127,
-						"y": 1004,
-						"w": 52,
-						"h": 29
-					}
-				},
-				{
-					"filename": "impact/1/21/140.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 18,
-						"y": 21,
-						"w": 46,
-						"h": 21
-					},
-					"frame": {
-						"x": 122,
-						"y": 1035,
-						"w": 46,
-						"h": 21
 					}
 				},
 				{
@@ -2754,14 +2418,14 @@
 						"h": 41
 					},
 					"frame": {
-						"x": 125,
-						"y": 1058,
+						"x": 178,
+						"y": 830,
 						"w": 45,
 						"h": 41
 					}
 				},
 				{
-					"filename": "impact/1/22/147.png",
+					"filename": "impact/1/1/0.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2769,20 +2433,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 18,
-						"y": 17,
-						"w": 43,
-						"h": 31
+						"x": 8,
+						"y": 18,
+						"w": 47,
+						"h": 38
 					},
 					"frame": {
-						"x": 123,
-						"y": 1101,
-						"w": 43,
-						"h": 31
+						"x": 179,
+						"y": 873,
+						"w": 47,
+						"h": 38
 					}
 				},
 				{
-					"filename": "impact/1/18/113.png",
+					"filename": "impact/1/4/18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2790,16 +2454,247 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 10,
-						"y": 10,
-						"w": 42,
+						"x": 17,
+						"y": 18,
+						"w": 47,
+						"h": 28
+					},
+					"frame": {
+						"x": 179,
+						"y": 913,
+						"w": 47,
+						"h": 28
+					}
+				},
+				{
+					"filename": "impact/1/18/118.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 19,
+						"w": 43,
+						"h": 34
+					},
+					"frame": {
+						"x": 133,
+						"y": 935,
+						"w": 43,
+						"h": 34
+					}
+				},
+				{
+					"filename": "impact/1/8/46.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 1,
+						"w": 50,
 						"h": 38
 					},
 					"frame": {
-						"x": 126,
-						"y": 1134,
-						"w": 42,
+						"x": 128,
+						"y": 971,
+						"w": 50,
 						"h": 38
+					}
+				},
+				{
+					"filename": "impact/1/14/82.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 31,
+						"w": 46,
+						"h": 26
+					},
+					"frame": {
+						"x": 178,
+						"y": 943,
+						"w": 46,
+						"h": 26
+					}
+				},
+				{
+					"filename": "impact/1/8/44.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 3,
+						"w": 51,
+						"h": 37
+					},
+					"frame": {
+						"x": 180,
+						"y": 971,
+						"w": 51,
+						"h": 37
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 39,
+						"y": 32,
+						"w": 34,
+						"h": 46
+					},
+					"frame": {
+						"x": 108,
+						"y": 1331,
+						"w": 34,
+						"h": 46
+					}
+				},
+				{
+					"filename": "impact/1/23/155.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 10,
+						"w": 41,
+						"h": 41
+					},
+					"frame": {
+						"x": 108,
+						"y": 1379,
+						"w": 41,
+						"h": 41
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 31,
+						"w": 34,
+						"h": 35
+					},
+					"frame": {
+						"x": 115,
+						"y": 1422,
+						"w": 34,
+						"h": 35
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 30,
+						"w": 38,
+						"h": 39
+					},
+					"frame": {
+						"x": 117,
+						"y": 1459,
+						"w": 38,
+						"h": 39
+					}
+				},
+				{
+					"filename": "impact/1/15/91.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 22,
+						"w": 54,
+						"h": 18
+					},
+					"frame": {
+						"x": 128,
+						"y": 1011,
+						"w": 54,
+						"h": 18
+					}
+				},
+				{
+					"filename": "impact/1/10/55.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 15,
+						"w": 47,
+						"h": 36
+					},
+					"frame": {
+						"x": 125,
+						"y": 1031,
+						"w": 47,
+						"h": 36
+					}
+				},
+				{
+					"filename": "impact/1/9/48.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 21,
+						"w": 47,
+						"h": 25
+					},
+					"frame": {
+						"x": 125,
+						"y": 1069,
+						"w": 47,
+						"h": 25
 					}
 				},
 				{
@@ -2818,13 +2713,13 @@
 					},
 					"frame": {
 						"x": 123,
-						"y": 1174,
+						"y": 1096,
 						"w": 45,
 						"h": 37
 					}
 				},
 				{
-					"filename": "impact/1/23/155.png",
+					"filename": "impact/1/18/113.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2832,37 +2727,16 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 12,
+						"x": 10,
 						"y": 10,
-						"w": 41,
-						"h": 41
+						"w": 42,
+						"h": 38
 					},
 					"frame": {
-						"x": 119,
-						"y": 1213,
-						"w": 41,
-						"h": 41
-					}
-				},
-				{
-					"filename": "impact/1/18/118.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 11,
-						"y": 19,
-						"w": 43,
-						"h": 34
-					},
-					"frame": {
-						"x": 119,
-						"y": 1256,
-						"w": 43,
-						"h": 34
+						"x": 123,
+						"y": 1135,
+						"w": 42,
+						"h": 38
 					}
 				},
 				{
@@ -2880,14 +2754,14 @@
 						"h": 28
 					},
 					"frame": {
-						"x": 110,
-						"y": 1292,
+						"x": 184,
+						"y": 1010,
 						"w": 48,
 						"h": 28
 					}
 				},
 				{
-					"filename": "impact/1/21/138.png",
+					"filename": "impact/1/21/139.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2895,16 +2769,16 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 25,
-						"w": 52,
-						"h": 14
+						"x": 2,
+						"y": 23,
+						"w": 58,
+						"h": 17
 					},
 					"frame": {
-						"x": 110,
-						"y": 1322,
-						"w": 52,
-						"h": 14
+						"x": 174,
+						"y": 1040,
+						"w": 58,
+						"h": 17
 					}
 				},
 				{
@@ -2922,115 +2796,52 @@
 						"h": 35
 					},
 					"frame": {
-						"x": 112,
-						"y": 1338,
+						"x": 174,
+						"y": 1059,
 						"w": 40,
 						"h": 35
 					}
 				},
 				{
-					"filename": "blood-splatter-small/1/1_10.png",
+					"filename": "impact/1/22/149.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 100,
-						"h": 100
+						"w": 64,
+						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 30,
-						"y": 30,
-						"w": 36,
-						"h": 38
+						"x": 26,
+						"y": 15,
+						"w": 38,
+						"h": 36
 					},
 					"frame": {
-						"x": 114,
-						"y": 1375,
-						"w": 36,
-						"h": 38
+						"x": 216,
+						"y": 1059,
+						"w": 38,
+						"h": 36
 					}
 				},
 				{
-					"filename": "blood-splatter-small/1/1_9.png",
+					"filename": "impact/1/22/147.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 100,
-						"h": 100
+						"w": 64,
+						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 31,
-						"y": 31,
-						"w": 34,
-						"h": 35
+						"x": 18,
+						"y": 17,
+						"w": 43,
+						"h": 31
 					},
 					"frame": {
-						"x": 121,
-						"y": 1415,
-						"w": 34,
-						"h": 35
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 34,
-						"y": 32,
-						"w": 27,
-						"h": 28
-					},
-					"frame": {
-						"x": 223,
-						"y": 953,
-						"w": 27,
-						"h": 28
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_10.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 35,
-						"w": 26,
-						"h": 27
-					},
-					"frame": {
-						"x": 195,
-						"y": 970,
-						"w": 26,
-						"h": 27
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_13.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 37,
-						"w": 27,
-						"h": 27
-					},
-					"frame": {
-						"x": 223,
-						"y": 983,
-						"w": 27,
-						"h": 27
+						"x": 170,
+						"y": 1096,
+						"w": 43,
+						"h": 31
 					}
 				},
 				{
@@ -3048,115 +2859,10 @@
 						"h": 15
 					},
 					"frame": {
-						"x": 121,
-						"y": 1452,
+						"x": 215,
+						"y": 1097,
 						"w": 39,
 						"h": 15
-					}
-				},
-				{
-					"filename": "impact/1/19/123.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 20,
-						"y": 22,
-						"w": 40,
-						"h": 30
-					},
-					"frame": {
-						"x": 118,
-						"y": 1469,
-						"w": 40,
-						"h": 30
-					}
-				},
-				{
-					"filename": "impact/1/14/82.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 9,
-						"y": 31,
-						"w": 46,
-						"h": 26
-					},
-					"frame": {
-						"x": 113,
-						"y": 1501,
-						"w": 46,
-						"h": 26
-					}
-				},
-				{
-					"filename": "impact/1/9/48.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 21,
-						"w": 47,
-						"h": 25
-					},
-					"frame": {
-						"x": 113,
-						"y": 1529,
-						"w": 47,
-						"h": 25
-					}
-				},
-				{
-					"filename": "impact/1/4/17.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 19,
-						"w": 41,
-						"h": 25
-					},
-					"frame": {
-						"x": 112,
-						"y": 1556,
-						"w": 41,
-						"h": 25
-					}
-				},
-				{
-					"filename": "impact/1/5/22.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 20,
-						"y": 17,
-						"w": 33,
-						"h": 27
-					},
-					"frame": {
-						"x": 112,
-						"y": 1583,
-						"w": 33,
-						"h": 27
 					}
 				},
 				{
@@ -3174,14 +2880,14 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 112,
-						"y": 1612,
+						"x": 215,
+						"y": 1114,
 						"w": 38,
 						"h": 22
 					}
 				},
 				{
-					"filename": "impact/1/21/141.png",
+					"filename": "impact/1/10/54.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3189,188 +2895,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 26,
-						"y": 21,
-						"w": 38,
-						"h": 22
+						"x": 21,
+						"y": 20,
+						"w": 28,
+						"h": 24
 					},
 					"frame": {
-						"x": 111,
-						"y": 1636,
-						"w": 38,
-						"h": 22
+						"x": 226,
+						"y": 943,
+						"w": 28,
+						"h": 24
 					}
 				},
 				{
-					"filename": "impact/1/22/146.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 22,
-						"w": 52,
-						"h": 18
-					},
-					"frame": {
-						"x": 111,
-						"y": 1660,
-						"w": 52,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_6.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 33,
-						"y": 32,
-						"w": 29,
-						"h": 29
-					},
-					"frame": {
-						"x": 119,
-						"y": 1680,
-						"w": 29,
-						"h": 29
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_18.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 41,
-						"w": 19,
-						"h": 28
-					},
-					"frame": {
-						"x": 150,
-						"y": 1680,
-						"w": 19,
-						"h": 28
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_15.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 39,
-						"w": 23,
-						"h": 27
-					},
-					"frame": {
-						"x": 147,
-						"y": 1583,
-						"w": 23,
-						"h": 27
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 33,
-						"w": 25,
-						"h": 25
-					},
-					"frame": {
-						"x": 155,
-						"y": 1556,
-						"w": 25,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 34,
-						"w": 21,
-						"h": 22
-					},
-					"frame": {
-						"x": 152,
-						"y": 1612,
-						"w": 21,
-						"h": 22
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_9.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 37,
-						"w": 23,
-						"h": 22
-					},
-					"frame": {
-						"x": 151,
-						"y": 1636,
-						"w": 23,
-						"h": 22
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_16.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 40,
-						"w": 24,
-						"h": 27
-					},
-					"frame": {
-						"x": 172,
-						"y": 1583,
-						"w": 24,
-						"h": 27
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_7.png",
+					"filename": "blood-splatter-small/2/1_8.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3381,76 +2919,13 @@
 						"x": 37,
 						"y": 36,
 						"w": 21,
-						"h": 22
+						"h": 23
 					},
 					"frame": {
-						"x": 175,
-						"y": 1612,
+						"x": 233,
+						"y": 969,
 						"w": 21,
-						"h": 22
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_7.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 36,
-						"w": 20,
-						"h": 22
-					},
-					"frame": {
-						"x": 176,
-						"y": 1636,
-						"w": 20,
-						"h": 22
-					}
-				},
-				{
-					"filename": "impact/1/21/143.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 34,
-						"y": 26,
-						"w": 30,
-						"h": 18
-					},
-					"frame": {
-						"x": 165,
-						"y": 1660,
-						"w": 30,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_14.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 37,
-						"w": 27,
-						"h": 28
-					},
-					"frame": {
-						"x": 171,
-						"y": 1680,
-						"w": 27,
-						"h": 28
+						"h": 23
 					}
 				},
 				{
@@ -3468,98 +2943,14 @@
 						"h": 28
 					},
 					"frame": {
-						"x": 154,
-						"y": 1338,
+						"x": 234,
+						"y": 994,
 						"w": 20,
 						"h": 28
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_12.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 37,
-						"w": 23,
-						"h": 26
-					},
-					"frame": {
-						"x": 198,
-						"y": 999,
-						"w": 23,
-						"h": 26
-					}
-				},
-				{
-					"filename": "impact/1/3/13.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 17,
-						"y": 23,
-						"w": 15,
-						"h": 19
-					},
-					"frame": {
-						"x": 181,
-						"y": 1004,
-						"w": 15,
-						"h": 19
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_15.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 38,
-						"w": 27,
-						"h": 28
-					},
-					"frame": {
-						"x": 223,
-						"y": 1012,
-						"w": 27,
-						"h": 28
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_13.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 38,
-						"w": 23,
-						"h": 26
-					},
-					"frame": {
-						"x": 198,
-						"y": 1027,
-						"w": 23,
-						"h": 26
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_1.png",
+					"filename": "blood-splatter-small/2/1_20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3568,19 +2959,124 @@
 					},
 					"spriteSourceSize": {
 						"x": 40,
+						"y": 43,
+						"w": 20,
+						"h": 25
+					},
+					"frame": {
+						"x": 234,
+						"y": 1024,
+						"w": 20,
+						"h": 25
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
 						"y": 36,
-						"w": 15,
-						"h": 18
+						"w": 26,
+						"h": 28
 					},
 					"frame": {
-						"x": 181,
-						"y": 1025,
-						"w": 15,
-						"h": 18
+						"x": 228,
+						"y": 716,
+						"w": 26,
+						"h": 28
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_7.png",
+					"filename": "impact-debris/impact-debris4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 28,
+						"h": 27
+					},
+					"frame": {
+						"x": 226,
+						"y": 746,
+						"w": 28,
+						"h": 27
+					}
+				},
+				{
+					"filename": "impact/1/2/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 22,
+						"w": 28,
+						"h": 22
+					},
+					"frame": {
+						"x": 226,
+						"y": 775,
+						"w": 28,
+						"h": 22
+					}
+				},
+				{
+					"filename": "impact/1/22/150.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 15,
+						"w": 27,
+						"h": 36
+					},
+					"frame": {
+						"x": 225,
+						"y": 799,
+						"w": 27,
+						"h": 36
+					}
+				},
+				{
+					"filename": "impact/1/17/106.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 15,
+						"w": 27,
+						"h": 33
+					},
+					"frame": {
+						"x": 225,
+						"y": 837,
+						"w": 27,
+						"h": 33
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3589,19 +3085,19 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
-						"y": 34,
-						"w": 24,
-						"h": 26
+						"y": 42,
+						"w": 26,
+						"h": 28
 					},
 					"frame": {
-						"x": 172,
-						"y": 1045,
-						"w": 24,
-						"h": 26
+						"x": 228,
+						"y": 872,
+						"w": 26,
+						"h": 28
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_8.png",
+					"filename": "blood-splatter-small/5/1_20.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3610,15 +3106,330 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
+						"y": 43,
+						"w": 26,
+						"h": 28
+					},
+					"frame": {
+						"x": 228,
+						"y": 902,
+						"w": 26,
+						"h": 28
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 36,
+						"w": 21,
+						"h": 21
+					},
+					"frame": {
+						"x": 232,
+						"y": 343,
+						"w": 21,
+						"h": 21
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 39,
+						"y": 36,
+						"w": 17,
+						"h": 19
+					},
+					"frame": {
+						"x": 237,
+						"y": 366,
+						"w": 17,
+						"h": 19
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 39,
+						"y": 36,
+						"w": 17,
+						"h": 18
+					},
+					"frame": {
+						"x": 237,
+						"y": 387,
+						"w": 17,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 39,
+						"y": 36,
+						"w": 17,
+						"h": 18
+					},
+					"frame": {
+						"x": 237,
+						"y": 407,
+						"w": 17,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 39,
+						"y": 36,
+						"w": 17,
+						"h": 18
+					},
+					"frame": {
+						"x": 237,
+						"y": 427,
+						"w": 17,
+						"h": 18
+					}
+				},
+				{
+					"filename": "impact/1/17/105.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 24,
+						"w": 13,
+						"h": 17
+					},
+					"frame": {
+						"x": 241,
+						"y": 166,
+						"w": 13,
+						"h": 17
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 38,
+						"w": 14,
+						"h": 15
+					},
+					"frame": {
+						"x": 237,
+						"y": 447,
+						"w": 14,
+						"h": 15
+					}
+				},
+				{
+					"filename": "impact/1/4/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 19,
+						"w": 41,
+						"h": 25
+					},
+					"frame": {
+						"x": 170,
+						"y": 1129,
+						"w": 41,
+						"h": 25
+					}
+				},
+				{
+					"filename": "impact/1/21/140.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 21,
+						"w": 46,
+						"h": 21
+					},
+					"frame": {
+						"x": 167,
+						"y": 1156,
+						"w": 46,
+						"h": 21
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 30,
+						"w": 36,
+						"h": 38
+					},
+					"frame": {
+						"x": 215,
+						"y": 1138,
+						"w": 36,
+						"h": 38
+					}
+				},
+				{
+					"filename": "impact/1/15/96.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 25,
+						"w": 62,
+						"h": 4
+					},
+					"frame": {
+						"x": 151,
+						"y": 1179,
+						"w": 62,
+						"h": 4
+					}
+				},
+				{
+					"filename": "impact/1/21/138.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 25,
+						"w": 52,
+						"h": 14
+					},
+					"frame": {
+						"x": 151,
+						"y": 1185,
+						"w": 52,
+						"h": 14
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
 						"y": 35,
-						"w": 25,
-						"h": 26
+						"w": 26,
+						"h": 27
 					},
 					"frame": {
-						"x": 172,
-						"y": 1073,
-						"w": 25,
-						"h": 26
+						"x": 123,
+						"y": 1175,
+						"w": 26,
+						"h": 27
+					}
+				},
+				{
+					"filename": "impact/1/16/99.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 21,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 119,
+						"y": 1204,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "impact/1/19/123.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 22,
+						"w": 40,
+						"h": 30
+					},
+					"frame": {
+						"x": 153,
+						"y": 1201,
+						"w": 40,
+						"h": 30
 					}
 				},
 				{
@@ -3636,8 +3447,8 @@
 						"h": 28
 					},
 					"frame": {
-						"x": 168,
-						"y": 1101,
+						"x": 119,
+						"y": 1238,
 						"w": 30,
 						"h": 28
 					}
@@ -3657,9 +3468,219 @@
 						"h": 28
 					},
 					"frame": {
-						"x": 170,
-						"y": 1131,
+						"x": 119,
+						"y": 1268,
 						"w": 30,
+						"h": 28
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 34,
+						"y": 32,
+						"w": 27,
+						"h": 28
+					},
+					"frame": {
+						"x": 118,
+						"y": 1298,
+						"w": 27,
+						"h": 28
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 41,
+						"y": 38,
+						"w": 13,
+						"h": 14
+					},
+					"frame": {
+						"x": 241,
+						"y": 185,
+						"w": 13,
+						"h": 14
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 41,
+						"y": 38,
+						"w": 13,
+						"h": 14
+					},
+					"frame": {
+						"x": 241,
+						"y": 201,
+						"w": 13,
+						"h": 14
+					}
+				},
+				{
+					"filename": "impact/1/22/146.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 22,
+						"w": 52,
+						"h": 18
+					},
+					"frame": {
+						"x": 153,
+						"y": 1233,
+						"w": 52,
+						"h": 18
+					}
+				},
+				{
+					"filename": "impact/1/21/141.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 21,
+						"w": 38,
+						"h": 22
+					},
+					"frame": {
+						"x": 151,
+						"y": 1253,
+						"w": 38,
+						"h": 22
+					}
+				},
+				{
+					"filename": "impact/1/21/142.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 21,
+						"w": 33,
+						"h": 23
+					},
+					"frame": {
+						"x": 151,
+						"y": 1277,
+						"w": 33,
+						"h": 23
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 37,
+						"w": 27,
+						"h": 27
+					},
+					"frame": {
+						"x": 147,
+						"y": 1302,
+						"w": 27,
+						"h": 27
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 37,
+						"w": 27,
+						"h": 28
+					},
+					"frame": {
+						"x": 144,
+						"y": 1331,
+						"w": 27,
+						"h": 28
+					}
+				},
+				{
+					"filename": "impact/1/9/47.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 25,
+						"w": 34,
+						"h": 14
+					},
+					"frame": {
+						"x": 144,
+						"y": 1361,
+						"w": 34,
+						"h": 14
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 38,
+						"w": 27,
+						"h": 28
+					},
+					"frame": {
+						"x": 151,
+						"y": 1377,
+						"w": 27,
 						"h": 28
 					}
 				},
@@ -3678,14 +3699,35 @@
 						"h": 28
 					},
 					"frame": {
-						"x": 170,
-						"y": 1161,
+						"x": 151,
+						"y": 1407,
 						"w": 27,
 						"h": 28
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_17.png",
+					"filename": "blood-splatter-small/3/1_5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 36,
+						"w": 20,
+						"h": 20
+					},
+					"frame": {
+						"x": 151,
+						"y": 1437,
+						"w": 20,
+						"h": 20
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_17.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3695,18 +3737,18 @@
 					"spriteSourceSize": {
 						"x": 35,
 						"y": 40,
-						"w": 27,
+						"w": 24,
 						"h": 28
 					},
 					"frame": {
-						"x": 170,
-						"y": 1191,
-						"w": 27,
+						"x": 157,
+						"y": 1459,
+						"w": 24,
 						"h": 28
 					}
 				},
 				{
-					"filename": "impact/1/13/76.png",
+					"filename": "impact/1/22/151.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3714,62 +3756,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 17,
-						"y": 25,
-						"w": 35,
-						"h": 24
+						"x": 53,
+						"y": 15,
+						"w": 11,
+						"h": 29
 					},
 					"frame": {
-						"x": 162,
-						"y": 1221,
-						"w": 35,
-						"h": 24
+						"x": 195,
+						"y": 1201,
+						"w": 11,
+						"h": 29
 					}
 				},
 				{
-					"filename": "impact/1/21/142.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 31,
-						"y": 21,
-						"w": 33,
-						"h": 23
-					},
-					"frame": {
-						"x": 164,
-						"y": 1247,
-						"w": 33,
-						"h": 23
-					}
-				},
-				{
-					"filename": "impact/1/15/90.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 11,
-						"y": 23,
-						"w": 42,
-						"h": 15
-					},
-					"frame": {
-						"x": 164,
-						"y": 1272,
-						"w": 42,
-						"h": 15
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_18.png",
+					"filename": "blood-splatter-small/1/1_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3777,37 +3777,16 @@
 						"h": 100
 					},
 					"spriteSourceSize": {
-						"x": 35,
-						"y": 41,
-						"w": 27,
-						"h": 28
+						"x": 37,
+						"y": 34,
+						"w": 21,
+						"h": 22
 					},
 					"frame": {
-						"x": 223,
-						"y": 1042,
-						"w": 27,
-						"h": 28
-					}
-				},
-				{
-					"filename": "impact/1/11/61.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 18,
-						"y": 27,
-						"w": 23,
-						"h": 15
-					},
-					"frame": {
-						"x": 198,
-						"y": 1055,
-						"w": 23,
-						"h": 15
+						"x": 191,
+						"y": 1253,
+						"w": 21,
+						"h": 22
 					}
 				},
 				{
@@ -3825,14 +3804,119 @@
 						"h": 27
 					},
 					"frame": {
-						"x": 199,
-						"y": 1072,
+						"x": 186,
+						"y": 1277,
 						"w": 26,
 						"h": 27
 					}
 				},
 				{
-					"filename": "blood-splatter-small/3/1_15.png",
+					"filename": "blood-splatter-small/5/1_17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 40,
+						"w": 27,
+						"h": 28
+					},
+					"frame": {
+						"x": 176,
+						"y": 1306,
+						"w": 27,
+						"h": 28
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 45,
+						"w": 25,
+						"h": 23
+					},
+					"frame": {
+						"x": 173,
+						"y": 1336,
+						"w": 25,
+						"h": 23
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 41,
+						"w": 19,
+						"h": 28
+					},
+					"frame": {
+						"x": 180,
+						"y": 1361,
+						"w": 19,
+						"h": 28
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 41,
+						"w": 27,
+						"h": 28
+					},
+					"frame": {
+						"x": 180,
+						"y": 1391,
+						"w": 27,
+						"h": 28
+					}
+				},
+				{
+					"filename": "impact/1/16/104.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 27,
+						"h": 25
+					},
+					"frame": {
+						"x": 180,
+						"y": 1421,
+						"w": 27,
+						"h": 25
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3841,15 +3925,15 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
-						"y": 40,
-						"w": 24,
-						"h": 25
+						"y": 44,
+						"w": 26,
+						"h": 28
 					},
 					"frame": {
-						"x": 227,
-						"y": 1072,
-						"w": 24,
-						"h": 25
+						"x": 183,
+						"y": 1448,
+						"w": 26,
+						"h": 28
 					}
 				},
 				{
@@ -3867,14 +3951,35 @@
 						"h": 28
 					},
 					"frame": {
-						"x": 200,
-						"y": 1101,
+						"x": 205,
+						"y": 1306,
 						"w": 26,
 						"h": 28
 					}
 				},
 				{
-					"filename": "blood-splatter-small/3/1_14.png",
+					"filename": "impact/1/21/143.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 34,
+						"y": 26,
+						"w": 30,
+						"h": 18
+					},
+					"frame": {
+						"x": 200,
+						"y": 1336,
+						"w": 30,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3883,19 +3988,313 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
-						"y": 39,
-						"w": 23,
-						"h": 25
+						"y": 47,
+						"w": 26,
+						"h": 27
 					},
 					"frame": {
-						"x": 228,
-						"y": 1099,
-						"w": 23,
-						"h": 25
+						"x": 201,
+						"y": 1356,
+						"w": 26,
+						"h": 27
 					}
 				},
 				{
-					"filename": "blood-splatter-small/3/1_12.png",
+					"filename": "blood-splatter-small/5/1_8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 35,
+						"w": 25,
+						"h": 26
+					},
+					"frame": {
+						"x": 229,
+						"y": 1356,
+						"w": 25,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 35,
+						"w": 25,
+						"h": 26
+					},
+					"frame": {
+						"x": 229,
+						"y": 1384,
+						"w": 25,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 36,
+						"w": 18,
+						"h": 20
+					},
+					"frame": {
+						"x": 209,
+						"y": 1385,
+						"w": 18,
+						"h": 20
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 36,
+						"w": 18,
+						"h": 19
+					},
+					"frame": {
+						"x": 209,
+						"y": 1407,
+						"w": 18,
+						"h": 19
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 51,
+						"w": 25,
+						"h": 26
+					},
+					"frame": {
+						"x": 229,
+						"y": 1412,
+						"w": 25,
+						"h": 26
+					}
+				},
+				{
+					"filename": "impact/1/16/98.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 33,
+						"y": 27,
+						"w": 18,
+						"h": 18
+					},
+					"frame": {
+						"x": 209,
+						"y": 1428,
+						"w": 18,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 52,
+						"w": 25,
+						"h": 26
+					},
+					"frame": {
+						"x": 229,
+						"y": 1440,
+						"w": 25,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 38,
+						"w": 16,
+						"h": 19
+					},
+					"frame": {
+						"x": 211,
+						"y": 1448,
+						"w": 16,
+						"h": 19
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_28.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 54,
+						"w": 25,
+						"h": 26
+					},
+					"frame": {
+						"x": 229,
+						"y": 1468,
+						"w": 25,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 39,
+						"w": 16,
+						"h": 19
+					},
+					"frame": {
+						"x": 211,
+						"y": 1469,
+						"w": 16,
+						"h": 19
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 48,
+						"w": 26,
+						"h": 27
+					},
+					"frame": {
+						"x": 183,
+						"y": 1478,
+						"w": 26,
+						"h": 27
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 40,
+						"w": 24,
+						"h": 27
+					},
+					"frame": {
+						"x": 157,
+						"y": 1489,
+						"w": 24,
+						"h": 27
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 36,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 233,
+						"y": 1178,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 36,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 233,
+						"y": 1202,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3906,13 +4305,517 @@
 						"x": 36,
 						"y": 38,
 						"w": 23,
+						"h": 27
+					},
+					"frame": {
+						"x": 208,
+						"y": 1185,
+						"w": 23,
+						"h": 27
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 33,
+						"w": 23,
 						"h": 24
 					},
 					"frame": {
-						"x": 228,
-						"y": 1126,
+						"x": 208,
+						"y": 1214,
 						"w": 23,
 						"h": 24
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 34,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 233,
+						"y": 1226,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "impact/1/24/161.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 49,
+						"w": 24,
+						"h": 11
+					},
+					"frame": {
+						"x": 207,
+						"y": 1240,
+						"w": 24,
+						"h": 11
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 34,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 233,
+						"y": 1250,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 43,
+						"y": 48,
+						"w": 17,
+						"h": 18
+					},
+					"frame": {
+						"x": 214,
+						"y": 1253,
+						"w": 17,
+						"h": 18
+					}
+				},
+				{
+					"filename": "impact/1/3/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 24,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 232,
+						"y": 1336,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 38,
+						"w": 16,
+						"h": 18
+					},
+					"frame": {
+						"x": 211,
+						"y": 1490,
+						"w": 16,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 33,
+						"w": 25,
+						"h": 25
+					},
+					"frame": {
+						"x": 229,
+						"y": 1496,
+						"w": 25,
+						"h": 25
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 49,
+						"w": 26,
+						"h": 27
+					},
+					"frame": {
+						"x": 183,
+						"y": 1507,
+						"w": 26,
+						"h": 27
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 38,
+						"w": 16,
+						"h": 18
+					},
+					"frame": {
+						"x": 211,
+						"y": 1510,
+						"w": 16,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 41,
+						"w": 25,
+						"h": 25
+					},
+					"frame": {
+						"x": 229,
+						"y": 1523,
+						"w": 25,
+						"h": 25
+					}
+				},
+				{
+					"filename": "impact/1/20/130.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 16,
+						"h": 16
+					},
+					"frame": {
+						"x": 211,
+						"y": 1530,
+						"w": 16,
+						"h": 16
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 39,
+						"y": 36,
+						"w": 17,
+						"h": 17
+					},
+					"frame": {
+						"x": 214,
+						"y": 1273,
+						"w": 17,
+						"h": 17
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 41,
+						"y": 39,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 214,
+						"y": 1292,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 36,
+						"w": 20,
+						"h": 22
+					},
+					"frame": {
+						"x": 233,
+						"y": 1274,
+						"w": 20,
+						"h": 22
+					}
+				},
+				{
+					"filename": "impact/1/4/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 26,
+						"w": 12,
+						"h": 9
+					},
+					"frame": {
+						"x": 228,
+						"y": 932,
+						"w": 12,
+						"h": 9
+					}
+				},
+				{
+					"filename": "impact/1/16/97.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 31,
+						"w": 11,
+						"h": 9
+					},
+					"frame": {
+						"x": 242,
+						"y": 932,
+						"w": 11,
+						"h": 9
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 36,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 233,
+						"y": 1298,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 41,
+						"y": 38,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 233,
+						"y": 1321,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 39,
+						"w": 23,
+						"h": 27
+					},
+					"frame": {
+						"x": 108,
+						"y": 1637,
+						"w": 23,
+						"h": 27
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 46,
+						"w": 22,
+						"h": 23
+					},
+					"frame": {
+						"x": 133,
+						"y": 1500,
+						"w": 22,
+						"h": 23
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 40,
+						"w": 24,
+						"h": 25
+					},
+					"frame": {
+						"x": 157,
+						"y": 1518,
+						"w": 24,
+						"h": 25
+					}
+				},
+				{
+					"filename": "impact/1/8/40.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 32,
+						"w": 26,
+						"h": 26
+					},
+					"frame": {
+						"x": 183,
+						"y": 1536,
+						"w": 26,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 34,
+						"w": 22,
+						"h": 23
+					},
+					"frame": {
+						"x": 133,
+						"y": 1525,
+						"w": 22,
+						"h": 23
 					}
 				},
 				{
@@ -3930,8 +4833,323 @@
 						"h": 25
 					},
 					"frame": {
-						"x": 202,
-						"y": 1131,
+						"x": 157,
+						"y": 1545,
+						"w": 24,
+						"h": 25
+					}
+				},
+				{
+					"filename": "impact/1/23/154.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 18,
+						"w": 22,
+						"h": 24
+					},
+					"frame": {
+						"x": 133,
+						"y": 1550,
+						"w": 22,
+						"h": 24
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 36,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 112,
+						"y": 1548,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "blood-splatter-small/1/1_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 35,
+						"w": 19,
+						"h": 20
+					},
+					"frame": {
+						"x": 112,
+						"y": 1571,
+						"w": 19,
+						"h": 20
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 37,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 112,
+						"y": 1593,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "impact/1/13/75.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 34,
+						"w": 20,
+						"h": 14
+					},
+					"frame": {
+						"x": 112,
+						"y": 1621,
+						"w": 20,
+						"h": 14
+					}
+				},
+				{
+					"filename": "impact/1/11/61.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 27,
+						"w": 23,
+						"h": 15
+					},
+					"frame": {
+						"x": 133,
+						"y": 1576,
+						"w": 23,
+						"h": 15
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 38,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 137,
+						"y": 1593,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 42,
+						"w": 25,
+						"h": 25
+					},
+					"frame": {
+						"x": 134,
+						"y": 1621,
+						"w": 25,
+						"h": 25
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 43,
+						"w": 25,
+						"h": 25
+					},
+					"frame": {
+						"x": 133,
+						"y": 1648,
+						"w": 25,
+						"h": 25
+					}
+				},
+				{
+					"filename": "impact-debris/impact-debris2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 25,
+						"h": 24
+					},
+					"frame": {
+						"x": 109,
+						"y": 1675,
+						"w": 25,
+						"h": 24
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 38,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 136,
+						"y": 1675,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 36,
+						"w": 19,
+						"h": 19
+					},
+					"frame": {
+						"x": 158,
+						"y": 1572,
+						"w": 19,
+						"h": 19
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 34,
+						"w": 24,
+						"h": 26
+					},
+					"frame": {
+						"x": 162,
+						"y": 1593,
+						"w": 24,
+						"h": 26
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 35,
+						"y": 44,
+						"w": 25,
+						"h": 25
+					},
+					"frame": {
+						"x": 161,
+						"y": 1621,
+						"w": 25,
+						"h": 25
+					}
+				},
+				{
+					"filename": "blood-splatter-small/5/1_6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 36,
+						"y": 34,
+						"w": 24,
+						"h": 25
+					},
+					"frame": {
+						"x": 160,
+						"y": 1648,
 						"w": 24,
 						"h": 25
 					}
@@ -3951,14 +5169,98 @@
 						"h": 24
 					},
 					"frame": {
-						"x": 228,
-						"y": 1152,
+						"x": 161,
+						"y": 1675,
 						"w": 23,
 						"h": 24
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_6.png",
+					"filename": "impact/1/5/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 18,
+						"h": 15
+					},
+					"frame": {
+						"x": 113,
+						"y": 1503,
+						"w": 18,
+						"h": 15
+					}
+				},
+				{
+					"filename": "impact/1/3/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 23,
+						"w": 15,
+						"h": 19
+					},
+					"frame": {
+						"x": 113,
+						"y": 1520,
+						"w": 15,
+						"h": 19
+					}
+				},
+				{
+					"filename": "impact/1/15/89.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 25,
+						"w": 24,
+						"h": 10
+					},
+					"frame": {
+						"x": 183,
+						"y": 1564,
+						"w": 24,
+						"h": 10
+					}
+				},
+				{
+					"filename": "impact/1/12/68.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 30,
+						"w": 20,
+						"h": 15
+					},
+					"frame": {
+						"x": 179,
+						"y": 1576,
+						"w": 20,
+						"h": 15
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_14.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -3967,14 +5269,14 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
-						"y": 34,
-						"w": 24,
+						"y": 39,
+						"w": 23,
 						"h": 25
 					},
 					"frame": {
-						"x": 202,
-						"y": 1158,
-						"w": 24,
+						"x": 188,
+						"y": 1593,
+						"w": 23,
 						"h": 25
 					}
 				},
@@ -3993,346 +5295,10 @@
 						"h": 24
 					},
 					"frame": {
-						"x": 228,
-						"y": 1178,
+						"x": 188,
+						"y": 1620,
 						"w": 23,
 						"h": 24
-					}
-				},
-				{
-					"filename": "impact/1/16/103.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 7,
-						"w": 27,
-						"h": 25
-					},
-					"frame": {
-						"x": 199,
-						"y": 1185,
-						"w": 27,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_10.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 37,
-						"w": 23,
-						"h": 23
-					},
-					"frame": {
-						"x": 228,
-						"y": 1204,
-						"w": 23,
-						"h": 23
-					}
-				},
-				{
-					"filename": "impact/1/16/104.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 7,
-						"w": 27,
-						"h": 25
-					},
-					"frame": {
-						"x": 199,
-						"y": 1212,
-						"w": 27,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_11.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 38,
-						"w": 23,
-						"h": 23
-					},
-					"frame": {
-						"x": 228,
-						"y": 1229,
-						"w": 23,
-						"h": 23
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_23.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 47,
-						"w": 26,
-						"h": 27
-					},
-					"frame": {
-						"x": 199,
-						"y": 1239,
-						"w": 26,
-						"h": 27
-					}
-				},
-				{
-					"filename": "impact/1/22/145.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 24,
-						"w": 24,
-						"h": 13
-					},
-					"frame": {
-						"x": 227,
-						"y": 1254,
-						"w": 24,
-						"h": 13
-					}
-				},
-				{
-					"filename": "impact/1/9/47.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 13,
-						"y": 25,
-						"w": 34,
-						"h": 14
-					},
-					"frame": {
-						"x": 164,
-						"y": 1289,
-						"w": 34,
-						"h": 14
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_24.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 48,
-						"w": 26,
-						"h": 27
-					},
-					"frame": {
-						"x": 164,
-						"y": 1305,
-						"w": 26,
-						"h": 27
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_25.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 49,
-						"w": 26,
-						"h": 27
-					},
-					"frame": {
-						"x": 176,
-						"y": 1334,
-						"w": 26,
-						"h": 27
-					}
-				},
-				{
-					"filename": "impact/1/23/153.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 25,
-						"y": 25,
-						"w": 11,
-						"h": 10
-					},
-					"frame": {
-						"x": 167,
-						"y": 668,
-						"w": 11,
-						"h": 10
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 39,
-						"y": 36,
-						"w": 17,
-						"h": 19
-					},
-					"frame": {
-						"x": 208,
-						"y": 1268,
-						"w": 17,
-						"h": 19
-					}
-				},
-				{
-					"filename": "impact/1/24/161.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 20,
-						"y": 49,
-						"w": 24,
-						"h": 11
-					},
-					"frame": {
-						"x": 227,
-						"y": 1269,
-						"w": 24,
-						"h": 11
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_16.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 41,
-						"w": 25,
-						"h": 25
-					},
-					"frame": {
-						"x": 200,
-						"y": 1289,
-						"w": 25,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_11.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 37,
-						"w": 22,
-						"h": 25
-					},
-					"frame": {
-						"x": 227,
-						"y": 1282,
-						"w": 22,
-						"h": 25
-					}
-				},
-				{
-					"filename": "impact/1/21/137.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 28,
-						"w": 24,
-						"h": 8
-					},
-					"frame": {
-						"x": 227,
-						"y": 1309,
-						"w": 24,
-						"h": 8
-					}
-				},
-				{
-					"filename": "impact/1/20/130.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 25,
-						"y": 32,
-						"w": 16,
-						"h": 16
-					},
-					"frame": {
-						"x": 192,
-						"y": 1316,
-						"w": 16,
-						"h": 16
 					}
 				},
 				{
@@ -4350,14 +5316,14 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 210,
-						"y": 1316,
+						"x": 211,
+						"y": 1548,
 						"w": 15,
 						"h": 16
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_9.png",
+					"filename": "blood-splatter-small/3/1_9.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4366,19 +5332,19 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
-						"y": 35,
-						"w": 25,
-						"h": 26
+						"y": 37,
+						"w": 23,
+						"h": 22
 					},
 					"frame": {
-						"x": 204,
-						"y": 1334,
-						"w": 25,
-						"h": 26
+						"x": 228,
+						"y": 1550,
+						"w": 23,
+						"h": 22
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_20.png",
+					"filename": "blood-splatter-small/4/1_12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4387,481 +5353,40 @@
 					},
 					"spriteSourceSize": {
 						"x": 40,
-						"y": 43,
-						"w": 20,
-						"h": 25
-					},
-					"frame": {
-						"x": 231,
-						"y": 1319,
-						"w": 20,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 36,
-						"w": 20,
-						"h": 20
-					},
-					"frame": {
-						"x": 231,
-						"y": 1346,
-						"w": 20,
-						"h": 20
-					}
-				},
-				{
-					"filename": "impact/1/20/129.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 28,
-						"y": 35,
-						"w": 10,
-						"h": 10
-					},
-					"frame": {
-						"x": 225,
-						"y": 800,
-						"w": 10,
-						"h": 10
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_17.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 42,
-						"w": 25,
-						"h": 25
-					},
-					"frame": {
-						"x": 204,
-						"y": 1362,
-						"w": 25,
-						"h": 25
-					}
-				},
-				{
-					"filename": "impact/1/8/40.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 32,
-						"w": 26,
-						"h": 26
-					},
-					"frame": {
-						"x": 176,
-						"y": 1363,
-						"w": 26,
-						"h": 26
-					}
-				},
-				{
-					"filename": "impact/1/12/68.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 23,
-						"y": 30,
-						"w": 20,
-						"h": 15
-					},
-					"frame": {
-						"x": 231,
-						"y": 1368,
-						"w": 20,
-						"h": 15
-					}
-				},
-				{
-					"filename": "impact/1/13/75.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 25,
-						"y": 34,
-						"w": 20,
-						"h": 14
-					},
-					"frame": {
-						"x": 154,
-						"y": 1368,
-						"w": 20,
-						"h": 14
-					}
-				},
-				{
-					"filename": "impact/1/23/154.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 18,
-						"y": 18,
-						"w": 22,
-						"h": 24
-					},
-					"frame": {
-						"x": 152,
-						"y": 1384,
-						"w": 22,
-						"h": 24
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_18.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 43,
-						"w": 25,
-						"h": 25
-					},
-					"frame": {
-						"x": 176,
-						"y": 1391,
-						"w": 25,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 39,
-						"y": 36,
+						"y": 39,
 						"w": 17,
-						"h": 18
-					},
-					"frame": {
-						"x": 157,
-						"y": 1410,
-						"w": 17,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 35,
-						"w": 19,
-						"h": 20
-					},
-					"frame": {
-						"x": 157,
-						"y": 1430,
-						"w": 19,
-						"h": 20
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_26.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 51,
-						"w": 25,
-						"h": 26
-					},
-					"frame": {
-						"x": 178,
-						"y": 1418,
-						"w": 25,
-						"h": 26
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 39,
-						"y": 36,
-						"w": 17,
-						"h": 18
-					},
-					"frame": {
-						"x": 162,
-						"y": 1452,
-						"w": 17,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_27.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 52,
-						"w": 25,
-						"h": 26
-					},
-					"frame": {
-						"x": 160,
-						"y": 1472,
-						"w": 25,
-						"h": 26
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_28.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 54,
-						"w": 25,
-						"h": 26
-					},
-					"frame": {
-						"x": 161,
-						"y": 1500,
-						"w": 25,
-						"h": 26
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_19.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 44,
-						"w": 25,
-						"h": 25
-					},
-					"frame": {
-						"x": 162,
-						"y": 1528,
-						"w": 25,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_9.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 36,
-						"w": 21,
-						"h": 24
-					},
-					"frame": {
-						"x": 181,
-						"y": 1446,
-						"w": 21,
-						"h": 24
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_10.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 36,
-						"w": 21,
-						"h": 25
-					},
-					"frame": {
-						"x": 187,
-						"y": 1472,
-						"w": 21,
-						"h": 25
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_8.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 36,
-						"w": 21,
-						"h": 23
-					},
-					"frame": {
-						"x": 188,
-						"y": 1499,
-						"w": 21,
-						"h": 23
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_20.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 35,
-						"y": 45,
-						"w": 25,
-						"h": 23
-					},
-					"frame": {
-						"x": 189,
-						"y": 1524,
-						"w": 25,
-						"h": 23
-					}
-				},
-				{
-					"filename": "impact/1/18/120.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 16,
-						"y": 45,
-						"w": 30,
 						"h": 8
 					},
 					"frame": {
-						"x": 189,
-						"y": 1549,
-						"w": 30,
+						"x": 209,
+						"y": 1566,
+						"w": 17,
 						"h": 8
 					}
 				},
 				{
-					"filename": "blood-splatter-small/3/1_8.png",
+					"filename": "impact/1/22/145.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 100,
-						"h": 100
+						"w": 64,
+						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 37,
-						"y": 36,
-						"w": 21,
-						"h": 22
+						"x": 0,
+						"y": 24,
+						"w": 24,
+						"h": 13
 					},
 					"frame": {
-						"x": 182,
-						"y": 1559,
-						"w": 21,
-						"h": 22
+						"x": 201,
+						"y": 1576,
+						"w": 24,
+						"h": 13
 					}
 				},
 				{
-					"filename": "blood-splatter-small/3/1_21.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 46,
-						"w": 22,
-						"h": 23
-					},
-					"frame": {
-						"x": 205,
-						"y": 1559,
-						"w": 22,
-						"h": 23
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_3.png",
+					"filename": "blood-splatter-small/3/1_10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4870,19 +5395,19 @@
 					},
 					"spriteSourceSize": {
 						"x": 36,
-						"y": 34,
+						"y": 37,
 						"w": 23,
 						"h": 23
 					},
 					"frame": {
-						"x": 198,
-						"y": 1584,
+						"x": 213,
+						"y": 1591,
 						"w": 23,
 						"h": 23
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_2.png",
+					"filename": "blood-splatter-small/3/1_11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4890,37 +5415,16 @@
 						"h": 100
 					},
 					"spriteSourceSize": {
-						"x": 37,
-						"y": 34,
-						"w": 22,
+						"x": 36,
+						"y": 38,
+						"w": 23,
 						"h": 23
 					},
 					"frame": {
-						"x": 198,
-						"y": 1609,
-						"w": 22,
+						"x": 213,
+						"y": 1616,
+						"w": 23,
 						"h": 23
-					}
-				},
-				{
-					"filename": "blood-splatter-small/5/1_0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 37,
-						"y": 34,
-						"w": 21,
-						"h": 22
-					},
-					"frame": {
-						"x": 198,
-						"y": 1634,
-						"w": 21,
-						"h": 22
 					}
 				},
 				{
@@ -4945,7 +5449,7 @@
 					}
 				},
 				{
-					"filename": "blood-splatter-small/5/1_1.png",
+					"filename": "blood-splatter-small/5/1_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4953,20 +5457,83 @@
 						"h": 100
 					},
 					"spriteSourceSize": {
-						"x": 37,
+						"x": 36,
 						"y": 34,
-						"w": 21,
-						"h": 22
+						"w": 23,
+						"h": 23
 					},
 					"frame": {
-						"x": 223,
-						"y": 1584,
-						"w": 21,
-						"h": 22
+						"x": 213,
+						"y": 1641,
+						"w": 23,
+						"h": 23
 					}
 				},
 				{
-					"filename": "blood-splatter-small/4/1_12.png",
+					"filename": "impact/1/3/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 25,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 188,
+						"y": 1646,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "blood-splatter-small/3/1_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 38,
+						"y": 36,
+						"w": 19,
+						"h": 20
+					},
+					"frame": {
+						"x": 186,
+						"y": 1665,
+						"w": 19,
+						"h": 20
+					}
+				},
+				{
+					"filename": "impact/1/7/33.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 27,
+						"w": 11,
+						"h": 12
+					},
+					"frame": {
+						"x": 186,
+						"y": 1687,
+						"w": 11,
+						"h": 12
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -4975,15 +5542,36 @@
 					},
 					"spriteSourceSize": {
 						"x": 40,
-						"y": 39,
-						"w": 17,
-						"h": 8
+						"y": 36,
+						"w": 15,
+						"h": 18
 					},
 					"frame": {
-						"x": 91,
-						"y": 1679,
-						"w": 17,
-						"h": 8
+						"x": 207,
+						"y": 1666,
+						"w": 15,
+						"h": 18
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 38,
+						"w": 15,
+						"h": 17
+					},
+					"frame": {
+						"x": 224,
+						"y": 1666,
+						"w": 15,
+						"h": 17
 					}
 				},
 				{
@@ -5001,8 +5589,8 @@
 						"h": 5
 					},
 					"frame": {
-						"x": 117,
-						"y": 899,
+						"x": 215,
+						"y": 1178,
 						"w": 9,
 						"h": 5
 					}
@@ -5022,98 +5610,35 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 204,
-						"y": 1389,
+						"x": 228,
+						"y": 1574,
 						"w": 24,
 						"h": 3
 					}
 				},
 				{
-					"filename": "blood-splatter-small/3/1_6.png",
+					"filename": "impact-debris/impact-debris1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 100,
-						"h": 100
+						"w": 32,
+						"h": 32
 					},
 					"spriteSourceSize": {
-						"x": 37,
-						"y": 36,
-						"w": 21,
-						"h": 21
+						"x": 9,
+						"y": 9,
+						"w": 15,
+						"h": 10
 					},
 					"frame": {
-						"x": 203,
-						"y": 1394,
-						"w": 21,
-						"h": 21
+						"x": 227,
+						"y": 1579,
+						"w": 15,
+						"h": 10
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 36,
-						"w": 19,
-						"h": 21
-					},
-					"frame": {
-						"x": 205,
-						"y": 1417,
-						"w": 19,
-						"h": 21
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_6.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 36,
-						"w": 19,
-						"h": 21
-					},
-					"frame": {
-						"x": 226,
-						"y": 1394,
-						"w": 19,
-						"h": 21
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 36,
-						"w": 19,
-						"h": 20
-					},
-					"frame": {
-						"x": 226,
-						"y": 1417,
-						"w": 19,
-						"h": 20
-					}
-				},
-				{
-					"filename": "impact/1/6/27.png",
+					"filename": "impact/1/20/129.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5121,188 +5646,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 24,
-						"y": 23,
-						"w": 22,
-						"h": 20
+						"x": 28,
+						"y": 35,
+						"w": 10,
+						"h": 10
 					},
 					"frame": {
-						"x": 229,
-						"y": 1439,
-						"w": 22,
-						"h": 20
+						"x": 244,
+						"y": 1579,
+						"w": 10,
+						"h": 10
 					}
 				},
 				{
-					"filename": "blood-splatter-small/3/1_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 39,
-						"y": 36,
-						"w": 17,
-						"h": 18
-					},
-					"frame": {
-						"x": 210,
-						"y": 1440,
-						"w": 17,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_22.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 43,
-						"y": 48,
-						"w": 17,
-						"h": 18
-					},
-					"frame": {
-						"x": 210,
-						"y": 1460,
-						"w": 17,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 36,
-						"w": 19,
-						"h": 19
-					},
-					"frame": {
-						"x": 229,
-						"y": 1461,
-						"w": 19,
-						"h": 19
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 39,
-						"y": 36,
-						"w": 17,
-						"h": 17
-					},
-					"frame": {
-						"x": 210,
-						"y": 1480,
-						"w": 17,
-						"h": 17
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 36,
-						"w": 18,
-						"h": 20
-					},
-					"frame": {
-						"x": 211,
-						"y": 1499,
-						"w": 18,
-						"h": 20
-					}
-				},
-				{
-					"filename": "impact/1/5/21.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 29,
-						"y": 25,
-						"w": 18,
-						"h": 15
-					},
-					"frame": {
-						"x": 229,
-						"y": 1482,
-						"w": 18,
-						"h": 15
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 38,
-						"y": 36,
-						"w": 18,
-						"h": 19
-					},
-					"frame": {
-						"x": 231,
-						"y": 1499,
-						"w": 18,
-						"h": 19
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_10.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 38,
-						"w": 16,
-						"h": 19
-					},
-					"frame": {
-						"x": 216,
-						"y": 1521,
-						"w": 16,
-						"h": 19
-					}
-				},
-				{
-					"filename": "impact/1/19/122.png",
+					"filename": "impact/1/3/10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5312,245 +5669,14 @@
 					"spriteSourceSize": {
 						"x": 32,
 						"y": 34,
-						"w": 17,
-						"h": 11
-					},
-					"frame": {
-						"x": 234,
-						"y": 1520,
-						"w": 17,
-						"h": 11
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 38,
-						"w": 14,
-						"h": 15
-					},
-					"frame": {
-						"x": 221,
-						"y": 1542,
-						"w": 14,
-						"h": 15
-					}
-				},
-				{
-					"filename": "blood-splatter-small/3/1_23.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 43,
-						"y": 49,
-						"w": 17,
-						"h": 3
-					},
-					"frame": {
-						"x": 234,
-						"y": 1533,
-						"w": 17,
-						"h": 3
-					}
-				},
-				{
-					"filename": "impact/1/17/105.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 28,
-						"y": 24,
-						"w": 13,
-						"h": 17
-					},
-					"frame": {
-						"x": 237,
-						"y": 1538,
-						"w": 13,
-						"h": 17
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_11.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 39,
 						"w": 16,
-						"h": 19
+						"h": 8
 					},
 					"frame": {
-						"x": 229,
-						"y": 1559,
+						"x": 238,
+						"y": 1591,
 						"w": 16,
-						"h": 19
-					}
-				},
-				{
-					"filename": "impact/1/4/15.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 26,
-						"w": 12,
-						"h": 9
-					},
-					"frame": {
-						"x": 237,
-						"y": 800,
-						"w": 12,
-						"h": 9
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_8.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 38,
-						"w": 16,
-						"h": 18
-					},
-					"frame": {
-						"x": 197,
-						"y": 1660,
-						"w": 16,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_9.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 38,
-						"w": 16,
-						"h": 18
-					},
-					"frame": {
-						"x": 200,
-						"y": 1680,
-						"w": 16,
-						"h": 18
-					}
-				},
-				{
-					"filename": "impact/1/16/97.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 36,
-						"y": 31,
-						"w": 11,
-						"h": 9
-					},
-					"frame": {
-						"x": 200,
-						"y": 1700,
-						"w": 11,
-						"h": 9
-					}
-				},
-				{
-					"filename": "impact/1/3/12.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 17,
-						"y": 24,
-						"w": 19,
-						"h": 18
-					},
-					"frame": {
-						"x": 215,
-						"y": 1658,
-						"w": 19,
-						"h": 18
-					}
-				},
-				{
-					"filename": "impact/1/16/98.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 33,
-						"y": 27,
-						"w": 18,
-						"h": 18
-					},
-					"frame": {
-						"x": 218,
-						"y": 1678,
-						"w": 18,
-						"h": 18
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_7.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 38,
-						"w": 15,
-						"h": 17
-					},
-					"frame": {
-						"x": 236,
-						"y": 1608,
-						"w": 15,
-						"h": 17
+						"h": 8
 					}
 				},
 				{
@@ -5568,8 +5694,8 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 236,
-						"y": 1627,
+						"x": 238,
+						"y": 1601,
 						"w": 15,
 						"h": 16
 					}
@@ -5589,77 +5715,14 @@
 						"h": 16
 					},
 					"frame": {
-						"x": 236,
-						"y": 1645,
+						"x": 238,
+						"y": 1619,
 						"w": 15,
 						"h": 16
 					}
 				},
 				{
-					"filename": "blood-splatter-small/4/1_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 41,
-						"y": 38,
-						"w": 13,
-						"h": 14
-					},
-					"frame": {
-						"x": 221,
-						"y": 1634,
-						"w": 13,
-						"h": 14
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 41,
-						"y": 38,
-						"w": 13,
-						"h": 14
-					},
-					"frame": {
-						"x": 238,
-						"y": 1663,
-						"w": 13,
-						"h": 14
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 41,
-						"y": 38,
-						"w": 12,
-						"h": 13
-					},
-					"frame": {
-						"x": 222,
-						"y": 1609,
-						"w": 12,
-						"h": 13
-					}
-				},
-				{
-					"filename": "impact/1/19/121.png",
+					"filename": "impact/1/23/153.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5667,20 +5730,20 @@
 						"h": 64
 					},
 					"spriteSourceSize": {
-						"x": 34,
-						"y": 36,
-						"w": 12,
-						"h": 8
+						"x": 25,
+						"y": 25,
+						"w": 11,
+						"h": 10
 					},
 					"frame": {
-						"x": 222,
-						"y": 1624,
-						"w": 12,
-						"h": 8
+						"x": 238,
+						"y": 1637,
+						"w": 11,
+						"h": 10
 					}
 				},
 				{
-					"filename": "blood-splatter-small/4/1_0.png",
+					"filename": "blood-splatter-small/3/1_23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5688,16 +5751,16 @@
 						"h": 100
 					},
 					"spriteSourceSize": {
-						"x": 41,
-						"y": 39,
-						"w": 12,
-						"h": 12
+						"x": 43,
+						"y": 49,
+						"w": 17,
+						"h": 3
 					},
 					"frame": {
-						"x": 238,
-						"y": 1679,
-						"w": 12,
-						"h": 12
+						"x": 234,
+						"y": 1051,
+						"w": 17,
+						"h": 3
 					}
 				},
 				{
@@ -5722,6 +5785,48 @@
 					}
 				},
 				{
+					"filename": "impact/1/19/121.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 34,
+						"y": 36,
+						"w": 12,
+						"h": 8
+					},
+					"frame": {
+						"x": 238,
+						"y": 1649,
+						"w": 12,
+						"h": 8
+					}
+				},
+				{
+					"filename": "impact/1/19/122.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 32,
+						"y": 34,
+						"w": 17,
+						"h": 11
+					},
+					"frame": {
+						"x": 199,
+						"y": 1687,
+						"w": 17,
+						"h": 11
+					}
+				},
+				{
 					"filename": "blood-splatter-small/1/1_21.png",
 					"rotated": false,
 					"trimmed": true,
@@ -5736,35 +5841,14 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 152,
-						"y": 1410,
+						"x": 172,
+						"y": 698,
 						"w": 3,
 						"h": 3
 					}
 				},
 				{
-					"filename": "impact/1/3/10.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 32,
-						"y": 34,
-						"w": 16,
-						"h": 8
-					},
-					"frame": {
-						"x": 218,
-						"y": 1698,
-						"w": 16,
-						"h": 8
-					}
-				},
-				{
-					"filename": "impact/1/7/33.png",
+					"filename": "impact/1/21/137.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -5773,15 +5857,15 @@
 					},
 					"spriteSourceSize": {
 						"x": 0,
-						"y": 27,
-						"w": 11,
-						"h": 12
+						"y": 28,
+						"w": 24,
+						"h": 8
 					},
 					"frame": {
-						"x": 238,
-						"y": 1693,
-						"w": 11,
-						"h": 12
+						"x": 224,
+						"y": 1685,
+						"w": 24,
+						"h": 8
 					}
 				},
 				{
@@ -5799,8 +5883,8 @@
 						"h": 4
 					},
 					"frame": {
-						"x": 184,
-						"y": 316,
+						"x": 125,
+						"y": 609,
 						"w": 4,
 						"h": 4
 					}
@@ -5820,8 +5904,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 160,
-						"y": 807,
+						"x": 228,
+						"y": 1292,
 						"w": 3,
 						"h": 3
 					}
@@ -5841,8 +5925,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 122,
-						"y": 1013,
+						"x": 228,
+						"y": 1297,
 						"w": 3,
 						"h": 3
 					}
@@ -5862,8 +5946,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 205,
-						"y": 1440,
+						"x": 251,
+						"y": 1637,
 						"w": 3,
 						"h": 3
 					}
@@ -5883,134 +5967,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 216,
-						"y": 1542,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_26.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 213,
-						"y": 1700,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_27.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 165,
-						"y": 807,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/1/1_28.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 122,
-						"y": 1018,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_21.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 170,
-						"y": 807,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_22.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 122,
-						"y": 1023,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/2/1_23.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 122,
-						"y": 1028,
+						"x": 251,
+						"y": 1642,
 						"w": 3,
 						"h": 3
 					}
@@ -6030,14 +5988,14 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 123,
-						"y": 463,
+						"x": 59,
+						"y": 1212,
 						"w": 2,
 						"h": 3
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_24.png",
+					"filename": "blood-splatter-small/1/1_26.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6051,14 +6009,14 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 213,
-						"y": 1705,
+						"x": 251,
+						"y": 645,
 						"w": 3,
 						"h": 3
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_25.png",
+					"filename": "blood-splatter-small/1/1_27.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6072,14 +6030,14 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 230,
-						"y": 1389,
+						"x": 251,
+						"y": 650,
 						"w": 3,
 						"h": 3
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_26.png",
+					"filename": "blood-splatter-small/1/1_28.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6093,14 +6051,14 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 205,
-						"y": 1445,
+						"x": 251,
+						"y": 655,
 						"w": 3,
 						"h": 3
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_27.png",
+					"filename": "blood-splatter-small/2/1_21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6121,7 +6079,7 @@
 					}
 				},
 				{
-					"filename": "blood-splatter-small/2/1_28.png",
+					"filename": "blood-splatter-small/2/1_22.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6142,6 +6100,132 @@
 					}
 				},
 				{
+					"filename": "blood-splatter-small/2/1_23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 148,
+						"y": 294,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 249,
+						"y": 602,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 177,
+						"y": 650,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 182,
+						"y": 650,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 174,
+						"y": 764,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/2/1_28.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 179,
+						"y": 764,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
 					"filename": "blood-splatter-small/3/1_24.png",
 					"rotated": false,
 					"trimmed": true,
@@ -6156,8 +6240,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 219,
-						"y": 145,
+						"x": 108,
+						"y": 1422,
 						"w": 3,
 						"h": 3
 					}
@@ -6177,8 +6261,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 119,
-						"y": 637,
+						"x": 174,
+						"y": 1031,
 						"w": 3,
 						"h": 3
 					}
@@ -6198,8 +6282,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 167,
-						"y": 699,
+						"x": 179,
+						"y": 1031,
 						"w": 3,
 						"h": 3
 					}
@@ -6219,8 +6303,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 163,
-						"y": 749,
+						"x": 225,
+						"y": 703,
 						"w": 3,
 						"h": 3
 					}
@@ -6240,8 +6324,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 163,
-						"y": 754,
+						"x": 173,
+						"y": 1437,
 						"w": 3,
 						"h": 3
 					}
@@ -6261,8 +6345,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 161,
-						"y": 892,
+						"x": 201,
+						"y": 1385,
 						"w": 3,
 						"h": 3
 					}
@@ -6282,8 +6366,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 174,
-						"y": 935,
+						"x": 247,
+						"y": 1321,
 						"w": 3,
 						"h": 3
 					}
@@ -6303,8 +6387,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 114,
-						"y": 1415,
+						"x": 108,
+						"y": 1666,
 						"w": 3,
 						"h": 3
 					}
@@ -6324,140 +6408,14 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 185,
-						"y": 976,
+						"x": 113,
+						"y": 1541,
 						"w": 3,
 						"h": 3
 					}
 				},
 				{
 					"filename": "blood-splatter-small/4/1_17.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 190,
-						"y": 976,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_18.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 185,
-						"y": 999,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_19.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 170,
-						"y": 1035,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_20.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 170,
-						"y": 1040,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_21.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 162,
-						"y": 1213,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_22.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 100,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 3,
-						"h": 3
-					},
-					"frame": {
-						"x": 192,
-						"y": 1305,
-						"w": 3,
-						"h": 3
-					}
-				},
-				{
-					"filename": "blood-splatter-small/4/1_23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6478,7 +6436,7 @@
 					}
 				},
 				{
-					"filename": "blood-splatter-small/4/1_24.png",
+					"filename": "blood-splatter-small/4/1_18.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6492,14 +6450,14 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 221,
-						"y": 1650,
+						"x": 226,
+						"y": 1178,
 						"w": 3,
 						"h": 3
 					}
 				},
 				{
-					"filename": "blood-splatter-small/4/1_25.png",
+					"filename": "blood-splatter-small/4/1_19.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6513,14 +6471,35 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 184,
-						"y": 322,
+						"x": 238,
+						"y": 1659,
 						"w": 3,
 						"h": 3
 					}
 				},
 				{
-					"filename": "blood-splatter-small/4/1_26.png",
+					"filename": "blood-splatter-small/4/1_20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 125,
+						"y": 615,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_21.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6541,7 +6520,28 @@
 					}
 				},
 				{
-					"filename": "blood-splatter-small/4/1_27.png",
+					"filename": "blood-splatter-small/4/1_22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 250,
+						"y": 1,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_23.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -6562,6 +6562,90 @@
 					}
 				},
 				{
+					"filename": "blood-splatter-small/4/1_24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 148,
+						"y": 299,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 153,
+						"y": 294,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 249,
+						"y": 607,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "blood-splatter-small/4/1_27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 177,
+						"y": 655,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
 					"filename": "blood-splatter-small/4/1_28.png",
 					"rotated": false,
 					"trimmed": true,
@@ -6576,8 +6660,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 219,
-						"y": 150,
+						"x": 182,
+						"y": 655,
 						"w": 3,
 						"h": 3
 					}
@@ -6597,8 +6681,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 124,
-						"y": 637,
+						"x": 174,
+						"y": 769,
 						"w": 3,
 						"h": 3
 					}
@@ -6618,8 +6702,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 168,
-						"y": 749,
+						"x": 179,
+						"y": 769,
 						"w": 3,
 						"h": 3
 					}
@@ -6639,8 +6723,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 168,
-						"y": 754,
+						"x": 225,
+						"y": 708,
 						"w": 3,
 						"h": 3
 					}
@@ -6660,8 +6744,8 @@
 						"h": 3
 					},
 					"frame": {
-						"x": 166,
-						"y": 892,
+						"x": 173,
+						"y": 1442,
 						"w": 3,
 						"h": 3
 					}
@@ -6672,6 +6756,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:0996da8cd40f39f62c21fa244faf332b:34f26192c408ce7fb14a5a92b5110aad:05d3c1256da5d10ff4f36ef2966c3322$"
+		"smartupdate": "$TexturePacker:SmartUpdate:dcf8c1a0a0f97c3744fb71a1fadbfde7:0285686f7e910b9f9e690a41ee7796a7:05d3c1256da5d10ff4f36ef2966c3322$"
 	}
 }

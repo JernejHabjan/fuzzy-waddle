@@ -52,9 +52,36 @@ export class SaveGame {
     this.saveGameSubscription.unsubscribe();
   }
 
-  private onSaveGame() {
+  private async onSaveGame() {
     const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
     if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
     sceneActorCreator.saveAllKnownActorsToGameState();
+
+    const thumbnail = await this.takeScreenshot();
+    this.scene.communicator.utilityEvents.emit({
+      name: "save-game",
+      data: {
+        thumbnail
+      } satisfies SaveGamePayload
+    });
   }
+
+  private async takeScreenshot() {
+    return new Promise<string>((resolve) => {
+      this.scene.game.renderer.snapshot(
+        (snapshot) => {
+          const imageElement = snapshot as HTMLImageElement;
+          // get base64 image
+          const base64Image = imageElement.src;
+          resolve(base64Image);
+        },
+        "image/jpeg",
+        0.2
+      );
+    });
+  }
+}
+
+export interface SaveGamePayload {
+  thumbnail: string;
 }

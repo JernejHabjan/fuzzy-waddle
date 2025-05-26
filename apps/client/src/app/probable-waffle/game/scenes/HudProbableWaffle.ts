@@ -10,6 +10,7 @@ import Resources from "../prefabs/gui/labels/Resources";
 import AiControllerDebugPanel from "../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
 import GameSpeedModifier from "../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../prefabs/gui/labels/HudMessages";
+import GroupContainer from "../prefabs/gui/labels/GroupContainer";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { HudGameState } from "../hud/hud-game-state";
@@ -67,6 +68,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.add.existing(hudMessages);
     hudMessages.setStyle({});
 
+    // groupContainer
+    const groupContainer = new GroupContainer(this, 552, 541);
+    this.add.existing(groupContainer);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -78,6 +83,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel = aiControllerDebugPanel;
     this.gameSpeedModifier = gameSpeedModifier;
     this.hudMessages = hudMessages;
+    this.groupContainer = groupContainer;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -91,6 +97,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private aiControllerDebugPanel!: AiControllerDebugPanel;
   private gameSpeedModifier!: GameSpeedModifier;
   private hudMessages!: HudMessages;
+  private groupContainer!: GroupContainer;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -112,7 +119,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new CursorHandler(this);
     new HudGameState(this);
     new HudElementVisibilityHandler(this, this.hudElements);
-    this.sceneGameData.components.push(new MultiSelectionHandler(this));
+    this.sceneGameData.components.push(new MultiSelectionHandler(this, this.probableWaffleScene!));
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
@@ -167,6 +174,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // hide on small devices
     this.actor_info_container.visible = sceneWidth > this.actorInfoSmallScreenBreakpoint;
 
+    // set groupContainer above actor_info_container on the left side and hide on small devices
+    const actorInfoContainerBounds = getGameObjectBounds(this.actor_info_container)!;
+    this.groupContainer.x = this.actor_info_container.x - actorInfoContainerBounds.width;
+    this.groupContainer.y = this.actor_info_container.y - actorInfoContainerBounds.height;
+    this.groupContainer.visible = sceneWidth > this.actorInfoSmallScreenBreakpoint;
+
     // set AI controller debug panel to top right below game actions
     const gameActionsHeight = getGameObjectBounds(this.game_actions_container)!.height;
     this.aiControllerDebugPanel.x = this.scale.width - 10;
@@ -199,14 +212,17 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     return this.probableWaffleScene.communicator.allScenes
       .pipe(filter((value) => value.name === eventName))
       .subscribe(() => {
-        const text = this.add.text(this.scale.width / 2, this.scale.height / 2, displayText, {
-          fontSize: "32px",
-          color: "#ffffff",
-          backgroundColor: "#000000",
-          padding: { x: 20, y: 10 }
+        // wait so saving is done
+        setTimeout(() => {
+          const text = this.add.text(this.scale.width / 2, this.scale.height / 2, displayText, {
+            fontSize: "32px",
+            color: "#ffffff",
+            backgroundColor: "#000000",
+            padding: { x: 20, y: 10 }
+          });
+          text.setOrigin(0.5);
+          this.time.delayedCall(500, () => text.destroy());
         });
-        text.setOrigin(0.5);
-        this.time.delayedCall(500, () => text.destroy());
       });
   }
 

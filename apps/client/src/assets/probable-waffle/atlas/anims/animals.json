@@ -1,6 +1,40 @@
 {
     "anims": [
         {
+            "key": "bird-idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
             "key": "hedgehog_idle_right",
             "type": "frame",
             "frames": [
@@ -19,7 +53,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_idle_down",
@@ -40,7 +75,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_idle_top",
@@ -61,7 +97,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_walk_right",
@@ -82,7 +119,8 @@
             ],
             "frameRate": 4,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_walk_top",
@@ -103,7 +141,8 @@
             ],
             "frameRate": 4,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_ball_right",
@@ -129,7 +168,8 @@
                 }
             ],
             "frameRate": 2,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_ball_down",
@@ -155,7 +195,8 @@
                 }
             ],
             "frameRate": 2,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_ball_top",
@@ -175,7 +216,8 @@
                 }
             ],
             "frameRate": 2,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_idle_left",
@@ -196,7 +238,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_walk_left",
@@ -217,7 +260,8 @@
             ],
             "frameRate": 4,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_ball_left",
@@ -243,7 +287,8 @@
                 }
             ],
             "frameRate": 2,
-            "skipMissedFrames": true
+            "skipMissedFrames": true,
+            "randomFrame": false
         },
         {
             "key": "hedgehog_walk_down",
@@ -264,7 +309,8 @@
             ],
             "frameRate": 4,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_down",
@@ -279,7 +325,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_left",
@@ -294,7 +341,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_right",
@@ -309,7 +357,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_up",
@@ -324,7 +373,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_down_sheared",
@@ -339,7 +389,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_left_sheared",
@@ -354,7 +405,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_right_sheared",
@@ -369,7 +421,8 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
         },
         {
             "key": "sheep_idle_up_sheared",
@@ -384,7 +437,1186 @@
             ],
             "frameRate": 1,
             "skipMissedFrames": true,
-            "repeat": -1
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "sheep_down_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_down_walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_down_walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_down_walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_down_walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_down_walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_down_walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "sheep_left_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_left_walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_left_walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_left_walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_left_walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "sheep_right_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_right_walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_right_walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_right_walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_right_walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "sheep_up_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_up_walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_up_walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_up_walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_up_walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "sheep/walk/sheep_up_walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogBlueBlue_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogBlueBlue_Hop",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogBlueBlue_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogBlueBrown_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogBlueBrown_Hop",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogBlueBrown_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogGreenBlue_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogGreenBlue_Hop",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogGreenBlue_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogGreenBrown_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogGreenBrown_Hop",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogGreenBrown_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogPurpleBlue_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogPurpleBlue_Hop",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogPurpleBlue_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogPurpleWhite_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogPurpleWhite_Hop",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "ToxicFrogPurpleWhite_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "bird-idle-flap",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "bird-fly-off",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "bird-fly",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "animals",
+                    "frame": "8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "animals",
+                    "frame": "9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         }
     ],
     "globalTimeScale": 1,

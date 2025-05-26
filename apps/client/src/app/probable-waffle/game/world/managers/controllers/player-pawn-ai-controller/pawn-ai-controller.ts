@@ -109,7 +109,7 @@ export class PawnAiController {
   }
 
   private onShutdown() {
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.aiDebuggingSubscription?.unsubscribe();
   }
 }

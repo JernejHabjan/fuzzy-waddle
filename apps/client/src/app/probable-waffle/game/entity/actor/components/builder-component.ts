@@ -6,13 +6,16 @@ import { ObjectNames } from "../../../data/object-names";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
-import { onSceneInitialized } from "../../../data/game-object-helper";
+import { getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
 import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/labels/HudMessages";
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "./owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { AnimationActorComponent, AnimationOptions } from "./animation-actor-component";
+import { OrderType } from "../../character/ai/order-type";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ActorTranslateComponent } from "./actor-translate-component";
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce
@@ -37,6 +40,8 @@ export class BuilderComponent {
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   remainingCooldown = 0;
   private audioService?: AudioService;
+  private animationActorComponent?: AnimationActorComponent;
+  private actorTranslateComponent?: ActorTranslateComponent;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -50,6 +55,8 @@ export class BuilderComponent {
 
   private sceneInit() {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+    this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
   }
 
   private update(_: number, delta: number): void {
@@ -86,12 +93,13 @@ export class BuilderComponent {
     constructionSiteComponent.assignBuilder(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
 
-    if (this.builderComponentDefinition.enterConstructionSite) {
-      const containerComponent = getActorComponent(constructionSite, ContainerComponent);
-      if (containerComponent) {
-        containerComponent.loadGameObject(this.gameObject);
-        this.onConstructionSiteEntered.next([this.gameObject, constructionSite]);
-      }
+    const containerComponent = getActorComponent(constructionSite, ContainerComponent);
+    if (this.builderComponentDefinition.enterConstructionSite && containerComponent) {
+      containerComponent.loadGameObject(this.gameObject);
+      this.onConstructionSiteEntered.next([this.gameObject, constructionSite]);
+    } else {
+      this.actorTranslateComponent?.turnTowardsGameObject(constructionSite);
+      this.animationActorComponent?.playOrderAnimation(OrderType.Build, { repeat: -1 } satisfies AnimationOptions);
     }
   }
 
@@ -124,6 +132,13 @@ export class BuilderComponent {
     return 1;
   }
 
+  /**
+   * will seek for new construction sites in this range
+   */
+  getConstructionSeekRange(): number {
+    return 10;
+  }
+
   getRepairRange() {
     return 1;
   }
@@ -142,12 +157,13 @@ export class BuilderComponent {
     constructionSiteComponent.assignRepairer(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, target]);
 
-    if (this.builderComponentDefinition.enterConstructionSite) {
-      const containerComponent = getActorComponent(target, ContainerComponent);
-      if (containerComponent) {
-        containerComponent.loadGameObject(this.gameObject);
-        this.onConstructionSiteEntered.next([this.gameObject, target]);
-      }
+    const containerComponent = getActorComponent(target, ContainerComponent);
+    if (this.builderComponentDefinition.enterConstructionSite && containerComponent) {
+      containerComponent.loadGameObject(this.gameObject);
+      this.onConstructionSiteEntered.next([this.gameObject, target]);
+    } else {
+      this.actorTranslateComponent?.turnTowardsGameObject(target);
+      this.animationActorComponent?.playOrderAnimation(OrderType.Repair, { repeat: -1 } satisfies AnimationOptions);
     }
   }
 
@@ -191,10 +207,51 @@ export class BuilderComponent {
   }
 
   private destroy() {
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
   isIdle() {
     return !this.assignedConstructionSite;
+  }
+
+  getClosestConstructionSite(rangeInTiles: number): GameObject | null {
+    const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    const transform = getGameObjectTransform(this.gameObject);
+    if (!owner || !transform) return null;
+    const availableConstructionSites = this.gameObject.scene.children.list.filter((go) => {
+      const constructionSiteComponent = getActorComponent(go, ConstructionSiteComponent);
+      if (!constructionSiteComponent) return false;
+      if (!constructionSiteComponent.canAssignBuilder()) return false;
+      const targetOwnerComponent = getActorComponent(go, OwnerComponent);
+      if (!targetOwnerComponent) return false;
+      const targetOwner = targetOwnerComponent.getOwner();
+      if (!targetOwner) return false;
+      // noinspection RedundantIfStatementJS
+      if (targetOwner !== owner) return false;
+      return true;
+    });
+
+    if (availableConstructionSites.length === 0) return null;
+
+    const closestConstructionSite = availableConstructionSites.reduce((prev, curr) => {
+      const prevPosition = getGameObjectTransform(prev);
+      const currPosition = getGameObjectTransform(curr);
+      if (!prevPosition || !currPosition) return prev;
+
+      const prevDistance = Phaser.Math.Distance.Between(transform.x, transform.y, prevPosition.x, prevPosition.y);
+      const currDistance = Phaser.Math.Distance.Between(transform.x, transform.y, currPosition.x, currPosition.y);
+
+      return prevDistance < currDistance ? prev : curr;
+    });
+
+    // Check if the closest site is within the specified range
+    const closestPosition = getGameObjectTransform(closestConstructionSite);
+    if (!closestPosition) return null;
+
+    const distance = Phaser.Math.Distance.Between(transform.x, transform.y, closestPosition.x, closestPosition.y);
+
+    const tileSize = 64;
+    const worldRange = rangeInTiles * tileSize;
+    return distance <= worldRange ? closestConstructionSite : null;
   }
 }

@@ -29,6 +29,14 @@ export function getGameObjectTransform(
   return transformComponent;
 }
 
+export function getGameObjectVisibility(
+  gameObject: Phaser.GameObjects.GameObject
+): Phaser.GameObjects.Components.Visible | null {
+  const visibilityComponent = gameObject as unknown as Phaser.GameObjects.Components.Visible;
+  if (visibilityComponent.visible === undefined) return null;
+  return visibilityComponent;
+}
+
 export async function getGameObjectTileInNavigableRadius(
   gameObject: Phaser.GameObjects.GameObject,
   radius: number

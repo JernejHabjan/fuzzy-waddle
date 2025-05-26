@@ -106,5 +106,5 @@ export class AnimatedTilemap {
   }
 
   private update = (_: number, delta: number) => this.animatedTiles.forEach((tile) => tile.update(delta));
-  private destroy = () => this.scene.events.off("update", this.update);
+  private destroy = () => this.scene?.events.off("update", this.update);
 }

@@ -15,15 +15,6 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
     this.play("general_warrior_idle_down");
 
     /* START-USER-CTR-CODE */
-    this.on("pointerdown", () => {
-      // and play anim skaduwee_worker_male_slash_down
-      this.play("general_warrior_thrust_down", true);
-      // after anim complete, remove tint
-      this.once("animationcomplete", () => {
-        this.clearTint();
-        this.play("general_warrior_idle_down", true);
-      });
-    });
     /* END-USER-CTR-CODE */
   }
 

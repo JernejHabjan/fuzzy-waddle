@@ -8,7 +8,6 @@ import { HealthComponent } from "../../../entity/combat/components/health-compon
 import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
-import SkaduweeOwlFurball from "./SkaduweeOwlFurball";
 import { ObjectNames } from "../../../data/object-names";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
@@ -19,6 +18,7 @@ import {
 } from "../../../sfx/SkaduweeOwlSfx";
 import { SoundDefinition } from "../../../entity/actor/components/audio-actor-component";
 import { EffectsAnims } from "../../../animations/effects";
+import SkaduweeOwlFurball from "../../weapons/SkaduweeOwlFurball";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Container {
@@ -110,7 +110,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
   }
 
   private playHitAnimation(x: number, y: number, depth: number) {
-    const impactSprite = EffectsAnims.createAndPlayAnimation(this.scene, EffectsAnims.ANIM_IMPACT_1, x, y);
+    const impactSprite = EffectsAnims.createAndPlayEffectAnimation(this.scene, EffectsAnims.ANIM_IMPACT_1, x, y);
     impactSprite.setDepth(depth);
     impactSprite.setTint(0x006600);
   }

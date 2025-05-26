@@ -60,6 +60,6 @@ export class HealingComponent {
   }
 
   private destroy() {
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 }

@@ -92,8 +92,8 @@ export class ResourceSourceComponent {
     if (!transform) return;
     if (!this.scene) return;
 
-    let texture;
-    let frame;
+    let texture = null;
+    let frame = null;
     switch (this.resourceSourceDefinition.resourceType) {
       case ResourceType.Wood:
         texture = "outside";
@@ -112,6 +112,7 @@ export class ResourceSourceComponent {
         frame = "foliage/tree_trunks/tree_fallen.png"; // todo
         break;
     }
+    if (!texture || !frame) return;
 
     this.depletedImage = this.scene.add.image(transform.x, transform.y, texture, frame);
   }

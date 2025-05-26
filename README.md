@@ -54,6 +54,8 @@
 - Phaser Editor
   - `.skip` files are used to skip files from being processed by Phaser Editor 2D
   - Investigate Issues: `Ctrl+Shift+I`
-
+- TileSetter:
+  - there seem to be some issues with "chipped" tiles on certain GPUs. Workaround is to run the TileSetter.exe with 2 flags:
+  `"C:\Program Files (x86)\Steam\steamapps\common\Tilesetter\Tilesetter.exe" --disable-gpu --disable-gpu-sandbox`
 ## Attribution
 Please see [attributions.json](apps/client/src/assets/general/attributions.json). They are also listed on the [Attributions Page](https://fuzzy-waddle.onrender.com/attributions).

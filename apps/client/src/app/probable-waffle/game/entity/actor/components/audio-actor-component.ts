@@ -3,6 +3,8 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { AdditionalAudioConfig, AudioService } from "../../../scenes/services/audio.service";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { OrderType } from "../../character/ai/order-type";
+import { getActorComponent } from "../../../data/actor-component";
+import { GathererComponent } from "./gatherer-component";
 
 export enum SoundType {
   Select = "select",
@@ -150,7 +152,7 @@ export class AudioActorComponent {
       case OrderType.Build:
         return SoundType.Build;
       case OrderType.Gather:
-        return SoundType.Chop;
+        return this.getGatherSoundType();
       case OrderType.Move:
         return SoundType.Move;
       case OrderType.ReturnResources:
@@ -166,5 +168,11 @@ export class AudioActorComponent {
       default:
         return null;
     }
+  }
+
+  private getGatherSoundType(): SoundType | null {
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent) return null;
+    return gathererComponent.getGatherSound();
   }
 }

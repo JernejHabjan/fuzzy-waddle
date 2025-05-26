@@ -22,8 +22,6 @@ export default class Stairs extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 32, y ?? 48);
 
-    this.blendMode = Phaser.BlendModes.SKIP_CHECK;
-
     // cursor
     const cursor = scene.add.image(
       0.03889938974372242,
@@ -37,12 +35,19 @@ export default class Stairs extends Phaser.GameObjects.Container {
 
     // foundation
     const foundation = scene.add.image(0, -8, "factions", "buildings/tivara/wall/foundation/foundation_1.png");
+    foundation.setInteractive(
+      new Phaser.Geom.Polygon(
+        "-0.10106595137152397 71.96885109399099 28.877763874655756 54.4686486665849 63.50182029016887 73.47424485118721 63.31364607051934 84.38834959085982 29.06593809430528 97.56054496632676 0.2752824879275302 84.20017537121029"
+      ),
+      Phaser.Geom.Polygon.Contains
+    );
     foundation.setOrigin(0.5, 0.75);
     foundation.visible = false;
     this.add(foundation);
 
     // editorStairs
     const editorStairs = new StairsTopLeft(scene, 0.03889938974372242, -0.04250807446052818);
+    editorStairs.visible = true;
     this.add(editorStairs);
 
     this.cursor = cursor;
@@ -101,9 +106,10 @@ export default class Stairs extends Phaser.GameObjects.Container {
   private refreshStairsType() {
     if (!this.active) return;
     const stairsType = this.getStairsTypeAccordingToNeighbors();
+    const stairs = this.stairs as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
       this.updateCursor(stairsType);
-    } else if (this.stairs) {
+    } else if (stairs.visible) {
       this.updateStairs(stairsType);
     }
   }
@@ -177,7 +183,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   destroy(fromScene?: boolean) {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this);
     super.destroy(fromScene);
   }
 

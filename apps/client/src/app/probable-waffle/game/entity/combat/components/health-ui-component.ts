@@ -173,8 +173,8 @@ export class HealthUiComponent {
     this.updateElementPosition();
   }
 
-  setVisibility(visibility: boolean) {
-    this.bar.setVisible(visibility);
+  setVisibility(visible: boolean) {
+    this.bar.setVisible(visible);
     this.draw();
   }
 }

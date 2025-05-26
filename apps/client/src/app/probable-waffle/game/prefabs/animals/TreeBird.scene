@@ -1,0 +1,55 @@
+{
+    "id": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 32,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "ed677ba0-9af7-450d-817c-854e76042f7a",
+            "label": "bird_idle",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 16,
+            "hitArea.radius": 16,
+            "texture": {
+                "key": "animals",
+                "frame": "1.png"
+            },
+            "x": 16,
+            "y": 112.37994467473578,
+            "originY": 3.511873290466627,
+            "animationPlayMethod": 1,
+            "animationKey": "bird-idle"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    },
+    "prefabProperties": [
+        {
+            "name": "z",
+            "label": "Z",
+            "tooltip": "",
+            "defValue": 0,
+            "customDefinition": false,
+            "type": {
+                "id": "number"
+            }
+        }
+    ]
+}

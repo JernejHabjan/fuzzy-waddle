@@ -3,9 +3,9 @@ import { AudioSprites } from "./AudioSprites";
 
 // This file was generated from "convert-to-enums.js" script
 export enum SharedActorActionsSfx {
-  HIT = "hit",
-  SHOOT_1 = "shoot 1",
-  SHOOT_2 = "shoot 2",
+  ARROW_HIT = "hit",
+  ARROW_SHOOT_1 = "shoot 1",
+  ARROW_SHOOT_2 = "shoot 2",
   AXE_HIT = "axe hit",
   BODY_FALL = "body fall",
   BUILDING_DESTROY = "building destroy",
@@ -22,9 +22,9 @@ export enum SharedActorActionsSfx {
   FROST_BOLT_FIRE = "frost bolt fire",
   FROST_BOLT_IMPACT = "frost bolt impact",
   HEAL = "heal",
-  SWING_1 = "swing 1",
-  SWING_2 = "swing 2",
-  SWING_3 = "swing 3",
+  HEAVY_WEAPON_SWING_1 = "swing 1",
+  HEAVY_WEAPON_SWING_2 = "swing 2",
+  HEAVY_WEAPON_SWING_3 = "swing 3",
   LEATHER_NOCK = "leather nock",
   MACE_HIT = "mace hit",
   MINING = "mining",
@@ -49,12 +49,39 @@ export enum SharedActorActionsSfx {
   STONE_3 = "stone 3",
   RALLY_POINT = "rally point",
   SLINGSHOT_FIRE = "slingshot fire",
-  SLINGSHOT_HIT = "slingshot hit"
+  SLINGSHOT_HIT = "slingshot hit",
+  ARROW_SHOOT_MULTIPLE_1 = "arrows-shoot-multiple-1",
+  SPEAR_STAB_HIT_1 = "spear-stab",
+  STAFF_HIT_1 = "staff-hit-1",
+  PUNCH_HIT_1 = "punch-hit-1",
+  PUNCH_HIT_2 = "punch-hit-2",
+  SLIME_HIT_1 = "slime-hit-1",
+  SLIME_HIT_2 = "slime-hit-2"
 }
 
-export const SharedActorActionsSfxShootSounds: SoundDefinition[] = [
-  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SHOOT_1 },
-  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SHOOT_2 }
+export const SharedActorActionsSfxArrowShootSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.ARROW_SHOOT_1 },
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.ARROW_SHOOT_2 }
+];
+
+export const SharedActorActionsSfxArrowShootMultipleSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.ARROW_SHOOT_MULTIPLE_1 }
+];
+export const SharedActorActionsSfxSpearStabHitSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SPEAR_STAB_HIT_1 }
+];
+export const SharedActorActionsSfxStaffHitSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.STAFF_HIT_1 }
+];
+
+export const SharedActorActionsSfxPunchHitSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.PUNCH_HIT_1 },
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.PUNCH_HIT_2 }
+];
+
+export const SharedActorActionsFurballHitSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SLIME_HIT_1 },
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SLIME_HIT_2 }
 ];
 
 export const SharedActorActionsSfxChoppingSounds: SoundDefinition[] = [
@@ -82,10 +109,10 @@ export const SharedActorActionsSfxFrostImpactSounds: SoundDefinition[] = [
   { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.FROST_BOLT_IMPACT }
 ];
 
-export const SharedActorActionsSfxSwingSounds: SoundDefinition[] = [
-  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SWING_1 },
-  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SWING_2 },
-  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SWING_3 }
+export const SharedActorActionsSfxHeavyWeaponSwingSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.HEAVY_WEAPON_SWING_1 },
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.HEAVY_WEAPON_SWING_2 },
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.HEAVY_WEAPON_SWING_3 }
 ];
 
 export const SharedActorActionsSfxGrassSounds: SoundDefinition[] = [
@@ -139,8 +166,8 @@ export const SharedActorActionsSfxSelectionSounds: SoundDefinition[] = [
   { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.SELECTION }
 ];
 
-export const SharedActorActionsSfxHitSounds: SoundDefinition[] = [
-  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.HIT }
+export const SharedActorActionsSfxArrowHitSounds: SoundDefinition[] = [
+  { key: AudioSprites.SHARED_ACTOR_ACTIONS, spriteName: SharedActorActionsSfx.ARROW_HIT }
 ];
 
 export const SharedActorActionsSfxAxeHitSounds: SoundDefinition[] = [

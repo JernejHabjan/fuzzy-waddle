@@ -10,18 +10,23 @@ export interface VisionDefinition {
 
 export class VisionComponent {
   private visibleEnemies?: GameObject[]; // todo
+  public visibilityByCurrentPlayer: boolean = false;
 
   constructor(
     private readonly gameObject: GameObject,
     private readonly visionDefinition: VisionDefinition
   ) {}
 
+  get range() {
+    return this.visionDefinition.range;
+  }
+
   isActorVisible(actor: GameObject): boolean {
     const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, actor);
     if (distance === null) {
       return false;
     }
-    return distance <= this.visionDefinition.range;
+    return distance <= this.range;
   }
 
   getVisibleHighValueResources(): GameObject[] {

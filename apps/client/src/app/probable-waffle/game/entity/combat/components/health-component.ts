@@ -8,18 +8,36 @@ import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
-import { onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
 import { environment } from "../../../../../../environments/environment";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { AudioActorComponent, SoundDefinition, SoundType } from "../../actor/components/audio-actor-component";
+import { AnimationActorComponent, AnimationType } from "../../actor/components/animation-actor-component";
+import { EffectsAnims } from "../../../animations/effects";
+import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { AudioService } from "../../../scenes/services/audio.service";
+import {
+  SharedActorActionsSfxBodyFallSounds,
+  SharedActorActionsSfxBuildingDestroySounds
+} from "../../../sfx/SharedActorActionsSfx";
+import { VisionComponent } from "../../actor/components/vision-component";
 
 export type HealthDefinition = {
   maxHealth: number;
   maxArmour?: number;
   regenerateHealthRate?: number;
   healthDisplayBehavior?: "always" | "onDamage";
+  physicalState: ActorPhysicalType;
 };
+
+export enum ActorPhysicalType {
+  Biological = "biological",
+  Structural = "structural",
+  Organic = "organic"
+}
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -52,12 +70,40 @@ export class HealthComponent {
     },
     hooks: {
       health: (value: number, previousValue: number) => {
+        if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
+        let asTint;
+        switch (this.healthDefinition.physicalState) {
+          case ActorPhysicalType.Biological:
+            if (this.actorTranslateComponent) {
+              const transform = this.actorTranslateComponent.currentTileWorldXY;
+              const effect = EffectsAnims.createAndPlayBloodAnimation(this.gameObject.scene, transform.x, transform.y);
+              const gameObjectDepth = getGameObjectDepth(this.gameObject);
+              if (gameObjectDepth) {
+                effect.setDepth(gameObjectDepth + 1);
+              }
+            }
+            break;
+          case ActorPhysicalType.Structural:
+            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+            if (asTint.setTint) asTint.setTint(0xff0000);
+            // console.warn("this tint is not working "); // todo
+
+            // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
+            break;
+          case ActorPhysicalType.Organic:
+            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+            if (asTint.setTint) asTint.setTint(0xff0000);
+            // console.warn("this tint is not working "); // todo
+            break;
+        }
+
         if (value <= 0) {
           this.killActor(); // Custom logic when health reaches zero
         }
       },
       armour: (value: number, previousValue: number) => {
-        // Example of custom logic when armor changes
+        if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
+
         if (HealthComponent.DEBUG) console.log(`Armor changed from ${previousValue} to ${value}`);
       }
     }
@@ -69,6 +115,12 @@ export class HealthComponent {
   private healthUiHideOnTimeout?: number;
   private killKey?: Phaser.Input.Keyboard.Key | undefined;
   private damageKey?: Phaser.Input.Keyboard.Key | undefined;
+  private animationActorComponent?: AnimationActorComponent;
+  private audioActorComponent?: AudioActorComponent;
+  private actorTranslateComponent?: ActorTranslateComponent;
+  private audioService?: AudioService;
+  hidden: boolean = false;
+
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly healthDefinition: HealthDefinition
@@ -105,21 +157,31 @@ export class HealthComponent {
   }
 
   private init() {
+    this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+    this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
+    this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
     if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
       const shouldBeVisible = this.shouldUiElementsBeVisible;
       this.setVisibilityUiComponent(false);
       this.shouldUiElementsBeVisible = shouldBeVisible;
       this.constructionProgressSubscription = constructionSiteComponent.constructionStateChanged.subscribe(() =>
-        this.setVisibilityUiComponent(this.shouldUiElementsBeVisible)
+        this.refreshVisibility()
       );
     }
+    // Todo - now calling refreshVisibility on tick to update visibility due to FOW changes
+    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
 
     this.bindKillKey();
 
     if (!environment.production) {
       this.bindDamageKey();
     }
+  }
+
+  private refreshVisibility() {
+    this.setVisibilityUiComponent(this.shouldUiElementsBeVisible);
   }
 
   private bindKillKey() {
@@ -159,10 +221,14 @@ export class HealthComponent {
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
-    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
-      this.setVisibilityUiComponent(true);
+    if (visible) {
+      if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
+        this.setVisibilityUiComponent(true);
+      } else {
+        this.setVisibilityUiComponent(visible);
+      }
     } else {
-      this.setVisibilityUiComponent(visible);
+      this.setVisibilityUiComponent(false);
     }
   }
 
@@ -213,23 +279,48 @@ export class HealthComponent {
   }
 
   killActor() {
+    if (!this.gameObject.active || !this.gameObject.scene) return;
     this.healthComponentData.health = 0;
-    this.gameObject.emit(HealthComponent.KilledEvent);
+    this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
+    this.playDeathSound();
     this.playDeathAnimation();
     this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
       this.gameObject.destroy();
     });
+    // emit last
+    this.gameObject.emit(HealthComponent.KilledEvent);
   }
 
   private playDeathAnimation() {
-    const sprite = this.gameObject as Phaser.GameObjects.Sprite; // todo
-    if (sprite.anims) {
-      sprite.play("general_warrior_hurt"); // todo
+    if (this.animationActorComponent) {
+      this.animationActorComponent.playCustomAnimation(AnimationType.Death);
     } else {
-      // todo this is just fallback - ensure that you handle this case correctly
+      // this is just fallback - ensure that you handle this case correctly
       const visibleComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Visible;
       if (visibleComponent.setVisible === undefined) return;
       visibleComponent.setVisible(false);
+      this.hidden = true;
+    }
+  }
+
+  private playDeathSound() {
+    let randomSound: SoundDefinition;
+    let randomSoundIndex: number;
+    switch (this.healthDefinition.physicalState) {
+      case ActorPhysicalType.Organic:
+      case ActorPhysicalType.Biological:
+        randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBodyFallSounds.length);
+        randomSound = SharedActorActionsSfxBodyFallSounds[randomSoundIndex];
+        if (this.audioService)
+          this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
+        if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Death);
+        break;
+      case ActorPhysicalType.Structural:
+        randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBuildingDestroySounds.length);
+        randomSound = SharedActorActionsSfxBuildingDestroySounds[randomSoundIndex];
+        if (this.audioService)
+          this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
+        break;
     }
   }
 
@@ -241,17 +332,19 @@ export class HealthComponent {
     this.healthComponentData.armour = this.healthDefinition.maxArmour ?? 0;
   }
 
-  setVisibilityUiComponent(visibility: boolean) {
+  setVisibilityUiComponent(visible: boolean) {
     if (!this.gameObject.active) return;
-    this.shouldUiElementsBeVisible = visibility;
+    this.shouldUiElementsBeVisible = visible;
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
-    if (constructionSiteComponent && !constructionSiteComponent.isFinished) visibility = false;
+    if (constructionSiteComponent && !constructionSiteComponent.isFinished) visible = false;
     const previousVisibility = this.uiComponentsVisible;
-    if (visibility === previousVisibility) return;
-    this.healthUiComponent.setVisibility(visibility);
-    this.armorUiComponent?.setVisibility(visibility);
-    this.uiComponentsVisible = visibility;
-    this.uiComponentsVisibilityChanged.next(visibility);
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
+    if (visible === previousVisibility) return;
+    this.healthUiComponent.setVisibility(visible);
+    this.armorUiComponent?.setVisibility(visible);
+    this.uiComponentsVisible = visible;
+    this.uiComponentsVisibilityChanged.next(visible);
   }
 
   private destroy() {
@@ -260,6 +353,7 @@ export class HealthComponent {
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     this.killKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.killSelected, this);
     this.damageKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
   }
 
   get alive(): boolean {
@@ -271,7 +365,7 @@ export class HealthComponent {
   }
 
   getData(): HealthComponentData {
-    return this.healthComponentData;
+    return { ...this.healthComponentData }; // need to clone it so it's not a proxy object
   }
 
   setData(data: Partial<HealthComponentData>) {

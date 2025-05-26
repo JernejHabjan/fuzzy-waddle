@@ -119,6 +119,18 @@
             "scope": "CLASS",
             "x": 6,
             "y": 472
+        },
+        {
+            "prefabId": "20ff71f1-47d6-4bbe-89d7-2ecd728804fc",
+            "id": "47b0d040-d499-4715-9b23-0364ef8e41a4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "groupContainer",
+            "scope": "CLASS",
+            "x": 552,
+            "y": 541
         }
     ],
     "plainObjects": [],

@@ -2,8 +2,9 @@
 
 /* START OF COMPILED CODE */
 
-import ActorIcon, { ActorIconClickAction } from "./ActorIcon";
+import ActorIcon from "./ActorIcon";
 /* START-USER-IMPORTS */
+import { ActorIconClickAction } from "./ActorIcon";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";
@@ -19,8 +20,6 @@ import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
-
-    this.blendMode = Phaser.BlendModes.SKIP_CHECK;
 
     // actorIcon1
     const actorIcon1 = new ActorIcon(scene, 10, 9);
@@ -123,7 +122,6 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private clickSubscriptions: Subscription[] = [];
   private actor?: Phaser.GameObjects.GameObject;
 
-  /* END-USER-CODE */
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
     this.visible = false;
@@ -262,6 +260,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (!item) return;
     productionComponent.cancelProduction(item);
   }
+  /* END-USER-CODE */
 }
 
 /* END OF COMPILED CODE */

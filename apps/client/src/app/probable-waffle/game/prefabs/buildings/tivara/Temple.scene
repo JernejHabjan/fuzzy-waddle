@@ -32,7 +32,7 @@
                     "label": "templeCursor",
                     "scope": "CLASS",
                     "x": 0,
-                    "y": 0,
+                    "y": -8,
                     "visible": false
                 },
                 {
@@ -46,7 +46,7 @@
                     "label": "templeFoundation1",
                     "scope": "CLASS",
                     "x": 0,
-                    "y": 0,
+                    "y": -8,
                     "visible": false
                 },
                 {
@@ -60,7 +60,7 @@
                     "label": "templeFoundation2",
                     "scope": "CLASS",
                     "x": 0,
-                    "y": 0,
+                    "y": -8,
                     "visible": false
                 },
                 {
@@ -73,7 +73,7 @@
                     "label": "templeLevel1",
                     "scope": "CLASS",
                     "x": 0,
-                    "y": 0
+                    "y": -8
                 }
             ]
         }
