@@ -81,16 +81,27 @@ export class CursorHandler {
     targetMoveB: "Cursor Target Move B"
   };
 
+  private currentCursor?: string;
+
   constructor(private readonly scene: Phaser.Scene) {
-    new LockedCursorHandler(scene);
+    new LockedCursorHandler(scene, this);
     this.setupCursor();
   }
 
   private setupCursor() {
+    this.currentCursor = this.getRawCursorUrl(this.cursors.default);
     this.scene.input.setDefaultCursor(this.getCursorUrl(this.cursors.default));
   }
 
+  private getRawCursorUrl(cursor: string): string {
+    return `assets/probable-waffle/input/cursors/${cursor}.cur`;
+  }
+
   private getCursorUrl(cursor: string): string {
-    return `url("assets/probable-waffle/input/cursors/${cursor}.cur"), auto`;
+    return `url("${this.getRawCursorUrl(cursor)}"), auto`;
+  }
+
+  getCurrentCursorUrl(): string {
+    return this.currentCursor || this.getRawCursorUrl(this.cursors.default);
   }
 }
