@@ -2,7 +2,7 @@ import { Input } from "phaser";
 import { CursorHandler } from "./cursor.handler";
 
 export class LockedCursorHandler {
-  private readonly lockToScreen = true; // Set to true to enable pointer lock
+  private readonly lockToScreen = false;
   private readonly input: Input.InputPlugin;
 
   private customCursor: Phaser.GameObjects.Graphics | null = null;
@@ -72,13 +72,14 @@ export class LockedCursorHandler {
 
   /**
    * Update the active pointer position so Phaser's input system knows where the cursor is
+   * TODO - seems like there's still an issue with pointer position being automatically set by Phaser on move, overriding my manual updates.
+   * TODO - see this: https://github.com/phaserjs/phaser/issues/7153
    */
   private updateInputPointerPosition() {
     if (!this.customCursor) return;
-    this.input.activePointer.x = this.cursorPosition.x;
-    this.input.activePointer.y = this.cursorPosition.y;
-    this.input.activePointer.worldX = this.cursorPosition.x;
-    this.input.activePointer.worldY = this.cursorPosition.y;
+    this.input.activePointer.position.set(this.cursorPosition.x, this.cursorPosition.y);
+    const camera = this.scene.cameras.main;
+    this.input.activePointer.updateWorldPoint(camera);
   }
 
   /**

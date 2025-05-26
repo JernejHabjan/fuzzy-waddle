@@ -2,7 +2,7 @@ import { Cameras, Geom, Input, Types } from "phaser";
 import GameProbableWaffleScene from "../../../../scenes/GameProbableWaffleScene";
 
 export class CameraMovementHandler {
-  private readonly enabledMouseCornerMovement = true;
+  private readonly enabledMouseCornerMovement = false;
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private cursorOverGameInstance = false;
@@ -10,7 +10,6 @@ export class CameraMovementHandler {
   private readonly cameraEdgeMargin = 30;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
-  private readonly cameraZoomFactor = 0.1;
 
   constructor(
     private readonly scene: Phaser.Scene,
