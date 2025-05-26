@@ -68,9 +68,7 @@ export default class Lizard extends Phaser.Physics.Arcade.Sprite {
   // noinspection JSUnusedLocalSymbols
   private handleTileCollision(go: Phaser.GameObjects.GameObject, tile: Phaser.Tilemaps.Tile) {
     // if this object didn't collide with the tile
-    if (go !== this) {
-      return;
-    }
+    if (go !== this) return;
 
     // change direction
     this.direction = randomDirection(this.direction);

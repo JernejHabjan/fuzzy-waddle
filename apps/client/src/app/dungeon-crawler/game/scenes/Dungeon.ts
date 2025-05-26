@@ -5,23 +5,39 @@ import Lizard from "../enemies/Lizard";
 import "../characters/Faune";
 import Faune from "../characters/Faune";
 import { createTreasureAnims } from "../anims/TreasureAnims";
-import findPath from "../utils/findPath";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
 import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
 import { Scene } from "phaser";
+import Phaser from "phaser";
+import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
 
 export default class Dungeon extends Scene implements CreateSceneFromObjectConfig {
+  private readonly DEBUG = false;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private faune!: Faune;
   private playerLizardsCollider?: Phaser.Physics.Arcade.Collider;
   private knives!: Phaser.Physics.Arcade.Group;
   private lizards!: Phaser.Physics.Arcade.Group;
+  private joystick?: any;
+  private joystickRight?: any;
+  private wasd?: {
+    up: Phaser.Input.Keyboard.Key;
+    down: Phaser.Input.Keyboard.Key;
+    left: Phaser.Input.Keyboard.Key;
+    right: Phaser.Input.Keyboard.Key;
+  };
+  private isMobile = false;
+  private victoryText?: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: DungeonCrawlerScenes.MainSceneDungeon });
   }
 
   preload() {
+    this.cursors = this.input.keyboard?.createCursorKeys();
+    // Detect mobile
+    this.isMobile = this.sys.game.device.os.android || this.sys.game.device.os.iOS;
+    // Always create cursors for Faune.update signature
     this.cursors = this.input.keyboard?.createCursorKeys();
   }
 
@@ -34,19 +50,22 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     createTreasureAnims(this.anims);
 
     const map = this.make.tilemap({ key: AssetsDungeon.dungeon });
-    const tileset = map.addTilesetImage(DungeonTilesetNames.dungeion, AssetsDungeon.tiles)!;
+    const tileset = map.addTilesetImage(DungeonTilesetNames.dungeon, AssetsDungeon.tiles)!;
     const groundLayer = map.createLayer(DungeonTilesetLayers.Ground, tileset);
     const wallsLayer = map.createLayer(DungeonTilesetLayers.Walls, tileset)!;
+    const assetsLayer = map.createLayer(DungeonTilesetLayers.Assets, tileset)!;
 
     wallsLayer.setCollisionByProperty({ collides: true });
+    assetsLayer.setCollisionByProperty({ collides: true });
 
-    // this.renderDebugCollision(wallsLayer);
+    this.renderDebugCollision(wallsLayer);
+    this.renderDebugCollision(assetsLayer);
 
     this.knives = this.physics.add.group({
       classType: Phaser.Physics.Arcade.Image
     });
 
-    this.faune = this.add.faune(220, 128);
+    this.faune = this.add.faune(100, 128);
     this.faune.setKnives(this.knives);
 
     this.lizards = this.physics.add.group({
@@ -60,6 +79,9 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     this.physics.add.collider(this.faune, wallsLayer);
     this.physics.add.collider(this.lizards, wallsLayer);
     this.physics.add.collider(this.knives, wallsLayer, this.handleKnifeWallCollision, undefined, this);
+    this.physics.add.collider(this.faune, assetsLayer);
+    this.physics.add.collider(this.lizards, assetsLayer);
+    this.physics.add.collider(this.knives, assetsLayer);
     this.physics.add.collider(this.knives, this.lizards, this.handleKnifeLizardCollision, undefined, this);
     this.playerLizardsCollider = this.physics.add.collider(
       this.lizards,
@@ -71,58 +93,139 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     this.cameras.main.startFollow(this.faune, true);
 
-    this.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
-      const { worldX, worldY } = pointer;
+    // Setup controls
+    if (this.isMobile) {
+      // Virtual joystick (left for movement, right for action)
+      this.joystick = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+        x: 80,
+        y: this.cameras.main.height - 80,
+        radius: 50,
+        base: this.add.circle(0, 0, 50, 0x888888, 0.3),
+        thumb: this.add.circle(0, 0, 25, 0xcccccc, 0.7),
+        dir: "8dir",
+        forceMin: 10,
+        enable: true
+      });
 
-      const startVec = groundLayer!.worldToTileXY(this.faune.x, this.faune.y);
-      const targetVec = groundLayer!.worldToTileXY(worldX, worldY);
+      this.joystickRight = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+        x: this.cameras.main.width - 80,
+        y: this.cameras.main.height - 80,
+        radius: 40,
+        base: this.add.circle(0, 0, 40, 0x888888, 0.3),
+        thumb: this.add.circle(0, 0, 20, 0xcccccc, 0.7),
+        dir: "8dir",
+        forceMin: 10,
+        enable: true
+      });
+    } else {
+      // WASD keys for desktop
+      this.wasd = {
+        up: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+        down: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+        left: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+        right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+      };
 
-      // generate the path
-      const path = findPath(startVec, targetVec, groundLayer!, wallsLayer);
-
-      // give it to the player to use
-      this.faune.moveAlong(path);
-    });
+      // Fire projectile in direction of click
+      this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
+        const dx = pointer.worldX - this.faune.x;
+        const dy = pointer.worldY - this.faune.y;
+        const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
+        // Use knife cooldown for click as well
+        const t = this.time.now;
+        if (t - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
+          this.faune.throwKnife(angle);
+          this.faune.lastKnifeTime = t;
+        }
+      });
+    }
 
     // remember to clean up on Scene shutdown
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.input.off(Phaser.Input.Events.POINTER_UP);
+      this.input.off(Phaser.Input.Events.POINTER_DOWN);
     });
   }
 
   /**
-   * todo update speed by delta
+   * Update speed by delta
    */
   update(t: number, dt: number) {
-    if (this.faune && this.cursors) {
-      this.faune.update(this.cursors);
+    if (this.faune) {
+      if (this.isMobile) {
+        // Pass dummy cursors (required by Faune.update signature)
+        const joystick = this.joystick;
+        const joystickRight = this.joystickRight;
+        this.faune.update(this.cursors!, t, dt, joystick, joystickRight);
+      } else {
+        // WASD for movement, no joystick
+        this.faune.updateWASD(this.wasd!, t, dt);
+      }
     }
   }
 
-  renderDebugCollision(layer: Phaser.Tilemaps.TilemapLayer) {
+  renderDebugCollision(layer: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer) {
+    if (!this.DEBUG) return;
     const debugGraphics = this.add.graphics().setAlpha(0.7);
     layer.renderDebug(debugGraphics, {
-      tileColor: null, // color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // color of colliding face edges
+      tileColor: null, // colour of non-colliding tiles
+      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // colour of colliding tiles
+      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // colour of colliding face edges
     });
   }
 
-  // noinspection JSUnusedLocalSymbols
-  private handleKnifeWallCollision(knife: any, obj2: any) {
+  private handleKnifeWallCollision(knife: any, _obj2: any) {
     this.knives.killAndHide(knife);
-    // todo remove from collision as this one still exists
+    // Remove from collision as this one still exists
+    this.knives.remove(knife, true, true);
   }
 
   private handleKnifeLizardCollision(knife: any, lizard: any) {
     this.knives.killAndHide(knife);
     this.lizards.killAndHide(lizard);
 
-    // todo remove both from collision as this one still exists
+    // Remove both from collision as this one still exists
+    this.knives.remove(knife, true, true);
+    this.lizards.remove(lizard, true, true);
+
+    // Check if all lizards are dead
+    if (this.lizards.countActive(true) === 0) {
+      this.onAllLizardsKilled();
+    }
   }
 
-  // noinspection JSUnusedLocalSymbols
-  private handlePlayerLizardCollision(obj1: any, obj2: any) {
+  private onAllLizardsKilled() {
+    // Pause the game and display "Victory"
+    this.victoryText = this.add
+      .text(this.cameras.main.centerX, this.cameras.main.centerY, "Victory", {
+        fontSize: "18px",
+        color: "#fff",
+        backgroundColor: "#222",
+        padding: { x: 20, y: 10 }
+      })
+      .setOrigin(0.5);
+    this.victoryText.setScrollFactor(0); // Make sure it doesn't scroll with the camera
+
+    // Listen for any input to restart the scene
+    const restartScene = () => {
+      this.input.keyboard?.off("keydown", restartScene);
+      this.input.off("pointerdown", restartScene);
+      this.input.off("gamepaddown", restartScene);
+      this.victoryText?.destroy();
+      this.scene.restart();
+    };
+
+    setTimeout(() => {
+      if (!this.victoryText) return; // If victory text was destroyed, do not add listeners
+      // set Victory text to "click to restart"
+      this.victoryText.setText("Click or press any key to restart");
+      this.input.keyboard?.on("keydown", restartScene);
+      this.input.on("pointerdown", restartScene);
+      this.input.on("gamepaddown", restartScene);
+    }, 1000);
+  }
+
+  private handlePlayerLizardCollision(_obj1: any, obj2: any) {
     const lizard = obj2 as Lizard;
     const dx = this.faune.x - lizard.x;
     const dy = this.faune.y - lizard.y;
