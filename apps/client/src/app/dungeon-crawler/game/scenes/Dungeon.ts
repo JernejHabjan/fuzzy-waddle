@@ -10,6 +10,7 @@ import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/s
 import { Scene } from "phaser";
 import Phaser from "phaser";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
+import TilemapLayer = Phaser.Tilemaps.TilemapLayer;
 
 export default class Dungeon extends Scene implements CreateSceneFromObjectConfig {
   private readonly DEBUG = false;
@@ -51,9 +52,9 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     const map = this.make.tilemap({ key: AssetsDungeon.dungeon });
     const tileset = map.addTilesetImage(DungeonTilesetNames.dungeon, AssetsDungeon.tiles)!;
-    const groundLayer = map.createLayer(DungeonTilesetLayers.Ground, tileset);
-    const wallsLayer = map.createLayer(DungeonTilesetLayers.Walls, tileset)!;
-    const assetsLayer = map.createLayer(DungeonTilesetLayers.Assets, tileset)!;
+    const groundLayer = map.createLayer(DungeonTilesetLayers.Ground, tileset) as TilemapLayer;
+    const wallsLayer = map.createLayer(DungeonTilesetLayers.Walls, tileset) as TilemapLayer;
+    const assetsLayer = map.createLayer(DungeonTilesetLayers.Assets, tileset) as TilemapLayer;
 
     wallsLayer.setCollisionByProperty({ collides: true });
     assetsLayer.setCollisionByProperty({ collides: true });
