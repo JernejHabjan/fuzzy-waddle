@@ -49,6 +49,7 @@ export class SpawnBerryComponent {
       ease: "Linear",
       onUpdate: (tween) => {
         const t = tween.getValue();
+        if (!t) return;
 
         // Parabolic arc
         const x = Phaser.Math.Linear(startX, landX, t);
