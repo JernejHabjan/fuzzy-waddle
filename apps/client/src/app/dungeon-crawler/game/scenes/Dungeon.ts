@@ -7,8 +7,7 @@ import Faune from "../characters/Faune";
 import { createTreasureAnims } from "../anims/TreasureAnims";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
 import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
-import { Scene } from "phaser";
-import Phaser from "phaser";
+import Phaser, { Scene } from "phaser";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
 import TilemapLayer = Phaser.Tilemaps.TilemapLayer;
 
@@ -28,6 +27,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     right: Phaser.Input.Keyboard.Key;
   };
   private isMobile = false;
+  private activePointer?: Phaser.Input.Pointer;
   private victoryText?: Phaser.GameObjects.Text;
 
   constructor() {
@@ -96,24 +96,29 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     // Setup controls
     if (this.isMobile) {
+      this.input.addPointer(2);
+
+      const margin = 40;
+      const leftJoystickRadius = 30;
+      const rightJoystickRadius = 20;
       // Virtual joystick (left for movement, right for action)
       this.joystick = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
-        x: 80,
-        y: this.cameras.main.height - 80,
-        radius: 50,
-        base: this.add.circle(0, 0, 50, 0x888888, 0.3),
-        thumb: this.add.circle(0, 0, 25, 0xcccccc, 0.7),
+        x: margin,
+        y: this.cameras.main.height - margin,
+        radius: leftJoystickRadius,
+        base: this.add.circle(0, 0, leftJoystickRadius, 0x888888, 0.3),
+        thumb: this.add.circle(0, 0, leftJoystickRadius / 2, 0xcccccc, 0.7),
         dir: "8dir",
         forceMin: 10,
         enable: true
       });
 
       this.joystickRight = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
-        x: this.cameras.main.width - 80,
-        y: this.cameras.main.height - 80,
-        radius: 40,
-        base: this.add.circle(0, 0, 40, 0x888888, 0.3),
-        thumb: this.add.circle(0, 0, 20, 0xcccccc, 0.7),
+        x: this.cameras.main.width - margin,
+        y: this.cameras.main.height - margin,
+        radius: rightJoystickRadius,
+        base: this.add.circle(0, 0, rightJoystickRadius, 0x888888, 0.3),
+        thumb: this.add.circle(0, 0, rightJoystickRadius / 2, 0xcccccc, 0.7),
         dir: "8dir",
         forceMin: 10,
         enable: true
@@ -139,6 +144,14 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
           this.faune.lastKnifeTime = t;
         }
       });
+
+      this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
+        this.activePointer = pointer;
+      });
+
+      this.input.on(Phaser.Input.Events.POINTER_UP, () => {
+        this.activePointer = undefined;
+      });
     }
 
     // remember to clean up on Scene shutdown
@@ -154,13 +167,24 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
   update(t: number, dt: number) {
     if (this.faune) {
       if (this.isMobile) {
-        // Pass dummy cursors (required by Faune.update signature)
         const joystick = this.joystick;
         const joystickRight = this.joystickRight;
         this.faune.update(this.cursors!, t, dt, joystick, joystickRight);
       } else {
-        // WASD for movement, no joystick
         this.faune.updateWASD(this.wasd!, t, dt);
+      }
+
+      // Handle held pointer shooting
+      if (this.activePointer?.isDown) {
+        const dx = this.activePointer.worldX - this.faune.x;
+        const dy = this.activePointer.worldY - this.faune.y;
+        const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
+
+        const now = this.time.now;
+        if (now - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
+          this.faune.throwKnife(angle);
+          this.faune.lastKnifeTime = now;
+        }
       }
     }
   }
@@ -199,10 +223,13 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     // Pause the game and display "Victory"
     this.victoryText = this.add
       .text(this.cameras.main.centerX, this.cameras.main.centerY, "Victory", {
-        fontSize: "18px",
+        fontSize: "12px",
         color: "#fff",
         backgroundColor: "#222",
-        padding: { x: 20, y: 10 }
+        padding: { x: 20, y: 10 },
+        wordWrap: {
+          width: this.cameras.main.width - 40
+        }
       })
       .setOrigin(0.5);
     this.victoryText.setScrollFactor(0); // Make sure it doesn't scroll with the camera
