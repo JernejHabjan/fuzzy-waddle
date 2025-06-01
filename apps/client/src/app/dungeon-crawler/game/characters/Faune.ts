@@ -84,151 +84,110 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
 
   update(cursors: Phaser.Types.Input.Keyboard.CursorKeys, t: number, dt: number, joystick?: any, joystickRight?: any) {
     super.update(t, dt);
+
     if (this.healthState === HealthState.DAMAGE || this.healthState === HealthState.DEAD) {
-      // dont do movement if damaged
       return;
     }
 
-    // Joystick movement
-    let movedByJoystick = false;
-    if (joystick && joystick.force > 0) {
-      const baseSpeed = 8000;
-      const speed = baseSpeed * (dt / 1000);
-      const angle = joystick.angle; // degrees
-      const rad = Phaser.Math.DegToRad(angle);
-      const vx = Math.cos(rad) * speed;
-      const vy = Math.sin(rad) * speed;
+    const baseSpeed = 8000;
+    const speed = baseSpeed * (dt / 1000);
 
-      // Animation by direction
-      if (Math.abs(vx) > Math.abs(vy)) {
-        // Horizontal
-        this.anims.play(AnimationsFaune.runSide, true);
-        this.setVelocity(vx, 0);
-        this.scaleX = vx < 0 ? -1 : 1;
-        this.body!.offset.x = vx < 0 ? 24 : 8;
-      } else {
-        // Vertical
-        if (vy < 0) {
-          this.anims.play(AnimationsFaune.runUp, true);
-        } else {
-          this.anims.play(AnimationsFaune.runDown, true);
-        }
-        this.setVelocity(0, vy);
+    let vx = 0;
+    let vy = 0;
+
+    // --- Joystick movement ---
+    if (joystick && joystick.force > 0) {
+      const angle = Phaser.Math.DegToRad(joystick.angle);
+      vx = Math.cos(angle) * speed;
+      vy = Math.sin(angle) * speed;
+    } else if (cursors) {
+      if (cursors.left?.isDown) {
+        vx -= speed;
       }
-      movedByJoystick = true;
+      if (cursors.right?.isDown) {
+        vx += speed;
+      }
+      if (cursors.up?.isDown) {
+        vy -= speed;
+      }
+      if (cursors.down?.isDown) {
+        vy += speed;
+      }
     }
 
-    // Right joystick attack (fire in joystick direction, with cooldown)
+    // Normalize diagonal movement
+    const lenSq = vx * vx + vy * vy;
+    if (lenSq > 0) {
+      const len = Math.sqrt(lenSq);
+      vx = (vx / len) * speed;
+      vy = (vy / len) * speed;
+    }
+
+    this.setVelocity(vx, vy);
+
+    // --- Animation ---
+    if (Math.abs(vx) > Math.abs(vy)) {
+      this.anims.play(AnimationsFaune.runSide, true);
+      this.scaleX = vx < 0 ? -1 : 1;
+      this.body!.offset.x = vx < 0 ? 24 : 8;
+    } else if (Math.abs(vy) > 0) {
+      this.anims.play(vy < 0 ? AnimationsFaune.runUp : AnimationsFaune.runDown, true);
+    } else {
+      // Idle
+      const parts = this.anims.currentAnim?.key.split("-");
+      if (parts && parts.length >= 3) {
+        parts[1] = "idle";
+        this.anims.play(parts.join("-"));
+      }
+    }
+
+    // --- Attack: Right joystick or spacebar ---
     if (joystickRight && joystickRight.force > 0) {
       if (t - this.lastKnifeTime > this.knifeCooldown) {
         this.throwKnife(joystickRight.angle);
         this.lastKnifeTime = t;
       }
-    }
-
-    if (!movedByJoystick) {
-      // Keyboard fallback
-      if (!cursors) {
-        return;
-      }
-
-      if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
-        if (t - this.lastKnifeTime > this.knifeCooldown) {
-          this.throwKnife();
-          this.lastKnifeTime = t;
-        }
-        return;
-      }
-
-      const baseSpeed = 8000;
-      const speed = baseSpeed * (dt / 1000);
-
-      const hasMovedByKeys = this.moveByKeys(cursors, speed);
-
-      if (!hasMovedByKeys) {
-        // update direction we're facing by anim key name
-        const parts = this.anims.currentAnim!.key.split("-");
-        parts[1] = "idle";
-        this.anims.play(parts.join("-"));
-        this.setVelocity(0, 0);
+    } else if (cursors && Phaser.Input.Keyboard.JustDown(cursors.space)) {
+      if (t - this.lastKnifeTime > this.knifeCooldown) {
+        this.throwKnife();
+        this.lastKnifeTime = t;
       }
     }
   }
 
-  updateWASD(
-    wasd: {
-      up: Phaser.Input.Keyboard.Key;
-      down: Phaser.Input.Keyboard.Key;
-      left: Phaser.Input.Keyboard.Key;
-      right: Phaser.Input.Keyboard.Key;
-    },
-    t: number,
-    dt: number
-  ) {
-    if (this.healthState === HealthState.DAMAGE || this.healthState === HealthState.DEAD) {
-      return;
-    }
+  updateWASD(wasd: { up: any; down: any; left: any; right: any }, t: number, dt: number) {
+    if (this.healthState === HealthState.DAMAGE || this.healthState === HealthState.DEAD) return;
 
-    // WASD movement
-    let moved = false;
+    const direction = new Phaser.Math.Vector2(0, 0);
     const baseSpeed = 8000;
     const speed = baseSpeed * (dt / 1000);
 
-    if (wasd.left.isDown) {
-      this.anims.play(AnimationsFaune.runSide, true);
-      this.setVelocity(-speed, 0);
-      this.scaleX = -1;
-      this.body!.offset.x = 24;
-      moved = true;
-    } else if (wasd.right.isDown) {
-      this.anims.play(AnimationsFaune.runSide, true);
-      this.setVelocity(speed, 0);
-      this.scaleX = 1;
-      this.body!.offset.x = 8;
-      moved = true;
-    } else if (wasd.up.isDown) {
-      this.anims.play(AnimationsFaune.runUp, true);
-      this.setVelocity(0, -speed);
-      moved = true;
-    } else if (wasd.down.isDown) {
-      this.anims.play(AnimationsFaune.runDown, true);
-      this.setVelocity(0, speed);
-      moved = true;
-    }
+    if (wasd.left.isDown) direction.x = -1;
+    else if (wasd.right.isDown) direction.x = 1;
 
-    if (!moved) {
-      // update direction we're facing by anim key name
+    if (wasd.up.isDown) direction.y = -1;
+    else if (wasd.down.isDown) direction.y = 1;
+
+    if (direction.lengthSq() > 0) {
+      direction.normalize();
+      this.setVelocity(direction.x * speed, direction.y * speed);
+
+      if (Math.abs(direction.x) > Math.abs(direction.y)) {
+        this.anims.play(AnimationsFaune.runSide, true);
+        this.scaleX = direction.x < 0 ? -1 : 1;
+        this.body!.offset.x = direction.x < 0 ? 24 : 8;
+      } else if (direction.y < 0) {
+        this.anims.play(AnimationsFaune.runUp, true);
+      } else {
+        this.anims.play(AnimationsFaune.runDown, true);
+      }
+    } else {
+      // idle animation
       const parts = this.anims.currentAnim!.key.split("-");
       parts[1] = "idle";
       this.anims.play(parts.join("-"));
       this.setVelocity(0, 0);
     }
-  }
-
-  private moveByKeys(cursors: Phaser.Types.Input.Keyboard.CursorKeys, speed: number): boolean {
-    let movedByKeys = false;
-    if (cursors.left?.isDown) {
-      this.anims.play(AnimationsFaune.runSide, true);
-      this.setVelocity(-speed, 0);
-      this.scaleX = -1;
-      this.body!.offset.x = 24;
-      movedByKeys = true;
-    } else if (cursors.right?.isDown) {
-      this.anims.play(AnimationsFaune.runSide, true);
-      this.setVelocity(speed, 0);
-      this.scaleX = 1;
-      this.body!.offset.x = 8;
-      movedByKeys = true;
-    } else if (cursors.up?.isDown) {
-      this.anims.play(AnimationsFaune.runUp, true);
-      this.setVelocity(0, -speed);
-      movedByKeys = true;
-    } else if (cursors.down?.isDown) {
-      this.anims.play(AnimationsFaune.runDown, true);
-      this.setVelocity(0, speed);
-      movedByKeys = true;
-    }
-    return movedByKeys;
   }
 
   public throwKnife(angleDeg?: number) {

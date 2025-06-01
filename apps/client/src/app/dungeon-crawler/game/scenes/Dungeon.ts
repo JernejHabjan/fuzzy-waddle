@@ -165,26 +165,25 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
    * Update speed by delta
    */
   update(t: number, dt: number) {
-    if (this.faune) {
-      if (this.isMobile) {
-        const joystick = this.joystick;
-        const joystickRight = this.joystickRight;
-        this.faune.update(this.cursors!, t, dt, joystick, joystickRight);
-      } else {
-        this.faune.updateWASD(this.wasd!, t, dt);
-      }
+    if (!this.faune) return;
+    if (this.isMobile) {
+      const joystick = this.joystick;
+      const joystickRight = this.joystickRight;
+      this.faune.update(this.cursors!, t, dt, joystick, joystickRight);
+    } else {
+      this.faune.updateWASD(this.wasd!, t, dt);
+    }
 
-      // Handle held pointer shooting
-      if (this.activePointer?.isDown) {
-        const dx = this.activePointer.worldX - this.faune.x;
-        const dy = this.activePointer.worldY - this.faune.y;
-        const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
+    // Handle held pointer shooting
+    if (this.activePointer?.isDown) {
+      const dx = this.activePointer.worldX - this.faune.x;
+      const dy = this.activePointer.worldY - this.faune.y;
+      const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
 
-        const now = this.time.now;
-        if (now - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
-          this.faune.throwKnife(angle);
-          this.faune.lastKnifeTime = now;
-        }
+      const now = this.time.now;
+      if (now - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
+        this.faune.throwKnife(angle);
+        this.faune.lastKnifeTime = now;
       }
     }
   }
@@ -262,8 +261,41 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     this.faune.handleDamage(dir);
 
     if (this.faune.health <= 0) {
-      // stop colliding after death
-      this.playerLizardsCollider?.destroy();
+      // Stop the collider so Faune isn't hit multiple times after death
+      this.physics.world.removeCollider(this.playerLizardsCollider!);
+
+      this.faune.setTint(0xff0000);
+      this.faune.anims.stop();
+      this.faune.setVelocity(0, 0);
+
+      const gameOverText = this.add
+        .text(this.cameras.main.centerX, this.cameras.main.centerY, "Game Over", {
+          fontSize: "12px",
+          color: "#fff",
+          backgroundColor: "#222",
+          padding: { x: 20, y: 10 },
+          wordWrap: {
+            width: this.cameras.main.width - 40
+          }
+        })
+        .setOrigin(0.5);
+      gameOverText.setScrollFactor(0);
+
+      const restartScene = () => {
+        this.input.keyboard?.off("keydown", restartScene);
+        this.input.off("pointerdown", restartScene);
+        this.input.off("gamepaddown", restartScene);
+        gameOverText.destroy();
+        this.scene.restart();
+      };
+
+      setTimeout(() => {
+        if (!gameOverText) return;
+        gameOverText.setText("Click or press any key to restart");
+        this.input.keyboard?.on("keydown", restartScene);
+        this.input.on("pointerdown", restartScene);
+        this.input.on("gamepaddown", restartScene);
+      }, 1000);
     }
   }
 }
