@@ -96,33 +96,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     // Setup controls
     if (this.isMobile) {
-      this.input.addPointer(2);
-
-      const margin = 40;
-      const leftJoystickRadius = 30;
-      const rightJoystickRadius = 20;
-      // Virtual joystick (left for movement, right for action)
-      this.joystick = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
-        x: margin,
-        y: this.cameras.main.height - margin,
-        radius: leftJoystickRadius,
-        base: this.add.circle(0, 0, leftJoystickRadius, 0x888888, 0.3),
-        thumb: this.add.circle(0, 0, leftJoystickRadius / 2, 0xcccccc, 0.7),
-        dir: "8dir",
-        forceMin: 10,
-        enable: true
-      });
-
-      this.joystickRight = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
-        x: this.cameras.main.width - margin,
-        y: this.cameras.main.height - margin,
-        radius: rightJoystickRadius,
-        base: this.add.circle(0, 0, rightJoystickRadius, 0x888888, 0.3),
-        thumb: this.add.circle(0, 0, rightJoystickRadius / 2, 0xcccccc, 0.7),
-        dir: "8dir",
-        forceMin: 10,
-        enable: true
-      });
+      this.addJoySticks();
     } else {
       // WASD keys for desktop
       this.wasd = {
@@ -132,33 +106,61 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
         right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D)
       };
 
-      // Fire projectile in direction of click
-      this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
-        const dx = pointer.worldX - this.faune.x;
-        const dy = pointer.worldY - this.faune.y;
-        const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
-        // Use knife cooldown for click as well
-        const t = this.time.now;
-        if (t - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
-          this.faune.throwKnife(angle);
-          this.faune.lastKnifeTime = t;
-        }
-      });
-
-      this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
-        this.activePointer = pointer;
-      });
-
-      this.input.on(Phaser.Input.Events.POINTER_UP, () => {
-        this.activePointer = undefined;
-      });
+      this.input.on(Phaser.Input.Events.POINTER_DOWN, this.pointerDownHandler, this);
+      this.input.on(Phaser.Input.Events.POINTER_UP, this.pointerUpHandler, this);
     }
+  }
 
-    // remember to clean up on Scene shutdown
-    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.input.off(Phaser.Input.Events.POINTER_UP);
-      this.input.off(Phaser.Input.Events.POINTER_DOWN);
+  private addJoySticks() {
+    this.input.addPointer(2);
+
+    const margin = 40;
+    const leftJoystickRadius = 30;
+    const rightJoystickRadius = 20;
+    // Virtual joystick (left for movement, right for action)
+    this.joystick = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+      x: margin,
+      y: this.cameras.main.height - margin,
+      radius: leftJoystickRadius,
+      base: this.add.circle(0, 0, leftJoystickRadius, 0x888888, 0.3),
+      thumb: this.add.circle(0, 0, leftJoystickRadius / 2, 0xcccccc, 0.7),
+      dir: "8dir",
+      forceMin: 10,
+      enable: true
     });
+
+    this.joystickRight = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+      x: this.cameras.main.width - margin,
+      y: this.cameras.main.height - margin,
+      radius: rightJoystickRadius,
+      base: this.add.circle(0, 0, rightJoystickRadius, 0x888888, 0.3),
+      thumb: this.add.circle(0, 0, rightJoystickRadius / 2, 0xcccccc, 0.7),
+      dir: "8dir",
+      forceMin: 10,
+      enable: true
+    });
+  }
+
+  private pointerDownHandler(pointer: Phaser.Input.Pointer) {
+    this.activePointer = pointer;
+    const dx = pointer.worldX - this.faune.x;
+    const dy = pointer.worldY - this.faune.y;
+    const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
+    // Use knife cooldown for click as well
+    const t = this.time.now;
+    if (t - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
+      this.faune.throwKnife(angle);
+      this.faune.lastKnifeTime = t;
+    }
+  }
+
+  private pointerUpHandler() {
+    this.activePointer = undefined;
+  }
+
+  destroy() {
+    this.input.off(Phaser.Input.Events.POINTER_UP);
+    this.input.off(Phaser.Input.Events.POINTER_DOWN);
   }
 
   /**
