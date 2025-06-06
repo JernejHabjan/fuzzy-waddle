@@ -1,10 +1,14 @@
 import { filter, Subscription } from "rxjs";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import HudProbableWaffle from "../scenes/HudProbableWaffle";
 
 export class RestartGame {
   private restartGameSubscription: Subscription;
 
-  constructor(private scene: GameProbableWaffleScene) {
+  constructor(
+    private readonly scene: GameProbableWaffleScene,
+    private readonly hud: HudProbableWaffle
+  ) {
     this.restartGameSubscription = scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "restart-game"))
       .subscribe(() => this.onRestartGame());
@@ -17,5 +21,6 @@ export class RestartGame {
 
   private onRestartGame() {
     this.scene.scene.restart();
+    this.hud.scene.stop();
   }
 }

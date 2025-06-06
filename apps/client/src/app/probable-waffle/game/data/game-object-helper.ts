@@ -104,10 +104,19 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
       first()
     )
     .subscribe(() => {
+      const executeCallback = () => {
+        if (scene.time.now === 0 || scene.scene?.isActive() || scene.data.get("justCreated")) {
+          callback.call(scope);
+        } else {
+          console.warn("Scene is not active when onSceneInitialized callback is called.");
+        }
+      };
       if (delay === null) {
-        callback.call(scope);
+        executeCallback();
       } else {
-        setTimeout(() => callback.call(scope), delay);
+        setTimeout(() => {
+          executeCallback();
+        }, delay);
       }
     });
 }

@@ -1800,7 +1800,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Stone]: {
+  [ObjectNames.StonePile]: {
     components: {
       objectDescriptor: {
         color: 0xbea55b

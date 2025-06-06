@@ -36,5 +36,5 @@ export enum ObjectNames {
   WatchTower = "WatchTower",
   Wall = "Wall",
   Minerals = "Minerals",
-  Stone = "Stone"
+  StonePile = "StonePile"
 }

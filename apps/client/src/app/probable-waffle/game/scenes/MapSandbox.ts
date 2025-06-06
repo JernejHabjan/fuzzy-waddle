@@ -12,7 +12,6 @@ import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotF
 /* END-USER-IMPORTS */
 
 export default class MapSandbox extends GameProbableWaffleScene {
-
   constructor() {
     super("MapSandbox");
 
@@ -22,14 +21,13 @@ export default class MapSandbox extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // tivaraWorkerMale
     const tivaraWorkerMale = new TivaraWorkerMale(this, 40, 650);

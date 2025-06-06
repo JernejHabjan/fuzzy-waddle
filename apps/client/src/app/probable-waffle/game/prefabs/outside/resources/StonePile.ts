@@ -42,7 +42,7 @@ export default class StonePile extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Stone;
+  name = ObjectNames.StonePile;
   private readonly availableRockPiles = ["stone_pile_1.png", "stone_pile_2.png"];
 
   /* END-USER-CODE */

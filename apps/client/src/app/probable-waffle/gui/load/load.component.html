@@ -1,11 +1,11 @@
-<div class="container mt-4">
+<div class="container mt-4 overflow-auto">
   <div class="card-container">
     @if (gameInstanceDataRecords.length) {
-      <div class="d-grid text-center" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr; grid-gap: 4px">
+      <div class="d-grid text-center" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr; grid-gap: 4px; row-gap: 30px">
         <div class="text-primary">Save Name</div>
         <div class="text-primary">Map Name</div>
         <div class="text-primary">Last Played</div>
-        <div class="text-primary">Thumbnail</div>
+        <div class="text-primary"></div>
         <div></div>
         @for (rec of gameInstanceDataRecords; track rec) {
           <div>{{ rec.saveName }}</div>
@@ -21,9 +21,9 @@
               />
             }
           </div>
-          <div style="text-align: right">
-            <button class="btn btn-primary" type="button" (click)="loadSave(rec)">Load</button>
-            <button class="btn btn-primary ms-2" type="button" (click)="deleteSave(rec)">Delete</button>
+          <div class="d-flex flex-column justify-content-end gap-2">
+            <button class="btn btn-primary flex-fill" style="max-width: 100px" type="button" (click)="loadSave(rec)">Load</button>
+            <button class="btn btn-primary flex-fill" style="max-width: 100px" type="button" (click)="deleteSave(rec)">Delete</button>
           </div>
         }
       </div>
@@ -32,7 +32,7 @@
     }
 
     <div class="mt-4">
-      <button class="btn btn-primary" routerLink="/probable-waffle">Leave</button>
+      <button class="btn btn-primary" (click)="handleLeave()">{{ fromGame ? "Back to game" : "Leave" }}</button>
     </div>
   </div>
 </div>
