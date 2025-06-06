@@ -1,11 +1,13 @@
-<button
-  routerLink="/probable-waffle"
-  class="btn btn-danger m-1 position-absolute"
-  style="left: 20px; top: 20px"
-  type="button"
->
-  Leave
-</button>
+@if (!fromGame) {
+  <button
+    routerLink="/probable-waffle"
+    class="btn btn-danger m-1 position-absolute"
+    style="left: 20px; top: 20px"
+    type="button"
+  >
+    Leave
+  </button>
+}
 
 <div class="card-container">
   <div class="general-title">Options:</div>
@@ -47,4 +49,10 @@
       />
     </div>
   </div>
+
+  @if (fromGame) {
+    <div class="mt-4">
+      <button class="btn btn-primary" (click)="backToGame()">{{ "Back to game" }}</button>
+    </div>
+  }
 </div>

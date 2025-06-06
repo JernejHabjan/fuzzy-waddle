@@ -42,8 +42,9 @@ import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
 import { SaveGamePayload } from "../game/data/save-game";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
+import { OptionsComponent } from "../gui/options/options.component";
 
 @Injectable({
   providedIn: "root"
@@ -137,6 +138,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           filter((config) => config.name === "save-game" || config.name === "load-game" || config.name === "settings")
         )
         .subscribe(async (payload) => {
+          let modalRef: NgbModalRef | undefined;
           switch (payload.name) {
             case "save-game":
               if (this.DEBUG) {
@@ -148,13 +150,27 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               if (this.DEBUG) {
                 console.log("load game requested", payload.data);
               }
-              const modalRef = this.modalService.open(LoadComponent, { size: "lg", scrollable: true });
+              modalRef = this.modalService.open(LoadComponent, {
+                size: "lg",
+                scrollable: true,
+                centered: true,
+                modalDialogClass: "transparent-modal"
+              });
               (modalRef.componentInstance as LoadComponent).fromGame = true;
               (modalRef.componentInstance as LoadComponent).dialogRef = modalRef;
               break;
             case "settings":
-              // handle settings change
-              // todo show dialog
+              if (this.DEBUG) {
+                console.log("settings requested", payload.data);
+              }
+              modalRef = this.modalService.open(OptionsComponent, {
+                size: "lg",
+                scrollable: true,
+                centered: true,
+                modalDialogClass: "transparent-modal"
+              });
+              (modalRef.componentInstance as OptionsComponent).fromGame = true;
+              (modalRef.componentInstance as OptionsComponent).dialogRef = modalRef;
               break;
           }
         })
