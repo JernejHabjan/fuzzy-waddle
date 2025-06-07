@@ -268,8 +268,15 @@ export class AudioService {
   }
 
   private volumeChanged() {
-    // todo adjust all currently playing sounds
-    console.log("volume changed. Current volume settings:", this.volumeSettings);
+    const soundManager = this.scene.sound;
+    const sounds = (soundManager as any).sounds as Phaser.Sound.HTML5AudioSound[] | Phaser.Sound.WebAudioSound[];
+    for (const sound of sounds) {
+      if (!sound.isPlaying) return;
+      const isMusic = this.ost.includes(sound.key);
+      const newVolume = isMusic ? this.musicVolumeNormalized : this.sfxVolumeNormalized;
+      sound.setVolume(newVolume);
+    }
+    console.log("Volume updated. Music:", this.musicVolumeNormalized, "SFX:", this.sfxVolumeNormalized);
   }
 
   private destroy() {
