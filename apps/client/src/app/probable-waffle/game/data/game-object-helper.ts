@@ -10,15 +10,15 @@ import { RepresentableComponent } from "../entity/actor/components/representable
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
-  // todo const representableComponent = getActorComponent(gameObject, RepresentableComponent);
-  // todo if (representableComponent) {
-  // todo   return new Phaser.Geom.Rectangle(
-  // todo     representableComponent.worldTransform.x,
-  // todo     representableComponent.worldTransform.y,
-  // todo     representableComponent.width,
-  // todo     representableComponent.height
-  // todo   );
-  // todo }
+  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+  if (representableComponent) {
+    return representableComponent.bounds;
+  }
+  return getGameObjectBoundsRaw(gameObject);
+}
+
+export function getGameObjectBoundsRaw(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
+  if (!gameObject) return null;
   const boundsComponent = gameObject as unknown as Phaser.GameObjects.Components.GetBounds;
   if (boundsComponent.getBounds === undefined) return null;
   return boundsComponent.getBounds();
@@ -32,16 +32,17 @@ export function getGameObjectDepth(gameObject: Phaser.GameObjects.GameObject): n
 
 export function getGameObjectTransform(gameObject?: Phaser.GameObjects.GameObject): Vector3Simple | null {
   if (!gameObject) return null;
-  // todo const representableComponent = getActorComponent(gameObject, RepresentableComponent);
-  // todo if (representableComponent) {
-  // todo   return {
-  // todo     x: representableComponent.worldTransform.x,
-  // todo     y: representableComponent.worldTransform.y,
-  // todo     z: representableComponent.worldTransform.z || 0 // Default z to 0 if not defined
-  // todo   } satisfies Vector3Simple;
-  // todo }
+  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+  if (representableComponent) {
+    return representableComponent.worldTransform;
+  }
+  return getGameObjectTransformRaw(gameObject);
+}
+
+export function getGameObjectTransformRaw(gameObject?: Phaser.GameObjects.GameObject): Vector3Simple | null {
+  if (!gameObject) return null;
   const transformComponent = gameObject as unknown as Phaser.GameObjects.Components.Transform;
-  if (transformComponent.x === undefined || transformComponent.y === undefined) return null;
+  if (!transformComponent.hasTransformComponent) return null;
   return transformComponent;
 }
 
