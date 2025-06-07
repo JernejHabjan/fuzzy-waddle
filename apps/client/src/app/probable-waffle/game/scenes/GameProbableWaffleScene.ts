@@ -53,7 +53,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.components.push(new SingleSelectionHandler(this, hud, this.tilemap));
     new GameObjectSelectionHandler(this);
     new SaveGame(this);
-    new RestartGame(this);
+    new RestartGame(this, hud);
     const creator = new SceneActorCreator(this);
     const audioService = new AudioService(this);
 
@@ -75,9 +75,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
 
     super.create();
-    this.sceneGameData.initializers.sceneInitialized.next(true);
 
-    audioService.playMusicByShuffledPlaylist();
+    this.scene.scene.data.set("justCreated", true);
+    setTimeout(() => {
+      this.scene.scene.data.remove("justCreated");
+    });
+    this.sceneGameData.initializers.sceneInitialized.next(true);
   }
 
   private cleanup() {

@@ -10,7 +10,6 @@ import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { HealthComponent } from "../../combat/components/health-component";
-import { onSceneInitialized } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
 import {
@@ -20,8 +19,9 @@ import {
 import { SoundDefinition, SoundType } from "./audio-actor-component";
 import { AnimationActorComponent, AnimationType } from "./animation-actor-component";
 import { OrderType } from "../../character/ai/order-type";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ActorTranslateComponent } from "./actor-translate-component";
+import GameObject = Phaser.GameObjects.GameObject;
+import { onObjectReady } from "../../../data/game-object-helper";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -91,10 +91,10 @@ export class GathererComponent {
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    onSceneInitialized(this.gameObject.scene, this.sceneInit, this);
+    onObjectReady(this.gameObject, this.onObjectReady, this);
   }
 
-  private sceneInit() {
+  private onObjectReady() {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);

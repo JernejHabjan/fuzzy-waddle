@@ -36,13 +36,13 @@ import { IdComponent } from "../entity/actor/components/id-component";
 import { ObjectNames } from "./object-names";
 import { setConstructingActorDataFromName, setCoreActorDataFromName, setFullActorDataFromName } from "./actor-data";
 import Minerals from "../prefabs/outside/resources/Minerals";
-import Stone from "../../../other/Template/prefabs/Stone";
 import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
+import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
+import StonePile from "../prefabs/outside/resources/StonePile";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
-import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -107,7 +107,7 @@ export class ActorManager {
     [ObjectNames.Tree10]: Tree10,
     [ObjectNames.Tree11]: Tree11,
     [ObjectNames.Minerals]: Minerals,
-    [ObjectNames.Stone]: Stone
+    [ObjectNames.StonePile]: StonePile
   };
 
   public static actorMap: ActorMap = {

@@ -48,6 +48,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this.gameData = {
       gameInstance: gameSessionInstance,
       communicator: this.communicatorService,
+      components: [],
       user: new FlySquasherUserInfo(this.authService.userId)
     };
     this.sceneCommunicatorClientService.startCommunication();

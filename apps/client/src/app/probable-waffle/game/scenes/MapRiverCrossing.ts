@@ -81,7 +81,6 @@ import Badger from "../prefabs/animals/Badger";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -91,14 +90,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);

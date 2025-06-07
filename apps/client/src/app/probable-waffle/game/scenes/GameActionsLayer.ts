@@ -424,13 +424,15 @@ export default class GameActionsLayer extends ProbableWaffleScene {
 
   private handleLoadGame() {
     this.game_action_load.once("game-load", () => {
-      console.log("load game");
+      this.communicator.utilityEvents.emit({ name: "load-game" });
+      this.destroySelf();
     });
   }
 
   private handleSettings() {
     this.game_action_settings.once("game-settings", () => {
-      console.log("show settings");
+      this.communicator.utilityEvents.emit({ name: "settings" });
+      this.destroySelf();
     });
   }
 
