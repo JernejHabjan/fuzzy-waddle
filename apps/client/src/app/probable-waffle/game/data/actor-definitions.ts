@@ -814,8 +814,8 @@ export const pwActorDefinitions: {
   [ObjectNames.AnkGuard]: {
     components: {
       representable: {
-        width: 128,
-        height: 128
+        width: 256,
+        height: 256
       },
       objectDescriptor: {
         color: 0xc2a080
@@ -1656,8 +1656,8 @@ export const pwActorDefinitions: {
         maximumResources: 40
       },
       representable: {
-        width: 64,
-        height: 192
+        width: 128,
+        height: 384
       }
     }
   },
@@ -1670,8 +1670,8 @@ export const pwActorDefinitions: {
         maximumResources: 40
       },
       representable: {
-        width: 64,
-        height: 128
+        width: 128,
+        height: 256
       }
     }
   },
@@ -1684,8 +1684,8 @@ export const pwActorDefinitions: {
         maximumResources: 60
       },
       representable: {
-        width: 64,
-        height: 128
+        width: 128,
+        height: 256
       }
     }
   },
@@ -1698,8 +1698,8 @@ export const pwActorDefinitions: {
         maximumResources: 60
       },
       representable: {
-        width: 64,
-        height: 192
+        width: 128,
+        height: 384
       }
     }
   },
@@ -1712,8 +1712,8 @@ export const pwActorDefinitions: {
         maximumResources: 60
       },
       representable: {
-        width: 64,
-        height: 128
+        width: 128,
+        height: 256
       }
     }
   },
@@ -1726,8 +1726,8 @@ export const pwActorDefinitions: {
         maximumResources: 120
       },
       representable: {
-        width: 128,
-        height: 192
+        width: 256,
+        height: 384
       }
     }
   },
@@ -1740,8 +1740,8 @@ export const pwActorDefinitions: {
         maximumResources: 50
       },
       representable: {
-        width: 92,
-        height: 92
+        width: 184,
+        height: 184
       }
     }
   },
@@ -1754,8 +1754,8 @@ export const pwActorDefinitions: {
         maximumResources: 80
       },
       representable: {
-        width: 92,
-        height: 92
+        width: 184,
+        height: 184
       }
     }
   },

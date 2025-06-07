@@ -5,8 +5,7 @@
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
         "snapEnabled": true,
-        "snapWidth": 8,
-        "snapHeight": 8,
+        "snapWidth": 32,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -64,7 +63,7 @@
             ],
             "label": "christmasTree",
             "x": -288,
-            "y": 1184
+            "y": 1200
         },
         {
             "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
@@ -90,7 +89,7 @@
             ],
             "label": "christmasTree_1",
             "x": -128,
-            "y": 1168
+            "y": 1184
         },
         {
             "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
@@ -179,7 +178,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -64,
+            "x": 0,
             "y": 336
         },
         {
@@ -194,7 +193,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -128,
+            "x": -160,
             "y": 464
         },
         {
@@ -643,7 +642,7 @@
             ],
             "label": "tree_2",
             "x": -832,
-            "y": 848
+            "y": 864
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f36",
@@ -654,7 +653,7 @@
             ],
             "label": "tree1",
             "x": -1152,
-            "y": 784
+            "y": 800
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
@@ -664,8 +663,8 @@
                 "y"
             ],
             "label": "tree_3",
-            "x": -640,
-            "y": 1040
+            "x": -448,
+            "y": 960
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
@@ -1172,7 +1171,7 @@
             ],
             "label": "stonePile",
             "x": -608,
-            "y": 784
+            "y": 768
         },
         {
             "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
@@ -1183,7 +1182,7 @@
             ],
             "label": "stonePile_1",
             "x": -640,
-            "y": 800
+            "y": 784
         },
         {
             "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
@@ -1194,7 +1193,7 @@
             ],
             "label": "stonePile_2",
             "x": -576,
-            "y": 800
+            "y": 784
         },
         {
             "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
@@ -1205,7 +1204,7 @@
             ],
             "label": "stonePile_3",
             "x": -608,
-            "y": 816
+            "y": 800
         },
         {
             "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
@@ -1216,7 +1215,7 @@
             ],
             "label": "stonePile_4",
             "x": -672,
-            "y": 784
+            "y": 768
         },
         {
             "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
@@ -1227,7 +1226,7 @@
             ],
             "label": "stonePile_5",
             "x": -672,
-            "y": 816
+            "y": 800
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -1238,7 +1237,7 @@
             ],
             "label": "minerals",
             "x": -224,
-            "y": 240
+            "y": 224
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -1249,7 +1248,7 @@
             ],
             "label": "minerals_1",
             "x": -192,
-            "y": 224
+            "y": 208
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -1260,7 +1259,7 @@
             ],
             "label": "minerals_2",
             "x": -192,
-            "y": 256
+            "y": 240
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -1271,7 +1270,7 @@
             ],
             "label": "minerals_3",
             "x": -160,
-            "y": 240
+            "y": 224
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -1282,7 +1281,7 @@
             ],
             "label": "minerals_4",
             "x": -256,
-            "y": 256
+            "y": 240
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -1293,7 +1292,7 @@
             ],
             "label": "minerals_5",
             "x": -224,
-            "y": 272
+            "y": 256
         },
         {
             "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
@@ -1880,7 +1879,7 @@
                 "key": "outside",
                 "frame": "nature/rock_piles/6_snow.png"
             },
-            "x": 1096,
+            "x": 1088,
             "y": 1040
         },
         {
@@ -2128,8 +2127,8 @@
                 "y"
             ],
             "label": "tree_12",
-            "x": 1032,
-            "y": 703
+            "x": 1024,
+            "y": 720
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
@@ -2139,7 +2138,7 @@
                 "y"
             ],
             "label": "tree_15",
-            "x": 1096,
+            "x": 1088,
             "y": 688
         },
         {
@@ -2150,8 +2149,8 @@
                 "y"
             ],
             "label": "tree_16",
-            "x": 1168,
-            "y": 648
+            "x": 1184,
+            "y": 672
         },
         {
             "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
@@ -2161,8 +2160,8 @@
                 "y"
             ],
             "label": "tree_17",
-            "x": 976,
-            "y": 728
+            "x": 960,
+            "y": 720
         }
     ],
     "plainObjects": [
