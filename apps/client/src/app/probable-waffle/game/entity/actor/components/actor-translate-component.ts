@@ -1,9 +1,11 @@
 import { Observable, Subject } from "rxjs";
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectDirectionBetweenTiles } from "../../systems/movement.system";
-import { getGameObjectTransform } from "../../../data/game-object-helper";
+import { getGameObjectTransform, onObjectReady } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { NavigationService } from "../../../scenes/services/navigation.service";
+import { getActorComponent } from "../../../data/actor-component";
+import { RepresentableComponent } from "./representable-component";
 
 export type IsoDirection = "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest";
 
@@ -20,11 +22,16 @@ export class ActorTranslateComponent {
   private _actorMoved: Subject<Vector3Simple> = new Subject<Vector3Simple>();
   currentDirection?: IsoDirection;
   onDirectionChanged: Subject<IsoDirection> = new Subject<IsoDirection>();
+  private representableComponent?: RepresentableComponent;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly actorTranslateDefinition: ActorTranslateDefinition
-  ) {}
-
+  ) {
+    onObjectReady(gameObject, this.init, this);
+  }
+  init() {
+    this.representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
+  }
   get currentTileWorldXY(): Vector2Simple {
     const transform = getGameObjectTransform(this.gameObject);
     if (!transform) return { x: 0, y: 0 };
@@ -78,5 +85,8 @@ export class ActorTranslateComponent {
    */
   moveActorToPosition(worldPosition: Vector3Simple) {
     this._actorMoved.next(worldPosition);
+    if (this.representableComponent) {
+      this.representableComponent.worldTransform = worldPosition;
+    }
   }
 }

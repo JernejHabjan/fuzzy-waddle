@@ -174,6 +174,7 @@ import {
   ANIM_STAG_DEFINITION,
   ANIM_WOLF_DEFINITION
 } from "../animations/animals2";
+import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -266,6 +267,10 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
   ...generalWorkerDefinitions,
   components: {
     ...generalWorkerDefinitions.components,
+    representable: {
+      width: 64,
+      height: 64
+    },
     objectDescriptor: {
       color: 0xc2a080
     },
@@ -301,6 +306,10 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
   ...generalWorkerDefinitions,
   components: {
     ...generalWorkerDefinitions.components,
+    representable: {
+      width: 64,
+      height: 64
+    },
     objectDescriptor: {
       color: 0xf2f7fa
     },
@@ -333,6 +342,7 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
 export type ActorInfoDefinition = Partial<{
   components: Partial<{
     objectDescriptor: ObjectDescriptorDefinition;
+    representable: RepresentableDefinition;
     owner: OwnerDefinition;
     vision: VisionDefinition;
     info: InfoDefinition;
@@ -370,6 +380,10 @@ export const pwActorDefinitions: {
 } = {
   [ObjectNames.Hedgehog]: {
     components: {
+      representable: {
+        width: 32,
+        height: 32
+      },
       objectDescriptor: {
         color: 0x896347
       },
@@ -390,6 +404,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Sheep]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -411,6 +429,10 @@ export const pwActorDefinitions: {
   },
   Badger: {
     components: {
+      representable: {
+        width: 42,
+        height: 32
+      },
       objectDescriptor: {
         color: 0x222e37
       },
@@ -430,6 +452,10 @@ export const pwActorDefinitions: {
   },
   Boar: {
     components: {
+      representable: {
+        width: 46,
+        height: 32
+      },
       objectDescriptor: {
         color: 0x222e37
       },
@@ -449,6 +475,10 @@ export const pwActorDefinitions: {
   },
   Stag: {
     components: {
+      representable: {
+        width: 32,
+        height: 41
+      },
       objectDescriptor: {
         color: 0xc75841
       },
@@ -468,6 +498,10 @@ export const pwActorDefinitions: {
   },
   Wolf: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0x3b4a50
       },
@@ -507,6 +541,10 @@ export const pwActorDefinitions: {
 
   [ObjectNames.GeneralWarrior]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0x75502d
       },
@@ -562,6 +600,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.TivaraMacemanMale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -632,6 +674,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.TivaraSlingshotFemale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -767,6 +813,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.AnkGuard]: {
     components: {
+      representable: {
+        width: 128,
+        height: 128
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -821,6 +871,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Olival]: {
     components: {
+      representable: {
+        width: 32,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -874,6 +928,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Sandhold]: {
     components: {
+      representable: {
+        width: 320,
+        height: 320
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -935,6 +993,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Temple]: {
     components: {
+      representable: {
+        width: 192,
+        height: 192
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -992,6 +1054,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.WorkMill]: {
     components: {
+      representable: {
+        width: 128,
+        height: 128
+      },
       objectDescriptor: {
         color: 0x967847
       },
@@ -1043,6 +1109,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeOwl]: {
     components: {
+      representable: {
+        width: 32,
+        height: 32
+      },
       objectDescriptor: {
         color: 0xe9ecf2
       },
@@ -1110,6 +1180,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeRangedFemale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1180,6 +1254,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeMagicianFemale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1249,6 +1327,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeWarriorMale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1383,6 +1465,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.FrostForge]: {
     components: {
+      representable: {
+        width: 256,
+        height: 384
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1443,6 +1529,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.InfantryInn]: {
     components: {
+      representable: {
+        width: 128,
+        height: 128
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1501,6 +1591,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Owlery]: {
     components: {
+      representable: {
+        width: 64,
+        height: 192
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1560,6 +1654,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 40
+      },
+      representable: {
+        width: 64,
+        height: 192
       }
     }
   },
@@ -1570,6 +1668,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 40
+      },
+      representable: {
+        width: 64,
+        height: 128
       }
     }
   },
@@ -1580,6 +1682,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 60
+      },
+      representable: {
+        width: 64,
+        height: 128
       }
     }
   },
@@ -1590,6 +1696,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 60
+      },
+      representable: {
+        width: 64,
+        height: 192
       }
     }
   },
@@ -1600,6 +1710,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 60
+      },
+      representable: {
+        width: 64,
+        height: 128
       }
     }
   },
@@ -1610,6 +1724,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 120
+      },
+      representable: {
+        width: 128,
+        height: 192
       }
     }
   },
@@ -1620,6 +1738,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 50
+      },
+      representable: {
+        width: 92,
+        height: 92
       }
     }
   },
@@ -1630,11 +1752,19 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 80
+      },
+      representable: {
+        width: 92,
+        height: 92
       }
     }
   },
   [ObjectNames.Stairs]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0x95a083
       },
@@ -1681,6 +1811,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.WatchTower]: {
     components: {
+      representable: {
+        width: 128,
+        height: 176
+      },
       objectDescriptor: {
         color: 0x95a083
       },
@@ -1733,6 +1867,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Wall]: {
     components: {
+      representable: {
+        width: 64,
+        height: 96
+      },
       objectDescriptor: {
         color: 0x95a083
       },
@@ -1780,6 +1918,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Minerals]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xbea55b
       },
@@ -1802,6 +1944,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.StonePile]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xbea55b
       },
