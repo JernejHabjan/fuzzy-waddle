@@ -785,7 +785,7 @@ export const pwActorDefinitions: {
       ...tivaraWorkerDefinition.components,
       info: {
         name: "Tivara Laborer",
-        description: "Bound to the desert’s will, he rebuilds and gathers with relentless devotion",
+        description: "Bound to the desert's will, he rebuilds and gathers with relentless devotion",
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_male.png",

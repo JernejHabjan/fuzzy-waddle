@@ -24,18 +24,18 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     this.add(icon);
 
     // title
-    const title = scene.add.text(129, 95, "", {});
+    const title = scene.add.text(129, 83, "", {});
     title.setOrigin(0.5, 0);
     title.text = "Actor name";
-    title.setStyle({ "align": "center", "fontSize": "20px", "maxLines": 2, "resolution": 4 });
+    title.setStyle({ "align": "center", "fontSize": "20px", "maxLines": 2 });
     title.setWordWrapWidth(250);
     this.add(title);
 
     // description
-    const description = scene.add.text(130, 124, "", {});
+    const description = scene.add.text(130, 107, "", {});
     description.setOrigin(0.5, 0);
     description.text = "Actual description of this actor";
-    description.setStyle({ "align": "center", "resolution": 4 });
+    description.setStyle({ "align": "center", "fontSize": "14px" });
     description.setWordWrapWidth(200);
     this.add(description);
 

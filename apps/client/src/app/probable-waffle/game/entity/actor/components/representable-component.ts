@@ -114,7 +114,7 @@ export class RepresentableComponent {
   }
 
   get visible(): boolean {
-    if (!this._visible) {
+    if (this._visible === undefined) {
       const visibility = getGameObjectVisibility(this.gameObject);
       if (visibility) {
         this._visible = visibility.visible;

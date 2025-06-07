@@ -58,10 +58,9 @@
                     "label": "title",
                     "scope": "CLASS",
                     "x": 129,
-                    "y": 95,
+                    "y": 83,
                     "originX": 0.5,
                     "text": "Actor name",
-                    "resolution": 4,
                     "align": "center",
                     "fontSize": "20px",
                     "maxLines": 2,
@@ -73,11 +72,11 @@
                     "label": "description",
                     "scope": "CLASS",
                     "x": 130,
-                    "y": 124,
+                    "y": 107,
                     "originX": 0.5,
                     "text": "Actual description of this actor",
-                    "resolution": 4,
                     "align": "center",
+                    "fontSize": "14px",
                     "wordWrapWidth": 200
                 }
             ]
