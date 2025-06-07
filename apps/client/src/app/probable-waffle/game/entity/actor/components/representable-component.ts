@@ -1,9 +1,17 @@
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   getGameObjectBoundsRaw,
   getGameObjectTransformRaw,
-  getGameObjectVisibility
+  getGameObjectVisibility,
+  onObjectReady
 } from "../../../data/game-object-helper";
+
+interface ActorInitialBounds {
+  topLeft: Vector2Simple;
+  topRight: Vector2Simple;
+  bottomLeft: Vector2Simple;
+  bottomRight: Vector2Simple;
+}
 
 export interface RepresentableDefinition {
   width: number;
@@ -16,11 +24,14 @@ export class RepresentableComponent {
   private _worldTransform?: Vector3Simple;
   private _visible?: boolean;
   bounds = new Phaser.Geom.Rectangle(0, 0, 0, 0);
+  private _actorBounds?: ActorInitialBounds;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public representableDefinition: RepresentableDefinition
-  ) {}
+  ) {
+    onObjectReady(gameObject, this.setTransformInitially, this);
+  }
 
   private setTransformInitially() {
     const gameObject = this.gameObject;
@@ -28,25 +39,57 @@ export class RepresentableComponent {
     const transform = getGameObjectTransformRaw(gameObject);
     if (transform) {
       this._worldTransform = transform;
-      this.refreshBounds();
     } else {
       this._worldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
       console.warn("RepresentableComponent: GameObject transform is not available, bounds may not be accurate.");
-      this.refreshBounds(); // still refresh bounds to set initial values
     }
+    this.setActorInitialBounds();
+    this.refreshBounds();
   }
 
-  private refreshBounds() {
-    // we need to obtain x, y from the game object bounds because worldTransform may represent center of the object (relative to the origin)
-    const gameObjectBounds = getGameObjectBoundsRaw(this.gameObject);
-    if (!gameObjectBounds) return;
-    const { x, y } = gameObjectBounds;
+  private refreshBounds(): void {
+    const worldTransform = this._worldTransform!;
+    const initialBounds = this._actorBounds!;
     this.bounds = new Phaser.Geom.Rectangle(
-      x,
-      y,
+      worldTransform.x + initialBounds.topLeft.x,
+      worldTransform.y + initialBounds.topLeft.y,
       this.representableDefinition.width,
       this.representableDefinition.height
     );
+  }
+
+  /**
+   * We need to store actors initial bounds, as bounds may change during animation playback due to different sprite dimensions.
+   * See #374 for more details.
+   */
+  private setActorInitialBounds() {
+    const centerRelativeToOrigin = this.worldTransform;
+    const bounds = getGameObjectBoundsRaw(this.gameObject);
+    if (!bounds) throw new Error("RepresentableComponent: GameObject bounds are not available.");
+
+    const topLeft = {
+      x: bounds.x - centerRelativeToOrigin.x,
+      y: bounds.y - centerRelativeToOrigin.y
+    };
+    const topRight = {
+      x: bounds.right - centerRelativeToOrigin.x,
+      y: bounds.y - centerRelativeToOrigin.y
+    };
+    const bottomLeft = {
+      x: bounds.x - centerRelativeToOrigin.x,
+      y: bounds.bottom - centerRelativeToOrigin.y
+    };
+    const bottomRight = {
+      x: bounds.right - centerRelativeToOrigin.x,
+      y: bounds.bottom - centerRelativeToOrigin.y
+    };
+
+    this._actorBounds = {
+      topLeft,
+      topRight,
+      bottomLeft,
+      bottomRight
+    } satisfies ActorInitialBounds;
   }
 
   get worldTransform(): Vector3Simple {
