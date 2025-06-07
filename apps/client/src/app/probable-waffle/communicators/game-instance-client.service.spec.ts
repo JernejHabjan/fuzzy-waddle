@@ -17,7 +17,7 @@ import {
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
 } from "@fuzzy-waddle/api-interfaces";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 import { gameInstanceLocalStorageServiceStub } from "./storage/game-instance-local-storage.service.spec";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
@@ -26,6 +26,7 @@ import { provideHttpClient } from "@angular/common/http";
 
 export const gameInstanceClientServiceStub = {
   gameInstance: undefined as ProbableWaffleGameInstance | undefined,
+  gameInstanceToGameComponentCommunicator: new Subject<"refresh">(),
   get currentGameInstanceId(): string | null {
     return null;
   },
