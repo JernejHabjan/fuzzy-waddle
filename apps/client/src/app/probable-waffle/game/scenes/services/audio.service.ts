@@ -1,5 +1,8 @@
 import { VolumeSettings } from "../../core/volumeSettings";
-import { getGameObjectTransform } from "../../data/game-object-helper";
+import { getGameObjectTransform, onSceneInitialized } from "../../data/game-object-helper";
+import { getSceneExternalComponent } from "../components/scene-component-helpers";
+import { OptionsService } from "../../../gui/options/options.service";
+import { filter, Subscription } from "rxjs";
 
 export interface AdditionalAudioConfig {
   onComplete?: () => void;
@@ -12,13 +15,31 @@ export class AudioService {
   private readonly ost = [...this.skaduweeOst];
   private ostQueue: string[] = [];
 
-  private volumeSettings = new VolumeSettings();
+  private volumeSettings!: VolumeSettings;
   private currentTrackIndex = 0;
+  private volumeChangedSubscription?: Subscription;
 
   constructor(private readonly scene: Phaser.Scene) {
+    onSceneInitialized(this.scene, this.init, this);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+  }
+
+  private init() {
+    const optionsService = getSceneExternalComponent(this.scene, OptionsService);
+    if (!optionsService) {
+      throw new Error("OptionsService is not available in the scene.");
+    }
+    this.volumeSettings = optionsService.volumeSettings;
     this.volumeSettings.init();
+    this.volumeChangedSubscription = optionsService
+      .optionsChanged()
+      .pipe(filter((options) => options.type === "volume"))
+      .subscribe(() => this.volumeChanged());
+
     this.shuffleOstQueue();
     this.scene.sound.pauseOnBlur = !this.playAudioAlsoOnBlur;
+
+    this.playMusicByShuffledPlaylist();
   }
 
   private get volumeRatio() {
@@ -38,7 +59,7 @@ export class AudioService {
     this.currentTrackIndex = 0;
   }
 
-  playMusicByShuffledPlaylist() {
+  private playMusicByShuffledPlaylist() {
     if (this.currentTrackIndex >= this.ostQueue.length) {
       this.shuffleOstQueue(); // Reshuffle once all tracks are played
     }
@@ -244,5 +265,14 @@ export class AudioService {
 
   stopSound(key: string) {
     this.scene.sound.stopByKey(key);
+  }
+
+  private volumeChanged() {
+    // todo adjust all currently playing sounds
+    console.log("volume changed. Current volume settings:", this.volumeSettings);
+  }
+
+  private destroy() {
+    this.volumeChangedSubscription?.unsubscribe();
   }
 }

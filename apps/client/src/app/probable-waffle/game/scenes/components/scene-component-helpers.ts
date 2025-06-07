@@ -9,6 +9,18 @@ export function getSceneComponent<T>(scene: Phaser.Scene, componentClass: new (.
   return component;
 }
 
+export function getSceneExternalComponent<T>(
+  scene: Phaser.Scene,
+  componentClass: new (...args: any[]) => T
+): T | undefined {
+  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleSceneData");
+  const component = scene.getSceneGameData().baseGameData.components.find((c) => c instanceof componentClass);
+  if (!component) {
+    return undefined;
+  }
+  return component;
+}
+
 export function getSceneService<T>(scene: Phaser.Scene, serviceClass: new (...args: any[]) => T): T | undefined {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleSceneData");
   const service = scene.getSceneGameData().services.find((s) => s instanceof serviceClass);

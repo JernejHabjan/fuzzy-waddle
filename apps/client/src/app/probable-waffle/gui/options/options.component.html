@@ -16,21 +16,21 @@
     <h5 class="mb-3">Volume Controls:</h5>
     <div class="mb-3">
       <label for="masterVolume" class="form-label form-label--volume"
-        >Master Volume: {{ volumeSettings.masterVolume }}</label
+        >Master Volume: {{ optionsService.volumeSettings.masterVolume }}</label
       >
       <input
         type="range"
-        [(ngModel)]="volumeSettings.masterVolume"
+        [(ngModel)]="optionsService.volumeSettings.masterVolume"
         (change)="saveToLocalStorage()"
         class="form-range"
         id="masterVolume"
       />
     </div>
     <div class="mb-3">
-      <label for="sfxVolume" class="form-label form-label--volume">SFX Volume: {{ volumeSettings.sfxVolume }}</label>
+      <label for="sfxVolume" class="form-label form-label--volume">SFX Volume: {{ optionsService.volumeSettings.sfxVolume }}</label>
       <input
         type="range"
-        [(ngModel)]="volumeSettings.sfxVolume"
+        [(ngModel)]="optionsService.volumeSettings.sfxVolume"
         (change)="saveToLocalStorage()"
         class="form-range"
         id="sfxVolume"
@@ -38,11 +38,11 @@
     </div>
     <div class="mb-3">
       <label for="musicVolume" class="form-label form-label--volume"
-        >Music Volume: {{ volumeSettings.musicVolume }}</label
+        >Music Volume: {{ optionsService.volumeSettings.musicVolume }}</label
       >
       <input
         type="range"
-        [(ngModel)]="volumeSettings.musicVolume"
+        [(ngModel)]="optionsService.volumeSettings.musicVolume"
         (change)="saveToLocalStorage()"
         class="form-range"
         id="musicVolume"

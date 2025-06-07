@@ -81,8 +81,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
-
-    audioService.playMusicByShuffledPlaylist();
   }
 
   private cleanup() {

@@ -8,5 +8,6 @@ export interface BaseGameData<
 > {
   gameInstance: TGameInstance;
   communicator: TCommunicator;
+  components: any[];
   user: TUserInfo;
 }

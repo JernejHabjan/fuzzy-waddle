@@ -28,6 +28,7 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     this.gameData = {
       communicator: this.communicator,
+      components: [],
       gameInstance: this.gameInstanceClientService.gameInstance!,
       user: new LittleMuncherUserInfo(this.authService.userId)
     };
