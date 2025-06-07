@@ -182,8 +182,7 @@ export class AttackComponent {
       this.gameObject.scene.add.existing(projectileSprite);
       projectileSprite.setPosition(position.centerX, position.centerY);
       projectileSprite.setOrigin(0.5, 0.5);
-      const gameObjectDepth = getGameObjectDepth(this.gameObject);
-      if (gameObjectDepth !== null) DepthHelper.setActorDepth(gameObjectDepth + 1);
+      DepthHelper.setActorDepth(this.gameObject);
 
       const projectileSpeed = projectile.speed;
       const targetX = targetPosition.x + targetPosition.width / 2;

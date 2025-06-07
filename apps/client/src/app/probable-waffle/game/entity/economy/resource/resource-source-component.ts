@@ -1,4 +1,4 @@
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
@@ -88,7 +88,7 @@ export class ResourceSourceComponent {
     return gatheredAmount;
   }
 
-  private spawnTreeTrunk(transform: Phaser.GameObjects.Components.Transform | null) {
+  private spawnTreeTrunk(transform: Vector3Simple | null) {
     if (!transform) return;
     if (!this.scene) return;
 
