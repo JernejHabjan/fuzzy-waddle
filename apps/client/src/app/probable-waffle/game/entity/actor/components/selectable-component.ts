@@ -29,7 +29,6 @@ export class SelectableComponent {
     private readonly gameObject: GameObject,
     private readonly selectableDefinition?: SelectableDefinition
   ) {
-    this.createSelectionCircle();
     onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
@@ -53,7 +52,7 @@ export class SelectableComponent {
     const ellipse = new Phaser.Geom.Ellipse(0, 0, bounds.width, bounds.width / 2);
     ellipse.y = this.selectableDefinition?.offsetY ?? 0;
     const graphics = this.gameObject.scene.add.graphics();
-    graphics.lineStyle(2, 0xffffff); // todo color from player
+    graphics.lineStyle(2, 0xffffff);
     graphics.strokeEllipseShape(ellipse);
     graphics.visible = false;
     this.selectionCircle = graphics;
@@ -62,6 +61,7 @@ export class SelectableComponent {
   setSelected(selected: boolean) {
     if (this.selected === selected) return;
     this.selected = selected;
+    if (this.selected && !this.selectionCircle) this.createSelectionCircle();
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (visionComponent && !visionComponent.visibilityByCurrentPlayer) selected = false;
     this.selectionCircle.visible = selected;
@@ -74,6 +74,7 @@ export class SelectableComponent {
   }
 
   private update = () => {
+    if (!this.selected) return;
     this.setPosition();
     this.setDepth();
   };
@@ -82,7 +83,7 @@ export class SelectableComponent {
     const transform = getGameObjectTransform(this.gameObject);
     if (!transform) throw new Error("Transform not found");
     if (transform.x === undefined || transform.y === undefined) return;
-    this.selectionCircle.setPosition(transform.x, transform.y); // todo
+    this.selectionCircle.setPosition(transform.x, transform.y);
   }
 
   private setDepth() {
@@ -115,11 +116,12 @@ export class SelectableComponent {
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {
+    if (!this.selectionCircle) return;
     this.selectionCircle.visible = visible;
   }
 
   private destroy = () => {
-    this.selectionCircle.destroy();
+    this.selectionCircle?.destroy();
     this.actorMovedSubscription?.unsubscribe();
     this.selectionChangedSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
