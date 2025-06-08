@@ -90,9 +90,10 @@ export const TivaraWorkerMaleSfxSelectionExtraSounds: SoundDefinition[] = [
 ];
 
 export const TivaraWorkerMaleSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE1 },
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE2 },
-  { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE3 }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE1 },
+  // { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE2 },
+  // { key: AudioSprites.TIVARA_WORKER_MALE, spriteName: TivaraWorkerMaleSfx.DAMAGE3 }
 ];
 
 export const TivaraWorkerMaleSfxMineSounds: SoundDefinition[] = [

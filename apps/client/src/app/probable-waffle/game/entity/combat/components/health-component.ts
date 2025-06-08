@@ -205,7 +205,7 @@ export class HealthComponent {
 
   private damageSelected() {
     if (!this.canDamageOrKillOnKeyboardAction()) return;
-    this.takeDamage(1, DamageType.Physical);
+    this.takeDamage(10, DamageType.Physical);
   }
 
   private bindAttackAnimKey() {
