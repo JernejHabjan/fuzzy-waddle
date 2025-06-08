@@ -29,6 +29,9 @@ export class InstantGameComponent implements OnInit {
     const currentPlayer = await this.gameInstanceClientService.addSelfAsPlayer();
     const aiPlayer = await this.gameInstanceClientService.addAiPlayer();
 
+    currentPlayer.team = 1;
+    aiPlayer.team = 2;
+
     currentPlayer.factionType = FactionType.Tivara;
     aiPlayer.factionType = FactionType.Skaduwee;
 

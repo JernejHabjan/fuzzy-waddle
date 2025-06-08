@@ -5,7 +5,7 @@ import { OwnerComponent } from "../entity/actor/components/owner-component";
 export class ScenePlayerHelpers {
   static getActorsByPlayer(
     scene: Phaser.Scene,
-    currentPlayer: number
+    currentPlayer?: number
   ): {
     actorsByPlayer: Map<number, Phaser.GameObjects.GameObject[]>;
     currentPlayerActors: Phaser.GameObjects.GameObject[];

@@ -245,3 +245,16 @@ export function getGameModeFromScene<TGameMode extends BaseGameMode>(scene: Phas
   if (!(gameMode instanceof BaseGameMode)) throw new Error("GameMode is not an instance of BaseGameMode");
   return gameMode as TGameMode;
 }
+
+export function getPlayersFromScene<TPlayer extends BasePlayer>(scene: Phaser.Scene): TPlayer[] {
+  const baseGameData = getBaseGameDataFromScene<BaseGameData>(scene);
+  const players = baseGameData.gameInstance.players;
+  if (!players) throw new Error("Players are not defined in scene");
+  if (!Array.isArray(players)) throw new Error("Players is not an array");
+  return players as TPlayer[];
+}
+
+export function isPlayerHostInScene<TPlayer extends BasePlayer>(scene: Phaser.Scene, player: TPlayer): boolean {
+  const baseGameData = getBaseGameDataFromScene<BaseGameData>(scene);
+  return baseGameData.gameInstance.isHost(player.playerController.data.userId);
+}
