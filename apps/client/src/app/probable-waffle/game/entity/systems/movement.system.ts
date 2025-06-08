@@ -10,6 +10,7 @@ import {
   getGameObjectTileInRadius,
   getGameObjectTransform,
   getGameObjectTransformRaw,
+  getGameObjectVisibility,
   onObjectReady
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
@@ -357,6 +358,8 @@ export class MovementSystem {
 
   private playMovementSound() {
     if (!this.audioService) return;
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
     const movementSoundDefinition = this.getMovementSound();
     if (!movementSoundDefinition) return;
     // get random from movementSoundDefinition

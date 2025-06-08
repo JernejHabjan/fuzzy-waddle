@@ -127,10 +127,4 @@ export class RepresentableComponent {
     }
     return this._visible;
   }
-  get width(): number {
-    return this.representableDefinition.width;
-  }
-  get height(): number {
-    return this.representableDefinition.height;
-  }
 }
