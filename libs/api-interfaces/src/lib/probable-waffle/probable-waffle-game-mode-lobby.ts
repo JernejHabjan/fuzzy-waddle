@@ -6,7 +6,8 @@ export interface TieConditions {
 }
 
 export interface WinConditions {
-  time?: number; // in minutes
+  noEnemyPlayersLeft?: boolean;
+  timeReachedInMinutes?: number;
   kills?: number;
   resources?: Map<ResourceType, number>;
   actorsTotal?: number;

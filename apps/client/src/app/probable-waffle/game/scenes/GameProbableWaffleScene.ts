@@ -22,6 +22,7 @@ import { DebuggingService } from "./services/DebuggingService";
 import { CrossSceneCommunicationService } from "./services/CrossSceneCommunicationService";
 import { FogOfWarComponent } from "./components/fog-of-war.component";
 import { SelectionGroupsComponent } from "./components/selection-groups.component";
+import { GameModeConditionChecker } from "../world/managers/game-mode/GameModeConditionChecker";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -54,6 +55,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectSelectionHandler(this);
     new SaveGame(this);
     new RestartGame(this, hud);
+    new GameModeConditionChecker(this);
     const creator = new SceneActorCreator(this);
     const audioService = new AudioService(this);
 

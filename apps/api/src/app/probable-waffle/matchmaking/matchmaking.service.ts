@@ -123,7 +123,9 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         tieConditions: {
           maximumTimeLimitInMinutes: 60
         },
-        winConditions: {},
+        winConditions: {
+          noEnemyPlayersLeft: true
+        },
         loseConditions: {
           allBuildingsMustBeEliminated: true
         },
@@ -208,7 +210,9 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       tieConditions: {
         maximumTimeLimitInMinutes: 60
       },
-      winConditions: {},
+      winConditions: {
+        noEnemyPlayersLeft: true
+      },
       loseConditions: {
         allBuildingsMustBeEliminated: true
       },

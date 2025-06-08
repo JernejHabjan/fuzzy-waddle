@@ -45,6 +45,12 @@ export class InstantGameComponent implements OnInit {
     this.gameInstanceClientService.gameInstance!.gameMode!.data.loseConditions = {
       allBuildingsMustBeEliminated
     };
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const noEnemyPlayersLeft = map !== ProbableWaffleMapEnum.Sandbox;
+    this.gameInstanceClientService.gameInstance!.gameMode!.data.winConditions = {
+      noEnemyPlayersLeft
+    };
 
     await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }

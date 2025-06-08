@@ -42,7 +42,9 @@ export class GameInstanceService implements GameInstanceServiceInterface {
         tieConditions: {
           maximumTimeLimitInMinutes: 60
         },
-        winConditions: {},
+        winConditions: {
+          noEnemyPlayersLeft: true
+        },
         loseConditions: {
           allBuildingsMustBeEliminated: true
         },
