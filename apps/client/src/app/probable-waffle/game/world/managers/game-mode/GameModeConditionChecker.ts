@@ -67,11 +67,12 @@ export class GameModeConditionChecker {
   }
 
   private checkWinConditions(): boolean {
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
+    const players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
+    const currentPlayer = players.find((player) => player.playerNumber === currentPlayerNumber)!;
+
     if (this.winConditions.noEnemyPlayersLeft) {
       // Check if there are no enemy players left
-      const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
-      const players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
-      const currentPlayer = players.find((player) => player.playerNumber === currentPlayerNumber)!;
       const enemyPlayers = players.filter(
         (player) =>
           player.playerNumber !== currentPlayer.playerNumber &&
@@ -92,9 +93,6 @@ export class GameModeConditionChecker {
     }
     if (this.winConditions.kills) {
       // Check if current player has reached the required number of kills
-      const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
-      const players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
-      const currentPlayer = players.find((player) => player.playerNumber === currentPlayerNumber)!;
       const actorKilledEvents = currentPlayer.playerState.data.summary.filter((s) => s.type === "unit_killed");
       const totalKills = actorKilledEvents.reduce((acc, event) => acc + (event.data?.kills || 0), 0);
       if (totalKills >= this.winConditions.kills) {
@@ -104,9 +102,6 @@ export class GameModeConditionChecker {
     }
     if (this.winConditions.resources) {
       // Check if current player has collected the required resources
-      const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
-      const players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
-      const currentPlayer = players.find((player) => player.playerNumber === currentPlayerNumber)!;
       const playerResources = currentPlayer.playerState.data.resources;
       for (const [resourceType, requiredAmount] of this.winConditions.resources.entries()) {
         const currentAmount = playerResources[resourceType] || 0;
@@ -119,7 +114,6 @@ export class GameModeConditionChecker {
     }
     if (this.winConditions.actorsTotal) {
       // Check if current player has the required number of actors
-      const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
       const actors = this.actorsByPlayer?.get(currentPlayerNumber) || [];
       if (actors.length >= this.winConditions.actorsTotal) {
         console.log("Required number of actors reached, win condition met.");
@@ -128,7 +122,6 @@ export class GameModeConditionChecker {
     }
     if (this.winConditions.actorsOfType) {
       // Check if current player has the required number of specific actors
-      const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
       const actors = this.actorsByPlayer?.get(currentPlayerNumber) || [];
       for (const [actorType, requiredAmount] of this.winConditions.actorsOfType.entries()) {
         const count = actors.filter((actor) => actor.name === actorType).length;
@@ -143,10 +136,10 @@ export class GameModeConditionChecker {
   }
 
   private checkLoseConditions(): boolean {
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
+    const actors = this.actorsByPlayer?.get(currentPlayerNumber) || [];
     if (this.loseConditions.allActorsMustBeEliminated) {
       // Check if current player has no owning actors left
-      const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
-      const actors = this.actorsByPlayer?.get(currentPlayerNumber) || [];
       if (actors.length === 0) {
         console.log("All actors eliminated, lose condition met.");
         return true; // No actors left, consider it a loss
@@ -154,8 +147,6 @@ export class GameModeConditionChecker {
     }
     if (this.loseConditions.allBuildingsMustBeEliminated) {
       // Check if current player has no owning buildings left (actors with constructionSite component)
-      const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
-      const actors = this.actorsByPlayer?.get(currentPlayerNumber) || [];
       const buildings = actors.filter((actor) => getActorComponent(actor, ConstructionSiteComponent));
       if (buildings.length === 0) {
         console.log("All buildings eliminated, lose condition met.");
