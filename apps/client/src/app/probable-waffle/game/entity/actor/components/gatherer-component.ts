@@ -21,7 +21,7 @@ import { AnimationActorComponent, AnimationType } from "./animation-actor-compon
 import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -426,7 +426,10 @@ export class GathererComponent {
     }
 
     const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-    this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (visibilityComponent && visibilityComponent.visible) {
+      this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
+    }
   }
 
   private playGatherAnimation() {

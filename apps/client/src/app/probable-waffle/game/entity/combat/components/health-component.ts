@@ -8,7 +8,7 @@ import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
-import { getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectDepth, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { environment } from "../../../../../../environments/environment";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
@@ -323,6 +323,8 @@ export class HealthComponent {
   }
 
   private playDeathSound() {
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
     let randomSound: SoundDefinition;
     let randomSoundIndex: number;
     switch (this.healthDefinition.physicalState) {
