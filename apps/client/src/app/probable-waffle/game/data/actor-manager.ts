@@ -43,6 +43,9 @@ import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 import StonePile from "../prefabs/outside/resources/StonePile";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
+import { SkaduweeWorker } from "../prefabs/characters/skaduwee/SkaduweeWorker";
+import { TivaraWorker } from "../prefabs/characters/tivara/TivaraWorker";
+import { pwActorDefinitions } from "./actor-definitions";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -57,6 +60,7 @@ export class ActorManager {
   };
 
   private static tivaraWorkers: ActorMap = {
+    [ObjectNames.TivaraWorker]: TivaraWorker,
     [ObjectNames.TivaraWorkerFemale]: TivaraWorkerFemale,
     [ObjectNames.TivaraWorkerMale]: TivaraWorkerMale
   };
@@ -81,6 +85,7 @@ export class ActorManager {
   };
 
   private static skaduweeWorkers: ActorMap = {
+    [ObjectNames.SkaduweeWorker]: SkaduweeWorker,
     [ObjectNames.SkaduweeWorkerMale]: SkaduweeWorkerMale,
     [ObjectNames.SkaduweeWorkerFemale]: SkaduweeWorkerFemale
   };
@@ -153,6 +158,17 @@ export class ActorManager {
   }
 
   static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
+    const definition = pwActorDefinitions[name as ObjectNames];
+    if (!definition) {
+      throw new Error(`Actor definition for ${name} not found.`);
+    }
+
+    if (definition.meta?.randomOfType?.length) {
+      // If the actor definition has a randomOfType, we need to pick a random one from the list
+      const randomIndex = Math.floor(Math.random() * definition.meta.randomOfType.length);
+      name = definition.meta.randomOfType[randomIndex] as ObjectNames;
+    }
+
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {

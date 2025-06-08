@@ -374,6 +374,9 @@ export type ActorInfoDefinition = Partial<{
       enabled: boolean;
     };
   }>;
+  meta: Partial<{
+    randomOfType: ObjectNames[];
+  }>;
 }>;
 export const pwActorDefinitions: {
   [key in ObjectNames]: ActorInfoDefinition;
@@ -747,6 +750,24 @@ export const pwActorDefinitions: {
       action: { enabled: true }
     }
   },
+  [ObjectNames.TivaraWorker]: {
+    ...tivaraWorkerDefinition,
+    components: {
+      ...tivaraWorkerDefinition.components,
+      info: {
+        name: "Tivara Worker", // TODO
+        description: "Worker", // Todo
+        smallImage: {
+          key: "factions",
+          frame: "character_icons/tivara/worker_female.png", // todo combined pic
+          origin: { x: 0.5, y: 0.6 }
+        }
+      }
+    },
+    meta: {
+      randomOfType: [ObjectNames.TivaraWorkerFemale, ObjectNames.TivaraWorkerMale]
+    }
+  },
   [ObjectNames.TivaraWorkerFemale]: {
     ...tivaraWorkerDefinition,
     components: {
@@ -984,7 +1005,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
+        availableProduceActors: [ObjectNames.TivaraWorker]
       },
       selectable: {},
       collider: { enabled: true },
@@ -1435,6 +1456,24 @@ export const pwActorDefinitions: {
       animatable: { animations: ANIM_SKADUWEE_WORKER_MALE_DEFINITION }
     }
   },
+  [ObjectNames.SkaduweeWorker]: {
+    ...skaduweeWorkerDefinition,
+    components: {
+      ...skaduweeWorkerDefinition.components,
+      info: {
+        name: "Skaduwee Worker", // TODO
+        description: "Worker", // Todo
+        smallImage: {
+          key: "factions",
+          frame: "character_icons/skaduwee/worker_female.png", // todo combined pic
+          origin: { x: 0.5, y: 0.6 }
+        }
+      }
+    },
+    meta: {
+      randomOfType: [ObjectNames.SkaduweeWorkerFemale, ObjectNames.SkaduweeWorkerMale]
+    }
+  },
   [ObjectNames.SkaduweeWorkerFemale]: {
     ...skaduweeWorkerDefinition,
     components: {
@@ -1523,7 +1562,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.SkaduweeWorkerMale, ObjectNames.SkaduweeWorkerFemale]
+        availableProduceActors: [ObjectNames.SkaduweeWorker]
       },
       collider: { enabled: true },
       constructable: {
