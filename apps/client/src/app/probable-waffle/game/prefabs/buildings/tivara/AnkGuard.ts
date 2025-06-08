@@ -7,7 +7,7 @@ import AnkGuardFoundation1 from "./AnkGuard/AnkGuardFoundation1";
 import AnkGuardFoundation2 from "./AnkGuard/AnkGuardFoundation2";
 import AnkGuardLevel1 from "./AnkGuard/AnkGuardLevel1";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */

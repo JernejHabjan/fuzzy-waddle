@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { AudioActorComponent } from "../../entity/actor/components/audio-actor-component";
 import { AnimationActorComponent, AnimationOptions } from "../../entity/actor/components/animation-actor-component";
 import { getActorComponent } from "../../data/actor-component";

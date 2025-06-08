@@ -1,5 +1,5 @@
 import { pwActorDefinitions } from "./actor-definitions";
-import { ObjectNames } from "./object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { VisionComponent } from "../entity/actor/components/vision-component";
 import { InfoComponent } from "../entity/actor/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";

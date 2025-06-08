@@ -7,7 +7,7 @@ import WatchTowerFoundation1 from "./WatchTower/WatchTowerFoundation1";
 import WatchTowerFoundation2 from "./WatchTower/WatchTowerFoundation2";
 import WatchTowerLevel1 from "./WatchTower/WatchTowerLevel1";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../../data/actor-data";
 /* END-USER-IMPORTS */

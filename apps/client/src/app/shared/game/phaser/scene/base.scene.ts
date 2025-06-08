@@ -230,3 +230,31 @@ export class BaseScene<
     return this.baseGameData.user.userId;
   }
 }
+
+export function getBaseGameDataFromScene<TGameData extends BaseGameData>(scene: Phaser.Scene): TGameData {
+  if (!(scene instanceof BaseScene)) throw new Error("Scene is not an instance of BaseScene");
+  const baseGameData = scene.baseGameData;
+  if (!baseGameData) throw new Error("BaseGameData is not defined in scene");
+  return baseGameData as TGameData;
+}
+
+export function getGameModeFromScene<TGameMode extends BaseGameMode>(scene: Phaser.Scene): TGameMode {
+  const baseGameData = getBaseGameDataFromScene<BaseGameData>(scene);
+  const gameMode = baseGameData.gameInstance.gameMode;
+  if (!gameMode) throw new Error("GameMode is not defined in scene");
+  if (!(gameMode instanceof BaseGameMode)) throw new Error("GameMode is not an instance of BaseGameMode");
+  return gameMode as TGameMode;
+}
+
+export function getPlayersFromScene<TPlayer extends BasePlayer>(scene: Phaser.Scene): TPlayer[] {
+  const baseGameData = getBaseGameDataFromScene<BaseGameData>(scene);
+  const players = baseGameData.gameInstance.players;
+  if (!players) throw new Error("Players are not defined in scene");
+  if (!Array.isArray(players)) throw new Error("Players is not an array");
+  return players as TPlayer[];
+}
+
+export function isPlayerHostInScene<TPlayer extends BasePlayer>(scene: Phaser.Scene, player: TPlayer): boolean {
+  const baseGameData = getBaseGameDataFromScene<BaseGameData>(scene);
+  return baseGameData.gameInstance.isHost(player.playerController.data.userId);
+}

@@ -25,7 +25,7 @@ import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
 import { AudioService } from "../../../scenes/services/audio.service";
 import { BuilderComponent } from "../../../entity/actor/components/builder-component";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";

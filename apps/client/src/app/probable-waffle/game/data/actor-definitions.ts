@@ -1,4 +1,4 @@
-import { ObjectNames } from "./object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ObjectDescriptorDefinition } from "../entity/actor/components/object-descriptor-component";
 import { OwnerDefinition } from "../entity/actor/components/owner-component";
 import { VisionDefinition } from "../entity/actor/components/vision-component";

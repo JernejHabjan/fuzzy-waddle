@@ -9,7 +9,7 @@ import { DebuggingService } from "../../../../scenes/services/DebuggingService";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
 import { ProductionComponent } from "../../../../entity/building/production/production-component";
-import { ObjectNames } from "../../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { pwActorDefinitions } from "../../../../data/actor-definitions";
 import { ScenePlayerHelpers } from "../../../../data/scene-player-helpers";
 import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";

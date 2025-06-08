@@ -29,6 +29,9 @@ export class InstantGameComponent implements OnInit {
     const currentPlayer = await this.gameInstanceClientService.addSelfAsPlayer();
     const aiPlayer = await this.gameInstanceClientService.addAiPlayer();
 
+    currentPlayer.team = 1;
+    aiPlayer.team = 2;
+
     currentPlayer.factionType = FactionType.Tivara;
     aiPlayer.factionType = FactionType.Skaduwee;
 
@@ -39,6 +42,18 @@ export class InstantGameComponent implements OnInit {
     await this.gameInstanceClientService.gameInstanceMetadataChanged("sessionState", {
       sessionState: GameSessionState.MovingPlayersToGame
     });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const allBuildingsMustBeEliminated = map !== ProbableWaffleMapEnum.Sandbox;
+    this.gameInstanceClientService.gameInstance!.gameMode!.data.loseConditions = {
+      allBuildingsMustBeEliminated
+    };
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const noEnemyPlayersLeft = map !== ProbableWaffleMapEnum.Sandbox;
+    this.gameInstanceClientService.gameInstance!.gameMode!.data.winConditions = {
+      noEnemyPlayersLeft
+    };
 
     await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
   }
