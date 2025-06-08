@@ -7,12 +7,12 @@
         <label class="form-label" for="timeLimit">Time limit (in minutes)</label>
         <input
           (ngModelChange)="
-            onValueChange('conditions.maximumTimeLimitInMinutes', {
-              conditions: { maximumTimeLimitInMinutes: gameMode.conditions.maximumTimeLimitInMinutes }
+            onValueChange('tieConditions.maximumTimeLimitInMinutes', {
+              tieConditions: { maximumTimeLimitInMinutes: gameMode.tieConditions.maximumTimeLimitInMinutes }
             })
           "
-          [placeholder]="!gameMode.conditions.maximumTimeLimitInMinutes ? 'No time limit' : ''"
-          [(ngModel)]="gameMode.conditions.maximumTimeLimitInMinutes"
+          [placeholder]="!gameMode.tieConditions.maximumTimeLimitInMinutes ? 'No time limit' : ''"
+          [(ngModel)]="gameMode.tieConditions.maximumTimeLimitInMinutes"
           class="mr-1 form-control"
           id="timeLimit"
           name="timeLimit"

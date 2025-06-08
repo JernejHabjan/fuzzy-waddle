@@ -1,7 +1,7 @@
 import { GameObjects, Input } from "phaser";
 import { ActorDefinition, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";

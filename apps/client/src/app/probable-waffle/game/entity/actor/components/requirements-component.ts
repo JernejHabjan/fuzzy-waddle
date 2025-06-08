@@ -1,5 +1,5 @@
 import GameObject = Phaser.GameObjects.GameObject;
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 export type RequirementsDefinition = {
   actors: ObjectNames[];

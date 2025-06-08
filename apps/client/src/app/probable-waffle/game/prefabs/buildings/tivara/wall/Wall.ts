@@ -4,7 +4,7 @@
 
 import WallTopRightBottomLeft from "./WallTopRightBottomLeft";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import WallTopRightBottomRight from "./WallTopRightBottomRight";
 import WallTopLeftBottomRight from "./WallTopLeftBottomRight";
 import WallTopLeftBottomLeft from "./WallTopLeftBottomLeft";

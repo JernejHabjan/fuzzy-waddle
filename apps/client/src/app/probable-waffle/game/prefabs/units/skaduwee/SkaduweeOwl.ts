@@ -8,7 +8,7 @@ import { HealthComponent } from "../../../entity/combat/components/health-compon
 import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
 import {

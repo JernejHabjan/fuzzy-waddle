@@ -230,3 +230,11 @@ export class BaseScene<
     return this.baseGameData.user.userId;
   }
 }
+
+export function getGameModeFromScene<TGameMode extends BaseGameMode>(scene: Phaser.Scene): TGameMode {
+  if (!(scene instanceof BaseScene)) throw new Error("Scene is not an instance of BaseScene");
+  const gameMode = scene.baseGameData.gameInstance.gameMode;
+  if (!gameMode) throw new Error("GameMode is not defined in scene");
+  if (!(gameMode instanceof BaseGameMode)) throw new Error("GameMode is not an instance of BaseGameMode");
+  return gameMode as TGameMode;
+}

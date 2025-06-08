@@ -15,7 +15,7 @@ import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
 } from "../../../entity/actor/components/object-descriptor-component";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class StonePile extends Phaser.GameObjects.Image {

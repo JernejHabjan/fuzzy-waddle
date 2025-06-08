@@ -9,7 +9,7 @@ import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../world/managers/controllers/input/single-selection.handler";
 import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
 import { IdComponent } from "../../../entity/actor/components/id-component";
