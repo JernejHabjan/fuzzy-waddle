@@ -19,7 +19,7 @@ import {
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType,
   RequestGameSearchForMatchMakingDto,
-  WinConditions
+  Conditions
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
@@ -120,7 +120,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         startOptions: {}
       },
       gameModeData: {
-        winConditions: {} satisfies WinConditions,
+        conditions: {} satisfies Conditions,
         mapTuning: {} satisfies MapTuning,
         difficultyModifiers: {} satisfies DifficultyModifiers
       } satisfies ProbableWaffleGameModeData,
@@ -199,9 +199,9 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     const gameModeData = {
       map: mapId,
       difficultyModifiers: {} satisfies DifficultyModifiers,
-      winConditions: {
-        timeLimit: 60
-      } satisfies WinConditions,
+      conditions: {
+        maximumTimeLimitInMinutes: 60
+      } satisfies Conditions,
       mapTuning: {
         unitCap: 20
       } satisfies MapTuning

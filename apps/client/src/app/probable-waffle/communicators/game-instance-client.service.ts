@@ -29,7 +29,7 @@ import {
   ProbableWaffleSpectatorData,
   ProbableWaffleSpectatorDataChangeEventProperty,
   RequestGameSearchForMatchMakingDto,
-  WinConditions
+  Conditions
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
@@ -85,7 +85,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         startOptions: {}
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
-        winConditions: {} satisfies WinConditions,
+        conditions: {} satisfies Conditions,
         mapTuning: {} satisfies MapTuning,
         difficultyModifiers: {} satisfies DifficultyModifiers
       } satisfies ProbableWaffleGameModeData,

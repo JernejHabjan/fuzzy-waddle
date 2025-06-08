@@ -8,7 +8,7 @@ import {
   ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGameModeData,
   ProbableWaffleGameStateData,
-  WinConditions
+  Conditions
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";
@@ -39,7 +39,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const newGameInstance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: this.sanitizeGameInstanceMetadataData(gameInstanceMetadataData),
       gameModeData: {
-        winConditions: {} satisfies WinConditions,
+        conditions: {} satisfies Conditions,
         mapTuning: {} satisfies MapTuning,
         difficultyModifiers: {} satisfies DifficultyModifiers
       } satisfies ProbableWaffleGameModeData,

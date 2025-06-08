@@ -1,7 +1,7 @@
 import { ResourceTypeDefinition } from "./resource-type-definition";
 
-export interface WinConditions {
-  timeLimit?: number;
+export interface Conditions {
+  maximumTimeLimitInMinutes?: number;
 }
 
 export interface MapTuning {

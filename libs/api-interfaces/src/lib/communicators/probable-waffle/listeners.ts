@@ -58,8 +58,9 @@ export class ProbableWaffleListeners {
       case "map":
         gameInstance.gameMode!.data.map = payload.data.map;
         break;
-      case "winConditions.timeLimit":
-        gameInstance.gameMode!.data.winConditions.timeLimit = payload.data.winConditions!.timeLimit;
+      case "conditions.maximumTimeLimitInMinutes":
+        gameInstance.gameMode!.data.conditions.maximumTimeLimitInMinutes =
+          payload.data.conditions!.maximumTimeLimitInMinutes;
         break;
       case "mapTuning.unitCap":
         gameInstance.gameMode!.data.mapTuning.unitCap = payload.data.mapTuning!.unitCap;
