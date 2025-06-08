@@ -755,12 +755,12 @@ export const pwActorDefinitions: {
     components: {
       ...tivaraWorkerDefinition.components,
       info: {
-        name: "Tivara Worker", // TODO
-        description: "Worker", // Todo
+        name: "Tivara Scavenger",
+        description: "Guardian of forgotten secrets, laboring in shadow to uphold the ancient cycle",
         smallImage: {
           key: "factions",
-          frame: "character_icons/tivara/worker_female.png", // todo combined pic
-          origin: { x: 0.5, y: 0.6 }
+          frame: "character_icons/tivara/worker.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       }
     },
@@ -773,8 +773,8 @@ export const pwActorDefinitions: {
     components: {
       ...tivaraWorkerDefinition.components,
       info: {
-        name: "Tivara Scavenger",
-        description: "Guardian of forgotten secrets, laboring in shadow to uphold the ancient cycle",
+        name: "Dustbound",
+        description: "Bound by ancient decree, they labor in the sand to honor what once was — and what must return",
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_female.png",
@@ -805,8 +805,8 @@ export const pwActorDefinitions: {
     components: {
       ...tivaraWorkerDefinition.components,
       info: {
-        name: "Tivara Laborer",
-        description: "Bound to the desert's will, he rebuilds and gathers with relentless devotion",
+        name: "Sandward",
+        description: "From ruin to rise again — their toil feeds the endless rhythm etched in stone and soul",
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_male.png",
@@ -1035,9 +1035,9 @@ export const pwActorDefinitions: {
         range: 10
       },
       info: {
-        name: "Temple",
+        name: "Hall of Echoing Rites",
         description:
-          "Draped in fine fabrics and surrounded by sacred artifacts, this temple hums with the power of forgotten rituals.",
+          "Ancient fabrics sway between crumbling pillars, and the air hums with ritual echoes long buried in the sand",
         portraitAnimation: {
           idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
           action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
@@ -1461,12 +1461,12 @@ export const pwActorDefinitions: {
     components: {
       ...skaduweeWorkerDefinition.components,
       info: {
-        name: "Skaduwee Worker", // TODO
-        description: "Worker", // Todo
+        name: "Umbral Worker",
+        description: "Shaping the realm of shadows with silent devotion",
         smallImage: {
           key: "factions",
-          frame: "character_icons/skaduwee/worker_female.png", // todo combined pic
-          origin: { x: 0.5, y: 0.6 }
+          frame: "character_icons/skaduwee/worker.png",
+          origin: { x: 0.5, y: 0.5 }
         }
       }
     },
