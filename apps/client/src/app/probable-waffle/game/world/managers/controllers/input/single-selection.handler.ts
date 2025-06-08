@@ -43,6 +43,8 @@ export class SingleSelectionHandler {
 
         // Check if an interactive object was clicked
         const isLeftClick = pointer.leftButtonReleased();
+        const isRightClick = pointer.rightButtonReleased();
+        if (!isRightClick && !isLeftClick) return;
         const isShiftDown = pointer.event.shiftKey; // shift removes from selection
         const isCtrlDown = pointer.event.ctrlKey; // ctrl adds to selection
 
