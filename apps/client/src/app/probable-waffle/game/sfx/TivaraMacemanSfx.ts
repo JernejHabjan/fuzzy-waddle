@@ -31,9 +31,10 @@ export const TivaraMacemanSfxAttackSounds: SoundDefinition[] = [
 ];
 
 export const TivaraMacemanSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_1 },
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_2 },
-  { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_3 }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_1 },
+  // { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_2 },
+  // { key: AudioSprites.TIVARA_MACEMAN, spriteName: TivaraMacemanSfx.DAMAGE_3 }
 ];
 
 export const TivaraMacemanSfxDeathSounds: SoundDefinition[] = [

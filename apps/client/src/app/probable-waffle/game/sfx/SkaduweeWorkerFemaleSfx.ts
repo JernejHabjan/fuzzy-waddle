@@ -55,12 +55,13 @@ export const SkaduweeWorkerFemaleSfxChopSounds: SoundDefinition[] = [
 ];
 
 export const SkaduweeWorkerFemaleSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_1 },
-  { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_2 },
-  { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_3 },
-  { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_4 },
-  { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_5 },
-  { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_6 }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_1 },
+  // { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_2 },
+  // { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_3 },
+  // { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_4 },
+  // { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_5 },
+  // { key: AudioSprites.SKADUWEE_WORKER_FEMALE, spriteName: SkaduweeWorkerFemaleSfx.DAMAGE_6 }
 ];
 
 export const SkaduweeWorkerFemaleSfxDeathSounds: SoundDefinition[] = [

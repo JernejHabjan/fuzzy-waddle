@@ -33,9 +33,10 @@ export const TivaraSlingshotSfxAttackSounds: SoundDefinition[] = [
 ];
 
 export const TivaraSlingshotSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_SLINGSHOT, spriteName: TivaraSlingshotSfx.DAMAGE_1 },
-  { key: AudioSprites.TIVARA_SLINGSHOT, spriteName: TivaraSlingshotSfx.DAMAGE_2 },
-  { key: AudioSprites.TIVARA_SLINGSHOT, spriteName: TivaraSlingshotSfx.DAMAGE_3 }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.TIVARA_SLINGSHOT, spriteName: TivaraSlingshotSfx.DAMAGE_1 },
+  // { key: AudioSprites.TIVARA_SLINGSHOT, spriteName: TivaraSlingshotSfx.DAMAGE_2 },
+  // { key: AudioSprites.TIVARA_SLINGSHOT, spriteName: TivaraSlingshotSfx.DAMAGE_3 }
 ];
 
 export const TivaraSlingshotSfxDeathSounds: SoundDefinition[] = [

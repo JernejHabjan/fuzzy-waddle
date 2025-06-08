@@ -51,9 +51,10 @@ export const TivaraWorkerFemaleSfxChopSounds: SoundDefinition[] = [
 ];
 
 export const TivaraWorkerFemaleSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.TIVARA_WORKER_FEMALE, spriteName: TivaraWorkerFemaleSfx.DAMAGE_1 },
-  { key: AudioSprites.TIVARA_WORKER_FEMALE, spriteName: TivaraWorkerFemaleSfx.DAMAGE_2 },
-  { key: AudioSprites.TIVARA_WORKER_FEMALE, spriteName: TivaraWorkerFemaleSfx.DAMAGE_3 }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.TIVARA_WORKER_FEMALE, spriteName: TivaraWorkerFemaleSfx.DAMAGE_1 },
+  // { key: AudioSprites.TIVARA_WORKER_FEMALE, spriteName: TivaraWorkerFemaleSfx.DAMAGE_2 },
+  // { key: AudioSprites.TIVARA_WORKER_FEMALE, spriteName: TivaraWorkerFemaleSfx.DAMAGE_3 }
 ];
 
 export const TivaraWorkerFemaleSfxDeathSounds: SoundDefinition[] = [
