@@ -1,13 +1,15 @@
 import {
   getBaseGameDataFromScene,
   getGameModeFromScene,
-  getPlayersFromScene
+  getPlayersFromScene,
+  isPlayerHostInScene
 } from "../../../../../shared/game/phaser/scene/base.scene";
 import {
   GameSessionState,
   LoseConditions,
   ProbableWaffleGameMode,
   ProbableWafflePlayer,
+  ProbableWafflePlayerType,
   TieConditions,
   WinConditions
 } from "@fuzzy-waddle/api-interfaces";
@@ -23,6 +25,9 @@ export class GameModeConditionChecker {
   private winConditions: WinConditions;
   private tieConditions: TieConditions;
   private actorsByPlayer?: Map<number, Phaser.GameObjects.GameObject[]>;
+  private currentPlayerNumber!: number;
+  private players!: ProbableWafflePlayer[];
+  private currentPlayer!: ProbableWafflePlayer;
 
   constructor(private readonly scene: Phaser.Scene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -54,23 +59,37 @@ export class GameModeConditionChecker {
   }
 
   private prepareData() {
-    const shouldGatherActorsFromScene =
-      this.winConditions.noEnemyPlayersLeft ||
-      this.winConditions.actorsTotal ||
-      this.winConditions.actorsOfType ||
-      this.loseConditions.allActorsMustBeEliminated ||
-      this.loseConditions.allBuildingsMustBeEliminated;
-    if (shouldGatherActorsFromScene) {
-      const { actorsByPlayer } = ScenePlayerHelpers.getActorsByPlayer(this.scene);
-      this.actorsByPlayer = actorsByPlayer;
-    }
+    this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
+    this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
+    this.currentPlayer = this.players.find((player) => player.playerNumber === this.currentPlayerNumber)!;
+    this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
+
+    this.runChecksForSelfAndAiPlayers();
+  }
+
+  private runChecksForSelfAndAiPlayers() {
+    const isHost = isPlayerHostInScene(this.scene, this.currentPlayer);
+    const aiPlayers = this.players.filter(
+      (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI
+    );
+
+    const playersToCheck = isHost ? [this.currentPlayer, ...aiPlayers] : [this.currentPlayer];
+    playersToCheck.forEach((player) => {
+      if (player.playerController.data.leftOrKilled) return;
+
+      // check if player has no actors left, if yes, mark as left or killed
+      const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
+      if (actors.length === 0) {
+        player.playerController.data.leftOrKilled = true;
+        console.log(`Player ${player.playerNumber} has no actors left, marked as killed.`);
+      }
+    });
   }
 
   private checkWinConditions(): boolean {
-    const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
-    const players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
-    const currentPlayer = players.find((player) => player.playerNumber === currentPlayerNumber)!;
-
+    const players = this.players;
+    const currentPlayerNumber = this.currentPlayerNumber;
+    const currentPlayer = this.currentPlayer;
     if (this.winConditions.noEnemyPlayersLeft) {
       // Check if there are no enemy players left
       const enemyPlayers = players.filter(
@@ -136,20 +155,21 @@ export class GameModeConditionChecker {
   }
 
   private checkLoseConditions(): boolean {
-    const currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
-    const actors = this.actorsByPlayer?.get(currentPlayerNumber) || [];
+    const currentPlayerNumber = this.currentPlayerNumber;
     if (this.loseConditions.allActorsMustBeEliminated) {
       // Check if current player has no owning actors left
-      if (actors.length === 0) {
+      if (this.currentPlayer.playerController.data.leftOrKilled) {
         console.log("All actors eliminated, lose condition met.");
         return true; // No actors left, consider it a loss
       }
     }
     if (this.loseConditions.allBuildingsMustBeEliminated) {
+      const actors = this.actorsByPlayer?.get(currentPlayerNumber) || [];
       // Check if current player has no owning buildings left (actors with constructionSite component)
       const buildings = actors.filter((actor) => getActorComponent(actor, ConstructionSiteComponent));
       if (buildings.length === 0) {
         console.log("All buildings eliminated, lose condition met.");
+        this.currentPlayer.playerController.data.leftOrKilled = true;
         return true; // No buildings left, consider it a loss
       }
     }

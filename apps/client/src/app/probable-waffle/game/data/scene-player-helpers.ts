@@ -1,6 +1,7 @@
 import { getAllPlayers, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
+import { HealthComponent } from "../entity/combat/components/health-component";
 
 export class ScenePlayerHelpers {
   static getActorsByPlayer(
@@ -20,6 +21,8 @@ export class ScenePlayerHelpers {
     selectableActors.forEach((actor) => {
       const ownerComponent = getActorComponent(actor, OwnerComponent);
       if (!ownerComponent) return;
+      const healthComponent = getActorComponent(actor, HealthComponent);
+      if (healthComponent?.killed) return;
       const playerNr = ownerComponent.getOwner();
       if (!playerNr) return;
       if (!allPlayers.some((player) => player.playerNumber === playerNr)) return;
