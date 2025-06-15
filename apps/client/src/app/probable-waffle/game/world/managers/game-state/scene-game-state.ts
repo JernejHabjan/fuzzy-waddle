@@ -72,7 +72,8 @@ export class SceneGameState {
         this.scene.scene.stop();
         break;
       case GameSessionState.Stopped:
-        this.scene.scene?.stop();
+        const sceneExists = this.scene.scene.scene;
+        if (sceneExists) this.scene.scene.stop();
     }
   }
 
