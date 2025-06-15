@@ -131,6 +131,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               case GameSessionState.Stopped:
                 await this.stopListeningToGameInstanceEvents();
                 this.gameInstance = undefined;
+                console.log("removed game instance");
                 break;
             }
             break;
