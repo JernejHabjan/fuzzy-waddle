@@ -6,9 +6,8 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 export enum VersionState {
   Checking,
   NewVersionDetected,
-  NewVersionDownloaded,
-  VersionInstallationFailed,
-  VersionOk
+  VersionOk,
+  UpdatingApp // New state for when we're clearing cache
 }
 
 @Injectable({
@@ -19,13 +18,13 @@ export class VersionService implements VersionServiceInterface, OnDestroy {
   private unrecoverableSubscription?: Subscription;
   private versionUpdateSubscription?: Subscription;
   private readonly localVersionState = new BehaviorSubject(VersionState.Checking);
-  private autoRefresh = true;
 
   constructor() {
     this.subscribeToSwEvents();
-    if (this.swUpdate.isEnabled)
+    if (this.swUpdate.isEnabled) {
       // noinspection JSIgnoredPromiseFromCall
       this.swUpdate.checkForUpdate();
+    }
   }
 
   async ready(): Promise<void> {
@@ -42,38 +41,71 @@ export class VersionService implements VersionServiceInterface, OnDestroy {
     return this.localVersionState.asObservable();
   }
 
-  onVersionRefreshClick = () => {
-    this.swUpdate.activateUpdate().then(() => document.location.reload());
-  };
+  private async clearAllCaches(): Promise<void> {
+    try {
+      // Clear all caches
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
+      console.log("All caches cleared");
+    } catch (error) {
+      console.error("Error clearing caches:", error);
+    }
+  }
+
+  private async unregisterServiceWorker(): Promise<void> {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+      console.log("Service worker unregistered");
+    } catch (error) {
+      console.error("Error unregistering service worker:", error);
+    }
+  }
+
+  private async forceReload(): Promise<void> {
+    this.localVersionState.next(VersionState.UpdatingApp);
+
+    try {
+      // 1. Clear all caches first
+      await this.clearAllCaches();
+
+      // 2. Unregister service worker
+      await this.unregisterServiceWorker();
+
+      // 4. Hard reload the page
+      window.location.reload();
+    } catch (error) {
+      console.error("Error during force reload:", error);
+      // Fallback to regular reload
+      window.location.reload();
+    }
+  }
 
   private subscribeToSwEvents() {
     if (!this.swUpdate.isEnabled) {
       this.localVersionState.next(VersionState.VersionOk);
       return;
     }
+
     this.versionUpdateSubscription = this.swUpdate.versionUpdates.subscribe((versionEvent) => {
-      // if version available, then show version ready modal
       switch (versionEvent.type) {
         case "VERSION_DETECTED":
           this.localVersionState.next(VersionState.NewVersionDetected);
-          break;
-        case "VERSION_READY":
-          this.localVersionState.next(VersionState.NewVersionDownloaded);
-          // Auto-refresh when version is ready
-          if (this.autoRefresh) {
-            this.swUpdate.activateUpdate().then(() => document.location.reload());
-          }
-          break;
-        case "VERSION_INSTALLATION_FAILED":
-          this.localVersionState.next(VersionState.VersionInstallationFailed);
+          // Immediately start force reload process
+          // noinspection JSIgnoredPromiseFromCall
+          this.forceReload();
           break;
         case "NO_NEW_VERSION_DETECTED":
           this.localVersionState.next(VersionState.VersionOk);
           break;
+        // We don't handle VERSION_READY since we're doing aggressive updates
       }
     });
+
     this.unrecoverableSubscription = this.swUpdate.unrecoverable.subscribe(() => {
-      this.localVersionState.next(VersionState.VersionInstallationFailed);
+      // On unrecoverable error, also force reload
+      // noinspection JSIgnoredPromiseFromCall
+      this.forceReload();
     });
   }
 
