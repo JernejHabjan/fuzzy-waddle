@@ -8,6 +8,7 @@ export enum ObjectNames {
   GeneralWarrior = "GeneralWarrior",
   TivaraMacemanMale = "TivaraMacemanMale",
   TivaraSlingshotFemale = "TivaraSlingshotFemale",
+  TivaraWorker = "TivaraWorker",
   TivaraWorkerFemale = "TivaraWorkerFemale",
   TivaraWorkerMale = "TivaraWorkerMale",
   AnkGuard = "AnkGuard",
@@ -19,6 +20,7 @@ export enum ObjectNames {
   SkaduweeRangedFemale = "SkaduweeRangedFemale",
   SkaduweeMagicianFemale = "SkaduweeMagicianFemale",
   SkaduweeWarriorMale = "SkaduweeWarriorMale",
+  SkaduweeWorker = "SkaduweeWorker",
   SkaduweeWorkerMale = "SkaduweeWorkerMale",
   SkaduweeWorkerFemale = "SkaduweeWorkerFemale",
   FrostForge = "FrostForge",
@@ -36,5 +38,5 @@ export enum ObjectNames {
   WatchTower = "WatchTower",
   Wall = "Wall",
   Minerals = "Minerals",
-  Stone = "Stone"
+  StonePile = "StonePile"
 }

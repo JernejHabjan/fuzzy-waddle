@@ -35,7 +35,7 @@ export class ProbableWaffleCommunicatorService
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
    */
-  utilityEvents = new EventEmitter<{ name: "save-game"; data?: any }>();
+  utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings"; data?: any }>();
   /**
    * cross scene events - internal phaser events that are not related to game instance and are broadcast to all scenes
    */

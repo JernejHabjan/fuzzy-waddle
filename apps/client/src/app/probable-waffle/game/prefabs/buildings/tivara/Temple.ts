@@ -7,7 +7,7 @@ import TempleFoundation1 from "./Temple/TempleFoundation1";
 import TempleFoundation2 from "./Temple/TempleFoundation2";
 import TempleLevel1 from "./Temple/TempleLevel1";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */

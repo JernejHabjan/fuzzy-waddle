@@ -2,17 +2,17 @@
   <form class="card-container">
     <div class="general-title">Game Setup</div>
     <fieldset>
-      <legend>Win Conditions</legend>
+      <legend>Conditions</legend>
       <div class="p-2">
         <label class="form-label" for="timeLimit">Time limit (in minutes)</label>
         <input
           (ngModelChange)="
-            onValueChange('winConditions.timeLimit', {
-              winConditions: { timeLimit: gameMode.winConditions.timeLimit }
+            onValueChange('tieConditions.maximumTimeLimitInMinutes', {
+              tieConditions: { maximumTimeLimitInMinutes: gameMode.tieConditions.maximumTimeLimitInMinutes }
             })
           "
-          [placeholder]="!gameMode.winConditions.timeLimit ? 'No time limit' : ''"
-          [(ngModel)]="gameMode.winConditions.timeLimit"
+          [placeholder]="!gameMode.tieConditions.maximumTimeLimitInMinutes ? 'No time limit' : ''"
+          [(ngModel)]="gameMode.tieConditions.maximumTimeLimitInMinutes"
           class="mr-1 form-control"
           id="timeLimit"
           name="timeLimit"

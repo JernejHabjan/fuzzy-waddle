@@ -19,6 +19,11 @@ export class ServerHealthService implements ServerHealthServiceInterface {
   private serverState: ServerState = ServerState.checking;
   private checkHealthPromise: Promise<void> | null = null;
 
+  constructor() {
+    // noinspection JSIgnoredPromiseFromCall
+    this._checkHealth();
+  }
+
   get serverAvailable(): boolean {
     return this.serverState === ServerState.available;
   }
@@ -31,7 +36,11 @@ export class ServerHealthService implements ServerHealthServiceInterface {
     return this.serverState === ServerState.checking;
   }
 
-  async checkHealth() {
+  async checkHealth(): Promise<void | null> {
+    if (this.checkHealthPromise) await this.checkHealthPromise;
+  }
+
+  private async _checkHealth() {
     if (!this.checkHealthPromise) {
       const url = environment.api + "api/health";
       this.checkHealthPromise = this.runCheck(url);

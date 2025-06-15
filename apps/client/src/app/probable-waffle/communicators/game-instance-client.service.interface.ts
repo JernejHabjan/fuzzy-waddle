@@ -11,10 +11,11 @@ import {
   ProbableWaffleGameModeData
 } from "@fuzzy-waddle/api-interfaces";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 
 export interface GameInstanceClientServiceInterface {
   gameInstance?: ProbableWaffleGameInstance;
+  gameInstanceToGameComponentCommunicator: Subject<"refresh">;
 
   createGameInstance(
     name: string,

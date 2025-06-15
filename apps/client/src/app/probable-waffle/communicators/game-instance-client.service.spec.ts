@@ -6,6 +6,8 @@ import { GameInstanceClientServiceInterface } from "./game-instance-client.servi
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.spec";
 import {
+  DifficultyModifiers,
+  MapTuning,
   PositionPlayerDefinition,
   ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameFoundEvent,
@@ -15,9 +17,10 @@ import {
   ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGameModeData
+  ProbableWaffleGameModeData,
+  ProbableWaffleGameStateData
 } from "@fuzzy-waddle/api-interfaces";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 import { gameInstanceLocalStorageServiceStub } from "./storage/game-instance-local-storage.service.spec";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
@@ -26,6 +29,7 @@ import { provideHttpClient } from "@angular/common/http";
 
 export const gameInstanceClientServiceStub = {
   gameInstance: undefined as ProbableWaffleGameInstance | undefined,
+  gameInstanceToGameComponentCommunicator: new Subject<"refresh">(),
   get currentGameInstanceId(): string | null {
     return null;
   },
@@ -34,7 +38,29 @@ export const gameInstanceClientServiceStub = {
     visibility: ProbableWaffleGameInstanceVisibility,
     type: ProbableWaffleGameInstanceType
   ): Promise<void> {
-    this.gameInstance = new ProbableWaffleGameInstance();
+    this.gameInstance = new ProbableWaffleGameInstance({
+      gameInstanceMetadataData: {
+        name,
+        createdBy: "1",
+        type,
+        visibility,
+        startOptions: {}
+      } satisfies ProbableWaffleGameInstanceMetadataData,
+      gameModeData: {
+        tieConditions: {
+          maximumTimeLimitInMinutes: 60
+        },
+        winConditions: {
+          noEnemyPlayersLeft: true
+        },
+        loseConditions: {
+          allBuildingsMustBeEliminated: true
+        },
+        mapTuning: { unitCap: 100 } satisfies MapTuning,
+        difficultyModifiers: {} satisfies DifficultyModifiers
+      } satisfies ProbableWaffleGameModeData,
+      gameStateData: {} as ProbableWaffleGameStateData
+    });
   },
   async stopGameInstance(): Promise<void> {
     return Promise.resolve();

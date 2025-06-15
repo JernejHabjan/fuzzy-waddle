@@ -1,5 +1,5 @@
 import { inject, Injectable, NgZone } from "@angular/core";
-import { filter, firstValueFrom, Observable, Subscription } from "rxjs";
+import { filter, firstValueFrom, Observable, Subject, Subscription } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
@@ -29,7 +29,7 @@ import {
   ProbableWaffleSpectatorData,
   ProbableWaffleSpectatorDataChangeEventProperty,
   RequestGameSearchForMatchMakingDto,
-  WinConditions
+  TieConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
@@ -42,6 +42,9 @@ import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
 import { SaveGamePayload } from "../game/data/save-game";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { LoadComponent } from "../gui/load/load.component";
+import { OptionsComponent } from "../gui/options/options.component";
 
 @Injectable({
   providedIn: "root"
@@ -61,10 +64,12 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
   private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
+  private readonly modalService = inject(NgbModal);
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
+  gameInstanceToGameComponentCommunicator = new Subject<"refresh">();
 
   async createGameInstance(
     name: string,
@@ -80,8 +85,16 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         startOptions: {}
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
-        winConditions: {} satisfies WinConditions,
-        mapTuning: {} satisfies MapTuning,
+        tieConditions: {
+          maximumTimeLimitInMinutes: 60
+        },
+        winConditions: {
+          noEnemyPlayersLeft: true
+        },
+        loseConditions: {
+          allBuildingsMustBeEliminated: true
+        },
+        mapTuning: { unitCap: 100 } satisfies MapTuning,
         difficultyModifiers: {} satisfies DifficultyModifiers
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
@@ -118,6 +131,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               case GameSessionState.Stopped:
                 await this.stopListeningToGameInstanceEvents();
                 this.gameInstance = undefined;
+                console.log("removed game instance");
                 break;
             }
             break;
@@ -126,12 +140,48 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
-  listenToSaveGameEvents(): void {
+  listenToUtilityGameEvents(): void {
     this.communicatorSubscriptions.push(
       this.probableWaffleCommunicatorService.utilityEvents
-        .pipe(filter((config) => config.name === "save-game"))
+        .pipe(
+          filter((config) => config.name === "save-game" || config.name === "load-game" || config.name === "settings")
+        )
         .subscribe(async (payload) => {
-          await this.saveGameInstance(payload.data);
+          let modalRef: NgbModalRef | undefined;
+          switch (payload.name) {
+            case "save-game":
+              if (this.DEBUG) {
+                console.log("save game requested", payload.data);
+              }
+              await this.saveGameInstance(payload.data);
+              break;
+            case "load-game":
+              if (this.DEBUG) {
+                console.log("load game requested", payload.data);
+              }
+              modalRef = this.modalService.open(LoadComponent, {
+                size: "lg",
+                scrollable: true,
+                centered: true,
+                modalDialogClass: "transparent-modal"
+              });
+              (modalRef.componentInstance as LoadComponent).fromGame = true;
+              (modalRef.componentInstance as LoadComponent).dialogRef = modalRef;
+              break;
+            case "settings":
+              if (this.DEBUG) {
+                console.log("settings requested", payload.data);
+              }
+              modalRef = this.modalService.open(OptionsComponent, {
+                size: "lg",
+                scrollable: true,
+                centered: true,
+                modalDialogClass: "transparent-modal"
+              });
+              (modalRef.componentInstance as OptionsComponent).fromGame = true;
+              (modalRef.componentInstance as OptionsComponent).dialogRef = modalRef;
+              break;
+          }
         })
     );
   }
@@ -210,7 +260,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToPlayerEvents();
     this.listenToSpectatorEvents();
     this.listenToGameStateChangedEvents();
-    this.listenToSaveGameEvents();
+    this.listenToUtilityGameEvents();
   }
 
   private async stopListeningToGameInstanceEvents() {
@@ -419,6 +469,12 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     }
   }
 
+  async navigateDirectlyToGame(): Promise<void> {
+    if (!this.gameInstance)
+      throw new Error("Game instance not found in navigateDirectlyToGame in GameInstanceClientService");
+    await this.router.navigate(["probable-waffle/game"]);
+  }
+
   get currentGameInstanceId(): string | null {
     return this.gameInstance?.gameInstanceMetadata?.data.gameInstanceId ?? null;
   }
@@ -497,14 +553,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await firstValueFrom(this.httpClient.delete<void>(url, {}));
   }
 
-  /**
-   * todo this is a prototype
-   */
   async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.startOptions.loadFromSave = true;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
     await this.startListeningToGameInstanceEvents();
-    await this.navigateToLobbyOrDirectlyToGame();
+    await this.navigateDirectlyToGame();
   }
 
   async saveGameInstance(data: SaveGamePayload): Promise<void> {

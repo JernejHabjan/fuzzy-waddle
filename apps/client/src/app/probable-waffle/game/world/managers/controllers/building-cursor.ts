@@ -1,7 +1,7 @@
 import { GameObjects, Input } from "phaser";
 import { ActorDefinition, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
@@ -21,6 +21,7 @@ import { AudioService } from "../../../scenes/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../../scenes/components/fog-of-war.component";
 import Vector2 = Phaser.Math.Vector2;
+import { RepresentableComponent } from "../../../entity/actor/components/representable-component";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -104,6 +105,7 @@ export class BuildingCursor {
       this.isDragging = true;
     }
 
+    if (!this.building) return;
     const transformComponent = getGameObjectTransform(this.building);
     if (!transformComponent) return;
 
@@ -123,9 +125,16 @@ export class BuildingCursor {
       this.drawLineBetweenPoints();
     }
 
-    transformComponent.x = worldPosition.x;
-    transformComponent.y = worldPosition.y;
-
+    const representableComponent = getActorComponent(this.building, RepresentableComponent);
+    if (representableComponent == null) {
+      console.error("Building cursor: RepresentableComponent not found on building game object.");
+      return;
+    }
+    representableComponent.worldTransform = {
+      x: worldPosition.x,
+      y: worldPosition.y,
+      z: 0
+    } satisfies Vector3Simple;
     DepthHelper.setActorDepth(this.building);
 
     // Check if the current building can be placed

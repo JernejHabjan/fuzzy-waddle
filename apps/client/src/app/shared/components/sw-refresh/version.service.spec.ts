@@ -10,7 +10,6 @@ export const versionServiceStub = {
     // return observable
     return new Observable<VersionState>();
   },
-  onVersionRefreshClick: () => {},
   async ready() {
     await Promise.resolve();
   }

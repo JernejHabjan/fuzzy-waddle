@@ -31,6 +31,7 @@ export class ProbableWaffleScene extends BaseScene<
   ProbableWaffleCommunicatorService
 > {
   override getSceneGameData() {
+    this.sceneGameData.baseGameData = this.baseGameData;
     return this.sceneGameData;
   }
 

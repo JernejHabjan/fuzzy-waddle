@@ -8,14 +8,24 @@ import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
     // game_actions_bg
-    const game_actions_bg = scene.add.nineslice(1, 0, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 20, 20, 1, 1, 1, 1);
+    const game_actions_bg = scene.add.nineslice(
+      1,
+      0,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      20,
+      20,
+      1,
+      1,
+      1,
+      1
+    );
     game_actions_bg.scaleX = 12.430939264477326;
-    game_actions_bg.scaleY = 10.778213319031138;
+    game_actions_bg.scaleY = 15.778213319031138;
     game_actions_bg.setOrigin(0, 0);
     this.add(game_actions_bg);
 
@@ -24,19 +34,26 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     this.add(icon);
 
     // title
-    const title = scene.add.text(129, 95, "", {});
+    const title = scene.add.text(129, 77, "", {});
     title.setOrigin(0.5, 0);
     title.text = "Actor name";
-    title.setStyle({ "align": "center", "fontSize": "20px", "maxLines": 2, "resolution": 4 });
-    title.setWordWrapWidth(250);
+    title.setStyle({ align: "center", fontFamily: "disposabledroid", fontSize: "26px", maxLines: 2, resolution: 10 });
+    title.setWordWrapWidth(220);
     this.add(title);
 
     // description
-    const description = scene.add.text(130, 124, "", {});
+    const description = scene.add.text(125, 123, "", {});
     description.setOrigin(0.5, 0);
-    description.text = "Actual description of this actor";
-    description.setStyle({ "align": "center", "resolution": 4 });
-    description.setWordWrapWidth(200);
+    description.text =
+      "Actual description of this actor Actual description of this actor Actual description of this actor ";
+    description.setStyle({
+      align: "center",
+      fontFamily: "disposabledroid",
+      fontSize: "20px",
+      maxLines: 5,
+      resolution: 10
+    });
+    description.setWordWrapWidth(220);
     this.add(description);
 
     this.icon = icon;

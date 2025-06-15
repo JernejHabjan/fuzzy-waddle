@@ -2,11 +2,11 @@ import { ConstructionSiteComponent } from "../../building/construction/construct
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
-import { getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
+import { getGameObjectTransform, onObjectReady } from "../../../data/game-object-helper";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
 import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/labels/HudMessages";
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
@@ -50,10 +50,10 @@ export class BuilderComponent {
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    onSceneInitialized(this.gameObject.scene, this.sceneInit, this);
+    onObjectReady(this.gameObject, this.onObjectReady, this);
   }
 
-  private sceneInit() {
+  private onObjectReady() {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);

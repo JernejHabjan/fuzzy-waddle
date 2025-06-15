@@ -5,9 +5,9 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ProductionCostDefinition } from "../production/production-cost-component";
-import { onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
@@ -158,6 +158,8 @@ export class ConstructionSiteComponent {
 
   private playBuildSound() {
     if (!this.audioService) return;
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
     if (this.playingBuildSound) return;
     this.playingBuildSound = true;
     const soundDefinitions = [...SharedActorActionsSfxHammeringSounds, ...SharedActorActionsSfxSawingSounds];
@@ -312,9 +314,12 @@ export class ConstructionSiteComponent {
     this.constructionSiteData.state = ConstructionStateEnum.Finished;
     this.constructionStateChanged.next(this.constructionSiteData.state);
 
-    const soundDefinitions = SharedActorActionsSfxSelectionSounds;
-    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
-    this.audioService?.playSpatialAudioSprite(this.gameObject, soundDefinition.key, soundDefinition.spriteName);
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (visibilityComponent && visibilityComponent.visible) {
+      const soundDefinitions = SharedActorActionsSfxSelectionSounds;
+      const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+      this.audioService?.playSpatialAudioSprite(this.gameObject, soundDefinition.key, soundDefinition.spriteName);
+    }
 
     if (this.constructionSiteDefinition.consumesBuilders) {
       this.assignedBuilders.forEach((builder) => {

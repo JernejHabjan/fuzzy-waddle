@@ -1,13 +1,23 @@
 import { getSceneInitializers, getSceneService } from "../scenes/components/scene-component-helpers";
 import { NavigationService } from "../scenes/services/navigation.service";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
 import { GameObjects } from "phaser";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { getActorComponent } from "./actor-component";
+import { RepresentableComponent } from "../entity/actor/components/representable-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
+  if (!gameObject) return null;
+  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+  if (representableComponent) {
+    return representableComponent.bounds;
+  }
+  return getGameObjectBoundsRaw(gameObject);
+}
+
+export function getGameObjectBoundsRaw(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
   const boundsComponent = gameObject as unknown as Phaser.GameObjects.Components.GetBounds;
   if (boundsComponent.getBounds === undefined) return null;
@@ -20,18 +30,26 @@ export function getGameObjectDepth(gameObject: Phaser.GameObjects.GameObject): n
   return depthComponent.depth;
 }
 
-export function getGameObjectTransform(
-  gameObject?: Phaser.GameObjects.GameObject
-): Phaser.GameObjects.Components.Transform | null {
+export function getGameObjectTransform(gameObject?: Phaser.GameObjects.GameObject): Vector3Simple | null {
+  if (!gameObject) return null;
+  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+  if (representableComponent) {
+    return representableComponent.worldTransform;
+  }
+  return getGameObjectTransformRaw(gameObject);
+}
+
+export function getGameObjectTransformRaw(gameObject?: Phaser.GameObjects.GameObject): Vector3Simple | null {
   if (!gameObject) return null;
   const transformComponent = gameObject as unknown as Phaser.GameObjects.Components.Transform;
-  if (transformComponent.x === undefined || transformComponent.y === undefined) return null;
+  if (!transformComponent.hasTransformComponent) return null;
   return transformComponent;
 }
 
 export function getGameObjectVisibility(
   gameObject: Phaser.GameObjects.GameObject
 ): Phaser.GameObjects.Components.Visible | null {
+  // todo adjust this so it first tries to pull representable component and get visible from that - then adjust also health component etc to use this
   const visibilityComponent = gameObject as unknown as Phaser.GameObjects.Components.Visible;
   if (visibilityComponent.visible === undefined) return null;
   return visibilityComponent;
@@ -104,12 +122,30 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
       first()
     )
     .subscribe(() => {
+      const executeCallback = () => {
+        if (scene.time.now === 0 || scene.scene?.isActive() || scene.data.get("justCreated")) {
+          callback.call(scope);
+        } else {
+          console.warn("Scene is not active when onSceneInitialized callback is called.");
+        }
+      };
       if (delay === null) {
-        callback.call(scope);
+        executeCallback();
       } else {
-        setTimeout(() => callback.call(scope), delay);
+        setTimeout(() => {
+          executeCallback();
+        }, delay);
       }
     });
+}
+
+export function onGameObjectReady(
+  gameObject: Phaser.GameObjects.GameObject,
+  callback: () => void,
+  scope: any,
+  delay: number | null = 0
+) {
+  return onObjectReady(gameObject, callback, scope, delay);
 }
 
 /**

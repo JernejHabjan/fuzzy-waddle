@@ -30,7 +30,7 @@
                     },
                     "x": 1,
                     "scaleX": 12.430939264477326,
-                    "scaleY": 10.778213319031138,
+                    "scaleY": 15.778213319031138,
                     "originX": 0,
                     "originY": 0,
                     "leftWidth": 1,
@@ -58,27 +58,31 @@
                     "label": "title",
                     "scope": "CLASS",
                     "x": 129,
-                    "y": 95,
+                    "y": 77,
                     "originX": 0.5,
                     "text": "Actor name",
-                    "resolution": 4,
+                    "resolution": 10,
                     "align": "center",
-                    "fontSize": "20px",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "26px",
                     "maxLines": 2,
-                    "wordWrapWidth": 250
+                    "wordWrapWidth": 220
                 },
                 {
                     "type": "Text",
                     "id": "e910978e-f6fd-4b7d-9e6a-6d278257eb27",
                     "label": "description",
                     "scope": "CLASS",
-                    "x": 130,
-                    "y": 124,
+                    "x": 125,
+                    "y": 123,
                     "originX": 0.5,
-                    "text": "Actual description of this actor",
-                    "resolution": 4,
+                    "text": "Actual description of this actor Actual description of this actor Actual description of this actor ",
+                    "resolution": 10,
                     "align": "center",
-                    "wordWrapWidth": 200
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "20px",
+                    "maxLines": 5,
+                    "wordWrapWidth": 220
                 }
             ]
         }

@@ -1,33 +1,25 @@
 {
     "id": "427f5265-4bd1-4de9-900f-51854253c9c2",
+    "sceneType": "PREFAB",
     "settings": {
-        "createMethodName": "",
-        "preloadMethodName": "",
-        "compilerOutputLanguage": "TYPE_SCRIPT",
-        "exportClass": true,
-        "autoImport": true,
-        "importFileExtension": false,
-        "generateAwakeHandler": false,
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
         "borderWidth": 1280,
-        "borderHeight": 720,
-        "borderX": 0,
-        "borderY": 0
+        "borderHeight": 720
     },
-    "sceneType": "PREFAB",
     "displayList": [
         {
-            "unlock": [
-                "x",
-                "y"
-            ],
             "type": "Container",
             "id": "3adfe68b-04fd-4769-bd2c-0e887a81064b",
             "label": "minimap_container",
             "displayName": "Minimap",
             "scope": "CLASS",
-            "y": 0,
             "scaleX": 1.0265358293529236,
             "scaleY": 0.9537232846001076,
             "list": [
@@ -42,20 +34,24 @@
                     },
                     "x": 12,
                     "y": -247,
-                    "scaleX": 12.769367198119731,
-                    "scaleY": 7.444257731898887,
+                    "scaleX": 6.360057500071948,
+                    "scaleY": 4.918865473567761,
                     "originX": 0,
                     "originY": 0,
                     "leftWidth": 3,
                     "rightWidth": 3,
                     "topHeight": 3,
                     "bottomHeight": 3,
-                    "width": 32,
-                    "height": 32,
+                    "width": 64,
+                    "height": 48,
                     "list": [
                         {
                             "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
                             "id": "b53eba72-7feb-44aa-8019-9bb350841988",
+                            "unlock": [
+                                "x",
+                                "y"
+                            ],
                             "label": "preventDefaultScript_1",
                             "displayName": "Prevent Default"
                         }
@@ -82,13 +78,14 @@
                     "width": 128,
                     "height": 92
                 }
-            ],
-            "x": 0
+            ]
         }
     ],
+    "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
-        "contentType": "phasereditor2d.core.scene.SceneContentType"
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
     }
 }

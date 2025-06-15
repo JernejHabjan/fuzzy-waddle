@@ -1,3 +1,5 @@
+import { getGameObjectTransform } from "../../data/game-object-helper";
+
 export class DepthHelper {
   constructor(private readonly scene: Phaser.Scene) {
     this.handleSortOfStaticObjects();
@@ -10,13 +12,14 @@ export class DepthHelper {
     });
   };
 
-  static setActorDepth(actor: any) {
-    if (!actor.setDepth) return;
-    const actorWithDepth = actor as Phaser.GameObjects.Components.Depth;
-    actorWithDepth.setDepth(actor.y);
-    if (actor.z) {
-      const z = actor.z;
-      actor.setDepth(actor.y + z * 2);
+  static setActorDepth(actor: Phaser.GameObjects.GameObject) {
+    const actorWithDepth = actor as any as Phaser.GameObjects.Components.Depth;
+    const transform = getGameObjectTransform(actor);
+    if (!transform || !actorWithDepth.setDepth) return;
+    actorWithDepth.setDepth(transform.y);
+    if (transform.z) {
+      const z = transform.z;
+      actorWithDepth.setDepth(transform.y + z * 2);
     }
   }
 }

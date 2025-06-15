@@ -37,39 +37,40 @@ export class GameObjectSelectionHandler {
     this.sub = this.scene.communicator
       .allScenes!.pipe(filter((selection) => selection.name.startsWith("selection.")))
       .subscribe((selection) => {
-        const data = selection.data as ProbableWaffleSelectionData;
+        const data = selection.data as ProbableWaffleSelectionData | undefined;
+        const isShiftDown = data?.shiftKey;
+        const isCtrlDown = data?.ctrlKey;
+        const isLeftClick = data?.button === "left";
+        const isRightClick = data?.button === "right";
         switch (selection.name) {
           case "selection.deselect":
             if (this.debug) console.log("deselect");
             emitEventSelection(this.scene, "selection.cleared");
             break;
           case "selection.singleSelect":
-            if (this.debug) console.log("singleSelect", data.objectIds);
-            const isShiftDown = data.shiftKey;
-            const isCtrlDown = data.ctrlKey;
-            const isLeftClick = data.button === "left";
-
+            const objectIds = data?.objectIds;
+            if (this.debug) console.log("singleSelect", objectIds);
             if (isLeftClick) {
               if (isShiftDown) {
-                if (this.debug) console.log("removeFromSelection", data.objectIds);
-                emitEventSelection(this.scene, "selection.removed", data.objectIds!);
+                if (this.debug) console.log("removeFromSelection", objectIds);
+                emitEventSelection(this.scene, "selection.removed", objectIds!);
               } else if (isCtrlDown) {
-                if (this.debug) console.log("additionalSelect", data.objectIds);
-                emitEventSelection(this.scene, "selection.added", data.objectIds!);
+                if (this.debug) console.log("additionalSelect", objectIds);
+                emitEventSelection(this.scene, "selection.added", objectIds!);
               } else {
-                emitEventSelection(this.scene, "selection.set", data.objectIds!);
-                this.playAudio(data.objectIds!);
+                emitEventSelection(this.scene, "selection.set", objectIds!);
+                this.playAudio(objectIds!);
               }
-            } else {
-              emitEventIssueActorCommandToSelectedActors(this.scene, data.objectIds!);
+            } else if (isRightClick) {
+              emitEventIssueActorCommandToSelectedActors(this.scene, objectIds!);
             }
 
             break;
           case "selection.terrainSelect":
-            if (this.debug) console.log("terrainSelect", data.terrainSelectedTileVec3, data.terrainSelectedWorldVec3);
-            if (data.button === "left") {
+            if (this.debug) console.log("terrainSelect", data!.terrainSelectedTileVec3, data!.terrainSelectedWorldVec3);
+            if (isLeftClick) {
               emitEventSelection(this.scene, "selection.cleared");
-            } else {
+            } else if (isRightClick) {
               emitEventIssueMoveCommandToSelectedActors(
                 this.scene,
                 data.terrainSelectedTileVec3!,
@@ -78,16 +79,16 @@ export class GameObjectSelectionHandler {
             }
             break;
           case "selection.multiSelect":
-            const area = data.selectedArea!;
+            const area = data!.selectedArea!;
             // console.log("multiSelect", area);
             const actorsUnderArea = this.getSelectableComponentsUnderSelectedArea(area);
             const actorsWithHighestPriority = this.getChildrenWithHighestPriority(actorsUnderArea);
             const actorsWithHighestPriorityIds = actorsWithHighestPriority.map(
               (actor) => getActorComponent(actor, IdComponent)!.id
             );
-            if (data.shiftKey) {
+            if (isShiftDown) {
               emitEventSelection(this.scene, "selection.removed", actorsWithHighestPriorityIds);
-            } else if (data.ctrlKey) {
+            } else if (isCtrlDown) {
               emitEventSelection(this.scene, "selection.added", actorsWithHighestPriorityIds);
             } else {
               emitEventSelection(this.scene, "selection.set", actorsWithHighestPriorityIds);

@@ -27,9 +27,14 @@
                     "label": "resource_text",
                     "displayName": "Text",
                     "scope": "CLASS",
-                    "x": -39,
-                    "y": -20,
-                    "text": "0"
+                    "x": -25,
+                    "y": -16,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "0",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "22px"
                 },
                 {
                     "type": "Image",

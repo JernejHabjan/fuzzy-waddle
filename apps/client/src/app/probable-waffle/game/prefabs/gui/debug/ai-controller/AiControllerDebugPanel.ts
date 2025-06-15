@@ -48,7 +48,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     const buttonText = scene.add.text(69.74578515529078, -1, "", {});
     buttonText.setOrigin(0.5472303972883584, 0.5);
     buttonText.text = "Show AI debugging";
-    buttonText.setStyle({ color: "#000000ff" });
+    buttonText.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     button.add(buttonText);
 
     // onPointerDownScript

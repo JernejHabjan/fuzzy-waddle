@@ -11,7 +11,6 @@ import GameActionsLayer from "../../../scenes/GameActionsLayer";
 /* END-USER-IMPORTS */
 
 export default class GameActions extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 104, y ?? 2);
 
@@ -19,21 +18,46 @@ export default class GameActions extends Phaser.GameObjects.Container {
     this.scaleY = 2;
 
     // game_actions_bg
-    const game_actions_bg = scene.add.nineslice(-52, -1, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 10, 10, 1, 1, 1, 1);
-    game_actions_bg.scaleX = 5.028254553915996;
-    game_actions_bg.scaleY = 3.858978666894958;
+    const game_actions_bg = scene.add.nineslice(
+      -52,
+      -1,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      20,
+      10,
+      1,
+      1,
+      1,
+      1
+    );
+    game_actions_bg.scaleX = 2.39000249797712;
+    game_actions_bg.scaleY = 2.3713497642893233;
     game_actions_bg.setOrigin(0, 0);
     this.add(game_actions_bg);
 
     // game_action_menu
-    const game_action_menu = scene.add.container(-26.453369211907784, 18);
-    game_action_menu.setInteractive(new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
+    const game_action_menu = scene.add.container(-28, 11);
+    game_action_menu.setInteractive(
+      new Phaser.Geom.Rectangle(-18, -8, 34.60550202698232, 15.018236448430386),
+      Phaser.Geom.Rectangle.Contains
+    );
     this.add(game_action_menu);
 
     // game_actions_quit_bg
-    const game_actions_quit_bg = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
-    game_actions_quit_bg.scaleX = 2.0762647352357817;
-    game_actions_quit_bg.scaleY = 1.5492262688240692;
+    const game_actions_quit_bg = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      40,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_actions_quit_bg.scaleX = 0.9577274362605128;
+    game_actions_quit_bg.scaleY = 0.9194089554823783;
     game_action_menu.add(game_actions_quit_bg);
 
     // onPointerDownScript_menu
@@ -49,11 +73,11 @@ export default class GameActions extends Phaser.GameObjects.Container {
     const emitEventQuitAction = new EmitEventActionScript(onPointerUpScript_menu);
 
     // text_1
-    const text_1 = scene.add.text(-26, 17, "", {});
+    const text_1 = scene.add.text(0, -2, "", {});
     text_1.setOrigin(0.5, 0.5);
     text_1.text = "Menu";
-    text_1.setStyle({ "align": "center", "color": "#000000ff", "fontSize": "12px", "resolution": 4 });
-    this.add(text_1);
+    text_1.setStyle({ align: "center", color: "#000000ff", fontFamily: "disposabledroid", resolution: 10 });
+    game_action_menu.add(text_1);
 
     // emitEventQuitAction (prefab fields)
     emitEventQuitAction.eventName = "menu-open";

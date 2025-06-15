@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.1.0</string>
+        <string>7.4.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -287,6 +287,8 @@
             </struct>
             <key type="filename">../sprites/factions/building_icons/skaduwee/infantry_inn.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/sandhold/sandhold-crystal.png</key>
+            <key type="filename">../sprites/factions/character_icons/skaduwee/worker.png</key>
+            <key type="filename">../sprites/factions/character_icons/tivara/worker.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

@@ -7,9 +7,9 @@ import Faune from "../characters/Faune";
 import { createTreasureAnims } from "../anims/TreasureAnims";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
 import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
-import { Scene } from "phaser";
-import Phaser from "phaser";
+import Phaser, { Scene } from "phaser";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
+import TilemapLayer = Phaser.Tilemaps.TilemapLayer;
 
 export default class Dungeon extends Scene implements CreateSceneFromObjectConfig {
   private readonly DEBUG = false;
@@ -27,6 +27,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     right: Phaser.Input.Keyboard.Key;
   };
   private isMobile = false;
+  private activePointer?: Phaser.Input.Pointer;
   private victoryText?: Phaser.GameObjects.Text;
 
   constructor() {
@@ -51,9 +52,9 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     const map = this.make.tilemap({ key: AssetsDungeon.dungeon });
     const tileset = map.addTilesetImage(DungeonTilesetNames.dungeon, AssetsDungeon.tiles)!;
-    const groundLayer = map.createLayer(DungeonTilesetLayers.Ground, tileset);
-    const wallsLayer = map.createLayer(DungeonTilesetLayers.Walls, tileset)!;
-    const assetsLayer = map.createLayer(DungeonTilesetLayers.Assets, tileset)!;
+    const groundLayer = map.createLayer(DungeonTilesetLayers.Ground, tileset) as TilemapLayer;
+    const wallsLayer = map.createLayer(DungeonTilesetLayers.Walls, tileset) as TilemapLayer;
+    const assetsLayer = map.createLayer(DungeonTilesetLayers.Assets, tileset) as TilemapLayer;
 
     wallsLayer.setCollisionByProperty({ collides: true });
     assetsLayer.setCollisionByProperty({ collides: true });
@@ -95,28 +96,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
 
     // Setup controls
     if (this.isMobile) {
-      // Virtual joystick (left for movement, right for action)
-      this.joystick = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
-        x: 80,
-        y: this.cameras.main.height - 80,
-        radius: 50,
-        base: this.add.circle(0, 0, 50, 0x888888, 0.3),
-        thumb: this.add.circle(0, 0, 25, 0xcccccc, 0.7),
-        dir: "8dir",
-        forceMin: 10,
-        enable: true
-      });
-
-      this.joystickRight = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
-        x: this.cameras.main.width - 80,
-        y: this.cameras.main.height - 80,
-        radius: 40,
-        base: this.add.circle(0, 0, 40, 0x888888, 0.3),
-        thumb: this.add.circle(0, 0, 20, 0xcccccc, 0.7),
-        dir: "8dir",
-        forceMin: 10,
-        enable: true
-      });
+      this.addJoySticks();
     } else {
       // WASD keys for desktop
       this.wasd = {
@@ -126,40 +106,86 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
         right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D)
       };
 
-      // Fire projectile in direction of click
-      this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
-        const dx = pointer.worldX - this.faune.x;
-        const dy = pointer.worldY - this.faune.y;
-        const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
-        // Use knife cooldown for click as well
-        const t = this.time.now;
-        if (t - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
-          this.faune.throwKnife(angle);
-          this.faune.lastKnifeTime = t;
-        }
-      });
+      this.input.on(Phaser.Input.Events.POINTER_DOWN, this.pointerDownHandler, this);
+      this.input.on(Phaser.Input.Events.POINTER_UP, this.pointerUpHandler, this);
     }
+  }
 
-    // remember to clean up on Scene shutdown
-    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.input.off(Phaser.Input.Events.POINTER_UP);
-      this.input.off(Phaser.Input.Events.POINTER_DOWN);
+  private addJoySticks() {
+    this.input.addPointer(2);
+
+    const margin = 40;
+    const leftJoystickRadius = 30;
+    const rightJoystickRadius = 20;
+    // Virtual joystick (left for movement, right for action)
+    this.joystick = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+      x: margin,
+      y: this.cameras.main.height - margin,
+      radius: leftJoystickRadius,
+      base: this.add.circle(0, 0, leftJoystickRadius, 0x888888, 0.3),
+      thumb: this.add.circle(0, 0, leftJoystickRadius / 2, 0xcccccc, 0.7),
+      dir: "8dir",
+      forceMin: 10,
+      enable: true
     });
+
+    this.joystickRight = (this.plugins.get("rexVirtualJoystick") as VirtualJoystickPlugin).add(this, {
+      x: this.cameras.main.width - margin,
+      y: this.cameras.main.height - margin,
+      radius: rightJoystickRadius,
+      base: this.add.circle(0, 0, rightJoystickRadius, 0x888888, 0.3),
+      thumb: this.add.circle(0, 0, rightJoystickRadius / 2, 0xcccccc, 0.7),
+      dir: "8dir",
+      forceMin: 10,
+      enable: true
+    });
+  }
+
+  private pointerDownHandler(pointer: Phaser.Input.Pointer) {
+    this.activePointer = pointer;
+    const dx = pointer.worldX - this.faune.x;
+    const dy = pointer.worldY - this.faune.y;
+    const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
+    // Use knife cooldown for click as well
+    const t = this.time.now;
+    if (t - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
+      this.faune.throwKnife(angle);
+      this.faune.lastKnifeTime = t;
+    }
+  }
+
+  private pointerUpHandler() {
+    this.activePointer = undefined;
+  }
+
+  destroy() {
+    this.input.off(Phaser.Input.Events.POINTER_UP);
+    this.input.off(Phaser.Input.Events.POINTER_DOWN);
   }
 
   /**
    * Update speed by delta
    */
   update(t: number, dt: number) {
-    if (this.faune) {
-      if (this.isMobile) {
-        // Pass dummy cursors (required by Faune.update signature)
-        const joystick = this.joystick;
-        const joystickRight = this.joystickRight;
-        this.faune.update(this.cursors!, t, dt, joystick, joystickRight);
-      } else {
-        // WASD for movement, no joystick
-        this.faune.updateWASD(this.wasd!, t, dt);
+    if (!this.faune) return;
+    if (this.isMobile) {
+      const joystick = this.joystick;
+      const joystickRight = this.joystickRight;
+      this.faune.update(this.cursors!, t, dt, joystick, joystickRight);
+    } else {
+      this.faune.updateWASD(this.wasd!, t, dt);
+    }
+
+    // Handle held pointer shooting
+    if (this.activePointer?.isDown) {
+      const dx = this.activePointer.worldX - this.faune.x;
+      const dy = this.activePointer.worldY - this.faune.y;
+      const angle = Phaser.Math.RadToDeg(Math.atan2(dy, dx));
+
+      const now = this.time.now;
+      if (now - this.faune.lastKnifeTime > this.faune.knifeCooldown) {
+        this.faune.throwKnife(angle);
+        this.faune.lastKnifeTime = now;
       }
     }
   }
@@ -198,10 +224,13 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     // Pause the game and display "Victory"
     this.victoryText = this.add
       .text(this.cameras.main.centerX, this.cameras.main.centerY, "Victory", {
-        fontSize: "18px",
+        fontSize: "12px",
         color: "#fff",
         backgroundColor: "#222",
-        padding: { x: 20, y: 10 }
+        padding: { x: 20, y: 10 },
+        wordWrap: {
+          width: this.cameras.main.width - 40
+        }
       })
       .setOrigin(0.5);
     this.victoryText.setScrollFactor(0); // Make sure it doesn't scroll with the camera
@@ -234,8 +263,41 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
     this.faune.handleDamage(dir);
 
     if (this.faune.health <= 0) {
-      // stop colliding after death
-      this.playerLizardsCollider?.destroy();
+      // Stop the collider so Faune isn't hit multiple times after death
+      this.physics.world.removeCollider(this.playerLizardsCollider!);
+
+      this.faune.setTint(0xff0000);
+      this.faune.anims.stop();
+      this.faune.setVelocity(0, 0);
+
+      const gameOverText = this.add
+        .text(this.cameras.main.centerX, this.cameras.main.centerY, "Game Over", {
+          fontSize: "12px",
+          color: "#fff",
+          backgroundColor: "#222",
+          padding: { x: 20, y: 10 },
+          wordWrap: {
+            width: this.cameras.main.width - 40
+          }
+        })
+        .setOrigin(0.5);
+      gameOverText.setScrollFactor(0);
+
+      const restartScene = () => {
+        this.input.keyboard?.off("keydown", restartScene);
+        this.input.off("pointerdown", restartScene);
+        this.input.off("gamepaddown", restartScene);
+        gameOverText.destroy();
+        this.scene.restart();
+      };
+
+      setTimeout(() => {
+        if (!gameOverText) return;
+        gameOverText.setText("Click or press any key to restart");
+        this.input.keyboard?.on("keydown", restartScene);
+        this.input.on("pointerdown", restartScene);
+        this.input.on("gamepaddown", restartScene);
+      }, 1000);
     }
   }
 }

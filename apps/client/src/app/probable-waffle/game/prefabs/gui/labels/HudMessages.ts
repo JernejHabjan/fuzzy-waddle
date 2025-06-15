@@ -20,12 +20,12 @@ export default class HudMessages extends Phaser.GameObjects.Text {
     this.setOrigin(0, 1);
     this.text = "HUD Text";
     this.setStyle({
-      fontFamily: "Tahoma",
-      fontSize: "20px",
+      fontFamily: "disposabledroid",
+      fontSize: "28px",
       maxLines: 3,
       stroke: "#000000ff",
       strokeThickness: 3,
-      resolution: 4
+      resolution: 10
     });
     this.setWordWrapWidth(256);
 
@@ -40,7 +40,7 @@ export default class HudMessages extends Phaser.GameObjects.Text {
   setup(probableWaffleScene: ProbableWaffleScene) {
     this.setText("");
     if (this.scene.game.scale.width < 1200) {
-      this.setStyle({ fontSize: "16px" });
+      this.setStyle({ fontSize: "16px", fontFamily: "disposabledroid", resolution: 10 });
     }
     const crossSceneCommunicationService = getSceneService(probableWaffleScene, CrossSceneCommunicationService);
     this.crossSceneCommunicationService = crossSceneCommunicationService;
@@ -76,7 +76,7 @@ export default class HudMessages extends Phaser.GameObjects.Text {
     this.setText(HudMessages.messageTexts[messageType].text);
     const severity = HudMessages.messageTexts[messageType].severity;
     const color = severity === "warning" ? "#FFA500" : severity === "error" ? "#FF0000" : "#FFFFFF";
-    this.setStyle({ fill: color });
+    this.setStyle({ fill: color, fontFamily: "disposabledroid", resolution: 10 });
     if (this.delayedCall) this.delayedCall.destroy();
     this.delayedCall = this.scene.time.delayedCall(5000, () => {
       this.setText("");

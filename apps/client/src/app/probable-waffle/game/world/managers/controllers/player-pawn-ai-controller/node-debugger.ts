@@ -26,11 +26,12 @@ export class NodeDebugger {
     const textNode = this.gameObject.scene.add.text(0, 0, "", {
       color: "#000",
       stroke: "#fff",
-      strokeThickness: 3
+      strokeThickness: 3,
+      fontSize: "20px"
     });
     textNode.setOrigin(0.5, 1);
     textNode.text = "";
-    textNode.setStyle({ align: "center" });
+    textNode.setStyle({ align: "center", fontFamily: "disposabledroid", resolution: 10 });
     textNode.visible = false;
 
     this.textNode = textNode;

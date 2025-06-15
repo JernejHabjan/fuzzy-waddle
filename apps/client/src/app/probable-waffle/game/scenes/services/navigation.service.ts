@@ -38,10 +38,10 @@ export class NavigationService {
     this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this); // todo this for some reason doesnt work
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.easyStar = new EasyStar();
-    onSceneInitialized(scene, this.init, this);
+    onSceneInitialized(scene, this.initNavigationService, this);
   }
 
-  private init() {
+  private initNavigationService() {
     this.extractTilemapGrid();
 
     this.updateNavigation();

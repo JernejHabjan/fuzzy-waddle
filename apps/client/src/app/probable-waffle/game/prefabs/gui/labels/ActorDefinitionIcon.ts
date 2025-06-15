@@ -13,7 +13,7 @@ export default class ActorDefinitionIcon extends Phaser.GameObjects.Container {
     const text_1 = scene.add.text(21.261459892507833, 11.082984589831902, "", {});
     text_1.setOrigin(0, 0.5);
     text_1.text = "New text";
-    text_1.setStyle({ fontSize: "12px" });
+    text_1.setStyle({ fontFamily: "disposabledroid", fontSize: "18px", resolution: 10 });
     this.add(text_1);
 
     // character_icons_general_warrior_png

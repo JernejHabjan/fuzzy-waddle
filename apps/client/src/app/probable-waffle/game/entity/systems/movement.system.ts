@@ -9,6 +9,8 @@ import {
   getGameObjectTileInNavigableRadius,
   getGameObjectTileInRadius,
   getGameObjectTransform,
+  getGameObjectTransformRaw,
+  getGameObjectVisibility,
   onObjectReady
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
@@ -108,14 +110,13 @@ export class MovementSystem {
     this.audioActorComponent.playOrderSound(action);
   }
 
-  // todo this should maybe later move to component like ActorTransform which will also broadcast event for transform to game and update actors depth
   instantlyMoveToWorldCoordinates(vec3: Partial<Vector3Simple>): void {
     const transform = getGameObjectTransform(this.gameObject);
     if (!transform) return;
 
-    if (vec3.x) transform.x = vec3.x;
-    if (vec3.y) transform.y = vec3.y;
-    if (vec3.z) transform.z = vec3.z;
+    if (vec3.x !== undefined) transform.x = vec3.x;
+    if (vec3.y !== undefined) transform.y = vec3.y;
+    if (vec3.z !== undefined) transform.z = vec3.z;
     this.tweenUpdate();
   }
 
@@ -292,7 +293,7 @@ export class MovementSystem {
 
   private tweenUpdate = () => {
     DepthHelper.setActorDepth(this.gameObject);
-    const transform = getGameObjectTransform(this.gameObject);
+    const transform = getGameObjectTransformRaw(this.gameObject);
     if (!transform) return;
     if (!this.actorTranslateComponent) return;
     this.actorTranslateComponent.moveActorToPosition({
@@ -357,6 +358,8 @@ export class MovementSystem {
 
   private playMovementSound() {
     if (!this.audioService) return;
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
     const movementSoundDefinition = this.getMovementSound();
     if (!movementSoundDefinition) return;
     // get random from movementSoundDefinition

@@ -117,7 +117,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.resize({ height: this.scale.height, width: this.scale.width });
 
     new CursorHandler(this);
-    new HudGameState(this);
+    new HudGameState(this, this.probableWaffleScene!);
     new HudElementVisibilityHandler(this, this.hudElements);
     this.sceneGameData.components.push(new MultiSelectionHandler(this, this.probableWaffleScene!));
 

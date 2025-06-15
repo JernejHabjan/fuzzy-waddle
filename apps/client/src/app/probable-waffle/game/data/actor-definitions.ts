@@ -1,4 +1,4 @@
-import { ObjectNames } from "./object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ObjectDescriptorDefinition } from "../entity/actor/components/object-descriptor-component";
 import { OwnerDefinition } from "../entity/actor/components/owner-component";
 import { VisionDefinition } from "../entity/actor/components/vision-component";
@@ -174,6 +174,7 @@ import {
   ANIM_STAG_DEFINITION,
   ANIM_WOLF_DEFINITION
 } from "../animations/animals2";
+import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -266,6 +267,10 @@ const tivaraWorkerDefinition: ActorInfoDefinition = {
   ...generalWorkerDefinitions,
   components: {
     ...generalWorkerDefinitions.components,
+    representable: {
+      width: 64,
+      height: 64
+    },
     objectDescriptor: {
       color: 0xc2a080
     },
@@ -301,6 +306,10 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
   ...generalWorkerDefinitions,
   components: {
     ...generalWorkerDefinitions.components,
+    representable: {
+      width: 64,
+      height: 64
+    },
     objectDescriptor: {
       color: 0xf2f7fa
     },
@@ -333,6 +342,7 @@ const skaduweeWorkerDefinition: ActorInfoDefinition = {
 export type ActorInfoDefinition = Partial<{
   components: Partial<{
     objectDescriptor: ObjectDescriptorDefinition;
+    representable: RepresentableDefinition;
     owner: OwnerDefinition;
     vision: VisionDefinition;
     info: InfoDefinition;
@@ -364,12 +374,19 @@ export type ActorInfoDefinition = Partial<{
       enabled: boolean;
     };
   }>;
+  meta: Partial<{
+    randomOfType: ObjectNames[];
+  }>;
 }>;
 export const pwActorDefinitions: {
   [key in ObjectNames]: ActorInfoDefinition;
 } = {
   [ObjectNames.Hedgehog]: {
     components: {
+      representable: {
+        width: 32,
+        height: 32
+      },
       objectDescriptor: {
         color: 0x896347
       },
@@ -390,6 +407,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Sheep]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -411,6 +432,10 @@ export const pwActorDefinitions: {
   },
   Badger: {
     components: {
+      representable: {
+        width: 42,
+        height: 32
+      },
       objectDescriptor: {
         color: 0x222e37
       },
@@ -430,6 +455,10 @@ export const pwActorDefinitions: {
   },
   Boar: {
     components: {
+      representable: {
+        width: 46,
+        height: 32
+      },
       objectDescriptor: {
         color: 0x222e37
       },
@@ -449,6 +478,10 @@ export const pwActorDefinitions: {
   },
   Stag: {
     components: {
+      representable: {
+        width: 32,
+        height: 41
+      },
       objectDescriptor: {
         color: 0xc75841
       },
@@ -468,6 +501,10 @@ export const pwActorDefinitions: {
   },
   Wolf: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0x3b4a50
       },
@@ -476,7 +513,7 @@ export const pwActorDefinitions: {
       },
       info: {
         name: "Grey Wolf",
-        description: "A wolf",
+        description: "(critter) A grey wolf",
         smallImage: {
           key: "animals_2",
           frame: "wolf/idle/se/04.png",
@@ -507,6 +544,10 @@ export const pwActorDefinitions: {
 
   [ObjectNames.GeneralWarrior]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0x75502d
       },
@@ -522,8 +563,8 @@ export const pwActorDefinitions: {
         range: 5
       },
       info: {
-        name: "Warrior",
-        description: "A warrior",
+        name: "Bandit",
+        description: "A hardened rogue, quick with a blade and quicker to cause trouble",
         smallImage: {
           key: "factions",
           frame: "character_icons/general/warrior.png",
@@ -562,6 +603,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.TivaraMacemanMale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -577,8 +622,9 @@ export const pwActorDefinitions: {
         range: 5
       },
       info: {
-        name: "Tivara Maceman",
-        description: "A maceman",
+        name: "Anubian Mauler",
+        description:
+          "Cursed warrior in ritual armor, wielding mace and shield to spread plague in service of Tivara’s dark will",
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/maceman_male.png",
@@ -632,6 +678,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.TivaraSlingshotFemale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -647,8 +697,8 @@ export const pwActorDefinitions: {
         range: 5
       },
       info: {
-        name: "Tivara Slingshot",
-        description: "A slingshot unit",
+        name: "Cursed Banshee",
+        description: "A silent stalker armed with ancient curses and deadly precision",
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/slingshot_female.png",
@@ -700,13 +750,31 @@ export const pwActorDefinitions: {
       action: { enabled: true }
     }
   },
+  [ObjectNames.TivaraWorker]: {
+    ...tivaraWorkerDefinition,
+    components: {
+      ...tivaraWorkerDefinition.components,
+      info: {
+        name: "Tivara Scavenger",
+        description: "Guardian of forgotten secrets, laboring in shadow to uphold the ancient cycle",
+        smallImage: {
+          key: "factions",
+          frame: "character_icons/tivara/worker.png",
+          origin: { x: 0.5, y: 0.5 }
+        }
+      }
+    },
+    meta: {
+      randomOfType: [ObjectNames.TivaraWorkerFemale, ObjectNames.TivaraWorkerMale]
+    }
+  },
   [ObjectNames.TivaraWorkerFemale]: {
     ...tivaraWorkerDefinition,
     components: {
       ...tivaraWorkerDefinition.components,
       info: {
-        name: "Tivara Female Worker",
-        description: "A worker",
+        name: "Dustbound",
+        description: "Bound by ancient decree, they labor in the sand to honor what once was — and what must return",
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_female.png",
@@ -737,8 +805,8 @@ export const pwActorDefinitions: {
     components: {
       ...tivaraWorkerDefinition.components,
       info: {
-        name: "Tivara Male Worker",
-        description: "A worker",
+        name: "Sandward",
+        description: "From ruin to rise again — their toil feeds the endless rhythm etched in stone and soul",
         smallImage: {
           key: "factions",
           frame: "character_icons/tivara/worker_male.png",
@@ -767,6 +835,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.AnkGuard]: {
     components: {
+      representable: {
+        width: 256,
+        height: 256
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -783,7 +855,7 @@ export const pwActorDefinitions: {
       },
       info: {
         name: "Ank Guard",
-        description: "Produces Slingshot and Maceman",
+        description: "Oozing with ancient curse, this fortress births the mightiest of Tivara’s infantry",
         portraitAnimation: {
           idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE,
           action: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION
@@ -821,6 +893,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Olival]: {
     components: {
+      representable: {
+        width: 32,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -837,7 +913,7 @@ export const pwActorDefinitions: {
       },
       info: {
         name: "Olival",
-        description: "Creates a suitable surface for Tivara units and buildings",
+        description: "A living gem that transforms the barren sands into a foundation for dark power",
         smallImage: {
           key: "factions",
           frame: "buildings/tivara/olival/olival.png",
@@ -874,6 +950,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Sandhold]: {
     components: {
+      representable: {
+        width: 320,
+        height: 320
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -890,7 +970,8 @@ export const pwActorDefinitions: {
       },
       info: {
         name: "Sandhold",
-        description: "Main building of the Tivara faction. It is used to produce workers and store resources.",
+        description:
+          "A monument of stone and shadow, Sandhold is the cradle of Tivara’s power, commanding the restless workers and hoarding the lifeblood of the desert",
         portraitAnimation: {
           idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE,
           action: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION
@@ -924,7 +1005,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.TivaraWorkerMale, ObjectNames.TivaraWorkerFemale]
+        availableProduceActors: [ObjectNames.TivaraWorker]
       },
       selectable: {},
       collider: { enabled: true },
@@ -935,6 +1016,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Temple]: {
     components: {
+      representable: {
+        width: 192,
+        height: 192
+      },
       objectDescriptor: {
         color: 0xc2a080
       },
@@ -950,8 +1035,9 @@ export const pwActorDefinitions: {
         range: 10
       },
       info: {
-        name: "Temple",
-        description: "Produces Tivara Sling shooters",
+        name: "Hall of Echoing Rites",
+        description:
+          "Ancient fabrics sway between crumbling pillars, and the air hums with ritual echoes long buried in the sand",
         portraitAnimation: {
           idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
           action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
@@ -992,6 +1078,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.WorkMill]: {
     components: {
+      representable: {
+        width: 128,
+        height: 128
+      },
       objectDescriptor: {
         color: 0x967847
       },
@@ -1008,7 +1098,7 @@ export const pwActorDefinitions: {
       },
       info: {
         name: "Work Mill",
-        description: "Useful for producing wood",
+        description: "A sturdy mill that turns raw timber into vital resources",
         smallImage: {
           key: "factions",
           frame: "buildings/tivara/workmill.png",
@@ -1043,6 +1133,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeOwl]: {
     components: {
+      representable: {
+        width: 32,
+        height: 32
+      },
       objectDescriptor: {
         color: 0xe9ecf2
       },
@@ -1058,8 +1152,8 @@ export const pwActorDefinitions: {
         range: 10
       },
       info: {
-        name: "Skaduwee Owl",
-        description: "A flying unit",
+        name: "Mirk",
+        description: "A tiny harbinger of decay, this swift flyer unleashes toxic venom that corrupts all it touches",
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/owl.png",
@@ -1110,6 +1204,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeRangedFemale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1125,8 +1223,8 @@ export const pwActorDefinitions: {
         range: 5
       },
       info: {
-        name: "Skaduwee Ranged",
-        description: "A ranged unit",
+        name: "Ravenmark",
+        description: "Deadly and elusive, this warrior dispatches foes before they sense danger",
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/ranged_female.png",
@@ -1180,6 +1278,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeMagicianFemale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1194,8 +1296,9 @@ export const pwActorDefinitions: {
         range: 5
       },
       info: {
-        name: "Skaduwee Magician",
-        description: "A magician",
+        name: "Umbramancer",
+        description:
+          "A conduit of shadow and void, this sorcerer commands dark energies that consume all light and hope",
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/magician_female.png",
@@ -1249,6 +1352,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.SkaduweeWarriorMale]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1264,8 +1371,8 @@ export const pwActorDefinitions: {
         range: 5
       },
       info: {
-        name: "Skaduwee Warrior",
-        description: "A warrior",
+        name: "Garruk",
+        description: "Unyielding and fierce, he brings ruin to all who oppose him",
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/warrior_male.png",
@@ -1322,8 +1429,8 @@ export const pwActorDefinitions: {
     components: {
       ...skaduweeWorkerDefinition.components,
       info: {
-        name: "Skaduwee Male Worker",
-        description: "A worker",
+        name: "Darkwright",
+        description: "A shadowbound worker, crafting the foundation of dark dominion",
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/worker_male.png",
@@ -1349,13 +1456,31 @@ export const pwActorDefinitions: {
       animatable: { animations: ANIM_SKADUWEE_WORKER_MALE_DEFINITION }
     }
   },
+  [ObjectNames.SkaduweeWorker]: {
+    ...skaduweeWorkerDefinition,
+    components: {
+      ...skaduweeWorkerDefinition.components,
+      info: {
+        name: "Umbral Worker",
+        description: "Shaping the realm of shadows with silent devotion",
+        smallImage: {
+          key: "factions",
+          frame: "character_icons/skaduwee/worker.png",
+          origin: { x: 0.5, y: 0.5 }
+        }
+      }
+    },
+    meta: {
+      randomOfType: [ObjectNames.SkaduweeWorkerFemale, ObjectNames.SkaduweeWorkerMale]
+    }
+  },
   [ObjectNames.SkaduweeWorkerFemale]: {
     ...skaduweeWorkerDefinition,
     components: {
       ...skaduweeWorkerDefinition.components,
       info: {
-        name: "Skaduwee Female Worker",
-        description: "A worker",
+        name: "Shadehand",
+        description: "With whispered effort, the foundations of shadow are laid",
         smallImage: {
           key: "factions",
           frame: "character_icons/skaduwee/worker_female.png",
@@ -1383,6 +1508,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.FrostForge]: {
     components: {
+      representable: {
+        width: 256,
+        height: 384
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1433,7 +1562,7 @@ export const pwActorDefinitions: {
       production: {
         queueCount: 1,
         capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.SkaduweeWorkerMale, ObjectNames.SkaduweeWorkerFemale]
+        availableProduceActors: [ObjectNames.SkaduweeWorker]
       },
       collider: { enabled: true },
       constructable: {
@@ -1443,6 +1572,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.InfantryInn]: {
     components: {
+      representable: {
+        width: 128,
+        height: 128
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1501,6 +1634,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Owlery]: {
     components: {
+      representable: {
+        width: 64,
+        height: 192
+      },
       objectDescriptor: {
         color: 0xf2f7fa
       },
@@ -1560,6 +1697,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 40
+      },
+      representable: {
+        width: 128,
+        height: 384
       }
     }
   },
@@ -1570,6 +1711,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 40
+      },
+      representable: {
+        width: 128,
+        height: 256
       }
     }
   },
@@ -1580,6 +1725,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 60
+      },
+      representable: {
+        width: 128,
+        height: 256
       }
     }
   },
@@ -1590,6 +1739,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 60
+      },
+      representable: {
+        width: 128,
+        height: 384
       }
     }
   },
@@ -1600,6 +1753,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 60
+      },
+      representable: {
+        width: 128,
+        height: 256
       }
     }
   },
@@ -1610,6 +1767,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 120
+      },
+      representable: {
+        width: 256,
+        height: 384
       }
     }
   },
@@ -1620,6 +1781,10 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 50
+      },
+      representable: {
+        width: 184,
+        height: 184
       }
     }
   },
@@ -1630,11 +1795,19 @@ export const pwActorDefinitions: {
       resourceSource: {
         ...treeDefinitions.components!.resourceSource!,
         maximumResources: 80
+      },
+      representable: {
+        width: 184,
+        height: 184
       }
     }
   },
   [ObjectNames.Stairs]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0x95a083
       },
@@ -1681,6 +1854,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.WatchTower]: {
     components: {
+      representable: {
+        width: 128,
+        height: 176
+      },
       objectDescriptor: {
         color: 0x95a083
       },
@@ -1733,6 +1910,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Wall]: {
     components: {
+      representable: {
+        width: 64,
+        height: 96
+      },
       objectDescriptor: {
         color: 0x95a083
       },
@@ -1780,6 +1961,10 @@ export const pwActorDefinitions: {
   },
   [ObjectNames.Minerals]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xbea55b
       },
@@ -1800,8 +1985,12 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Stone]: {
+  [ObjectNames.StonePile]: {
     components: {
+      representable: {
+        width: 64,
+        height: 64
+      },
       objectDescriptor: {
         color: 0xbea55b
       },

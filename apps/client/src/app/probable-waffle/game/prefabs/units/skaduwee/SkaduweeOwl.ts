@@ -6,9 +6,9 @@
 
 import { HealthComponent } from "../../../entity/combat/components/health-component";
 import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
-import { onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
 import {
@@ -94,6 +94,8 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
 
   private playMoveSound() {
     if (!this.audioService) return;
+    const visibilityComponent = getGameObjectVisibility(this);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
     const movementSoundDefinition = SkaduweeOwlSfxMoveSounds;
     const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
     const movementSound = movementSoundDefinition[randomIndex];
@@ -104,6 +106,8 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Container {
 
   private playFurballSound(definitions: SoundDefinition[]) {
     if (!this.audioService) return;
+    const visibilityComponent = getGameObjectVisibility(this);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
     const randomIndex = Math.floor(Math.random() * definitions.length);
     const fireSound = definitions[randomIndex];
     this.audioService.playSpatialAudioSprite(this, fireSound.key, fireSound.spriteName);

@@ -39,13 +39,14 @@ export const SkaduweeRangedSfxAttackSounds: SoundDefinition[] = [
 ];
 
 export const SkaduweeRangedSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_1 },
-  { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_2 },
-  { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_3 },
-  { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_4 },
-  { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_5 },
-  { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_6 },
-  { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_7 }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_1 },
+  // { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_2 },
+  // { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_3 },
+  // { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_4 },
+  // { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_5 },
+  // { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_6 },
+  // { key: AudioSprites.SKADUWEE_RANGED, spriteName: SkaduweeRangedSfx.DAMAGE_7 }
 ];
 
 export const SkaduweeRangedSfxDeathSounds: SoundDefinition[] = [

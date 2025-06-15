@@ -51,9 +51,10 @@ export const SkaduweeWorkerMaleSfxChopSounds: SoundDefinition[] = [
 ];
 
 export const SkaduweeWorkerMaleSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.SKADUWEE_WORKER_MALE, spriteName: SkaduweeWorkerMaleSfx.DAMAGE_1 },
-  { key: AudioSprites.SKADUWEE_WORKER_MALE, spriteName: SkaduweeWorkerMaleSfx.DAMAGE_2 },
-  { key: AudioSprites.SKADUWEE_WORKER_MALE, spriteName: SkaduweeWorkerMaleSfx.DAMAGE_3 }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.SKADUWEE_WORKER_MALE, spriteName: SkaduweeWorkerMaleSfx.DAMAGE_1 },
+  // { key: AudioSprites.SKADUWEE_WORKER_MALE, spriteName: SkaduweeWorkerMaleSfx.DAMAGE_2 },
+  // { key: AudioSprites.SKADUWEE_WORKER_MALE, spriteName: SkaduweeWorkerMaleSfx.DAMAGE_3 }
 ];
 
 export const SkaduweeWorkerMaleSfxDeathSounds: SoundDefinition[] = [

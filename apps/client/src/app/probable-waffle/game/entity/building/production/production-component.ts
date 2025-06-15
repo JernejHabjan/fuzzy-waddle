@@ -8,7 +8,7 @@ import { ActorDefinition, ConstructionStateEnum, ResourceType, Vector3Simple } f
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import {
   getGameObjectBounds,
   getGameObjectTransform,

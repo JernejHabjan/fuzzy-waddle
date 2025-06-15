@@ -18,7 +18,6 @@
             "type": "Container",
             "id": "dd5cc55c-01f6-4704-bf2a-25d23ca35bce",
             "label": "container_1",
-            "blendMode": -1,
             "x": 50.1919575967303,
             "y": 5.992859840393066,
             "list": [
@@ -30,14 +29,14 @@
                         "key": "gui",
                         "frame": "cryos_mini_gui/surfaces/surface_dark.png"
                     },
-                    "x": -25.191959456710947,
-                    "y": -2.992859833650245,
+                    "x": -13,
+                    "y": -2,
                     "leftWidth": 2,
                     "rightWidth": 2,
                     "topHeight": 2,
                     "bottomHeight": 2,
-                    "width": 50,
-                    "height": 5
+                    "width": 74,
+                    "height": 8
                 },
                 {
                     "type": "Rectangle",
@@ -45,41 +44,43 @@
                     "label": "progress",
                     "scope": "CLASS",
                     "x": -49,
-                    "y": -3,
+                    "y": -2,
                     "scaleY": 1.4,
                     "originX": 0,
                     "isFilled": true,
                     "fillColor": "#016d65",
-                    "width": 48,
-                    "height": 2
+                    "width": 72,
+                    "height": 4
                 },
                 {
                     "type": "Text",
                     "id": "b25b44ae-660d-4039-a209-bd73825a00db",
                     "label": "out_of_100",
                     "displayName": "Out of 100",
-                    "x": -22.191959456710947,
-                    "y": -2.992859833650245,
+                    "x": -10,
+                    "y": -3,
                     "originX": 0.5,
                     "originY": 0.5,
                     "text": " / 100",
-                    "resolution": 4,
+                    "resolution": 10,
                     "align": "center",
-                    "fontSize": "4px"
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "10px"
                 },
                 {
                     "type": "Text",
                     "id": "2e923bcd-a518-45c2-beb9-daaa0ba726d6",
                     "label": "nr",
                     "scope": "CLASS",
-                    "x": -32.19195945671095,
-                    "y": -2.992859833650245,
+                    "x": -24,
+                    "y": -3,
                     "originX": 0.5,
                     "originY": 0.5,
                     "text": "1",
-                    "resolution": 4,
+                    "resolution": 10,
                     "align": "right",
-                    "fontSize": "4px"
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "10px"
                 }
             ]
         }

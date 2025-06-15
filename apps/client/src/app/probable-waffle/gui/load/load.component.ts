@@ -5,22 +5,31 @@ import {
   ProbableWaffleGameInstanceSaveData,
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
-import { RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 import { DatePipe } from "@angular/common";
+import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "fuzzy-waddle-load",
-  imports: [RouterLink, DatePipe],
+  imports: [DatePipe],
   templateUrl: "./load.component.html",
   styleUrls: ["./load.component.scss"]
 })
 export class LoadComponent implements OnInit {
   private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly router = inject(Router);
   protected gameInstanceDataRecords: ProbableWaffleGameInstanceSaveData[] = [];
+  fromGame: boolean = false;
+  dialogRef?: NgbModalRef;
+
   async ngOnInit(): Promise<void> {
+    await this.setData();
+  }
+
+  private async setData() {
     this.gameInstanceDataRecords = await this.gameInstanceStorageService.getFromStorage();
     // sort descending
     this.gameInstanceDataRecords.sort((a, b) => {
@@ -41,11 +50,29 @@ export class LoadComponent implements OnInit {
   }
 
   protected async loadSave(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData) {
-    await this.gameInstanceClientService.loadGameInstance(gameInstanceSaveData);
+    if (this.fromGame) {
+      this.dialogRef?.close();
+      // if we are loading from the game, we need to stop the current game instance
+      await this.gameInstanceClientService.stopGameInstance();
+      setTimeout(async () => {
+        await this.gameInstanceClientService.loadGameInstance(gameInstanceSaveData);
+        this.gameInstanceClientService.gameInstanceToGameComponentCommunicator.next("refresh");
+      }, 50);
+    } else {
+      await this.gameInstanceClientService.loadGameInstance(gameInstanceSaveData);
+    }
   }
 
   protected async deleteSave(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData) {
     await this.gameInstanceStorageService.deleteFromStorage(gameInstanceSaveData);
-    this.gameInstanceDataRecords = await this.gameInstanceStorageService.getFromStorage();
+    await this.setData();
+  }
+
+  handleLeave() {
+    if (this.fromGame) {
+      this.dialogRef?.close();
+    } else {
+      this.router.navigate(["/probable-waffle"]);
+    }
   }
 }

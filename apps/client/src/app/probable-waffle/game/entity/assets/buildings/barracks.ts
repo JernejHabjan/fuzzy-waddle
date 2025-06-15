@@ -1,7 +1,7 @@
 import { Building, BuildingInfoDefinition } from "./building";
 import { ProductionComponent } from "../../building/production/production-component";
 import { PaymentType } from "../../building/payment-type";
-import { ObjectNames } from "../../../data/object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 export const BarracksDefinition: BuildingInfoDefinition = {
   textureMapDefinition: {

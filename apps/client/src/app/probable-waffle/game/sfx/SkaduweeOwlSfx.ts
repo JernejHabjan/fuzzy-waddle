@@ -29,7 +29,8 @@ export const SkaduweeOwlSfxSelectionSounds: SoundDefinition[] = [
 ];
 
 export const SkaduweeOwlSfxDamageSounds: SoundDefinition[] = [
-  { key: AudioSprites.SKADUWEE_OWL, spriteName: SkaduweeOwlSfx.DAMAGE }
+  // #366 - damage sound effects sound "wrong" during combat
+  // { key: AudioSprites.SKADUWEE_OWL, spriteName: SkaduweeOwlSfx.DAMAGE }
 ];
 
 export const SkaduweeOwlSfxDeathSounds: SoundDefinition[] = [

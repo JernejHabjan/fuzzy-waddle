@@ -8,7 +8,7 @@ import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
-import { getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectDepth, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { environment } from "../../../../../../environments/environment";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
@@ -115,6 +115,7 @@ export class HealthComponent {
   private healthUiHideOnTimeout?: number;
   private killKey?: Phaser.Input.Keyboard.Key | undefined;
   private damageKey?: Phaser.Input.Keyboard.Key | undefined;
+  private attackKey?: Phaser.Input.Keyboard.Key | undefined;
   private animationActorComponent?: AnimationActorComponent;
   private audioActorComponent?: AudioActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -177,6 +178,7 @@ export class HealthComponent {
 
     if (!environment.production) {
       this.bindDamageKey();
+      this.bindAttackAnimKey();
     }
   }
 
@@ -203,7 +205,24 @@ export class HealthComponent {
 
   private damageSelected() {
     if (!this.canDamageOrKillOnKeyboardAction()) return;
-    this.takeDamage(1, DamageType.Physical);
+    this.takeDamage(10, DamageType.Physical);
+  }
+
+  private bindAttackAnimKey() {
+    this.attackKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+    if (!this.attackKey) return;
+    this.attackKey.on(Phaser.Input.Keyboard.Events.DOWN, this.playAttack, this);
+  }
+
+  /**
+   * Plays a large slash animation if the actor can damage or kill on keyboard action.
+   * This is for testing of jumping UI health up and down
+   */
+  private playAttack() {
+    if (!this.canDamageOrKillOnKeyboardAction()) return;
+    const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+    if (!animationActorComponent) return;
+    animationActorComponent.playCustomAnimation(AnimationType.LargeSlash);
   }
 
   private canDamageOrKillOnKeyboardAction(): boolean {
@@ -304,6 +323,8 @@ export class HealthComponent {
   }
 
   private playDeathSound() {
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
     let randomSound: SoundDefinition;
     let randomSoundIndex: number;
     switch (this.healthDefinition.physicalState) {
@@ -353,6 +374,7 @@ export class HealthComponent {
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     this.killKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.killSelected, this);
     this.damageKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
+    this.attackKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.playAttack, this);
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
   }
 

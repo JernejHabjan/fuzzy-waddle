@@ -109,7 +109,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(wall_6);
 
     // christmasTree
-    const christmasTree = new ChristmasTree(this, -288, 1184);
+    const christmasTree = new ChristmasTree(this, -288, 1200);
     this.add.existing(christmasTree);
 
     // spawn_1
@@ -117,7 +117,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(spawn_1);
 
     // christmasTree_1
-    const christmasTree_1 = new ChristmasTree(this, -128, 1168);
+    const christmasTree_1 = new ChristmasTree(this, -128, 1184);
     this.add.existing(christmasTree_1);
 
     // sheep_2
@@ -145,11 +145,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(infantryInn);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, -64, 336);
+    const ankGuard = new AnkGuard(this, 0, 336);
     this.add.existing(ankGuard);
 
     // temple
-    const temple = new Temple(this, -128, 464);
+    const temple = new Temple(this, -160, 464);
     this.add.existing(temple);
 
     // skaduweeWorkerMale
@@ -297,15 +297,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree_1);
 
     // tree_2
-    const tree_2 = new Tree4(this, -832, 848);
+    const tree_2 = new Tree4(this, -832, 864);
     this.add.existing(tree_2);
 
     // tree1
-    const tree1 = new Tree1(this, -1152, 784);
+    const tree1 = new Tree1(this, -1152, 800);
     this.add.existing(tree1);
 
     // tree_3
-    const tree_3 = new Tree4(this, -640, 1040);
+    const tree_3 = new Tree4(this, -448, 960);
     this.add.existing(tree_3);
 
     // treeTrunk_1
@@ -485,51 +485,51 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(fenceBottom);
 
     // stonePile
-    const stonePile = new StonePile(this, -608, 784);
+    const stonePile = new StonePile(this, -608, 768);
     this.add.existing(stonePile);
 
     // stonePile_1
-    const stonePile_1 = new StonePile(this, -640, 800);
+    const stonePile_1 = new StonePile(this, -640, 784);
     this.add.existing(stonePile_1);
 
     // stonePile_2
-    const stonePile_2 = new StonePile(this, -576, 800);
+    const stonePile_2 = new StonePile(this, -576, 784);
     this.add.existing(stonePile_2);
 
     // stonePile_3
-    const stonePile_3 = new StonePile(this, -608, 816);
+    const stonePile_3 = new StonePile(this, -608, 800);
     this.add.existing(stonePile_3);
 
     // stonePile_4
-    const stonePile_4 = new StonePile(this, -672, 784);
+    const stonePile_4 = new StonePile(this, -672, 768);
     this.add.existing(stonePile_4);
 
     // stonePile_5
-    const stonePile_5 = new StonePile(this, -672, 816);
+    const stonePile_5 = new StonePile(this, -672, 800);
     this.add.existing(stonePile_5);
 
     // minerals
-    const minerals = new Minerals(this, -224, 240);
+    const minerals = new Minerals(this, -224, 224);
     this.add.existing(minerals);
 
     // minerals_1
-    const minerals_1 = new Minerals(this, -192, 224);
+    const minerals_1 = new Minerals(this, -192, 208);
     this.add.existing(minerals_1);
 
     // minerals_2
-    const minerals_2 = new Minerals(this, -192, 256);
+    const minerals_2 = new Minerals(this, -192, 240);
     this.add.existing(minerals_2);
 
     // minerals_3
-    const minerals_3 = new Minerals(this, -160, 240);
+    const minerals_3 = new Minerals(this, -160, 224);
     this.add.existing(minerals_3);
 
     // minerals_4
-    const minerals_4 = new Minerals(this, -256, 256);
+    const minerals_4 = new Minerals(this, -256, 240);
     this.add.existing(minerals_4);
 
     // minerals_5
-    const minerals_5 = new Minerals(this, -224, 272);
+    const minerals_5 = new Minerals(this, -224, 256);
     this.add.existing(minerals_5);
 
     // tallGrass_5
@@ -717,7 +717,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.image(1208, 936, "outside", "foliage/tree_trunks/tree_fallen_snow.png");
 
     // nature_rock_piles_6_snow_png
-    this.add.image(1096, 1040, "outside", "nature/rock_piles/6_snow.png");
+    this.add.image(1088, 1040, "outside", "nature/rock_piles/6_snow.png");
 
     // nature_rock_piles_1_snow_covered_png
     this.add.image(1176, 992, "outside", "nature/rock_piles/1_snow_covered.png");
@@ -799,19 +799,19 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(badger);
 
     // tree_12
-    const tree_12 = new Tree7(this, 1032, 703);
+    const tree_12 = new Tree7(this, 1024, 720);
     this.add.existing(tree_12);
 
     // tree_15
-    const tree_15 = new Tree7(this, 1096, 688);
+    const tree_15 = new Tree7(this, 1088, 688);
     this.add.existing(tree_15);
 
     // tree_16
-    const tree_16 = new Tree1(this, 1168, 648);
+    const tree_16 = new Tree1(this, 1184, 672);
     this.add.existing(tree_16);
 
     // tree_17
-    const tree_17 = new Tree4(this, 976, 728);
+    const tree_17 = new Tree4(this, 960, 720);
     this.add.existing(tree_17);
 
     // spawn (components)

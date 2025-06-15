@@ -1,5 +1,5 @@
 import { pwActorDefinitions } from "./actor-definitions";
-import { ObjectNames } from "./object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { VisionComponent } from "../entity/actor/components/vision-component";
 import { InfoComponent } from "../entity/actor/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
@@ -31,6 +31,7 @@ import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/combat/components/healing-component";
 import { AudioActorComponent } from "../entity/actor/components/audio-actor-component";
 import { AnimationActorComponent } from "../entity/actor/components/animation-actor-component";
+import { RepresentableComponent } from "../entity/actor/components/representable-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -90,6 +91,9 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
     new IdComponent(),
     ...(componentDefinitions?.objectDescriptor
       ? [new ObjectDescriptorComponent(componentDefinitions.objectDescriptor)]
+      : []),
+    ...(componentDefinitions?.representable
+      ? [new RepresentableComponent(actor, componentDefinitions.representable)]
       : []),
     ...(componentDefinitions?.requirements
       ? [new RequirementsComponent(actor, componentDefinitions.requirements)]

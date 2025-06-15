@@ -15,10 +15,14 @@ export enum UiFeedbackSfx {
   YOU_ARE_UNDER_ATTACK = "you are under attack"
 }
 
-export const UiFeedbackSfxCountdownSounds: SoundDefinition[] = [
-  { key: AudioSprites.UI_FEEDBACK, spriteName: UiFeedbackSfx.COUNTDOWN_BEEP_FINAL },
-  { key: AudioSprites.UI_FEEDBACK, spriteName: UiFeedbackSfx.COUNTDOWN_BEEP }
-];
+export const UiFeedbackSfxCountdownSound: SoundDefinition = {
+  key: AudioSprites.UI_FEEDBACK,
+  spriteName: UiFeedbackSfx.COUNTDOWN_BEEP
+};
+export const UiFeedbackSfxCountdownFinalSound: SoundDefinition = {
+  key: AudioSprites.UI_FEEDBACK,
+  spriteName: UiFeedbackSfx.COUNTDOWN_BEEP_FINAL
+};
 
 export const UiFeedbackBuildDeniedSound: SoundDefinition = {
   key: AudioSprites.UI_FEEDBACK,

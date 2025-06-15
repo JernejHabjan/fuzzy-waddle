@@ -2,7 +2,12 @@ import { AttackData, ProjectileData, ProjectileType } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { AnimationActorComponent, AnimationOptions } from "../../actor/components/animation-actor-component";
-import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectDepth,
+  getGameObjectVisibility,
+  onObjectReady
+} from "../../../data/game-object-helper";
 import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
@@ -182,8 +187,7 @@ export class AttackComponent {
       this.gameObject.scene.add.existing(projectileSprite);
       projectileSprite.setPosition(position.centerX, position.centerY);
       projectileSprite.setOrigin(0.5, 0.5);
-      const gameObjectDepth = getGameObjectDepth(this.gameObject);
-      if (gameObjectDepth !== null) DepthHelper.setActorDepth(gameObjectDepth + 1);
+      DepthHelper.setActorDepth(this.gameObject);
 
       const projectileSpeed = projectile.speed;
       const targetX = targetPosition.x + targetPosition.width / 2;
@@ -243,12 +247,15 @@ export class AttackComponent {
 
     // play hit sound
     if (this.audioService && attack.sounds.hit) {
-      const randomHitSound = attack.sounds.hit[Math.floor(Math.random() * attack.sounds.hit.length)];
-      this.audioService.playSpatialAudioSprite(
-        enemy, // enemy hit position
-        randomHitSound.key,
-        randomHitSound.spriteName
-      );
+      const visibilityComponent = getGameObjectVisibility(this.gameObject);
+      if (visibilityComponent && visibilityComponent.visible) {
+        const randomHitSound = attack.sounds.hit[Math.floor(Math.random() * attack.sounds.hit.length)];
+        this.audioService.playSpatialAudioSprite(
+          enemy, // enemy hit position
+          randomHitSound.key,
+          randomHitSound.spriteName
+        );
+      }
     }
     this.stopProjectile();
     if (projectile.impactAnimation) {
@@ -308,17 +315,23 @@ export class AttackComponent {
     if (!this.audioService) return;
     const { preparing, fire, hit } = attack.sounds;
     if (preparing) {
-      const randomPreparingSound = preparing[Math.floor(Math.random() * preparing.length)];
-      this.audioService.playSpatialAudioSprite(
-        this.gameObject,
-        randomPreparingSound.key,
-        randomPreparingSound.spriteName
-      );
+      const visibilityComponent = getGameObjectVisibility(this.gameObject);
+      if (visibilityComponent && visibilityComponent.visible) {
+        const randomPreparingSound = preparing[Math.floor(Math.random() * preparing.length)];
+        this.audioService.playSpatialAudioSprite(
+          this.gameObject,
+          randomPreparingSound.key,
+          randomPreparingSound.spriteName
+        );
+      }
     }
     setTimeout(() => {
       if (fire) {
-        const randomFireSound = fire[Math.floor(Math.random() * fire.length)];
-        this.audioService!.playSpatialAudioSprite(this.gameObject, randomFireSound.key, randomFireSound.spriteName);
+        const visibilityComponent = getGameObjectVisibility(this.gameObject);
+        if (visibilityComponent && visibilityComponent.visible) {
+          const randomFireSound = fire[Math.floor(Math.random() * fire.length)];
+          this.audioService!.playSpatialAudioSprite(this.gameObject, randomFireSound.key, randomFireSound.spriteName);
+        }
       }
     }, attack.delays.fire);
 
@@ -326,12 +339,15 @@ export class AttackComponent {
       // if not a projectile, play hit sound
       setTimeout(() => {
         if (hit) {
-          const randomHitSound = hit[Math.floor(Math.random() * hit.length)];
-          this.audioService!.playSpatialAudioSprite(
-            enemy, // enemy hit position
-            randomHitSound.key,
-            randomHitSound.spriteName
-          );
+          const visibilityComponent = getGameObjectVisibility(this.gameObject);
+          if (visibilityComponent && visibilityComponent.visible) {
+            const randomHitSound = hit[Math.floor(Math.random() * hit.length)];
+            this.audioService!.playSpatialAudioSprite(
+              enemy, // enemy hit position
+              randomHitSound.key,
+              randomHitSound.spriteName
+            );
+          }
         }
       }, attack.delays.hit);
     }

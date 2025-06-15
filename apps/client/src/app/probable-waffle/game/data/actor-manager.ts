@@ -33,16 +33,19 @@ import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
-import { ObjectNames } from "./object-names";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { setConstructingActorDataFromName, setCoreActorDataFromName, setFullActorDataFromName } from "./actor-data";
 import Minerals from "../prefabs/outside/resources/Minerals";
-import Stone from "../../../other/Template/prefabs/Stone";
 import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
+import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
+import StonePile from "../prefabs/outside/resources/StonePile";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
-import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
+import { SkaduweeWorker } from "../prefabs/characters/skaduwee/SkaduweeWorker";
+import { TivaraWorker } from "../prefabs/characters/tivara/TivaraWorker";
+import { pwActorDefinitions } from "./actor-definitions";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -57,6 +60,7 @@ export class ActorManager {
   };
 
   private static tivaraWorkers: ActorMap = {
+    [ObjectNames.TivaraWorker]: TivaraWorker,
     [ObjectNames.TivaraWorkerFemale]: TivaraWorkerFemale,
     [ObjectNames.TivaraWorkerMale]: TivaraWorkerMale
   };
@@ -81,6 +85,7 @@ export class ActorManager {
   };
 
   private static skaduweeWorkers: ActorMap = {
+    [ObjectNames.SkaduweeWorker]: SkaduweeWorker,
     [ObjectNames.SkaduweeWorkerMale]: SkaduweeWorkerMale,
     [ObjectNames.SkaduweeWorkerFemale]: SkaduweeWorkerFemale
   };
@@ -107,7 +112,7 @@ export class ActorManager {
     [ObjectNames.Tree10]: Tree10,
     [ObjectNames.Tree11]: Tree11,
     [ObjectNames.Minerals]: Minerals,
-    [ObjectNames.Stone]: Stone
+    [ObjectNames.StonePile]: StonePile
   };
 
   public static actorMap: ActorMap = {
@@ -153,6 +158,17 @@ export class ActorManager {
   }
 
   static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
+    const definition = pwActorDefinitions[name as ObjectNames];
+    if (!definition) {
+      throw new Error(`Actor definition for ${name} not found.`);
+    }
+
+    if (definition.meta?.randomOfType?.length) {
+      // If the actor definition has a randomOfType, we need to pick a random one from the list
+      const randomIndex = Math.floor(Math.random() * definition.meta.randomOfType.length);
+      name = definition.meta.randomOfType[randomIndex] as ObjectNames;
+    }
+
     let actor: GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
