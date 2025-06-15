@@ -28,10 +28,6 @@ export class SwRefreshComponent implements OnInit, OnDestroy {
   private applyVersionState = (versionState: VersionState) => {
     if (versionState === VersionState.NewVersionDetected) {
       this.showNewVersion = true;
-    } else if (versionState === VersionState.NewVersionDownloaded) {
-      this.showVersionReady = true;
-    } else if (versionState === VersionState.VersionInstallationFailed) {
-      this.showInstallationFailed = true;
     } else if (versionState === VersionState.VersionOk) {
       this.showNewVersion = false;
     } else if (versionState === VersionState.Checking) {
@@ -41,10 +37,6 @@ export class SwRefreshComponent implements OnInit, OnDestroy {
 
   protected recover() {
     window.location.reload();
-  }
-
-  protected onVersionRefreshClick() {
-    this.versionService.onVersionRefreshClick();
   }
 
   ngOnDestroy(): void {
