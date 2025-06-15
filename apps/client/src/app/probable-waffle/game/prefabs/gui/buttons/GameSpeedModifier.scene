@@ -59,6 +59,9 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "10x",
+                            "resolution": 10,
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "22px",
                             "color": "#000000ff"
                         },
                         {
@@ -135,6 +138,9 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "3x",
+                            "resolution": 10,
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "22px",
                             "color": "#000000ff"
                         },
                         {
@@ -211,6 +217,9 @@
                             "originX": 0.5,
                             "originY": 0.5,
                             "text": "1x",
+                            "resolution": 10,
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "22px",
                             "color": "#000000ff"
                         },
                         {

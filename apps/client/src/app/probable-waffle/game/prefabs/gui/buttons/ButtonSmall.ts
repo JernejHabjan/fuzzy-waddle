@@ -17,7 +17,7 @@ export default class ButtonSmall extends Phaser.GameObjects.Container {
     // textEle
     const textEle = scene.add.text(6, 1, "", {});
     textEle.setOrigin(0.5, 0.5);
-    textEle.setStyle({ align: "center" });
+    textEle.setStyle({ align: "center", fontFamily: "disposabledroid", resolution: 10 });
     this.add(textEle);
 
     // image_1

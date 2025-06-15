@@ -42,6 +42,9 @@
                     "y": 5,
                     "originY": 0.5,
                     "text": "New text",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "26px",
                     "color": "#000000ff"
                 }
             ]

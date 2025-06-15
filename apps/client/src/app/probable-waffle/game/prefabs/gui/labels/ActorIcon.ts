@@ -15,7 +15,6 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
-    this.blendMode = Phaser.BlendModes.SKIP_CHECK;
     this.setInteractive(new Phaser.Geom.Rectangle(0, 0, 16, 16), Phaser.Geom.Rectangle.Contains);
 
     // bg
@@ -24,9 +23,10 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     this.add(bg);
 
     // nr
-    const nr = scene.add.text(4, 1, "", {});
+    const nr = scene.add.text(8, 7, "", {});
+    nr.setOrigin(0.5, 0.5);
     nr.text = "2";
-    nr.setStyle({ fontSize: "14px" });
+    nr.setStyle({ fontFamily: "disposabledroid", fontSize: "18px", resolution: 10 });
     this.add(nr);
 
     // image

@@ -30,7 +30,9 @@
                     "y": 11.082984589831902,
                     "originY": 0.5,
                     "text": "New text",
-                    "fontSize": "12px"
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px"
                 },
                 {
                     "type": "Image",

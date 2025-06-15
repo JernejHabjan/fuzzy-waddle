@@ -73,7 +73,13 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     const text_3 = this.add.text(-1, 0, "", {});
     text_3.setOrigin(0.5, 0.5);
     text_3.text = "Quit";
-    text_3.setStyle({ align: "center", color: "#000000ff", fontSize: "14px", resolution: 3 });
+    text_3.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
     game_action_quit.add(text_3);
 
     // onPointerUpScript_quit
@@ -119,7 +125,13 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     const text_4 = this.add.text(-1, 0, "", {});
     text_4.setOrigin(0.5, 0.5);
     text_4.text = "Load";
-    text_4.setStyle({ align: "center", color: "#000000ff", fontSize: "14px", resolution: 3 });
+    text_4.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
     game_action_load.add(text_4);
 
     // onPointerUpScript_load
@@ -165,7 +177,13 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     const text_5 = this.add.text(-1, 0, "", {});
     text_5.setOrigin(0.5, 0.5);
     text_5.text = "Save";
-    text_5.setStyle({ align: "center", color: "#000000ff", fontSize: "14px", resolution: 3 });
+    text_5.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
     game_action_save.add(text_5);
 
     // onPointerUpScript_save
@@ -211,7 +229,13 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     const text_2 = this.add.text(-1, 0, "", {});
     text_2.setOrigin(0.5, 0.5);
     text_2.text = "Settings";
-    text_2.setStyle({ align: "center", color: "#000000ff", fontSize: "14px", resolution: 3 });
+    text_2.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
     game_action_settings.add(text_2);
 
     // onPointerUpScript_settings
@@ -257,7 +281,13 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     const text = this.add.text(-1, 0, "", {});
     text.setOrigin(0.5, 0.5);
     text.text = "Restart";
-    text.setStyle({ align: "center", color: "#000000ff", fontSize: "14px", resolution: 3 });
+    text.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
     game_action_restart.add(text);
 
     // onPointerUpScript_continue_1
@@ -303,7 +333,14 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     const text_1 = this.add.text(-1, 0, "", {});
     text_1.setOrigin(0.5, 0.5);
     text_1.text = "Continue";
-    text_1.setStyle({ align: "center", color: "#000000ff", fontSize: "14px", stroke: "#ffffffff", resolution: 3 });
+    text_1.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      stroke: "#ffffffff",
+      resolution: 10
+    });
     game_action_continue.add(text_1);
 
     // onPointerUpScript_continue

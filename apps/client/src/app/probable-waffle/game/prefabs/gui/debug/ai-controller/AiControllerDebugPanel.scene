@@ -63,6 +63,9 @@
                             "originX": 0.5472303972883584,
                             "originY": 0.5,
                             "text": "Show AI debugging",
+                            "resolution": 10,
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "22px",
                             "color": "#000000ff"
                         },
                         {
