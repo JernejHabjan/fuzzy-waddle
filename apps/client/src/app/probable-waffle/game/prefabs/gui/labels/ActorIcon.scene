@@ -18,7 +18,6 @@
             "type": "Container",
             "id": "5f2e2d94-a065-44b7-84eb-b8759399f879",
             "label": "container_1",
-            "blendMode": -1,
             "hitArea.shape": "RECTANGLE",
             "hitArea.width": 16,
             "hitArea.height": 16,
@@ -50,6 +49,8 @@
                     "x": 4,
                     "y": 1,
                     "text": "2",
+                    "resolution": 10,
+                    "fontFamily": "ARCADECLASSIC",
                     "fontSize": "14px"
                 },
                 {

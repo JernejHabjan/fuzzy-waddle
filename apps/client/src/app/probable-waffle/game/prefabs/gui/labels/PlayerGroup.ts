@@ -1,11 +1,12 @@
 // You can write more code here
 
 /* START OF COMPILED CODE */
-/* START-USER-IMPORTS */
+
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
+/* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
 import { SelectionGroupsComponent } from "../../../scenes/components/selection-groups.component";
@@ -28,7 +29,7 @@ export default class PlayerGroup extends Phaser.GameObjects.Container {
     // nr
     const nr = scene.add.text(4, 7, "", {});
     nr.text = "2";
-    nr.setStyle({ fontSize: "18px" });
+    nr.setStyle({ fontFamily: "ARCADECLASSIC", fontSize: "18px", resolution: 10 });
     this.add(nr);
 
     // image
@@ -96,7 +97,6 @@ export default class PlayerGroup extends Phaser.GameObjects.Container {
     selectionGroupsComponent.selectGroup(this.key);
   }
 
-  /* END-USER-CODE */
   select() {
     this.underline?.setVisible(true);
   }
@@ -126,6 +126,7 @@ export default class PlayerGroup extends Phaser.GameObjects.Container {
     this.underline?.destroy();
     super.destroy(fromScene);
   }
+  /* END-USER-CODE */
 }
 
 /* END OF COMPILED CODE */

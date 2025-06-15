@@ -18,7 +18,6 @@
             "type": "Container",
             "id": "aab91f83-de2a-4285-a786-bd334e3318aa",
             "label": "container_1",
-            "blendMode": -1,
             "list": [
                 {
                     "prefabId": "994196d3-0550-4418-9691-f87cab9f5129",
@@ -42,7 +41,7 @@
                                 "fontSize"
                             ],
                             "label": "text",
-                            "fontSize": "12px"
+                            "fontSize": "16px"
                         }
                     ]
                 },
@@ -68,7 +67,7 @@
                                 "fontSize"
                             ],
                             "label": "text",
-                            "fontSize": "12px"
+                            "fontSize": "16px"
                         }
                     ]
                 },
@@ -94,7 +93,7 @@
                                 "fontSize"
                             ],
                             "label": "text",
-                            "fontSize": "12px"
+                            "fontSize": "16px"
                         }
                     ]
                 },
@@ -120,7 +119,7 @@
                                 "fontSize"
                             ],
                             "label": "text",
-                            "fontSize": "12px"
+                            "fontSize": "16px"
                         }
                     ]
                 },
@@ -146,7 +145,7 @@
                                 "fontSize"
                             ],
                             "label": "text",
-                            "fontSize": "12px"
+                            "fontSize": "16px"
                         }
                     ]
                 },
@@ -172,7 +171,7 @@
                                 "fontSize"
                             ],
                             "label": "text",
-                            "fontSize": "12px"
+                            "fontSize": "16px"
                         }
                     ]
                 }

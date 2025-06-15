@@ -3,9 +3,8 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-/* END-USER-IMPORTS */
-
 import { IconHelper } from "./IconHelper";
+/* END-USER-IMPORTS */
 
 export default class ActorInfoLabel extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
@@ -19,7 +18,7 @@ export default class ActorInfoLabel extends Phaser.GameObjects.Container {
     const text = scene.add.text(19, 5, "", {});
     text.setOrigin(0, 0.5);
     text.text = "New text";
-    text.setStyle({ color: "#000000ff" });
+    text.setStyle({ color: "#000000ff", fontFamily: "ARCADECLASSIC", resolution: 10 });
     this.add(text);
 
     this.icon = icon;

@@ -30,6 +30,8 @@
                     "y": 11.082984589831902,
                     "originY": 0.5,
                     "text": "New text",
+                    "resolution": 10,
+                    "fontFamily": "ARCADECLASSIC",
                     "fontSize": "12px"
                 },
                 {

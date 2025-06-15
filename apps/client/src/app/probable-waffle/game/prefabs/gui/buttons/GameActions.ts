@@ -52,7 +52,7 @@ export default class GameActions extends Phaser.GameObjects.Container {
     const text_1 = scene.add.text(-26, 17, "", {});
     text_1.setOrigin(0.5, 0.5);
     text_1.text = "Menu";
-    text_1.setStyle({ "align": "center", "color": "#000000ff", "fontSize": "12px", "resolution": 4 });
+    text_1.setStyle({ "align": "center", "color": "#000000ff", "fontFamily": "ARCADECLASSIC", "fontSize": "12px", "resolution": 10 });
     this.add(text_1);
 
     // emitEventQuitAction (prefab fields)

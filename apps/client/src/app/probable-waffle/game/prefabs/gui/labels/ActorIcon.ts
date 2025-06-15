@@ -12,10 +12,10 @@ import { Subject } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class ActorIcon extends Phaser.GameObjects.Container {
+
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
-    this.blendMode = Phaser.BlendModes.SKIP_CHECK;
     this.setInteractive(new Phaser.Geom.Rectangle(0, 0, 16, 16), Phaser.Geom.Rectangle.Contains);
 
     // bg
@@ -26,7 +26,7 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     // nr
     const nr = scene.add.text(4, 1, "", {});
     nr.text = "2";
-    nr.setStyle({ fontSize: "14px" });
+    nr.setStyle({ "fontFamily": "ARCADECLASSIC", "fontSize": "14px", "resolution": 10 });
     this.add(nr);
 
     // image

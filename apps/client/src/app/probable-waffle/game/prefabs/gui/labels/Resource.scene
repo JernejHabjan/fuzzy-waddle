@@ -27,9 +27,11 @@
                     "label": "resource_text",
                     "displayName": "Text",
                     "scope": "CLASS",
-                    "x": -39,
-                    "y": -20,
-                    "text": "0"
+                    "x": -36,
+                    "y": -23,
+                    "text": "0",
+                    "resolution": 10,
+                    "fontFamily": "ARCADECLASSIC"
                 },
                 {
                     "type": "Image",

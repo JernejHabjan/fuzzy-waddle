@@ -30,7 +30,7 @@ export class NodeDebugger {
     });
     textNode.setOrigin(0.5, 1);
     textNode.text = "";
-    textNode.setStyle({ align: "center" });
+    textNode.setStyle({ align: "center", fontFamily: "ARCADECLASSIC", resolution: 10 });
     textNode.visible = false;
 
     this.textNode = textNode;

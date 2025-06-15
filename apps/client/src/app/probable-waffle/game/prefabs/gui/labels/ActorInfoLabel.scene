@@ -42,6 +42,8 @@
                     "y": 5,
                     "originY": 0.5,
                     "text": "New text",
+                    "resolution": 10,
+                    "fontFamily": "ARCADECLASSIC",
                     "color": "#000000ff"
                 }
             ]

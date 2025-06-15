@@ -30,7 +30,9 @@
                     "y": 6,
                     "originX": 1,
                     "text": "Player Name",
+                    "resolution": 10,
                     "align": "right",
+                    "fontFamily": "ARCADECLASSIC",
                     "maxLines": 1,
                     "wordWrapWidth": 200
                 },
@@ -44,7 +46,9 @@
                     "y": 34,
                     "originX": 1,
                     "text": "Player action",
+                    "resolution": 10,
                     "align": "right",
+                    "fontFamily": "ARCADECLASSIC",
                     "maxLines": 1,
                     "wordWrapWidth": 200
                 }

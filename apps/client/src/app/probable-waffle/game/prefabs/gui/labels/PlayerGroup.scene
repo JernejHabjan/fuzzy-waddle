@@ -49,6 +49,8 @@
                     "x": 4,
                     "y": 7,
                     "text": "2",
+                    "resolution": 10,
+                    "fontFamily": "ARCADECLASSIC",
                     "fontSize": "18px"
                 },
                 {

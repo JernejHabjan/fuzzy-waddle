@@ -9,24 +9,12 @@ import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class ProgressBar extends Phaser.GameObjects.Container {
+
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 50.1919575967303, y ?? 5.992859840393066);
 
-    this.blendMode = Phaser.BlendModes.SKIP_CHECK;
-
     // background
-    const background = scene.add.nineslice(
-      -25.191959456710947,
-      -2.992859833650245,
-      "gui",
-      "cryos_mini_gui/surfaces/surface_dark.png",
-      50,
-      5,
-      2,
-      2,
-      2,
-      2
-    );
+    const background = scene.add.nineslice(-25.191959456710947, -2.992859833650245, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 50, 5, 2, 2, 2, 2);
     this.add(background);
 
     // progress
@@ -38,17 +26,17 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
     this.add(progress);
 
     // out_of_100
-    const out_of_100 = scene.add.text(-22.191959456710947, -2.992859833650245, "", {});
+    const out_of_100 = scene.add.text(-24, -3, "", {});
     out_of_100.setOrigin(0.5, 0.5);
     out_of_100.text = " / 100";
-    out_of_100.setStyle({ align: "center", fontSize: "4px", resolution: 4 });
+    out_of_100.setStyle({ "align": "center", "fontFamily": "ARCADECLASSIC", "fontSize": "4px", "resolution": 10 });
     this.add(out_of_100);
 
     // nr
-    const nr = scene.add.text(-32.19195945671095, -2.992859833650245, "", {});
+    const nr = scene.add.text(-30, -3, "", {});
     nr.setOrigin(0.5, 0.5);
     nr.text = "1";
-    nr.setStyle({ align: "right", fontSize: "4px", resolution: 4 });
+    nr.setStyle({ "align": "right", "fontFamily": "ARCADECLASSIC", "fontSize": "4px", "resolution": 10 });
     this.add(nr);
 
     this.progress = progress;
