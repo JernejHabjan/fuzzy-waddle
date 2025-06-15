@@ -39,10 +39,6 @@ export class SwRefreshComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
-  protected onVersionRefreshClick() {
-    // this.versionService.onVersionRefreshClick();
-  }
-
   ngOnDestroy(): void {
     this.versionStateSubscription?.unsubscribe();
   }
