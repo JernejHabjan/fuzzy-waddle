@@ -19,6 +19,7 @@ export class VersionService implements VersionServiceInterface, OnDestroy {
   private unrecoverableSubscription?: Subscription;
   private versionUpdateSubscription?: Subscription;
   private readonly localVersionState = new BehaviorSubject(VersionState.Checking);
+  private autoRefresh = true;
 
   constructor() {
     this.subscribeToSwEvents();
@@ -51,13 +52,17 @@ export class VersionService implements VersionServiceInterface, OnDestroy {
       return;
     }
     this.versionUpdateSubscription = this.swUpdate.versionUpdates.subscribe((versionEvent) => {
-      // if version available show version ready modal
+      // if version available, then show version ready modal
       switch (versionEvent.type) {
         case "VERSION_DETECTED":
           this.localVersionState.next(VersionState.NewVersionDetected);
           break;
         case "VERSION_READY":
           this.localVersionState.next(VersionState.NewVersionDownloaded);
+          // Auto-refresh when version is ready
+          if (this.autoRefresh) {
+            this.swUpdate.activateUpdate().then(() => document.location.reload());
+          }
           break;
         case "VERSION_INSTALLATION_FAILED":
           this.localVersionState.next(VersionState.VersionInstallationFailed);
