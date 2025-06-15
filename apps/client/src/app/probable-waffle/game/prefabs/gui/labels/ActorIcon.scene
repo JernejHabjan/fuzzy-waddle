@@ -46,12 +46,14 @@
                     "label": "nr",
                     "displayName": "Number",
                     "scope": "CLASS",
-                    "x": 4,
-                    "y": 1,
+                    "x": 8,
+                    "y": 7,
+                    "originX": 0.5,
+                    "originY": 0.5,
                     "text": "2",
                     "resolution": 10,
-                    "fontFamily": "ARCADECLASSIC",
-                    "fontSize": "14px"
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px"
                 },
                 {
                     "type": "Image",

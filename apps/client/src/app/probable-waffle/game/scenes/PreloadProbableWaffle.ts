@@ -35,7 +35,7 @@ export default class PreloadProbableWaffle extends ProbableWaffleScene {
     // loadingText
     const loadingText = this.add.text(552.0120849609375, 329, "", {});
     loadingText.text = "Loading...";
-    loadingText.setStyle({ color: "#e0e0e0", fontFamily: "ARCADECLASSIC", fontSize: "20px", resolution: 10 });
+    loadingText.setStyle({ color: "#e0e0e0", fontFamily: "disposabledroid", fontSize: "40px", resolution: 10 });
 
     this.progressBar = progressBar;
     this.progressBarBg = progressBarBg;

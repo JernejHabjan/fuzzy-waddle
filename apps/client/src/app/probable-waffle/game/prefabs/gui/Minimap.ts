@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
+/* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSceneComponent } from "../../scenes/components/scene-component-helpers";
 import { TilemapComponent } from "../../scenes/components/tilemap.component";
@@ -17,7 +18,6 @@ import { NavigationService } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { FogOfWarComponent, FogOfWarMode } from "../../scenes/components/fog-of-war.component";
 import { VisionComponent } from "../../entity/actor/components/vision-component";
-/* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {
@@ -33,15 +33,15 @@ export default class Minimap extends Phaser.GameObjects.Container {
       -247,
       "gui",
       "cryos_mini_gui/surfaces/surface_parchment.png",
-      32,
-      32,
+      64,
+      48,
       3,
       3,
       3,
       3
     );
-    minimap_bg.scaleX = 12.769367198119731;
-    minimap_bg.scaleY = 7.444257731898887;
+    minimap_bg.scaleX = 6.360057500071948;
+    minimap_bg.scaleY = 4.918865473567761;
     minimap_bg.setOrigin(0, 0);
     this.add(minimap_bg);
 
@@ -338,6 +338,8 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
     super.destroy(fromScene);
   }
+
+  /* END-USER-CODE */
 }
 
 /* END OF COMPILED CODE */

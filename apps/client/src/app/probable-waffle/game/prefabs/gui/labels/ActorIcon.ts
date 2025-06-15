@@ -12,7 +12,6 @@ import { Subject } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class ActorIcon extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
@@ -24,9 +23,10 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     this.add(bg);
 
     // nr
-    const nr = scene.add.text(4, 1, "", {});
+    const nr = scene.add.text(8, 7, "", {});
+    nr.setOrigin(0.5, 0.5);
     nr.text = "2";
-    nr.setStyle({ "fontFamily": "ARCADECLASSIC", "fontSize": "14px", "resolution": 10 });
+    nr.setStyle({ fontFamily: "disposabledroid", fontSize: "18px", resolution: 10 });
     this.add(nr);
 
     // image

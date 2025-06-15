@@ -30,15 +30,15 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       -80.93078633145431,
       "gui",
       "cryos_mini_gui/surfaces/surface_parchment.png",
-      32,
-      16,
+      64,
+      48,
       3,
       3,
       3,
       3
     );
-    actor_info_bg.scaleX = 6.711135518221706;
-    actor_info_bg.scaleY = 4.971499722371;
+    actor_info_bg.scaleX = 3.3669208029108955;
+    actor_info_bg.scaleY = 1.6660351475342665;
     actor_info_bg.setOrigin(0, 0);
     this.add(actor_info_bg);
 
@@ -53,7 +53,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     actorInfoLabel.text.setStyle({});
 
     // progress_bar
-    const progress_bar = new ProgressBar(scene, -24, -49);
+    const progress_bar = new ProgressBar(scene, -49, -56);
     this.add(progress_bar);
 
     // actorDetails

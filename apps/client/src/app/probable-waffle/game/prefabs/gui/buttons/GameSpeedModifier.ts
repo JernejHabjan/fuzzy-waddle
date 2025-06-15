@@ -12,17 +12,30 @@ import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 /* END-USER-IMPORTS */
 
 export default class GameSpeedModifier extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
     // multiplier_10x
     const multiplier_10x = scene.add.container(101, 15);
-    multiplier_10x.setInteractive(new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
+    multiplier_10x.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
     this.add(multiplier_10x);
 
     // game_action_bg_2
-    const game_action_bg_2 = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
+    const game_action_bg_2 = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
     game_action_bg_2.scaleX = 2.0762647352357817;
     game_action_bg_2.scaleY = 1.5492262688240692;
     multiplier_10x.add(game_action_bg_2);
@@ -31,7 +44,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     const text_2 = scene.add.text(0, -1, "", {});
     text_2.setOrigin(0.5, 0.5);
     text_2.text = "10x";
-    text_2.setStyle({ "color": "#000000ff", "fontFamily": "ARCADECLASSIC", "resolution": 10 });
+    text_2.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     multiplier_10x.add(text_2);
 
     // onPointerUpScript_menu_1
@@ -48,11 +61,25 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
 
     // multiplier_3x
     const multiplier_3x = scene.add.container(61, 15);
-    multiplier_3x.setInteractive(new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
+    multiplier_3x.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
     this.add(multiplier_3x);
 
     // game_action_bg_1
-    const game_action_bg_1 = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
+    const game_action_bg_1 = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
     game_action_bg_1.scaleX = 2.0762647352357817;
     game_action_bg_1.scaleY = 1.5492262688240692;
     multiplier_3x.add(game_action_bg_1);
@@ -61,7 +88,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     const text = scene.add.text(0, -1, "", {});
     text.setOrigin(0.5, 0.5);
     text.text = "3x";
-    text.setStyle({ "color": "#000000ff", "fontFamily": "ARCADECLASSIC", "resolution": 10 });
+    text.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     multiplier_3x.add(text);
 
     // onPointerUpScript_menu
@@ -78,11 +105,25 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
 
     // multiplier_1x
     const multiplier_1x = scene.add.container(21, 15);
-    multiplier_1x.setInteractive(new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
+    multiplier_1x.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
     this.add(multiplier_1x);
 
     // game_action_bg
-    const game_action_bg = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
+    const game_action_bg = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      20,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
     game_action_bg.scaleX = 2.0762647352357817;
     game_action_bg.scaleY = 1.5492262688240692;
     multiplier_1x.add(game_action_bg);
@@ -91,7 +132,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     const text_1 = scene.add.text(0, -1, "", {});
     text_1.setOrigin(0.5, 0.5);
     text_1.text = "1x";
-    text_1.setStyle({ "color": "#000000ff", "fontFamily": "ARCADECLASSIC", "resolution": 10 });
+    text_1.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     multiplier_1x.add(text_1);
 
     // onPointerUpScript_menu_9

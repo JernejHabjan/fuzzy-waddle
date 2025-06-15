@@ -43,7 +43,8 @@
                     "originY": 0.5,
                     "text": "New text",
                     "resolution": 10,
-                    "fontFamily": "ARCADECLASSIC",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "26px",
                     "color": "#000000ff"
                 }
             ]

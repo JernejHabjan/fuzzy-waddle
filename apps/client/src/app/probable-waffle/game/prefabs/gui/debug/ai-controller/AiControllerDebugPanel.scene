@@ -64,7 +64,8 @@
                             "originY": 0.5,
                             "text": "Show AI debugging",
                             "resolution": 10,
-                            "fontFamily": "ARCADECLASSIC",
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "22px",
                             "color": "#000000ff"
                         },
                         {

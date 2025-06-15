@@ -27,11 +27,14 @@
                     "label": "resource_text",
                     "displayName": "Text",
                     "scope": "CLASS",
-                    "x": -36,
-                    "y": -23,
+                    "x": -25,
+                    "y": -16,
+                    "originX": 0.5,
+                    "originY": 0.5,
                     "text": "0",
                     "resolution": 10,
-                    "fontFamily": "ARCADECLASSIC"
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "22px"
                 },
                 {
                     "type": "Image",

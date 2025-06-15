@@ -58,8 +58,8 @@
             "y": 329,
             "text": "Loading...",
             "resolution": 10,
-            "fontFamily": "ARCADECLASSIC",
-            "fontSize": "20px",
+            "fontFamily": "disposabledroid",
+            "fontSize": "40px",
             "color": "#e0e0e0"
         }
     ],

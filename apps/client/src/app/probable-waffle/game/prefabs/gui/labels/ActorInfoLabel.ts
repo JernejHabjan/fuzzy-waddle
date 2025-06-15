@@ -18,7 +18,7 @@ export default class ActorInfoLabel extends Phaser.GameObjects.Container {
     const text = scene.add.text(19, 5, "", {});
     text.setOrigin(0, 0.5);
     text.text = "New text";
-    text.setStyle({ color: "#000000ff", fontFamily: "ARCADECLASSIC", resolution: 10 });
+    text.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "26px", resolution: 10 });
     this.add(text);
 
     this.icon = icon;

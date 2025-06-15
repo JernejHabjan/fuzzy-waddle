@@ -9,14 +9,14 @@ import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class Resource extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 71.80414581298828, y ?? 32.202178808720916);
 
     // resource_text
-    const resource_text = scene.add.text(-36, -23, "", {});
+    const resource_text = scene.add.text(-25, -16, "", {});
+    resource_text.setOrigin(0.5, 0.5);
     resource_text.text = "0";
-    resource_text.setStyle({ "fontFamily": "ARCADECLASSIC", "resolution": 10 });
+    resource_text.setStyle({ fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     this.add(resource_text);
 
     // resource_icon
@@ -38,7 +38,7 @@ export default class Resource extends Phaser.GameObjects.Container {
 
   private resource_text: Phaser.GameObjects.Text;
   public resource_icon: Phaser.GameObjects.Image;
-  public type: "wood"|"stone"|"minerals"|"food"|"" = "";
+  public type: "wood" | "stone" | "minerals" | "food" | "" = "";
 
   /* START-USER-CODE */
   private readonly player: ProbableWafflePlayer | undefined;

@@ -9,16 +9,26 @@ import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
 export default class ProgressBar extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 50.1919575967303, y ?? 5.992859840393066);
 
     // background
-    const background = scene.add.nineslice(-25.191959456710947, -2.992859833650245, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 50, 5, 2, 2, 2, 2);
+    const background = scene.add.nineslice(
+      -13,
+      -2,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      74,
+      8,
+      2,
+      2,
+      2,
+      2
+    );
     this.add(background);
 
     // progress
-    const progress = scene.add.rectangle(-49, -3, 48, 2);
+    const progress = scene.add.rectangle(-49, -2, 72, 4);
     progress.scaleY = 1.4;
     progress.setOrigin(0, 0.5);
     progress.isFilled = true;
@@ -26,17 +36,17 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
     this.add(progress);
 
     // out_of_100
-    const out_of_100 = scene.add.text(-24, -3, "", {});
+    const out_of_100 = scene.add.text(-10, -3, "", {});
     out_of_100.setOrigin(0.5, 0.5);
     out_of_100.text = " / 100";
-    out_of_100.setStyle({ "align": "center", "fontFamily": "ARCADECLASSIC", "fontSize": "4px", "resolution": 10 });
+    out_of_100.setStyle({ align: "center", fontFamily: "disposabledroid", fontSize: "10px", resolution: 10 });
     this.add(out_of_100);
 
     // nr
-    const nr = scene.add.text(-30, -3, "", {});
+    const nr = scene.add.text(-24, -3, "", {});
     nr.setOrigin(0.5, 0.5);
     nr.text = "1";
-    nr.setStyle({ "align": "right", "fontFamily": "ARCADECLASSIC", "fontSize": "4px", "resolution": 10 });
+    nr.setStyle({ align: "right", fontFamily: "disposabledroid", fontSize: "10px", resolution: 10 });
     this.add(nr);
 
     this.progress = progress;
@@ -51,7 +61,7 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
   private nr: Phaser.GameObjects.Text;
 
   /* START-USER-CODE */
-  private readonly maxWidth = 48;
+  private readonly maxWidth = 72;
   private productionProgressSubscription?: Subscription;
 
   setProgressBar(actor: Phaser.GameObjects.GameObject) {

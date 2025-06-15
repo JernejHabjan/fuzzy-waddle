@@ -27,9 +27,10 @@ export default class PlayerGroup extends Phaser.GameObjects.Container {
     this.add(bg);
 
     // nr
-    const nr = scene.add.text(4, 7, "", {});
+    const nr = scene.add.text(9, 14, "", {});
+    nr.setOrigin(0.5, 0.5);
     nr.text = "2";
-    nr.setStyle({ fontFamily: "ARCADECLASSIC", fontSize: "18px", resolution: 10 });
+    nr.setStyle({ fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     this.add(nr);
 
     // image

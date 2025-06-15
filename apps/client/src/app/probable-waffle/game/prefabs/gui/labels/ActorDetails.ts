@@ -21,42 +21,42 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     actorInfoLabel_1.scaleX = 0.5;
     actorInfoLabel_1.scaleY = 0.5;
     this.add(actorInfoLabel_1);
-    actorInfoLabel_1.text.setStyle({ fontSize: "16px" });
+    actorInfoLabel_1.text.setStyle({ fontSize: "20px" });
 
     // actorInfoLabel_2
     const actorInfoLabel_2 = new ActorInfoLabel(scene, 8, 23);
     actorInfoLabel_2.scaleX = 0.5;
     actorInfoLabel_2.scaleY = 0.5;
     this.add(actorInfoLabel_2);
-    actorInfoLabel_2.text.setStyle({ fontSize: "16px" });
+    actorInfoLabel_2.text.setStyle({ fontSize: "20px" });
 
     // actorInfoLabel_3
     const actorInfoLabel_3 = new ActorInfoLabel(scene, 66, 5);
     actorInfoLabel_3.scaleX = 0.5;
     actorInfoLabel_3.scaleY = 0.5;
     this.add(actorInfoLabel_3);
-    actorInfoLabel_3.text.setStyle({ fontSize: "16px" });
+    actorInfoLabel_3.text.setStyle({ fontSize: "20px" });
 
     // actorInfoLabel_4
     const actorInfoLabel_4 = new ActorInfoLabel(scene, 127, 5);
     actorInfoLabel_4.scaleX = 0.5;
     actorInfoLabel_4.scaleY = 0.5;
     this.add(actorInfoLabel_4);
-    actorInfoLabel_4.text.setStyle({ fontSize: "16px" });
+    actorInfoLabel_4.text.setStyle({ fontSize: "20px" });
 
     // actorInfoLabel_5
     const actorInfoLabel_5 = new ActorInfoLabel(scene, 66, 23);
     actorInfoLabel_5.scaleX = 0.5;
     actorInfoLabel_5.scaleY = 0.5;
     this.add(actorInfoLabel_5);
-    actorInfoLabel_5.text.setStyle({ fontSize: "16px" });
+    actorInfoLabel_5.text.setStyle({ fontSize: "20px" });
 
     // actorInfoLabel_6
     const actorInfoLabel_6 = new ActorInfoLabel(scene, 127, 23);
     actorInfoLabel_6.scaleX = 0.5;
     actorInfoLabel_6.scaleY = 0.5;
     this.add(actorInfoLabel_6);
-    actorInfoLabel_6.text.setStyle({ fontSize: "16px" });
+    actorInfoLabel_6.text.setStyle({ fontSize: "20px" });
 
     // lists
     const attributes = [

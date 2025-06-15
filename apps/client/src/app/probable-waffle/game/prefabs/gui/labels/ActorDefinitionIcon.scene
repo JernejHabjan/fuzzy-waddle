@@ -31,8 +31,8 @@
                     "originY": 0.5,
                     "text": "New text",
                     "resolution": 10,
-                    "fontFamily": "ARCADECLASSIC",
-                    "fontSize": "12px"
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px"
                 },
                 {
                     "type": "Image",
