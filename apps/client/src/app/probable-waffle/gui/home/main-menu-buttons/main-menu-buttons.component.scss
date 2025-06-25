@@ -1,0 +1,135 @@
+@use "../../../../../styles/_variables.scss" as *;
+
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  width: 350px;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+
+  // Glassmorphism effect using variable colors
+  background: rgba($dark, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba($tertiary, 0.2);
+  border-radius: $app-border-radius;
+  box-shadow:
+    0 8px 32px rgba($primary, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+// Responsive design
+@media (max-width: 1200px) {
+  .main-menu {
+    // Remove scroll on mobile
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+.menu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.menu-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $quaternary;
+  margin: 0 0 0.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba($tertiary, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.menu-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background: rgba($secondary, 0.6);
+  border: 1px solid rgba($tertiary, 0.3);
+  border-radius: 8px;
+  color: $quaternary;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba($tertiary, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    background: rgba($tertiary, 0.15);
+    border-color: rgba($tertiary, 0.5);
+    transform: translateX(4px);
+    box-shadow:
+      0 4px 16px rgba($tertiary, 0.2),
+      -4px 0 8px rgba($tertiary, 0.1);
+
+    &::before {
+      left: 100%;
+    }
+
+    .menu-button-text {
+      color: $tertiary;
+    }
+  }
+
+  &:active {
+    transform: translateX(2px);
+  }
+}
+
+.menu-button-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.menu-button-description {
+  font-size: 0.875rem;
+  color: rgba($tertiary, 0.7);
+  font-weight: 400;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .main-menu {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+}
+
+// Custom scrollbar using variable colors
+.main-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.main-menu::-webkit-scrollbar-track {
+  background: rgba($secondary, 0.3);
+  border-radius: 3px;
+}
+
+.main-menu::-webkit-scrollbar-thumb {
+  background: rgba($tertiary, 0.4);
+  border-radius: 3px;
+}
+
+.main-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba($tertiary, 0.6);
+}
