@@ -1,34 +1,36 @@
-<fuzzy-waddle-leave-button routerLink="/probable-waffle"/>
+<fuzzy-waddle-home-nav routerLink="/probable-waffle" title="Probable Waffle" />
 
-<div class="card-container">
-  <div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
-    <div style="max-width: 500px">
-      @if (!authService.isAuthenticated) {
-        <div class="server-health">
-          <p>Not authenticated. Please Login to continue</p>
-        </div>
-      } @else {
-        @if (serverHealthService.serverChecking) {
+<fuzzy-waddle-center-wrapper>
+  <div class="card-container">
+    <div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
+      <div style="max-width: 500px">
+        @if (!authService.isAuthenticated) {
           <div class="server-health">
-            <p>Checking server health...</p>
+            <p>Not authenticated. Please Login to continue</p>
           </div>
-        } @else if (serverHealthService.serverAvailable) {
-          <h2 class="achievement-header">Achievements:</h2>
-          @for (achievement of gameInstanceService.getAchievements(); track achievement) {
-            <div class="d-flex achievement align-items-center">
-              <div>
-                <h3 class="achievement-title">{{ achievement.name }}</h3>
-                <div>{{ achievement.description }}</div>
+        } @else {
+          @if (serverHealthService.serverChecking) {
+            <div class="server-health">
+              <p>Checking server health...</p>
+            </div>
+          } @else if (serverHealthService.serverAvailable) {
+            <h2 class="achievement-header">Achievements:</h2>
+            @for (achievement of gameInstanceService.getAchievements(); track achievement) {
+              <div class="d-flex achievement align-items-center">
+                <div>
+                  <h3 class="achievement-title">{{ achievement.name }}</h3>
+                  <div>{{ achievement.description }}</div>
+                </div>
+                <img [alt]="achievement.name" [src]="achievement.image" class="achievement-image" />
               </div>
-              <img [alt]="achievement.name" [src]="achievement.image" class="achievement-image" />
+            }
+          } @else {
+            <div class="server-health">
+              <p>Server is not available</p>
             </div>
           }
-        } @else {
-          <div class="server-health">
-            <p>Server is not available</p>
-          </div>
         }
-      }
+      </div>
     </div>
   </div>
-</div>
+</fuzzy-waddle-center-wrapper>

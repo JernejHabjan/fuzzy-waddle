@@ -1,42 +1,44 @@
-<fuzzy-waddle-leave-button [routerLink]="'/fly-squasher'" />
+<fuzzy-waddle-home-nav routerLink="/fly-squasher" title="Fly Squasher" />
 
-<div class="card-container">
-  <div class="general-title">High score:</div>
+<fuzzy-waddle-center-wrapper>
+  <div class="card-container">
+    <div class="general-title">High score:</div>
 
-  @if (highScores.length) {
-    @for (level of getUniqueLevels(highScores); track level) {
-      <div class="card p-2 m-1">
-        <h3>{{ level.name }}</h3>
-        <ol>
-          @for (score of getTopScoresForLevel(highScores, level.id); track score) {
-            <li>{{ score.userName }} - {{ score.score }}</li>
-          }
-        </ol>
-      </div>
-    }
-  } @else {
-    <div class="text-center">
-      <!-- check if loading -->
-      @if (loading) {
-        <div>
-          <fa-icon [icon]="faSpinner" animation="spin" />
+    @if (highScores.length) {
+      @for (level of getUniqueLevels(highScores); track level) {
+        <div class="card p-2 m-1">
+          <h3>{{ level.name }}</h3>
+          <ol>
+            @for (score of getTopScoresForLevel(highScores, level.id); track score) {
+              <li>{{ score.userName }} - {{ score.score }}</li>
+            }
+          </ol>
         </div>
-      } @else {
-        @if (this.serverHealthService.serverAvailable) {
+      }
+    } @else {
+      <div class="text-center">
+        <!-- check if loading -->
+        @if (loading) {
           <div>
-            <div>No scores yet</div>
-            <div>Be the first to play!</div>
-            <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+            <fa-icon [icon]="faSpinner" animation="spin" />
           </div>
         } @else {
-          <div>Server unavailable</div>
-          <div>Try again later</div>
-          @if (!this.serverHealthService.serverAvailable) {
-            <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
+          @if (this.serverHealthService.serverAvailable) {
+            <div>
+              <div>No scores yet</div>
+              <div>Be the first to play!</div>
+              <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+            </div>
+          } @else {
+            <div>Server unavailable</div>
+            <div>Try again later</div>
+            @if (!this.serverHealthService.serverAvailable) {
+              <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
+            }
           }
         }
-      }
-      <!-- no scores -->
-    </div>
-  }
-</div>
+        <!-- no scores -->
+      </div>
+    }
+  </div>
+</fuzzy-waddle-center-wrapper>

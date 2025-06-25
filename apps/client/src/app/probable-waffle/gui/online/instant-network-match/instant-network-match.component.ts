@@ -5,21 +5,22 @@ import { MatchmakingService } from "../matchmaking/matchmaking.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
 import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../../../shared/consts";
+import { CenterWrapperComponent } from "../../../../shared/components/center-wrapper/center-wrapper.component";
 
 @Component({
   selector: "fuzzy-waddle-instant-network-match",
-  imports: [CommonModule, LoaderComponent, RouterLink],
+  imports: [CommonModule, LoaderComponent, RouterLink, CenterWrapperComponent],
   host: AngularHost.contentFlexFullHeight,
   template: `
     @if (errorText) {
-      <div class="d-flex justify-content-center align-items-center h-100 flex-column">
+      <fuzzy-waddle-center-wrapper>
         <p class="text-danger">{{ errorText }}</p>
         <button routerLink="/probable-waffle" class="btn btn-primary m-1" type="button">Home</button>
-      </div>
+      </fuzzy-waddle-center-wrapper>
     } @else if (!matchmakingService.gameFound) {
       <fuzzy-waddle-loader />
     } @else {
-      <div class="d-flex justify-content-center align-items-center h-100">{{ matchmakingService.navigatingText }}</div>
+      <fuzzy-waddle-center-wrapper>{{ matchmakingService.navigatingText }}</fuzzy-waddle-center-wrapper>
     }
   `
 })

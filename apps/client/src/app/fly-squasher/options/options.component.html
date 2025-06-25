@@ -1,43 +1,45 @@
-<fuzzy-waddle-leave-button routerLink="/fly-squasher" />
+<fuzzy-waddle-home-nav routerLink="/fly-squasher" title="Fly Squasher" />
 
-<div class="card-container">
-  <div class="general-title">Options:</div>
+<fuzzy-waddle-center-wrapper>
+  <div class="card-container">
+    <div class="general-title">Options:</div>
 
-  <div class="card mt-3 p-3">
-    <h5 class="mb-3">Volume Controls:</h5>
-    <div class="mb-3">
-      <label for="masterVolume" class="form-label form-label--volume"
-        >Master Volume: {{ volumeSettings.masterVolume }}</label
-      >
-      <input
-        type="range"
-        [(ngModel)]="volumeSettings.masterVolume"
-        (change)="saveToLocalStorage()"
-        class="form-range"
-        id="masterVolume"
-      />
-    </div>
-    <div class="mb-3">
-      <label for="sfxVolume" class="form-label form-label--volume">SFX Volume: {{ volumeSettings.sfxVolume }}</label>
-      <input
-        type="range"
-        [(ngModel)]="volumeSettings.sfxVolume"
-        (change)="saveToLocalStorage()"
-        class="form-range"
-        id="sfxVolume"
-      />
-    </div>
-    <div class="mb-3">
-      <label for="musicVolume" class="form-label form-label--volume"
-        >Music Volume: {{ volumeSettings.musicVolume }}</label
-      >
-      <input
-        type="range"
-        [(ngModel)]="volumeSettings.musicVolume"
-        (change)="saveToLocalStorage()"
-        class="form-range"
-        id="musicVolume"
-      />
+    <div class="card mt-3 p-3">
+      <h5 class="mb-3">Volume Controls:</h5>
+      <div class="mb-3">
+        <label for="masterVolume" class="form-label form-label--volume"
+          >Master Volume: {{ volumeSettings.masterVolume }}</label
+        >
+        <input
+          type="range"
+          [(ngModel)]="volumeSettings.masterVolume"
+          (change)="saveToLocalStorage()"
+          class="form-range"
+          id="masterVolume"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="sfxVolume" class="form-label form-label--volume">SFX Volume: {{ volumeSettings.sfxVolume }}</label>
+        <input
+          type="range"
+          [(ngModel)]="volumeSettings.sfxVolume"
+          (change)="saveToLocalStorage()"
+          class="form-range"
+          id="sfxVolume"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="musicVolume" class="form-label form-label--volume"
+          >Music Volume: {{ volumeSettings.musicVolume }}</label
+        >
+        <input
+          type="range"
+          [(ngModel)]="volumeSettings.musicVolume"
+          (change)="saveToLocalStorage()"
+          class="form-range"
+          id="musicVolume"
+        />
+      </div>
     </div>
   </div>
-</div>
+</fuzzy-waddle-center-wrapper>

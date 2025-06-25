@@ -1,20 +1,22 @@
-<fuzzy-waddle-leave-button [routerLink]="''" />
+<fuzzy-waddle-home-nav routerLink="" title="Fly Squasher" />
 
-<div class="card-container d-flex flex-column">
-  @if (!serverHealthService.serverChecking && !serverHealthService.serverAvailable) {
-    <div class="alert alert-warning d-flex align-items-center" role="alert">
-      <fa-icon [icon]="faExclamationTriangle" class="me-2" />
-      Warning! Server is not available. Your score will not be saved.
-    </div>
-  } @else {
-    @if (!authService.isAuthenticated) {
+<fuzzy-waddle-center-wrapper>
+  <div class="card-container d-flex flex-column">
+    @if (!serverHealthService.serverChecking && !serverHealthService.serverAvailable) {
       <div class="alert alert-warning d-flex align-items-center" role="alert">
         <fa-icon [icon]="faExclamationTriangle" class="me-2" />
-        Warning! You are not logged in. Your score will not be saved.
+        Warning! Server is not available. Your score will not be saved.
       </div>
+    } @else {
+      @if (!authService.isAuthenticated) {
+        <div class="alert alert-warning d-flex align-items-center" role="alert">
+          <fa-icon [icon]="faExclamationTriangle" class="me-2" />
+          Warning! You are not logged in. Your score will not be saved.
+        </div>
+      }
     }
-  }
-  <button routerLink="choose-level" class="btn btn-primary m-1" type="button">Play</button>
-  <button routerLink="high-score" class="btn btn-primary m-1" type="button">High Scores</button>
-  <button routerLink="options" class="btn btn-primary m-1" type="button">Options</button>
-</div>
+    <button routerLink="choose-level" class="btn btn-primary m-1" type="button">Play</button>
+    <button routerLink="high-score" class="btn btn-primary m-1" type="button">High Scores</button>
+    <button routerLink="options" class="btn btn-primary m-1" type="button">Options</button>
+  </div>
+</fuzzy-waddle-center-wrapper>

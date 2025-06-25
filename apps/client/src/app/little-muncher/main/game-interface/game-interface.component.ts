@@ -11,7 +11,7 @@ import { LittleMuncherCommunicatorService } from "../communicators/little-munche
 
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
-import { LeaveButtonComponent } from "../../../shared/components/leave-button.component";
+import { LeaveButtonComponent } from "../../../shared/components/leave-button/leave-button.component";
 
 @Component({
   selector: "little-muncher-game-interface",

@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-0">
   <div class="container-fluid">
-    <a class="navbar-brand btn-home align-items-center d-flex" routerLink="/">
-      <img alt="Fuzzy Waddle logo" height="46px" src="assets/icons/fuzzy-waddle.svg" width="46px" />
-      <div class="title">Fuzzy Waddle</div>
+    <a class="navbar-brand btn-home align-items-center d-flex" [routerLink]="routerLink">
+      <img alt="Image" height="46px" [src]="imgSrc" width="46px" />
+      <div class="title">{{title}}</div>
     </a>
     <button
       aria-controls="navbarSupportedContent"

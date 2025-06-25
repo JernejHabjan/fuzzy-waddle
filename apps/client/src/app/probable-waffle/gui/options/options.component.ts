@@ -5,13 +5,14 @@ import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../../shared/consts";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { OptionsService } from "./options.service";
-import { LeaveButtonComponent } from "../../../shared/components/leave-button.component";
+import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
+import { CenterWrapperComponent } from "../../../shared/components/center-wrapper/center-wrapper.component";
 
 @Component({
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
-  imports: [FormsModule, RouterLink, LeaveButtonComponent],
-  host: AngularHost.contentFlexFullHeightCenter
+  imports: [FormsModule, RouterLink, HomeNavComponent, CenterWrapperComponent],
+  host: AngularHost.contentFlexFullHeight
 })
 export class OptionsComponent implements OnInit {
   fromGame: boolean = false;
