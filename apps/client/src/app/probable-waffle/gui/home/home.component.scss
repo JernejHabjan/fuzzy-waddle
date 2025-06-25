@@ -29,8 +29,9 @@
   height: 100%;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
+  padding: 2rem 2rem 2rem 0;
   gap: 2rem;
+  pointer-events: none;
 }
 
 .menu-container {
@@ -38,6 +39,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  pointer-events: all;
 }
 
 // Responsive design
