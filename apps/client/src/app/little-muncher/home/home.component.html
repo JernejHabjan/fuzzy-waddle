@@ -1,16 +1,16 @@
-<button routerLink="" class="btn btn-danger m-1 position-absolute" style="left: 20px; top: 20px" type="button">
-  Leave
-</button>
+<fuzzy-waddle-home-nav />
 
-<div class="card-container">
-  <div class="general-title">Hill to climb on:</div>
-  <div class="d-flex flex-column">
-    @for (hill of LittleMuncherHills | keyvalue; track hill) {
-      <button class="btn btn-outline-primary m-2 p-2" (click)="climbOn(hill.key)">
-        {{ getHillName(hill.value) }}
-      </button>
-    }
+<div class="d-flex justify-content-center align-items-start overflow-auto h-100">
+  <div class="card-container">
+    <div class="general-title">Hill to climb on:</div>
+    <div class="d-flex flex-column">
+      @for (hill of LittleMuncherHills | keyvalue; track hill) {
+        <button class="btn btn-outline-primary m-2 p-2" (click)="climbOn(hill.key)">
+          {{ getHillName(hill.value) }}
+        </button>
+      }
+    </div>
   </div>
-</div>
 
-<little-muncher-spectate />
+  <little-muncher-spectate />
+</div>

@@ -4,9 +4,10 @@ import { RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { VolumeSettings } from "../shared/volumeSettings";
 import { AngularHost } from "../../shared/consts";
+import { LeaveButtonComponent } from "../../shared/components/leave-button.component";
 
 @Component({
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, LeaveButtonComponent],
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

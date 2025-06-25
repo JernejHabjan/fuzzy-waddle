@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
 import { flySquasherGameConfig } from "../game/consts/game-config";
 import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../auth/auth.service";
@@ -8,15 +8,15 @@ import { SceneCommunicatorClientService } from "./scene-communicator-client.serv
 import { Router } from "@angular/router";
 import { PreventNavigateBack } from "../../shared/handlers/prevent-navigate-back";
 import { ModalConfig } from "../../shared/components/modal/modal-config";
-import { ModalComponent } from "../../shared/components/modal/modal.component";
 
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { AngularHost } from "../../shared/consts";
+import { LeaveButtonComponent } from "../../shared/components/leave-button.component";
 
 @Component({
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
-  imports: [ModalComponent, GameContainerComponent],
+  imports: [GameContainerComponent, LeaveButtonComponent],
   host: AngularHost.contentFlexFullHeight
 })
 export class MainComponent implements OnInit, OnDestroy {
@@ -25,7 +25,6 @@ export class MainComponent implements OnInit, OnDestroy {
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly router = inject(Router);
 
-  @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly flySquasherGameConfig = flySquasherGameConfig;
   protected gameData!: FlySquasherGameData;
   @Input({ required: true }) level!: string;
@@ -52,14 +51,6 @@ export class MainComponent implements OnInit, OnDestroy {
       user: new FlySquasherUserInfo(this.authService.userId)
     };
     this.sceneCommunicatorClientService.startCommunication();
-  }
-
-  protected async leave() {
-    await this.openModal();
-  }
-
-  private async openModal() {
-    return await this.modalComponent.open();
   }
 
   ngOnDestroy(): void {

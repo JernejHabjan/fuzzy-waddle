@@ -5,12 +5,13 @@ import { ServerHealthService } from "../../../shared/services/server-health.serv
 
 import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../../shared/consts";
+import { LeaveButtonComponent } from "../../../shared/components/leave-button.component";
 
 @Component({
   templateUrl: "./progress.component.html",
   styleUrls: ["./progress.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, LeaveButtonComponent],
   host: AngularHost.contentFlexFullHeight
 })
 export class ProgressComponent {

@@ -1,6 +1,4 @@
-<button routerLink="" class="btn btn-danger m-1 position-absolute" style="left: 20px; top: 20px" type="button">
-  Leave
-</button>
+<fuzzy-waddle-leave-button [routerLink]="''" />
 
 <div class="card-container d-flex flex-column">
   @if (!serverHealthService.serverChecking && !serverHealthService.serverAvailable) {

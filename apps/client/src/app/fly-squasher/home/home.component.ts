@@ -6,12 +6,13 @@ import { ServerHealthService } from "../../shared/services/server-health.service
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../shared/consts";
+import { LeaveButtonComponent } from "../../shared/components/leave-button.component";
 
 @Component({
   selector: "fly-squasher-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
-  imports: [FaIconComponent, RouterLink],
+  imports: [FaIconComponent, RouterLink, LeaveButtonComponent],
   host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent {

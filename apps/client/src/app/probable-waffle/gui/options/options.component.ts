@@ -5,11 +5,12 @@ import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../../shared/consts";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { OptionsService } from "./options.service";
+import { LeaveButtonComponent } from "../../../shared/components/leave-button.component";
 
 @Component({
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, LeaveButtonComponent],
   host: AngularHost.contentFlexFullHeightCenter
 })
 export class OptionsComponent implements OnInit {
