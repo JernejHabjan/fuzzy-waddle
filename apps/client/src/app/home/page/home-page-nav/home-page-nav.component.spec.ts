@@ -4,7 +4,7 @@ import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testi
 import { provideRouter } from "@angular/router";
 import { Component } from "@angular/core";
 
-@Component({ selector: "probable-waffle-home-page-nav", template: "", standalone: true, imports: [] })
+@Component({ selector: "fuzzy-waddle-home-page-nav", template: "", standalone: true, imports: [] })
 export class HomePageNavTestingComponent {}
 
 describe("HomePageNavComponent", () => {

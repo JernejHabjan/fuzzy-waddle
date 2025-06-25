@@ -7,7 +7,7 @@ import { RouterLink } from "@angular/router";
 import { AvatarProviderService } from "../../../shared/components/chat/avatar-provider/avatar-provider.service";
 
 @Component({
-  selector: "probable-waffle-home-page-nav",
+  selector: "fuzzy-waddle-home-page-nav",
   templateUrl: "./home-page-nav.component.html",
   styleUrls: ["./home-page-nav.component.scss"],
   imports: [FaIconComponent, HomeNavComponent, RouterLink]
