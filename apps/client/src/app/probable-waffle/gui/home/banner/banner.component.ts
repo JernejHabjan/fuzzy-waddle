@@ -99,7 +99,7 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
 
     this.gameObject = new randomConstructor(this, 0, 0) as any;
     this.gameObject.setScale(10);
-    (this.gameObject as any).setOrigin(0.5, 0.5);
+    if ((this.gameObject as any).setOrigin) (this.gameObject as any).setOrigin(0.5, 0.5);
     this.repositionGameObject();
     this.add.existing(this.gameObject);
 
