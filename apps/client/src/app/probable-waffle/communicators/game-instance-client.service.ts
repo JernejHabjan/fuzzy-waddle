@@ -274,6 +274,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async startGame(): Promise<void> {
     await this.assignMissingFactionTypes();
+    await this.assignMissingTeams();
 
     await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.MovingPlayersToGame });
   }
@@ -288,6 +289,28 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           {
             playerNumber: player.playerNumber,
             playerControllerData: { playerDefinition: { factionType } as PositionPlayerDefinition }
+          }
+        );
+      }
+    }
+  }
+
+  private async assignMissingTeams() {
+    const players = this.gameInstance!.players;
+    const teamsSet = new Set(players.map((p) => p.playerController.data.playerDefinition!.team));
+    for (const player of players) {
+      if (player.playerController.data.playerDefinition!.team === undefined) {
+        // assign first free team
+        let team = 1;
+        while (teamsSet.has(team)) {
+          team++;
+        }
+        teamsSet.add(team);
+        await this.playerChanged(
+          "playerController.data.playerDefinition.team" as ProbableWafflePlayerDataChangeEventProperty,
+          {
+            playerNumber: player.playerNumber,
+            playerControllerData: { playerDefinition: { team } as PositionPlayerDefinition }
           }
         );
       }
