@@ -11,8 +11,13 @@
     @if (!authService.processing && authService.isAuthenticated) {
       <li class="nav-item">
         <a class="nav-link active" routerLink="/profile">
-          <fa-icon [icon]="faUser" />
-          Profile
+          <img
+            alt="avatar"
+            class="avatar"
+            height="32"
+            src="{{ avatarProviderService.getAvatar(authService.userId!) }}"
+          />
+          {{ authService.fullName! }}
         </a>
       </li>
     }
