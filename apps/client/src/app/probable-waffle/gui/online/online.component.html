@@ -11,26 +11,28 @@
       <p>Checking server health...</p>
     </div>
   } @else if (serverHealthService.serverAvailable) {
-    <ul class="nav-tabs">
-      <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'">Join</a></li>
-      <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'">Host</a></li>
-      <li (click)="selectTab('matchmaking')">
-        <a [class.active]="selectedTab === 'matchmaking'">Matchmaking</a>
-      </li>
-    </ul>
+    <div class="online-container">
+      <ul class="nav-tabs">
+        <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'">Join</a></li>
+        <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'">Host</a></li>
+        <li (click)="selectTab('matchmaking')">
+          <a [class.active]="selectedTab === 'matchmaking'">Matchmaking</a>
+        </li>
+      </ul>
 
-    <div>
-      @switch (selectedTab) {
-        @case ("join") {
-          <probable-waffle-lobbies (requestNavigateToHostLobby)="selectedTab = 'host'" />
+      <div class="tab-content">
+        @switch (selectedTab) {
+          @case ("join") {
+            <probable-waffle-lobbies (requestNavigateToHostLobby)="selectedTab = 'host'" />
+          }
+          @case ("host") {
+            <probable-waffle-host />
+          }
+          @case ("matchmaking") {
+            <probable-waffle-matchmaking />
+          }
         }
-        @case ("host") {
-          <probable-waffle-host />
-        }
-        @case ("matchmaking") {
-          <probable-waffle-matchmaking />
-        }
-      }
+      </div>
     </div>
   } @else {
     <div class="server-health">

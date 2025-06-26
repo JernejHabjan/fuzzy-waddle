@@ -1,29 +1,60 @@
 @use "../../../../styles/_variables.scss" as *;
 
+.online-container {
+  max-width: 800px;
+  min-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid $tertiary;
+  border-radius: $app-border-radius;
+  background-color: #f7f7f7;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Start with resetting the list style */
 .nav-tabs {
   list-style-type: none;
   padding: 0;
   display: flex;
   justify-content: space-around;
+  border-bottom: 2px solid $tertiary;
+  margin-bottom: 1rem;
 }
 
 /* Style each list item */
 .nav-tabs li {
-  padding: 10px 15px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: $app-border-radius $app-border-radius 0 0;
+  flex-grow: 1;
+  text-align: center;
+  user-select: none;
+}
+
+/* Hover effect for list items */
+.nav-tabs li:hover {
+  background-color: $quaternary;
 }
 
 /* Style for the anchor elements in the list */
 .nav-tabs li a {
   text-decoration: none;
-  color: #000;
-  transition: color 0.3s ease;
+  color: $dark;
+  font-weight: bold;
+  display: block;
+  padding: 10px 15px;
 }
 
 /* Coloring for the active state */
 .nav-tabs li a.active {
+  background-color: $tertiary;
   color: $primary;
+  border-radius: $app-border-radius $app-border-radius 0 0;
+}
+
+.tab-content {
+  padding: 1rem;
+  min-height: 400px;
 }
 
 .server-health {
