@@ -13,13 +13,13 @@
   } @else if (serverHealthService.serverAvailable) {
     <div class="online-container">
       <div class="game-mode-selection">
-        <div class="mode-card" (click)="selectMode('custom')" [class.active]="selectedMode === 'custom'">
-          <h2>Custom Game</h2>
-          <p>Create your own game lobby or join one from the list.</p>
-        </div>
         <div class="mode-card" (click)="selectMode('matchmaking')" [class.active]="selectedMode === 'matchmaking'">
           <h2>Unranked Matchmaking</h2>
           <p>Let us find a game for you. Quick and easy.</p>
+        </div>
+        <div class="mode-card" (click)="selectMode('custom')" [class.active]="selectedMode === 'custom'">
+          <h2>Custom Game</h2>
+          <p>Create your own game lobby or join one from the list.</p>
         </div>
       </div>
 
