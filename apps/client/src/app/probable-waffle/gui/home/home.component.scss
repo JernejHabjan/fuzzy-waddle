@@ -30,6 +30,7 @@
   justify-content: space-between;
   padding: 2rem 2rem 2rem 0;
   gap: 2rem;
+  pointer-events: none;
 }
 
 .left-container {
@@ -39,7 +40,7 @@
   justify-content: flex-start;
 }
 .menu-container {
-  //pointer-events: all;
+  pointer-events: all;
 }
 
 // Responsive design
