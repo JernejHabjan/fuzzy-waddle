@@ -118,19 +118,19 @@
 
 // Custom scrollbar using variable colors
 .main-menu::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .main-menu::-webkit-scrollbar-track {
-  background: rgba($secondary, 0.3);
+  background: rgba($tertiary, 1);
   border-radius: 3px;
 }
 
 .main-menu::-webkit-scrollbar-thumb {
-  background: rgba($tertiary, 0.4);
+  background: rgba($primary, 1);
   border-radius: 3px;
 }
 
 .main-menu::-webkit-scrollbar-thumb:hover {
-  background: rgba($tertiary, 0.6);
+  background: rgba($primary, 1);
 }
