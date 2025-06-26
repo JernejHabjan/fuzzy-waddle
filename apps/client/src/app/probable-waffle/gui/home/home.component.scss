@@ -1,7 +1,6 @@
 @use "../../../../styles/_variables.scss" as *;
 
 .logo {
-  position: relative;
   display: flex;
   width: 100vw;
   height: 100vh;
@@ -31,15 +30,16 @@
   justify-content: space-between;
   padding: 2rem 2rem 2rem 0;
   gap: 2rem;
-  pointer-events: none;
 }
 
-.menu-container {
-  flex-shrink: 0;
+.left-container {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  pointer-events: all;
+}
+.menu-container {
+  //pointer-events: all;
 }
 
 // Responsive design
@@ -50,9 +50,12 @@
     padding: 1rem;
     gap: 3rem;
   }
-
   .menu-container {
-    order: 2;
+    height: 0;
+  }
+
+  .left-container {
+    flex: 0;
   }
 }
 

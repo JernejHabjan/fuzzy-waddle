@@ -23,11 +23,20 @@ import GeneralWarrior from "../../../game/prefabs/characters/general/GeneralWarr
 import TivaraWorkerFemale from "../../../game/prefabs/characters/tivara/TivaraWorkerFemale";
 import TivaraWorkerMale from "../../../game/prefabs/characters/tivara/TivaraWorkerMale";
 import TivaraSlingshotFemale from "../../../game/prefabs/characters/tivara/TivaraSlingshotFemale";
+import SandholdCursor from "../../../game/prefabs/buildings/tivara/Sandhold/SandholdCursor";
+import AnkGuardCursor from "../../../game/prefabs/buildings/tivara/AnkGuard/AnkGuardCursor";
+import FrostForgeCursor from "../../../game/prefabs/buildings/skaduwee/FrostForge/FrostForgeCursor";
+import WatchTowerCursor from "../../../game/prefabs/buildings/tivara/wall/WatchTower/WatchTowerCursor";
+import OlivalCursor from "../../../game/prefabs/buildings/tivara/Olival/OlivalCursor";
+import OwleryCursor from "../../../game/prefabs/buildings/skaduwee/Owlery/OwleryCursor";
+import InfantryInnCursor from "../../../game/prefabs/buildings/skaduwee/InfantryInn/InfantryInnCursor";
+import WorkMillCursor from "../../../game/prefabs/buildings/tivara/WorkMill/WorkMillCursor";
+import TempleCursor from "../../../game/prefabs/buildings/tivara/Temple/TempleCursor";
 
 @Component({
   selector: "probable-waffle-banner",
   imports: [CommonModule],
-  template: `<div #gameContainer></div> `
+  template: `<div #gameContainer style="height: 95vh"></div> `
 })
 export class BannerComponent implements OnInit, OnDestroy {
   @ViewChild("gameContainer", { static: true }) gameContainer!: ElementRef;
@@ -92,13 +101,28 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
       Tree10,
       Tree11,
       Minerals,
-      StonePile
+      StonePile,
+      SandholdCursor,
+      AnkGuardCursor,
+      FrostForgeCursor,
+      WatchTowerCursor,
+      OlivalCursor,
+      OwleryCursor,
+      InfantryInnCursor,
+      WorkMillCursor,
+      TempleCursor
     ];
     const randomIndex = Phaser.Math.Between(0, constructors.length - 1);
     const randomConstructor = constructors[randomIndex];
 
     this.gameObject = new randomConstructor(this, 0, 0) as any;
-    this.gameObject.setScale(10);
+    // set scale so it fits the screen
+    const bounds = this.gameObject.getBounds();
+    const scaleX = this.cameras.main.width / bounds.width;
+    const scaleY = this.cameras.main.height / bounds.height;
+    const scale = Math.min(scaleX, scaleY);
+    this.gameObject.setScale(scale * 1.5); // Scale up a bit for better visibility
+
     if ((this.gameObject as any).setOrigin) (this.gameObject as any).setOrigin(0.5, 0.5);
     this.repositionGameObject();
     this.add.existing(this.gameObject);
@@ -112,16 +136,7 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
       targets: this.gameObject,
       alpha: 1,
       duration: 1000,
-      ease: "Power2",
-      onComplete: () => {
-        // Optionally, you can add a blur effect here if needed
-        // this.cameras.main.setPostPipeline(Phaser.Renderer.WebGL.Pipelines.BlurPipeline);
-      }
-    });
-
-    // Optional: Click interaction
-    this.gameObject.on("pointerdown", () => {
-      console.log("Game object clicked!");
+      ease: "Power2"
     });
   };
 
