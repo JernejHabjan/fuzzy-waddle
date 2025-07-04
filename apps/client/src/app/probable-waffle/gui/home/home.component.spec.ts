@@ -4,7 +4,8 @@ import { provideRouter } from "@angular/router";
 import { ConstellationEffectTestComponent } from "./constellation-effect/constellation-effect.component.spec";
 import { HomePageNavTestingComponent } from "../../../home/page/home-page-nav/home-page-nav.component.spec";
 import { ConstellationEffectComponent } from "./constellation-effect/constellation-effect.component";
-import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
+import { BannerComponent } from "./banner/banner.component";
+import { BannerTestComponent } from "./banner/banner.component.spec";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -17,10 +18,10 @@ describe("HomeComponent", () => {
     })
       .overrideComponent(HomeComponent, {
         remove: {
-          imports: [HomePageNavComponent, ConstellationEffectComponent]
+          imports: [ConstellationEffectComponent, BannerComponent]
         },
         add: {
-          imports: [HomePageNavTestingComponent, ConstellationEffectTestComponent]
+          imports: [HomePageNavTestingComponent, ConstellationEffectTestComponent, BannerTestComponent]
         }
       })
       .compileComponents();

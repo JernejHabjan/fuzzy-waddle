@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   GameSetupHelpers,
   PositionPlayerDefinition,
@@ -16,6 +16,7 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 
 import { FormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { AuthService } from "../../../../auth/auth.service";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
@@ -46,7 +47,10 @@ export class DifficultyDefinitions {
 })
 export class PlayerDefinitionComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
+  protected readonly authService = inject(AuthService);
   protected readonly faSpinner = faSpinner;
+  protected readonly faCheck = faCheck;
+  protected readonly faTimes = faTimes;
   protected PlayerTypeDefinitions = PlayerTypeDefinitions;
   protected PlayerType = ProbableWafflePlayerType;
   protected FactionDefinitions = FactionDefinitions;
@@ -194,5 +198,36 @@ export class PlayerDefinitionComponent {
     // noinspection UnnecessaryLocalVariableJS
     const isCreator = creatorUserId === userId;
     return isCreator;
+  }
+
+  protected get isHost(): boolean {
+    return this.gameInstanceClientService.gameInstance?.isHost(this.authService.userId) ?? false;
+  }
+
+  protected get isSelfHosted(): boolean {
+    return (
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data.type ===
+      ProbableWaffleGameInstanceType.SelfHosted
+    );
+  }
+
+  changeReadyStatus(player: ProbableWafflePlayer) {
+    const ready = this.definition(player).player.ready;
+    this.gameInstanceClientService.playerChanged(
+      "playerController.data.playerDefinition.player.ready" as ProbableWafflePlayerDataChangeEventProperty,
+      {
+        playerNumber: player.playerNumber,
+        playerControllerData: {
+          playerDefinition: {
+            player: { ready }
+          } as PositionPlayerDefinition
+        }
+      }
+    );
+  }
+
+  getPlayerIsHost(player: ProbableWafflePlayer): boolean {
+    const userId = player.playerController.data.userId;
+    return this.gameInstanceClientService.gameInstance?.isHost(userId) ?? false;
   }
 }

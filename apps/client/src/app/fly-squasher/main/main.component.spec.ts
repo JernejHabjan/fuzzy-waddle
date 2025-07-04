@@ -12,6 +12,7 @@ import { sceneCommunicatorClientServiceStub } from "./scene-communicator-client.
 import { ModalTestComponent } from "../../shared/components/modal/modal.component.spec";
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
+import { ActivatedRoute } from "@angular/router";
 
 jest.mock("../game/consts/game-config", () => ({
   flySquasherGameConfig: {}
@@ -26,7 +27,8 @@ describe("MainComponent", () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: FlySquasherCommunicatorService, useValue: flySquasherCommunicatorServiceStub },
-        { provide: SceneCommunicatorClientService, useValue: sceneCommunicatorClientServiceStub }
+        { provide: SceneCommunicatorClientService, useValue: sceneCommunicatorClientServiceStub },
+        { provide: ActivatedRoute, useValue: {} }
       ],
       imports: [MainComponent]
     })

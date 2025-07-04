@@ -1,0 +1,107 @@
+@use "../../../../../styles/_variables.scss" as *;
+@use "sass:color";
+
+:host {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 4rem;
+}
+
+.game-title {
+  text-align: center;
+  animation: titleGlow 12s ease-in-out infinite alternate;
+  backdrop-filter: blur(12px);
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+}
+.title-main {
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-family: $app-font-bold;
+  color: #ffffff;
+  margin: 0;
+  text-shadow:
+    0 0 20px rgba($primary, 0.5),
+    0 0 40px rgba($primary, 0.3),
+    0 0 60px rgba($primary, 0.2);
+  background: linear-gradient(
+    135deg,
+    color.adjust($primary, $lightness: 10%) 50%,
+    color.adjust($primary, $lightness: 30%) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: shimmer 4s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.title-tagline {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: $secondary;
+  margin-top: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes titleGlow {
+  0% {
+    filter: drop-shadow(0 0 5px rgba($primary, 0.1));
+  }
+  100% {
+    filter: drop-shadow(0 0 8px rgba($primary, 0.15));
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// Responsive design
+@media (max-width: 1200px) {
+  :host {
+    order: 1;
+    padding-right: 0;
+  }
+
+  .title-main {
+    font-size: clamp(3rem, 8vw, 6rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .title-main {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+  }
+
+  .title-tagline {
+    font-size: clamp(0.875rem, 3vw, 1.125rem);
+  }
+}

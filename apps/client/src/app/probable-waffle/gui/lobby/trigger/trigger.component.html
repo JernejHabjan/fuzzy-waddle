@@ -1,11 +1,17 @@
-<div class="px-2 w-100 d-flex" style="margin-bottom: 50px; font-size: 2rem; min-width: 300px">
-  <button (click)="leaveClick()" class="btn btn-outline-primary btn-lg ms-auto me-auto" type="button">Leave</button>
-  <button
-    (click)="start()"
-    [disabled]="!mapSelected || !atLeastTwoPlayersAndDifferentTeamsSelected || !isHost"
-    class="btn btn-primary btn-lg ms-auto me-auto"
-    type="button"
-  >
-    Start
-  </button>
-</div>
+@if (isSelfHosted) {
+  @if (isHost) {
+    <button (click)="handleStartGame()" class="btn btn-success btn-lg start-game" type="button">Start Game</button>
+  } @else {
+    <button (click)="toggleReady()" class="btn btn-primary btn-lg start-game" type="button">
+      @if (isCurrentPlayerReady) {
+        <fa-icon [icon]="faCheck" class="me-2 text-success" />
+        Ready
+      } @else {
+        <fa-icon [icon]="faTimes" class="me-2 text-danger" />
+        Not Ready
+      }
+    </button>
+  }
+} @else {
+  <button (click)="handleStartGame()" class="btn btn-success btn-lg start-game" type="button">Start Game</button>
+}

@@ -1,7 +1,2 @@
 <fuzzy-waddle-game-container [gameConfig]="flySquasherGameConfig" [gameData]="gameData" />
-<button (click)="leave()" class="btn btn-danger position-absolute" style="left: 2px; top: 2px" type="button">
-  Back
-</button>
-<fuzzy-waddle-modal #modal [modalConfig]="leaveModalConfirm">
-  <div>Are you sure you wish to leave?</div>
-</fuzzy-waddle-modal>
+<fuzzy-waddle-leave-button [modalConfig]="leaveModalConfirm" [style]="'left: 2px; top: 2px'" text="Back" />

@@ -24,17 +24,3 @@ jest.mock("@dicebear/pixel-art", () => {
     sprites: {}
   };
 });
-
-jest.mock("phaser", () => {
-  return {
-    Game: class Game {
-      constructor() {
-        //
-      }
-
-      destroy() {
-        //
-      }
-    }
-  };
-});

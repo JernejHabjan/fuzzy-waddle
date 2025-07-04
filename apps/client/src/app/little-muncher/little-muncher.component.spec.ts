@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, convertToParamMap } from "@angular/router";
+import { of } from "rxjs";
 
 import { LittleMuncherComponent } from "./little-muncher.component";
 import { SpectateService } from "./home/spectate/spectate.service";
@@ -27,7 +29,8 @@ describe("LittleMuncherComponent", () => {
       providers: [
         { provide: UserInstanceService, useValue: userInstanceServiceStub },
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: SpectateService, useValue: spectateServiceStub }
+        { provide: SpectateService, useValue: spectateServiceStub },
+        { provide: ActivatedRoute, useValue: {} }
       ]
     })
       .overrideComponent(LittleMuncherComponent, {

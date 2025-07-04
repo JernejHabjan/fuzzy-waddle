@@ -1,22 +1,19 @@
-<button
-  routerLink="/fly-squasher"
-  class="btn btn-danger m-1 position-absolute"
-  style="left: 20px; top: 20px"
-  type="button"
->
-  Leave
-</button>
+<fuzzy-waddle-home-nav routerLink="/fly-squasher" title="Fly Squasher" />
 
-<div class="card-container">
-  <div class="general-title">Choose level:</div>
+<fuzzy-waddle-center-wrapper>
+  <div class="card-container">
+    <div class="general-title">Choose level:</div>
 
-  <div class="level-list">
-    @for (level of flySquasherLevels | keyvalue; track level) {
-      <div class="level-list-item">
-        <div class="level-name">{{ level.value.name }}</div>
-        <div class="level-description">{{ level.value.description }}</div>
-        <button class="btn btn-primary" type="button" routerLink="/fly-squasher/play/{{ level.value.id }}">Play</button>
-      </div>
-    }
+    <div class="level-list">
+      @for (level of flySquasherLevels | keyvalue; track level) {
+        <div class="level-list-item">
+          <div class="level-name">{{ level.value.name }}</div>
+          <div class="level-description">{{ level.value.description }}</div>
+          <button class="btn btn-primary" type="button" routerLink="/fly-squasher/play/{{ level.value.id }}">
+            Play
+          </button>
+        </div>
+      }
+    </div>
   </div>
-</div>
+</fuzzy-waddle-center-wrapper>

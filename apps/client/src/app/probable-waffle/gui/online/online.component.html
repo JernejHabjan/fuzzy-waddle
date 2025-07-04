@@ -1,4 +1,4 @@
-<fuzzy-waddle-home-nav />
+<fuzzy-waddle-home-nav title="Probable Waffle" />
 
 @if (!authService.isAuthenticated) {
   <div class="server-health d-flex align-items-center justify-content-center h-100 flex-column">
@@ -11,25 +11,39 @@
       <p>Checking server health...</p>
     </div>
   } @else if (serverHealthService.serverAvailable) {
-    <ul class="nav-tabs">
-      <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'">Join</a></li>
-      <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'">Host</a></li>
-      <li (click)="selectTab('matchmaking')">
-        <a [class.active]="selectedTab === 'matchmaking'">Matchmaking</a>
-      </li>
-    </ul>
+    <div class="online-container">
+      <div class="game-mode-selection">
+        <div class="mode-card" (click)="selectMode('matchmaking')" [class.active]="selectedMode === 'matchmaking'">
+          <h2>Matchmaking</h2>
+          <p>Let us find a game for you. Quick and easy.</p>
+        </div>
+        <div class="mode-card" (click)="selectMode('custom')" [class.active]="selectedMode === 'custom'">
+          <h2>Custom Game</h2>
+          <p>Create your own game lobby or join one from the list.</p>
+        </div>
+      </div>
 
-    <div>
-      @switch (selectedTab) {
-        @case ("join") {
-          <probable-waffle-lobbies (requestNavigateToHostLobby)="selectedTab = 'host'" />
-        }
-        @case ("host") {
-          <probable-waffle-host />
-        }
-        @case ("matchmaking") {
+      @if (selectedMode === "custom") {
+        <div class="custom-game-container">
+          <ul class="nav-tabs">
+            <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'">Join</a></li>
+            <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'">Host</a></li>
+          </ul>
+          <div class="tab-content">
+            @switch (selectedTab) {
+              @case ("join") {
+                <probable-waffle-lobbies (requestNavigateToHostLobby)="selectedTab = 'host'" />
+              }
+              @case ("host") {
+                <probable-waffle-host />
+              }
+            }
+          </div>
+        </div>
+      } @else if (selectedMode === "matchmaking") {
+        <div class="matchmaking-container">
           <probable-waffle-matchmaking />
-        }
+        </div>
       }
     </div>
   } @else {

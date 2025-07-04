@@ -1,16 +1,15 @@
 import { Component } from "@angular/core";
-import { environment } from "../../../../../environments/environment";
 
-import { HomeNavComponent } from "../../../../shared/components/home-nav/home-nav.component";
+import { environment } from "../../../../../environments/environment";
 import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: "probable-waffle-home-page-nav",
-  templateUrl: "./home-page-nav.component.html",
-  styleUrls: ["./home-page-nav.component.scss"],
-  imports: [HomeNavComponent, RouterLink]
+  selector: "probable-waffle-main-menu-buttons",
+  imports: [RouterLink],
+  templateUrl: "./main-menu-buttons.component.html",
+  styleUrl: "./main-menu-buttons.component.scss"
 })
-export class HomePageNavComponent {
+export class MainMenuButtonsComponent {
   protected readonly enabledInstantDemoGame = !environment.production;
   protected readonly enabledMultiplayer = !environment.production;
   protected readonly enabledReplay = !environment.production;

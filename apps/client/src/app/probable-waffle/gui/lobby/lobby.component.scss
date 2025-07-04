@@ -1,19 +1,292 @@
-@use "../../../../styles/_variables.scss" as *;
+@use "../../../../styles/_variables" as *;
 
-:host {
+.lobby-container {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  background-color: $tertiary;
-  padding: 2rem;
-  flex-grow: 1;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 1800px; /* Increased from 1400px to use more screen width */
+  margin: 0 auto;
+  padding: 1rem;
+}
 
-  @media (max-width: 768px) {
-    padding: 1rem;
+.lobby-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $tertiary;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    color: $primary;
   }
-  @media (max-width: 576px) {
+}
+
+.lobby-content {
+  display: flex;
+  flex: 1;
+  gap: 1.5rem;
+  height: calc(100% - 70px);
+  overflow: hidden;
+
+  @media (max-width: 1800px) {
+    flex-direction: column;
+    overflow-y: auto;
+    height: auto;
+  }
+}
+
+.lobby-sidebar {
+  width: 600px;
+  min-width: 600px; /* Ensure it doesn't get smaller */
+  flex-shrink: 0; /* Prevent the sidebar from shrinking */
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid $tertiary;
+  padding-right: 1rem;
+  overflow: hidden;
+  position: relative; /* Needed for absolute positioning of children */
+
+  @media (max-width: 1800px) {
+    /* Changed from 992px to 1800px for earlier mobile breakpoint */
+    width: 100%;
+    min-width: auto;
+    border-right: none;
+    border-bottom: 1px solid $tertiary;
+    padding-right: 0;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.lobby-main {
+  flex: 1;
+  min-width: 400px; /* Ensure a minimum width for the main content */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  padding-right: 1rem;
+  transition: all 0.3s ease;
+
+  &.hidden {
+    min-width: 0;
+    width: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  @media (max-width: 1800px) {
+    padding-right: 0;
+    min-width: auto;
+  }
+}
+
+.lobby-chat-sidebar {
+  width: 350px;
+  min-width: 350px; /* Ensure chat sidebar doesn't get too narrow */
+  flex-shrink: 0; /* Prevent the chat sidebar from shrinking */
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid $tertiary;
+  padding-left: 1rem;
+
+  @media (max-width: 1800px) {
+    /* Changed from 992px to 1800px for earlier mobile breakpoint */
+    width: 100%;
+    min-width: auto;
+    border-left: none;
+    border-top: 1px solid $tertiary;
+    padding-left: 0;
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+}
+
+.map-selection-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  &.collapsed {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: $primary;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+}
+
+.map-definition-section {
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  height: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  overflow: auto;
+
+  &.active {
+    height: 100%;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .map-definition-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+
+    h3 {
+      margin: 0;
+      color: $primary;
+      font-size: 1.2rem;
+    }
+
+    button {
+      white-space: nowrap;
+    }
+  }
+}
+
+.map-search {
+  margin-bottom: 1rem;
+  padding: 0 4px; /* Add horizontal padding */
+
+  input {
+    width: 100%;
+    border-radius: $app-border-radius;
+    padding: 8px;
+    border: 2px solid $tertiary;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: $primary;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($primary, 0.3);
+    }
+  }
+}
+
+.maps-grid {
+  flex: 1;
+  overflow: hidden;
+}
+
+.map-details-section,
+.players-section,
+.game-setup-section,
+.chat-section {
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid $tertiary;
+  border-radius: $app-border-radius;
+  padding: 1rem;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: $primary;
+    font-size: 1.2rem;
+  }
+}
+
+.game-setup-content {
+  overflow: hidden;
+  max-height: 800px;
+  transition: max-height 0.3s ease;
+
+  &.collapsed {
+    max-height: 0;
+  }
+}
+
+.toggle-setup {
+  width: 100%;
+}
+
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 300px; /* Ensure minimum height for the chat section */
+
+  &.collapsed {
+    max-height: 0;
+  }
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%; /* Take up full height of parent */
+
+  /* Make sure the lobby-chat component takes up full height */
+  ::ng-deep probable-waffle-lobby-chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+.start-game-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba($tertiary, 0.3);
+
+  /* Remove top margin, padding and border when chat is not visible */
+  .lobby-chat-sidebar.no-chat & {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .lobby-container {
     padding: 0.5rem;
+  }
+
+  .lobby-header {
+    flex-direction: column;
+    gap: 1rem;
+
+    .lobby-actions {
+      width: 100%;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .map-details-section,
+  .players-section,
+  .game-setup-section,
+  .chat-section {
+    padding: 0.75rem;
   }
 }
