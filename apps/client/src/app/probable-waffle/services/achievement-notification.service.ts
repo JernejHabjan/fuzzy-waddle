@@ -16,8 +16,11 @@ export class AchievementNotificationService {
   private activeNotifications: ComponentRef<AchievementNotificationComponent>[] = [];
   private readonly MAX_NOTIFICATIONS = 3;
 
-  private readonly appRef = inject(ApplicationRef);
-  private readonly injector = inject(EnvironmentInjector);
+  constructor(
+    private appRef: ApplicationRef,
+    private injector: EnvironmentInjector
+  ) {}
+
   /**
    * Shows an achievement notification overlay
    */

@@ -9,6 +9,7 @@ import { CenterWrapperComponent } from "../../../shared/components/center-wrappe
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 import { AtlasSpriteComponent } from "../../components/atlas-sprite/atlas-sprite.component";
 import { CommonModule } from "@angular/common";
+import { AchievementNotificationService } from "../../services/achievement-notification.service";
 
 @Component({
   templateUrl: "./progress.component.html",
@@ -22,4 +23,17 @@ export class ProgressComponent {
   protected readonly gameInstanceService = inject(DEPRECATED_gameInstanceService);
   protected readonly authService = inject(AuthService);
   protected readonly serverHealthService = inject(ServerHealthService);
+  private readonly AchievementNotificationService = inject(AchievementNotificationService);
+  constructor() {
+    setTimeout(() => {
+      console.warn("this is just for test");
+      this.AchievementNotificationService.showAchievementNotification({
+        title: "New Spell",
+        spriteId: "actor_info_icons/element.png",
+        autoHide: true,
+        description: 'You unlocked new "Frostbolt" spellme',
+        autoHideDuration: 3000
+      });
+    }, 1000);
+  }
 }
