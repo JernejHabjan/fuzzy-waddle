@@ -27,7 +27,6 @@ import AnkGuardCursor from "../../../game/prefabs/buildings/tivara/AnkGuard/AnkG
 import FrostForgeCursor from "../../../game/prefabs/buildings/skaduwee/FrostForge/FrostForgeCursor";
 import WatchTowerCursor from "../../../game/prefabs/buildings/tivara/wall/WatchTower/WatchTowerCursor";
 import OlivalCursor from "../../../game/prefabs/buildings/tivara/Olival/OlivalCursor";
-import OwleryCursor from "../../../game/prefabs/buildings/skaduwee/Owlery/OwleryCursor";
 import InfantryInnCursor from "../../../game/prefabs/buildings/skaduwee/InfantryInn/InfantryInnCursor";
 import WorkMillCursor from "../../../game/prefabs/buildings/tivara/WorkMill/WorkMillCursor";
 import TempleCursor from "../../../game/prefabs/buildings/tivara/Temple/TempleCursor";
@@ -114,7 +113,6 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
       FrostForgeCursor,
       WatchTowerCursor,
       OlivalCursor,
-      OwleryCursor,
       InfantryInnCursor,
       WorkMillCursor,
       TempleCursor
@@ -127,9 +125,16 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
     const bounds = this.gameObject.getBounds();
     const scaleX = this.cameras.main.width / bounds.width;
     const scaleY = this.cameras.main.height / bounds.height;
-    const scale = Math.min(scaleX, scaleY);
-    this.gameObject.setScale(scale * 1.5); // Scale up a bit for better visibility
+    let scale = Math.min(scaleX, scaleY);
 
+    // Prevent scale from becoming too large for very narrow objects
+    const maxScale = 4; // tweak this as needed
+    scale = Phaser.Math.Clamp(scale, 0, maxScale);
+
+    // Optional: minimum scale to avoid objects that are too small
+    const minScale = 0.5;
+    scale = Math.max(scale, minScale);
+    this.gameObject.setScale(scale * 1.5); // Scale up a bit for better visibility
     if ((this.gameObject as any).setOrigin) (this.gameObject as any).setOrigin(0.5, 0.5);
     this.repositionGameObject();
     this.add.existing(this.gameObject);
@@ -154,8 +159,54 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
   private repositionGameObject = () => {
     if (this.gameObject) {
       const centerX = this.cameras.main.width / 2;
-      const centerY = this.cameras.main.height / 2;
-      this.gameObject.setPosition(centerX, centerY);
+      const cameraHeight = this.cameras.main.height;
+      const bounds = this.gameObject.getBounds();
+
+      // Calculate vertical center of the object based on bounds
+      const objectTop = bounds.top;
+      const objectBottom = bounds.bottom;
+      const objectHeight = bounds.height;
+      const objectCenterY = objectTop + objectHeight / 2;
+
+      // Camera vertical center
+      const cameraCenterY = cameraHeight / 2;
+
+      let newY;
+
+      if (objectHeight <= cameraHeight) {
+        // If object fits inside camera height, position so bounds center aligns with camera center
+        // Calculate delta to move the container so its bounds center is at cameraCenterY
+
+        // Current container position is this.gameObject.y
+        // The current bounds center relative to container origin is objectCenterY - container.y
+        // So to center container: newY = currentY + (cameraCenterY - objectCenterY)
+
+        newY = this.gameObject.y + (cameraCenterY - objectCenterY);
+      } else {
+        // Object taller than camera height
+        // Clamp so that top is >= 0 and bottom <= cameraHeight
+
+        // We want newY so that:
+        // new bounds.top >= 0  => newY + (objectTop - oldY) >= 0
+        // new bounds.bottom <= cameraHeight => newY + (objectBottom - oldY) <= cameraHeight
+
+        // Rearranged:
+        // newY >= oldY - objectTop
+        // newY <= oldY + (cameraHeight - objectBottom)
+
+        const oldY = this.gameObject.y;
+        const minY = oldY - objectTop;
+        const maxY = oldY + (cameraHeight - objectBottom);
+
+        // Try to center at cameraCenterY
+        // Find the corresponding newY for centering bounds center at cameraCenterY:
+        const centeredY = this.gameObject.y + (cameraCenterY - objectCenterY);
+
+        // Clamp newY within minY and maxY
+        newY = Phaser.Math.Clamp(centeredY, minY, maxY);
+      }
+
+      this.gameObject.setPosition(centerX, newY);
     }
   };
 }
