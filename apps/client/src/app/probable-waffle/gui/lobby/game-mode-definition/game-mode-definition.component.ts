@@ -3,6 +3,7 @@ import { ProbableWaffleDataChangeEventProperty, ProbableWaffleGameModeData } fro
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 import { FormsModule } from "@angular/forms";
+import { AuthService } from "../../../../auth/auth.service";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",
@@ -12,7 +13,7 @@ import { FormsModule } from "@angular/forms";
 })
 export class GameModeDefinitionComponent {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
-
+  protected readonly authService = inject(AuthService);
   protected async onValueChange(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
     data: Partial<ProbableWaffleGameModeData>
@@ -23,5 +24,9 @@ export class GameModeDefinitionComponent {
 
   protected get gameMode(): ProbableWaffleGameModeData | undefined {
     return this.gameInstanceClientService.gameInstance?.gameMode?.data;
+  }
+
+  protected get isHost(): boolean {
+    return this.gameInstanceClientService.gameInstance?.isHost(this.authService.userId) ?? false;
   }
 }

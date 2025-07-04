@@ -1,5 +1,5 @@
 @if (gameMode && gameMode.map) {
-  <form class="card-container">
+  <form class="card-container" style="margin: 20px 0 0">
     <div class="general-title">Game Setup</div>
     <fieldset>
       <legend>Conditions</legend>
@@ -17,6 +17,7 @@
           id="timeLimit"
           name="timeLimit"
           type="number"
+          [disabled]="!isHost"
         />
       </div>
     </fieldset>
@@ -32,6 +33,7 @@
           id="unitCap"
           name="unitCap"
           type="number"
+          [disabled]="!isHost"
         />
       </div>
     </fieldset>
@@ -49,6 +51,7 @@
           id="aiAdvantageResources"
           name="additionalResources"
           type="checkbox"
+          [disabled]="!isHost"
         />
         <label class="form-check-label ms-2" for="aiAdvantageResources">A.I. additional resources</label>
       </div>
@@ -64,6 +67,7 @@
           id="reducedIncome"
           name="reducedIncome"
           type="checkbox"
+          [disabled]="!isHost"
         />
         <label class="form-check-label ms-2" for="reducedIncome">Reduced income</label>
       </div>

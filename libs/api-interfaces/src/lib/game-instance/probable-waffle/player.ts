@@ -143,6 +143,7 @@ export interface PlayerLobbyDefinition {
   playerName?: string;
   playerPosition?: number;
   joined: boolean;
+  ready?: boolean;
 }
 
 export enum FactionType {

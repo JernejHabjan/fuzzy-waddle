@@ -113,6 +113,12 @@ export class ProbableWaffleListeners {
           player.playerController.data.playerDefinition!.player.playerPosition =
             payload.data.playerControllerData!.playerDefinition!.player.playerPosition;
           break;
+        case "playerController.data.playerDefinition.player.ready" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerController.data.playerDefinition!.player.ready =
+            payload.data.playerControllerData!.playerDefinition!.player.ready;
+          break;
         case "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
