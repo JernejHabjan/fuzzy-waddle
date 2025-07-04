@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AttributionComponent } from "./attribution.component";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient } from "@angular/common/http";
+import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
+import { HomeNavTestingComponent } from "../../shared/components/home-nav/home-nav.component.spec";
 
 describe("AttributionComponent", () => {
   let component: AttributionComponent;
@@ -12,7 +14,16 @@ describe("AttributionComponent", () => {
     await TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
       imports: [AttributionComponent]
-    }).compileComponents();
+    })
+      .overrideComponent(AttributionComponent, {
+        remove: {
+          imports: [HomeNavComponent]
+        },
+        add: {
+          imports: [HomeNavTestingComponent]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(AttributionComponent);
     component = fixture.componentInstance;

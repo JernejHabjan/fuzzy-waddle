@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { LeaveButtonComponent } from "./leave-button.component";
+import { ActivatedRoute } from "@angular/router";
 
 describe("LeaveButtonComponent", () => {
   let component: LeaveButtonComponent;
@@ -7,7 +8,8 @@ describe("LeaveButtonComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LeaveButtonComponent]
+      imports: [LeaveButtonComponent],
+      providers: [{ provide: ActivatedRoute, useValue: {} }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LeaveButtonComponent);

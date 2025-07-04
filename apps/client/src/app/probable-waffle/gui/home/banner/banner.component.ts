@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import TivaraMacemanMale from "../../../game/prefabs/characters/tivara/TivaraMacemanMale";
 import Phaser from "phaser";
+import TivaraMacemanMale from "../../../game/prefabs/characters/tivara/TivaraMacemanMale";
 import { baseGameConfig } from "../../../../shared/game/base-game.config";
 import { CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
 import SkaduweeWorkerFemale from "../../../game/prefabs/characters/skaduwee/SkaduweeWorkerFemale";

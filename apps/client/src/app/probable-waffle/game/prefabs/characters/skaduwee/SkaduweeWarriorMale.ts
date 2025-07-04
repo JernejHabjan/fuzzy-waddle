@@ -4,6 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {

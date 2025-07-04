@@ -8,21 +8,7 @@ describe("OptionsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            // add your mock values here that replicate the ActivatedRoute API
-            // snapshot: {
-            //   paramMap: {
-            //     get(): string {
-            //       return '1';  // Mock route parameter
-            //     }
-            //   }
-            // }
-          }
-        }
-      ],
+      providers: [{ provide: ActivatedRoute, useValue: {} }],
       imports: [OptionsComponent]
     }).compileComponents();
 
