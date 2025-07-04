@@ -21,7 +21,12 @@
                   <h3 class="achievement-title">{{ achievement.name }}</h3>
                   <div>{{ achievement.description }}</div>
                 </div>
-                <img [alt]="achievement.name" [src]="achievement.image" class="achievement-image" />
+                <fuzzy-waddle-atlas-sprite
+                  [spriteName]="achievement.image"
+                  [width]="48"
+                  [height]="48"
+                  class="achievement-image"
+                />
               </div>
             }
           } @else {

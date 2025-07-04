@@ -16,13 +16,13 @@ export class DEPRECATED_gameInstanceService {
     {
       name: "Level 1",
       description: "Complete level 1",
-      image: "https://cdn4.iconfinder.com/data/icons/flat-design-security-set-one/24/security-level-1-512.png",
+      image: "actor_info_icons/element.png",
       unlocked: true
     },
     {
       name: "Level 2",
       description: "Complete level 2",
-      image: "https://cdn-icons-png.flaticon.com/512/3640/3640595.png",
+      image: "actor_info_icons/element.png",
       unlocked: false
     }
   ];

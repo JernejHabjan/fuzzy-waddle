@@ -7,13 +7,16 @@ import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../../shared/consts";
 import { CenterWrapperComponent } from "../../../shared/components/center-wrapper/center-wrapper.component";
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
+import { AtlasSpriteComponent } from "../../components/atlas-sprite/atlas-sprite.component";
+import { CommonModule } from "@angular/common";
 
 @Component({
   templateUrl: "./progress.component.html",
   styleUrls: ["./progress.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, CenterWrapperComponent, HomeNavComponent],
-  host: AngularHost.contentFlexFullHeight
+  imports: [RouterLink, CenterWrapperComponent, HomeNavComponent, AtlasSpriteComponent, CommonModule],
+  host: AngularHost.contentFlexFullHeight,
+  standalone: true
 })
 export class ProgressComponent {
   protected readonly gameInstanceService = inject(DEPRECATED_gameInstanceService);
