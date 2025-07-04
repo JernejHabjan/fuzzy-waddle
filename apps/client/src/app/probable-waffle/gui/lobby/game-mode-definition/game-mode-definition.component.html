@@ -1,10 +1,9 @@
 @if (gameMode && gameMode.map) {
-  <form class="card-container">
-    <div class="general-title">Game Setup</div>
-    <fieldset>
-      <legend>Conditions</legend>
-      <div class="p-2">
-        <label class="form-label" for="timeLimit">Time limit (in minutes)</label>
+  <form class="card-container compact-form">
+    <div class="options-grid">
+      <!-- Time limit option -->
+      <div class="option-item">
+        <label class="form-label" for="timeLimit">Time limit (minutes)</label>
         <input
           (ngModelChange)="
             onValueChange('tieConditions.maximumTimeLimitInMinutes', {
@@ -13,31 +12,31 @@
           "
           [placeholder]="!gameMode.tieConditions.maximumTimeLimitInMinutes ? 'No time limit' : ''"
           [(ngModel)]="gameMode.tieConditions.maximumTimeLimitInMinutes"
-          class="mr-1 form-control"
+          class="form-control"
           id="timeLimit"
           name="timeLimit"
           type="number"
+          [disabled]="!isHost"
         />
       </div>
-    </fieldset>
-    <fieldset>
-      <legend>Flow</legend>
-      <div class="p-2">
+
+      <!-- Unit cap option -->
+      <div class="option-item">
         <label class="form-label" for="unitCap">Unit cap</label>
         <input
           (ngModelChange)="onValueChange('mapTuning.unitCap', { mapTuning: { unitCap: gameMode.mapTuning.unitCap } })"
           [placeholder]="!gameMode.mapTuning.unitCap ? 'No unit cap' : ''"
           [(ngModel)]="gameMode.mapTuning.unitCap"
-          class="mr-1 form-control"
+          class="form-control"
           id="unitCap"
           name="unitCap"
           type="number"
+          [disabled]="!isHost"
         />
       </div>
-    </fieldset>
-    <fieldset>
-      <legend>Modifiers</legend>
-      <div class="p-2">
+
+      <!-- AI Advantage Resources option -->
+      <div class="option-item checkbox-item">
         <input
           (ngModelChange)="
             onValueChange('difficultyModifiers.aiAdvantageResources', {
@@ -45,14 +44,17 @@
             })
           "
           [(ngModel)]="gameMode.difficultyModifiers.aiAdvantageResources"
-          class="mr-1 form-check-input"
+          class="form-check-input"
           id="aiAdvantageResources"
           name="additionalResources"
           type="checkbox"
+          [disabled]="!isHost"
         />
-        <label class="form-check-label ms-2" for="aiAdvantageResources">A.I. additional resources</label>
+        <label class="form-check-label" for="aiAdvantageResources">A.I. additional resources</label>
       </div>
-      <div class="p-2">
+
+      <!-- Reduced Income option -->
+      <div class="option-item checkbox-item">
         <input
           (ngModelChange)="
             onValueChange('difficultyModifiers.reducedIncome', {
@@ -60,13 +62,14 @@
             })
           "
           [(ngModel)]="gameMode.difficultyModifiers.reducedIncome"
-          class="mr-1 form-check-input"
+          class="form-check-input"
           id="reducedIncome"
           name="reducedIncome"
           type="checkbox"
+          [disabled]="!isHost"
         />
-        <label class="form-check-label ms-2" for="reducedIncome">Reduced income</label>
+        <label class="form-check-label" for="reducedIncome">Reduced income</label>
       </div>
-    </fieldset>
+    </div>
   </form>
 }

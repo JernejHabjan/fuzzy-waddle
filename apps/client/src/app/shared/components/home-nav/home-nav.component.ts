@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 
@@ -8,4 +8,8 @@ import { RouterLink } from "@angular/router";
   styleUrls: ["./home-nav.component.scss"],
   imports: [RouterLink]
 })
-export class HomeNavComponent {}
+export class HomeNavComponent {
+  @Input() routerLink: string = "/";
+  @Input() title: string = "Fuzzy Waddle";
+  @Input() imgSrc: string = "assets/icons/fuzzy-waddle.svg";
+}

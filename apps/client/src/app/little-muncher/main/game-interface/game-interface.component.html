@@ -1,9 +1,4 @@
-<button (click)="leave()" class="btn btn-danger m-1 position-absolute" style="left: 20px; top: 20px" type="button">
-  Leave
-</button>
-<fuzzy-waddle-modal #modal [modalConfig]="leaveModalConfirm">
-  <div>Are you sure you wish to leave?</div>
-</fuzzy-waddle-modal>
+<fuzzy-waddle-leave-button [modalConfig]="leaveModalConfirm"/>
 
 @if (isPlayer) {
   <button

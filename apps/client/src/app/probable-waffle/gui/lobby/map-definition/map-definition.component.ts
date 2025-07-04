@@ -23,8 +23,7 @@ import {
 } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { MapSelectorComponent } from "../map-selector/map-selector.component";
-import { TriggerComponent } from "../trigger/trigger.component";
+import { AuthService } from "../../../../auth/auth.service";
 
 /**
  * canvas element containing info about current player and position.
@@ -49,8 +48,7 @@ interface DisplayRect {
 @Component({
   selector: "probable-waffle-map-definition",
   templateUrl: "./map-definition.component.html",
-  styleUrls: ["./map-definition.component.scss"],
-  imports: [MapSelectorComponent, TriggerComponent]
+  styleUrls: ["./map-definition.component.scss"]
 })
 export class MapDefinitionComponent implements OnInit, OnDestroy {
   private readonly preferredCanvasWidth = 400;
@@ -80,6 +78,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  protected readonly authService = inject(AuthService);
 
   @ViewChild("canvas")
   get canvas(): ElementRef | undefined {
@@ -103,6 +102,10 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
 
   private get players(): ProbableWafflePlayer[] {
     return this.gameInstanceClientService.gameInstance?.players ?? [];
+  }
+
+  protected get isHost(): boolean {
+    return this.gameInstanceClientService.gameInstance?.isHost(this.authService.userId) ?? false;
   }
 
   ngOnInit(): void {
@@ -453,6 +456,9 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
    * check if we clicked on any draggable rectangle - if yes, set isDragging to true
    */
   private myDown(e: MouseEvent) {
+    // Only allow host to drag and reposition players
+    if (!this.isHost) return;
+
     this.recalculateOffset();
     // tell the browser we're handling this mouse event
     e.preventDefault();
@@ -585,7 +591,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     await this.emitPlayerPositionChanged(draggingPlayer, hoveringPositionNumber);
     await this.emitPlayerPositionChanged(hoveringPlayer, draggingPositionNumber);
 
-    console.log("player positions changed" + draggingPositionNumber + " " + hoveringPositionNumber);
+    console.log("player positions changed " + draggingPositionNumber + " " + hoveringPositionNumber);
   }
 
   /**

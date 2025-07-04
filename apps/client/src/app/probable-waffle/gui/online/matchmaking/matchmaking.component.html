@@ -81,8 +81,10 @@
     }
   </div>
 
-  <div class="matchmaking-tooltip mt-4">
-    There are currently {{ roomsService.playersSearchingForMatchmakingGame() }} players waiting for a Match and
-    {{ roomsService.matchmakingGamesInProgress() }} Matchmaking Games in progress
-  </div>
+  @if (roomsService.playersSearchingForMatchmakingGame() > 0 || roomsService.matchmakingGamesInProgress() > 0) {
+    <div class="matchmaking-tooltip mt-4">
+      There are currently {{ roomsService.playersSearchingForMatchmakingGame() }} players waiting for a Match and
+      {{ roomsService.matchmakingGamesInProgress() }} Matchmaking Games in progress
+    </div>
+  }
 </div>

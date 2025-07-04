@@ -3,7 +3,6 @@ import Dungeon from "./scenes/Dungeon";
 import DungeonUi from "./scenes/DungeonUi";
 import { baseGameConfig } from "../../shared/game/base-game.config";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
-import { Scale } from "phaser";
 
 export const dungeonCrawlerGameConfig: Phaser.Types.Core.GameConfig = {
   ...baseGameConfig,

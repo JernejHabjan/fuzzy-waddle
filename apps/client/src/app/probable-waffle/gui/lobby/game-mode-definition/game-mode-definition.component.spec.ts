@@ -4,6 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { AuthService } from "../../../../auth/auth.service";
+import { authServiceStub } from "../../../../auth/auth.service.spec";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",
@@ -20,7 +22,10 @@ describe("GameModeDefinitionComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GameModeDefinitionComponent, FormsModule],
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
+      providers: [
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: AuthService, useValue: authServiceStub }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GameModeDefinitionComponent);

@@ -3,19 +3,8 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../data/actor-data";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-import { SelectableComponent, SelectableDefinition } from "../../../entity/actor/components/selectable-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import {
-  ResourceSourceComponent,
-  ResourceSourceDefinition
-} from "../../../entity/economy/resource/resource-source-component";
-import {
-  ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../entity/actor/components/object-descriptor-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class StonePile extends Phaser.GameObjects.Image {

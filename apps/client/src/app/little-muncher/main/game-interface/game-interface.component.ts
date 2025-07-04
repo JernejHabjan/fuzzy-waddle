@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { ModalConfig } from "../../../shared/components/modal/modal-config";
-import { ModalComponent } from "../../../shared/components/modal/modal.component";
 import { Subscription } from "rxjs";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../auth/auth.service";
@@ -12,12 +11,13 @@ import { LittleMuncherCommunicatorService } from "../communicators/little-munche
 
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
+import { LeaveButtonComponent } from "../../../shared/components/leave-button/leave-button.component";
 
 @Component({
   selector: "little-muncher-game-interface",
   templateUrl: "./game-interface.component.html",
   styleUrls: ["./game-interface.component.scss"],
-  imports: [ModalComponent, FaIconComponent, WrapPipe]
+  imports: [FaIconComponent, WrapPipe, LeaveButtonComponent]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
@@ -28,7 +28,6 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
 
   protected score = 0;
   protected remaining = 0;
-  @ViewChild("modal") private modalComponent!: ModalComponent;
   protected readonly faPause = faPause;
   protected readonly faPlay = faPlay;
   protected paused = false;
@@ -45,14 +44,6 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   };
   private scoreSubscription?: Subscription;
   private pauseSubscription?: Subscription;
-
-  protected async leave() {
-    await this.openModal();
-  }
-
-  protected async openModal() {
-    return await this.modalComponent.open();
-  }
 
   ngOnInit(): void {
     this.manageUiElementVisibility();

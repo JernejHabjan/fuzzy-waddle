@@ -14,6 +14,8 @@ import { MapDefinitionComponent } from "./map-definition/map-definition.componen
 import { GameModeDefinitionComponent } from "./game-mode-definition/game-mode-definition.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
 import { LobbyChatComponent } from "./lobby-chat/lobby-chat.component";
+import { MapBrowserComponent } from "./map-browser/map-browser.component";
+import { MapBrowserTestingComponent } from "./map-browser/map-browser.component.spec";
 
 @Component({ selector: "probable-waffle-lobby", template: "", standalone: true, imports: [] })
 export class LobbyTestingComponent {}
@@ -34,7 +36,8 @@ describe("ProbableWaffleLobbyLobbyComponent", () => {
             MapDefinitionComponent,
             GameModeDefinitionComponent,
             SpectatorsGridComponent,
-            LobbyChatComponent
+            LobbyChatComponent,
+            MapBrowserComponent
           ]
         },
         add: {
@@ -43,7 +46,8 @@ describe("ProbableWaffleLobbyLobbyComponent", () => {
             MapDefinitionTestingComponent,
             GameModeDefinitionTestingComponent,
             SpectatorsGridTestingComponent,
-            LobbyChatTestingComponent
+            LobbyChatTestingComponent,
+            MapBrowserTestingComponent
           ]
         }
       })

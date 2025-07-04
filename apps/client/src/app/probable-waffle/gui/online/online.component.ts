@@ -9,17 +9,24 @@ import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../../shared/consts";
 
 @Component({
+  selector: "probable-waffle-online",
   templateUrl: "./online.component.html",
   styleUrls: ["./online.component.scss"],
+  standalone: true,
   imports: [MatchmakingComponent, HostComponent, LobbiesComponent, HomeNavComponent, RouterLink],
   host: AngularHost.contentFlexFullHeight
 })
 export class OnlineComponent {
   protected selectedTab: string = "join";
+  protected selectedMode: "custom" | "matchmaking" | null = null;
   protected readonly serverHealthService = inject(ServerHealthService);
   protected readonly authService = inject(AuthService);
 
   protected selectTab(tab: string) {
     this.selectedTab = tab;
+  }
+
+  protected selectMode(mode: "custom" | "matchmaking") {
+    this.selectedMode = mode;
   }
 }

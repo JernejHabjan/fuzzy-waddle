@@ -7,12 +7,14 @@ import { ServerHealthService } from "../../shared/services/server-health.service
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../shared/consts";
+import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
+import { CenterWrapperComponent } from "../../shared/components/center-wrapper/center-wrapper.component";
 
 @Component({
   selector: "fly-squasher-high-score",
   templateUrl: "./high-score.component.html",
-  imports: [FaIconComponent, RouterLink],
-  host: AngularHost.contentFlexFullHeightCenter
+  imports: [FaIconComponent, RouterLink, HomeNavComponent, CenterWrapperComponent],
+  host: AngularHost.contentFlexFullHeight
 })
 export class HighScoreComponent implements OnInit {
   protected readonly faSpinner = faSpinner;

@@ -4,13 +4,14 @@ import { ServerHealthService } from "./shared/services/server-health.service";
 import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
 import { RouterOutlet } from "@angular/router";
 import { AngularHost } from "./shared/consts";
+import { ToastContainerComponent } from "./shared/components/toast-container.component";
 
 @Component({
   selector: "fuzzy-waddle-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
   host: AngularHost.contentFlexFullHeight,
-  imports: [RouterOutlet, SwRefreshComponent]
+  imports: [RouterOutlet, SwRefreshComponent, ToastContainerComponent]
 })
 export class AppComponent implements OnInit {
   protected readonly authService = inject(AuthService);

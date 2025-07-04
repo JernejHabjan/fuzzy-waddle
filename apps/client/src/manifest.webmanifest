@@ -1,8 +1,8 @@
 {
   "name": "Fuzzy Waddle",
   "short_name": "FW",
-  "theme_color": "#9f3000",
-  "background_color": "#ffe6c2",
+  "theme_color": "#001f4d",
+  "background_color": "#dce7f3",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

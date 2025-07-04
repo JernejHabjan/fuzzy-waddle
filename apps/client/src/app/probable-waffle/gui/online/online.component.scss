@@ -1,29 +1,66 @@
 @use "../../../../styles/_variables.scss" as *;
 
+.online-container {
+  max-width: 800px;
+  width: 95%;
+  min-width: auto;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid $tertiary;
+  border-radius: $app-border-radius;
+  background-color: #f7f7f7;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Start with resetting the list style */
 .nav-tabs {
   list-style-type: none;
   padding: 0;
   display: flex;
   justify-content: space-around;
+  border-bottom: 2px solid $tertiary;
+  margin-bottom: 1rem;
 }
 
 /* Style each list item */
 .nav-tabs li {
-  padding: 10px 15px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: $app-border-radius $app-border-radius 0 0;
+  flex-grow: 1;
+  text-align: center;
+  user-select: none;
+}
+
+/* Hover effect for list items */
+.nav-tabs li:hover {
+  background-color: $quaternary;
 }
 
 /* Style for the anchor elements in the list */
 .nav-tabs li a {
   text-decoration: none;
-  color: #000;
-  transition: color 0.3s ease;
+  color: $dark;
+  font-weight: bold;
+  display: block;
+  padding: 10px 15px;
 }
 
 /* Coloring for the active state */
 .nav-tabs li a.active {
+  background-color: $tertiary;
   color: $primary;
+  border-radius: $app-border-radius $app-border-radius 0 0;
+}
+
+.tab-content {
+  padding: 1rem;
+  min-height: 400px;
+
+  @media (max-width: 768px) {
+    min-height: 300px;
+    padding: 0.5rem;
+  }
 }
 
 .server-health {
@@ -31,4 +68,79 @@
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+}
+
+.game-mode-selection {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.mode-card {
+  padding: 1.5rem;
+  border: 1px solid $tertiary;
+  border-radius: $app-border-radius;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 45%;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    width: 95%;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    color: $primary;
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+  }
+
+  p {
+    color: $secondary;
+    font-size: clamp(0.9rem, 3vw, 1rem);
+  }
+
+  &:hover,
+  &.active {
+    border-color: $primary;
+    background-color: $quaternary;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+
+    @media (max-width: 768px) {
+      transform: translateY(-3px);
+    }
+  }
+}
+
+/* Responsive adjustments for tab content */
+.tab-content {
+  padding: 1rem;
+  min-height: 400px;
+
+  @media (max-width: 768px) {
+    min-height: 300px;
+    padding: 0.5rem;
+  }
+}
+
+/* Make tables responsive */
+.custom-game-container,
+.matchmaking-container {
+  overflow-x: auto;
+
+  table {
+    min-width: 100%;
+
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+    }
+  }
 }

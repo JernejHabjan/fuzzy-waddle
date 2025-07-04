@@ -1,5 +1,79 @@
 .lobby-host {
   max-width: 500px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Make form elements responsive */
+form {
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  input,
+  select {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  @media (max-width: 768px) {
+    input,
+    select {
+      max-width: 100%;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+/* Improve layout for map selection */
+.map-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+
+  .map-item {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &.selected {
+      border-color: #007bff;
+      background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+}
+
+/* Responsive buttons container */
+.buttons-container {
+  display: flex;
+  justify-content: flex-end;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+      margin: 0.25rem 0;
+    }
+  }
 }

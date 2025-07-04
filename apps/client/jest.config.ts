@@ -20,6 +20,8 @@ export default {
     "jest-preset-angular/build/serializers/html-comment"
   ],
   moduleNameMapper: {
-    "^lodash-es$": "lodash"
+    "^lodash-es$": "lodash",
+    "^phaser$": "<rootDir>/src/test/mocks/phaser.js",
+    "^@supabase/supabase-js$": "<rootDir>/src/test/mocks/supabase-js.js"
   }
 };

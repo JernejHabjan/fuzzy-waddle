@@ -1,27 +1,33 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { Attribution } from "./attribution";
+import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
+
+interface GroupedAttribution {
+  type: string;
+  items: Attribution[];
+}
 
 @Component({
   selector: "fuzzy-waddle-attribution",
-  imports: [CommonModule],
+  imports: [CommonModule, HomeNavComponent],
   templateUrl: "./attribution.component.html"
 })
 export class AttributionComponent implements OnInit {
-  attributions$?: Observable<Attribution[]>;
+  groupedAttributions$?: Observable<GroupedAttribution[]>;
   private readonly httpClient = inject(HttpClient);
-  constructor() {}
 
   ngOnInit(): void {
-    this.attributions$ = this.httpClient.get<Attribution[]>("assets/general/attributions.json");
+    this.groupedAttributions$ = this.httpClient
+      .get<Attribution[]>("assets/general/attributions.json")
+      .pipe(map((attributions) => this.groupByType(attributions)));
   }
 
-  groupByType(attributions: Attribution[]): { type: string; items: Attribution[] }[] {
+  private groupByType(attributions: Attribution[]): GroupedAttribution[] {
     const grouped: { [key: string]: Attribution[] } = {};
 
-    // Group attributions by type
     for (const attribution of attributions) {
       if (!grouped[attribution.type]) {
         grouped[attribution.type] = [];
@@ -29,7 +35,6 @@ export class AttributionComponent implements OnInit {
       grouped[attribution.type].push(attribution);
     }
 
-    // Sort types alphabetically and within each type, sort by name alphabetically
     const sortedTypes = Object.keys(grouped).sort();
     return sortedTypes.map((type) => ({
       type,

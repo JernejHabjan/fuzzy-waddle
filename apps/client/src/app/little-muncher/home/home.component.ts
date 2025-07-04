@@ -9,15 +9,15 @@ import { ServerHealthService } from "../../shared/services/server-health.service
 import { AuthService } from "../../auth/auth.service";
 import { CommonModule } from "@angular/common";
 import { SpectateComponent } from "./spectate/spectate.component";
-import { RouterLink } from "@angular/router";
 import { AngularHost } from "../../shared/consts";
+import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
 
 @Component({
   selector: "little-muncher-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
-  imports: [CommonModule, SpectateComponent, RouterLink],
-  host: AngularHost.contentFlexFullHeightCenter
+  imports: [CommonModule, SpectateComponent, HomeNavComponent],
+  host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent {
   protected readonly LittleMuncherHills = LittleMuncherHills;

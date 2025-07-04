@@ -1,7 +1,7 @@
 import { Socket } from "ngx-socket-io";
 import { AuthService } from "../../auth/auth.service";
 import { environment } from "../../../environments/environment";
-import { inject, Injectable } from "@angular/core";
+import { ApplicationRef, inject, Injectable } from "@angular/core";
 import { IAuthenticatedSocketService } from "./authenticated-socket.service.interface";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 
@@ -11,7 +11,7 @@ import { ServerHealthService } from "../../shared/services/server-health.service
 export class AuthenticatedSocketService implements IAuthenticatedSocketService {
   private readonly authService = inject(AuthService);
   private readonly serverHealthService = inject(ServerHealthService);
-
+  private readonly appRef = inject(ApplicationRef);
   private authenticatedSocket?: Socket;
 
   async getSocket(): Promise<Socket | undefined> {
@@ -29,10 +29,7 @@ export class AuthenticatedSocketService implements IAuthenticatedSocketService {
 
   private createAuthSocket(): Promise<Socket> {
     return new Promise((resolve, reject) => {
-      const socket = new Socket({
-        ...environment.socketIoConfig
-      });
-
+      const socket = new Socket({ ...environment.socketIoConfig }, this.appRef);
       socket.auth = { token: this.authService.accessToken };
       socket.connect();
       socket.on("connect", () => resolve(socket));

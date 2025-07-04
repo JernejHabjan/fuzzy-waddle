@@ -1,31 +1,42 @@
-<div *ngIf="attributions$ | async as attributions" class="container mt-2">
-  <div *ngFor="let typeGroup of groupByType(attributions)" class="mb-2">
-    <h2 class="text-primary" style="font-size: 1.5rem;">{{ typeGroup.type }}</h2>
-    <div *ngFor="let attribution of typeGroup.items" class="card mb-1 ms-1" style="font-size: 0.875rem;">
-      <div class="card-body p-2">
-        <h3 class="card-title mb-1" style="font-size: 1.25rem;" *ngIf="attribution.url; else noUrl">
-          <a [href]="attribution.url" target="_blank">{{ attribution.name }}</a>
-        </h3>
-        <ng-template #noUrl>
-          <h3 class="card-title mb-1" style="font-size: 1.25rem;">{{ attribution.name }}</h3>
-        </ng-template>
-        <p class="card-text mb-1"><strong>Type:</strong> {{ attribution.type }}</p>
-        <p class="card-text mb-1" *ngIf="attribution.author"><strong>Author:</strong> {{ attribution.author }}</p>
-        <p class="card-text mb-1" *ngIf="attribution.reason"><strong>Reason:</strong> {{ attribution.reason }}</p>
-        <ng-container *ngIf="attribution.license">
-          <ng-container *ngIf="attribution.license.name">
-            <p class="card-text mb-1">
-              <strong>License: </strong>
-              <ng-container *ngIf="attribution.license.url; else noLicenseUrl">
-                <a [href]="attribution.license.url" target="_blank">{{ attribution.license.name }}</a>
-              </ng-container>
-              <ng-template #noLicenseUrl>
-                {{ attribution.license.name }}
-              </ng-template>
-            </p>
-          </ng-container>
-        </ng-container>
+<fuzzy-waddle-home-nav />
+@if (groupedAttributions$ | async; as groupedAttributions) {
+  <div class="container mt-4">
+    @for (typeGroup of groupedAttributions; track typeGroup.type) {
+      <div class="mb-2">
+        <h2 class="text-primary" style="font-size: 1.5rem">{{ typeGroup.type }}</h2>
+        @for (attribution of typeGroup.items; track attribution) {
+          <div class="card mb-1 ms-1" style="font-size: 0.875rem">
+            <div class="card-body p-2">
+              @if (attribution.url) {
+                <h3 class="card-title mb-1" style="font-size: 1.25rem">
+                  <a [href]="attribution.url" target="_blank">{{ attribution.name }}</a>
+                </h3>
+              } @else {
+                <h3 class="card-title mb-1" style="font-size: 1.25rem">{{ attribution.name }}</h3>
+              }
+              <p class="card-text mb-1"><strong>Type:</strong> {{ attribution.type }}</p>
+              @if (attribution.author) {
+                <p class="card-text mb-1"><strong>Author:</strong> {{ attribution.author }}</p>
+              }
+              @if (attribution.reason) {
+                <p class="card-text mb-1"><strong>Reason:</strong> {{ attribution.reason }}</p>
+              }
+              @if (attribution.license) {
+                @if (attribution.license.name) {
+                  <p class="card-text mb-1">
+                    <strong>License: </strong>
+                    @if (attribution.license.url) {
+                      <a [href]="attribution.license.url" target="_blank">{{ attribution.license.name }}</a>
+                    } @else {
+                      {{ attribution.license.name }}
+                    }
+                  </p>
+                }
+              }
+            </div>
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
-</div>
+}

@@ -1,0 +1,18 @@
+<div class="map-browser">
+  <div class="maps-container">
+    @if (filteredMaps.length === 0) {
+      <div class="no-maps">No maps found. Try adjusting your search.</div>
+    } @else {
+      <div class="maps-grid">
+        @for (map of filteredMaps; track map.id) {
+          <div class="map-item" [class.selected]="selectedMapId() === map.id" (click)="selectMap(map.id)">
+            <div class="map-image">
+              <img [src]="map.presentation.imagePath" [alt]="map.name" />
+            </div>
+            <div class="map-name">{{ map.name }}</div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

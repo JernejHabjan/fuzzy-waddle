@@ -28,7 +28,8 @@
           "easystarjs",
           "ws",
           "@supabase/node-fetch",
-          "eventemitter3"
+          "eventemitter3",
+          "mistreevous"
         ]
       },
       "configurations": {
@@ -41,8 +42,8 @@
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumWarning": "8kb",
+              "maximumError": "10kb"
             }
           ],
           "fileReplacements": [

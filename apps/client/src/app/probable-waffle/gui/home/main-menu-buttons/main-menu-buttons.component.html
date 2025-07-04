@@ -1,0 +1,81 @@
+<div class="main-menu">
+  <div class="menu-grid">
+    <div class="menu-section">
+      <h3 class="menu-section-title">Game Modes</h3>
+      <div class="section-buttons">
+        @if (enabledCampaign) {
+          <button class="menu-button" routerLink="campaign">
+            <span class="menu-button-text">Campaign</span>
+            <span class="menu-button-description">Single player campaign</span>
+          </button>
+        }
+        @if (enabledMultiplayer) {
+          <button class="menu-button" routerLink="online">
+            <span class="menu-button-text">Online</span>
+            <span class="menu-button-description">Multiplayer battles</span>
+          </button>
+        }
+        <button class="menu-button" routerLink="skirmish">
+          <span class="menu-button-text">Skirmish</span>
+          <span class="menu-button-description">Custom battles</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h3 class="menu-section-title">Game Management</h3>
+      <div class="section-buttons">
+        <button class="menu-button" routerLink="load">
+          <span class="menu-button-text">Load Game</span>
+          <span class="menu-button-description">Continue saved game</span>
+        </button>
+        @if (enabledReplay) {
+          <button class="menu-button" routerLink="replay">
+            <span class="menu-button-text">Replay</span>
+            <span class="menu-button-description">Watch recorded matches</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (enabledInstantDemoGame) {
+      <div class="menu-section">
+        <h3 class="menu-section-title">Development</h3>
+        <div class="section-buttons">
+          <button class="menu-button" routerLink="instant-game">
+            <span class="menu-button-text">Instant Game</span>
+            <span class="menu-button-description">Quick test match</span>
+          </button>
+          <button class="menu-button" routerLink="instant-network-match">
+            <span class="menu-button-text">Network Test</span>
+            <span class="menu-button-description">Network test match</span>
+          </button>
+        </div>
+      </div>
+    }
+
+    <div class="menu-section">
+      <h3 class="menu-section-title">Options</h3>
+      <div class="section-buttons">
+        @if (enabledProgress) {
+          <button class="menu-button" routerLink="progress">
+            <span class="menu-button-text">Progress</span>
+            <span class="menu-button-description">View achievements</span>
+          </button>
+        }
+        @if (enabledOptions) {
+          <button class="menu-button" routerLink="options">
+            <span class="menu-button-text">Settings</span>
+            <span class="menu-button-description">Game settings</span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="back-button-container">
+    <button class="menu-button back-button" routerLink="/">
+      <span class="menu-button-text">Back</span>
+    </button>
+  </div>
+</div>

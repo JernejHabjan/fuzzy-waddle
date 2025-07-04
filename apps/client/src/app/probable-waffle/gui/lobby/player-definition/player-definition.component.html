@@ -1,94 +1,132 @@
 @if (map) {
-  <div class="card-container start-position-container">
+  <div class="card-container player-definition-container">
     <div class="general-title">Players</div>
-    <div class="player-rows">
+
+    <div class="player-grid">
       @for (player of players; track player) {
-        <div class="start-position-row">
-          <div [style.background-color]="getColorForPlayer(player)" class="color-box"></div>
-          <div class="p-2">
-            <label class="form-label" for="playerName">Player:</label>
-            <div id="playerName">
+        <div class="player-card" [style.border-color]="getColorForPlayer(player)">
+          <div class="player-header">
+            <div class="player-color" [style.background-color]="getColorForPlayer(player)"></div>
+            <div class="player-name">
               {{ getPlayerName(player) }}
-            </div>
-          </div>
-          <div class="p-2">
-            <label class="form-label" for="factionTypes">Faction:</label>
-            <select
-              (ngModelChange)="changeFaction(player)"
-              [(ngModel)]="definition(player).factionType"
-              class="form-select"
-              id="factionTypes"
-            >
-              <option [ngValue]="undefined">Random</option>
-              @for (factionTypeType of FactionDefinitions.factions; track factionTypeType) {
-                <option [ngValue]="factionTypeType.value.factionType">
-                  {{ factionTypeType.value.name }}
-                </option>
+              @if (getPlayerIsHost(player)) {
+                <span class="host-badge">Host</span>
               }
-            </select>
-          </div>
-          <div class="p-2">
-            <label class="form-label" for="playerType">Type:</label>
-            <div id="playerType">
-              {{ PlayerTypeDefinitions.playerTypeLookup[definition(player).playerType] }}
-              @if (definition(player).playerType === PlayerType.NetworkOpen) {
-                <fa-icon [icon]="faSpinner" animation="spin" />
+            </div>
+            <div class="player-actions">
+              @if (!getPlayerIsCreator(player) && !getPlayerIsCurrentPlayer(player) && isHost) {
+                <button
+                  (click)="removePlayer(player.playerNumber!)"
+                  aria-label="Remove player"
+                  class="btn-close"
+                  type="button"
+                ></button>
               }
             </div>
           </div>
-          @if (teams.length) {
-            <div class="p-2" style="margin-left: 10px">
-              <label class="form-label" for="team">Team:</label>
+
+          <div class="player-details">
+            <div class="detail-row">
+              <div class="detail-label">Type:</div>
+              <div class="detail-value">
+                {{ PlayerTypeDefinitions.playerTypeLookup[definition(player).playerType] }}
+                @if (definition(player).playerType === PlayerType.NetworkOpen) {
+                  <fa-icon [icon]="faSpinner" animation="spin" />
+                }
+              </div>
+            </div>
+
+            @if (definition(player).playerType === PlayerType.Human && isSelfHosted && !getPlayerIsHost(player)) {
+              <div class="detail-row">
+                <div class="detail-label">Ready:</div>
+                <div class="detail-value">
+                  @if (definition(player).player.ready) {
+                    <fa-icon [icon]="faCheck" class="text-success" />
+                  } @else {
+                    <fa-icon [icon]="faTimes" class="text-danger" />
+                  }
+                  @if (getPlayerIsCurrentPlayer(player)) {
+                    <div class="form-check form-switch ms-2 d-inline-block">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="ready-{{ player.playerNumber }}"
+                        [(ngModel)]="definition(player).player.ready"
+                        (ngModelChange)="changeReadyStatus(player)"
+                      />
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="detail-row">
+              <label class="detail-label" for="faction-{{ player.playerNumber }}">Faction:</label>
               <select
-                (ngModelChange)="changeTeam(player)"
-                [(ngModel)]="definition(player).team"
-                class="form-select"
-                id="team"
+                (ngModelChange)="changeFaction(player)"
+                [(ngModel)]="definition(player).factionType"
+                class="form-select detail-value"
+                id="faction-{{ player.playerNumber }}"
+                [disabled]="!isHost && !getPlayerIsCurrentPlayer(player)"
               >
-                @for (team of teams; track team) {
-                  <option [ngValue]="team">
-                    {{ team === undefined ? "No team" : team + 1 }}
+                <option [ngValue]="undefined">Random</option>
+                @for (factionTypeType of FactionDefinitions.factions; track factionTypeType) {
+                  <option [ngValue]="factionTypeType.value.factionType">
+                    {{ factionTypeType.value.name }}
                   </option>
                 }
               </select>
             </div>
-          }
-          @if (definition(player).playerType === PlayerType.AI) {
-            <div class="p-2">
-              <label class="form-label" for="difficulty">Difficulty:</label>
-              <select
-                (ngModelChange)="changeDifficulty(player)"
-                [(ngModel)]="definition(player).difficulty"
-                class="form-select"
-                id="difficulty"
-              >
-                @for (difficulty of DifficultyDefinitions.difficulties; track difficulty) {
-                  <option [ngValue]="difficulty.value">
-                    {{ difficulty.name }}
-                  </option>
-                }
-              </select>
-            </div>
-          }
-          <div class="p-2" style="margin-left: 10px">
-            <div class="form-label">&nbsp;</div>
-            @if (!getPlayerIsCreator(player) && !getPlayerIsCurrentPlayer(player)) {
-              <button
-                (click)="removePlayer(player.playerNumber!)"
-                aria-label="Close"
-                class="btn-close"
-                type="button"
-              ></button>
+
+            @if (teams.length) {
+              <div class="detail-row">
+                <label class="detail-label" for="team-{{ player.playerNumber }}">Team:</label>
+                <select
+                  (ngModelChange)="changeTeam(player)"
+                  [(ngModel)]="definition(player).team"
+                  class="form-select detail-value"
+                  id="team-{{ player.playerNumber }}"
+                  [disabled]="!isHost && !getPlayerIsCurrentPlayer(player)"
+                >
+                  @for (team of teams; track team) {
+                    <option [ngValue]="team">
+                      {{ team === undefined ? "No team" : team }}
+                    </option>
+                  }
+                </select>
+              </div>
+            }
+
+            @if (definition(player).playerType === PlayerType.AI) {
+              <div class="detail-row">
+                <label class="detail-label" for="difficulty-{{ player.playerNumber }}">Difficulty:</label>
+                <select
+                  (ngModelChange)="changeDifficulty(player)"
+                  [(ngModel)]="definition(player).difficulty"
+                  class="form-select detail-value"
+                  id="difficulty-{{ player.playerNumber }}"
+                  [disabled]="!isHost"
+                >
+                  @for (difficulty of DifficultyDefinitions.difficulties; track difficulty) {
+                    <option [ngValue]="difficulty.value">
+                      {{ difficulty.name }}
+                    </option>
+                  }
+                </select>
+              </div>
             }
           </div>
         </div>
       }
     </div>
-    @if (allowOpenSlotForMp && !allFilled) {
-      <button (click)="openMpSlot()" class="btn btn-primary mt-4 me-4" type="button">Open slot for MP</button>
-    }
-    @if (!allFilled) {
-      <button (click)="addAiPlayer()" class="btn btn-primary mt-4" type="button">Add A.I. player</button>
-    }
+
+    <div class="player-actions-container">
+      @if (allowOpenSlotForMp && !allFilled && isHost) {
+        <button (click)="openMpSlot()" class="btn btn-primary" type="button">Open MP Slot</button>
+      }
+      @if (!allFilled && isHost) {
+        <button (click)="addAiPlayer()" class="btn btn-primary" type="button">Add AI Player</button>
+      }
+    </div>
   </div>
 }

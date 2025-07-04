@@ -1,6 +1,4 @@
 <div class="card-container">
-  <probable-waffle-map-selector />
-
   <div class="mt-4">
     @if (mapData) {
       <div class="map-name">{{ mapData.name }}</div>
@@ -8,14 +6,15 @@
       <div>{{ mapData.mapInfo.widthTiles }} x {{ mapData.mapInfo.heightTiles }}</div>
       <div class="position-relative">
         <canvas class="m-4" #canvas [height]="canvasHeight" [width]="canvasWidth"></canvas>
-        <div
-          class="position-absolute tooltip-drag-and-drop"
-          style="top: 1px; left: calc(50% - {{ canvasWidth / 2 }}px)"
-        >
-          Drag to reposition
-        </div>
+        @if (isHost) {
+          <div
+            class="position-absolute tooltip-drag-and-drop"
+            style="top: 1px; left: calc(50% - {{ canvasWidth / 2 }}px)"
+          >
+            Drag to reposition
+          </div>
+        }
       </div>
     }
   </div>
-  <probable-waffle-trigger />
 </div>

@@ -11,6 +11,7 @@ import { gameInstanceClientServiceStub } from "../communicators/game-instance-cl
 import { ModalComponent } from "../../../shared/components/modal/modal.component";
 
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({ selector: "little-muncher-game-interface", template: "", standalone: true, imports: [] })
 export class GameInterfaceTestingComponent {}
@@ -24,7 +25,8 @@ describe("GameInterfaceComponent", () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: AuthService, useValue: authServiceStub }
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: ActivatedRoute, useValue: {} }
       ],
       imports: [GameInterfaceComponent, WrapPipe]
     })
