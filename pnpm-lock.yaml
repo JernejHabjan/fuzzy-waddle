@@ -111,10 +111,10 @@ importers:
         version: 11.1.3(@nestjs/common@11.1.3(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.3)(@nestjs/platform-socket.io@11.1.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@ng-bootstrap/ng-bootstrap':
         specifier: ^19.0.1
-        version: 19.0.1(f944cb528b9ca25002bf6c56390d415a)
+        version: 19.0.1(y7q7sw3zhzqi6ghs3wjhc3t3am)
       '@nx/angular':
         specifier: 21.2.2
-        version: 21.2.2(ff18e10787427f0513228402c0ce22c9)
+        version: 21.2.2(liutsej5rk4da5ujhawckbr4we)
       '@popperjs/core':
         specifier: ^2.11.8
         version: 2.11.8
@@ -199,7 +199,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: 20.0.5
-        version: 20.0.5(009f948c7b9d760229ba7a79d20620de)
+        version: 20.0.5(vgyzjtx7vzjumm7t76nempxcvy)
       '@angular-eslint/eslint-plugin':
         specifier: 20.1.1
         version: 20.1.1(@typescript-eslint/utils@8.35.1(eslint@9.30.1(jiti@1.21.0))(typescript@5.8.3))(eslint@9.30.1(jiti@1.21.0))(typescript@5.8.3)
@@ -322,7 +322,7 @@ importers:
         version: 3.3.1
       jest-preset-angular:
         specifier: 14.6.0
-        version: 14.6.0(6a88f4f77c59760a0b43ad2155e00f3f)
+        version: 14.6.0(5of3dbeokv6g3jziijprljzbim)
       lint-staged:
         specifier: ^16.1.2
         version: 16.1.2
@@ -4839,11 +4839,11 @@ packages:
     peerDependencies:
       '@popperjs/core': ^2.11.8
 
-  brace-expansion@1.1.11:
-    resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
+  brace-expansion@1.1.12:
+    resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
 
-  brace-expansion@2.0.1:
-    resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
+  brace-expansion@2.0.2:
+    resolution: {integrity: sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -10109,13 +10109,13 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular-devkit/build-angular@20.0.5(009f948c7b9d760229ba7a79d20620de)':
+  '@angular-devkit/build-angular@20.0.5(vgyzjtx7vzjumm7t76nempxcvy)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
       '@angular-devkit/build-webpack': 0.2000.5(chokidar@4.0.3)(webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.9(@swc/helpers@0.5.17))(esbuild@0.25.5)))(webpack@5.99.8(@swc/core@1.12.9(@swc/helpers@0.5.17))(esbuild@0.25.5))
       '@angular-devkit/core': 20.0.5(chokidar@4.0.3)
-      '@angular/build': 20.0.5(4cec1ce29a8fc07627dd2fd1cfce1e18)
+      '@angular/build': 20.0.5(hkx327am2v7xdjxjhoihds7nyq)
       '@angular/compiler-cli': 20.0.6(@angular/compiler@20.0.6)(typescript@5.8.3)
       '@babel/core': 7.27.1
       '@babel/generator': 7.27.1
@@ -10291,7 +10291,7 @@ snapshots:
       '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
       tslib: 2.8.1
 
-  '@angular/build@20.0.5(4cec1ce29a8fc07627dd2fd1cfce1e18)':
+  '@angular/build@20.0.5(hkx327am2v7xdjxjhoihds7nyq)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
@@ -10344,7 +10344,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@angular/build@20.0.5(5cdb5e78fdb9f1310c9061193eb9edc7)':
+  '@angular/build@20.0.5(wbcbdggosii527a76qfuzxasei)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
@@ -13719,7 +13719,7 @@ snapshots:
     optionalDependencies:
       '@nestjs/platform-socket.io': 11.1.3(@nestjs/common@11.1.3(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/websockets@11.1.3)(rxjs@7.8.2)
 
-  '@ng-bootstrap/ng-bootstrap@19.0.1(f944cb528b9ca25002bf6c56390d415a)':
+  '@ng-bootstrap/ng-bootstrap@19.0.1(y7q7sw3zhzqi6ghs3wjhc3t3am)':
     dependencies:
       '@angular/common': 20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
       '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
@@ -13822,7 +13822,7 @@ snapshots:
     dependencies:
       consola: 3.4.0
 
-  '@nx/angular@21.2.2(ff18e10787427f0513228402c0ce22c9)':
+  '@nx/angular@21.2.2(liutsej5rk4da5ujhawckbr4we)':
     dependencies:
       '@angular-devkit/core': 20.0.5(chokidar@4.0.3)
       '@angular-devkit/schematics': 20.0.5(chokidar@4.0.3)
@@ -13846,8 +13846,8 @@ snapshots:
       tslib: 2.8.1
       webpack-merge: 5.10.0
     optionalDependencies:
-      '@angular-devkit/build-angular': 20.0.5(009f948c7b9d760229ba7a79d20620de)
-      '@angular/build': 20.0.5(5cdb5e78fdb9f1310c9061193eb9edc7)
+      '@angular-devkit/build-angular': 20.0.5(vgyzjtx7vzjumm7t76nempxcvy)
+      '@angular/build': 20.0.5(wbcbdggosii527a76qfuzxasei)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@module-federation/enhanced'
@@ -15805,12 +15805,12 @@ snapshots:
     dependencies:
       '@popperjs/core': 2.11.8
 
-  brace-expansion@1.1.11:
+  brace-expansion@1.1.12:
     dependencies:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@2.0.1:
+  brace-expansion@2.0.2:
     dependencies:
       balanced-match: 1.0.2
 
@@ -18239,7 +18239,7 @@ snapshots:
     optionalDependencies:
       jest-resolve: 30.0.2
 
-  jest-preset-angular@14.6.0(6a88f4f77c59760a0b43ad2155e00f3f):
+  jest-preset-angular@14.6.0(5of3dbeokv6g3jziijprljzbim):
     dependencies:
       '@angular/compiler-cli': 20.0.6(@angular/compiler@20.0.6)(typescript@5.8.3)
       '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
@@ -19129,19 +19129,19 @@ snapshots:
 
   minimatch@3.1.2:
     dependencies:
-      brace-expansion: 1.1.11
+      brace-expansion: 1.1.12
 
   minimatch@5.1.6:
     dependencies:
-      brace-expansion: 2.0.1
+      brace-expansion: 2.0.2
 
   minimatch@9.0.3:
     dependencies:
-      brace-expansion: 2.0.1
+      brace-expansion: 2.0.2
 
   minimatch@9.0.5:
     dependencies:
-      brace-expansion: 2.0.1
+      brace-expansion: 2.0.2
 
   minimist@1.2.8: {}
 
