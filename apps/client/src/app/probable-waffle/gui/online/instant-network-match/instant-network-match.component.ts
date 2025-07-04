@@ -1,5 +1,5 @@
 import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { LoaderComponent } from "../../../../shared/loader/loader.component";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
@@ -9,7 +9,7 @@ import { CenterWrapperComponent } from "../../../../shared/components/center-wra
 
 @Component({
   selector: "fuzzy-waddle-instant-network-match",
-  imports: [CommonModule, LoaderComponent, RouterLink, CenterWrapperComponent],
+  imports: [LoaderComponent, RouterLink, CenterWrapperComponent],
   host: AngularHost.contentFlexFullHeight,
   template: `
     @if (errorText) {

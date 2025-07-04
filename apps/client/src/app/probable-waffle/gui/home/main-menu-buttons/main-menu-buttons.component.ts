@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { environment } from "../../../../../environments/environment";
 import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "probable-waffle-main-menu-buttons",
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   templateUrl: "./main-menu-buttons.component.html",
   styleUrl: "./main-menu-buttons.component.scss"
 })

@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { AngularHost } from "../../shared/consts";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
 
 @Component({
   selector: "fuzzy-waddle-music",
-  imports: [CommonModule, HomeNavComponent],
+  imports: [HomeNavComponent],
   templateUrl: "./music.component.html",
   styleUrl: "./music.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,

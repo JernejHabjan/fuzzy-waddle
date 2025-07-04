@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import TivaraMacemanMale from "../../../game/prefabs/characters/tivara/TivaraMacemanMale";
 import Phaser from "phaser";
@@ -35,7 +34,6 @@ import TempleCursor from "../../../game/prefabs/buildings/tivara/Temple/TempleCu
 
 @Component({
   selector: "probable-waffle-banner",
-  imports: [CommonModule],
   template: `<div #gameContainer style="height: 95vh"></div> `
 })
 export class BannerComponent implements OnInit, OnDestroy {
