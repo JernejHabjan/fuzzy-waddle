@@ -59,6 +59,15 @@ export class BannerComponent implements OnInit, OnDestroy {
       parent: this.gameContainer.nativeElement,
       transparent: true,
       pixelArt: true,
+      fps: {
+        forceSetTimeOut: true
+      },
+      render: {
+        powerPreference: "low-power",
+        antialias: false,
+        pixelArt: true,
+        roundPixels: true
+      },
       scene: BannerScene
     };
 

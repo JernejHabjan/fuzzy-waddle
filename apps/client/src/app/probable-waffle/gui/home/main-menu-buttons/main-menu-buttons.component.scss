@@ -4,9 +4,9 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 2rem;
-  width: 350px;
-  max-height: calc(100vh - 4rem);
+  padding: 1rem;
+  width: 400px; // Slightly wider to accommodate grid buttons
+  max-height: calc(100vh - 2rem);
   overflow-y: auto;
 
   // Card-row style background
@@ -16,13 +16,10 @@
   border-radius: $app-border-radius;
 }
 
-// Responsive design
-@media (max-width: 1200px) {
-  .main-menu {
-    // Remove scroll on mobile
-    max-height: none;
-    overflow-y: visible;
-  }
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr; // Single column layout
+  gap: 2rem;
 }
 
 .menu-section {
@@ -31,11 +28,63 @@
   gap: 0.75rem;
 }
 
+// Section buttons in 2 columns
+.section-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // Two equal columns
+  gap: 0.75rem;
+
+  .menu-button {
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%; // Make all buttons the same height
+    display: flex;
+    flex-direction: column;
+  }
+
+  // When there's only one button, it should take the right column
+  &:has(.menu-button:only-child) {
+    grid-template-columns: 0 1fr;
+
+    .menu-button {
+      grid-column: 2;
+    }
+  }
+}
+
+// For smaller screens, switch back to a single column
+@media (max-width: 576px) {
+  .section-buttons {
+    grid-template-columns: 1fr;
+
+    &:has(.menu-button:only-child) {
+      grid-template-columns: 1fr;
+
+      .menu-button {
+        grid-column: 1;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .main-menu {
+    width: 350px;
+    // Remove scroll on mobile
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .menu-grid {
+    flex-direction: column;
+  }
+}
+
 .menu-section-title {
   font-size: 1.1rem;
   font-weight: 600;
   color: $secondary;
-  margin: 0 0 0.5rem 0;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba($secondary, 0.3);
   text-transform: uppercase;
@@ -47,7 +96,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
+  position: relative;
 
   // Card-style design
   border-radius: $app-border-radius;
@@ -55,13 +105,13 @@
   border: 4px solid $primary;
   box-shadow: 10px 10px 0 0 $primary;
 
-  color: $dark; // Changed to contrast with quaternary background
+  color: $dark;
   text-decoration: none;
   transition: all 0.3s ease;
   cursor: pointer;
-  position: relative;
 
-  // Removed the glassmorphism pseudo-element animation
+  // Fix for hover movement
+  min-height: 1.5rem; // Ensure consistent height regardless of description visibility
 
   &:hover {
     background-color: $tertiary;
@@ -69,12 +119,17 @@
     box-shadow: 0 0 0 0 $primary;
 
     .menu-button-text {
-      color: $dark; // Ensure text remains readable on tertiary background
+      opacity: 0; // Hide the title on hover
+    }
+
+    .menu-button-description {
+      opacity: 1;
+      transform: translateY(-1.5rem); // Move up to overlay the hidden title
+      visibility: visible;
     }
   }
 
   &:active {
-    // Optional: Add a slight additional transform for active state
     transform: translate(12px, 12px);
   }
 }
@@ -82,37 +137,67 @@
 .menu-button-text {
   font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 0.25rem;
-  transition: color 0.3s ease;
-  color: $dark; // Updated to work with new background
+  transition: all 0.3s ease; // Changed to include opacity
+  color: $dark;
   font-family: $app-font-bold;
+  position: relative; // Added for proper stacking
+  z-index: 1; // Ensure text is above the description
 }
 
 .menu-button-description {
   font-size: 0.875rem;
-  color: rgba($dark, 0.7); // Updated to work with new background
+  color: rgba($dark, 0.9); // Made slightly darker for better readability
   font-weight: 400;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 1.8rem; // Positioned to overlay the title when it fades out
+  left: 1rem;
+  right: 1rem;
+  transition: all 0.3s ease;
+  transform: translateY(0); // Start at the same position as the title
+  pointer-events: none; // Prevent description from interfering with button clicks
+}
+
+// Back button styles
+.back-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.back-button {
+  width: auto;
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+
+  // Override hover effects for the back button
+  &:hover {
+    .menu-button-text {
+      opacity: 1; // Keep text visible on hover
+      transform: none; // No transform
+    }
+
+    // No description to show
+    .menu-button-description {
+      display: none;
+    }
+  }
+
+  .menu-button-text {
+    margin-bottom: 0;
+  }
 }
 
 // Responsive design
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .main-menu {
-    width: 100%;
-    max-width: 350px;
-    margin: 0 auto;
-  }
-
-  // Reduce shadow offset on mobile for better UX
-  .menu-button {
-    box-shadow: 6px 6px 0 0 $primary;
-
-    &:hover {
-      transform: translate(6px, 6px);
-    }
-
-    &:active {
-      transform: translate(8px, 8px);
-    }
+    // Remove scroll on mobile
+    max-height: none;
+    overflow-y: visible;
   }
 }
 
