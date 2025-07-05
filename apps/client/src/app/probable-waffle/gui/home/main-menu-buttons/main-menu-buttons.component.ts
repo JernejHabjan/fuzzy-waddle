@@ -13,7 +13,8 @@ export class MainMenuButtonsComponent {
   protected readonly enabledInstantDemoGame = !environment.production;
   protected readonly enabledMultiplayer = !environment.production;
   protected readonly enabledReplay = !environment.production;
+  protected readonly enabledLoadGame = !environment.production;
   protected readonly enabledCampaign = !environment.production;
-  protected readonly enabledProgress = !environment.production;
+  protected readonly enabledProgress = true; // finished in #414
   protected readonly enabledOptions = true;
 }
