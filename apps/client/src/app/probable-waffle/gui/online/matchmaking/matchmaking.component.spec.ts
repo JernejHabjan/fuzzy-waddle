@@ -4,9 +4,9 @@ import { MatchmakingComponent } from "./matchmaking.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
-import { roomsServiceStub } from "../../../communicators/rooms/rooms.service.spec";
+import { roomsServiceStub } from "../../../communicators/rooms/rooms.service.stub";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 
 @Component({ selector: "probable-waffle-matchmaking", template: "", standalone: true, imports: [] })
 export class MatchmakingTestingComponent {}

@@ -4,13 +4,9 @@ import { HighScoreService } from "./high-score.service";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient } from "@angular/common/http";
 import { AuthService } from "../../auth/auth.service";
-import { authServiceStub } from "../../auth/auth.service.spec";
+import { authServiceStub } from "../../auth/auth.service.stub";
 
 // noinspection JSUnusedGlobalSymbols
-export const highScoreServiceStub = {
-  postScore: () => {},
-  getScores: () => []
-};
 
 describe("HighScoreService", () => {
   let service: HighScoreService;

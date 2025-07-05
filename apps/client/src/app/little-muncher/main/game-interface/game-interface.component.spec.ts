@@ -5,9 +5,9 @@ import { LittleMuncherGameInstance } from "@fuzzy-waddle/api-interfaces";
 import { ModalTestComponent } from "../../../shared/components/modal/modal.component.spec";
 import { Component } from "@angular/core";
 import { AuthService } from "../../../auth/auth.service";
-import { authServiceStub } from "../../../auth/auth.service.spec";
+import { authServiceStub } from "../../../auth/auth.service.stub";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../communicators/game-instance-client.service.stub";
 import { ModalComponent } from "../../../shared/components/modal/modal.component";
 
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";

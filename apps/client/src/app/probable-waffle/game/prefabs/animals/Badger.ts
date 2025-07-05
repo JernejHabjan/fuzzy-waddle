@@ -14,7 +14,7 @@ import {
   PathMoveConfig
 } from "../../entity/systems/movement.system";
 import { getActorSystem } from "../../data/actor-system";
-import { getGameObjectCurrentTile, onObjectReady } from "../../data/game-object-helper";
+import { onObjectReady } from "../../data/game-object-helper";
 import { ActorTranslateComponent } from "../../entity/actor/components/actor-translate-component";
 import { OrderType } from "../../entity/character/ai/order-type";
 /* END-USER-IMPORTS */

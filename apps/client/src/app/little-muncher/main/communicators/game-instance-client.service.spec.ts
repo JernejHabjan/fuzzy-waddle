@@ -1,34 +1,10 @@
 import { TestBed } from "@angular/core/testing";
 import { GameInstanceClientService } from "./game-instance-client.service";
-import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { AuthService } from "../../../auth/auth.service";
-import { authServiceStub } from "../../../auth/auth.service.spec";
+import { authServiceStub } from "../../../auth/auth.service.stub";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient } from "@angular/common/http";
 
-export const gameInstanceClientServiceStub = {
-  get gameInstanceId(): string | null {
-    return null;
-  },
-  startGame(): Promise<void> {
-    return Promise.resolve();
-  },
-  stopGame() {
-    //
-  },
-  startLevel() {
-    //
-  },
-  openLevelSpectator(): Promise<void> {
-    return Promise.resolve();
-  },
-  openLevel(): Promise<void> {
-    return Promise.resolve();
-  },
-  stopLevel(): Promise<void> {
-    return Promise.resolve();
-  }
-} satisfies GameInstanceClientServiceInterface;
 describe("GameInstanceClientService", () => {
   let service: GameInstanceClientService;
 

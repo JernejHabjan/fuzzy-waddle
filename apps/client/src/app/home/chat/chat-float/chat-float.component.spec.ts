@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ChatFloatComponent } from "./chat-float.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { ChatService } from "../../../data-access/chat/chat.service";
-import { chatServiceStub } from "../../../data-access/chat/chat.service.spec";
+import { chatServiceStub } from "../../../data-access/chat/chat.service.stub";
 
 describe("ChatFloatComponent", () => {
   let component: ChatFloatComponent;

@@ -1,19 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { AtlasService } from "./atlas.service";
 import { provideHttpClient } from "@angular/common/http";
-import { AtlasServiceInterface } from "./atlas.service.interface";
-
-export const atlasServiceStub = {
-  getSpriteFrame(): Promise<{
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-  } | null> {
-    return Promise.resolve(null);
-  }
-} satisfies AtlasServiceInterface;
 
 describe("AtlasService", () => {
   let service: AtlasService;
@@ -46,16 +34,18 @@ describe("AtlasService", () => {
 
   it("should get a sprite frame", async () => {
     service.atlasData = mockAtlasData;
+    service.atlasLoaded = true;
 
-    const frame = service.getSpriteFrame("test/sprite.png");
+    const frame = await service.getSpriteFrame("test/sprite.png");
 
     expect(frame).toEqual({ x: 10, y: 20, w: 30, h: 40 });
   });
 
-  it("should return null for non-existent sprite frames", () => {
+  it("should return null for non-existent sprite frames", async () => {
     service.atlasData = mockAtlasData;
+    service.atlasLoaded = true;
 
-    const frame = service.getSpriteFrame("non-existent.png");
+    const frame = await service.getSpriteFrame("non-existent.png");
 
     expect(frame).toBeNull();
   });

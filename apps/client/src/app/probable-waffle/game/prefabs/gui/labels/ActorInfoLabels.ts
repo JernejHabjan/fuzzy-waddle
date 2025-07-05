@@ -2,9 +2,8 @@
 
 /* START OF COMPILED CODE */
 
-import ActorIcon from "./ActorIcon";
 /* START-USER-IMPORTS */
-import { ActorIconClickAction } from "./ActorIcon";
+import ActorIcon, { ActorIconClickAction } from "./ActorIcon";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";

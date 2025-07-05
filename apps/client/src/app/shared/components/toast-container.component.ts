@@ -15,7 +15,7 @@ import { Toast, ToastService } from "../services/toast.service";
           role="alert"
           aria-live="assertive"
           aria-atomic="true"
-          >
+        >
           <div class="toast-header">
             <strong class="me-auto">{{ toast.header }}</strong>
             <button type="button" class="btn-close" aria-label="Close" (click)="removeToast(toast.id)"></button>
@@ -24,7 +24,7 @@ import { Toast, ToastService } from "../services/toast.service";
         </div>
       }
     </div>
-    `,
+  `,
   styles: [
     `
       .toast-container {

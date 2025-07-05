@@ -1,9 +1,9 @@
 import { TestBed, waitForAsync } from "@angular/core/testing";
 import { AppComponent } from "./app.component";
 import { ServerHealthService } from "./shared/services/server-health.service";
-import { serverHealthServiceStub } from "./shared/services/server-health.service.spec";
+import { serverHealthServiceStub } from "./shared/services/server-health.service.stub";
 import { AuthService } from "./auth/auth.service";
-import { authServiceStub } from "./auth/auth.service.spec";
+import { authServiceStub } from "./auth/auth.service.stub";
 import { SwRefreshTestingComponent } from "./shared/components/sw-refresh/sw-refresh.component.spec";
 import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
 import { provideRouter } from "@angular/router";

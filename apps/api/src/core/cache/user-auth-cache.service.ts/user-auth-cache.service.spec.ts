@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UserAuthCacheService } from "./user-auth-cache.service";
-import { authUserStub } from "../../../auth/auth.service.spec";
+import { authUserStub } from "../../../auth/auth.service.stub";
 
 describe("UserAuthCacheService", () => {
   let service: UserAuthCacheService;

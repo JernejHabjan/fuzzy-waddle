@@ -2,6 +2,7 @@ import {
   ActorDefinition,
   ConstructionStateEnum,
   FactionType,
+  ObjectNames,
   ProbableWaffleGameStateDataPayload,
   Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
@@ -14,7 +15,6 @@ import { FactionDefinitions } from "../../player/faction-definitions";
 import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { setFullActorDataFromName } from "../../data/actor-data";
 import { pwActorDefinitions } from "../../data/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";

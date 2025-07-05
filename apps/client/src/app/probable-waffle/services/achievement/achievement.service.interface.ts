@@ -4,6 +4,7 @@ import { AchievementType } from "./achievement-type";
 import { AchievementDefinition } from "./achievement-definition";
 
 export interface AchievementServiceInterface {
+  achievements$: Observable<AchievementDto[]>;
   loadUserAchievements(userId?: string): Promise<AchievementDto[]>;
   getUserAchievements(): Observable<AchievementDto[]>;
   unlockAchievement(achievementId: AchievementType, showNotification: boolean, metadata?: any): Promise<boolean>;

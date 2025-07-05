@@ -1,14 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 
 import { DataAccessService } from "./data-access.service";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { DataAccessServiceInterface } from "./data-access.service.interface";
+import { dataAccessServiceStub } from "./data-access.service.stub";
 
-export const dataAccessServiceStub = {
-  get supabase(): SupabaseClient {
-    return new SupabaseClient("http://localhost:4200", "123");
-  }
-} satisfies DataAccessServiceInterface;
 describe("DataAccess", () => {
   let service: DataAccessService;
 

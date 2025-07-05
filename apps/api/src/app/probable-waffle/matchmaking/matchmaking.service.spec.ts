@@ -1,23 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { MatchmakingService } from "./matchmaking.service";
-import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
-import { RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/api-interfaces";
-import { User } from "@supabase/supabase-js";
 import { GameInstanceService } from "../game-instance/game-instance.service";
-import { GameInstanceServiceStub } from "../game-instance/game-instance.service.spec";
 import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
 import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway";
 import { RoomServerService } from "../game-room/room-server.service";
-import { roomServerServiceStub } from "../game-room/room-server.service.spec";
+import { GameInstanceServiceStub } from "../game-instance/game-instance.service.stub";
+import { roomServerServiceStub } from "../game-room/room-server.service.stub";
 
-export const matchmakingServiceStub = {
-  async requestGameSearchForMatchMaking(body: RequestGameSearchForMatchMakingDto, user: User): Promise<void> {
-    return Promise.resolve();
-  },
-  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
-    return Promise.resolve();
-  }
-} satisfies MatchmakingServiceInterface;
 describe("MatchmakingService", () => {
   let service: MatchmakingService;
 

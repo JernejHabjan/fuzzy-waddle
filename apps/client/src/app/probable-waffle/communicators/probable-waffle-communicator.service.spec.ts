@@ -1,11 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-import { ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 
-export const probableWaffleCommunicatorServiceStub = {
-  startCommunication: () => {},
-  stopCommunication: () => {}
-} satisfies ProbableWaffleCommunicatorServiceInterface;
 describe("ProbableWaffleCommunicatorService", () => {
   let service: ProbableWaffleCommunicatorService;
 

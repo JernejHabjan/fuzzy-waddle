@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
-import { faSpinner, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   GameSetupHelpers,
   PositionPlayerDefinition,

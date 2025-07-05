@@ -2,7 +2,6 @@ import { TestBed } from "@angular/core/testing";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { AudioAtlasService } from "./audio-atlas.service";
 import { provideHttpClient } from "@angular/common/http";
-import { AudioAtlasServiceInterface } from "./audio-atlas.service.interface";
 
 // Mock Howler to avoid actual audio playback during tests
 jest.mock("howler", () => {
@@ -25,24 +24,6 @@ jest.mock("howler", () => {
     }))
   };
 });
-
-export const audioAtlasServiceStub = {
-  playSound: function (name: string): Promise<number> {
-    throw new Error("Function not implemented.");
-  },
-  stopSound: function (id: number): void {
-    throw new Error("Function not implemented.");
-  },
-  stopAllSounds: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  loadAudioAtlas: function (): Promise<void> {
-    throw new Error("Function not implemented.");
-  },
-  isLoaded: function (): boolean {
-    throw new Error("Function not implemented.");
-  }
-} satisfies AudioAtlasServiceInterface;
 
 describe("AudioAtlasService", () => {
   let service: AudioAtlasService;

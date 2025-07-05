@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { RoomService } from "./room.service";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
-import { supabaseProviderServiceStub } from "../../../core/supabase-provider/supabase-provider.service.spec";
+import { supabaseProviderServiceStub } from "../../../core/supabase-provider/supabase-provider.service.stub";
 
 describe("RoomService", () => {
   let service: RoomService;

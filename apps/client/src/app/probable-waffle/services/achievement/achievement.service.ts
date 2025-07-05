@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { AchievementNotificationService } from "../achievement-notification.service";
 import { AudioAtlasService } from "../../audio-atlas/audio-atlas.service";

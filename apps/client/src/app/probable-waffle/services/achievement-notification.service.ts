@@ -1,4 +1,4 @@
-import { Injectable, ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, inject } from "@angular/core";
+import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, inject, Injectable } from "@angular/core";
 import { AchievementNotificationComponent } from "../components/achievement-notification/achievement-notification.component";
 
 export interface AchievementNotificationOptions {

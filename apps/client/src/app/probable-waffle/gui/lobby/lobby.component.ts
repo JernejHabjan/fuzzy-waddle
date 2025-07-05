@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import { PlayerDefinitionComponent } from "./player-definition/player-definition.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
@@ -26,7 +26,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
     MapBrowserComponent,
     FormsModule,
     TriggerComponent
-]
+  ]
 })
 export class LobbyComponent implements OnInit {
   protected mapSearchQuery = "";

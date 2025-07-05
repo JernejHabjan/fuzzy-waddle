@@ -10,7 +10,7 @@ export class AtlasService implements AtlasServiceInterface {
   atlasData: any;
   atlasImage = new Image();
 
-  private atlasLoaded = false;
+  atlasLoaded = false;
   private loadingPromise: Promise<void> | null = null;
 
   private readonly http = inject(HttpClient);

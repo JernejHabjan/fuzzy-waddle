@@ -11,7 +11,7 @@ import {
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 
 describe("ScoreTableComponent", () => {
   let component: ScoreTableComponent;
