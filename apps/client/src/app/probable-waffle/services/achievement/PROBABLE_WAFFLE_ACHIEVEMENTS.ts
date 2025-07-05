@@ -8,7 +8,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.FIRST_STEPS,
     name: "First Steps",
     description: "Complete the tutorial.",
-    image: "achievements/first_steps.png",
+    image: "actor_info_icons/element.png", // "achievements/first_steps.png",
     category: "Progression",
     difficulty: "easy"
   },
@@ -16,7 +16,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.CAMPAIGNER,
     name: "Campaigner",
     description: "Complete the first campaign mission.",
-    image: "achievements/campaigner.png",
+    image: "actor_info_icons/element.png", // "achievements/campaigner.png",
     category: "Progression",
     difficulty: "easy"
   },
@@ -24,7 +24,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.WAR_HERO,
     name: "War Hero",
     description: "Complete the entire campaign.",
-    image: "achievements/war_hero.png",
+    image: "actor_info_icons/element.png", // "achievements/war_hero.png",
     category: "Progression",
     difficulty: "hard"
   },
@@ -34,7 +34,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.FIRST_VICTORY,
     name: "First Victory",
     description: "Win your first skirmish or multiplayer game.",
-    image: "achievements/first_victory.png",
+    image: "actor_info_icons/element.png", // "achievements/first_victory.png",
     category: "Milestones",
     difficulty: "easy"
   },
@@ -42,7 +42,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.THE_ARCHITECT,
     name: "The Architect",
     description: "Construct one of every building type in a single match.",
-    image: "achievements/the_architect.png",
+    image: "actor_info_icons/element.png", // "achievements/the_architect.png",
     category: "Milestones",
     difficulty: "medium"
   },
@@ -50,7 +50,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.UNIT_COLLECTOR,
     name: "Unit Collector",
     description: "Train one of every unit type in a single match.",
-    image: "achievements/unit_collector.png",
+    image: "actor_info_icons/element.png", // "achievements/unit_collector.png",
     category: "Milestones",
     difficulty: "medium"
   },
@@ -58,7 +58,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.HUNDRED_WINS,
     name: "Centurion",
     description: "Achieve 100 victories.",
-    image: "achievements/hundred_wins.png",
+    image: "actor_info_icons/element.png", // "achievements/hundred_wins.png",
     category: "Milestones",
     difficulty: "hard"
   },
@@ -68,7 +68,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.RESOURCEFUL,
     name: "Resourceful",
     description: "Gather 10,000 resources in a single game.",
-    image: "achievements/resourceful.png",
+    image: "actor_info_icons/element.png", // "achievements/resourceful.png",
     category: "Economy",
     difficulty: "easy"
   },
@@ -76,7 +76,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.MASTER_ECONOMIST,
     name: "Master Economist",
     description: "End a match with over 50,000 resources in the bank.",
-    image: "achievements/master_economist.png",
+    image: "actor_info_icons/element.png", // "achievements/master_economist.png",
     category: "Economy",
     difficulty: "medium"
   },
@@ -84,7 +84,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.ECONOMIC_POWERHOUSE,
     name: "Economic Powerhouse",
     description: "Win a game with double the resource income of all opponents.",
-    image: "achievements/economic_powerhouse.png",
+    image: "actor_info_icons/element.png", // "achievements/economic_powerhouse.png",
     category: "Economy",
     difficulty: "hard"
   },
@@ -94,7 +94,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.ANNIHILATOR,
     name: "Annihilator",
     description: "Destroy 1,000 enemy units across all games.",
-    image: "achievements/annihilator.png",
+    image: "actor_info_icons/element.png", // "achievements/annihilator.png",
     category: "Military",
     difficulty: "medium"
   },
@@ -102,7 +102,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.UNSTOPPABLE_FORCE,
     name: "Unstoppable Force",
     description: "Build an army that reaches the maximum supply limit.",
-    image: "achievements/unstoppable_force.png",
+    image: "actor_info_icons/element.png", // "achievements/unstoppable_force.png",
     category: "Military",
     difficulty: "medium"
   },
@@ -110,7 +110,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.SWIFT_VICTORY,
     name: "Swift Victory",
     description: "Win a game in under 10 minutes.",
-    image: "achievements/swift_victory.png",
+    image: "actor_info_icons/element.png", // "achievements/swift_victory.png",
     category: "Military",
     difficulty: "medium"
   },
@@ -118,7 +118,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.COMEBACK_KING,
     name: "Comeback King",
     description: "Win a game after your main command center has been destroyed.",
-    image: "achievements/comeback_king.png",
+    image: "actor_info_icons/element.png", // "achievements/comeback_king.png",
     category: "Military",
     difficulty: "hard"
   },
@@ -128,7 +128,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.SCOUTS_HONOR,
     name: "Scout's Honor",
     description: "Reveal the entire map in a single game.",
-    image: "achievements/scouts_honor.png",
+    image: "actor_info_icons/element.png", // "achievements/scouts_honor.png",
     category: "Challenge",
     difficulty: "easy"
   },
@@ -136,7 +136,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.NO_FLY_ZONE,
     name: "No-Fly Zone",
     description: "Destroy 50 enemy air units in a single game.",
-    image: "achievements/no_fly_zone.png",
+    image: "actor_info_icons/element.png", // "achievements/no_fly_zone.png",
     category: "Challenge",
     difficulty: "medium"
   },
@@ -144,7 +144,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.DEATH_FROM_ABOVE,
     name: "Death From Above",
     description: "Win a game by only building air units (and necessary tech buildings).",
-    image: "achievements/death_from_above.png",
+    image: "actor_info_icons/element.png", // "achievements/death_from_above.png",
     category: "Challenge",
     difficulty: "hard"
   },
@@ -152,7 +152,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.TURTLE_POWER,
     name: "Turtle Power",
     description: "Win a game that lasts longer than one hour.",
-    image: "achievements/turtle_power.png",
+    image: "actor_info_icons/element.png", // "achievements/turtle_power.png",
     category: "Challenge",
     difficulty: "medium"
   },
@@ -162,7 +162,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.MASTER_TACTICIAN,
     name: "Master Tactician",
     description: "Win a game without losing a single unit.",
-    image: "achievements/master_tactician.png",
+    image: "actor_info_icons/element.png", // "achievements/master_tactician.png",
     category: "Secret",
     difficulty: "hard",
     secret: true
@@ -171,7 +171,7 @@ export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDe
     id: AchievementType.CLICK_HAPPY,
     name: "Click Happy",
     description: "Click on a single unit 50 times in a row.",
-    image: "achievements/click_happy.png",
+    image: "actor_info_icons/element.png", // "achievements/click_happy.png",
     category: "Secret",
     difficulty: "easy",
     secret: true
