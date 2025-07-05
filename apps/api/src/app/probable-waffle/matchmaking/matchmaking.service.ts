@@ -52,7 +52,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
         this.roomServerService.roomEvent("removed", gi.gameInstance, null);
-        console.log("Probable Waffle - Cron - Pending matchmaking instance removed");
+        console.log("Ashes of the Ancients - Cron - Pending matchmaking instance removed");
       }
       return !isOld;
     });
@@ -81,7 +81,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       gameInstanceId
     });
     this.roomServerService.roomEvent("game_instance_metadata", gameInstance, user);
-    console.log("Probable Waffle - Matchmaking game fully loaded", gameInstanceId);
+    console.log("Ashes of the Ancients - Matchmaking game fully loaded", gameInstanceId);
   }
 
   private async joinGameInstanceForMatchmaking(
@@ -143,7 +143,10 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     });
     this.gameInstanceService.addGameInstance(newGameInstance, user);
 
-    console.log("Probable Waffle - Game instance created for matchmaking", this.pendingMatchmakingGameInstances.length);
+    console.log(
+      "Ashes of the Ancients - Game instance created for matchmaking",
+      this.pendingMatchmakingGameInstances.length
+    );
   }
 
   private findGameInstanceForMatchMaking(
@@ -178,7 +181,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     const randomFactionType = getRandomFactionType();
 
     console.log(
-      "Probable Waffle - New player",
+      "Ashes of the Ancients - New player",
       gameInstance.players.length + 1,
       "FactionType",
       factionType ?? randomFactionType
@@ -239,7 +242,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
       (p) => p.playerController.data.userId !== user.id
     );
-    console.log("Probable Waffle - Player left pending matchmaking instance", user.id);
+    console.log("Ashes of the Ancients - Player left pending matchmaking instance", user.id);
 
     if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
       this.removePendingMatchmakingGameInstance(gameInstanceId);

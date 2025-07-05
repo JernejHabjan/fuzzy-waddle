@@ -43,7 +43,7 @@ export class GameInstanceGateway {
     @MessageBody() body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log("Probable Waffle - GI action:", body.communicator, body.payload);
+    console.log("Ashes of the Ancients - GI action:", body.communicator, body.payload);
 
     const success = this.gameStateServerService.updateGameState(body, user);
     if (success) {
@@ -65,7 +65,7 @@ export class GameInstanceGateway {
     @MessageBody() body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log(`Probable Waffle - GI chat message ${body.gameInstanceId}`);
+    console.log(`Ashes of the Ancients - GI chat message ${body.gameInstanceId}`);
 
     // clone the payload
     const newPayload = { ...body };
@@ -82,7 +82,7 @@ export class GameInstanceGateway {
           .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, newPayload);
         break;
       default:
-        throw new Error("Probable Waffle - Message broadcast - unknown communicator");
+        throw new Error("Ashes of the Ancients - Message broadcast - unknown communicator");
     }
   }
 
@@ -111,7 +111,7 @@ export class GameInstanceGateway {
         );
         break;
       default:
-        throw new Error("Probable Waffle - Web socket room broadcast - unknown communicator");
+        throw new Error("Ashes of the Ancients - Web socket room broadcast - unknown communicator");
     }
   }
 }

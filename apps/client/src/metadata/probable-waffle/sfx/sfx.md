@@ -1,4 +1,4 @@
-# Sound effects and vocalizations for the game "Probable Waffle"
+# Sound effects and vocalizations for the game "Ashes of the Ancients"
 
 ## General actors
 

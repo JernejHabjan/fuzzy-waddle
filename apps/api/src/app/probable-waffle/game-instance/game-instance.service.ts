@@ -27,14 +27,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.gameInstanceHolderService.addGameInstance(gameInstance);
     this.roomServerService.roomEvent("added", gameInstance, user);
     console.log(
-      "Probable Waffle - Game instance added. Open instances: " +
+      "Ashes of the Ancients - Game instance added. Open instances: " +
         this.gameInstanceHolderService.openGameInstances.length
     );
   }
 
   async createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
     if (gameInstanceMetadataData.createdBy !== user.id)
-      throw new Error("Probable Waffle - createGameInstance - createdBy must be the same as user id");
+      throw new Error("Ashes of the Ancients - createGameInstance - createdBy must be the same as user id");
     const newGameInstance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: this.sanitizeGameInstanceMetadataData(gameInstanceMetadataData),
       gameModeData: {
@@ -55,7 +55,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.addGameInstance(newGameInstance, user);
 
     console.log(
-      "Probable Waffle - game instance created. Open instances: " +
+      "Ashes of the Ancients - game instance created. Open instances: " +
         this.gameInstanceHolderService.openGameInstances.length
     );
   }
@@ -67,7 +67,8 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     this.gameInstanceHolderService.removeGameInstance(gameInstanceId);
     this.roomServerService.roomEvent("removed", gameInstance, user);
     console.log(
-      "Probable Waffle - game instance deleted. Remaining: " + this.gameInstanceHolderService.openGameInstances.length
+      "Ashes of the Ancients - game instance deleted. Remaining: " +
+        this.gameInstanceHolderService.openGameInstances.length
     );
   }
 
@@ -87,7 +88,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
         this.roomServerService.roomEvent("removed", gi, null);
-        console.log("Probable Waffle - Cron - Game instance removed");
+        console.log("Ashes of the Ancients - Cron - Game instance removed");
       }
       return !isOld;
     });

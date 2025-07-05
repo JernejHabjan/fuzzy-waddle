@@ -236,8 +236,7 @@ export class ProgressComponent implements OnInit {
     if (!userId) return;
 
     // Create the share URL
-    const shareUrl =
-      window.location.origin + this.router.createUrlTree(["/probable-waffle/progress", userId]).toString();
+    const shareUrl = window.location.origin + this.router.createUrlTree(["/aota/progress", userId]).toString();
 
     // Try to use the Web Share API if available
     if (navigator.share) {

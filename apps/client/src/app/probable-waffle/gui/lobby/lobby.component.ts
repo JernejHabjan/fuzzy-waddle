@@ -69,7 +69,7 @@ export class LobbyComponent implements OnInit {
   }
 
   leaveLobby() {
-    this.router.navigate(["probable-waffle"]);
+    this.router.navigate(["aota"]);
   }
 
   deselectMap() {

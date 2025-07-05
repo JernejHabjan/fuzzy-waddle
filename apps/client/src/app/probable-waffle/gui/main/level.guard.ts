@@ -15,7 +15,7 @@ export class LevelGuard implements CanActivate {
       return true;
     } else {
       console.error("Map doesn't exist in LevelGuard");
-      this.router.navigate(["/probable-waffle"]);
+      this.router.navigate(["/aota"]);
       return false;
     }
   }
