@@ -14,13 +14,63 @@
               <p>Checking server health...</p>
             </div>
           } @else if (serverHealthService.serverAvailable) {
-            <h2 class="achievement-header">Achievements</h2>
+            <div class="achievement-header-container">
+              <h2 class="achievement-header">Achievements</h2>
+
+              <!-- Filters -->
+              <div class="filters-container">
+                <!-- Category filter -->
+                <div ngbDropdown class="filter-dropdown">
+                  <button class="btn btn-outline-primary" ngbDropdownToggle>
+                    {{ selectedCategory() ? selectedCategory() : "All Categories" }}
+                  </button>
+                  <div ngbDropdownMenu>
+                    <button ngbDropdownItem (click)="setCategory(null)">All Categories</button>
+                    @for (category of categories; track category) {
+                      <button ngbDropdownItem (click)="setCategory(category)">{{ category }}</button>
+                    }
+                  </div>
+                </div>
+
+                <!-- Status filter buttons -->
+                <div class="filter-buttons">
+                  <button
+                    class="btn"
+                    [class.btn-outline-primary]="!showUnlockedOnly()"
+                    [class.btn-primary]="showUnlockedOnly()"
+                    (click)="toggleUnlockedOnly()"
+                  >
+                    Unlocked
+                  </button>
+                  <button
+                    class="btn"
+                    [class.btn-outline-primary]="!showLockedOnly()"
+                    [class.btn-primary]="showLockedOnly()"
+                    (click)="toggleLockedOnly()"
+                  >
+                    Locked
+                  </button>
+                </div>
+              </div>
+            </div>
 
             <div class="achievements-container">
-              @for (achievement of gameInstanceService.getAchievements(); track achievement) {
+              @for (achievement of getFilteredAchievements(); track achievement.id) {
                 <div class="achievement" [class.unlocked]="achievement.unlocked" [class.locked]="!achievement.unlocked">
+                  <!-- Difficulty indicator -->
+                  @if (achievement.difficulty) {
+                    <div class="difficulty-badge" [class]="achievement.difficulty">
+                      {{ achievement.difficulty }}
+                    </div>
+                  }
+
                   <h3 class="achievement-title">{{ achievement.name }}</h3>
                   <div class="achievement-description">{{ achievement.description }}</div>
+
+                  <!-- Category badge -->
+                  @if (achievement.category) {
+                    <div class="category-badge">{{ achievement.category }}</div>
+                  }
 
                   <div class="achievement-image-container">
                     <fuzzy-waddle-atlas-sprite
@@ -31,14 +81,14 @@
                     />
                   </div>
 
-                  @if (achievement.unlocked && achievement.date) {
-                    <div class="achievement-date">Unlocked: {{ achievement.date | date: "mediumDate" }}</div>
+                  @if (achievement.unlocked && achievement.unlockedDate) {
+                    <div class="achievement-date">Unlocked: {{ achievement.unlockedDate | date: "mediumDate" }}</div>
                   }
                 </div>
               }
 
               <!-- Placeholder achievements for empty spaces -->
-              @for (placeholder of getPlaceholders(gameInstanceService.getAchievements().length); track placeholder) {
+              @for (placeholder of getSecretAchievements(); track placeholder.id) {
                 <div class="achievement locked">
                   <h3 class="achievement-title">???</h3>
                   <div class="achievement-description">Continue playing to unlock more achievements!</div>

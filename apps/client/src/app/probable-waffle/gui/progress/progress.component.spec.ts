@@ -6,6 +6,8 @@ import { serverHealthServiceStub } from "../../../shared/services/server-health.
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.spec";
 import { provideRouter } from "@angular/router";
+import { AchievementService } from "../../services/achievement/achievement.service";
+import { achievementServiceStub } from "../../services/achievement/achievement.service.spec";
 
 describe("ProfileComponent", () => {
   let component: ProgressComponent;
@@ -16,14 +18,9 @@ describe("ProfileComponent", () => {
       imports: [ProgressComponent],
       providers: [
         provideRouter([]),
-        {
-          provide: ServerHealthService,
-          useValue: serverHealthServiceStub
-        },
-        {
-          provide: AuthService,
-          useValue: authServiceStub
-        }
+        { provide: ServerHealthService, useValue: serverHealthServiceStub },
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: AchievementService, useValue: achievementServiceStub }
       ]
     }).compileComponents();
 

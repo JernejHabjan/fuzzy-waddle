@@ -1,45 +1,82 @@
 @use "../../../../styles/_variables.scss" as *;
 
+.achievement-header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
 .achievement-header {
   text-align: center;
   color: $primary;
   font-family: $app-font-bold;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+
+  @media (min-width: 768px) {
+    margin-bottom: 0;
+  }
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    justify-content: flex-end;
+  }
+}
+
+.filter-dropdown {
+  margin-right: 8px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
 }
 
 .achievements-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); // Reduced minimum width for mobile
-  gap: 15px; // Slightly reduced gap for mobile
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
   width: 100%;
   max-width: 1200px;
-  padding: 0 10px; // Added padding for smaller screens
-  margin: 0 auto; // Center the grid
+  padding: 0 10px;
+  margin: 0 auto;
 
   @media (max-width: 576px) {
-    grid-template-columns: 1fr; // Single column on very small screens
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
   @media (min-width: 577px) and (max-width: 767px) {
-    grid-template-columns: repeat(2, 1fr); // Two columns on small screens
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    grid-template-columns: repeat(3, 1fr); // Three columns on medium screens
+    grid-template-columns: repeat(3, 1fr);
   }
 
   @media (min-width: 992px) {
-    grid-template-columns: repeat(4, 1fr); // Four columns on large screens
+    grid-template-columns: repeat(4, 1fr);
   }
 
   @media (min-width: 1200px) {
-    grid-template-columns: repeat(5, 1fr); // Five columns on extra large screens
+    grid-template-columns: repeat(5, 1fr);
   }
 
   @media (min-width: 1400px) {
-    grid-template-columns: repeat(6, 1fr); // Six columns on very large screens
-    max-width: 1400px; // Allow more width on very large screens
+    grid-template-columns: repeat(6, 1fr);
+    max-width: 1400px;
   }
 }
 
@@ -60,10 +97,10 @@
   overflow: hidden;
 
   @media (max-width: 576px) {
-    padding: 12px; // Smaller padding on mobile
+    padding: 12px;
 
     &:hover {
-      transform: none; // Disable hover effect on touch devices
+      transform: none;
     }
   }
 
@@ -101,10 +138,46 @@
     }
   }
 
-  .achievement-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .difficulty-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+
+    &.easy {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    &.medium {
+      background-color: #ff9800;
+      color: white;
+    }
+
+    &.hard {
+      background-color: #f44336;
+      color: white;
+    }
+  }
+
+  .category-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: rgba($primary, 0.1);
+    color: $primary;
+    margin-bottom: 8px;
+    text-transform: capitalize;
   }
 
   .achievement-title {
@@ -113,8 +186,11 @@
     margin: 0 0 10px 0;
     color: $primary;
 
+    // Add padding if there's a difficulty badge
+    padding-top: 20px;
+
     @media (max-width: 576px) {
-      font-size: 16px; // Slightly smaller font on mobile
+      font-size: 16px;
     }
   }
 
@@ -125,7 +201,7 @@
     flex-grow: 1;
 
     @media (max-width: 576px) {
-      font-size: 13px; // Slightly smaller font on mobile
+      font-size: 13px;
       margin-bottom: 12px;
     }
   }
@@ -149,7 +225,7 @@
     object-fit: contain;
 
     @media (max-width: 576px) {
-      width: 48px; // Smaller images on mobile
+      width: 48px;
       height: 48px;
     }
   }
