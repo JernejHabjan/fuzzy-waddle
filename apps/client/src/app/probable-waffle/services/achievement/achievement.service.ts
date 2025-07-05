@@ -6,23 +6,9 @@ import { AuthService } from "../../../auth/auth.service";
 import { DataAccessService } from "../../../data-access/data-access.service";
 import { AchievementDto } from "@fuzzy-waddle/api-interfaces";
 import { AchievementServiceInterface } from "./achievement.service.interface";
-
-export enum AchievementType {
-  LEVEL_1_COMPLETE = "level_1_complete",
-  LEVEL_2_COMPLETE = "level_2_complete",
-  FIRST_VICTORY = "first_victory",
-  MASTER_TACTICIAN = "master_tactician"
-}
-
-export interface AchievementDefinition {
-  id: AchievementType;
-  name: string;
-  description: string;
-  image: string;
-  category?: string;
-  difficulty?: "easy" | "medium" | "hard";
-  secret?: boolean;
-}
+import { PROBABLE_WAFFLE_ACHIEVEMENTS } from "./PROBABLE_WAFFLE_ACHIEVEMENTS";
+import { AchievementDefinition } from "./achievement-definition";
+import { AchievementType } from "./achievement-type";
 
 interface AchievementRecord {
   id: number;
@@ -31,44 +17,6 @@ interface AchievementRecord {
   unlocked_date: string;
   metadata: any;
 }
-
-// Achievement definitions - in a real app, these might come from a config file
-const ACHIEVEMENTS: Record<AchievementType, AchievementDefinition> = {
-  [AchievementType.LEVEL_1_COMPLETE]: {
-    id: AchievementType.LEVEL_1_COMPLETE,
-    name: "Level 1 Complete",
-    description: "You have completed the first level",
-    image: "actor_info_icons/element.png",
-    category: "progression",
-    difficulty: "easy"
-  },
-  [AchievementType.LEVEL_2_COMPLETE]: {
-    id: AchievementType.LEVEL_2_COMPLETE,
-    name: "Level 2 Complete",
-    description: "You have completed the second level",
-    image: "actor_info_icons/element.png",
-    category: "progression",
-    difficulty: "easy"
-  },
-  [AchievementType.FIRST_VICTORY]: {
-    id: AchievementType.FIRST_VICTORY,
-    name: "First Victory",
-    description: "Win your first game",
-    image: "actor_info_icons/element.png",
-    category: "gameplay",
-    difficulty: "medium"
-  },
-  [AchievementType.MASTER_TACTICIAN]: {
-    id: AchievementType.MASTER_TACTICIAN,
-    name: "Master Tactician",
-    description: "Win a game without losing any units",
-    image: "actor_info_icons/element.png",
-    category: "gameplay",
-    difficulty: "hard",
-    secret: true
-  }
-  // Add more achievements as needed
-};
 
 @Injectable({
   providedIn: "root"
@@ -120,7 +68,7 @@ export class AchievementService implements AchievementServiceInterface {
       });
 
       // Convert all achievement definitions to DTOs, marking which ones are unlocked
-      const achievementList = Object.values(ACHIEVEMENTS).map((achievement) => {
+      const achievementList = Object.values(PROBABLE_WAFFLE_ACHIEVEMENTS).map((achievement) => {
         const unlockedRecord = unlockedMap.get(achievement.id);
         return {
           id: achievement.id,
@@ -179,7 +127,7 @@ export class AchievementService implements AchievementServiceInterface {
       }
 
       // Check if achievement exists
-      const achievementDef = ACHIEVEMENTS[achievementId];
+      const achievementDef = PROBABLE_WAFFLE_ACHIEVEMENTS[achievementId];
       if (!achievementDef) {
         console.warn(`Achievement with ID ${achievementId} does not exist`);
         return false;
@@ -191,7 +139,6 @@ export class AchievementService implements AchievementServiceInterface {
       }
 
       // Check if already unlocked
-      const currentAchievements = this.achievements.value;
       if (this.isAchievementUnlocked(achievementId)) {
         // Achievement already unlocked, no need to continue
         return false;
@@ -251,13 +198,13 @@ export class AchievementService implements AchievementServiceInterface {
    * Get achievement definitions
    */
   getAchievementDefinitions(): AchievementDefinition[] {
-    return Object.values(ACHIEVEMENTS);
+    return Object.values(PROBABLE_WAFFLE_ACHIEVEMENTS);
   }
 
   /**
    * Get a specific achievement definition
    */
   getAchievementDefinition(achievementId: AchievementType): AchievementDefinition | null {
-    return ACHIEVEMENTS[achievementId] || null;
+    return PROBABLE_WAFFLE_ACHIEVEMENTS[achievementId] || null;
   }
 }

@@ -9,7 +9,8 @@ import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.c
 import { AtlasSpriteComponent } from "../../components/atlas-sprite/atlas-sprite.component";
 import { DatePipe } from "@angular/common";
 
-import { AchievementService, AchievementType } from "../../services/achievement/achievement.service";
+import { AchievementService } from "../../services/achievement/achievement.service";
+import { AchievementType } from "../../services/achievement/achievement-type";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from "@ng-bootstrap/ng-bootstrap";
 import { AchievementDto } from "@fuzzy-waddle/api-interfaces";
@@ -63,7 +64,7 @@ export class ProgressComponent implements OnInit {
     // For testing - unlock an achievement
     setTimeout(async () => {
       console.warn("just for testing - remove later");
-      this.achievementService.unlockAchievement(AchievementType.LEVEL_1_COMPLETE);
+      this.achievementService.unlockAchievement(AchievementType.FIRST_STEPS);
     }, 2000);
   }
 
