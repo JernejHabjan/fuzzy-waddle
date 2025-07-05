@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, inject } from "@angular/core";
-import { animate, style, transition, trigger } from "@angular/animations";
+import { animate, style, transition, trigger, AnimationEvent } from "@angular/animations";
 
 import { AtlasSpriteComponent } from "../atlas-sprite/atlas-sprite.component";
 import { AudioAtlasService } from "../../audio-atlas/audio-atlas.service";
@@ -11,12 +11,17 @@ import { AudioAtlasService } from "../../audio-atlas/audio-atlas.service";
   templateUrl: "./achievement-notification.component.html",
   styleUrls: ["./achievement-notification.component.scss"],
   animations: [
-    trigger("slideIn", [
+    trigger("notificationAnimation", [
+      // Element starts completely off-screen and invisible
       transition(":enter", [
-        style({ transform: "translateX(100%)" }),
-        animate("300ms ease-out", style({ transform: "translateX(0)" }))
+        style({ transform: "translateX(100%)", opacity: 0 }),
+        animate("300ms cubic-bezier(0.16, 1, 0.3, 1)", style({ transform: "translateX(0)", opacity: 1 }))
       ]),
-      transition(":leave", [animate("300ms ease-in", style({ transform: "translateX(100%)" }))])
+      // Element slides out and fades away
+      transition(":leave", [
+        style({ transform: "translateX(0)", opacity: 1 }),
+        animate("300ms cubic-bezier(0.7, 0, 0.84, 0)", style({ transform: "translateX(100%)", opacity: 0 }))
+      ])
     ])
   ]
 })
@@ -34,7 +39,8 @@ export class AchievementNotificationComponent implements OnInit, OnDestroy {
   private readonly audioAtlasService = inject(AudioAtlasService);
 
   ngOnInit() {
-    this.show();
+    // Small delay before showing to ensure CSS is fully applied
+    setTimeout(() => this.show(), 10);
   }
 
   ngOnDestroy() {
