@@ -1,13 +1,15 @@
-<div *ngIf="visible" @slideIn class="achievement-notification">
-  <div class="achievement-container">
-    <div class="icon-container">
-      <fuzzy-waddle-atlas-sprite [spriteName]="spriteId" [width]="48" [height]="48" />
+@if (visible) {
+  <div @slideIn class="achievement-notification">
+    <div class="achievement-container">
+      <div class="icon-container">
+        <fuzzy-waddle-atlas-sprite [spriteName]="spriteId" [width]="48" [height]="48" />
+      </div>
+      <div class="achievement-content">
+        <div class="achievement-header">Achievement Unlocked</div>
+        <div class="achievement-title">{{ title }}</div>
+        <div class="achievement-description">{{ description }}</div>
+      </div>
     </div>
-    <div class="achievement-content">
-      <div class="achievement-header">Achievement Unlocked</div>
-      <div class="achievement-title">{{ title }}</div>
-      <div class="achievement-description">{{ description }}</div>
-    </div>
+    <audio #audio src="assets/probable-waffle/sounds/achievement.mp3"></audio>
   </div>
-  <audio #audio src="assets/probable-waffle/sounds/achievement.mp3"></audio>
-</div>
+}

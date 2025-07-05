@@ -1,12 +1,12 @@
-import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+
 import { AtlasSpriteComponent } from "../atlas-sprite/atlas-sprite.component";
 import { animate, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: "fuzzy-waddle-achievement-notification",
   standalone: true,
-  imports: [CommonModule, AtlasSpriteComponent],
+  imports: [AtlasSpriteComponent],
   templateUrl: "./achievement-notification.component.html",
   styleUrls: ["./achievement-notification.component.scss"],
   animations: [
@@ -26,7 +26,7 @@ export class AchievementNotificationComponent implements OnInit, OnDestroy {
   @Input() autoHide: boolean = true;
   @Input() autoHideDuration: number = 5000; // 5 seconds default
 
-  @ViewChild("audio") audioRef!: ElementRef<HTMLAudioElement>;
+  @ViewChild("audio") audioRef?: ElementRef<HTMLAudioElement>;
 
   visible = false;
   private hideTimeout?: number;

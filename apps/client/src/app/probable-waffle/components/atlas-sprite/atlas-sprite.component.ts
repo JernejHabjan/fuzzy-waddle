@@ -1,11 +1,10 @@
 import { Component, Input, OnInit, ElementRef, ViewChild, AfterViewInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { AtlasService } from "../../atlas/atlas.service";
 
 @Component({
   selector: "fuzzy-waddle-atlas-sprite",
   standalone: true,
-  imports: [CommonModule],
   template: ` <canvas #canvas [width]="width" [height]="height"></canvas> `,
   styles: [
     `

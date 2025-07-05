@@ -8,14 +8,14 @@ import { AngularHost } from "../../../shared/consts";
 import { CenterWrapperComponent } from "../../../shared/components/center-wrapper/center-wrapper.component";
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 import { AtlasSpriteComponent } from "../../components/atlas-sprite/atlas-sprite.component";
-import { CommonModule } from "@angular/common";
+
 import { AchievementNotificationService } from "../../services/achievement-notification.service";
 
 @Component({
   templateUrl: "./progress.component.html",
   styleUrls: ["./progress.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, CenterWrapperComponent, HomeNavComponent, AtlasSpriteComponent, CommonModule],
+  imports: [RouterLink, CenterWrapperComponent, HomeNavComponent, AtlasSpriteComponent],
   host: AngularHost.contentFlexFullHeight,
   standalone: true
 })
@@ -31,7 +31,7 @@ export class ProgressComponent {
         title: "New Spell",
         spriteId: "actor_info_icons/element.png",
         autoHide: true,
-        description: 'You unlocked new "Frostbolt" spellme',
+        description: 'You unlocked new "Frostbolt" spell',
         autoHideDuration: 3000
       });
     }, 1000);

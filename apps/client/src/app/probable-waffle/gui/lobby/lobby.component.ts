@@ -9,7 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ProbableWaffleGameInstanceType, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { TriggerComponent } from "./trigger/trigger.component";
-import { NgIf } from "@angular/common";
+
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 
 @Component({
@@ -25,9 +25,8 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
     LobbyChatComponent,
     MapBrowserComponent,
     FormsModule,
-    TriggerComponent,
-    NgIf
-  ]
+    TriggerComponent
+]
 })
 export class LobbyComponent implements OnInit {
   protected mapSearchQuery = "";

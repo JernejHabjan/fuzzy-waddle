@@ -1,4 +1,4 @@
-import { Injectable, ApplicationRef, ComponentRef, createComponent, EnvironmentInjector } from "@angular/core";
+import { Injectable, ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, inject } from "@angular/core";
 import { AchievementNotificationComponent } from "../components/achievement-notification/achievement-notification.component";
 
 export interface AchievementNotificationOptions {
@@ -13,13 +13,11 @@ export interface AchievementNotificationOptions {
   providedIn: "root"
 })
 export class AchievementNotificationService {
+  private appRef = inject(ApplicationRef);
+  private injector = inject(EnvironmentInjector);
+
   private activeNotifications: ComponentRef<AchievementNotificationComponent>[] = [];
   private readonly MAX_NOTIFICATIONS = 3;
-
-  constructor(
-    private appRef: ApplicationRef,
-    private injector: EnvironmentInjector
-  ) {}
 
   /**
    * Shows an achievement notification overlay
