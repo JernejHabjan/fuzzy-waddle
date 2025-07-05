@@ -4,7 +4,7 @@
   <div class="card-container">
     <div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
       <div class="w-100">
-        @if (!authService.isAuthenticated) {
+        @if (!authService.isAuthenticated && !isViewingOtherUser()) {
           <div class="server-health">
             <p>Not authenticated. Please Login to continue</p>
           </div>
@@ -15,7 +15,26 @@
             </div>
           } @else if (serverHealthService.serverAvailable) {
             <div class="achievement-header-container">
-              <h2 class="achievement-header">Achievements</h2>
+              <!-- Back button and user info when viewing other user -->
+              @if (isViewingOtherUser()) {
+                <div class="d-flex align-items-center mb-2">
+                  <button class="btn btn-outline-secondary me-2" (click)="goBack()">
+                    <fa-icon [icon]="faArrowLeft" /> Back
+                  </button>
+                  <span class="ms-2">Viewing user achievements</span>
+                </div>
+              }
+
+              <div class="d-flex justify-content-between align-items-center">
+                <h2 class="achievement-header">Achievements</h2>
+
+                <!-- Share button - only visible when viewing your own achievements -->
+                @if (viewingUserId() && !isViewingOtherUser()) {
+                  <button class="btn btn-outline-primary" (click)="shareAchievements()">
+                    <fa-icon [icon]="faShare" /> Share
+                  </button>
+                }
+              </div>
 
               <!-- Filters -->
               <div class="filters-container">

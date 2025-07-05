@@ -74,6 +74,11 @@ const probableWaffleRoutes = [
               import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)
           },
           {
+            path: "progress/:userId",
+            loadComponent: () =>
+              import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)
+          },
+          {
             path: "options",
             loadComponent: () =>
               import("./probable-waffle/gui/options/options.component").then((m) => m.OptionsComponent)

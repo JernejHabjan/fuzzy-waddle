@@ -18,6 +18,8 @@
   color: $primary;
   font-family: $app-font-bold;
   margin-bottom: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 
   @media (min-width: 768px) {
     margin-bottom: 0;

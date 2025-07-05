@@ -87,10 +87,8 @@ export class AchievementService implements AchievementServiceInterface {
       });
 
       // If this is the current user, update the subject
-      if (!userId || userId === this.authService.userId) {
-        this.achievements.next(achievementList);
-        this.achievementsLoaded = true;
-      }
+      this.achievements.next(achievementList);
+      this.achievementsLoaded = true;
 
       return achievementList;
     } catch (error) {
