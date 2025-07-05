@@ -20,6 +20,7 @@ import FrostBolt from "../../../prefabs/weapons/FrostBolt";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { EffectsAnims } from "../../../animations/effects";
 import GameObject = Phaser.GameObjects.GameObject;
+import SkaduweeOwlFurball from "../../../prefabs/weapons/SkaduweeOwlFurball";
 
 export type AttackDefinition = {
   attacks: AttackData[];
@@ -175,6 +176,9 @@ export class AttackComponent {
           break;
         case ProjectileType.FireballProjectile:
           projectileSprite = new FireBall(this.gameObject.scene);
+          break;
+        case ProjectileType.FurballProjectile:
+          projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene);
           break;
         case ProjectileType.FrostBoltProjectile:
           projectileSprite = new FrostBolt(this.gameObject.scene);

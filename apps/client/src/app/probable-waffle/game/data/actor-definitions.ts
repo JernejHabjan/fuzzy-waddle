@@ -1184,6 +1184,9 @@ export const pwActorDefinitions: {
         tileStepDuration: 1000,
         isFlying: true
       },
+      aiControlled: {
+        type: AiType.Character
+      },
       audio: {
         sounds: {
           [SoundType.Attack]: SkaduweeOwlSfxSelectionSounds,
