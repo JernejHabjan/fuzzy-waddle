@@ -1,7 +1,8 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, inject } from "@angular/core";
+import { animate, style, transition, trigger } from "@angular/animations";
 
 import { AtlasSpriteComponent } from "../atlas-sprite/atlas-sprite.component";
-import { animate, style, transition, trigger } from "@angular/animations";
+import { AudioAtlasService } from "../../audio-atlas/audio-atlas.service";
 
 @Component({
   selector: "fuzzy-waddle-achievement-notification",
@@ -26,10 +27,11 @@ export class AchievementNotificationComponent implements OnInit, OnDestroy {
   @Input() autoHide: boolean = true;
   @Input() autoHideDuration: number = 5000; // 5 seconds default
 
-  @ViewChild("audio") audioRef?: ElementRef<HTMLAudioElement>;
-
   visible = false;
   private hideTimeout?: number;
+  private soundId = -1;
+
+  private readonly audioAtlasService = inject(AudioAtlasService);
 
   ngOnInit() {
     this.show();
@@ -39,6 +41,10 @@ export class AchievementNotificationComponent implements OnInit, OnDestroy {
     if (this.hideTimeout) {
       window.clearTimeout(this.hideTimeout);
     }
+    // Stop any playing sounds when component is destroyed
+    if (this.soundId >= 0) {
+      this.audioAtlasService.stopSound(this.soundId);
+    }
   }
 
   show() {
@@ -47,19 +53,13 @@ export class AchievementNotificationComponent implements OnInit, OnDestroy {
       window.clearTimeout(this.hideTimeout);
     }
 
-    // Make the notification visible
-    this.visible = true;
-
-    // Play sound effect
-    setTimeout(() => {
-      if (this.audioRef?.nativeElement) {
-        this.audioRef.nativeElement.play().catch((error) => {
-          console.warn("Could not play achievement sound:", error);
-        });
-      }
+    // Play achievement sound
+    this.audioAtlasService.playSound("achievement").then((id) => {
+      this.soundId = id;
     });
 
-    // Set timeout to hide the notification
+    this.visible = true;
+
     if (this.autoHide) {
       this.hideTimeout = window.setTimeout(() => {
         this.hide();

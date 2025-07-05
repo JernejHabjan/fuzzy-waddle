@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { AtlasService } from "./atlas.service";
 import { provideHttpClient } from "@angular/common/http";
+import { AtlasServiceInterface } from "./atlas.service.interface";
 
 export const atlasServiceStub = {
   getSpriteFrame(): Promise<{
@@ -10,13 +11,12 @@ export const atlasServiceStub = {
     w: number;
     h: number;
   } | null> {
-    return null;
+    return Promise.resolve(null);
   }
 } satisfies AtlasServiceInterface;
 
 describe("AtlasService", () => {
   let service: AtlasService;
-  let httpMock: HttpTestingController;
 
   const mockAtlasData = {
     textures: [

@@ -124,6 +124,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.50.3
         version: 2.50.3
+      '@types/howler':
+        specifier: ^2.2.12
+        version: 2.2.12
       audiosprite-ffmpeg:
         specifier: ^0.8.1
         version: 0.8.1
@@ -148,6 +151,9 @@ importers:
       helmet:
         specifier: ^8.1.0
         version: 8.1.0
+      howler:
+        specifier: ^2.2.4
+        version: 2.2.4
       mistreevous:
         specifier: ^4.2.0
         version: 4.2.0
@@ -4041,6 +4047,9 @@ packages:
   '@types/graceful-fs@4.1.6':
     resolution: {integrity: sha512-Sig0SNORX9fdW+bQuTEovKj3uHcUL6LQKbCrrqb1X7J6/ReAbhCXRAhc+SMejhLELFj2QcyuxmUooZ4bt5ReSw==}
 
+  '@types/howler@2.2.12':
+    resolution: {integrity: sha512-hy769UICzOSdK0Kn1FBk4gN+lswcj1EKRkmiDtMkUGvFfYJzgaDXmVXkSShS2m89ERAatGIPnTUlp2HhfkVo5g==}
+
   '@types/http-errors@2.0.4':
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
 
@@ -6394,6 +6403,9 @@ packages:
   hosted-git-info@8.0.2:
     resolution: {integrity: sha512-sYKnA7eGln5ov8T8gnYlkSOxFJvywzEx9BueN6xo/GKO8PGiI6uK6xx+DIGe45T3bdVjLAQDQW1aicT8z8JwQg==}
     engines: {node: ^18.17.0 || >=20.5.0}
+
+  howler@2.2.4:
+    resolution: {integrity: sha512-iARIBPgcQrwtEr+tALF+rapJ8qSc+Set2GJQl7xT1MQzWaVkFebdJhR3alVlSiUf5U7nAANKuj3aWpwerocD5w==}
 
   hpack.js@2.1.6:
     resolution: {integrity: sha512-zJxVehUdMGIKsRaNt7apO2Gqp0BdqW5yaiGHXXmbpvxgBYVZnAql+BJb4RO5ad2MgpbZKn5G6nMnegrH1FcNYQ==}
@@ -14866,6 +14878,8 @@ snapshots:
     dependencies:
       '@types/node': 24.0.10
 
+  '@types/howler@2.2.12': {}
+
   '@types/http-errors@2.0.4': {}
 
   '@types/http-proxy@1.17.15':
@@ -17497,6 +17511,8 @@ snapshots:
   hosted-git-info@8.0.2:
     dependencies:
       lru-cache: 10.4.3
+
+  howler@2.2.4: {}
 
   hpack.js@2.1.6:
     dependencies:
