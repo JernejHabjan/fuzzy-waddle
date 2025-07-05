@@ -111,15 +111,41 @@
   &.locked {
     filter: grayscale(0.7);
     opacity: 0.8;
+    border-color: rgba($primary, 0.4); // Reduced border color vibrancy
+
+    .achievement-image-container {
+      background: rgba($primary, 0.05); // Lighter background for locked achievements
+    }
 
     .achievement-image {
       opacity: 0.5;
+      filter: grayscale(1); // Full grayscale for locked achievement images
     }
   }
 
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  .achievement-title-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px 0;
+    // Add padding if there's a difficulty badge
+    padding-top: 20px;
+
+    .lock-icon {
+      color: rgba($primary, 0.6);
+      font-size: 16px;
+    }
+  }
+
+  .achievement-title {
+    font-family: $app-font-bold;
+    font-size: 18px;
+    color: $primary;
+    margin: 0;
+
+    @media (max-width: 576px) {
+      font-size: 16px;
+    }
   }
 
   .difficulty-badge {
@@ -146,6 +172,12 @@
       background-color: #f44336;
       color: white;
     }
+
+    // Reduced vibrancy for locked achievement badges
+    &.locked-badge {
+      opacity: 0.6;
+      filter: grayscale(0.3);
+    }
   }
 
   .category-badge {
@@ -157,20 +189,6 @@
     color: $primary;
     margin-bottom: 8px;
     text-transform: capitalize;
-  }
-
-  .achievement-title {
-    font-family: $app-font-bold;
-    font-size: 18px;
-    margin: 0 0 10px 0;
-    color: $primary;
-
-    // Add padding if there's a difficulty badge
-    padding-top: 20px;
-
-    @media (max-width: 576px) {
-      font-size: 16px;
-    }
   }
 
   .achievement-description {

@@ -16,7 +16,7 @@ import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from
 import { AchievementDto } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../environments/environment";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { faShare, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faShare, faArrowLeft, faLock } from "@fortawesome/free-solid-svg-icons";
 
 // Interface for achievement categories for display
 interface AchievementCategory {
@@ -54,6 +54,7 @@ export class ProgressComponent implements OnInit {
   // Font Awesome icons
   protected readonly faShare = faShare;
   protected readonly faArrowLeft = faArrowLeft;
+  protected readonly faLock = faLock;
 
   // Signal for user ID being viewed
   protected readonly viewingUserId = signal<string | null>(null);

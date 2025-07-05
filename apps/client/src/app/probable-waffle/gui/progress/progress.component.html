@@ -111,12 +111,21 @@
                       >
                         <!-- Difficulty indicator -->
                         @if (achievement.difficulty) {
-                          <div class="difficulty-badge" [class]="achievement.difficulty">
+                          <div
+                            class="difficulty-badge"
+                            [class]="achievement.difficulty"
+                            [class.locked-badge]="!achievement.unlocked"
+                          >
                             {{ achievement.difficulty }}
                           </div>
                         }
 
-                        <h3 class="achievement-title">{{ achievement.name }}</h3>
+                        <div class="achievement-title-container">
+                          <h3 class="achievement-title">{{ achievement.name }}</h3>
+                          @if (!achievement.unlocked) {
+                            <fa-icon [icon]="faLock" class="lock-icon"></fa-icon>
+                          }
+                        </div>
                         <div class="achievement-description">{{ achievement.description }}</div>
 
                         <!-- Category badge -->
