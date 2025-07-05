@@ -15,7 +15,7 @@ export class ProbableWaffleComponent implements OnInit, OnDestroy {
   protected readonly userInstanceService = inject(UserInstanceService);
 
   ngOnInit(): void {
-    this.userInstanceService.setVisitedGame("probable-waffle");
+    this.userInstanceService.setVisitedGame("aota");
   }
 
   @HostListener("window:beforeunload")

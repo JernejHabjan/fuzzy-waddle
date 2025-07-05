@@ -41,7 +41,7 @@ export class UserInstanceService implements UserInstanceServiceInterface {
     return preferredGame.name;
   }
 
-  setVisitedGame(game: "probable-waffle" | "little-muncher" | "fly-squasher"): void {
+  setVisitedGame(game: "aota" | "little-muncher" | "fly-squasher"): void {
     const gamesVisited = this.getGamesVisited();
     const existingGame = gamesVisited.find((g) => g.name === game);
 

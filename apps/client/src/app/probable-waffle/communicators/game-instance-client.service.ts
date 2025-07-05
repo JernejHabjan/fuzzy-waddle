@@ -120,11 +120,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           case "sessionState":
             switch (payload.data.sessionState) {
               case GameSessionState.MovingPlayersToGame:
-                await this.router.navigate(["probable-waffle/game"]);
+                await this.router.navigate(["aota/game"]);
                 break;
               case GameSessionState.ToScoreScreen:
                 await this.ngZone.run(async () => {
-                  await this.router.navigate(["probable-waffle/score-screen"]);
+                  await this.router.navigate(["aota/score-screen"]);
                 });
                 break;
               case GameSessionState.Stopped:
@@ -474,17 +474,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     switch (this.gameInstance.gameInstanceMetadata!.data.type) {
       case ProbableWaffleGameInstanceType.SelfHosted:
         // join lobby
-        await this.router.navigate(["probable-waffle/lobby"]);
+        await this.router.navigate(["aota/lobby"]);
         break;
       case ProbableWaffleGameInstanceType.Skirmish:
         // replaceUrl: true - we don't want to go back to skirmish page
-        await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
+        await this.router.navigate(["aota/lobby"], { replaceUrl: true });
         break;
       case ProbableWaffleGameInstanceType.Matchmaking:
       case ProbableWaffleGameInstanceType.InstantGame:
       case ProbableWaffleGameInstanceType.Replay:
         // directly to game
-        await this.router.navigate(["probable-waffle/game"]);
+        await this.router.navigate(["aota/game"]);
         break;
       default:
         throw new Error("Not implemented");
@@ -494,7 +494,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async navigateDirectlyToGame(): Promise<void> {
     if (!this.gameInstance)
       throw new Error("Game instance not found in navigateDirectlyToGame in GameInstanceClientService");
-    await this.router.navigate(["probable-waffle/game"]);
+    await this.router.navigate(["aota/game"]);
   }
 
   get currentGameInstanceId(): string | null {

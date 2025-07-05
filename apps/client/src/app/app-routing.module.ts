@@ -20,7 +20,7 @@ const littleMuncherRoutes = [
 
 const probableWaffleRoutes = [
   {
-    path: "probable-waffle",
+    path: "aota",
     children: [
       {
         path: "",

@@ -72,7 +72,7 @@ export class LoadComponent implements OnInit {
     if (this.fromGame) {
       this.dialogRef?.close();
     } else {
-      this.router.navigate(["/probable-waffle"]);
+      this.router.navigate(["/aota"]);
     }
   }
 }

@@ -33,11 +33,11 @@ export class HomePageComponent {
   private readonly currentlyFeaturedGame = "dungeon-crawler";
   displayGames: DisplayGame[] = [
     {
-      name: "Probable Waffle",
+      name: "Ashes of the Ancients",
       description: "A real-time strategy game",
       image: "probable-waffle.webp",
       bannerImage: "probable-waffle-banner.webp",
-      route: "probable-waffle",
+      route: "aota",
       inDevelopment: true
     },
     {
