@@ -9,7 +9,7 @@ export class DbAccessTestService {
 
   get(): void {
     this.dataAccessService.supabase
-      .from("test")
+      .from("messages")
       .select("*")
       .then((data) => {
         console.table(data.data);
@@ -18,7 +18,7 @@ export class DbAccessTestService {
 
   add(): void {
     this.dataAccessService.supabase
-      .from("test")
+      .from("messages")
       .insert({ text: "test from frontend" })
       .then((data) => {
         console.log(data);

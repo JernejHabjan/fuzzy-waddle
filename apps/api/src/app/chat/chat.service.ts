@@ -17,7 +17,7 @@ export class ChatService implements IChatService {
   async postMessage(text: string, user: AuthUser): Promise<string> {
     const sanitizedMessage = this.textSanitizationService.cleanBadWords(text);
     // Insert sanitized message into Messages table
-    const { data, error } = await this.supabaseProviderService.supabaseClient.from("test").insert({
+    const { data, error } = await this.supabaseProviderService.supabaseClient.from("messages").insert({
       text: sanitizedMessage,
       user_id: user.id
     });
