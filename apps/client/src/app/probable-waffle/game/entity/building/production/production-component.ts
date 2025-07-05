@@ -4,11 +4,16 @@ import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionCostDefinition } from "./production-cost-component";
 import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
-import { ActorDefinition, ConstructionStateEnum, ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import {
+  ActorDefinition,
+  ConstructionStateEnum,
+  ObjectNames,
+  ResourceType,
+  Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import {
   getGameObjectBounds,
   getGameObjectTransform,

@@ -1,4 +1,4 @@
-import { inject, Injectable } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { firstValueFrom, timeout } from "rxjs";
@@ -16,7 +16,14 @@ export enum ServerState {
 export class ServerHealthService implements ServerHealthServiceInterface {
   private readonly httpClient = inject(HttpClient);
 
-  private serverState: ServerState = ServerState.checking;
+  // Create a signal to track server state
+  private serverStateSignal = signal<ServerState>(ServerState.checking);
+
+  // Create computed signals for the different states
+  private serverAvailableSignal = computed(() => this.serverStateSignal() === ServerState.available);
+  private serverUnavailableSignal = computed(() => this.serverStateSignal() === ServerState.down);
+  private serverCheckingSignal = computed(() => this.serverStateSignal() === ServerState.checking);
+
   private checkHealthPromise: Promise<void> | null = null;
 
   constructor() {
@@ -24,16 +31,17 @@ export class ServerHealthService implements ServerHealthServiceInterface {
     this._checkHealth();
   }
 
+  // Keep getters for interface compatibility
   get serverAvailable(): boolean {
-    return this.serverState === ServerState.available;
+    return this.serverAvailableSignal();
   }
 
   get serverUnavailable(): boolean {
-    return this.serverState === ServerState.down;
+    return this.serverUnavailableSignal();
   }
 
   get serverChecking(): boolean {
-    return this.serverState === ServerState.checking;
+    return this.serverCheckingSignal();
   }
 
   async checkHealth(): Promise<void | null> {
@@ -53,10 +61,10 @@ export class ServerHealthService implements ServerHealthServiceInterface {
   private async runCheck(url: string) {
     try {
       await firstValueFrom(this.httpClient.get(url, { responseType: "text" }).pipe(timeout(5000)));
-      this.serverState = ServerState.available;
+      this.serverStateSignal.set(ServerState.available);
     } catch (e) {
       console.warn("Server is down", e);
-      this.serverState = ServerState.down;
+      this.serverStateSignal.set(ServerState.down);
     }
   }
 }

@@ -13,6 +13,7 @@ import { GameInstanceStorageServiceInterface } from "./app/probable-waffle/commu
 import { AccessTokenInterceptor } from "./app/auth/access-token.interceptor";
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { AuthGuard } from "./app/auth/auth.guard";
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 
 if (environment.production) {
   enableProdMode();
@@ -35,6 +36,7 @@ bootstrapApplication(AppComponent, {
     AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true },
     { provide: GameInstanceStorageServiceInterface, useClass: GameInstanceIndexeddbStorageService },
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync()
   ]
 }).catch((err) => console.error(err));

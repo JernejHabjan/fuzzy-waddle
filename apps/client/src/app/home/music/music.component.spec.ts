@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MusicComponent } from "./music.component";
-import { ProfileNavComponent } from "../profile/profile-nav/profile-nav.component";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
 import { HomeNavTestingComponent } from "../../shared/components/home-nav/home-nav.component.spec";
 

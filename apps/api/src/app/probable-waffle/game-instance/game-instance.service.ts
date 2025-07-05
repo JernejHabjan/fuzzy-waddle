@@ -7,8 +7,7 @@ import {
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
   ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData,
-  TieConditions
+  ProbableWaffleGameStateData
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceServiceInterface } from "./game-instance.service.interface";

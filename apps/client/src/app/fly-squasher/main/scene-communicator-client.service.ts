@@ -2,11 +2,12 @@ import { inject, Injectable } from "@angular/core";
 import { FlySquasherCommunicatorService } from "../game/fly-squasher-communicator.service";
 import { HighScoreService } from "../high-score/high-score.service";
 import { Subscription } from "rxjs";
+import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 
 @Injectable({
   providedIn: "root"
 })
-export class SceneCommunicatorClientService {
+export class SceneCommunicatorClientService implements SceneCommunicatorClientServiceInterface {
   private readonly highScoreService = inject(HighScoreService);
   private readonly communicatorService = inject(FlySquasherCommunicatorService);
 

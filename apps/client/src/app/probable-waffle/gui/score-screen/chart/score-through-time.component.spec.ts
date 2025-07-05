@@ -14,7 +14,7 @@ import {
   ProbableWaffleGameInstanceVisibility,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { BaseChartDirective } from "ng2-charts";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 

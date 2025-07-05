@@ -1,12 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { FlySquasherService } from "./fly-squasher.service";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
-import { supabaseProviderServiceStub } from "../../core/supabase-provider/supabase-provider.service.spec";
+import { supabaseProviderServiceStub } from "../../core/supabase-provider/supabase-provider.service.stub";
 
-export const flySquasherServiceStub = {
-  postScore: () => {},
-  getScores: () => {}
-};
 describe("FlySquasherService", () => {
   let service: FlySquasherService;
 

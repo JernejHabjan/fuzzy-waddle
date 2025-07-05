@@ -20,8 +20,8 @@ import { SoundDefinition, SoundType } from "./audio-actor-component";
 import { AnimationActorComponent, AnimationType } from "./animation-actor-component";
 import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom

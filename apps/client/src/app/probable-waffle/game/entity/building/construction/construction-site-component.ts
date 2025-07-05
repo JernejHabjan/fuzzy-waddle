@@ -1,11 +1,15 @@
 import { PaymentType } from "../payment-type";
-import { ConstructionSiteComponentData, ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import {
+  ConstructionSiteComponentData,
+  ConstructionStateEnum,
+  ObjectNames,
+  ResourceType
+} from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ProductionCostDefinition } from "../production/production-cost-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -19,8 +23,8 @@ import {
   SharedActorActionsSfxSawingSounds,
   SharedActorActionsSfxSelectionSounds
 } from "../../../sfx/SharedActorActionsSfx";
-import GameObject = Phaser.GameObjects.GameObject;
 import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished

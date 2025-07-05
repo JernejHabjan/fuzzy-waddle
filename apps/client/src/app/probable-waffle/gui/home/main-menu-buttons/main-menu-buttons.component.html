@@ -22,21 +22,25 @@
       </div>
     </div>
 
-    <div class="menu-section">
-      <h3 class="menu-section-title">Game Management</h3>
-      <div class="section-buttons">
-        <button class="menu-button" routerLink="load">
-          <span class="menu-button-text">Load Game</span>
-          <span class="menu-button-description">Continue saved game</span>
-        </button>
-        @if (enabledReplay) {
-          <button class="menu-button" routerLink="replay">
-            <span class="menu-button-text">Replay</span>
-            <span class="menu-button-description">Watch recorded matches</span>
-          </button>
-        }
+    @if (enabledLoadGame || enabledReplay) {
+      <div class="menu-section">
+        <h3 class="menu-section-title">Game Management</h3>
+        <div class="section-buttons">
+          @if (enabledLoadGame) {
+            <button class="menu-button" routerLink="load">
+              <span class="menu-button-text">Load Game</span>
+              <span class="menu-button-description">Continue saved game</span>
+            </button>
+          }
+          @if (enabledReplay) {
+            <button class="menu-button" routerLink="replay">
+              <span class="menu-button-text">Replay</span>
+              <span class="menu-button-description">Watch recorded matches</span>
+            </button>
+          }
+        </div>
       </div>
-    </div>
+    }
 
     @if (enabledInstantDemoGame) {
       <div class="menu-section">

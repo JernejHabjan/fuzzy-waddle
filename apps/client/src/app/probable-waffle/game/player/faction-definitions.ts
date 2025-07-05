@@ -1,7 +1,6 @@
 import { TechTreeComponent } from "./tech-tree";
 import { FactionInfo } from "./faction-info";
-import { FactionType } from "@fuzzy-waddle/api-interfaces";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 export class FactionDefinitions {
   static tivara: FactionInfo = new FactionInfo(

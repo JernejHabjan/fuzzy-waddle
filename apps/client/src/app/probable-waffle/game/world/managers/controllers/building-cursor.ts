@@ -1,7 +1,6 @@
 import { GameObjects, Input } from "phaser";
-import { ActorDefinition, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ActorDefinition, ObjectNames, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
@@ -20,8 +19,8 @@ import { NavigationService } from "../../../scenes/services/navigation.service";
 import { AudioService } from "../../../scenes/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../../scenes/components/fog-of-war.component";
-import Vector2 = Phaser.Math.Vector2;
 import { RepresentableComponent } from "../../../entity/actor/components/representable-component";
+import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;

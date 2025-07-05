@@ -4,7 +4,7 @@ import { HostComponent } from "./host.component";
 import { LobbyTestingComponent } from "../../lobby/lobby.component.spec";
 import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { FormsModule } from "@angular/forms";
 
 import { LobbyComponent } from "../../lobby/lobby.component";

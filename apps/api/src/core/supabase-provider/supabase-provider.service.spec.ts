@@ -1,13 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { SupabaseProviderService } from "./supabase-provider.service";
-import { ISupabaseProviderService } from "./supabase-provider.service.interface";
-import { SupabaseClient } from "@supabase/supabase-js";
-
-export const supabaseProviderServiceStub = {
-  get supabaseClient(): SupabaseClient {
-    return {} as SupabaseClient;
-  }
-} satisfies ISupabaseProviderService;
 
 describe("SupabaseProviderService", () => {
   /**

@@ -13,7 +13,9 @@ import WallTopLeft from "./WallTopLeft";
 import WallTopRight from "./WallTopRight";
 import WallBottomLeft from "./WallBottomLeft";
 import WallBottomRight from "./WallBottomRight";
-import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
+import {
+  ConstructionGameObjectInterfaceComponent
+} from "../../../../entity/building/construction/construction-game-object-interface-component";
 import WallBottomLeftBottomRight from "./WallBottomLeftBottomRight";
 import WallTopLeftTopRight from "./WallTopLeftTopRight";
 import WallFull from "./WallFull";

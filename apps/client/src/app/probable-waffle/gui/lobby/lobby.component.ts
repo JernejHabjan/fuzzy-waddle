@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import { PlayerDefinitionComponent } from "./player-definition/player-definition.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
@@ -9,7 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ProbableWaffleGameInstanceType, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { TriggerComponent } from "./trigger/trigger.component";
-import { NgIf } from "@angular/common";
+
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 
 @Component({
@@ -25,8 +25,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
     LobbyChatComponent,
     MapBrowserComponent,
     FormsModule,
-    TriggerComponent,
-    NgIf
+    TriggerComponent
   ]
 })
 export class LobbyComponent implements OnInit {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { FlySquasherController } from "./fly-squasher.controller";
 import { FlySquasherService } from "./fly-squasher.service";
-import { flySquasherServiceStub } from "./fly-squasher.service.spec";
+import { flySquasherServiceStub } from "./fly-squasher.service.stub";
 
 describe("FlySquasherController", () => {
   let controller: FlySquasherController;

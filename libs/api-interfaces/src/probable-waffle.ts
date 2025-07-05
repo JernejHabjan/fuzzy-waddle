@@ -16,3 +16,4 @@ export * from "./lib/probable-waffle/probable-waffle-player-state-action";
 export * from "./lib/probable-waffle/resource-type-definition";
 export * from "./lib/probable-waffle/probable-waffle-api";
 export * from "./lib/probable-waffle/game-setup.helpers";
+export * from "./lib/probable-waffle/achievement";

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { LobbyPageComponent } from "./lobby-page.component";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { LobbyTestingComponent } from "../../lobby/lobby.component.spec";
 import { LobbyComponent } from "../../lobby/lobby.component";
 
