@@ -23,6 +23,9 @@ import { CrossSceneCommunicationService } from "./services/CrossSceneCommunicati
 import { FogOfWarComponent } from "./components/fog-of-war.component";
 import { SelectionGroupsComponent } from "./components/selection-groups.component";
 import { GameModeConditionChecker } from "../world/managers/game-mode/GameModeConditionChecker";
+import { getSceneExternalComponent } from "./components/scene-component-helpers";
+import { AchievementService, AchievementType } from "../../services/achievement/achievement.service";
+import { environment } from "../../../../environments/environment";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -83,6 +86,11 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
+
+    if (!environment.production) {
+      const achievementService = getSceneExternalComponent(this.scene.scene, AchievementService);
+      achievementService?.unlockAchievement(AchievementType.FIRST_VICTORY); // just for test
+    }
   }
 
   private cleanup() {

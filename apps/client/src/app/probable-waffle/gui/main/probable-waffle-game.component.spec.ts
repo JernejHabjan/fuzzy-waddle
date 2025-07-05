@@ -5,6 +5,8 @@ import { GameContainerTestingComponent } from "../../../shared/game/game-contain
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { GameContainerComponent } from "../../../shared/game/game-container/game-container.component";
+import { AchievementService } from "../../services/achievement/achievement.service";
+import { achievementServiceStub } from "../../services/achievement/achievement.service.spec";
 
 jest.mock("../../game/world/const/game-config", () => ({
   probableWaffleGameConfig: {}
@@ -16,7 +18,10 @@ describe("ProbableWaffleGameComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
+      providers: [
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: AchievementService, useValue: achievementServiceStub }
+      ],
       imports: [ProbableWaffleGameComponent]
     })
       .overrideComponent(ProbableWaffleGameComponent, {
