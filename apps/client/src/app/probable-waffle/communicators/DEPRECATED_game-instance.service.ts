@@ -5,6 +5,7 @@ export type Achievement = {
   description: string;
   image: string;
   unlocked: boolean;
+  date?: Date; // Date when the achievement was unlocked
 };
 
 @Injectable({
@@ -17,7 +18,8 @@ export class DEPRECATED_gameInstanceService {
       name: "Level 1",
       description: "Complete level 1",
       image: "actor_info_icons/element.png",
-      unlocked: true
+      unlocked: true,
+      date: new Date("2025-04-01")
     },
     {
       name: "Level 2",

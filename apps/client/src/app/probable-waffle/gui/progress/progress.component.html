@@ -3,7 +3,7 @@
 <fuzzy-waddle-center-wrapper>
   <div class="card-container">
     <div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
-      <div style="max-width: 500px">
+      <div class="w-100">
         @if (!authService.isAuthenticated) {
           <div class="server-health">
             <p>Not authenticated. Please Login to continue</p>
@@ -14,21 +14,46 @@
               <p>Checking server health...</p>
             </div>
           } @else if (serverHealthService.serverAvailable) {
-            <h2 class="achievement-header">Achievements:</h2>
-            @for (achievement of gameInstanceService.getAchievements(); track achievement) {
-              <div class="d-flex achievement align-items-center">
-                <div>
+            <h2 class="achievement-header">Achievements</h2>
+
+            <div class="achievements-container">
+              @for (achievement of gameInstanceService.getAchievements(); track achievement) {
+                <div class="achievement" [class.unlocked]="achievement.unlocked" [class.locked]="!achievement.unlocked">
                   <h3 class="achievement-title">{{ achievement.name }}</h3>
-                  <div>{{ achievement.description }}</div>
+                  <div class="achievement-description">{{ achievement.description }}</div>
+
+                  <div class="achievement-image-container">
+                    <fuzzy-waddle-atlas-sprite
+                      [spriteName]="achievement.image"
+                      [width]="64"
+                      [height]="64"
+                      class="achievement-image"
+                    />
+                  </div>
+
+                  @if (achievement.unlocked && achievement.date) {
+                    <div class="achievement-date">Unlocked: {{ achievement.date | date: "mediumDate" }}</div>
+                  }
                 </div>
-                <fuzzy-waddle-atlas-sprite
-                  [spriteName]="achievement.image"
-                  [width]="48"
-                  [height]="48"
-                  class="achievement-image"
-                />
-              </div>
-            }
+              }
+
+              <!-- Placeholder achievements for empty spaces -->
+              @for (placeholder of getPlaceholders(gameInstanceService.getAchievements().length); track placeholder) {
+                <div class="achievement locked">
+                  <h3 class="achievement-title">???</h3>
+                  <div class="achievement-description">Continue playing to unlock more achievements!</div>
+
+                  <div class="achievement-image-container">
+                    <fuzzy-waddle-atlas-sprite
+                      spriteName="unknown"
+                      [width]="64"
+                      [height]="64"
+                      class="achievement-image"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
           } @else {
             <div class="server-health">
               <p>Server is not available</p>
