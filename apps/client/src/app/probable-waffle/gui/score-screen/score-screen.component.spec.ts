@@ -3,7 +3,7 @@ import { ScoreScreenComponent } from "./score-screen.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
 import { ScoreThroughTimeTestingComponent } from "./chart/score-through-time.component.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { provideRouter } from "@angular/router";
 
 describe("ScoreScreenComponent", () => {

@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HomeComponent } from "./home.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
-import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
+import { serverHealthServiceStub } from "../../shared/services/server-health.service.stub";
 import { AuthService } from "../../auth/auth.service";
-import { authServiceStub } from "../../auth/auth.service.spec";
+import { authServiceStub } from "../../auth/auth.service.stub";
 import { SpectateTestComponent } from "./spectate/spectate.component.spec";
 import { SpectateComponent } from "./spectate/spectate.component";
 import { Component } from "@angular/core";

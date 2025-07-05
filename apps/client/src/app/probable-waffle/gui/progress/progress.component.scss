@@ -1,27 +1,345 @@
+@use "sass:color";
 @use "../../../../styles/_variables.scss" as *;
+
+.achievement-header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
 
 .achievement-header {
   text-align: center;
   color: $primary;
   font-family: $app-font-bold;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+
+  @media (min-width: 768px) {
+    margin-bottom: 0;
+  }
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    justify-content: flex-end;
+  }
+}
+
+.filter-dropdown {
+  margin-right: 8px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.achievements-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 10px;
+  margin: 0 auto;
+
+  @media (min-width: 1400px) {
+    max-width: 1400px;
+  }
 }
 
 .achievement {
-  border-radius: 5px;
-  border: 1px solid $primary;
-  padding: 10px;
-  margin: 10px;
+  border-radius: 12px;
+  border: 2px solid $primary;
+  padding: 16px;
+  margin: 0;
   background-color: white;
   color: $primary;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 576px) {
+    padding: 12px;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  &.unlocked {
+    border-color: #4caf50;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background-color: #4caf50;
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+
+    &::after {
+      content: "✓";
+      position: absolute;
+      top: 2px;
+      right: 6px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+
+  &.locked {
+    filter: grayscale(0.7);
+    opacity: 0.8;
+    border-color: rgba($primary, 0.4); // Reduced border color vibrancy
+
+    .achievement-image-container {
+      background: rgba($primary, 0.05); // Lighter background for locked achievements
+    }
+
+    .achievement-image {
+      opacity: 0.5;
+      filter: grayscale(1); // Full grayscale for locked achievement images
+    }
+  }
+
+  .achievement-title-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px 0;
+    // Add padding if there's a difficulty badge
+    padding-top: 20px;
+
+    .lock-icon {
+      color: rgba($primary, 0.6);
+      font-size: 16px;
+    }
+  }
 
   .achievement-title {
     font-family: $app-font-bold;
+    font-size: 18px;
+    color: $primary;
+    margin: 0;
+
+    @media (max-width: 576px) {
+      font-size: 16px;
+    }
+  }
+
+  .difficulty-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+
+    &.easy {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    &.medium {
+      background-color: #ff9800;
+      color: white;
+    }
+
+    &.hard {
+      background-color: #f44336;
+      color: white;
+    }
+
+    // Reduced vibrancy for locked achievement badges
+    &.locked-badge {
+      opacity: 0.6;
+      filter: grayscale(0.3);
+    }
+  }
+
+  .category-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: rgba($primary, 0.1);
+    color: $primary;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+  }
+
+  .achievement-description {
+    font-size: 14px;
+    color: color.adjust($primary, $lightness: -10%);
+    margin-bottom: 16px;
+    flex-grow: 1;
+
+    @media (max-width: 576px) {
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+  }
+
+  .achievement-image-container {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding: 10px;
+    background: rgba($primary, 0.1);
+    border-radius: 8px;
+
+    @media (max-width: 576px) {
+      padding: 8px;
+    }
   }
 
   .achievement-image {
-    // max 200x200
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+
+    @media (max-width: 576px) {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .achievement-date {
+    font-size: 12px;
+    color: gray;
+    margin-top: 10px;
+    text-align: right;
+
+    @media (max-width: 576px) {
+      font-size: 11px;
+      margin-top: 8px;
+    }
+  }
+}
+
+// Achievement progress styling
+.achievement-progress-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+}
+
+.achievement-progress-stats {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+
+  .progress-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4caf50;
+  }
+
+  .progress-separator {
+    font-size: 1.2rem;
+    margin: 0 0.3rem;
+  }
+
+  .progress-total {
+    font-size: 1.2rem;
+  }
+
+  .progress-percent {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    color: $primary;
+    font-weight: bold;
+    background: rgba($primary, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+  }
+}
+
+.achievement-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: rgba($primary, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+
+  .achievement-progress-filled {
+    height: 100%;
+    background-color: #4caf50;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+}
+
+// Category section styling
+.category-section {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.category-header {
+  border-bottom: 2px solid $primary;
+  margin-bottom: 1rem;
+  width: 100%;
+
+  h3 {
+    color: $primary;
+    font-family: $app-font-bold;
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    padding-left: 0.5rem;
+  }
+}
+
+.category-achievements {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  width: 100%;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 577px) and (max-width: 767px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

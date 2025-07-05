@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ChatService } from "./chat.service";
-import { chatServiceStub } from "./chat.service.spec";
+import { chatServiceStub } from "./chat.service.stub";
 import { ChatController } from "./chat.controller";
 import { MessageDto } from "./message.dto";
-import { authUserStub } from "../../auth/auth.service.spec";
+import { authUserStub } from "../../auth/auth.service.stub";
 
 describe("ChatController", () => {
   let app: TestingModule;

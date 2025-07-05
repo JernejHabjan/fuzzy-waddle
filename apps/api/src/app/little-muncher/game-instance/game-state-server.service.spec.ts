@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { GameStateServerService } from "./game-state-server.service";
 import { GameInstanceService } from "./game-instance.service";
-import { GameInstanceServiceStub } from "./game-instance.service.spec";
+import { GameInstanceServiceStub } from "./game-instance.service.stub";
 
 describe("GameStateServerService", () => {
   let service: GameStateServerService;

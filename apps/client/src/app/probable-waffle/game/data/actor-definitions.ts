@@ -1,4 +1,4 @@
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ObjectDescriptorDefinition } from "../entity/actor/components/object-descriptor-component";
 import { OwnerDefinition } from "../entity/actor/components/owner-component";
 import { VisionDefinition } from "../entity/actor/components/vision-component";
@@ -6,7 +6,6 @@ import { InfoDefinition } from "../entity/actor/components/info-component";
 import { RequirementsDefinition } from "../entity/actor/components/requirements-component";
 import { BuilderDefinition } from "../entity/actor/components/builder-component";
 import { GathererDefinition } from "../entity/actor/components/gatherer-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../entity/building/payment-type";
 import { AttackDefinition } from "../entity/combat/components/attack-component";
 import { ActorPhysicalType, HealthDefinition } from "../entity/combat/components/health-component";

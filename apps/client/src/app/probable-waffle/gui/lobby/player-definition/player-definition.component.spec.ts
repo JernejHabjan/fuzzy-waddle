@@ -4,7 +4,7 @@ import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testi
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 
 @Component({ selector: "probable-waffle-player-definition", template: "", standalone: true, imports: [] })
 export class PlayerDefinitionTestingComponent {}

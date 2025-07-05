@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { SpectateComponent } from "./spectate.component";
 import { SpectateService } from "./spectate.service";
-import { spectateServiceStub } from "./spectate.service.spec";
+import { spectateServiceStub } from "./spectate.service.stub";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
-import { serverHealthServiceStub } from "../../../shared/services/server-health.service.spec";
+import { serverHealthServiceStub } from "../../../shared/services/server-health.service.stub";
 import { Component } from "@angular/core";
 
 @Component({ selector: "little-muncher-spectate", template: "", standalone: true, imports: [] })

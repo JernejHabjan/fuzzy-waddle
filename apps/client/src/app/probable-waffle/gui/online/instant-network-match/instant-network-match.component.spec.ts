@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { InstantNetworkMatchComponent } from "./instant-network-match.component";
-import { matchmakingServiceStub } from "../matchmaking/matchmaking.service.spec";
+import { matchmakingServiceStub } from "../matchmaking/matchmaking.service.stub";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";
-import { serverHealthServiceStub } from "../../../../shared/services/server-health.service.spec";
+import { serverHealthServiceStub } from "../../../../shared/services/server-health.service.stub";
 
 describe("InstantNetworkMatchComponent", () => {
   let component: InstantNetworkMatchComponent;

@@ -29,7 +29,8 @@
           "ws",
           "@supabase/node-fetch",
           "eventemitter3",
-          "mistreevous"
+          "mistreevous",
+          "howler"
         ]
       },
       "configurations": {
@@ -37,8 +38,8 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "1mb",
-              "maximumError": "2mb"
+              "maximumWarning": "2mb",
+              "maximumError": "3mb"
             },
             {
               "type": "anyComponentStyle",

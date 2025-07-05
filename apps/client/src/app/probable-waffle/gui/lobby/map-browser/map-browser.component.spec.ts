@@ -4,10 +4,10 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, input, model, Output } from "@angular/core";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
 import { AuthService } from "../../../../auth/auth.service";
-import { authServiceStub } from "../../../../auth/auth.service.spec";
+import { authServiceStub } from "../../../../auth/auth.service.stub";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
-import { SceneCommunicatorClientServiceStub } from "../../../communicators/scene-communicator-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
+import { SceneCommunicatorClientServiceStub } from "../../../communicators/scene-communicator-client.service.stub";
 import { ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 
 @Component({

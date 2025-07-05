@@ -28,8 +28,7 @@ import {
   ProbableWafflePlayerType,
   ProbableWaffleSpectatorData,
   ProbableWaffleSpectatorDataChangeEventProperty,
-  RequestGameSearchForMatchMakingDto,
-  TieConditions
+  RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";

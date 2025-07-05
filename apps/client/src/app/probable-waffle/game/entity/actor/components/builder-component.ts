@@ -14,8 +14,8 @@ import { OwnerComponent } from "./owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { AnimationActorComponent, AnimationOptions } from "./animation-actor-component";
 import { OrderType } from "../../character/ai/order-type";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ActorTranslateComponent } from "./actor-translate-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce

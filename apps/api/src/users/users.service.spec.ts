@@ -1,12 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { User, UsersService } from "./users.service";
-import { IUsersService } from "./users.service.interface";
-
-export const usersServiceStub = {
-  findOne(): Promise<User> {
-    return Promise.resolve(null);
-  }
-} satisfies IUsersService;
+import { UsersService } from "./users.service";
 
 describe("UsersService", () => {
   let service: UsersService;

@@ -18,8 +18,8 @@ import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
 import { AudioActorComponent, SoundType } from "../../../../entity/actor/components/audio-actor-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;

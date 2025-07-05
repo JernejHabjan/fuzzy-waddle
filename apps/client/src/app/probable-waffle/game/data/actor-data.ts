@@ -1,5 +1,5 @@
 import { pwActorDefinitions } from "./actor-definitions";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { VisionComponent } from "../entity/actor/components/vision-component";
 import { InfoComponent } from "../entity/actor/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
@@ -22,16 +22,15 @@ import { ProductionComponent } from "../entity/building/production/production-co
 import { ResourceSourceComponent } from "../entity/economy/resource/resource-source-component";
 import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
-import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "./actor-component";
 import { DepthHelper } from "../world/map/depth.helper";
-import GameObject = Phaser.GameObjects.GameObject;
-import Transform = Phaser.GameObjects.Components.Transform;
 import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/combat/components/healing-component";
 import { AudioActorComponent } from "../entity/actor/components/audio-actor-component";
 import { AnimationActorComponent } from "../entity/actor/components/animation-actor-component";
 import { RepresentableComponent } from "../entity/actor/components/representable-component";
+import GameObject = Phaser.GameObjects.GameObject;
+import Transform = Phaser.GameObjects.Components.Transform;
 
 export const ActorDataKey = "actorData";
 export class ActorData {

@@ -6,7 +6,7 @@ import { PlayerDefinitionTestingComponent } from "./player-definition/player-def
 import { MapDefinitionTestingComponent } from "./map-definition/map-definition.component.spec";
 import { GameModeDefinitionTestingComponent } from "./game-mode-definition/game-mode-definition.component.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { SpectatorsGridTestingComponent } from "./spectators-grid/spectators-grid.component.spec";
 import { LobbyChatTestingComponent } from "./lobby-chat/lobby-chat.component.spec";
 import { PlayerDefinitionComponent } from "./player-definition/player-definition.component";

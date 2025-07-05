@@ -3,8 +3,8 @@
 <fuzzy-waddle-center-wrapper>
   <div class="card-container">
     <div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
-      <div style="max-width: 500px">
-        @if (!authService.isAuthenticated) {
+      <div class="w-100">
+        @if (!authService.isAuthenticated && !isViewingOtherUser()) {
           <div class="server-health">
             <p>Not authenticated. Please Login to continue</p>
           </div>
@@ -14,16 +14,162 @@
               <p>Checking server health...</p>
             </div>
           } @else if (serverHealthService.serverAvailable) {
-            <h2 class="achievement-header">Achievements:</h2>
-            @for (achievement of gameInstanceService.getAchievements(); track achievement) {
-              <div class="d-flex achievement align-items-center">
-                <div>
-                  <h3 class="achievement-title">{{ achievement.name }}</h3>
-                  <div>{{ achievement.description }}</div>
+            <div class="achievement-header-container">
+              <!-- Back button and user info when viewing other user -->
+              @if (isViewingOtherUser()) {
+                <div class="d-flex align-items-center mb-2">
+                  <button class="btn btn-outline-secondary me-2" (click)="goBack()">
+                    <fa-icon [icon]="faArrowLeft" /> Back
+                  </button>
+                  <span class="ms-2">Viewing user achievements</span>
                 </div>
-                <img [alt]="achievement.name" [src]="achievement.image" class="achievement-image" />
+              }
+
+              <div class="d-flex justify-content-between align-items-center">
+                <h2 class="achievement-header">Achievements</h2>
+
+                <!-- Share button - only visible when viewing your own achievements -->
+                @if (viewingUserId() && !isViewingOtherUser()) {
+                  <button class="btn btn-outline-primary" (click)="shareAchievements()">
+                    <fa-icon [icon]="faShare" /> Share
+                  </button>
+                }
               </div>
-            }
+
+              <!-- Achievement progress indicator -->
+              <div class="achievement-progress-container">
+                <div class="achievement-progress-stats">
+                  <span class="progress-count">{{ getUnlockedCount() }}</span>
+                  <span class="progress-separator">/</span>
+                  <span class="progress-total">{{ getTotalAchievementsCount() }}</span>
+                  <span class="progress-percent">{{ getUnlockedPercentage() }}%</span>
+                </div>
+                <div class="achievement-progress-bar">
+                  <div class="achievement-progress-filled" [style.width.%]="getUnlockedPercentage()"></div>
+                </div>
+              </div>
+
+              <!-- Filters -->
+              <div class="filters-container">
+                <!-- Category filter -->
+                <div ngbDropdown class="filter-dropdown">
+                  <button class="btn btn-outline-primary" ngbDropdownToggle>
+                    {{ selectedCategory() ? selectedCategory() : "All Categories" }}
+                  </button>
+                  <div ngbDropdownMenu>
+                    <button ngbDropdownItem (click)="setCategory(null)">All Categories</button>
+                    @for (category of categories; track category) {
+                      <button ngbDropdownItem (click)="setCategory(category)">{{ category }}</button>
+                    }
+                  </div>
+                </div>
+
+                <!-- Status filter buttons -->
+                <div class="filter-buttons">
+                  <button
+                    class="btn"
+                    [class.btn-outline-primary]="!showUnlockedOnly()"
+                    [class.btn-primary]="showUnlockedOnly()"
+                    (click)="toggleUnlockedOnly()"
+                  >
+                    Unlocked
+                  </button>
+                  <button
+                    class="btn"
+                    [class.btn-outline-primary]="!showLockedOnly()"
+                    [class.btn-primary]="showLockedOnly()"
+                    (click)="toggleLockedOnly()"
+                  >
+                    Locked
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="achievements-container">
+              <!-- Display achievements organized by category -->
+              @for (category of getCategorizedAchievements(); track category.name) {
+                <div class="category-section">
+                  <!-- Category header -->
+                  @if (category.name !== null && !selectedCategory()) {
+                    <div class="category-header">
+                      <h3>{{ category.name }}</h3>
+                    </div>
+                  } @else if (category.name === null && !selectedCategory()) {
+                    <div class="category-header">
+                      <h3>General</h3>
+                    </div>
+                  }
+
+                  <!-- Achievements in this category -->
+                  <div class="category-achievements">
+                    @for (achievement of category.achievements; track achievement.id) {
+                      <div
+                        class="achievement"
+                        [class.unlocked]="achievement.unlocked"
+                        [class.locked]="!achievement.unlocked"
+                      >
+                        <!-- Difficulty indicator -->
+                        @if (achievement.difficulty) {
+                          <div
+                            class="difficulty-badge"
+                            [class]="achievement.difficulty"
+                            [class.locked-badge]="!achievement.unlocked"
+                          >
+                            {{ achievement.difficulty }}
+                          </div>
+                        }
+
+                        <div class="achievement-title-container">
+                          <h3 class="achievement-title">{{ achievement.name }}</h3>
+                          @if (!achievement.unlocked) {
+                            <fa-icon [icon]="faLock" class="lock-icon" />
+                          }
+                        </div>
+                        <div class="achievement-description">{{ achievement.description }}</div>
+
+                        <!-- Category badge -->
+                        @if (achievement.category) {
+                          <div class="category-badge">{{ achievement.category }}</div>
+                        }
+
+                        <div class="achievement-image-container">
+                          <fuzzy-waddle-atlas-sprite
+                            [spriteName]="achievement.image"
+                            [width]="64"
+                            [height]="64"
+                            class="achievement-image"
+                          />
+                        </div>
+
+                        @if (achievement.unlocked && achievement.unlockedDate) {
+                          <div class="achievement-date">
+                            Unlocked: {{ achievement.unlockedDate | date: "mediumDate" }}
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Placeholder achievements for empty spaces - only show when no filters are active -->
+              @if (!selectedCategory() && !showUnlockedOnly() && !showLockedOnly()) {
+                <div class="category-section">
+                  <div class="category-header">
+                    <h3>Secret Achievements</h3>
+                  </div>
+                  <div class="category-achievements">
+                    @for (placeholder of getSecretAchievements(); track placeholder.id) {
+                      <div class="achievement locked">
+                        <h3 class="achievement-title">???</h3>
+                        <div class="achievement-description">Continue playing to unlock more achievements!</div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
           } @else {
             <div class="server-health">
               <p>Server is not available</p>

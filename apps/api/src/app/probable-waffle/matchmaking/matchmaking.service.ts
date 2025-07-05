@@ -18,8 +18,7 @@ import {
   ProbableWaffleMapEnum,
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType,
-  RequestGameSearchForMatchMakingDto,
-  TieConditions
+  RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
 import { User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
