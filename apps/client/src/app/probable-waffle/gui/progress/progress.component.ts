@@ -18,6 +18,12 @@ import { environment } from "../../../../environments/environment";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { faShare, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
+// Interface for achievement categories for display
+interface AchievementCategory {
+  name: string | null;
+  achievements: AchievementDto[];
+}
+
 @Component({
   templateUrl: "./progress.component.html",
   styleUrls: ["./progress.component.scss"],
@@ -121,6 +127,58 @@ export class ProgressComponent implements OnInit {
     // Filter by category if selected
     if (this.selectedCategory()) {
       filtered = filtered.filter((a) => a.category === this.selectedCategory());
+
+      // Sort by unlock status (unlocked first)
+      filtered.sort((a, b) => {
+        // Unlocked achievements first
+        if (a.unlocked !== b.unlocked) {
+          return a.unlocked ? -1 : 1;
+        }
+        // Then alphabetically by name
+        return a.name.localeCompare(b.name);
+      });
+    } else {
+      // When no category is selected, group by category
+      // First get all categories from the filtered achievements
+      const categoriesInAchievements = filtered
+        .map((a) => a.category)
+        .filter((c, i, self) => c && self.indexOf(c) === i) as string[];
+
+      // Sort categories alphabetically
+      categoriesInAchievements.sort();
+
+      // Create a new array with achievements grouped by category
+      const groupedFiltered: AchievementDto[] = [];
+
+      // First add achievements without a category (if any)
+      const uncategorized = filtered.filter((a) => !a.category);
+
+      // Sort uncategorized with unlocked first
+      uncategorized.sort((a, b) => {
+        if (a.unlocked !== b.unlocked) {
+          return a.unlocked ? -1 : 1;
+        }
+        return a.name.localeCompare(b.name);
+      });
+
+      groupedFiltered.push(...uncategorized);
+
+      // Then add achievements for each category
+      for (const category of categoriesInAchievements) {
+        const categoryAchievements = filtered.filter((a) => a.category === category);
+
+        // Sort each category with unlocked first
+        categoryAchievements.sort((a, b) => {
+          if (a.unlocked !== b.unlocked) {
+            return a.unlocked ? -1 : 1;
+          }
+          return a.name.localeCompare(b.name);
+        });
+
+        groupedFiltered.push(...categoryAchievements);
+      }
+
+      filtered = groupedFiltered;
     }
 
     // Filter by unlock status
@@ -216,5 +274,110 @@ export class ProgressComponent implements OnInit {
    */
   protected goBack() {
     this.location.back();
+  }
+
+  /**
+   * Get achievements organized by category with unlocked ones first within each category
+   */
+  protected getCategorizedAchievements(): AchievementCategory[] {
+    // If a specific category is selected, just return that as a single group
+    if (this.selectedCategory()) {
+      let filtered = this.achievements().filter((a) => a.category === this.selectedCategory());
+
+      // Apply unlock status filter if needed
+      if (this.showUnlockedOnly()) {
+        filtered = filtered.filter((a) => a.unlocked);
+      } else if (this.showLockedOnly()) {
+        filtered = filtered.filter((a) => !a.unlocked);
+      }
+
+      // Filter out secret achievements that aren't unlocked
+      filtered = filtered.filter((a) => !a.secret);
+
+      // Sort with unlocked first
+      filtered.sort((a, b) => {
+        if (a.unlocked !== b.unlocked) {
+          return a.unlocked ? -1 : 1;
+        }
+        return a.name.localeCompare(b.name);
+      });
+
+      return [{ name: this.selectedCategory(), achievements: filtered }];
+    }
+
+    // Start with all achievements
+    let allAchievements = this.achievements();
+
+    // Apply unlock status filter if needed
+    if (this.showUnlockedOnly()) {
+      allAchievements = allAchievements.filter((a) => a.unlocked);
+    } else if (this.showLockedOnly()) {
+      allAchievements = allAchievements.filter((a) => !a.unlocked);
+    }
+
+    // Hide secret achievements that aren't unlocked
+    allAchievements = allAchievements.filter((a) => !a.secret);
+
+    // Get all categories present in the filtered achievements
+    const categoriesInAchievements = allAchievements
+      .map((a) => a.category)
+      .filter((c, i, self) => self.indexOf(c) === i) as (string | null)[];
+
+    // Sort categories alphabetically, but keep null (uncategorized) first
+    categoriesInAchievements.sort((a, b) => {
+      if (a === null) return -1;
+      if (b === null) return 1;
+      return a.localeCompare(b);
+    });
+
+    // Create the category groups
+    const categorizedAchievements: AchievementCategory[] = [];
+
+    for (const category of categoriesInAchievements) {
+      const categoryAchievements = allAchievements.filter((a) => a.category === category);
+
+      // Sort each category with unlocked first
+      categoryAchievements.sort((a, b) => {
+        if (a.unlocked !== b.unlocked) {
+          return a.unlocked ? -1 : 1;
+        }
+        return a.name.localeCompare(b.name);
+      });
+
+      categorizedAchievements.push({
+        name: category,
+        achievements: categoryAchievements
+      });
+    }
+
+    return categorizedAchievements;
+  }
+
+  /**
+   * Get the total number of achievements (excluding secret ones that aren't unlocked)
+   */
+  protected getTotalAchievementsCount(): number {
+    const allAchievements = this.achievements();
+    // Count all non-secret achievements plus unlocked secret achievements
+    return allAchievements.filter((a) => !a.secret || a.unlocked).length;
+  }
+
+  /**
+   * Get the number of unlocked achievements
+   */
+  protected getUnlockedCount(): number {
+    return this.achievements().filter((a) => a.unlocked).length;
+  }
+
+  /**
+   * Calculate the percentage of unlocked achievements
+   */
+  protected getUnlockedPercentage(): number {
+    const total = this.getTotalAchievementsCount();
+    if (total === 0) return 0;
+
+    const unlocked = this.getUnlockedCount();
+    const percentage = Math.round((unlocked / total) * 100);
+    return percentage;
   }
 }

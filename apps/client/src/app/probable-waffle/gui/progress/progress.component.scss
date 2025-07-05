@@ -47,37 +47,14 @@
 }
 
 .achievements-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 1200px;
   padding: 0 10px;
   margin: 0 auto;
 
-  @media (max-width: 576px) {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  @media (min-width: 577px) and (max-width: 767px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 768px) and (max-width: 991px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media (min-width: 992px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(5, 1fr);
-  }
-
   @media (min-width: 1400px) {
-    grid-template-columns: repeat(6, 1fr);
     max-width: 1400px;
   }
 }
@@ -242,5 +219,108 @@
       font-size: 11px;
       margin-top: 8px;
     }
+  }
+}
+
+// Achievement progress styling
+.achievement-progress-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+}
+
+.achievement-progress-stats {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+
+  .progress-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4caf50;
+  }
+
+  .progress-separator {
+    font-size: 1.2rem;
+    margin: 0 0.3rem;
+  }
+
+  .progress-total {
+    font-size: 1.2rem;
+  }
+
+  .progress-percent {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    color: $primary;
+    font-weight: bold;
+    background: rgba($primary, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+  }
+}
+
+.achievement-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: rgba($primary, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+
+  .achievement-progress-filled {
+    height: 100%;
+    background-color: #4caf50;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+}
+
+// Category section styling
+.category-section {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.category-header {
+  border-bottom: 2px solid $primary;
+  margin-bottom: 1rem;
+  width: 100%;
+
+  h3 {
+    color: $primary;
+    font-family: $app-font-bold;
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    padding-left: 0.5rem;
+  }
+}
+
+.category-achievements {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  width: 100%;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 577px) and (max-width: 767px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

@@ -36,6 +36,19 @@
                 }
               </div>
 
+              <!-- Achievement progress indicator -->
+              <div class="achievement-progress-container">
+                <div class="achievement-progress-stats">
+                  <span class="progress-count">{{ getUnlockedCount() }}</span>
+                  <span class="progress-separator">/</span>
+                  <span class="progress-total">{{ getTotalAchievementsCount() }}</span>
+                  <span class="progress-percent">{{ getUnlockedPercentage() }}%</span>
+                </div>
+                <div class="achievement-progress-bar">
+                  <div class="achievement-progress-filled" [style.width.%]="getUnlockedPercentage()"></div>
+                </div>
+              </div>
+
               <!-- Filters -->
               <div class="filters-container">
                 <!-- Category filter -->
@@ -74,51 +87,85 @@
             </div>
 
             <div class="achievements-container">
-              @for (achievement of getFilteredAchievements(); track achievement.id) {
-                <div class="achievement" [class.unlocked]="achievement.unlocked" [class.locked]="!achievement.unlocked">
-                  <!-- Difficulty indicator -->
-                  @if (achievement.difficulty) {
-                    <div class="difficulty-badge" [class]="achievement.difficulty">
-                      {{ achievement.difficulty }}
+              <!-- Display achievements organized by category -->
+              @for (category of getCategorizedAchievements(); track category.name) {
+                <div class="category-section">
+                  <!-- Category header -->
+                  @if (category.name !== null && !selectedCategory()) {
+                    <div class="category-header">
+                      <h3>{{ category.name }}</h3>
+                    </div>
+                  } @else if (category.name === null && !selectedCategory()) {
+                    <div class="category-header">
+                      <h3>General</h3>
                     </div>
                   }
 
-                  <h3 class="achievement-title">{{ achievement.name }}</h3>
-                  <div class="achievement-description">{{ achievement.description }}</div>
+                  <!-- Achievements in this category -->
+                  <div class="category-achievements">
+                    @for (achievement of category.achievements; track achievement.id) {
+                      <div
+                        class="achievement"
+                        [class.unlocked]="achievement.unlocked"
+                        [class.locked]="!achievement.unlocked"
+                      >
+                        <!-- Difficulty indicator -->
+                        @if (achievement.difficulty) {
+                          <div class="difficulty-badge" [class]="achievement.difficulty">
+                            {{ achievement.difficulty }}
+                          </div>
+                        }
 
-                  <!-- Category badge -->
-                  @if (achievement.category) {
-                    <div class="category-badge">{{ achievement.category }}</div>
-                  }
+                        <h3 class="achievement-title">{{ achievement.name }}</h3>
+                        <div class="achievement-description">{{ achievement.description }}</div>
 
-                  <div class="achievement-image-container">
-                    <fuzzy-waddle-atlas-sprite
-                      [spriteName]="achievement.image"
-                      [width]="64"
-                      [height]="64"
-                      class="achievement-image"
-                    />
+                        <!-- Category badge -->
+                        @if (achievement.category) {
+                          <div class="category-badge">{{ achievement.category }}</div>
+                        }
+
+                        <div class="achievement-image-container">
+                          <fuzzy-waddle-atlas-sprite
+                            [spriteName]="achievement.image"
+                            [width]="64"
+                            [height]="64"
+                            class="achievement-image"
+                          />
+                        </div>
+
+                        @if (achievement.unlocked && achievement.unlockedDate) {
+                          <div class="achievement-date">
+                            Unlocked: {{ achievement.unlockedDate | date: "mediumDate" }}
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
-
-                  @if (achievement.unlocked && achievement.unlockedDate) {
-                    <div class="achievement-date">Unlocked: {{ achievement.unlockedDate | date: "mediumDate" }}</div>
-                  }
                 </div>
               }
 
-              <!-- Placeholder achievements for empty spaces -->
-              @for (placeholder of getSecretAchievements(); track placeholder.id) {
-                <div class="achievement locked">
-                  <h3 class="achievement-title">???</h3>
-                  <div class="achievement-description">Continue playing to unlock more achievements!</div>
+              <!-- Placeholder achievements for empty spaces - only show when no filters are active -->
+              @if (!selectedCategory() && !showUnlockedOnly() && !showLockedOnly()) {
+                <div class="category-section">
+                  <div class="category-header">
+                    <h3>Secret Achievements</h3>
+                  </div>
+                  <div class="category-achievements">
+                    @for (placeholder of getSecretAchievements(); track placeholder.id) {
+                      <div class="achievement locked">
+                        <h3 class="achievement-title">???</h3>
+                        <div class="achievement-description">Continue playing to unlock more achievements!</div>
 
-                  <div class="achievement-image-container">
-                    <fuzzy-waddle-atlas-sprite
-                      spriteName="unknown"
-                      [width]="64"
-                      [height]="64"
-                      class="achievement-image"
-                    />
+                        <div class="achievement-image-container">
+                          <fuzzy-waddle-atlas-sprite
+                            spriteName="unknown"
+                            [width]="64"
+                            [height]="64"
+                            class="achievement-image"
+                          />
+                        </div>
+                      </div>
+                    }
                   </div>
                 </div>
               }
