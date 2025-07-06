@@ -1,6 +1,16 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
 
+export interface WalkablePath {
+  top?: boolean;
+  bottom?: boolean;
+  left?: boolean;
+  right?: boolean;
+  topLeft?: boolean;
+  topRight?: boolean;
+  bottomLeft?: boolean;
+  bottomRight?: boolean;
+}
 export interface WalkableDefinition {
   shrinkPathToRight?: number;
   shrinkPathToLeft?: number;
@@ -12,6 +22,16 @@ export interface WalkableDefinition {
 }
 
 export class WalkableComponent {
+  private walkablePath: WalkablePath = {
+    top: true,
+    bottom: true,
+    left: true,
+    right: true,
+    topLeft: true,
+    topRight: true,
+    bottomLeft: true,
+    bottomRight: true
+  } satisfies WalkablePath;
   constructor(
     private readonly gameObject: GameObject,
     public readonly walkableDefinition: WalkableDefinition
@@ -34,5 +54,9 @@ export class WalkableComponent {
    */
   getDestinationHeight(): number {
     return this.walkableDefinition.walkableHeight ?? 0;
+  }
+
+  allowWalkablePath(approachableFrom: Partial<WalkablePath>) {
+    this.walkablePath = approachableFrom;
   }
 }

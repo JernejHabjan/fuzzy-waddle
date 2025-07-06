@@ -5,9 +5,7 @@
 import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import {
-  ConstructionGameObjectInterfaceComponent
-} from "../../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
 import { onObjectReady } from "../../../../data/game-object-helper";
 import { throttle } from "../../../../library/throttle";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
@@ -18,6 +16,8 @@ import StairsTopRight from "./StairsTopRight";
 import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
 import { setActorData } from "../../../../data/actor-data";
+import { getActorComponent } from "../../../../data/actor-component";
+import { WalkablePath, WalkableComponent } from "../../../../entity/actor/components/walkable-component";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -84,6 +84,42 @@ export default class Stairs extends Phaser.GameObjects.Container {
       this.add(this.stairs);
     } else {
       throw new Error("Stairs type not found");
+    }
+    const walkableComponent = getActorComponent(this, WalkableComponent);
+    if (walkableComponent) {
+      const walkablePath = this.getWalkablePath(stairsType);
+      walkableComponent.allowWalkablePath(walkablePath);
+    }
+  }
+
+  private getWalkablePath(stairsType: StairsType): WalkablePath {
+    switch (stairsType) {
+      case StairsType.TopLeft:
+        return {
+          right: true,
+          bottomRight: true,
+          bottom: true
+        };
+      case StairsType.TopRight:
+        return {
+          left: true,
+          bottomLeft: true,
+          bottom: true
+        };
+      case StairsType.BottomLeft:
+        return {
+          top: true,
+          topRight: true,
+          right: true
+        };
+      case StairsType.BottomRight:
+        return {
+          top: true,
+          topLeft: true,
+          left: true
+        };
+      default:
+        return {};
     }
   }
 

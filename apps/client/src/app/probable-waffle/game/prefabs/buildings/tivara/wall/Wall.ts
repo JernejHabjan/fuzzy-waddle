@@ -13,9 +13,7 @@ import WallTopLeft from "./WallTopLeft";
 import WallTopRight from "./WallTopRight";
 import WallBottomLeft from "./WallBottomLeft";
 import WallBottomRight from "./WallBottomRight";
-import {
-  ConstructionGameObjectInterfaceComponent
-} from "../../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
 import WallBottomLeftBottomRight from "./WallBottomLeftBottomRight";
 import WallTopLeftTopRight from "./WallTopLeftTopRight";
 import WallFull from "./WallFull";
@@ -30,6 +28,8 @@ import Stairs from "../stairs/Stairs";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import { TilemapComponent } from "../../../../scenes/components/tilemap.component";
 import { setActorData } from "../../../../data/actor-data";
+import { getActorComponent } from "../../../../data/actor-component";
+import { WalkableComponent, WalkablePath } from "../../../../entity/actor/components/walkable-component";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -105,6 +105,60 @@ export default class Wall extends Phaser.GameObjects.Container {
       this.add(this.wall);
     } else {
       throw new Error("Wall type not found");
+    }
+
+    const walkableComponent = getActorComponent(this, WalkableComponent);
+    if (walkableComponent) {
+      const walkablePath = this.getWalkablePath(wallType);
+      walkableComponent.allowWalkablePath(walkablePath);
+    }
+  }
+
+  private getWalkablePath(wallType: WallType): WalkablePath {
+    switch (wallType) {
+      case WallType.TopRightBottomRight:
+        return { topLeft: true, left: true, bottomLeft: true };
+      case WallType.TopRightBottomLeft:
+        return { topLeft: true, bottomRight: true };
+      case WallType.TopLeftBottomRight:
+        return { topRight: true, bottomLeft: true };
+      case WallType.TopLeftBottomLeft:
+        return { topRight: true, right: true, bottomRight: true };
+      case WallType.Empty:
+        return {
+          top: true,
+          bottom: true,
+          left: true,
+          right: true,
+          topLeft: true,
+          topRight: true,
+          bottomLeft: true,
+          bottomRight: true
+        };
+      case WallType.Full:
+        return {};
+      case WallType.TopLeft:
+        return { topRight: true, right: true, bottomRight: true, bottom: true, bottomLeft: true };
+      case WallType.TopRight:
+        return { topLeft: true, left: true, bottomLeft: true, bottom: true, bottomRight: true };
+      case WallType.BottomLeft:
+        return { topLeft: true, top: true, topRight: true, right: true, bottomRight: true };
+      case WallType.BottomRight:
+        return { topRight: true, top: true, topLeft: true, left: true, bottomLeft: true };
+      case WallType.TopLeftTopRight:
+        return { bottomLeft: true, bottom: true, bottomRight: true };
+      case WallType.BottomLeftBottomRight:
+        return { topRight: true, top: true, topLeft: true };
+      case WallType.TopLeftTopRightBottomLeft:
+        return { bottomRight: true };
+      case WallType.TopRightBottomLeftBottomRight:
+        return { topLeft: true };
+      case WallType.TopLeftTopRightBottomRight:
+        return { bottomLeft: true };
+      case WallType.TopLeftBottomLeftBottomRight:
+        return { topRight: true };
+      default:
+        return {};
     }
   }
 
