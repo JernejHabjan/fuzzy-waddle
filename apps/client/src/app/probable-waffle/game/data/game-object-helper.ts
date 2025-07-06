@@ -67,16 +67,6 @@ export async function getGameObjectTileInNavigableRadius(
   return await navigationService.randomTileInNavigableRadius(currentTile, radius);
 }
 
-export async function getClosestWalkableTileBetweenGameObjectsInRadius(
-  gameObject: Phaser.GameObjects.GameObject,
-  destinationGameObject: Phaser.GameObjects.GameObject,
-  radius: number
-): Promise<Vector2Simple | undefined> {
-  const navigationService = getSceneService(gameObject.scene, NavigationService);
-  if (!navigationService) throw new Error("NavigationService not found");
-  return navigationService.closestWalkableTileBetweenGameObjectsInRadius(gameObject, destinationGameObject, radius);
-}
-
 export function getGameObjectTileInRadius(
   gameObject: Phaser.GameObjects.GameObject,
   radius: number

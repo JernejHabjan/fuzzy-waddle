@@ -16,10 +16,11 @@ export class DepthHelper {
     const actorWithDepth = actor as any as Phaser.GameObjects.Components.Depth;
     const transform = getGameObjectTransform(actor);
     if (!transform || !actorWithDepth.setDepth) return;
-    actorWithDepth.setDepth(transform.y);
+    let newDepth = transform.y;
     if (transform.z) {
       const z = transform.z;
-      actorWithDepth.setDepth(transform.y + z * 2);
+      newDepth = transform.y + z * 2;
     }
+    actorWithDepth.setDepth(newDepth);
   }
 }

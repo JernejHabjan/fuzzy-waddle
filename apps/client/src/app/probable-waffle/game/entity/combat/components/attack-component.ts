@@ -21,6 +21,7 @@ import { GameplayLibrary } from "../../../library/gameplay-library";
 import { EffectsAnims } from "../../../animations/effects";
 import GameObject = Phaser.GameObjects.GameObject;
 import SkaduweeOwlFurball from "../../../prefabs/weapons/SkaduweeOwlFurball";
+import { FlightComponent } from "../../actor/components/flight-component";
 
 export type AttackDefinition = {
   attacks: AttackData[];
@@ -76,8 +77,7 @@ export class AttackComponent {
    * @returns Whether the target is flying or not
    */
   private isTargetFlying(target: GameObject): boolean {
-    const actorTranslateComponent = getActorComponent(target, ActorTranslateComponent);
-    return actorTranslateComponent?.actorTranslateDefinition.isFlying ?? false;
+    return !!getActorComponent(target, FlightComponent);
   }
 
   /**

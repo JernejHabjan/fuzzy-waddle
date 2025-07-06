@@ -4,7 +4,6 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { AudioActorComponent } from "../../entity/actor/components/audio-actor-component";
 import { AnimationActorComponent, AnimationOptions } from "../../entity/actor/components/animation-actor-component";
 import { getActorComponent } from "../../data/actor-component";
 import {
@@ -37,7 +36,6 @@ export default class Badger extends Phaser.GameObjects.Sprite {
   /* START-USER-CODE */
   name = ObjectNames.Badger;
 
-  private actorAudioComponent?: AudioActorComponent;
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
   private movementSystem?: MovementSystem;
@@ -46,7 +44,6 @@ export default class Badger extends Phaser.GameObjects.Sprite {
   private tunneling = false;
 
   private postSceneCreate() {
-    this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
     this.animationActorComponent = getActorComponent(this, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this, ActorTranslateComponent);
     this.movementSystem = getActorSystem(this, MovementSystem);
@@ -105,7 +102,6 @@ export default class Badger extends Phaser.GameObjects.Sprite {
 
     this.movementSystem
       ?.moveToLocation({ x: tileXY.x, y: tileXY.y, z: 0 }, {
-        tileStepDuration: 500,
         ignoreAnimations: true // we're overriding move animations here
       } satisfies PathMoveConfig)
       .then((success) => {

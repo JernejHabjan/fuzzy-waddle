@@ -174,6 +174,7 @@ import {
   ANIM_WOLF_DEFINITION
 } from "../animations/animals2";
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
+import { FlightDefinition } from "../entity/actor/components/flight-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -249,7 +250,7 @@ const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
     },
     selectable: {},
     translatable: {
-      tileStepDuration: 500
+      tileMoveDuration: 500
     },
     containable: { enabled: true },
     aiControlled: {
@@ -358,6 +359,7 @@ export type ActorInfoDefinition = Partial<{
     production: ProductionDefinition;
     healing: HealingDefinition;
     translatable: ActorTranslateDefinition;
+    flying: FlightDefinition;
     animatable: ActorAnimationsDefinition;
     aiControlled: PawnAiDefinition;
     containable: { enabled: boolean };
@@ -390,7 +392,7 @@ export const pwActorDefinitions: {
         color: 0x896347
       },
       translatable: {
-        tileStepDuration: 5000
+        tileMoveDuration: 5000
       },
       audio: {
         sounds: {
@@ -414,7 +416,7 @@ export const pwActorDefinitions: {
         color: 0xf2f7fa
       },
       translatable: {
-        tileStepDuration: 5000
+        tileMoveDuration: 5000
       },
       audio: {
         sounds: {
@@ -439,7 +441,7 @@ export const pwActorDefinitions: {
         color: 0x222e37
       },
       translatable: {
-        tileStepDuration: 800
+        tileMoveDuration: 800
       },
       audio: {
         sounds: {
@@ -462,7 +464,7 @@ export const pwActorDefinitions: {
         color: 0x222e37
       },
       translatable: {
-        tileStepDuration: 400
+        tileMoveDuration: 400
       },
       audio: {
         sounds: {
@@ -485,7 +487,7 @@ export const pwActorDefinitions: {
         color: 0xc75841
       },
       translatable: {
-        tileStepDuration: 800
+        tileMoveDuration: 800
       },
       audio: {
         sounds: {
@@ -524,7 +526,7 @@ export const pwActorDefinitions: {
         maxHealth: 100
       },
       translatable: {
-        tileStepDuration: 300
+        tileMoveDuration: 300
       },
       audio: {
         sounds: {
@@ -588,7 +590,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -651,7 +653,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -725,7 +727,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -1180,9 +1182,10 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Owlery]
       },
       translatable: {
-        usePathfinding: false,
-        tileStepDuration: 1000,
-        isFlying: true
+        tileMoveDuration: 2000
+      },
+      flying: {
+        height: 128
       },
       aiControlled: {
         type: AiType.Character
@@ -1254,7 +1257,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -1328,7 +1331,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -1402,7 +1405,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {

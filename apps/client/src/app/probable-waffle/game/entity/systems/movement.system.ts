@@ -33,13 +33,12 @@ import {
 } from "../../sfx/SharedActorActionsSfx";
 import { OwnerComponent } from "../actor/components/owner-component";
 import { AnimationActorComponent } from "../actor/components/animation-actor-component";
+import { FlightComponent } from "../actor/components/flight-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
 
 export interface PathMoveConfig {
-  usePathfinding?: boolean;
   radiusTilesAroundDestination?: number;
-  tileStepDuration?: number;
   onUpdateThrottle?: number;
   onComplete?: () => void;
   onPathUpdate?: (newTileXY: Vector2Simple) => void;
@@ -50,7 +49,6 @@ export interface PathMoveConfig {
 }
 
 export class MovementSystem {
-  private readonly defaultTileStepDuration = 500;
   private _navigationService?: NavigationService;
   private _currentTween?: Tween;
   private readonly DEBUG = false;
@@ -126,7 +124,9 @@ export class MovementSystem {
   }
 
   async moveToLocation(tileVec3: Vector3Simple, pathMoveConfig?: PathMoveConfig): Promise<boolean> {
-    if (pathMoveConfig?.usePathfinding === false) {
+    const flightComponent = getActorComponent(this.gameObject, FlightComponent);
+    const usePathfinding = !flightComponent;
+    if (!usePathfinding) {
       return this.moveDirectlyToLocation(tileVec3, pathMoveConfig)
         .then(() => true)
         .catch(() => false);
@@ -155,7 +155,9 @@ export class MovementSystem {
   }
 
   async moveToActor(gameObject: GameObject, pathMoveConfig?: Partial<PathMoveConfig>): Promise<boolean> {
-    if (pathMoveConfig?.usePathfinding === false) {
+    const flightComponent = getActorComponent(gameObject, FlightComponent);
+    const usePathfinding = !flightComponent;
+    if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(gameObject);
       if (!vec3) return false;
       return this.moveDirectlyToLocation(
@@ -206,13 +208,16 @@ export class MovementSystem {
           : undefined;
 
         this.onMovementStart(tileWorldXY, pathMoveConfig);
-
+        const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+        const tileStepDuration =
+          actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
+          new Error("No tile move duration defined");
         // Only move one step at a time when following
         this._currentTween = this.gameObject.scene.tweens.add({
           targets: this.gameObject,
           x: tileWorldXY.x,
           y: tileWorldXY.y,
-          duration: pathMoveConfig?.tileStepDuration ?? this.defaultTileStepDuration,
+          duration: tileStepDuration,
           onComplete: () => {
             // After completing one step, call the callback
             pathMoveConfig?.onComplete?.();
@@ -259,13 +264,16 @@ export class MovementSystem {
       ? throttle(config.onUpdateThrottled, config.onUpdateThrottle ?? 360)
       : undefined;
 
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    const tileStepDuration =
+      actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ?? new Error("No tile move duration defined");
     return new Promise<void>((resolve, reject) => {
       this.onMovementStart(tileWorldXY, config);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
-        duration: config?.tileStepDuration ?? this.defaultTileStepDuration,
+        duration: tileStepDuration,
         onComplete: async () => {
           try {
             await this.moveAlongPath(path, config);
@@ -310,7 +318,8 @@ export class MovementSystem {
     }
   }
 
-  private moveDirectlyToLocation(vec3: Vector3Simple, pathMoveConfig: PathMoveConfig): Promise<void> {
+  private moveDirectlyToLocation(vec3: Vector3Simple, pathMoveConfig?: PathMoveConfig): Promise<void> {
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     // don't use pathfinding
     // use worldXY to move directly to location
     this.cancelMovement();
@@ -330,7 +339,9 @@ export class MovementSystem {
         targets: this.gameObject,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
-        duration: pathMoveConfig?.tileStepDuration ?? this.defaultTileStepDuration,
+        duration:
+          actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
+          new Error("No tile move duration defined"),
         onComplete: async () => {
           pathMoveConfig?.onComplete?.();
           this.playMovementAnimation(false, pathMoveConfig);
@@ -436,15 +447,15 @@ export class MovementSystem {
 
 export async function getRandomTileInNavigableRadius(
   gameObject: Phaser.GameObjects.GameObject,
-  radius: number,
-  pathMoveConfig?: PathMoveConfig
+  radius: number
 ): Promise<Vector2Simple | undefined> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const newTile =
-    pathMoveConfig?.usePathfinding === false
-      ? getGameObjectTileInRadius(gameObject, radius)
-      : await getGameObjectTileInNavigableRadius(gameObject, radius);
+  const flightComponent = getActorComponent(gameObject, FlightComponent);
+  const usePathfinding = !flightComponent;
+  const newTile = usePathfinding
+    ? await getGameObjectTileInNavigableRadius(gameObject, radius)
+    : getGameObjectTileInRadius(gameObject, radius);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }
@@ -459,15 +470,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
 ): Promise<void> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const actorTranslateComponent = getActorComponent(gameObject, ActorTranslateComponent);
-  if (!actorTranslateComponent) return Promise.reject("No actor translate component found");
-  const newPathMoveConfig = {
-    ...pathMoveConfig,
-    usePathfinding: actorTranslateComponent.actorTranslateDefinition.usePathfinding ?? true,
-    tileStepDuration: actorTranslateComponent.actorTranslateDefinition.tileStepDuration
-  } satisfies PathMoveConfig;
-
-  const newTile = await getRandomTileInNavigableRadius(gameObject, radius, newPathMoveConfig);
+  const newTile = await getRandomTileInNavigableRadius(gameObject, radius);
   if (!newTile) {
     return Promise.reject("No new tile found");
   }
@@ -477,9 +480,8 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
       y: newTile.y,
       z: 0
     } satisfies Vector3Simple,
-    newPathMoveConfig
+    pathMoveConfig
   );
-  // todo todo this movementSystem.moveToLocation should be called from the pawn ai controller. Here we should only get the new tile
 }
 
 export function getGameObjectDirection(
