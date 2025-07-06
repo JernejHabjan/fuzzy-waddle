@@ -175,6 +175,7 @@ import {
 } from "../animations/animals2";
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 import { FlightDefinition } from "../entity/actor/components/flight-component";
+import { WalkableDefinition } from "../entity/actor/components/walkable-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -352,6 +353,7 @@ export type ActorInfoDefinition = Partial<{
     requirements: RequirementsDefinition;
     builder: BuilderDefinition;
     constructable: ConstructionSiteDefinition;
+    walkable: WalkableDefinition;
     gatherer: GathererDefinition;
     container: ContainerDefinition;
     resourceDrain: ResourceDrainDefinition;
@@ -1836,6 +1838,9 @@ export const pwActorDefinitions: {
       vision: {
         range: 10
       },
+      walkable: {
+        walkableHeight: 32
+      },
       selectable: {},
       health: {
         physicalState: ActorPhysicalType.Structural,
@@ -1887,6 +1892,9 @@ export const pwActorDefinitions: {
         }
       },
       selectable: {},
+      walkable: {
+        walkableHeight: 96
+      },
       health: {
         physicalState: ActorPhysicalType.Structural,
         maxHealth: 1000,
@@ -1961,6 +1969,9 @@ export const pwActorDefinitions: {
       constructable: {
         ...coreConstructionSiteDefinition,
         canBeDragPlaced: true
+      },
+      walkable: {
+        walkableHeight: 64
       }
     }
   },

@@ -32,6 +32,7 @@ import { RepresentableComponent } from "../entity/actor/components/representable
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
 import { FlightComponent } from "../entity/actor/components/flight-component";
+import { WalkableComponent } from "../entity/actor/components/walkable-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -154,6 +155,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
       : []),
     ...(componentDefinitions?.flying ? [new FlightComponent(actor, componentDefinitions.flying)] : []),
+    ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
   ];
