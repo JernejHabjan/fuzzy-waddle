@@ -216,7 +216,7 @@ const treeDefinitions: ActorInfoDefinition = {
 const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
   components: {
     vision: {
-      range: 5
+      range: 10
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
@@ -510,7 +510,7 @@ export const pwActorDefinitions: {
         color: 0x3b4a50
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Grey Wolf",
@@ -561,7 +561,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Bandit",
@@ -620,7 +620,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Anubian Mauler",
@@ -695,7 +695,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Cursed Banshee",
@@ -852,7 +852,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 15
       },
       info: {
         name: "Ank Guard",
@@ -910,7 +910,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 14
       },
       info: {
         name: "Olival",
@@ -967,7 +967,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 15
+        range: 20
       },
       info: {
         name: "Sandhold",
@@ -1033,7 +1033,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 15
       },
       info: {
         name: "Hall of Echoing Rites",
@@ -1095,7 +1095,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 8
+        range: 14
       },
       info: {
         name: "Work Mill",
@@ -1150,7 +1150,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 14
       },
       info: {
         name: "Mirk",
@@ -1225,7 +1225,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Ravenmark",
@@ -1298,7 +1298,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Umbramancer",
@@ -1373,7 +1373,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Garruk",
@@ -1529,7 +1529,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 15
+        range: 20
       },
       info: {
         name: "Frost Forge",
@@ -1593,7 +1593,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 15
       },
       info: {
         name: "Infantry Inn",
@@ -1655,7 +1655,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 12
+        range: 16
       },
       info: {
         name: "Owlery",
@@ -1875,7 +1875,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 15
+        range: 18
       },
       info: {
         name: "Watch Tower",
