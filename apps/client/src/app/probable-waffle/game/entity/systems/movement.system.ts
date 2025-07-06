@@ -34,6 +34,7 @@ import {
 import { OwnerComponent } from "../actor/components/owner-component";
 import { AnimationActorComponent } from "../actor/components/animation-actor-component";
 import { FlightComponent } from "../actor/components/flight-component";
+import { WalkableComponent } from "../actor/components/walkable-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -211,6 +212,12 @@ export class MovementSystem {
         const flightComponent = getActorComponent(this.gameObject, FlightComponent);
         if (flightComponent && flightComponent.flightDefinition?.height) {
           adjustedY -= flightComponent.flightDefinition.height;
+        } else {
+          // If not flying, check for walkable component
+          const walkableComponent = getActorComponent(this.gameObject, WalkableComponent);
+          if (walkableComponent && walkableComponent.getDestinationHeight) {
+            adjustedY -= walkableComponent.getDestinationHeight();
+          }
         }
         this.onMovementStart({ x: tileWorldXY.x, y: adjustedY }, pathMoveConfig);
         const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
@@ -343,6 +350,12 @@ export class MovementSystem {
       const flightComponent = getActorComponent(this.gameObject, FlightComponent);
       if (flightComponent && flightComponent.flightDefinition?.height) {
         adjustedY -= flightComponent.flightDefinition.height;
+      } else {
+        // If not flying, check for walkable component
+        const walkableComponent = getActorComponent(this.gameObject, WalkableComponent);
+        if (walkableComponent && walkableComponent.getDestinationHeight) {
+          adjustedY -= walkableComponent.getDestinationHeight();
+        }
       }
       this.onMovementStart({ x: tileWorldXY.x, y: adjustedY }, pathMoveConfig);
       this._currentTween = this.gameObject.scene.tweens.add({
