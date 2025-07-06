@@ -207,7 +207,12 @@ export class MovementSystem {
           ? throttle(pathMoveConfig.onUpdateThrottled, pathMoveConfig.onUpdateThrottle ?? 360)
           : undefined;
 
-        this.onMovementStart(tileWorldXY, pathMoveConfig);
+        let adjustedY = tileWorldXY.y;
+        const flightComponent = getActorComponent(this.gameObject, FlightComponent);
+        if (flightComponent && flightComponent.flightDefinition?.height) {
+          adjustedY -= flightComponent.flightDefinition.height;
+        }
+        this.onMovementStart({ x: tileWorldXY.x, y: adjustedY }, pathMoveConfig);
         const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
         const tileStepDuration =
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
@@ -216,7 +221,7 @@ export class MovementSystem {
         this._currentTween = this.gameObject.scene.tweens.add({
           targets: this.gameObject,
           x: tileWorldXY.x,
-          y: tileWorldXY.y,
+          y: adjustedY,
           duration: tileStepDuration,
           onComplete: () => {
             // After completing one step, call the callback
@@ -334,11 +339,16 @@ export class MovementSystem {
         return;
       }
 
-      this.onMovementStart(tileWorldXY, pathMoveConfig);
+      let adjustedY = tileWorldXY.y;
+      const flightComponent = getActorComponent(this.gameObject, FlightComponent);
+      if (flightComponent && flightComponent.flightDefinition?.height) {
+        adjustedY -= flightComponent.flightDefinition.height;
+      }
+      this.onMovementStart({ x: tileWorldXY.x, y: adjustedY }, pathMoveConfig);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
-        y: tileWorldXY.y,
+        y: adjustedY,
         duration:
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
           new Error("No tile move duration defined"),
