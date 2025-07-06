@@ -10,12 +10,10 @@ import { RepresentableComponent } from "./representable-component";
 export type IsoDirection = "north" | "south" | "east" | "west" | "northeast" | "northwest" | "southeast" | "southwest";
 
 export interface ActorTranslateDefinition {
-  usePathfinding?: boolean;
   /**
-   * Tile step duration specifies how long (in ms) unit requires to cross 1 tile
+   * Tile move duration specifies how long (in ms) unit requires to cross 1 tile
    */
-  tileStepDuration?: number;
-  isFlying?: boolean;
+  tileMoveDuration?: number;
 }
 
 export class ActorTranslateComponent {

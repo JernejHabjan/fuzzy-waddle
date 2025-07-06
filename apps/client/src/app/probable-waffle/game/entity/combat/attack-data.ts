@@ -2,7 +2,6 @@ import { DamageType } from "./damage-type";
 import { AnimationType } from "../actor/components/animation-actor-component";
 import { SoundDefinition } from "../actor/components/audio-actor-component";
 import {
-  SharedActorActionsFurballHitSounds,
   SharedActorActionsSfxArrowHitSounds,
   SharedActorActionsSfxArrowShootMultipleSounds,
   SharedActorActionsSfxArrowShootSounds,
@@ -22,6 +21,7 @@ import {
   SharedActorActionsSfxStaffHitSounds
 } from "../../sfx/SharedActorActionsSfx";
 import { EffectsAnims } from "../../animations/effects";
+import { SkaduweeOwlSfxFurballFireSounds, SkaduweeOwlSfxFurballHitSounds } from "../../sfx/SkaduweeOwlSfx";
 
 export interface AttackData {
   // Time before this attack can be used again, in seconds
@@ -69,7 +69,8 @@ export enum ProjectileType {
   SlingshotProjectile = "slingshotProjectile",
   ArrowProjectile = "arrowProjectile",
   FireballProjectile = "fireballProjectile",
-  FrostBoltProjectile = "frostBoltProjectile"
+  FrostBoltProjectile = "frostBoltProjectile",
+  FurballProjectile = "furballProjectile"
 }
 
 export enum WeaponType {
@@ -305,6 +306,18 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
   [WeaponType.Furball]: {
     weaponType: WeaponType.Furball,
     canTargetAir: true,
+    projectile: {
+      type: ProjectileType.FurballProjectile,
+      speed: 800,
+      orientation: {
+        randomizeOrientation: true,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: [EffectsAnims.ANIM_IMPACT_1],
+        tint: 0x006600
+      }
+    },
     damage: 9,
     damageType: DamageType.Poison,
     cooldown: 3000,
@@ -313,8 +326,8 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     animationType: AnimationType.Shoot,
     sounds: {
       preparing: null,
-      fire: null,
-      hit: SharedActorActionsFurballHitSounds
+      fire: SkaduweeOwlSfxFurballFireSounds,
+      hit: SkaduweeOwlSfxFurballHitSounds
     },
     delays: {
       fire: 200,

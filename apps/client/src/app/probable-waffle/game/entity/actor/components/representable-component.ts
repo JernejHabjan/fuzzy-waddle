@@ -50,11 +50,17 @@ export class RepresentableComponent {
   private refreshBounds(): void {
     const worldTransform = this._worldTransform!;
     const initialBounds = this._actorBounds!;
+    const scaleX = (this.gameObject as any).scaleX ?? 1;
+    const scaleY = (this.gameObject as any).scaleY ?? 1;
+    const originX = (this.gameObject as any).originX ?? 0.5;
+    const height = this.representableDefinition.height;
+    const width = this.representableDefinition.width;
+
     this.bounds = new Phaser.Geom.Rectangle(
-      worldTransform.x + initialBounds.topLeft.x,
-      worldTransform.y + initialBounds.topLeft.y,
-      this.representableDefinition.width,
-      this.representableDefinition.height
+      worldTransform.x - width * originX * scaleX, // Center horizontally with scale
+      worldTransform.y + initialBounds.topLeft.y * scaleY, // Preserve initial vertical offset, scaled
+      width * scaleX,
+      height * scaleY
     );
   }
 

@@ -70,32 +70,7 @@ export class HealthComponent {
     },
     hooks: {
       health: (value: number, previousValue: number) => {
-        if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
-        let asTint;
-        switch (this.healthDefinition.physicalState) {
-          case ActorPhysicalType.Biological:
-            if (this.actorTranslateComponent) {
-              const transform = this.actorTranslateComponent.currentTileWorldXY;
-              const effect = EffectsAnims.createAndPlayBloodAnimation(this.gameObject.scene, transform.x, transform.y);
-              const gameObjectDepth = getGameObjectDepth(this.gameObject);
-              if (gameObjectDepth) {
-                effect.setDepth(gameObjectDepth + 1);
-              }
-            }
-            break;
-          case ActorPhysicalType.Structural:
-            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
-            if (asTint.setTint) asTint.setTint(0xff0000);
-            // console.warn("this tint is not working "); // todo
-
-            // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
-            break;
-          case ActorPhysicalType.Organic:
-            asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
-            if (asTint.setTint) asTint.setTint(0xff0000);
-            // console.warn("this tint is not working "); // todo
-            break;
-        }
+        this.reactToDamage();
 
         if (value <= 0) {
           this.killActor(); // Custom logic when health reaches zero
@@ -155,6 +130,39 @@ export class HealthComponent {
     }
 
     onObjectReady(gameObject, this.init, this);
+  }
+
+  private reactToDamage(): void {
+    if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
+    if (this.latestDamage?.damageType !== DamageType.Poison) this.reactToDamageVisually();
+  }
+
+  private reactToDamageVisually() {
+    let asTint;
+    switch (this.healthDefinition.physicalState) {
+      case ActorPhysicalType.Biological:
+        if (this.actorTranslateComponent) {
+          const transform = this.actorTranslateComponent.currentTileWorldXY;
+          const effect = EffectsAnims.createAndPlayBloodAnimation(this.gameObject.scene, transform.x, transform.y);
+          const gameObjectDepth = getGameObjectDepth(this.gameObject);
+          if (gameObjectDepth) {
+            effect.setDepth(gameObjectDepth + 1);
+          }
+        }
+        break;
+      case ActorPhysicalType.Structural:
+        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+        if (asTint.setTint) asTint.setTint(0xff0000);
+        // console.warn("this tint is not working "); // todo
+
+        // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
+        break;
+      case ActorPhysicalType.Organic:
+        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
+        if (asTint.setTint) asTint.setTint(0xff0000);
+        // console.warn("this tint is not working "); // todo
+        break;
+    }
   }
 
   private init() {
@@ -268,17 +276,18 @@ export class HealthComponent {
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
-    if (this.healthComponentData.armour > 0) {
-      this.healthComponentData.armour = Math.max(this.healthComponentData.armour - damage, 0);
-    } else {
-      this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
-    }
     this.latestDamage = {
       damage,
       damageType,
       damageInitiator,
       timestamp: new Date()
     };
+
+    if (this.healthComponentData.armour > 0) {
+      this.healthComponentData.armour = Math.max(this.healthComponentData.armour - damage, 0);
+    } else {
+      this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
+    }
 
     if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
       this.setVisibilityUiComponent(true);

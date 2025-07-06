@@ -31,6 +31,7 @@ import { AnimationActorComponent } from "../entity/actor/components/animation-ac
 import { RepresentableComponent } from "../entity/actor/components/representable-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
+import { FlightComponent } from "../entity/actor/components/flight-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -152,6 +153,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.translatable
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
       : []),
+    ...(componentDefinitions?.flying ? [new FlightComponent(actor, componentDefinitions.flying)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
   ];

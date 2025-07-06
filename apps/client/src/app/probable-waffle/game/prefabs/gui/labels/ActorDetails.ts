@@ -89,7 +89,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       };
       text: string;
     }[] = [];
-    const tileStepDuration = definition.components?.translatable?.tileStepDuration;
+    const tileStepDuration = definition.components?.translatable?.tileMoveDuration;
     if (tileStepDuration) {
       const movementSpeed = (1000 / tileStepDuration).toFixed(1) + " t/s";
       iconsAndTexts.push({

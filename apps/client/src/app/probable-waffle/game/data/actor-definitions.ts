@@ -174,6 +174,7 @@ import {
   ANIM_WOLF_DEFINITION
 } from "../animations/animals2";
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
+import { FlightDefinition } from "../entity/actor/components/flight-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -215,7 +216,7 @@ const treeDefinitions: ActorInfoDefinition = {
 const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
   components: {
     vision: {
-      range: 5
+      range: 10
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
@@ -249,7 +250,7 @@ const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
     },
     selectable: {},
     translatable: {
-      tileStepDuration: 500
+      tileMoveDuration: 500
     },
     containable: { enabled: true },
     aiControlled: {
@@ -358,6 +359,7 @@ export type ActorInfoDefinition = Partial<{
     production: ProductionDefinition;
     healing: HealingDefinition;
     translatable: ActorTranslateDefinition;
+    flying: FlightDefinition;
     animatable: ActorAnimationsDefinition;
     aiControlled: PawnAiDefinition;
     containable: { enabled: boolean };
@@ -390,7 +392,7 @@ export const pwActorDefinitions: {
         color: 0x896347
       },
       translatable: {
-        tileStepDuration: 5000
+        tileMoveDuration: 5000
       },
       audio: {
         sounds: {
@@ -414,7 +416,7 @@ export const pwActorDefinitions: {
         color: 0xf2f7fa
       },
       translatable: {
-        tileStepDuration: 5000
+        tileMoveDuration: 5000
       },
       audio: {
         sounds: {
@@ -439,7 +441,7 @@ export const pwActorDefinitions: {
         color: 0x222e37
       },
       translatable: {
-        tileStepDuration: 800
+        tileMoveDuration: 800
       },
       audio: {
         sounds: {
@@ -462,7 +464,7 @@ export const pwActorDefinitions: {
         color: 0x222e37
       },
       translatable: {
-        tileStepDuration: 400
+        tileMoveDuration: 400
       },
       audio: {
         sounds: {
@@ -485,7 +487,7 @@ export const pwActorDefinitions: {
         color: 0xc75841
       },
       translatable: {
-        tileStepDuration: 800
+        tileMoveDuration: 800
       },
       audio: {
         sounds: {
@@ -508,7 +510,7 @@ export const pwActorDefinitions: {
         color: 0x3b4a50
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Grey Wolf",
@@ -524,7 +526,7 @@ export const pwActorDefinitions: {
         maxHealth: 100
       },
       translatable: {
-        tileStepDuration: 300
+        tileMoveDuration: 300
       },
       audio: {
         sounds: {
@@ -559,7 +561,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Bandit",
@@ -588,7 +590,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -618,7 +620,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Anubian Mauler",
@@ -651,7 +653,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -693,7 +695,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Cursed Banshee",
@@ -725,7 +727,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -850,7 +852,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 15
       },
       info: {
         name: "Ank Guard",
@@ -908,7 +910,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 14
       },
       info: {
         name: "Olival",
@@ -965,7 +967,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 15
+        range: 20
       },
       info: {
         name: "Sandhold",
@@ -1031,7 +1033,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 15
       },
       info: {
         name: "Hall of Echoing Rites",
@@ -1093,7 +1095,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 8
+        range: 14
       },
       info: {
         name: "Work Mill",
@@ -1148,7 +1150,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 14
       },
       info: {
         name: "Mirk",
@@ -1180,9 +1182,13 @@ export const pwActorDefinitions: {
         actors: [ObjectNames.Owlery]
       },
       translatable: {
-        usePathfinding: false,
-        tileStepDuration: 1000,
-        isFlying: true
+        tileMoveDuration: 2000
+      },
+      flying: {
+        height: 128
+      },
+      aiControlled: {
+        type: AiType.Character
       },
       audio: {
         sounds: {
@@ -1219,7 +1225,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Ravenmark",
@@ -1251,7 +1257,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -1292,7 +1298,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Umbramancer",
@@ -1325,7 +1331,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -1367,7 +1373,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 5
+        range: 10
       },
       info: {
         name: "Garruk",
@@ -1399,7 +1405,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       translatable: {
-        tileStepDuration: 500
+        tileMoveDuration: 500
       },
       containable: { enabled: true },
       aiControlled: {
@@ -1523,7 +1529,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 15
+        range: 20
       },
       info: {
         name: "Frost Forge",
@@ -1587,7 +1593,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 10
+        range: 15
       },
       info: {
         name: "Infantry Inn",
@@ -1649,7 +1655,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 12
+        range: 16
       },
       info: {
         name: "Owlery",
@@ -1869,7 +1875,7 @@ export const pwActorDefinitions: {
         ]
       },
       vision: {
-        range: 15
+        range: 18
       },
       info: {
         name: "Watch Tower",
