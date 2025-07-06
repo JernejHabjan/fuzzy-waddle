@@ -1,8 +1,19 @@
-import { js as EasyStar } from "easystarjs";
+import {
+  js as EasyStar,
+  TOP,
+  BOTTOM,
+  BOTTOM_LEFT,
+  LEFT,
+  BOTTOM_RIGHT,
+  RIGHT,
+  TOP_LEFT,
+  TOP_RIGHT,
+  Direction
+} from "easystarjs";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
-import { WalkableComponent } from "../../entity/actor/components/walkable-component";
+import { WalkableComponent, WalkablePath } from "../../entity/actor/components/walkable-component";
 import { ColliderComponent } from "../../entity/actor/components/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
@@ -160,6 +171,38 @@ export class NavigationService {
     return emptyGrid;
   }
 
+  private setDirectionalConditions(): void {
+    // for all game objects with WalkableComponent, extract the walkable path definition.
+    this.scene.children.each((child) => {
+      const walkableComponent = getActorComponent(child, WalkableComponent);
+      if (!walkableComponent) return;
+      const walkablePath: WalkablePath = walkableComponent.walkablePathDefinition;
+      const accessibleFromAllSides = walkableComponent.accessibleFromAllSides;
+      if (walkablePath && !accessibleFromAllSides) {
+        const directionalConditions = this.convertWalkablePathToDirectionalConditions(walkablePath);
+        const tileCoords = getTileCoordsUnderObject(this.tilemap, child);
+        for (const tile of tileCoords) {
+          // set directional conditions for the tile in the grid
+          this.easyStar.setDirectionalCondition(tile.x, tile.y, directionalConditions);
+          console.warn("set directional conditions for tile", tile, directionalConditions);
+        }
+      }
+    });
+  }
+
+  private convertWalkablePathToDirectionalConditions(walkablePath: WalkablePath): Direction[] {
+    const conditions: Direction[] = [];
+    if (walkablePath.top) conditions.push(TOP);
+    if (walkablePath.bottom) conditions.push(BOTTOM);
+    if (walkablePath.left) conditions.push(LEFT);
+    if (walkablePath.right) conditions.push(RIGHT);
+    if (walkablePath.topLeft) conditions.push(TOP_LEFT);
+    if (walkablePath.topRight) conditions.push(TOP_RIGHT);
+    if (walkablePath.bottomLeft) conditions.push(BOTTOM_LEFT);
+    if (walkablePath.bottomRight) conditions.push(BOTTOM_RIGHT);
+    return conditions;
+  }
+
   /**
    * Returns all tile indexes under colliders
    */
@@ -206,6 +249,7 @@ export class NavigationService {
     this.easyStar.setGrid(this.grid);
     this.easyStar.setAcceptableTiles([0]);
     this.easyStar.enableDiagonals();
+    this.setDirectionalConditions();
   }
 
   private throttleUpdateNavigation = throttle(this.updateNavigation.bind(this), 100);

@@ -59,4 +59,22 @@ export class WalkableComponent {
   allowWalkablePath(approachableFrom: Partial<WalkablePath>) {
     this.walkablePath = approachableFrom;
   }
+
+  get walkablePathDefinition(): WalkablePath {
+    return this.walkablePath;
+  }
+
+  get accessibleFromAllSides(): boolean {
+    return (
+      (this.walkablePath.top &&
+        this.walkablePath.bottom &&
+        this.walkablePath.left &&
+        this.walkablePath.right &&
+        this.walkablePath.topLeft &&
+        this.walkablePath.topRight &&
+        this.walkablePath.bottomLeft &&
+        this.walkablePath.bottomRight) ??
+      true
+    );
+  }
 }
