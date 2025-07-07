@@ -1909,9 +1909,10 @@ export const pwActorDefinitions: {
         productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
-      container: {
-        capacity: 2
-      },
+      // note - this unit can be walked on and can not contain units
+      // container: {
+      //   capacity: 2
+      // },
       attack: {
         attacks: [weaponDefinitions.bowTower]
       },
