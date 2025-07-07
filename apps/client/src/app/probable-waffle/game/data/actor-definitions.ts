@@ -1839,7 +1839,7 @@ export const pwActorDefinitions: {
         range: 10
       },
       walkable: {
-        walkableHeight: 32
+        walkableHeight: 16
       },
       selectable: {},
       health: {
@@ -1893,7 +1893,7 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       walkable: {
-        walkableHeight: 96
+        walkableHeight: 64
       },
       health: {
         physicalState: ActorPhysicalType.Structural,
@@ -1972,7 +1972,7 @@ export const pwActorDefinitions: {
         canBeDragPlaced: true
       },
       walkable: {
-        walkableHeight: 64
+        walkableHeight: 32
       }
     }
   },
