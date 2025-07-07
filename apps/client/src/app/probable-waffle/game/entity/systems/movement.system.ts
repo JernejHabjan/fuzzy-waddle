@@ -366,7 +366,7 @@ export class MovementSystem {
       this.onMovementStart(newCoords, pathMoveConfig);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
-        x: newCoords,
+        x: newCoords.x,
         y: newCoords.y,
         z: newCoords.z,
         duration:
