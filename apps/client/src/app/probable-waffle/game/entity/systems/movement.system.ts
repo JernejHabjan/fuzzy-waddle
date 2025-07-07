@@ -177,13 +177,13 @@ export class MovementSystem {
   }
 
   private async calculateAndFollowPath(
-    gameObject: GameObject,
+    destinationGameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
     if (!this.navigationService) return false;
 
     const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
-      gameObject,
+      destinationGameObject,
       pathMoveConfig?.radiusTilesAroundDestination
     );
     if (!path.length) return false;
@@ -208,18 +208,24 @@ export class MovementSystem {
           ? throttle(pathMoveConfig.onUpdateThrottled, pathMoveConfig.onUpdateThrottle ?? 360)
           : undefined;
 
-        let adjustedY = tileWorldXY.y;
+        let newZ = 0;
         const flightComponent = getActorComponent(this.gameObject, FlightComponent);
         if (flightComponent && flightComponent.flightDefinition?.height) {
-          adjustedY -= flightComponent.flightDefinition.height;
+          newZ = flightComponent.flightDefinition.height;
         } else {
           // If not flying, check for walkable component
-          const walkableComponent = getActorComponent(this.gameObject, WalkableComponent);
+          const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
           if (walkableComponent && walkableComponent.getDestinationHeight) {
-            adjustedY -= walkableComponent.getDestinationHeight();
+            newZ += walkableComponent.getDestinationHeight();
           }
         }
-        this.onMovementStart({ x: tileWorldXY.x, y: adjustedY }, pathMoveConfig);
+        const newCoords = {
+          x: tileWorldXY.x,
+          y: tileWorldXY.y - newZ,
+          z: newZ
+        } as Vector3Simple;
+
+        this.onMovementStart(newCoords, pathMoveConfig);
         const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
         const tileStepDuration =
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
@@ -227,8 +233,9 @@ export class MovementSystem {
         // Only move one step at a time when following
         this._currentTween = this.gameObject.scene.tweens.add({
           targets: this.gameObject,
-          x: tileWorldXY.x,
-          y: adjustedY,
+          x: newCoords.x,
+          y: newCoords.y,
+          z: newCoords.z,
           duration: tileStepDuration,
           onComplete: () => {
             // After completing one step, call the callback
@@ -280,7 +287,7 @@ export class MovementSystem {
     const tileStepDuration =
       actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ?? new Error("No tile move duration defined");
     return new Promise<void>((resolve, reject) => {
-      this.onMovementStart(tileWorldXY, config);
+      this.onMovementStart({ ...tileWorldXY, z: 0 }, config);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
         x: tileWorldXY.x,
@@ -346,22 +353,22 @@ export class MovementSystem {
         return;
       }
 
-      let adjustedY = tileWorldXY.y;
+      let newZ = 0;
       const flightComponent = getActorComponent(this.gameObject, FlightComponent);
       if (flightComponent && flightComponent.flightDefinition?.height) {
-        adjustedY -= flightComponent.flightDefinition.height;
-      } else {
-        // If not flying, check for walkable component
-        const walkableComponent = getActorComponent(this.gameObject, WalkableComponent);
-        if (walkableComponent && walkableComponent.getDestinationHeight) {
-          adjustedY -= walkableComponent.getDestinationHeight();
-        }
+        newZ = flightComponent.flightDefinition.height;
       }
-      this.onMovementStart({ x: tileWorldXY.x, y: adjustedY }, pathMoveConfig);
+      const newCoords = {
+        x: tileWorldXY.x,
+        y: tileWorldXY.y - newZ,
+        z: newZ
+      } as Vector3Simple;
+      this.onMovementStart(newCoords, pathMoveConfig);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
-        x: tileWorldXY.x,
-        y: adjustedY,
+        x: newCoords,
+        y: newCoords.y,
+        z: newCoords.z,
         duration:
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
           new Error("No tile move duration defined"),
@@ -384,7 +391,7 @@ export class MovementSystem {
     });
   }
 
-  private onMovementStart(newTileWorldXY: Vector2Simple, config?: PathMoveConfig) {
+  private onMovementStart(newTileWorldXY: Vector3Simple, config?: PathMoveConfig) {
     this.playMovementSound();
     if (this.actorTranslateComponent) this.actorTranslateComponent.updateDirection(newTileWorldXY);
     this.playMovementAnimation(true, config);

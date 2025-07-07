@@ -46,7 +46,7 @@ export class NavigationService {
     private readonly scene: Phaser.Scene,
     private readonly tilemap: Phaser.Tilemaps.Tilemap
   ) {
-    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this); // todo this for some reason doesnt work
+    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.easyStar = new EasyStar();
     onSceneInitialized(scene, this.initNavigationService, this);
@@ -336,16 +336,23 @@ export class NavigationService {
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!fromTile) return undefined;
 
-    // Step 1: Get blocked tiles (occupied by the destination object)
-    const blockedTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
+    const isWalkable = !!getActorComponent(destinationGameObject, WalkableComponent);
 
-    // Step 2: Find the closest walkable tile around the blocked tiles within the radius
-    // noinspection UnnecessaryLocalVariableJS
-    const closestWalkableTile = this.getClosestWalkableTileAroundBlockedTilesInRadius(
-      fromTile,
-      blockedTiles,
-      radiusTiles
-    );
+    let closestWalkableTile;
+    if (isWalkable) {
+      // no need to find the closest walkable - try to find the tile under the destination object
+      // this moves actor ON the wall or tower
+      const destinationTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
+      if (!destinationTile) return undefined;
+      closestWalkableTile = destinationTile; // Use the tile under the destination object directly
+    } else {
+      // Step 1: Get blocked tiles (occupied by the destination object)
+      const blockedTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
+
+      // Step 2: Find the closest walkable tile around the blocked tiles within the radius
+      // noinspection UnnecessaryLocalVariableJS
+      closestWalkableTile = this.getClosestWalkableTileAroundBlockedTilesInRadius(fromTile, blockedTiles, radiusTiles);
+    }
 
     return closestWalkableTile; // Return the closest walkable tile if found, or undefined
   }

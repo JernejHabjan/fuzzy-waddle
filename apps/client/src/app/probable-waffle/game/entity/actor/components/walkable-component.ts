@@ -23,6 +23,7 @@ export interface WalkableDefinition {
 
 export class WalkableComponent {
   private walkablePath: WalkablePath = {
+    // todo should be by default false
     top: true,
     bottom: true,
     left: true,
