@@ -17,7 +17,7 @@ import { PawnAiController } from "../player-pawn-ai-controller/pawn-ai-controlle
 import { OrderData } from "../../../../entity/character/ai/OrderData";
 import { OrderType } from "../../../../entity/character/ai/order-type";
 import { BuildingCursor } from "../building-cursor";
-import { getGameObjectTransform } from "../../../../data/game-object-helper";
+import { getGameObjectLogicalTransform, getGameObjectRenderedTransform } from "../../../../data/game-object-helper";
 import { GameplayLibrary } from "../../../../library/gameplay-library";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -348,8 +348,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
     // spawn building:
     // get random location - get point next to worker
     const worker = this.blackboard.workers[0];
-    const randomX = getGameObjectTransform(worker)!.x + Math.floor(Math.random() * 10) - 10;
-    const randomY = getGameObjectTransform(worker)!.y + Math.floor(Math.random() * 10) - 10;
+    const transform = getGameObjectLogicalTransform(worker);
+    const randomX = transform!.x + Math.floor(Math.random() * 10) - 10;
+    const randomY = transform!.y + Math.floor(Math.random() * 10) - 10;
     const location = {
       x: randomX,
       y: randomY,

@@ -12,7 +12,7 @@ import { getCommunicator } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../../editor-components/EditorOwner";
 import { FactionDefinitions } from "../../player/faction-definitions";
-import { getGameObjectBounds, getGameObjectTransform } from "../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
 import { setFullActorDataFromName } from "../../data/actor-data";
@@ -117,7 +117,7 @@ export class SceneActorCreator {
   private spawnActorsFromSpawnList(spawn: Spawn) {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
-    const vec3 = {
+    const logicalSpawnPoint = {
       x: spawn.x,
       y: spawn.y,
       z: spawn.z
@@ -130,7 +130,7 @@ export class SceneActorCreator {
       (p) => p.playerController.data.playerDefinition?.player.playerNumber === owner_id
     );
     if (!player) return;
-    player.playerController.data.playerDefinition!.initialWorldSpawnPosition = vec3;
+    player.playerController.data.playerDefinition!.initialWorldLogicalSpawnPosition = logicalSpawnPoint;
 
     const faction = player.playerController.data.playerDefinition!.factionType;
     if (!faction) throw new Error("Faction not found");
@@ -138,13 +138,13 @@ export class SceneActorCreator {
     switch (faction) {
       case FactionType.Skaduwee:
         FactionDefinitions.skaduwee.initialActors.forEach((actorName, index) => {
-          actor = this.createInitialActors(actorName, vec3, owner_id, index, actor);
+          actor = this.createInitialActors(actorName, logicalSpawnPoint, owner_id, index, actor);
         });
         break;
 
       case FactionType.Tivara:
         FactionDefinitions.tivara.initialActors.forEach((actorName, index) => {
-          actor = this.createInitialActors(actorName, vec3, owner_id, index, actor);
+          actor = this.createInitialActors(actorName, logicalSpawnPoint, owner_id, index, actor);
         });
         break;
       default:
@@ -154,39 +154,42 @@ export class SceneActorCreator {
 
   private createInitialActors(
     actorName: string,
-    vec3: Vector3Simple,
+    logicalSpawnPoint: Vector3Simple,
     owner_id: number,
     index: number,
     previouslyCreatedActor: Phaser.GameObjects.GameObject | undefined
   ): Phaser.GameObjects.GameObject | undefined {
     const previouslyCreatedActorBounds = getGameObjectBounds(previouslyCreatedActor);
-    let newX = vec3.x + index * 160;
+    let newX = logicalSpawnPoint.x + index * 160;
     if (previouslyCreatedActorBounds) {
-      newX = vec3.x + previouslyCreatedActorBounds.width / 2;
+      newX = logicalSpawnPoint.x + previouslyCreatedActorBounds.width / 2;
     }
     // padding between actors
     newX += 20;
+
+    const newLogicalSpawnPoint = {
+      x: newX,
+      y: logicalSpawnPoint.y,
+      z: logicalSpawnPoint.z
+    } satisfies Vector3Simple;
     const actorDefinition = {
       name: actorName,
-      x: newX,
-      y: vec3.y,
-      z: vec3.z,
+      logicalWorldTransform: newLogicalSpawnPoint,
       owner: owner_id,
       constructionSite: {
         state: ConstructionStateEnum.Finished
       }
-    } as ActorDefinition;
+    } satisfies ActorDefinition;
 
     const newActor = this.createActorFromDefinition(actorDefinition);
     if (!newActor) return newActor;
     const newActorBounds = getGameObjectBounds(newActor);
-    const newActorTransform = getGameObjectTransform(newActor);
+    const actorLogicalTransform = getGameObjectLogicalTransform(newActor);
     const movementSystem = getActorSystem(newActor, MovementSystem);
-    if (previouslyCreatedActor && newActorBounds && newActorTransform && movementSystem) {
+    if (previouslyCreatedActor && newActorBounds && actorLogicalTransform && movementSystem) {
       // adjust the actor position by its width
-      newActorTransform.x += newActorBounds.width / 2;
-      // todo later this should move to some other actor component like ActorTransform or something like that which then emits the transform change event across the game
-      movementSystem.instantlyMoveToWorldCoordinates(newActorTransform);
+      actorLogicalTransform.x += newActorBounds.width / 2;
+      movementSystem.instantlyMoveToWorldCoordinates(actorLogicalTransform);
     }
     return newActor;
   }

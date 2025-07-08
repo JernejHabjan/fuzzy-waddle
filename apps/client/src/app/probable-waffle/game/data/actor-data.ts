@@ -67,10 +67,12 @@ export function setActorData(
 
 function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
-  const transform = actor as any as Transform;
-  if (transform.x !== undefined && actorDefinition.x !== undefined) transform.x = actorDefinition.x;
-  if (transform.y !== undefined && actorDefinition.y !== undefined) transform.y = actorDefinition.y;
-  if (transform.z !== undefined && actorDefinition.z !== undefined) transform.z = actorDefinition.z;
+  if (actorDefinition.logicalWorldTransform) {
+    const representableComponent = getActorComponent(actor, RepresentableComponent);
+    if (representableComponent) {
+      representableComponent.logicalWorldTransform = actorDefinition.logicalWorldTransform;
+    }
+  }
   if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setOwner(actorDefinition.owner);
   if (actorDefinition.selectable)
     getActorComponent(actor, SelectableComponent)?.setSelected(actorDefinition.selectable);

@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectBounds, getGameObjectTransform } from "../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectLogicalTransform } from "../data/game-object-helper";
 import { environment } from "../../../../environments/environment";
 import { drawDebugPoint } from "../debug/debug-point";
 import { getActorComponent } from "../data/actor-component";
@@ -14,21 +14,22 @@ export function getTileCoordsUnderObject(
 
   const bounds = getGameObjectBounds(gameObject);
   if (!bounds) return [];
-  const transform = getGameObjectTransform(gameObject);
-  if (!transform) return [];
+  // pulling logical transform from the game object, so we know on which tile he is standing (z axis invariant)
+  const logicalTransform = getGameObjectLogicalTransform(gameObject);
+  if (!logicalTransform) return [];
 
   const reduction = getActorComponent(gameObject, ColliderComponent)?.colliderDefinition?.colliderFactorReduction ?? 0;
 
   const origin = {
     x: bounds.left + bounds.width / 2,
-    y: transform.y
+    y: logicalTransform.y
   };
 
   if (DEBUG) drawDebugPoint(gameObject.scene, origin, 0x0000ff);
 
-  const tileUnderOrigin = tilemap.getTileAtWorldXY(origin.x, origin.y + 32)!;
-  if (DEBUG && tileUnderOrigin && !environment.production) {
-    tileUnderOrigin.tint = 0x0000ff;
+  const logicalTileUnderOrigin = tilemap.getTileAtWorldXY(origin.x, origin.y + 32)!;
+  if (DEBUG && logicalTileUnderOrigin && !environment.production) {
+    logicalTileUnderOrigin.tint = 0x0000ff;
   }
   const nrOfTiles = (reduction ? bounds.width * reduction : bounds.width) / tilemap.tileWidth;
   const onEachSide = Math.floor(nrOfTiles / 2);
@@ -36,10 +37,10 @@ export function getTileCoordsUnderObject(
   const tileIndexes1: Vector2Simple[] = [];
   for (let i = -onEachSide; i <= onEachSide; i++) {
     for (let j = -onEachSide; j <= onEachSide; j++) {
-      if (tileUnderOrigin) {
-        tileIndexes1.push({ x: tileUnderOrigin.x + i, y: tileUnderOrigin.y + j });
+      if (logicalTileUnderOrigin) {
+        tileIndexes1.push({ x: logicalTileUnderOrigin.x + i, y: logicalTileUnderOrigin.y + j });
         if (DEBUG && !environment.production) {
-          const tile = tilemap.getTileAt(tileUnderOrigin.x + i, tileUnderOrigin.y + j);
+          const tile = tilemap.getTileAt(logicalTileUnderOrigin.x + i, logicalTileUnderOrigin.y + j);
           if (tile) {
             tile.tint = 0x0000ff;
           }

@@ -1,7 +1,12 @@
 import { GameObjects, Input } from "phaser";
 import { ActorDefinition, ObjectNames, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
-import { getGameObjectBounds, getGameObjectTransform, onSceneInitialized } from "../../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectLogicalTransform,
+  getGameObjectRenderedTransform,
+  onSceneInitialized
+} from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../../data/actor-data";
@@ -84,10 +89,14 @@ export class BuildingCursor {
 
     worldPosition = this.snapToGrid(worldPosition);
 
-    const actor = ActorManager.createActorCore(this.scene, name, {
+    const spawnLogicalLocation = {
       x: worldPosition.x,
       y: worldPosition.y,
       z: 0
+    } as Vector3Simple;
+
+    const actor = ActorManager.createActorCore(this.scene, name, {
+      logicalWorldTransform: spawnLogicalLocation
     } satisfies ActorDefinition);
 
     this.building = this.scene.add.existing(actor);
@@ -105,8 +114,6 @@ export class BuildingCursor {
     }
 
     if (!this.building) return;
-    const transformComponent = getGameObjectTransform(this.building);
-    if (!transformComponent) return;
 
     let worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
     worldPosition = this.snapToGrid(worldPosition);
@@ -157,7 +164,7 @@ export class BuildingCursor {
 
       // Check each spawned object individually and track which ones can't be placed
       for (const gameObject of this.spawnedCursorGameObjects) {
-        const transform = getGameObjectTransform(gameObject);
+        const transform = getGameObjectRenderedTransform(gameObject);
         if (!transform) continue;
 
         const canPlace = this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!]);
@@ -217,11 +224,18 @@ export class BuildingCursor {
       if (objectsToIgnore.has(c)) return false;
       if (c instanceof Phaser.GameObjects.Graphics) return false;
 
-      const transform = getGameObjectTransform(c);
-      if (!transform) return false;
+      // pulling logical transform from the game object, so we know on which tile he is standing (z axis invariant)
+      const logicalTransform = getGameObjectLogicalTransform(c);
+      if (!logicalTransform) return false;
 
       // Quick bounds check
-      if (transform.x < minX || transform.x > maxX || transform.y < minY || transform.y > maxY) return false;
+      if (
+        logicalTransform.x < minX ||
+        logicalTransform.x > maxX ||
+        logicalTransform.y < minY ||
+        logicalTransform.y > maxY
+      )
+        return false;
 
       // More precise tile-based collision check
       const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
@@ -533,8 +547,8 @@ export class BuildingCursor {
     // Filter out any objects at invalid positions when in drag mode
     const objectsToPlace = this.isDragging
       ? this.spawnedCursorGameObjects.filter((obj) => {
-          const transform = getGameObjectTransform(obj);
-          return transform && !this.invalidCursorPositions.has(`${transform.x},${transform.y}`);
+          const renderedTransform = getGameObjectRenderedTransform(obj);
+          return renderedTransform && !this.invalidCursorPositions.has(`${renderedTransform.x},${renderedTransform.y}`);
         })
       : [];
 
@@ -575,12 +589,12 @@ export class BuildingCursor {
   static spawnBuildingForPlayer(
     scene: Phaser.Scene,
     name: ObjectNames,
-    location?: Vector3Simple,
+    logicalTransform: Vector3Simple,
     playerNumber?: number
   ) {
     const actorDefinition = {
       ...(playerNumber && { owner: playerNumber }),
-      ...(location && { x: location.x, y: location.y, z: location.z })
+      logicalWorldTransform: logicalTransform
     } satisfies ActorDefinition;
 
     const actor = ActorManager.createActorConstructing(scene, name, actorDefinition);

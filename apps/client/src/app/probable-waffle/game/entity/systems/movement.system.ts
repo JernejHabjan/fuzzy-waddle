@@ -8,8 +8,6 @@ import {
   getGameObjectCurrentTile,
   getGameObjectTileInNavigableRadius,
   getGameObjectTileInRadius,
-  getGameObjectTransform,
-  getGameObjectTransformRaw,
   getGameObjectVisibility,
   onObjectReady
 } from "../../data/game-object-helper";
@@ -37,6 +35,7 @@ import { FlightComponent } from "../actor/components/flight-component";
 import { WalkableComponent } from "../actor/components/walkable-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
+import { RepresentableComponent } from "../actor/components/representable-component";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -109,13 +108,11 @@ export class MovementSystem {
     this.audioActorComponent.playOrderSound(action);
   }
 
-  instantlyMoveToWorldCoordinates(vec3: Partial<Vector3Simple>): void {
-    const transform = getGameObjectTransform(this.gameObject);
-    if (!transform) return;
+  instantlyMoveToWorldCoordinates(logicalWorldTransform: Vector3Simple): void {
+    const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
+    if (!representableComponent) return;
 
-    if (vec3.x !== undefined) transform.x = vec3.x;
-    if (vec3.y !== undefined) transform.y = vec3.y;
-    if (vec3.z !== undefined) transform.z = vec3.z;
+    representableComponent.logicalWorldTransform = logicalWorldTransform;
     this.tweenUpdate();
   }
 
@@ -211,7 +208,8 @@ export class MovementSystem {
         let newZ = 0;
         const flightComponent = getActorComponent(this.gameObject, FlightComponent);
         if (flightComponent && flightComponent.flightDefinition?.height) {
-          newZ = flightComponent.flightDefinition.height;
+          // todo newZ = flightComponent.flightDefinition.height;
+          console.log("z offset for flying actors is not implemented yet"); // todo
         } else {
           // If not flying, check for walkable component
           const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
@@ -219,13 +217,13 @@ export class MovementSystem {
             newZ += walkableComponent.getDestinationHeight();
           }
         }
-        const newCoords = {
+        const newRenderWorldTransform = {
           x: tileWorldXY.x,
           y: tileWorldXY.y - newZ,
           z: newZ
         } as Vector3Simple;
 
-        this.onMovementStart(newCoords, pathMoveConfig);
+        this.onMovementStart(newRenderWorldTransform, pathMoveConfig);
         const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
         const tileStepDuration =
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
@@ -233,9 +231,9 @@ export class MovementSystem {
         // Only move one step at a time when following
         this._currentTween = this.gameObject.scene.tweens.add({
           targets: this.gameObject,
-          x: newCoords.x,
-          y: newCoords.y,
-          z: newCoords.z,
+          x: newRenderWorldTransform.x,
+          y: newRenderWorldTransform.y,
+          z: newRenderWorldTransform.z,
           duration: tileStepDuration,
           onComplete: () => {
             // After completing one step, call the callback
@@ -319,15 +317,18 @@ export class MovementSystem {
   }
 
   private tweenUpdate = () => {
-    DepthHelper.setActorDepth(this.gameObject);
-    const transform = getGameObjectTransformRaw(this.gameObject);
-    if (!transform) return;
+    // for now, take it from actor translate component // TODO - IT SHOULD COME IN AS PARAMETER TO TWEEN UPDATE
+    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    if (!transformComponent.hasTransformComponent) return;
+    const newLogicalTransform = {
+      x: transformComponent.x ?? 0,
+      y: transformComponent.y ?? 0,
+      z: transformComponent.z ?? 0
+    } satisfies Vector3Simple;
+
     if (!this.actorTranslateComponent) return;
-    this.actorTranslateComponent.moveActorToPosition({
-      x: transform.x,
-      y: transform.y,
-      z: transform.z
-    });
+    this.actorTranslateComponent.moveActorToLogicalPosition(newLogicalTransform);
+    DepthHelper.setActorDepth(this.gameObject);
   };
 
   cancelMovement() {
@@ -356,19 +357,20 @@ export class MovementSystem {
       let newZ = 0;
       const flightComponent = getActorComponent(this.gameObject, FlightComponent);
       if (flightComponent && flightComponent.flightDefinition?.height) {
-        newZ = flightComponent.flightDefinition.height;
+        // todo newZ = flightComponent.flightDefinition.height;
+        console.log("z offset for flying actors is not implemented yet"); // todo
       }
-      const newCoords = {
+      const newRenderWWorldTransform = {
         x: tileWorldXY.x,
         y: tileWorldXY.y - newZ,
         z: newZ
       } as Vector3Simple;
-      this.onMovementStart(newCoords, pathMoveConfig);
+      this.onMovementStart(newRenderWWorldTransform, pathMoveConfig);
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: this.gameObject,
-        x: newCoords.x,
-        y: newCoords.y,
-        z: newCoords.z,
+        x: newRenderWWorldTransform.x,
+        y: newRenderWWorldTransform.y,
+        z: newRenderWWorldTransform.z,
         duration:
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
           new Error("No tile move duration defined"),

@@ -16,7 +16,8 @@ import { getSceneService } from "../../../scenes/components/scene-component-help
 import { SceneActorCreator } from "../../../scenes/components/scene-actor-creator";
 import {
   getGameObjectBounds,
-  getGameObjectTransform,
+  getGameObjectLogicalTransform,
+  getGameObjectRenderedTransform,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../data/game-object-helper";
@@ -258,9 +259,8 @@ export class ProductionComponent {
 
     // spawn gameObject
 
-    const transform = getGameObjectTransform(this.gameObject);
-    if (!transform) throw new Error("Transform not found");
-    const tilePlacementData = { x: transform.x, y: transform.y, z: transform.z } satisfies Vector3Simple;
+    const logicalTransform = getGameObjectLogicalTransform(this.gameObject);
+    if (!logicalTransform) throw new Error("Transform not found");
 
     // offset spawn position
     const bounds = getGameObjectBounds(this.gameObject);
@@ -268,23 +268,21 @@ export class ProductionComponent {
     const { width, height } = bounds;
 
     const spawnPosition: Vector3Simple = {
-      x: tilePlacementData.x + width / 2,
-      y: tilePlacementData.y + height / 4,
-      z: tilePlacementData.z
+      x: logicalTransform.x + width / 2,
+      y: logicalTransform.y + height / 4,
+      z: logicalTransform.z
     };
 
     const originalOwner = this.ownerComponent.getOwner();
 
     const actorDefinition = {
       name: actorName,
-      x: spawnPosition.x,
-      y: spawnPosition.y,
-      ...(spawnPosition.z && { z: spawnPosition.z }),
+      logicalWorldTransform: spawnPosition,
       ...(originalOwner && { owner: originalOwner }),
       constructionSite: {
         state: ConstructionStateEnum.Finished
       }
-    } as ActorDefinition;
+    } satisfies ActorDefinition;
 
     const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
     if (!sceneActorCreator) throw new Error("SceneActorCreator not found");

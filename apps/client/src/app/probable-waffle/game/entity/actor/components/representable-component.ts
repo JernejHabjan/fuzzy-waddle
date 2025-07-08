@@ -1,10 +1,5 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import {
-  getGameObjectBoundsRaw,
-  getGameObjectTransformRaw,
-  getGameObjectVisibility,
-  onObjectReady
-} from "../../../data/game-object-helper";
+import { getGameObjectBoundsRaw, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 
 interface ActorInitialBounds {
   topLeft: Vector2Simple;
@@ -35,17 +30,19 @@ export class RepresentableComponent {
   }
 
   private setTransformInitially() {
-    const gameObject = this.gameObject;
-    if (!gameObject) return;
-    const transform = getGameObjectTransformRaw(gameObject);
-    if (transform) {
-      this._logicalWorldTransform = transform;
+    if (!this.gameObject) return;
+    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    if (transformComponent) {
+      this._logicalWorldTransform = {
+        x: transformComponent.x ?? 0,
+        y: transformComponent.y ?? 0,
+        z: transformComponent.z ?? 0 // z component may be assigned in editor itself from prefab properties "z" property
+      };
     } else {
       this._logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
       console.warn("RepresentableComponent: GameObject transform is not available, bounds may not be accurate.");
     }
-    this.setActorInitialBounds();
-    this.refreshBounds();
+    this.ensureBoundArePrepared();
   }
 
   private refreshBounds(): void {
@@ -69,7 +66,8 @@ export class RepresentableComponent {
    * We need to store actors initial bounds, as bounds may change during animation playback due to different sprite dimensions.
    * See #374 for more details.
    */
-  private setActorInitialBounds() {
+  private ensureBoundArePrepared() {
+    if (this._actorBounds) return;
     const centerRelativeToOrigin = this.renderedWorldTransform;
     const bounds = getGameObjectBoundsRaw(this.gameObject);
     if (!bounds) throw new Error("RepresentableComponent: GameObject bounds are not available.");
@@ -97,6 +95,7 @@ export class RepresentableComponent {
       bottomLeft,
       bottomRight
     } satisfies ActorInitialBounds;
+    this.refreshBounds();
   }
 
   get logicalWorldTransform(): Vector3Simple {
@@ -108,27 +107,29 @@ export class RepresentableComponent {
 
   set logicalWorldTransform(worldPosition: Vector3Simple) {
     this._logicalWorldTransform = worldPosition;
-
-    const transform = getGameObjectTransformRaw(this.gameObject);
-    if (!transform) throw new Error("RepresentableComponent: GameObject transform is not available.");
-    // Update the game object position based on the new world transform
-    transform.x = worldPosition.x;
-    transform.y = worldPosition.y;
-    if (worldPosition.z !== undefined) {
-      transform.z = worldPosition.z; // if z is defined, update it as well
-    }
-
+    this.renderedWorldTransform = {
+      x: worldPosition.x,
+      y: worldPosition.y - worldPosition.z // adjust y by z offset
+    } satisfies Vector2Simple;
+    this.ensureBoundArePrepared();
     this.refreshBounds();
   }
 
-  get renderedWorldTransform(): Vector3Simple {
+  set renderedWorldTransform(worldPosition: Vector2Simple) {
+    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    if (!transformComponent.hasTransformComponent) return;
+    // Update the game object position based on the new world transform
+    transformComponent.x = worldPosition.x;
+    transformComponent.y = worldPosition.y;
+  }
+
+  get renderedWorldTransform(): Vector2Simple {
     const transform = this.logicalWorldTransform;
     // adjust the y by z offset
     return {
       x: transform.x,
-      y: transform.y - transform.z,
+      y: transform.y - transform.z
       // z does not affect rendering in Phaser 3
-      z: 0
     };
   }
 

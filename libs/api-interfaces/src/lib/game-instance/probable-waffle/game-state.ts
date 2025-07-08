@@ -4,6 +4,7 @@ import {
   ConstructionSiteComponentData,
   HealthComponentData
 } from "../../communicators/probable-waffle/communicator-game-events";
+import { Vector3Simple } from "../../game/vector";
 
 export interface ProbableWaffleGameCommand {
   command: string;
@@ -36,9 +37,7 @@ export interface ActorDefinition extends Record<string, any> {
   // Constructor name - used to create actor
   name?: string;
 
-  x?: number;
-  y?: number;
-  z?: number;
+  logicalWorldTransform?: Vector3Simple;
 
   // OwnerComponent
   owner?: number;

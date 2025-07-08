@@ -1,8 +1,8 @@
-import { ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { getGameObjectTransform } from "../../../data/game-object-helper";
+import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ResourceSourceDefinition = {
@@ -81,15 +81,18 @@ export class ResourceSourceComponent {
     // check if we're depleted
     if (this.currentResources <= 0) {
       this.onDepleted.next(this.gameObject);
-      const transform = getGameObjectTransform(this.gameObject);
+      const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
       this.gameObject.destroy();
-      this.spawnTreeTrunk(transform);
+      this.spawnTreeTrunk(renderedTransform);
     }
     return gatheredAmount;
   }
 
-  private spawnTreeTrunk(transform: Vector3Simple | null) {
-    if (!transform) return;
+  /**
+   * Spawns a tree trunk image at the given rendered transform position.
+   */
+  private spawnTreeTrunk(renderedTransform: Vector2Simple | null) {
+    if (!renderedTransform) return;
     if (!this.scene) return;
 
     let texture = null;
@@ -114,7 +117,7 @@ export class ResourceSourceComponent {
     }
     if (!texture || !frame) return;
 
-    this.depletedImage = this.scene.add.image(transform.x, transform.y, texture, frame);
+    this.depletedImage = this.scene.add.image(renderedTransform.x, renderedTransform.y, texture, frame);
   }
 
   canGathererEnter(gatherer: GameObject): boolean {

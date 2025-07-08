@@ -1,4 +1,4 @@
-import { getGameObjectTransform } from "../../data/game-object-helper";
+import { getGameObjectLogicalTransform, getGameObjectRenderedTransform } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { FlightComponent } from "../../entity/actor/components/flight-component";
 
@@ -16,7 +16,7 @@ export class DepthHelper {
 
   static setActorDepth(actor: Phaser.GameObjects.GameObject) {
     const actorWithDepth = actor as any as Phaser.GameObjects.Components.Depth;
-    const transform = getGameObjectTransform(actor);
+    const transform = getGameObjectLogicalTransform(actor);
     if (!transform || !actorWithDepth.setDepth) return;
     let newDepth = transform.y;
     if (transform.z) {
@@ -26,7 +26,7 @@ export class DepthHelper {
     // Adjust for flying units: use the bottom of the vertical line (ground location)
     const flightComponent = getActorComponent(actor, FlightComponent);
     if (flightComponent && flightComponent.flightDefinition?.height) {
-      newDepth += flightComponent.flightDefinition.height;
+      newDepth += flightComponent.flightDefinition.height; // todo - maybe this should be added to Z instead?
     }
     actorWithDepth.setDepth(newDepth);
   }

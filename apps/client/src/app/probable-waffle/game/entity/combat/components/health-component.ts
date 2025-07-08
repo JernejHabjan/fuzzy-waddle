@@ -142,8 +142,12 @@ export class HealthComponent {
     switch (this.healthDefinition.physicalState) {
       case ActorPhysicalType.Biological:
         if (this.actorTranslateComponent) {
-          const transform = this.actorTranslateComponent.currentTileWorldXY;
-          const effect = EffectsAnims.createAndPlayBloodAnimation(this.gameObject.scene, transform.x, transform.y);
+          const renderedTransform = this.actorTranslateComponent.renderedTransform;
+          const effect = EffectsAnims.createAndPlayBloodAnimation(
+            this.gameObject.scene,
+            renderedTransform.x,
+            renderedTransform.y
+          );
           const gameObjectDepth = getGameObjectDepth(this.gameObject);
           if (gameObjectDepth) {
             effect.setDepth(gameObjectDepth + 1);
