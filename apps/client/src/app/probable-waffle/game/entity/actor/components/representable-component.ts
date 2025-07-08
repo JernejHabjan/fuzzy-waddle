@@ -1,5 +1,7 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBoundsRaw, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import { getActorComponent } from "../../../data/actor-component";
+import { FlightComponent } from "./flight-component";
 
 interface ActorInitialBounds {
   topLeft: Vector2Simple;
@@ -98,6 +100,15 @@ export class RepresentableComponent {
     this.refreshBounds();
   }
 
+  /**
+   * get z + flight height
+   */
+  getActualLogicalZ(logicalWorldTransform: Vector3Simple): number {
+    const logicalZ = logicalWorldTransform.z;
+    const flightHeight = getActorComponent(this.gameObject, FlightComponent)?.flightDefinition?.height ?? 0;
+    return logicalZ + flightHeight;
+  }
+
   get logicalWorldTransform(): Vector3Simple {
     if (!this._logicalWorldTransform) {
       this.setTransformInitially();
@@ -109,7 +120,7 @@ export class RepresentableComponent {
     this._logicalWorldTransform = worldPosition;
     this.renderedWorldTransform = {
       x: worldPosition.x,
-      y: worldPosition.y - worldPosition.z // adjust y by z offset
+      y: worldPosition.y - this.getActualLogicalZ(worldPosition) // adjust y by z offset
     } satisfies Vector2Simple;
     this.ensureBoundPrepared();
     this.refreshBounds();

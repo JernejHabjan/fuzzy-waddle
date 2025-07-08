@@ -206,16 +206,9 @@ export class MovementSystem {
           : undefined;
 
         let newZ = 0;
-        const flightComponent = getActorComponent(this.gameObject, FlightComponent);
-        if (flightComponent && flightComponent.flightDefinition?.height) {
-          // todo newZ = flightComponent.flightDefinition.height;
-          console.log("z offset for flying actors is not implemented yet"); // todo
-        } else {
-          // If not flying, check for walkable component
-          const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
-          if (walkableComponent && walkableComponent.getDestinationHeight) {
-            newZ += walkableComponent.getDestinationHeight();
-          }
+        const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
+        if (walkableComponent && walkableComponent.getDestinationHeight) {
+          newZ += walkableComponent.getDestinationHeight();
         }
         const newRenderWorldTransform = {
           x: tileWorldXY.x,
@@ -354,12 +347,7 @@ export class MovementSystem {
         return;
       }
 
-      let newZ = 0;
-      const flightComponent = getActorComponent(this.gameObject, FlightComponent);
-      if (flightComponent && flightComponent.flightDefinition?.height) {
-        // todo newZ = flightComponent.flightDefinition.height;
-        console.log("z offset for flying actors is not implemented yet"); // todo
-      }
+      const newZ = 0;
       const newRenderWWorldTransform = {
         x: tileWorldXY.x,
         y: tileWorldXY.y - newZ,
