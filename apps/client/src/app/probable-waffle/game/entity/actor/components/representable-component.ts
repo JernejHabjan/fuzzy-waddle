@@ -42,7 +42,7 @@ export class RepresentableComponent {
       this._logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
       console.warn("RepresentableComponent: GameObject transform is not available, bounds may not be accurate.");
     }
-    this.ensureBoundArePrepared();
+    this.ensureBoundPrepared();
   }
 
   private refreshBounds(): void {
@@ -66,7 +66,7 @@ export class RepresentableComponent {
    * We need to store actors initial bounds, as bounds may change during animation playback due to different sprite dimensions.
    * See #374 for more details.
    */
-  private ensureBoundArePrepared() {
+  private ensureBoundPrepared() {
     if (this._actorBounds) return;
     const centerRelativeToOrigin = this.renderedWorldTransform;
     const bounds = getGameObjectBoundsRaw(this.gameObject);
@@ -111,11 +111,11 @@ export class RepresentableComponent {
       x: worldPosition.x,
       y: worldPosition.y - worldPosition.z // adjust y by z offset
     } satisfies Vector2Simple;
-    this.ensureBoundArePrepared();
+    this.ensureBoundPrepared();
     this.refreshBounds();
   }
 
-  set renderedWorldTransform(worldPosition: Vector2Simple) {
+  private set renderedWorldTransform(worldPosition: Vector2Simple) {
     const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
     if (!transformComponent.hasTransformComponent) return;
     // Update the game object position based on the new world transform
