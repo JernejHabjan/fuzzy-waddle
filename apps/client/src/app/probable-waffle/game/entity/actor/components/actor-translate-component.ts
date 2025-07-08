@@ -84,7 +84,7 @@ export class ActorTranslateComponent {
   moveActorToPosition(worldPosition: Vector3Simple) {
     this._actorMoved.next(worldPosition);
     if (this.representableComponent) {
-      this.representableComponent.worldTransform = worldPosition;
+      this.representableComponent.logicalWorldTransform = worldPosition;
     }
   }
 }

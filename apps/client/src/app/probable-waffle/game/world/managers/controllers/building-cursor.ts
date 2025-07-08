@@ -129,7 +129,7 @@ export class BuildingCursor {
       console.error("Building cursor: RepresentableComponent not found on building game object.");
       return;
     }
-    representableComponent.worldTransform = {
+    representableComponent.logicalWorldTransform = {
       x: worldPosition.x,
       y: worldPosition.y,
       z: 0

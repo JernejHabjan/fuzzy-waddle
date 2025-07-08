@@ -34,7 +34,7 @@ export function getGameObjectTransform(gameObject?: Phaser.GameObjects.GameObjec
   if (!gameObject) return null;
   const representableComponent = getActorComponent(gameObject, RepresentableComponent);
   if (representableComponent) {
-    return representableComponent.worldTransform;
+    return representableComponent.renderedWorldTransform;
   }
   return getGameObjectTransformRaw(gameObject);
 }

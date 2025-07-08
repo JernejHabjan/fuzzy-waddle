@@ -20,8 +20,9 @@ export interface RepresentableDefinition {
 export class RepresentableComponent {
   /**
    * Center of the game object relative to the origin of the game object.
+   * This is the logical world position of the game object, not the rendered position.
    */
-  private _worldTransform?: Vector3Simple;
+  private _logicalWorldTransform?: Vector3Simple;
   private _visible?: boolean;
   bounds = new Phaser.Geom.Rectangle(0, 0, 0, 0);
   private _actorBounds?: ActorInitialBounds;
@@ -38,9 +39,9 @@ export class RepresentableComponent {
     if (!gameObject) return;
     const transform = getGameObjectTransformRaw(gameObject);
     if (transform) {
-      this._worldTransform = transform;
+      this._logicalWorldTransform = transform;
     } else {
-      this._worldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
+      this._logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
       console.warn("RepresentableComponent: GameObject transform is not available, bounds may not be accurate.");
     }
     this.setActorInitialBounds();
@@ -48,7 +49,7 @@ export class RepresentableComponent {
   }
 
   private refreshBounds(): void {
-    const worldTransform = this._worldTransform!;
+    const worldTransform = this._logicalWorldTransform!;
     const initialBounds = this._actorBounds!;
     const scaleX = (this.gameObject as any).scaleX ?? 1;
     const scaleY = (this.gameObject as any).scaleY ?? 1;
@@ -69,7 +70,7 @@ export class RepresentableComponent {
    * See #374 for more details.
    */
   private setActorInitialBounds() {
-    const centerRelativeToOrigin = this.worldTransform;
+    const centerRelativeToOrigin = this.renderedWorldTransform;
     const bounds = getGameObjectBoundsRaw(this.gameObject);
     if (!bounds) throw new Error("RepresentableComponent: GameObject bounds are not available.");
 
@@ -98,14 +99,15 @@ export class RepresentableComponent {
     } satisfies ActorInitialBounds;
   }
 
-  get worldTransform(): Vector3Simple {
-    if (!this._worldTransform) {
+  get logicalWorldTransform(): Vector3Simple {
+    if (!this._logicalWorldTransform) {
       this.setTransformInitially();
     }
-    return this._worldTransform!;
+    return this._logicalWorldTransform!;
   }
-  set worldTransform(worldPosition: Vector3Simple) {
-    this._worldTransform = worldPosition;
+
+  set logicalWorldTransform(worldPosition: Vector3Simple) {
+    this._logicalWorldTransform = worldPosition;
 
     const transform = getGameObjectTransformRaw(this.gameObject);
     if (!transform) throw new Error("RepresentableComponent: GameObject transform is not available.");
@@ -117,6 +119,17 @@ export class RepresentableComponent {
     }
 
     this.refreshBounds();
+  }
+
+  get renderedWorldTransform(): Vector3Simple {
+    const transform = this.logicalWorldTransform;
+    // adjust the y by z offset
+    return {
+      x: transform.x,
+      y: transform.y - transform.z,
+      // z does not affect rendering in Phaser 3
+      z: 0
+    };
   }
 
   get visible(): boolean {
