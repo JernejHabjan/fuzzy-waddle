@@ -68,6 +68,21 @@
             "EditorOwner.owner_id": "1",
             "x": -192,
             "y": 592
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "5ada33a3-a915-4864-a290-2e1aa49ab21f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -160,
+            "y": 624
         }
     ],
     "plainObjects": [

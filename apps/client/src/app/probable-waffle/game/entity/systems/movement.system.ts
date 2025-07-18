@@ -286,6 +286,7 @@ export class MovementSystem {
         targets: logicalTransform,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
+        z: 0,
         duration: tileStepDuration,
         onComplete: async () => {
           try {
