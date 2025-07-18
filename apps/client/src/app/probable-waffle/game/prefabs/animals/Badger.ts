@@ -101,7 +101,7 @@ export default class Badger extends Phaser.GameObjects.Sprite {
     this.animationActorComponent?.playCustomAnimation("tunnel");
 
     this.movementSystem
-      ?.moveToLocation({ x: tileXY.x, y: tileXY.y, z: 0 }, {
+      ?.moveToLocationByFollowingStaticPath({ x: tileXY.x, y: tileXY.y, z: 0 }, {
         ignoreAnimations: true // we're overriding move animations here
       } satisfies PathMoveConfig)
       .then((success) => {

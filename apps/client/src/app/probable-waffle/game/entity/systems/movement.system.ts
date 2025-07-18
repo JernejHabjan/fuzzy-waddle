@@ -97,7 +97,7 @@ export class MovementSystem {
 
           this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
         } else {
-          this.moveToLocation(tileVec3);
+          this.moveToLocationByFollowingStaticPath(tileVec3);
         }
       });
   }
@@ -116,11 +116,14 @@ export class MovementSystem {
     return this._navigationService;
   }
 
-  async moveToLocation(tileVec3: Vector3Simple, pathMoveConfig?: PathMoveConfig): Promise<boolean> {
+  async moveToLocationByFollowingStaticPath(
+    tileVec3: Vector3Simple,
+    pathMoveConfig?: PathMoveConfig
+  ): Promise<boolean> {
     const flightComponent = getActorComponent(this.gameObject, FlightComponent);
     const usePathfinding = !flightComponent;
     if (!usePathfinding) {
-      return this.moveDirectlyToLocation(tileVec3, pathMoveConfig)
+      return this.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig)
         .then(() => true)
         .catch(() => false);
     }
@@ -138,7 +141,7 @@ export class MovementSystem {
       if (!path.length) return false;
       // Remove the first tile, as it's the current tile
       path.shift();
-      await this.moveAlongPath(path, pathMoveConfig);
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig);
     } catch (e) {
       // console.error("Error moving along path", e);
       return false;
@@ -147,13 +150,16 @@ export class MovementSystem {
     return true;
   }
 
-  async moveToActor(gameObject: GameObject, pathMoveConfig?: Partial<PathMoveConfig>): Promise<boolean> {
+  async moveToActorByAdjustingPathDynamically(
+    gameObject: GameObject,
+    pathMoveConfig?: Partial<PathMoveConfig>
+  ): Promise<boolean> {
     const flightComponent = getActorComponent(gameObject, FlightComponent);
     const usePathfinding = !flightComponent;
     if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(gameObject);
       if (!vec3) return false;
-      return this.moveDirectlyToLocation(
+      return this.moveDirectlyToLocationWithoutPathfinding(
         {
           x: vec3.x,
           y: vec3.y,
@@ -165,10 +171,29 @@ export class MovementSystem {
         .catch(() => false);
     }
 
-    return this.calculateAndFollowPath(gameObject, pathMoveConfig);
+    return this.calculateAndFollowPathOfMovingTarget(gameObject, pathMoveConfig);
   }
 
-  private async calculateAndFollowPath(
+  /**
+   * Calculates and follows a dynamic path to a moving target game object.
+   * This method is used for "following" behavior where the target may move during pathfinding.
+   *
+   * Unlike moveAlongPathByFollowingPreCalculatedStaticPath which follows a static pre-calculated path, this method:
+   * - Recalculates the path dynamically after each step
+   * - Handles moving targets that may change position
+   * - Finds the closest walkable tile within a specified radius of the target
+   * - Stops and recalculates if the target moves significantly
+   *
+   * Use cases:
+   * - Following another character/unit
+   * - Moving to interact with a movable object
+   * - AI units pursuing a target
+   *
+   * @param destinationGameObject The target game object to follow/move towards
+   * @param pathMoveConfig Optional configuration for movement behavior
+   * @returns Promise<boolean> - true if movement started successfully, false otherwise
+   */
+  private async calculateAndFollowPathOfMovingTarget(
     destinationGameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
@@ -196,10 +221,6 @@ export class MovementSystem {
         const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
         if (!tileWorldXY) return false;
 
-        const throttledTweenUpdate = pathMoveConfig?.onUpdateThrottled
-          ? throttle(pathMoveConfig.onUpdateThrottled, pathMoveConfig.onUpdateThrottle ?? 360)
-          : undefined;
-
         let newZ = 0;
         const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
         if (walkableComponent && walkableComponent.getDestinationHeight) {
@@ -211,49 +232,29 @@ export class MovementSystem {
           z: newZ
         } as Vector3Simple;
 
-        this.onMovementStart(newLogicalTransform, pathMoveConfig);
-        const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
-        const tileStepDuration =
-          actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
-          new Error("No tile move duration defined");
+        const onComplete = () => {
+          // After completing one step, call the callback
+          pathMoveConfig?.onComplete?.();
 
-        const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
-        if (!representableComponent) return false;
-        const logicalTransform = { ...representableComponent.logicalWorldTransform };
-
-        // Only move one step at a time when following
-        this._currentTween = this.gameObject.scene.tweens.add({
-          targets: logicalTransform,
-          x: newLogicalTransform.x,
-          y: newLogicalTransform.y,
-          z: newLogicalTransform.z,
-          duration: tileStepDuration,
-          onComplete: () => {
-            // After completing one step, call the callback
-            pathMoveConfig?.onComplete?.();
-
-            // If still following, calculate a new path from the current position
-            if (this.targetGameObject) {
-              this.calculateAndFollowPath(this.targetGameObject, pathMoveConfig);
-            } else if (path.length > 1) {
-              // If not following but there are more steps, continue the path
-              path.shift(); // Remove the step we just completed
-              this.moveAlongPath(path, pathMoveConfig);
-            } else {
-              // End of path and not following
-              this.playMovementAnimation(false, pathMoveConfig);
-            }
-          },
-          onStop: () => {
-            pathMoveConfig?.onStop?.();
-            // no need to stop animation, otherwise it's not smooth
-          },
-          onUpdate: () => {
-            this.tweenUpdate(logicalTransform);
-            throttledTweenUpdate?.();
-            pathMoveConfig?.onUpdate?.();
+          // If still following, calculate a new path from the current position
+          if (this.targetGameObject) {
+            this.calculateAndFollowPathOfMovingTarget(this.targetGameObject, pathMoveConfig);
+          } else if (path.length > 1) {
+            // If not following but there are more steps, continue the path
+            path.shift(); // Remove the step we just completed
+            this.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig);
+          } else {
+            // End of path and not following
+            this.playMovementAnimation(false, pathMoveConfig);
           }
-        });
+        };
+
+        const onStop = () => {
+          pathMoveConfig?.onStop?.();
+          // no need to stop animation, otherwise it's not smooth
+        };
+
+        await this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop);
       }
 
       return true;
@@ -262,55 +263,54 @@ export class MovementSystem {
     }
   }
 
-  private async moveAlongPath(path: Vector2Simple[], config?: PathMoveConfig): Promise<void> {
-    if (!path.length) return Promise.resolve();
+  /**
+   * Moves the game object along a pre-calculated static path tile by tile.
+   * This is the core pathfinding movement method that executes a sequence of tile movements.
+   *
+   * The method works recursively:
+   * - Takes the next tile from the path array
+   * - Moves to that tile using a tween animation
+   * - When movement completes, recursively calls itself for the next tile
+   * - Continues until the entire path is traversed
+   *
+   * Use cases:
+   * - Executing a complete path from point A to point B
+   * - Moving along a predetermined route
+   * - Player-commanded movement to a specific location
+   * - AI following a calculated route
+   *
+   * @param path Array of tile coordinates representing the movement path
+   * @param config Optional configuration for movement behavior and callbacks
+   * @returns Promise<void> - resolves when the entire path is completed
+   */
+  private async moveAlongPathByFollowingPreCalculatedStaticPath(
+    path: Vector2Simple[],
+    config?: PathMoveConfig
+  ): Promise<void> {
+    if (!path.length) {
+      config?.onComplete?.();
+      this.playMovementAnimation(false, config);
+      return;
+    }
     const nextTile = path.shift();
     if (!nextTile) return Promise.reject("No next tile to move to");
     const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
     if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
     this.cancelMovement();
     config?.onPathUpdate?.(nextTile);
-    const throttledTweenUpdate = config?.onUpdateThrottled
-      ? throttle(config.onUpdateThrottled, config.onUpdateThrottle ?? 360)
-      : undefined;
 
-    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
-    const tileStepDuration =
-      actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ?? new Error("No tile move duration defined");
-    return new Promise<void>((resolve, reject) => {
-      this.onMovementStart({ ...tileWorldXY, z: 0 }, config);
-      const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
-      if (!representableComponent) return reject("No representable component");
-      const logicalTransform = { ...representableComponent.logicalWorldTransform };
-      this._currentTween = this.gameObject.scene.tweens.add({
-        targets: logicalTransform,
-        x: tileWorldXY.x,
-        y: tileWorldXY.y,
-        z: 0,
-        duration: tileStepDuration,
-        onComplete: async () => {
-          try {
-            await this.moveAlongPath(path, config);
-            config?.onComplete?.();
-            this.playMovementAnimation(false, config);
-            resolve();
-          } catch (e) {
-            // console.error("Error moving along path", e);
-            reject(e);
-          }
-        },
-        onStop: () => {
-          reject("Movement stopped");
-          config?.onStop?.();
-          this.playMovementAnimation(false, config);
-        },
-        onUpdate: () => {
-          this.tweenUpdate(logicalTransform);
-          throttledTweenUpdate?.();
-          config?.onUpdate?.();
-        }
-      });
-    });
+    const newLogicalTransform = { ...tileWorldXY, z: 0 } as Vector3Simple;
+
+    const onComplete = async () => {
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);
+    };
+
+    const onStop = () => {
+      config?.onStop?.();
+      this.playMovementAnimation(false, config);
+    };
+
+    return this.startMovementTween(newLogicalTransform, config, onComplete, onStop);
   }
 
   private tweenUpdate = (logicalTransform: Vector3Simple) => {
@@ -325,28 +325,68 @@ export class MovementSystem {
     }
   }
 
-  private moveDirectlyToLocation(vec3: Vector3Simple, pathMoveConfig?: PathMoveConfig): Promise<void> {
-    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+  /**
+   * Moves the game object directly to a target location without pathfinding.
+   * This method bypasses navigation obstacles and moves in a straight line to the destination.
+   *
+   * This is primarily used for:
+   * - Flying units that can ignore ground obstacles
+   * - Teleportation or instant movement effects
+   * - Debug/admin movement commands
+   * - Movement in open areas without obstacles
+   *
+   * The movement is handled as a single tween animation from current position to target,
+   * without considering navigation mesh or walkable tiles along the route.
+   *
+   * @param vec3 The target world coordinates (x, y, z) to move to
+   * @param pathMoveConfig Optional configuration for movement behavior
+   * @returns Promise<void> - resolves when movement is completed
+   */
+  private moveDirectlyToLocationWithoutPathfinding(
+    vec3: Vector3Simple,
+    pathMoveConfig?: PathMoveConfig
+  ): Promise<void> {
     // don't use pathfinding
     // use worldXY to move directly to location
     this.cancelMovement();
-    const throttledTweenUpdate = pathMoveConfig?.onUpdateThrottled
-      ? throttle(pathMoveConfig.onUpdateThrottled, pathMoveConfig.onUpdateThrottle ?? 360)
+
+    const tileWorldXY = this.navigationService?.getTileWorldCenter(vec3);
+    if (!tileWorldXY) {
+      return Promise.reject("No tile world xy to move to");
+    }
+
+    const newLogicalTransform = {
+      x: tileWorldXY.x,
+      y: tileWorldXY.y,
+      z: vec3.z
+    } as Vector3Simple;
+
+    const onComplete = () => {
+      pathMoveConfig?.onComplete?.();
+      this.playMovementAnimation(false, pathMoveConfig);
+    };
+
+    const onStop = () => {
+      pathMoveConfig?.onStop?.();
+      if (!pathMoveConfig?.ignoreAnimations) this.playMovementAnimation(false, pathMoveConfig);
+    };
+
+    return this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop);
+  }
+
+  private startMovementTween(
+    newLogicalTransform: Vector3Simple,
+    config: PathMoveConfig | Partial<PathMoveConfig> | undefined,
+    onComplete?: (() => void) | (() => Promise<void>),
+    onStop?: () => void
+  ): Promise<void> {
+    const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    const throttledTweenUpdate = config?.onUpdateThrottled
+      ? throttle(config.onUpdateThrottled, config.onUpdateThrottle ?? 360)
       : undefined;
 
     return new Promise<void>((resolve, reject) => {
-      const tileWorldXY = this.navigationService?.getTileWorldCenter(vec3);
-      if (!tileWorldXY) {
-        reject("No tile world xy to move to");
-        return;
-      }
-
-      const newLogicalTransform = {
-        x: tileWorldXY.x,
-        y: tileWorldXY.y,
-        z: vec3.z
-      } as Vector3Simple;
-      this.onMovementStart(newLogicalTransform, pathMoveConfig);
+      this.onMovementStart(newLogicalTransform, config);
       const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
       if (!representableComponent) return reject("No representable component");
       const logicalTransform = { ...representableComponent.logicalWorldTransform };
@@ -359,25 +399,31 @@ export class MovementSystem {
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
           new Error("No tile move duration defined"),
         onComplete: async () => {
-          pathMoveConfig?.onComplete?.();
-          this.playMovementAnimation(false, pathMoveConfig);
+          if (onComplete) {
+            await onComplete();
+          }
           resolve();
         },
         onStop: () => {
-          pathMoveConfig?.onStop?.();
-          if (!pathMoveConfig?.ignoreAnimations) this.playMovementAnimation(false, pathMoveConfig);
-          reject("Movement stopped");
+          if (onStop) {
+            onStop();
+          } else {
+            config?.onStop?.();
+            if (!config?.ignoreAnimations) this.playMovementAnimation(false, config);
+          }
+          // reject("Movement stopped");
+          resolve();
         },
         onUpdate: () => {
           this.tweenUpdate(logicalTransform);
           throttledTweenUpdate?.();
-          pathMoveConfig?.onUpdate?.();
+          config?.onUpdate?.();
         }
       });
     });
   }
 
-  private onMovementStart(newTileWorldXY: Vector3Simple, config?: PathMoveConfig) {
+  private onMovementStart(newTileWorldXY: Vector3Simple, config?: PathMoveConfig | Partial<PathMoveConfig>) {
     this.playMovementSound();
     if (this.actorTranslateComponent) this.actorTranslateComponent.updateDirection(newTileWorldXY);
     this.playMovementAnimation(true, config);
@@ -490,7 +536,7 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
   if (!newTile) {
     return Promise.reject("No new tile found");
   }
-  await movementSystem.moveToLocation(
+  await movementSystem.moveToLocationByFollowingStaticPath(
     {
       x: newTile.x,
       y: newTile.y,

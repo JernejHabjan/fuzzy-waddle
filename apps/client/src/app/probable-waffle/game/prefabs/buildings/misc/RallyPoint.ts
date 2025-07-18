@@ -75,12 +75,12 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     if (!movementSystem) return;
     if (this.tileVec3) {
       // noinspection JSIgnoredPromiseFromCall
-      movementSystem.moveToLocation(this.tileVec3);
+      movementSystem.moveToLocationByFollowingStaticPath(this.tileVec3);
       return;
     }
     if (this.actor) {
       // noinspection JSIgnoredPromiseFromCall
-      movementSystem.moveToActor(this.actor);
+      movementSystem.moveToActorByAdjustingPathDynamically(this.actor);
     }
   }
 

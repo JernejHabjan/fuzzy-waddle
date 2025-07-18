@@ -287,7 +287,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             if (!movementSystem) return;
             const tileXY = await getRandomTileInNavigableRadius(actor, 10);
             if (!tileXY) return;
-            await movementSystem.moveToLocation({
+            await movementSystem.moveToLocationByFollowingStaticPath({
               x: tileXY.x,
               y: tileXY.y,
               z: 0
