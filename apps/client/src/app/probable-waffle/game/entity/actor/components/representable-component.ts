@@ -1,5 +1,10 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import {
+  getGameObjectBoundsRaw,
+  getGameObjectRenderedTransformRaw,
+  getGameObjectVisibility,
+  onObjectReady
+} from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
 import { FlightComponent } from "./flight-component";
 import { DepthHelper } from "../../../world/map/depth.helper";
@@ -15,6 +20,12 @@ export class RepresentableComponent {
   private _logicalWorldTransform?: Vector3Simple;
   private _visible?: boolean;
   bounds = new Phaser.Geom.Rectangle(0, 0, 0, 0);
+  private initialBounds?: {
+    width: number;
+    height: number;
+    offsetX: number;
+    offsetY: number;
+  };
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -36,23 +47,46 @@ export class RepresentableComponent {
       this.logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
       console.warn("RepresentableComponent: GameObject transform is not available, bounds may not be accurate.");
     }
+    this.ensureInitialBounds();
     this.refreshBounds();
   }
 
   private refreshBounds(): void {
+    if (!this.initialBounds) return;
     const renderedTransform = this.renderedWorldTransform;
     const scaleX = (this.gameObject as any).scaleX ?? 1;
     const scaleY = (this.gameObject as any).scaleY ?? 1;
-    const originX = (this.gameObject as any).originX ?? 0.5;
-    const height = this.representableDefinition.height;
-    const width = this.representableDefinition.width;
 
     this.bounds = new Phaser.Geom.Rectangle(
-      renderedTransform.x - width * originX * scaleX, // Center horizontally with scale
-      renderedTransform.y - height * scaleY, // Center vertically with scale
-      width * scaleX,
-      height * scaleY
+      renderedTransform.x + this.initialBounds.offsetX * scaleX,
+      renderedTransform.y + this.initialBounds.offsetY * scaleY,
+      this.initialBounds.width * scaleX,
+      this.initialBounds.height * scaleY
     );
+  }
+
+  private ensureInitialBounds() {
+    if (this.initialBounds) return;
+    const bounds = getGameObjectBoundsRaw(this.gameObject);
+    if (!bounds) {
+      console.warn("Could not get initial bounds for", this.gameObject);
+      this.initialBounds = {
+        width: this.representableDefinition.width,
+        height: this.representableDefinition.height,
+        offsetX: -this.representableDefinition.width * 0.5,
+        offsetY: -this.representableDefinition.height * 0.5
+      };
+      return;
+    }
+
+    const transform = getGameObjectRenderedTransformRaw(this.gameObject)!;
+
+    this.initialBounds = {
+      width: bounds.width,
+      height: bounds.height,
+      offsetX: bounds.x - transform.x,
+      offsetY: bounds.y - transform.y
+    };
   }
 
   /**
@@ -77,6 +111,7 @@ export class RepresentableComponent {
       x: worldPosition.x,
       y: worldPosition.y - this.getActualLogicalZ(worldPosition) // adjust y by z offset
     } satisfies Vector2Simple;
+    this.ensureInitialBounds();
     this.refreshBounds();
   }
 
