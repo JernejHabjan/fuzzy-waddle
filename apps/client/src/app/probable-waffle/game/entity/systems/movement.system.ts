@@ -2,7 +2,6 @@ import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../scenes/components/scene-component-helpers";
 import { NavigationService, TerrainType } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
-import { DepthHelper } from "../../world/map/depth.helper";
 import { getActorSystem } from "../../data/actor-system";
 import {
   getGameObjectCurrentTile,
@@ -33,9 +32,9 @@ import { OwnerComponent } from "../actor/components/owner-component";
 import { AnimationActorComponent } from "../actor/components/animation-actor-component";
 import { FlightComponent } from "../actor/components/flight-component";
 import { WalkableComponent } from "../actor/components/walkable-component";
+import { RepresentableComponent } from "../actor/components/representable-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
-import { RepresentableComponent } from "../actor/components/representable-component";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -109,11 +108,7 @@ export class MovementSystem {
   }
 
   instantlyMoveToWorldCoordinates(logicalWorldTransform: Vector3Simple): void {
-    const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
-    if (!representableComponent) return;
-
-    representableComponent.logicalWorldTransform = logicalWorldTransform;
-    this.tweenUpdate();
+    this.tweenUpdate(logicalWorldTransform);
   }
 
   private get navigationService(): NavigationService | undefined {
@@ -210,23 +205,28 @@ export class MovementSystem {
         if (walkableComponent && walkableComponent.getDestinationHeight) {
           newZ += walkableComponent.getDestinationHeight();
         }
-        const newRenderWorldTransform = {
+        const newLogicalTransform = {
           x: tileWorldXY.x,
-          y: tileWorldXY.y - newZ,
+          y: tileWorldXY.y,
           z: newZ
         } as Vector3Simple;
 
-        this.onMovementStart(newRenderWorldTransform, pathMoveConfig);
+        this.onMovementStart(newLogicalTransform, pathMoveConfig);
         const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
         const tileStepDuration =
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
           new Error("No tile move duration defined");
+
+        const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
+        if (!representableComponent) return false;
+        const logicalTransform = { ...representableComponent.logicalWorldTransform };
+
         // Only move one step at a time when following
         this._currentTween = this.gameObject.scene.tweens.add({
-          targets: this.gameObject,
-          x: newRenderWorldTransform.x,
-          y: newRenderWorldTransform.y,
-          z: newRenderWorldTransform.z,
+          targets: logicalTransform,
+          x: newLogicalTransform.x,
+          y: newLogicalTransform.y,
+          z: newLogicalTransform.z,
           duration: tileStepDuration,
           onComplete: () => {
             // After completing one step, call the callback
@@ -249,7 +249,7 @@ export class MovementSystem {
             // no need to stop animation, otherwise it's not smooth
           },
           onUpdate: () => {
-            this.tweenUpdate();
+            this.tweenUpdate(logicalTransform);
             throttledTweenUpdate?.();
             pathMoveConfig?.onUpdate?.();
           }
@@ -279,8 +279,11 @@ export class MovementSystem {
       actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ?? new Error("No tile move duration defined");
     return new Promise<void>((resolve, reject) => {
       this.onMovementStart({ ...tileWorldXY, z: 0 }, config);
+      const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
+      if (!representableComponent) return reject("No representable component");
+      const logicalTransform = { ...representableComponent.logicalWorldTransform };
       this._currentTween = this.gameObject.scene.tweens.add({
-        targets: this.gameObject,
+        targets: logicalTransform,
         x: tileWorldXY.x,
         y: tileWorldXY.y,
         duration: tileStepDuration,
@@ -301,7 +304,7 @@ export class MovementSystem {
           this.playMovementAnimation(false, config);
         },
         onUpdate: () => {
-          this.tweenUpdate();
+          this.tweenUpdate(logicalTransform);
           throttledTweenUpdate?.();
           config?.onUpdate?.();
         }
@@ -309,19 +312,9 @@ export class MovementSystem {
     });
   }
 
-  private tweenUpdate = () => {
-    // for now, take it from actor translate component // TODO - IT SHOULD COME IN AS PARAMETER TO TWEEN UPDATE
-    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
-    if (!transformComponent.hasTransformComponent) return;
-    const newLogicalTransform = {
-      x: transformComponent.x ?? 0,
-      y: transformComponent.y ?? 0,
-      z: transformComponent.z ?? 0
-    } satisfies Vector3Simple;
-
+  private tweenUpdate = (logicalTransform: Vector3Simple) => {
     if (!this.actorTranslateComponent) return;
-    this.actorTranslateComponent.moveActorToLogicalPosition(newLogicalTransform);
-    DepthHelper.setActorDepth(this.gameObject);
+    this.actorTranslateComponent.moveActorToLogicalPosition(logicalTransform);
   };
 
   cancelMovement() {
@@ -347,18 +340,20 @@ export class MovementSystem {
         return;
       }
 
-      const newZ = 0;
-      const newRenderWWorldTransform = {
+      const newLogicalTransform = {
         x: tileWorldXY.x,
-        y: tileWorldXY.y - newZ,
-        z: newZ
+        y: tileWorldXY.y,
+        z: vec3.z
       } as Vector3Simple;
-      this.onMovementStart(newRenderWWorldTransform, pathMoveConfig);
+      this.onMovementStart(newLogicalTransform, pathMoveConfig);
+      const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
+      if (!representableComponent) return reject("No representable component");
+      const logicalTransform = { ...representableComponent.logicalWorldTransform };
       this._currentTween = this.gameObject.scene.tweens.add({
-        targets: this.gameObject,
-        x: newRenderWWorldTransform.x,
-        y: newRenderWWorldTransform.y,
-        z: newRenderWWorldTransform.z,
+        targets: logicalTransform,
+        x: newLogicalTransform.x,
+        y: newLogicalTransform.y,
+        z: newLogicalTransform.z,
         duration:
           actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
           new Error("No tile move duration defined"),
@@ -373,7 +368,7 @@ export class MovementSystem {
           reject("Movement stopped");
         },
         onUpdate: () => {
-          this.tweenUpdate();
+          this.tweenUpdate(logicalTransform);
           throttledTweenUpdate?.();
           pathMoveConfig?.onUpdate?.();
         }
