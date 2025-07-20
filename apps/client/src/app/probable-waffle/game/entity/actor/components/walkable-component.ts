@@ -12,6 +12,17 @@ export interface WalkablePath {
   bottomRight?: boolean;
 }
 
+export enum WalkablePathDirection {
+  Top = "top",
+  Bottom = "bottom",
+  Left = "left",
+  Right = "right",
+  TopLeft = "topLeft",
+  TopRight = "topRight",
+  BottomLeft = "bottomLeft",
+  BottomRight = "bottomRight"
+}
+
 /**
  * Wall:
  *   walkableHeight: 64,
@@ -96,15 +107,14 @@ export class WalkableComponent {
 
   get accessibleFromAllSides(): boolean {
     return (
-      (this.walkablePath.top &&
-        this.walkablePath.bottom &&
-        this.walkablePath.left &&
-        this.walkablePath.right &&
-        this.walkablePath.topLeft &&
-        this.walkablePath.topRight &&
-        this.walkablePath.bottomLeft &&
-        this.walkablePath.bottomRight) ??
-      true
+      (this.walkablePath.top ?? false) &&
+      (this.walkablePath.bottom ?? false) &&
+      (this.walkablePath.left ?? false) &&
+      (this.walkablePath.right ?? false) &&
+      (this.walkablePath.topLeft ?? false) &&
+      (this.walkablePath.topRight ?? false) &&
+      (this.walkablePath.bottomLeft ?? false) &&
+      (this.walkablePath.bottomRight ?? false)
     );
   }
 }
