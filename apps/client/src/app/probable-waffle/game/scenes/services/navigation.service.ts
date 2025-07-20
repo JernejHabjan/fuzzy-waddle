@@ -13,7 +13,11 @@ import {
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
-import { WalkableComponent } from "../../entity/actor/components/walkable-component";
+import {
+  WalkableComponent,
+  WalkablePath,
+  WalkablePathDirection
+} from "../../entity/actor/components/walkable-component";
 import { ColliderComponent } from "../../entity/actor/components/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
@@ -22,7 +26,7 @@ import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent } from "../components/scene-component-helpers";
 import { TilemapComponent } from "../components/tilemap.component";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
-import { throttle } from "../../library/throttle";
+import { throttle, throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";
 
 export enum TerrainType {
@@ -40,6 +44,7 @@ interface HeightMapCell {
   exitHeight: number;
   acceptMinimumHeight: number;
   isWalkable: boolean;
+  walkableComponent?: WalkableComponent;
 }
 
 export class NavigationService {
@@ -152,7 +157,9 @@ export class NavigationService {
       }))
     );
 
-    // Overlay Walkable objects
+    const walkableTilesToProcess: { x: number; y: number; walkableComponent: WalkableComponent }[] = [];
+
+    // First pass: Overlay Walkable objects without checking accessibility yet
     this.scene.children.each((child) => {
       const walkableComponent = getActorComponent(child, WalkableComponent);
       if (!walkableComponent) return;
@@ -160,47 +167,42 @@ export class NavigationService {
       const def = walkableComponent.walkableDefinition;
       tiles.forEach(({ x, y }) => {
         if (!(this.heightMapGrid[y] && this.heightMapGrid[y][x])) return; // Skip if out of bounds
-        // Check if this walkable is actually accessible (has stairs or adjacent walkable)
-        let accessible = false;
-        // Check neighbors for accessibility
-        const neighborOffsets = [
-          { dx: 0, dy: -1 },
-          { dx: 0, dy: 1 },
-          { dx: -1, dy: 0 },
-          { dx: 1, dy: 0 },
-          { dx: -1, dy: -1 },
-          { dx: 1, dy: -1 },
-          { dx: -1, dy: 1 },
-          { dx: 1, dy: 1 }
-        ];
-        for (const { dx, dy } of neighborOffsets) {
-          const nx = x + dx,
-            ny = y + dy;
-          if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny].length) {
-            const neighbor = this.heightMapGrid[ny][nx];
-            // Accessible if neighbor is walkable and canAccessFrom neighbor to this tile
-            if (
-              neighbor.isWalkable &&
-              this.canAccessFrom(neighbor, {
-                walkableHeight: def.walkableHeight ?? 0,
-                exitHeight: def.exitHeight ?? 0,
-                acceptMinimumHeight: def.acceptMinimumHeight ?? 0,
-                isWalkable: true
-              })
-            ) {
-              accessible = true;
-              break;
-            }
-          }
-        }
-        // If not accessible from any neighbor, do not mark as walkable
         this.heightMapGrid[y][x] = {
           walkableHeight: def.walkableHeight ?? 0,
           exitHeight: def.exitHeight ?? 0,
           acceptMinimumHeight: def.acceptMinimumHeight ?? 0,
-          isWalkable: accessible
+          isWalkable: false, // Assume not walkable until proven otherwise in the second pass
+          walkableComponent
         };
+        walkableTilesToProcess.push({ x, y, walkableComponent });
       });
+    });
+
+    // Second pass: Determine accessibility for all walkable objects
+    walkableTilesToProcess.forEach(({ x, y }) => {
+      const cell = this.heightMapGrid[y][x];
+      const neighborOffsets = [
+        { dx: 0, dy: -1 },
+        { dx: 0, dy: 1 },
+        { dx: -1, dy: 0 },
+        { dx: 1, dy: 0 },
+        { dx: -1, dy: -1 },
+        { dx: 1, dy: -1 },
+        { dx: -1, dy: 1 },
+        { dx: 1, dy: 1 }
+      ];
+      for (const { dx, dy } of neighborOffsets) {
+        const nx = x + dx,
+          ny = y + dy;
+        if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny].length) {
+          const neighbor = this.heightMapGrid[ny][nx];
+          // Accessible if neighbor is walkable and can access from neighbor to this tile
+          if (this.canAccessFrom(neighbor, cell)) {
+            cell.isWalkable = true;
+            break;
+          }
+        }
+      }
     });
   }
 
@@ -214,27 +216,74 @@ export class NavigationService {
         const allowedDirections: Direction[] = [];
 
         // Check all 8 directions
-        const directions: { dir: Direction; dx: number; dy: number }[] = [
-          { dir: TOP, dx: 0, dy: -1 },
-          { dir: BOTTOM, dx: 0, dy: 1 },
-          { dir: LEFT, dx: -1, dy: 0 },
-          { dir: RIGHT, dx: 1, dy: 0 },
-          { dir: TOP_LEFT, dx: -1, dy: -1 },
-          { dir: TOP_RIGHT, dx: 1, dy: -1 },
-          { dir: BOTTOM_LEFT, dx: -1, dy: 1 },
-          { dir: BOTTOM_RIGHT, dx: 1, dy: 1 }
+        const directions: { dir: Direction; dx: number; dy: number; name: WalkablePathDirection }[] = [
+          { dir: TOP, dx: 0, dy: -1, name: WalkablePathDirection.Top },
+          { dir: BOTTOM, dx: 0, dy: 1, name: WalkablePathDirection.Bottom },
+          { dir: LEFT, dx: -1, dy: 0, name: WalkablePathDirection.Left },
+          { dir: RIGHT, dx: 1, dy: 0, name: WalkablePathDirection.Right },
+          { dir: TOP_LEFT, dx: -1, dy: -1, name: WalkablePathDirection.TopLeft },
+          { dir: TOP_RIGHT, dx: 1, dy: -1, name: WalkablePathDirection.TopRight },
+          { dir: BOTTOM_LEFT, dx: -1, dy: 1, name: WalkablePathDirection.BottomLeft },
+          { dir: BOTTOM_RIGHT, dx: 1, dy: 1, name: WalkablePathDirection.BottomRight }
         ];
 
-        directions.forEach(({ dir, dx, dy }) => {
+        const checkDirection = (
+          dir: Direction,
+          dx: number,
+          dy: number,
+          name: WalkablePathDirection,
+          pathDef?: WalkablePath
+        ) => {
           const nx = x + dx;
           const ny = y + dy;
           if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny].length) {
             const neighbor = this.heightMapGrid[ny][nx];
-            if (neighbor.isWalkable && this.canAccessFrom(cell, neighbor)) {
-              allowedDirections.push(dir);
+            const neighborWalkableComponent = neighbor.walkableComponent;
+
+            // check if we can move from cell to neighbor
+            const canMoveToNeighbor = this.canAccessFrom(cell, neighbor);
+            // check if we can move from neighbor to cell
+            const canMoveFromNeighbor = this.canAccessFrom(neighbor, cell);
+
+            if (!canMoveToNeighbor && !canMoveFromNeighbor) return;
+
+            // if on a walkable component with path restrictions, check them
+            if (pathDef && !pathDef[name]) {
+              // if neighbor is not a walkable component, we can't move to it if path is restricted
+              if (!neighborWalkableComponent) return;
+
+              // if neighbor is a walkable component, check if it allows access from our direction
+              const oppositeDirection: WalkablePathDirection | undefined = {
+                [WalkablePathDirection.Top]: WalkablePathDirection.Bottom,
+                [WalkablePathDirection.Bottom]: WalkablePathDirection.Top,
+                [WalkablePathDirection.Left]: WalkablePathDirection.Right,
+                [WalkablePathDirection.Right]: WalkablePathDirection.Left,
+                [WalkablePathDirection.TopLeft]: WalkablePathDirection.BottomRight,
+                [WalkablePathDirection.TopRight]: WalkablePathDirection.BottomLeft,
+                [WalkablePathDirection.BottomLeft]: WalkablePathDirection.TopRight,
+                [WalkablePathDirection.BottomRight]: WalkablePathDirection.TopLeft
+              }[name];
+              if (!oppositeDirection || !neighborWalkableComponent.walkablePathDefinition[oppositeDirection]) {
+                return;
+              }
             }
+            allowedDirections.push(dir);
           }
-        });
+        };
+
+        const walkableComponent = cell.walkableComponent;
+        const pathDef = walkableComponent?.walkablePathDefinition;
+        const accessibleFromAllSides = walkableComponent?.accessibleFromAllSides ?? true;
+
+        if (walkableComponent && !accessibleFromAllSides) {
+          directions.forEach(({ dir, dx, dy, name }) => {
+            checkDirection(dir, dx, dy, name, pathDef);
+          });
+        } else {
+          directions.forEach(({ dir, dx, dy, name }) => {
+            checkDirection(dir, dx, dy, name);
+          });
+        }
 
         this.easyStar.setDirectionalCondition(x, y, allowedDirections);
         if (this.DEBUG_CLICK_INFO && !environment.production) {
@@ -372,7 +421,7 @@ export class NavigationService {
     this.setDirectionalConditions();
   }
 
-  private throttleUpdateNavigation = throttle(this.updateNavigation.bind(this), 100);
+  private throttleUpdateNavigation = throttleWithTrailing(this.updateNavigation.bind(this), 100);
 
   private updateNavigation() {
     this.setup();

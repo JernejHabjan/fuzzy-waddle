@@ -75,8 +75,10 @@ export default class Wall extends Phaser.GameObjects.Container {
   name = ObjectNames.Wall;
 
   private wall?: Phaser.GameObjects.GameObject;
-
+  private currentWallType?: WallType;
   updateWall(wallType: WallType) {
+    if (this.currentWallType === wallType) return;
+    this.currentWallType = wallType;
     this.wall?.destroy();
 
     const wallClasses = {

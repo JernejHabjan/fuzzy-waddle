@@ -68,7 +68,10 @@ export default class Stairs extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   name = ObjectNames.Stairs;
   private stairs?: Phaser.GameObjects.GameObject;
+  private currentStairsType?: StairsType;
   updateStairs(stairsType: StairsType) {
+    if (this.currentStairsType === stairsType) return;
+    this.currentStairsType = stairsType;
     this.stairs?.destroy();
     const stairClasses = {
       [StairsType.TopLeft]: StairsTopLeft,
