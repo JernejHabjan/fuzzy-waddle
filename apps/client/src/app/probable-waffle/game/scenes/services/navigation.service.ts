@@ -36,8 +36,8 @@ export enum TerrainType {
 export class NavigationService {
   private readonly terrainTypes = Object.values(TerrainType);
   static UpdateNavigationEvent = "updateNavigation";
-  private easyStar: EasyStar;
-  private grid: number[][] = [];
+  private readonly easyStar: EasyStar;
+  private easyStarNavigationGrid: number[][] = [];
   private tilemapGrid: number[][] = [];
   private readonly DEBUG = false;
   private readonly DEBUG_DEMO = false;
@@ -92,12 +92,12 @@ export class NavigationService {
 
   private setup() {
     const objectsGrid = this.extractGridFromObjects();
-    this.grid = this.tilemapGrid.map((row, i) =>
+    this.easyStarNavigationGrid = this.tilemapGrid.map((row, i) =>
       row.map((tile, j) => {
         const objectValue = objectsGrid[i][j];
         if (objectValue === 0) return 0; // walkable object
         if (objectValue === 1) return 1; // blocked by object
-        return tile; // tilemap grid
+        return tile; // tilemap easyStarNavigationGrid
       })
     );
     this.setupNavigation();
@@ -182,7 +182,7 @@ export class NavigationService {
         const directionalConditions = this.convertWalkablePathToDirectionalConditions(walkablePath);
         const tileCoords = getTileCoordsUnderObject(this.tilemap, child);
         for (const tile of tileCoords) {
-          // set directional conditions for the tile in the grid
+          // set directional conditions for the tile in the easyStarNavigationGrid
           this.easyStar.setDirectionalCondition(tile.x, tile.y, directionalConditions);
           console.warn("set directional conditions for tile", tile, directionalConditions);
         }
@@ -246,7 +246,7 @@ export class NavigationService {
   }
 
   private setupNavigation() {
-    this.easyStar.setGrid(this.grid);
+    this.easyStar.setGrid(this.easyStarNavigationGrid);
     this.easyStar.setAcceptableTiles([0]);
     this.easyStar.enableDiagonals();
     this.setDirectionalConditions();
@@ -259,7 +259,7 @@ export class NavigationService {
   }
 
   /**
-   * Uses navigation grid to find a random tile that can be navigated to from the current tile within the radius of current tile
+   * Uses navigation easyStarNavigationGrid to find a random tile that can be navigated to from the current tile within the radius of current tile
    */
   async randomTileInNavigableRadius(
     currentTile: Vector2Simple,
@@ -369,10 +369,10 @@ export class NavigationService {
     const validTiles: Vector2Simple[] = [];
     for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
       for (let x = currentTile.x - radiusTiles; x <= currentTile.x + radiusTiles; x++) {
-        // Ensure coordinates are within grid bounds
-        if (0 <= x && x < this.grid[0].length && 0 <= y && y < this.grid.length) {
+        // Ensure coordinates are within easyStarNavigationGrid bounds
+        if (0 <= x && x < this.easyStarNavigationGrid[0].length && 0 <= y && y < this.easyStarNavigationGrid.length) {
           if (walkable) {
-            if (this.grid[y][x] === 0) {
+            if (this.easyStarNavigationGrid[y][x] === 0) {
               validTiles.push({ x, y });
             }
           } else {
@@ -451,9 +451,9 @@ export class NavigationService {
           // Calculate the neighboring tile coordinates
           const neighbor: Vector2Simple = { x: blockedTile.x + dx, y: blockedTile.y + dy };
 
-          // Check if the neighbor is within grid bounds, walkable, and within radius
+          // Check if the neighbor is within easyStarNavigationGrid bounds, walkable, and within radius
           if (
-            this.isWithinGridBounds(neighbor) && // Ensure it's within grid bounds
+            this.isWithinGridBounds(neighbor) && // Ensure it's within easyStarNavigationGrid bounds
             this.isTileWalkable(neighbor) &&
             Math.abs(dx) + Math.abs(dy) <= radiusTiles // Use Manhattan distance
           ) {
@@ -483,11 +483,16 @@ export class NavigationService {
   }
 
   private isWithinGridBounds(tile: Vector2Simple): boolean {
-    return tile.x >= 0 && tile.x < this.grid[0].length && tile.y >= 0 && tile.y < this.grid.length;
+    return (
+      tile.x >= 0 &&
+      tile.x < this.easyStarNavigationGrid[0].length &&
+      tile.y >= 0 &&
+      tile.y < this.easyStarNavigationGrid.length
+    );
   }
 
   private isTileWalkable(tile: Vector2Simple): boolean {
-    return this.grid[tile.y][tile.x] === 0; // Check if the tile is walkable (0 means walkable)
+    return this.easyStarNavigationGrid[tile.y][tile.x] === 0; // Check if the tile is walkable (0 means walkable)
   }
 
   isAreaBeneathGameObjectWalkable(gameObject: Phaser.GameObjects.GameObject): boolean {
