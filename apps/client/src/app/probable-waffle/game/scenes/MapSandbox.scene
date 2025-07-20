@@ -62,7 +62,11 @@
                 "y"
             ],
             "label": "stairs",
-            "x": -224,
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -160,
             "y": 624
         },
         {
@@ -73,6 +77,10 @@
                 "y"
             ],
             "label": "stairs_2",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 32,
             "y": 752
         },
@@ -84,8 +92,57 @@
                 "y"
             ],
             "label": "wall",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 0,
             "y": 768
+        },
+        {
+            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
+            "id": "e4175041-b949-424a-bfc5-bb5e44de7db8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraWorkerMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 108,
+            "y": 786
+        },
+        {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "ace32f75-11be-4b55-9f23-be5ee4e6e94e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -32,
+            "y": 784
+        },
+        {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "efedada0-9a41-42d0-a956-77c4580811c9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall_2",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -64,
+            "y": 800
         },
         {
             "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
@@ -95,8 +152,12 @@
                 "y"
             ],
             "label": "stairs_1",
-            "x": -32,
-            "y": 784
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -96,
+            "y": 816
         }
     ],
     "plainObjects": [

@@ -1839,7 +1839,7 @@ export const pwActorDefinitions: {
         range: 10
       },
       walkable: {
-        walkableHeight: 32,
+        walkableHeight: 24,
         exitHeight: 64,
         acceptMinimumHeight: 0
       },
@@ -1977,7 +1977,7 @@ export const pwActorDefinitions: {
         canBeDragPlaced: true
       },
       walkable: {
-        walkableHeight: 64,
+        walkableHeight: 42,
         exitHeight: 64,
         // can be accessed from the stairs
         acceptMinimumHeight: 64
