@@ -49,6 +49,9 @@ export interface WalkableDefinition {
 }
 
 export class WalkableComponent {
+  /**
+   * The walkable path definition that indicates from which sides this object can be approached.
+   */
   private walkablePath: WalkablePath = {
     top: false,
     bottom: false,
