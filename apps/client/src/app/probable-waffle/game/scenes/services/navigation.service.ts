@@ -1,19 +1,19 @@
 import {
-  js as EasyStar,
-  TOP,
   BOTTOM,
   BOTTOM_LEFT,
-  LEFT,
   BOTTOM_RIGHT,
+  Direction,
+  js as EasyStar,
+  LEFT,
   RIGHT,
+  TOP,
   TOP_LEFT,
-  TOP_RIGHT,
-  Direction
+  TOP_RIGHT
 } from "easystarjs";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
-import { WalkableComponent, WalkablePath } from "../../entity/actor/components/walkable-component";
+import { WalkableComponent } from "../../entity/actor/components/walkable-component";
 import { ColliderComponent } from "../../entity/actor/components/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
@@ -21,8 +21,9 @@ import { Pathfinder_old } from "../../world/map/pathfinder_old";
 import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent } from "../components/scene-component-helpers";
 import { TilemapComponent } from "../components/tilemap.component";
-import { onSceneInitialized } from "../../data/game-object-helper";
+import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
 import { throttle } from "../../library/throttle";
+import { environment } from "../../../../../environments/environment";
 
 export enum TerrainType {
   Grass = "grass",
@@ -33,14 +34,25 @@ export enum TerrainType {
   Stone = "stone"
 }
 
+// HeightMapCell stores height and walkability info for each tile
+interface HeightMapCell {
+  walkableHeight: number;
+  exitHeight: number;
+  acceptMinimumHeight: number;
+  isWalkable: boolean;
+}
+
 export class NavigationService {
   private readonly terrainTypes = Object.values(TerrainType);
   static UpdateNavigationEvent = "updateNavigation";
   private readonly easyStar: EasyStar;
   private easyStarNavigationGrid: number[][] = [];
   private tilemapGrid: number[][] = [];
+  private heightMapGrid: HeightMapCell[][] = [];
   private readonly DEBUG = false;
   private readonly DEBUG_DEMO = false;
+  private readonly DEBUG_CLICK_INFO = true; // Enable debug click info
+  private directionalConditions: Map<string, Direction[]> = new Map();
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -56,6 +68,30 @@ export class NavigationService {
     this.extractTilemapGrid();
 
     this.updateNavigation();
+
+    // DEBUG: Bind click listener to print conditional directions and heightMapGrid info
+    if (this.DEBUG_CLICK_INFO && !environment.production) {
+      this.scene.input.on(
+        Phaser.Input.Events.POINTER_UP,
+        (pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: Phaser.GameObjects.GameObject[]) => {
+          const interactiveObjectIds = gameObjectsUnderCursor
+            .map((go) => getSelectableGameObject(go))
+            .filter((go) => !!go) as Phaser.GameObjects.GameObject[];
+          if (interactiveObjectIds.length === 0) return; // No interactive objects clicked
+          const object = interactiveObjectIds[0];
+          const tiles = getTileCoordsUnderObject(this.tilemap, object);
+          console.log("Clicked GameObject:", object);
+          tiles.forEach(({ x, y }) => {
+            const heightInfo = this.heightMapGrid[y]?.[x];
+            const directions = this.directionalConditions.get(`${x}_${y}`);
+            console.log(`Tile (${x},${y}):`, {
+              heightInfo,
+              conditionalDirections: directions
+            });
+          });
+        }
+      );
+    }
 
     if (this.DEBUG_DEMO) {
       try {
@@ -100,7 +136,123 @@ export class NavigationService {
         return tile; // tilemap easyStarNavigationGrid
       })
     );
+    this.extractHeightMapGrid();
     this.setupNavigation();
+  }
+
+  // Populate heightMapGrid with info from tilemap and Walkable objects
+  private extractHeightMapGrid() {
+    // Initialize grid with default values
+    this.heightMapGrid = this.tilemapGrid.map((row) =>
+      row.map((tile) => ({
+        walkableHeight: 0,
+        exitHeight: 0,
+        acceptMinimumHeight: 0,
+        isWalkable: tile === 0
+      }))
+    );
+
+    // Overlay Walkable objects
+    this.scene.children.each((child) => {
+      const walkableComponent = getActorComponent(child, WalkableComponent);
+      if (!walkableComponent) return;
+      const tiles = getTileCoordsUnderObject(this.tilemap, child);
+      const def = walkableComponent.walkableDefinition;
+      tiles.forEach(({ x, y }) => {
+        if (!(this.heightMapGrid[y] && this.heightMapGrid[y][x])) return; // Skip if out of bounds
+        // Check if this walkable is actually accessible (has stairs or adjacent walkable)
+        let accessible = false;
+        // Check neighbors for accessibility
+        const neighborOffsets = [
+          { dx: 0, dy: -1 },
+          { dx: 0, dy: 1 },
+          { dx: -1, dy: 0 },
+          { dx: 1, dy: 0 },
+          { dx: -1, dy: -1 },
+          { dx: 1, dy: -1 },
+          { dx: -1, dy: 1 },
+          { dx: 1, dy: 1 }
+        ];
+        for (const { dx, dy } of neighborOffsets) {
+          const nx = x + dx,
+            ny = y + dy;
+          if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny].length) {
+            const neighbor = this.heightMapGrid[ny][nx];
+            // Accessible if neighbor is walkable and canAccessFrom neighbor to this tile
+            if (
+              neighbor.isWalkable &&
+              this.canAccessFrom(neighbor, {
+                walkableHeight: def.walkableHeight ?? 0,
+                exitHeight: def.exitHeight ?? 0,
+                acceptMinimumHeight: def.acceptMinimumHeight ?? 0,
+                isWalkable: true
+              })
+            ) {
+              accessible = true;
+              break;
+            }
+          }
+        }
+        // If not accessible from any neighbor, do not mark as walkable
+        this.heightMapGrid[y][x] = {
+          walkableHeight: def.walkableHeight ?? 0,
+          exitHeight: def.exitHeight ?? 0,
+          acceptMinimumHeight: def.acceptMinimumHeight ?? 0,
+          isWalkable: accessible
+        };
+      });
+    });
+  }
+
+  private setDirectionalConditions(): void {
+    // For each tile, set directional conditions based on heightMapGrid
+    this.directionalConditions.clear(); // Clear previous conditions
+    for (let y = 0; y < this.heightMapGrid.length; y++) {
+      for (let x = 0; x < this.heightMapGrid[y].length; x++) {
+        const cell = this.heightMapGrid[y][x];
+        if (!cell.isWalkable) continue;
+        const allowedDirections: Direction[] = [];
+
+        // Check all 8 directions
+        const directions: { dir: Direction; dx: number; dy: number }[] = [
+          { dir: TOP, dx: 0, dy: -1 },
+          { dir: BOTTOM, dx: 0, dy: 1 },
+          { dir: LEFT, dx: -1, dy: 0 },
+          { dir: RIGHT, dx: 1, dy: 0 },
+          { dir: TOP_LEFT, dx: -1, dy: -1 },
+          { dir: TOP_RIGHT, dx: 1, dy: -1 },
+          { dir: BOTTOM_LEFT, dx: -1, dy: 1 },
+          { dir: BOTTOM_RIGHT, dx: 1, dy: 1 }
+        ];
+
+        directions.forEach(({ dir, dx, dy }) => {
+          const nx = x + dx;
+          const ny = y + dy;
+          if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny].length) {
+            const neighbor = this.heightMapGrid[ny][nx];
+            if (neighbor.isWalkable && this.canAccessFrom(cell, neighbor)) {
+              allowedDirections.push(dir);
+            }
+          }
+        });
+
+        this.easyStar.setDirectionalCondition(x, y, allowedDirections);
+        if (this.DEBUG_CLICK_INFO && !environment.production) {
+          this.directionalConditions.set(`${x}_${y}`, allowedDirections); // Store for debug
+        }
+      }
+    }
+  }
+
+  // canAccessFrom: allow access if exitHeight of 'from' >= acceptMinimumHeight of 'to'
+  // Or if stairs (walkableHeight < exitHeight) allow access from ground to stairs/wall
+  private canAccessFrom(from: HeightMapCell, to: HeightMapCell): boolean {
+    // Allow access if exitHeight of 'from' >= acceptMinimumHeight of 'to'
+    if (from.exitHeight >= to.acceptMinimumHeight) return true;
+    // Stairs logic: allow access from ground to stairs/wall
+    // noinspection RedundantIfStatementJS
+    if (from.walkableHeight < from.exitHeight && to.walkableHeight >= from.exitHeight) return true;
+    return false;
   }
 
   private async find(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[]> {
@@ -169,38 +321,6 @@ export class NavigationService {
     });
 
     return emptyGrid;
-  }
-
-  private setDirectionalConditions(): void {
-    // for all game objects with WalkableComponent, extract the walkable path definition.
-    this.scene.children.each((child) => {
-      const walkableComponent = getActorComponent(child, WalkableComponent);
-      if (!walkableComponent) return;
-      const walkablePath: WalkablePath = walkableComponent.walkablePathDefinition;
-      const accessibleFromAllSides = walkableComponent.accessibleFromAllSides;
-      if (walkablePath && !accessibleFromAllSides) {
-        const directionalConditions = this.convertWalkablePathToDirectionalConditions(walkablePath);
-        const tileCoords = getTileCoordsUnderObject(this.tilemap, child);
-        for (const tile of tileCoords) {
-          // set directional conditions for the tile in the easyStarNavigationGrid
-          this.easyStar.setDirectionalCondition(tile.x, tile.y, directionalConditions);
-          console.warn("set directional conditions for tile", tile, directionalConditions);
-        }
-      }
-    });
-  }
-
-  private convertWalkablePathToDirectionalConditions(walkablePath: WalkablePath): Direction[] {
-    const conditions: Direction[] = [];
-    if (walkablePath.top) conditions.push(TOP);
-    if (walkablePath.bottom) conditions.push(BOTTOM);
-    if (walkablePath.left) conditions.push(LEFT);
-    if (walkablePath.right) conditions.push(RIGHT);
-    if (walkablePath.topLeft) conditions.push(TOP_LEFT);
-    if (walkablePath.topRight) conditions.push(TOP_RIGHT);
-    if (walkablePath.bottomLeft) conditions.push(BOTTOM_LEFT);
-    if (walkablePath.bottomRight) conditions.push(BOTTOM_RIGHT);
-    return conditions;
   }
 
   /**

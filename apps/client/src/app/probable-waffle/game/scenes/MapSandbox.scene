@@ -5,7 +5,7 @@
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
         "snapEnabled": true,
-        "snapWidth": 32,
+        "snapHeight": 8,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -27,21 +27,6 @@
                 "tiles",
                 "tiles_2"
             ]
-        },
-        {
-            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
-            "id": "995e2abe-47e3-4715-85aa-ab35a85fb09f",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tivaraWorkerMale",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": 40,
-            "y": 650
         },
         {
             "prefabId": "f09568ca-4e05-4ddd-ba4f-3ad6c515d28b",
@@ -71,18 +56,47 @@
         },
         {
             "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
-            "id": "5ada33a3-a915-4864-a290-2e1aa49ab21f",
+            "id": "0bf2c10c-cff0-4183-9a96-b148339e7bff",
             "unlock": [
                 "x",
                 "y"
             ],
             "label": "stairs",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -160,
+            "x": -224,
             "y": 624
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "f87c28b2-9fb5-46d8-b7b9-35fd13ad562f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_2",
+            "x": 32,
+            "y": 752
+        },
+        {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "1a0c7d0f-4d01-40e1-8372-4f830017e538",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall",
+            "x": 0,
+            "y": 768
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "22a8f57b-7d26-4990-9f25-b6e129042ae4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_1",
+            "x": -32,
+            "y": 784
         }
     ],
     "plainObjects": [

@@ -3,11 +3,11 @@
 /* START OF COMPILED CODE */
 
 import GameProbableWaffleScene from "./GameProbableWaffleScene";
-import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
-import EditorOwner from "../editor-components/EditorOwner";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
+import EditorOwner from "../editor-components/EditorOwner";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
+import Wall from "../prefabs/buildings/tivara/wall/Wall";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -31,10 +31,6 @@ export default class MapSandbox extends GameProbableWaffleScene {
     // tilemap_level_1
     tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
 
-    // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, 40, 650);
-    this.add.existing(tivaraWorkerMale);
-
     // tree11
     const tree11 = new Tree11(this, -160, 416);
     this.add.existing(tree11);
@@ -44,20 +40,24 @@ export default class MapSandbox extends GameProbableWaffleScene {
     this.add.existing(watchTower);
 
     // stairs
-    const stairs = new Stairs(this, -160, 624);
+    const stairs = new Stairs(this, -224, 624);
     this.add.existing(stairs);
 
-    // tivaraWorkerMale (components)
-    const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
-    tivaraWorkerMaleEditorOwner.owner_id = "1";
+    // stairs_2
+    const stairs_2 = new Stairs(this, 32, 752);
+    this.add.existing(stairs_2);
+
+    // wall
+    const wall = new Wall(this, 0, 768);
+    this.add.existing(wall);
+
+    // stairs_1
+    const stairs_1 = new Stairs(this, -32, 784);
+    this.add.existing(stairs_1);
 
     // watchTower (components)
     const watchTowerEditorOwner = new EditorOwner(watchTower);
     watchTowerEditorOwner.owner_id = "1";
-
-    // stairs (components)
-    const stairsEditorOwner = new EditorOwner(stairs);
-    stairsEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

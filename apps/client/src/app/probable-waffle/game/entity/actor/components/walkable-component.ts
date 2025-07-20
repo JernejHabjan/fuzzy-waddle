@@ -50,15 +50,14 @@ export interface WalkableDefinition {
 
 export class WalkableComponent {
   private walkablePath: WalkablePath = {
-    // todo should be by default false
-    top: true,
-    bottom: true,
-    left: true,
-    right: true,
-    topLeft: true,
-    topRight: true,
-    bottomLeft: true,
-    bottomRight: true
+    top: false,
+    bottom: false,
+    left: false,
+    right: false,
+    topLeft: false,
+    topRight: false,
+    bottomLeft: false,
+    bottomRight: false
   } satisfies WalkablePath;
   constructor(
     private readonly gameObject: GameObject,
