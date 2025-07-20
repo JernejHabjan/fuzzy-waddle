@@ -1839,7 +1839,9 @@ export const pwActorDefinitions: {
         range: 10
       },
       walkable: {
-        walkableHeight: 32
+        walkableHeight: 32,
+        exitHeight: 64,
+        acceptMinimumHeight: 0
       },
       selectable: {},
       health: {
@@ -1893,7 +1895,10 @@ export const pwActorDefinitions: {
       },
       selectable: {},
       walkable: {
-        walkableHeight: 128
+        walkableHeight: 128,
+        exitHeight: 128,
+        // can be accessed from the stairs or a wall
+        acceptMinimumHeight: 64
       },
       health: {
         physicalState: ActorPhysicalType.Structural,
@@ -1972,7 +1977,10 @@ export const pwActorDefinitions: {
         canBeDragPlaced: true
       },
       walkable: {
-        walkableHeight: 64
+        walkableHeight: 64,
+        exitHeight: 64,
+        // can be accessed from the stairs
+        acceptMinimumHeight: 64
       }
     }
   },
