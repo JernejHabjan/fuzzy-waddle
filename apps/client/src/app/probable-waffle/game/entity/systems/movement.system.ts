@@ -546,22 +546,6 @@ export async function moveGameObjectToRandomTileInNavigableRadius(
   );
 }
 
-export function getGameObjectDirection(
-  gameObject: Phaser.GameObjects.GameObject,
-  newTile: Vector2Simple
-): IsoDirection | undefined {
-  const currentTile = getGameObjectCurrentTile(gameObject);
-  if (!currentTile) return;
-
-  const navigationService = getSceneService(gameObject.scene, NavigationService);
-  if (!navigationService) return;
-
-  const currentTileWorldXY = navigationService.getTileWorldCenter(currentTile);
-  const newTileWorldXY = navigationService.getTileWorldCenter(newTile);
-
-  return getGameObjectDirectionBetweenTiles(currentTileWorldXY, newTileWorldXY);
-}
-
 export function getGameObjectDirectionBetweenTiles(
   oldTileWorldXY: Vector2Simple | undefined,
   newTileWorldXY: Vector2Simple | undefined
