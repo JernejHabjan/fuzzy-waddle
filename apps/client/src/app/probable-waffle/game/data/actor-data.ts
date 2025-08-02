@@ -32,6 +32,7 @@ import { RepresentableComponent } from "../entity/actor/components/representable
 import GameObject = Phaser.GameObjects.GameObject;
 import Transform = Phaser.GameObjects.Components.Transform;
 import { FlightComponent } from "../entity/actor/components/flight-component";
+import { WalkableComponent } from "../entity/actor/components/walkable-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -66,10 +67,12 @@ export function setActorData(
 
 function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
-  const transform = actor as any as Transform;
-  if (transform.x !== undefined && actorDefinition.x !== undefined) transform.x = actorDefinition.x;
-  if (transform.y !== undefined && actorDefinition.y !== undefined) transform.y = actorDefinition.y;
-  if (transform.z !== undefined && actorDefinition.z !== undefined) transform.z = actorDefinition.z;
+  if (actorDefinition.logicalWorldTransform) {
+    const representableComponent = getActorComponent(actor, RepresentableComponent);
+    if (representableComponent) {
+      representableComponent.logicalWorldTransform = actorDefinition.logicalWorldTransform;
+    }
+  }
   if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setOwner(actorDefinition.owner);
   if (actorDefinition.selectable)
     getActorComponent(actor, SelectableComponent)?.setSelected(actorDefinition.selectable);
@@ -154,6 +157,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
       : []),
     ...(componentDefinitions?.flying ? [new FlightComponent(actor, componentDefinitions.flying)] : []),
+    ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
   ];

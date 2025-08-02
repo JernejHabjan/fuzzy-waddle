@@ -27,3 +27,47 @@ export function throttle<T extends (...args: any) => any>(func: T, limit: number
     return lastResult;
   };
 }
+
+export function throttleWithTrailing<T extends (...args: any[]) => any>(func: T, limit: number): ThrottledFunction<T> {
+  let inThrottle = false;
+  let lastArgs: Parameters<T> | null = null;
+  let lastContext: any;
+  let lastResult: ReturnType<T>;
+
+  function invoke() {
+    if (lastArgs) {
+      lastResult = func.apply(lastContext, lastArgs);
+      lastArgs = null;
+      lastContext = null;
+      inThrottle = true;
+
+      setTimeout(() => {
+        inThrottle = false;
+        if (lastArgs) {
+          invoke(); // call again if new args arrived during wait
+        }
+      }, limit);
+    } else {
+      inThrottle = false;
+    }
+  }
+
+  return function (this: any, ...args: Parameters<T>): ReturnType<T> {
+    if (!inThrottle) {
+      lastResult = func.apply(this, args);
+      inThrottle = true;
+
+      setTimeout(() => {
+        inThrottle = false;
+        if (lastArgs) {
+          invoke();
+        }
+      }, limit);
+    } else {
+      lastArgs = args;
+      lastContext = this;
+    }
+
+    return lastResult;
+  };
+}

@@ -12,7 +12,7 @@ import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
 import { Subscription } from "rxjs";
-import { getGameObjectTransform } from "../../../data/game-object-helper";
+import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
@@ -75,12 +75,12 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     if (!movementSystem) return;
     if (this.tileVec3) {
       // noinspection JSIgnoredPromiseFromCall
-      movementSystem.moveToLocation(this.tileVec3);
+      movementSystem.moveToLocationByFollowingStaticPath(this.tileVec3);
       return;
     }
     if (this.actor) {
       // noinspection JSIgnoredPromiseFromCall
-      movementSystem.moveToActor(this.actor);
+      movementSystem.moveToActorByAdjustingPathDynamically(this.actor);
     }
   }
 
@@ -117,7 +117,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     if (!this.owner) return;
     if (!this.lineGraphics) return;
     if (!this.visible) return;
-    const ownerTransform = getGameObjectTransform(this.owner);
+    const ownerTransform = getGameObjectRenderedTransform(this.owner);
     if (!ownerTransform) return;
 
     this.lineGraphics.clear();

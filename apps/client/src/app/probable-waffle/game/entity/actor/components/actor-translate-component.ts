@@ -1,7 +1,7 @@
 import { Observable, Subject } from "rxjs";
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectDirectionBetweenTiles } from "../../systems/movement.system";
-import { getGameObjectTransform, onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectRenderedTransform, onObjectReady } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { NavigationService } from "../../../scenes/services/navigation.service";
 import { getActorComponent } from "../../../data/actor-component";
@@ -17,7 +17,7 @@ export interface ActorTranslateDefinition {
 }
 
 export class ActorTranslateComponent {
-  private _actorMoved: Subject<Vector3Simple> = new Subject<Vector3Simple>();
+  private _actorMovedLogicalPosition: Subject<Vector3Simple> = new Subject<Vector3Simple>();
   currentDirection?: IsoDirection;
   onDirectionChanged: Subject<IsoDirection> = new Subject<IsoDirection>();
   private representableComponent?: RepresentableComponent;
@@ -30,18 +30,18 @@ export class ActorTranslateComponent {
   init() {
     this.representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
   }
-  get currentTileWorldXY(): Vector2Simple {
-    const transform = getGameObjectTransform(this.gameObject);
+  get renderedTransform(): Vector2Simple {
+    const transform = getGameObjectRenderedTransform(this.gameObject);
     if (!transform) return { x: 0, y: 0 };
     return { x: transform.x, y: transform.y };
   }
 
-  get actorMoved(): Observable<Vector3Simple> {
-    return this._actorMoved.asObservable();
+  get actorMovedLogicalPosition(): Observable<Vector3Simple> {
+    return this._actorMovedLogicalPosition.asObservable();
   }
 
   updateDirection(newTileWorldXY: Vector2Simple) {
-    const transform = getGameObjectTransform(this.gameObject);
+    const transform = getGameObjectRenderedTransform(this.gameObject);
     if (!transform) return;
     const newDirection = getGameObjectDirectionBetweenTiles(transform, newTileWorldXY);
     if (this.currentDirection === newDirection) return;
@@ -49,15 +49,15 @@ export class ActorTranslateComponent {
   }
 
   turnTowardsGameObject(targetGameObject: Phaser.GameObjects.GameObject) {
-    const transform = getGameObjectTransform(this.gameObject);
+    const transform = getGameObjectRenderedTransform(this.gameObject);
     if (!transform) return;
-    const targetTransform = getGameObjectTransform(targetGameObject);
+    const targetTransform = getGameObjectRenderedTransform(targetGameObject);
     if (!targetTransform) return;
     this.turnTowardsPosition({ x: targetTransform.x, y: targetTransform.y });
   }
 
   turnTowardsPosition(targetWorldXY: Vector2Simple) {
-    const transform = getGameObjectTransform(this.gameObject);
+    const transform = getGameObjectRenderedTransform(this.gameObject);
     if (!transform) return;
     const newDirection = getGameObjectDirectionBetweenTiles(transform, targetWorldXY);
     this.directionChanged(newDirection);
@@ -81,10 +81,10 @@ export class ActorTranslateComponent {
    * This should be called by movement system - action to move actor to position is broadcast to all players in the game.
    * This is to update all listeners in clients world about small movement changes - not to broadcast this across network
    */
-  moveActorToPosition(worldPosition: Vector3Simple) {
-    this._actorMoved.next(worldPosition);
+  moveActorToLogicalPosition(logicalPosition: Vector3Simple) {
+    this._actorMovedLogicalPosition.next(logicalPosition);
     if (this.representableComponent) {
-      this.representableComponent.worldTransform = worldPosition;
+      this.representableComponent.logicalWorldTransform = logicalPosition;
     }
   }
 }

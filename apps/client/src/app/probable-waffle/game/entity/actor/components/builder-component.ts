@@ -6,7 +6,7 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
-import { getGameObjectTransform, onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
 import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/labels/HudMessages";
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
@@ -15,6 +15,7 @@ import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { AnimationActorComponent, AnimationOptions } from "./animation-actor-component";
 import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
+import { GameplayLibrary } from "../../../library/gameplay-library";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
@@ -216,7 +217,7 @@ export class BuilderComponent {
 
   getClosestConstructionSite(rangeInTiles: number): GameObject | null {
     const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
-    const transform = getGameObjectTransform(this.gameObject);
+    const transform = getGameObjectLogicalTransform(this.gameObject);
     if (!owner || !transform) return null;
     const availableConstructionSites = this.gameObject.scene.children.list.filter((go) => {
       const constructionSiteComponent = getActorComponent(go, ConstructionSiteComponent);
@@ -234,21 +235,21 @@ export class BuilderComponent {
     if (availableConstructionSites.length === 0) return null;
 
     const closestConstructionSite = availableConstructionSites.reduce((prev, curr) => {
-      const prevPosition = getGameObjectTransform(prev);
-      const currPosition = getGameObjectTransform(curr);
+      const prevPosition = getGameObjectLogicalTransform(prev);
+      const currPosition = getGameObjectLogicalTransform(curr);
       if (!prevPosition || !currPosition) return prev;
 
-      const prevDistance = Phaser.Math.Distance.Between(transform.x, transform.y, prevPosition.x, prevPosition.y);
-      const currDistance = Phaser.Math.Distance.Between(transform.x, transform.y, currPosition.x, currPosition.y);
+      const prevDistance = GameplayLibrary.distance3D(transform, prevPosition);
+      const currDistance = GameplayLibrary.distance3D(transform, currPosition);
 
       return prevDistance < currDistance ? prev : curr;
     });
 
     // Check if the closest site is within the specified range
-    const closestPosition = getGameObjectTransform(closestConstructionSite);
+    const closestPosition = getGameObjectLogicalTransform(closestConstructionSite);
     if (!closestPosition) return null;
 
-    const distance = Phaser.Math.Distance.Between(transform.x, transform.y, closestPosition.x, closestPosition.y);
+    const distance = GameplayLibrary.distance3D(transform, closestPosition);
 
     const tileSize = 64;
     const worldRange = rangeInTiles * tileSize;

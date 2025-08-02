@@ -23,6 +23,8 @@ import { getSceneService } from "../../scenes/components/scene-component-helpers
 import { DebuggingService } from "../../scenes/services/DebuggingService";
 import { ContainableComponent } from "../actor/components/containable-component";
 import { AudioActorComponent } from "../actor/components/audio-actor-component";
+import { WalkableComponent } from "../actor/components/walkable-component";
+import { FlightComponent } from "../actor/components/flight-component";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
@@ -95,6 +97,13 @@ export class ActionSystem {
       if (selfPlayerNumber === targetPlayerNumber) {
         // ally
 
+        const targetIsWalkable = getActorComponent(targetGameObject, WalkableComponent);
+        const selfHasFlying = getActorComponent(this.gameObject, FlightComponent);
+        if (targetIsWalkable && !selfHasFlying) {
+          // target is walkable and self is not flying
+          return new OrderData(OrderType.Move, { targetGameObject });
+        }
+
         const targetIsBuilding = getActorComponent(targetGameObject, ConstructionSiteComponent);
         if (targetIsBuilding) {
           // target is building
@@ -159,6 +168,7 @@ export class ActionSystem {
           if (selfContainableComponent) {
             // self is containable
 
+            console.warn("todo - this is not yet supported in player-pawn-ai-controller"); // todo
             return new OrderData(OrderType.EnterContainer, { targetGameObject });
           }
         }

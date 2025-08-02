@@ -29,7 +29,7 @@ export class FlightComponent {
   private subscribeActorMove() {
     const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     if (!actorTranslateComponent) return;
-    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(() => {
+    this.actorMovedSubscription = actorTranslateComponent.actorMovedLogicalPosition.subscribe(() => {
       this.updateActorTranslateIndicators();
     });
   }

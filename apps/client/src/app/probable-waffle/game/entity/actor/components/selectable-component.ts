@@ -2,7 +2,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 import {
   getGameObjectBounds,
   getGameObjectDepth,
-  getGameObjectTransform,
+  getGameObjectRenderedTransform,
   onObjectReady
 } from "../../../data/game-object-helper";
 import { BehaviorSubject, Subscription } from "rxjs";
@@ -43,7 +43,7 @@ export class SelectableComponent {
   private subscribeActorMove() {
     const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     if (!actorTranslateComponent) return;
-    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(this.update);
+    this.actorMovedSubscription = actorTranslateComponent.actorMovedLogicalPosition.subscribe(this.update);
   }
 
   private createSelectionCircle() {
@@ -79,11 +79,14 @@ export class SelectableComponent {
     this.setDepth();
   };
 
+  /**
+   * sets selection circle position based on the game object's rendered transform.
+   */
   private setPosition() {
-    const transform = getGameObjectTransform(this.gameObject);
-    if (!transform) throw new Error("Transform not found");
-    if (transform.x === undefined || transform.y === undefined) return;
-    this.selectionCircle.setPosition(transform.x, transform.y);
+    const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
+    if (!renderedTransform) throw new Error("Transform not found");
+    if (renderedTransform.x === undefined || renderedTransform.y === undefined) return;
+    this.selectionCircle.setPosition(renderedTransform.x, renderedTransform.y);
   }
 
   private setDepth() {

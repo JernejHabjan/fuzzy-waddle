@@ -2,7 +2,7 @@ import { HealthComponent } from "../../../../entity/combat/components/health-com
 import { getActorComponent } from "../../../../data/actor-component";
 import { ActorTranslateComponent } from "../../../../entity/actor/components/actor-translate-component";
 import { Subscription } from "rxjs";
-import { getGameObjectDepth, getGameObjectTransform, onObjectReady } from "../../../../data/game-object-helper";
+import { getGameObjectDepth, getGameObjectRenderedTransform, onObjectReady } from "../../../../data/game-object-helper";
 import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 import { HealthUiComponent } from "../../../../entity/combat/components/health-ui-component";
 
@@ -45,13 +45,13 @@ export class NodeDebugger {
   private subscribeActorMove() {
     const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     if (!actorTranslateComponent) return;
-    this.actorMovedSubscription = actorTranslateComponent.actorMoved.subscribe(() => {
+    this.actorMovedSubscription = actorTranslateComponent.actorMovedLogicalPosition.subscribe(() => {
       this.updateOwnerUiElementPosition();
     });
   }
 
   private updateOwnerUiElementPosition() {
-    const gameObjectTransform = getGameObjectTransform(this.gameObject);
+    const gameObjectTransform = getGameObjectRenderedTransform(this.gameObject);
     if (!gameObjectTransform || !this.textNode) return;
     const { x, y } = gameObjectTransform;
     this.textNode.setPosition(x, y - 50);

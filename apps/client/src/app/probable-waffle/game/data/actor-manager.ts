@@ -43,8 +43,8 @@ import StonePile from "../prefabs/outside/resources/StonePile";
 import { SkaduweeWorker } from "../prefabs/characters/skaduwee/SkaduweeWorker";
 import { TivaraWorker } from "../prefabs/characters/tivara/TivaraWorker";
 import { pwActorDefinitions } from "./actor-definitions";
+import { RepresentableComponent } from "../entity/actor/components/representable-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import Transform = Phaser.GameObjects.Components.Transform;
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -136,10 +136,9 @@ export class ActorManager {
     const actorDefinition: ActorDefinition = {
       name: actorName
     };
-    const transform = actor as any as Transform;
-    if (transform.x !== undefined) actorDefinition.x = transform.x;
-    if (transform.y !== undefined) actorDefinition.y = transform.y;
-    if (transform.z !== undefined) actorDefinition.z = transform.z;
+
+    const representableComponent = getActorComponent(actor, RepresentableComponent);
+    if (representableComponent) actorDefinition.logicalWorldTransform = representableComponent?.logicalWorldTransform;
     const ownerComponent = getActorComponent(actor, OwnerComponent);
     if (ownerComponent) actorDefinition.owner = ownerComponent.getOwner();
     const selectableComponent = getActorComponent(actor, SelectableComponent);

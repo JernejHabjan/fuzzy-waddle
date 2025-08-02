@@ -159,7 +159,7 @@ export function getRandomFactionType(): FactionType {
 
 export interface PositionPlayerDefinition {
   // assigned only after entering the game in world space coordinates
-  initialWorldSpawnPosition?: Vector3Simple;
+  initialWorldLogicalSpawnPosition?: Vector3Simple;
   player: PlayerLobbyDefinition;
   team?: number;
   factionType?: FactionType;

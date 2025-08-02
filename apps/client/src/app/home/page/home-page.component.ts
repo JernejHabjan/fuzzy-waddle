@@ -59,7 +59,8 @@ export class HomePageComponent {
       description: "Creepy crawlies",
       image: "dungeon-crawler.webp",
       bannerImage: "dungeon-crawler-banner.webp",
-      route: "dungeon-crawler"
+      route: "dungeon-crawler",
+      inDevelopment: true
     }
   ];
 

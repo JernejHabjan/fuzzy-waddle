@@ -2,7 +2,7 @@ import { Actor } from "../entity/actor/actor";
 import { TransformComponent } from "../entity/actor/components/transformable-component";
 import { getActorComponent } from "../data/actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
-import { getGameObjectCurrentTile, getGameObjectTransform } from "../data/game-object-helper";
+import { getGameObjectCurrentTile } from "../data/game-object-helper";
 import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -51,32 +51,11 @@ export class GameplayLibrary {
     return distance;
   }
 
-  static getWorldDistanceBetweenGameObjects(actor1: GameObject, actor2: GameObject): number | null {
-    if (actor1 === actor2) return 0;
-    const actor1Transform = getGameObjectTransform(actor1);
-    if (!actor1Transform) return null;
-    const actor1Position = {
-      x: actor1Transform.x,
-      y: actor1Transform.y,
-      z: actor1Transform.z
-    } satisfies Vector3Simple;
-
-    const actor2Transform = getGameObjectTransform(actor2);
-    if (!actor2Transform) return null;
-    const actor2Position = {
-      x: actor2Transform.x,
-      y: actor2Transform.y,
-      z: actor2Transform.z
-    } satisfies Vector3Simple;
-
-    // noinspection UnnecessaryLocalVariableJS
-    const distance = Math.sqrt(
-      Math.pow(actor1Position.x - actor2Position.x, 2) +
-        Math.pow(actor1Position.y - actor2Position.y, 2) +
-        Math.pow(actor1Position.z - actor2Position.z, 2)
-    );
-
-    return distance;
+  static distance3D(a: Vector3Simple, b: Vector3Simple): number {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const dz = b.z - a.z;
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
 
   static getTileDistanceBetweenGameObjects(actor1: GameObject, actor2: GameObject): number | null {

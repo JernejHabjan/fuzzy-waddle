@@ -30,16 +30,31 @@ export function getGameObjectDepth(gameObject: Phaser.GameObjects.GameObject): n
   return depthComponent.depth;
 }
 
-export function getGameObjectTransform(gameObject?: Phaser.GameObjects.GameObject): Vector3Simple | null {
+export function getGameObjectRenderedTransform(gameObject?: Phaser.GameObjects.GameObject): Vector2Simple | null {
   if (!gameObject) return null;
   const representableComponent = getActorComponent(gameObject, RepresentableComponent);
   if (representableComponent) {
-    return representableComponent.worldTransform;
+    return representableComponent.renderedWorldTransform;
   }
-  return getGameObjectTransformRaw(gameObject);
+  return getGameObjectRenderedTransformRaw(gameObject);
 }
 
-export function getGameObjectTransformRaw(gameObject?: Phaser.GameObjects.GameObject): Vector3Simple | null {
+export function getGameObjectLogicalTransform(gameObject?: Phaser.GameObjects.GameObject): Vector3Simple | null {
+  if (!gameObject) return null;
+  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+  if (representableComponent) {
+    return representableComponent.logicalWorldTransform;
+  }
+  const transformComponent = gameObject as unknown as Phaser.GameObjects.Components.Transform;
+  if (!transformComponent.hasTransformComponent) return null;
+  return {
+    x: transformComponent.x ?? 0,
+    y: transformComponent.y ?? 0,
+    z: transformComponent.z ?? 0
+  } satisfies Vector3Simple;
+}
+
+export function getGameObjectRenderedTransformRaw(gameObject?: Phaser.GameObjects.GameObject): Vector2Simple | null {
   if (!gameObject) return null;
   const transformComponent = gameObject as unknown as Phaser.GameObjects.Components.Transform;
   if (!transformComponent.hasTransformComponent) return null;

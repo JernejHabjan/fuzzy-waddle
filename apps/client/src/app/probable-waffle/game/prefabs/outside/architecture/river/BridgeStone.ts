@@ -23,13 +23,25 @@ export default class BridgeStone extends Phaser.GameObjects.Image {
     );
 
     /* START-USER-CTR-CODE */
+    const walkableComponent = new WalkableComponent(this, { shrinkPathToRight: 4 } satisfies WalkableDefinition);
+    // TODO #387 - until this is properly implemented, we are marking the bridge as walkable from all sides
+    walkableComponent.allowWalkablePath({
+      bottomLeft: true,
+      topRight: true,
+      bottom: true,
+      bottomRight: true,
+      left: true,
+      right: true,
+      top: true,
+      topLeft: true
+    });
     setActorData(
       this,
       [
         new ObjectDescriptorComponent({
           color: 0x97a09e
         } satisfies ObjectDescriptorDefinition),
-        new WalkableComponent(this, { shrinkPathToRight: 4 } satisfies WalkableDefinition)
+        walkableComponent
       ],
       []
     );

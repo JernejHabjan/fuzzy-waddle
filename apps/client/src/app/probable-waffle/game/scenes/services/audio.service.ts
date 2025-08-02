@@ -1,5 +1,5 @@
 import { VolumeSettings } from "../../core/volumeSettings";
-import { getGameObjectTransform, onSceneInitialized } from "../../data/game-object-helper";
+import { getGameObjectRenderedTransform, onSceneInitialized } from "../../data/game-object-helper";
 import { getSceneExternalComponent } from "../components/scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
 import { filter, Subscription } from "rxjs";
@@ -197,7 +197,7 @@ export class AudioService {
     gameObject: Phaser.GameObjects.GameObject,
     soundConfig?: Phaser.Types.Sound.SoundConfig
   ): Phaser.Types.Sound.SoundConfig | undefined {
-    const transform = getGameObjectTransform(gameObject);
+    const transform = getGameObjectRenderedTransform(gameObject);
     if (!transform) return undefined;
     if (!gameObject.active || !gameObject.scene) return undefined;
     const camera = gameObject.scene.cameras.main;
@@ -228,7 +228,7 @@ export class AudioService {
     // Compute source position relative to the camera center
     const offsetX = transform.x - camX;
     const offsetY = transform.y - camY;
-    const offsetZ = transform.z ?? 0;
+    const offsetZ = 0; // does not affect in RTS top-down view
 
     // Shrink audible range as you zoom in:
     // World-space viewport size = camera.width / camera.zoom

@@ -1,18 +1,13 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   getGameObjectBoundsRaw,
-  getGameObjectTransformRaw,
+  getGameObjectRenderedTransformRaw,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../data/game-object-helper";
-
-interface ActorInitialBounds {
-  topLeft: Vector2Simple;
-  topRight: Vector2Simple;
-  bottomLeft: Vector2Simple;
-  bottomRight: Vector2Simple;
-}
-
+import { getActorComponent } from "../../../data/actor-component";
+import { FlightComponent } from "./flight-component";
+import { DepthHelper } from "../../../world/map/depth.helper";
 export interface RepresentableDefinition {
   width: number;
   height: number;
@@ -20,11 +15,17 @@ export interface RepresentableDefinition {
 export class RepresentableComponent {
   /**
    * Center of the game object relative to the origin of the game object.
+   * This is the logical world position of the game object, not the rendered position.
    */
-  private _worldTransform?: Vector3Simple;
+  private _logicalWorldTransform?: Vector3Simple;
   private _visible?: boolean;
   bounds = new Phaser.Geom.Rectangle(0, 0, 0, 0);
-  private _actorBounds?: ActorInitialBounds;
+  private initialBounds?: {
+    width: number;
+    height: number;
+    offsetX: number;
+    offsetY: number;
+  };
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -34,89 +35,103 @@ export class RepresentableComponent {
   }
 
   private setTransformInitially() {
-    const gameObject = this.gameObject;
-    if (!gameObject) return;
-    const transform = getGameObjectTransformRaw(gameObject);
-    if (transform) {
-      this._worldTransform = transform;
+    if (!this.gameObject) return;
+    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    if (transformComponent) {
+      this.logicalWorldTransform = {
+        x: transformComponent.x ?? 0,
+        y: transformComponent.y ?? 0,
+        z: transformComponent.z ?? 0 // z component may be assigned in editor itself from prefab properties "z" property
+      };
     } else {
-      this._worldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
+      this.logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
       console.warn("RepresentableComponent: GameObject transform is not available, bounds may not be accurate.");
     }
-    this.setActorInitialBounds();
+    this.ensureInitialBounds();
     this.refreshBounds();
   }
 
   private refreshBounds(): void {
-    const worldTransform = this._worldTransform!;
-    const initialBounds = this._actorBounds!;
+    if (!this.initialBounds) return;
+    const renderedTransform = this.renderedWorldTransform;
     const scaleX = (this.gameObject as any).scaleX ?? 1;
     const scaleY = (this.gameObject as any).scaleY ?? 1;
-    const originX = (this.gameObject as any).originX ?? 0.5;
-    const height = this.representableDefinition.height;
-    const width = this.representableDefinition.width;
 
     this.bounds = new Phaser.Geom.Rectangle(
-      worldTransform.x - width * originX * scaleX, // Center horizontally with scale
-      worldTransform.y + initialBounds.topLeft.y * scaleY, // Preserve initial vertical offset, scaled
-      width * scaleX,
-      height * scaleY
+      renderedTransform.x + this.initialBounds.offsetX * scaleX,
+      renderedTransform.y + this.initialBounds.offsetY * scaleY,
+      this.initialBounds.width * scaleX,
+      this.initialBounds.height * scaleY
     );
   }
 
-  /**
-   * We need to store actors initial bounds, as bounds may change during animation playback due to different sprite dimensions.
-   * See #374 for more details.
-   */
-  private setActorInitialBounds() {
-    const centerRelativeToOrigin = this.worldTransform;
+  private ensureInitialBounds() {
+    if (this.initialBounds) return;
     const bounds = getGameObjectBoundsRaw(this.gameObject);
-    if (!bounds) throw new Error("RepresentableComponent: GameObject bounds are not available.");
+    if (!bounds) {
+      console.warn("Could not get initial bounds for", this.gameObject);
+      this.initialBounds = {
+        width: this.representableDefinition.width,
+        height: this.representableDefinition.height,
+        offsetX: -this.representableDefinition.width * 0.5,
+        offsetY: -this.representableDefinition.height * 0.5
+      };
+      return;
+    }
 
-    const topLeft = {
-      x: bounds.x - centerRelativeToOrigin.x,
-      y: bounds.y - centerRelativeToOrigin.y
-    };
-    const topRight = {
-      x: bounds.right - centerRelativeToOrigin.x,
-      y: bounds.y - centerRelativeToOrigin.y
-    };
-    const bottomLeft = {
-      x: bounds.x - centerRelativeToOrigin.x,
-      y: bounds.bottom - centerRelativeToOrigin.y
-    };
-    const bottomRight = {
-      x: bounds.right - centerRelativeToOrigin.x,
-      y: bounds.bottom - centerRelativeToOrigin.y
-    };
+    const transform = getGameObjectRenderedTransformRaw(this.gameObject)!;
 
-    this._actorBounds = {
-      topLeft,
-      topRight,
-      bottomLeft,
-      bottomRight
-    } satisfies ActorInitialBounds;
+    this.initialBounds = {
+      width: bounds.width,
+      height: bounds.height,
+      offsetX: bounds.x - transform.x,
+      offsetY: bounds.y - transform.y
+    };
   }
 
-  get worldTransform(): Vector3Simple {
-    if (!this._worldTransform) {
+  /**
+   * get z + flight height
+   */
+  getActualLogicalZ(logicalWorldTransform: Vector3Simple): number {
+    const logicalZ = logicalWorldTransform.z;
+    const flightHeight = getActorComponent(this.gameObject, FlightComponent)?.flightDefinition?.height ?? 0;
+    return logicalZ + flightHeight;
+  }
+
+  get logicalWorldTransform(): Vector3Simple {
+    if (!this._logicalWorldTransform) {
       this.setTransformInitially();
     }
-    return this._worldTransform!;
+    return this._logicalWorldTransform!;
   }
-  set worldTransform(worldPosition: Vector3Simple) {
-    this._worldTransform = worldPosition;
 
-    const transform = getGameObjectTransformRaw(this.gameObject);
-    if (!transform) throw new Error("RepresentableComponent: GameObject transform is not available.");
-    // Update the game object position based on the new world transform
-    transform.x = worldPosition.x;
-    transform.y = worldPosition.y;
-    if (worldPosition.z !== undefined) {
-      transform.z = worldPosition.z; // if z is defined, update it as well
-    }
-
+  set logicalWorldTransform(worldPosition: Vector3Simple) {
+    this._logicalWorldTransform = worldPosition;
+    this.renderedWorldTransform = {
+      x: worldPosition.x,
+      y: worldPosition.y - this.getActualLogicalZ(worldPosition) // adjust y by z offset
+    } satisfies Vector2Simple;
+    this.ensureInitialBounds();
     this.refreshBounds();
+  }
+
+  private set renderedWorldTransform(worldPosition: Vector2Simple) {
+    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    if (!transformComponent.hasTransformComponent) return;
+    // Update the game object position based on the new world transform
+    transformComponent.x = worldPosition.x;
+    transformComponent.y = worldPosition.y;
+    DepthHelper.setActorDepth(this.gameObject);
+  }
+
+  get renderedWorldTransform(): Vector2Simple {
+    const transform = this.logicalWorldTransform;
+    // adjust the y by z offset
+    return {
+      x: transform.x,
+      y: transform.y - this.getActualLogicalZ(transform)
+      // z does not affect rendering in Phaser 3
+    };
   }
 
   get visible(): boolean {

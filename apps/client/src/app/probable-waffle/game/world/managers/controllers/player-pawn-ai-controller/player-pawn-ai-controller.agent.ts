@@ -146,7 +146,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       const canMoveToTarget = await this.CanMoveToTarget(range);
       if (!canMoveToTarget) return State.FAILED;
       // console.log("Moving to target!");
-      const success = await movementSystem.moveToActor(target, {
+      const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
         radiusTilesAroundDestination: range,
         onUpdateThrottled: () => {
           // if the target is not alive, stop moving
@@ -185,7 +185,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
     try {
-      const success = await movementSystem.moveToLocation(location);
+      const success = await movementSystem.moveToLocationByFollowingStaticPath(location);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       // console.error("Error in MoveToLocation", e);

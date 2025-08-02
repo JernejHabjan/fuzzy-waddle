@@ -175,6 +175,7 @@ import {
 } from "../animations/animals2";
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 import { FlightDefinition } from "../entity/actor/components/flight-component";
+import { WalkableDefinition } from "../entity/actor/components/walkable-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -352,6 +353,7 @@ export type ActorInfoDefinition = Partial<{
     requirements: RequirementsDefinition;
     builder: BuilderDefinition;
     constructable: ConstructionSiteDefinition;
+    walkable: WalkableDefinition;
     gatherer: GathererDefinition;
     container: ContainerDefinition;
     resourceDrain: ResourceDrainDefinition;
@@ -1836,6 +1838,11 @@ export const pwActorDefinitions: {
       vision: {
         range: 10
       },
+      walkable: {
+        walkableHeight: 24,
+        exitHeight: 64,
+        acceptMinimumHeight: 0
+      },
       selectable: {},
       health: {
         physicalState: ActorPhysicalType.Structural,
@@ -1887,6 +1894,12 @@ export const pwActorDefinitions: {
         }
       },
       selectable: {},
+      walkable: {
+        walkableHeight: 128,
+        exitHeight: 128,
+        // can be accessed from the stairs or a wall
+        acceptMinimumHeight: 64
+      },
       health: {
         physicalState: ActorPhysicalType.Structural,
         maxHealth: 1000,
@@ -1901,9 +1914,10 @@ export const pwActorDefinitions: {
         productionTime: 5000,
         costType: PaymentType.PayImmediately
       },
-      container: {
-        capacity: 2
-      },
+      // note - this unit can be walked on and can not contain units
+      // container: {
+      //   capacity: 2
+      // },
       attack: {
         attacks: [weaponDefinitions.bowTower]
       },
@@ -1961,6 +1975,12 @@ export const pwActorDefinitions: {
       constructable: {
         ...coreConstructionSiteDefinition,
         canBeDragPlaced: true
+      },
+      walkable: {
+        walkableHeight: 42,
+        exitHeight: 64,
+        // can be accessed from the stairs
+        acceptMinimumHeight: 64
       }
     }
   },

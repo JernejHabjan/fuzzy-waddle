@@ -252,7 +252,7 @@ export class CameraMovementHandler {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
     const initialWorldSpawnPosition =
-      gameScene.player.playerController.data.playerDefinition?.initialWorldSpawnPosition;
+      gameScene.player.playerController.data.playerDefinition?.initialWorldLogicalSpawnPosition;
     if (initialWorldSpawnPosition) {
       this.mainCamera.scrollX = initialWorldSpawnPosition.x - this.mainCamera.width / 2;
       this.mainCamera.scrollY = initialWorldSpawnPosition.y - this.mainCamera.height / 2;
