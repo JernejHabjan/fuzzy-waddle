@@ -71,12 +71,12 @@ root [AutoAssignNewOrder] {
         }
 
         /* Moving randomly */
-        sequence {
-            action [AssignMoveRandomlyInRange, 1]
-            sequence {
-                wait [2000, 5000]
-            }
-        }
+        /* sequence { */
+        /*     action [AssignMoveRandomlyInRange, 1] */
+        /*     sequence { */
+        /*         wait [2000, 5000] */
+        /*     } */
+        /* } */
     }
 }
 
