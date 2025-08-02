@@ -80,6 +80,7 @@ export class MultiSelectionHandler {
     const hitObjects = this.hudScene.input.hitTestPointer(pointer);
     if (hitObjects.length > 0) {
       // Pointer is over a HUD element, don't start multi-selection
+      this.pointerWithinGame = false;
       return;
     }
 
