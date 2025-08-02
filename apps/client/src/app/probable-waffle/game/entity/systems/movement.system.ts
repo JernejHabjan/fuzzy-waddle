@@ -95,7 +95,7 @@ export class MovementSystem {
         const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(tileVec3, selectedActorObjectIds);
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (payerPawnAiController) {
-          const newOrder = new OrderData(OrderType.Move, { targetLocation: newWorldVec3 });
+          const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
           if (this.shiftKey?.isDown) {
             payerPawnAiController.blackboard.addOrder(newOrder);
           } else {

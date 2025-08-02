@@ -73,7 +73,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
     const targetGameObject = currentOrder.data.targetGameObject;
-    const targetLocation = currentOrder.data.targetLocation;
+    const targetLocation = currentOrder.data.targetTileLocation;
     const range = this.getRangeToTarget(type);
     if (range === undefined) return State.FAILED;
     if (targetGameObject) {
@@ -106,7 +106,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     if (!currentOrder) return undefined;
 
     const targetGameObject = currentOrder.data.targetGameObject;
-    const targetLocation = currentOrder.data.targetLocation;
+    const targetLocation = currentOrder.data.targetTileLocation;
     if (targetGameObject) {
       switch (type) {
         case "move":
@@ -167,7 +167,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
-    const location = currentOrder.data.targetLocation;
+    const location = currentOrder.data.targetTileLocation;
     if (target) {
       return await this.MoveToTarget(type);
     } else if (location) {
@@ -180,7 +180,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   async MoveToLocation() {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
-    const location = currentOrder.data.targetLocation;
+    const location = currentOrder.data.targetTileLocation;
     if (!location) return State.FAILED;
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
@@ -433,7 +433,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
       return State.FAILED;
     }
     const targetLocation = { x: randomTile.x, y: randomTile.y, z: 0 } satisfies Vector3Simple;
-    this.blackboard.addOrder(new OrderData(OrderType.Move, { targetLocation }));
+    this.blackboard.addOrder(new OrderData(OrderType.Move, { targetTileLocation: targetLocation }));
     return State.SUCCEEDED;
   }
 
@@ -476,7 +476,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
   TargetOrLocationExists() {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return false;
-    return !!currentOrder.data.targetGameObject || !!currentOrder.data.targetLocation;
+    return !!currentOrder.data.targetGameObject || !!currentOrder.data.targetTileLocation;
   }
 
   /**

@@ -25,6 +25,7 @@ import { ContainableComponent } from "../actor/components/containable-component"
 import { AudioActorComponent } from "../actor/components/audio-actor-component";
 import { WalkableComponent } from "../actor/components/walkable-component";
 import { FlightComponent } from "../actor/components/flight-component";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
@@ -65,16 +66,26 @@ export class ActionSystem {
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (!payerPawnAiController) return;
 
-        const objectIds = payload.data.data!["objectIds"] as string[];
-        const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
-          objectIds.includes(getActorComponent(go, IdComponent)?.id ?? "")
-        );
+        const objectIds = payload.data.data!["objectIds"] as string[] | undefined;
+        let action;
+        if (objectIds) {
+          const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
+            objectIds.includes(getActorComponent(go, IdComponent)?.id ?? "")
+          );
 
-        if (clickedGameObjects.length === 0) return;
-        const clickedGameObject = clickedGameObjects[0];
-        const action = this.findAction(clickedGameObject);
+          if (clickedGameObjects.length === 0) return;
+          const clickedGameObject = clickedGameObjects[0];
+          action = this.findAction(clickedGameObject);
+        }
+
+        const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple | undefined;
+        if (tileVec3) {
+          action = new OrderData(OrderType.Move, {
+            targetTileLocation: tileVec3
+          });
+        }
+
         if (!action) return;
-
         if (this.displayDebugInfo && !environment.production) console.log("ActionSystem: action", action);
         if (this.shiftKey?.isDown) {
           payerPawnAiController.blackboard.addOrder(action);

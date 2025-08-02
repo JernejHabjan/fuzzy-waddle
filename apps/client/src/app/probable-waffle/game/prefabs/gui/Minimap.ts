@@ -21,6 +21,7 @@ import { VisionComponent } from "../../entity/actor/components/vision-component"
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {
+  static assignActorActionToTileCoordinatesEvent = "assignActorActionToTileCoordinates";
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
@@ -204,10 +205,18 @@ export default class Minimap extends Phaser.GameObjects.Container {
         const isoY = (i + j) * (pixelHeight / 2);
         const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
 
+        // Pointer over is needed for continuous camera movement while dragging
         diamond.on(Phaser.Input.Events.POINTER_OVER, (pointer: Phaser.Input.Pointer) => {
           if (multiSelectionHandler?.multiSelecting) return;
+          if (pointer.leftButtonDown()) {
+            this.moveCameraToTileCoordinates({ x: i, y: j });
+          }
+        });
+        // pointer down is needed for single minimap click to move camera or assign action
+        diamond.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
+          if (multiSelectionHandler?.multiSelecting) return;
           if (pointer.rightButtonDown()) {
-            this.assignActorActionToTileCoordinates({ x: i, y: j });
+            this.assignActorActionToTileCoordinates({ x: j, y: i });
           } else if (pointer.leftButtonDown()) {
             this.moveCameraToTileCoordinates({ x: i, y: j });
           }
@@ -244,12 +253,8 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
   private assignActorActionToTileCoordinates(tileXY: Vector2Simple) {
     if (!this.probableWaffleScene) throw new Error("Parent scene not set");
-    const isoCoords = this.getIsometricCoordinates(tileXY);
-    if (!isoCoords) return;
-
-    const { isoX, isoY } = isoCoords;
-    console.log("Assigning action to tile coordinates", isoX, isoY);
-    this.probableWaffleScene.events.emit("assignActorActionToTileCoordinates", { x: isoX, y: isoY }); // todo - use this event to move actor to X, Y tile or attack move or set rally etc...
+    console.log("Assigning action to tile coordinates", tileXY);
+    this.probableWaffleScene.events.emit(Minimap.assignActorActionToTileCoordinatesEvent, tileXY);
   }
 
   private shouldShowActorOnMinimap(actor: Phaser.GameObjects.GameObject): boolean {
