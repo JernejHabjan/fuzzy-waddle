@@ -517,6 +517,11 @@ export class MovementSystem {
    * Prevents units from clumping up in the same point.
    * It places units in a circle around the target tile.
    */
+  /**
+   * Prevents units from clumping up in the same point.
+   * It places units in a classic RTS game formation, arranging them in a grid around the target tile.
+   * The destination tile is chosen to be the closest available spot to the actor's current position.
+   */
   private async getTileVec3ByDynamicFlocking(
     tileVec3: Vector3Simple,
     selectedActorObjectIds: string[]
@@ -541,21 +546,41 @@ export class MovementSystem {
     const size = tilesUnderGameObject.length > 0 ? Math.ceil(Math.sqrt(tilesUnderGameObject.length)) : 1;
     const spacingInTiles = size + 1; // Add a buffer tile
 
-    const radius = (spacingInTiles * unitCount) / (2 * Math.PI); // Calculate radius to fit all units
+    const gridSize = Math.ceil(Math.sqrt(unitCount));
+    const formationPoints: Vector2Simple[] = [];
 
-    const maxAttemptsPerUnit = 10; // To prevent infinite loops
-    let attempts = 0;
-    let currentRadius = radius;
+    // Generate a grid of potential destination points around the target
+    const startX = tileVec3.x - Math.floor(gridSize / 2) * spacingInTiles;
+    const startY = tileVec3.y - Math.floor(gridSize / 2) * spacingInTiles;
 
-    while (attempts < maxAttemptsPerUnit) {
-      const angle = (ownIndex / unitCount) * 2 * Math.PI;
-      const destX = Math.round(tileVec3.x + currentRadius * Math.cos(angle));
-      const destY = Math.round(tileVec3.y + currentRadius * Math.sin(angle));
-      const destinationTile: Vector2Simple = { x: destX, y: destY };
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        formationPoints.push({
+          x: startX + c * spacingInTiles,
+          y: startY + r * spacingInTiles
+        });
+      }
+    }
 
+    // Sort the selected units by their ID to ensure a consistent order
+    const sortedSelectedIds = [...selectedActorObjectIds].sort();
+    const ownSortedIndex = sortedSelectedIds.findIndex((id) => id === ownId);
+
+    // Sort formation points by distance to the original target tile
+    formationPoints.sort((a, b) => {
+      const distA = Math.sqrt(Math.pow(a.x - tileVec3.x, 2) + Math.pow(a.y - tileVec3.y, 2));
+      const distB = Math.sqrt(Math.pow(b.x - tileVec3.x, 2) + Math.pow(b.y - tileVec3.y, 2));
+      return distA - distB;
+    });
+
+    // Assign a unique formation point to this unit based on its sorted index
+    if (ownSortedIndex < formationPoints.length) {
+      const assignedPoint = formationPoints[ownSortedIndex];
+      const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
+
+      // Check if the assigned point is valid and reachable
       if (this.navigationService.isTileWalkable(destinationTile)) {
         try {
-          // Check if a path exists. This is a more robust check.
           const path = await this.navigationService.findAndUsePathFromGameObjectToTile(
             this.gameObject,
             destinationTile
@@ -568,16 +593,12 @@ export class MovementSystem {
             } satisfies Vector3Simple;
           }
         } catch (e) {
-          // Path not found, continue to next attempt
+          // Path not found, will fallback
         }
       }
-
-      // If tile is not walkable or no path found, slightly increase radius and try again.
-      currentRadius += 0.5;
-      attempts++;
     }
 
-    // Fallback to original target if no suitable position is found after several attempts
+    // Fallback to original target if no suitable position is found
     return tileVec3;
   }
 }
