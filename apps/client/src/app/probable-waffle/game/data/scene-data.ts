@@ -164,7 +164,8 @@ export function listenToSelectionEvents(scene: Scene): Observable<ProbableWaffle
 export function emitEventIssueMoveCommandToSelectedActors(
   scene: Phaser.Scene,
   tileVec3: Vector3Simple,
-  worldVec3: Vector3Simple
+  worldVec3: Vector3Simple,
+  selectedActorObjectIds: string[]
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({
@@ -173,7 +174,8 @@ export function emitEventIssueMoveCommandToSelectedActors(
       playerNumber: getPlayer(scene)?.playerNumber,
       data: {
         tileVec3,
-        worldVec3
+        worldVec3,
+        selectedActorObjectIds
       }
     },
     gameInstanceId: scene.gameInstanceId,

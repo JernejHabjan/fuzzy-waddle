@@ -1,5 +1,5 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { getSceneService } from "../../scenes/components/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../scenes/components/scene-component-helpers";
 import { NavigationService, TerrainType } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { getActorSystem } from "../../data/actor-system";
@@ -35,6 +35,9 @@ import { WalkableComponent } from "../actor/components/walkable-component";
 import { RepresentableComponent } from "../actor/components/representable-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
+import { IdComponent } from "../actor/components/id-component";
+import { getTileCoordsUnderObject } from "../../library/tile-under-object";
+import { TilemapComponent } from "../../scenes/components/tilemap.component";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -53,6 +56,7 @@ export class MovementSystem {
   private readonly DEBUG = false;
   private playerChangedSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
+  private tileMapComponent!: TilemapComponent;
   private audioService: AudioService | undefined;
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
@@ -70,6 +74,7 @@ export class MovementSystem {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
+    this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent)!;
     this.subscribeToShiftKey();
   }
 
@@ -80,15 +85,17 @@ export class MovementSystem {
   private listenToMoveEvents() {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.move") // todo it's actually blackboard that should replicate
-      .subscribe((payload) => {
+      .subscribe(async (payload) => {
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
         const canIssueCommand = this.canIssueCommand();
         if (!canIssueCommand) return;
         const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
+        const selectedActorObjectIds = payload.data.data!["selectedActorObjectIds"] as string[];
+        const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(tileVec3, selectedActorObjectIds);
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (payerPawnAiController) {
-          const newOrder = new OrderData(OrderType.Move, { targetLocation: tileVec3 });
+          const newOrder = new OrderData(OrderType.Move, { targetLocation: newWorldVec3 });
           if (this.shiftKey?.isDown) {
             payerPawnAiController.blackboard.addOrder(newOrder);
           } else {
@@ -97,7 +104,7 @@ export class MovementSystem {
 
           this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
         } else {
-          this.moveToLocationByFollowingStaticPath(tileVec3);
+          this.moveToLocationByFollowingStaticPath(newWorldVec3);
         }
       });
   }
@@ -504,6 +511,94 @@ export class MovementSystem {
     const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
     const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
     return actorPlayerNr === currentPlayerNr;
+  }
+
+  /**
+   * Prevents units from clumping up in the same point.
+   * It places units in a classic RTS game formation, arranging them in a grid around the target tile.
+   */
+  private async getTileVec3ByDynamicFlocking(
+    tileVec3: Vector3Simple,
+    selectedActorObjectIds: string[]
+  ): Promise<Vector3Simple> {
+    const unitCount = selectedActorObjectIds.length;
+    if (unitCount < 2) {
+      return tileVec3;
+    }
+
+    const idComponent = getActorComponent(this.gameObject, IdComponent);
+    if (!idComponent || !this.navigationService) return tileVec3;
+
+    const ownId = idComponent.id;
+    const ownIndex = selectedActorObjectIds.findIndex((id) => id === ownId);
+
+    if (ownIndex === -1) {
+      console.warn(
+        `[MovementSystem] getTileVec3ByDynamicFlocking: ownId (${ownId}) not found in selectedActorObjectIds. This should not happen if logic is correct. Returning original tileVec3.`,
+        { ownId, selectedActorObjectIds, tileVec3 }
+      );
+      return tileVec3; // Should not happen if logic is correct
+    }
+
+    // Use the size of the current unit to determine spacing.
+    const tilesUnderGameObject = getTileCoordsUnderObject(this.tileMapComponent.tilemap, this.gameObject);
+    const size = tilesUnderGameObject.length > 0 ? Math.ceil(Math.sqrt(tilesUnderGameObject.length)) : 1;
+    const spacingInTiles = size + 1; // Add a buffer tile
+
+    const gridSize = Math.ceil(Math.sqrt(unitCount));
+    const formationPoints: Vector2Simple[] = [];
+
+    // Generate a grid of potential destination points around the target
+    const startX = tileVec3.x - Math.floor(gridSize / 2) * spacingInTiles;
+    const startY = tileVec3.y - Math.floor(gridSize / 2) * spacingInTiles;
+
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        formationPoints.push({
+          x: startX + c * spacingInTiles,
+          y: startY + r * spacingInTiles
+        });
+      }
+    }
+
+    // Sort the selected units by their ID to ensure a consistent order
+    const sortedSelectedIds = [...selectedActorObjectIds].sort();
+    const ownSortedIndex = sortedSelectedIds.findIndex((id) => id === ownId);
+
+    // Sort formation points by distance to the original target tile
+    formationPoints.sort((a, b) => {
+      const distA = Math.sqrt(Math.pow(a.x - tileVec3.x, 2) + Math.pow(a.y - tileVec3.y, 2));
+      const distB = Math.sqrt(Math.pow(b.x - tileVec3.x, 2) + Math.pow(b.y - tileVec3.y, 2));
+      return distA - distB;
+    });
+
+    // Assign a unique formation point to this unit based on its sorted index
+    if (ownSortedIndex < formationPoints.length) {
+      const assignedPoint = formationPoints[ownSortedIndex];
+      const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
+
+      // Check if the assigned point is valid and reachable
+      if (this.navigationService.isTileWalkable(destinationTile)) {
+        try {
+          const path = await this.navigationService.findAndUsePathFromGameObjectToTile(
+            this.gameObject,
+            destinationTile
+          );
+          if (path.length > 0) {
+            return {
+              x: destinationTile.x,
+              y: destinationTile.y,
+              z: tileVec3.z // Keep the original Z coordinate
+            } satisfies Vector3Simple;
+          }
+        } catch (e) {
+          // Path not found, will fallback
+        }
+      }
+    }
+
+    // Fallback to original target if no suitable position is found
+    return tileVec3;
   }
 }
 

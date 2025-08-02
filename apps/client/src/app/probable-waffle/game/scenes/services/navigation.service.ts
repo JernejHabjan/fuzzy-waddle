@@ -660,7 +660,7 @@ export class NavigationService {
     );
   }
 
-  private isTileWalkable(tile: Vector2Simple): boolean {
+  public isTileWalkable(tile: Vector2Simple): boolean {
     return this.easyStarNavigationGrid[tile.y][tile.x] === 0; // Check if the tile is walkable (0 means walkable)
   }
 
