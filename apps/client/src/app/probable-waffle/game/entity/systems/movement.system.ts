@@ -543,10 +543,11 @@ export class MovementSystem {
       return tileVec3; // Should not happen if logic is correct
     }
 
-    // Use the size of the current unit to determine spacing.
+    // Use a tighter formation spacing for better visual formation
     const tilesUnderGameObject = getTileCoordsUnderObject(this.tileMapComponent.tilemap, this.gameObject);
     const size = tilesUnderGameObject.length > 0 ? Math.ceil(Math.sqrt(tilesUnderGameObject.length)) : 1;
-    const spacingInTiles = size + 1; // Add a buffer tile
+    // Reduce spacing to just the unit size without additional buffer for tighter formations
+    const spacingInTiles = Math.max(1, size);
 
     const gridSize = Math.ceil(Math.sqrt(unitCount));
     const formationPoints: Vector2Simple[] = [];
