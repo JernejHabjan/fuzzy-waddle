@@ -24,6 +24,6 @@ export class GameObjectActionAssigner {
   }
 
   private destroy() {
-    this.scene.events.on(Minimap.assignActorActionToTileCoordinatesEvent, this.assignActionToTileCoordinates, this);
+    this.scene.events.off(Minimap.assignActorActionToTileCoordinatesEvent, this.assignActionToTileCoordinates, this);
   }
 }
