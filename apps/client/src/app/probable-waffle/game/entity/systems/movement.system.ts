@@ -533,6 +533,10 @@ export class MovementSystem {
     const ownIndex = selectedActorObjectIds.findIndex((id) => id === ownId);
 
     if (ownIndex === -1) {
+      console.warn(
+        `[MovementSystem] getTileVec3ByDynamicFlocking: ownId (${ownId}) not found in selectedActorObjectIds. This should not happen if logic is correct. Returning original tileVec3.`,
+        { ownId, selectedActorObjectIds, tileVec3 }
+      );
       return tileVec3; // Should not happen if logic is correct
     }
 
