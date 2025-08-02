@@ -70,17 +70,16 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     this.drawLine();
   }
 
-  navigateGameObjectToRallyPoint(newGameObject: Phaser.GameObjects.GameObject) {
+  async navigateGameObjectToRallyPoint(newGameObject: Phaser.GameObjects.GameObject) {
     const movementSystem = getActorSystem<MovementSystem>(newGameObject, MovementSystem);
     if (!movementSystem) return;
     if (this.tileVec3) {
-      // noinspection JSIgnoredPromiseFromCall
-      movementSystem.moveToLocationByFollowingStaticPath(this.tileVec3);
+      const tileVec3 = (await movementSystem.getClosestUnoccupiedTileVec3(this.tileVec3)) ?? this.tileVec3;
+      await movementSystem.moveToLocationByFollowingStaticPath(tileVec3);
       return;
     }
     if (this.actor) {
-      // noinspection JSIgnoredPromiseFromCall
-      movementSystem.moveToActorByAdjustingPathDynamically(this.actor);
+      await movementSystem.moveToActorByAdjustingPathDynamically(this.actor);
     }
   }
 

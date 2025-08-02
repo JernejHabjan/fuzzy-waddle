@@ -603,6 +603,29 @@ export class MovementSystem {
     // Fallback to original target if no suitable position is found
     return tileVec3;
   }
+
+  /**
+   * Finds the closest unoccupied tile around the target tile and returns it as Vector3Simple.
+   * Unoccupied means no actor sits on the tile (regardless of collider).
+   * Useful for preventing units from stacking on top of each other.
+   */
+  async getClosestUnoccupiedTileVec3(
+    tileVec3: Vector3Simple,
+    maxRadius: number = 10
+  ): Promise<Vector3Simple | undefined> {
+    if (!this.navigationService) return undefined;
+
+    const targetTile = { x: tileVec3.x, y: tileVec3.y };
+    const closestUnoccupiedTile = await this.navigationService.getClosestUnoccupiedTile(targetTile, maxRadius);
+
+    if (!closestUnoccupiedTile) return undefined;
+
+    return {
+      x: closestUnoccupiedTile.x,
+      y: closestUnoccupiedTile.y,
+      z: tileVec3.z
+    };
+  }
 }
 
 export async function getRandomTileInNavigableRadius(

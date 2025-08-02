@@ -293,6 +293,7 @@ export class ProductionComponent {
       if (visibilityComponent) visibilityComponent.setVisible(false);
 
       if (this.rallyPoint.isSet()) {
+        // noinspection JSIgnoredPromiseFromCall
         this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
       }
     }
