@@ -76,6 +76,13 @@ export class MultiSelectionHandler {
     const buildingCursor = getSceneComponent(this.probableWaffleScene, BuildingCursor);
     if (buildingCursor && buildingCursor.placingBuilding) return;
 
+    // Check if pointer is over any interactive HUD elements
+    const hitObjects = this.hudScene.input.hitTestPointer(pointer);
+    if (hitObjects.length > 0) {
+      // Pointer is over a HUD element, don't start multi-selection
+      return;
+    }
+
     this.selection.x = pointer.worldX;
     this.selection.y = pointer.worldY;
     this.selectionRect = null;
