@@ -515,12 +515,7 @@ export class MovementSystem {
 
   /**
    * Prevents units from clumping up in the same point.
-   * It places units in a circle around the target tile.
-   */
-  /**
-   * Prevents units from clumping up in the same point.
    * It places units in a classic RTS game formation, arranging them in a grid around the target tile.
-   * The destination tile is chosen to be the closest available spot to the actor's current position.
    */
   private async getTileVec3ByDynamicFlocking(
     tileVec3: Vector3Simple,
