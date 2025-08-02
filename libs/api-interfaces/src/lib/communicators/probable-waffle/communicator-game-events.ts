@@ -10,6 +10,10 @@ export interface ProbableWaffleSelectionData {
   ctrlKey?: boolean;
 }
 
+export interface ProbableWaffleDoubleSelectionData {
+  objectId: string;
+}
+
 export type HealthComponentData = {
   health: number;
   armour: number;
