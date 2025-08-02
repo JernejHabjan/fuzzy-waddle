@@ -516,6 +516,9 @@ export class MovementSystem {
   /**
    * Prevents units from clumping up in the same point.
    * It places units in a classic RTS game formation, arranging them in a grid around the target tile.
+   * Todo - this is not the most efficient way to do this:
+   * Todo - instead of finding tileVec3 here, we should rework "command.issued.move"
+   * Todo - to send the target tileVec3 for each actor
    */
   private async getTileVec3ByDynamicFlocking(
     tileVec3: Vector3Simple,
@@ -540,10 +543,11 @@ export class MovementSystem {
       return tileVec3; // Should not happen if logic is correct
     }
 
-    // Use the size of the current unit to determine spacing.
+    // Use a tighter formation spacing for better visual formation
     const tilesUnderGameObject = getTileCoordsUnderObject(this.tileMapComponent.tilemap, this.gameObject);
     const size = tilesUnderGameObject.length > 0 ? Math.ceil(Math.sqrt(tilesUnderGameObject.length)) : 1;
-    const spacingInTiles = size + 1; // Add a buffer tile
+    // Reduce spacing to just the unit size without additional buffer for tighter formations
+    const spacingInTiles = Math.max(1, size);
 
     const gridSize = Math.ceil(Math.sqrt(unitCount));
     const formationPoints: Vector2Simple[] = [];
@@ -599,6 +603,29 @@ export class MovementSystem {
 
     // Fallback to original target if no suitable position is found
     return tileVec3;
+  }
+
+  /**
+   * Finds the closest unoccupied tile around the target tile and returns it as Vector3Simple.
+   * Unoccupied means no actor sits on the tile (regardless of collider).
+   * Useful for preventing units from stacking on top of each other.
+   */
+  async getClosestUnoccupiedTileVec3(
+    tileVec3: Vector3Simple,
+    maxRadius: number = 10
+  ): Promise<Vector3Simple | undefined> {
+    if (!this.navigationService) return undefined;
+
+    const targetTile = { x: tileVec3.x, y: tileVec3.y };
+    const closestUnoccupiedTile = await this.navigationService.getClosestUnoccupiedTile(targetTile, maxRadius);
+
+    if (!closestUnoccupiedTile) return undefined;
+
+    return {
+      x: closestUnoccupiedTile.x,
+      y: closestUnoccupiedTile.y,
+      z: tileVec3.z
+    };
   }
 }
 

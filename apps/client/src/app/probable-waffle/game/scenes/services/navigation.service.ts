@@ -26,8 +26,9 @@ import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent } from "../components/scene-component-helpers";
 import { TilemapComponent } from "../components/tilemap.component";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
-import { throttle, throttleWithTrailing } from "../../library/throttle";
+import { throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";
+import { RepresentableComponent } from "../../entity/actor/components/representable-component";
 
 export enum TerrainType {
   Grass = "grass",
@@ -692,6 +693,101 @@ export class NavigationService {
     if (this.terrainTypes.includes(terrainType)) {
       return terrainType as TerrainType;
     }
+    return undefined;
+  }
+
+  /**
+   * Gets all tiles currently occupied by actors (any game object with position)
+   */
+  private getOccupiedTilesByActors(): Set<string> {
+    const occupiedTiles = new Set<string>();
+
+    this.scene.children.each((child) => {
+      const representableComponent = getActorComponent(child, RepresentableComponent);
+      if (!representableComponent) return;
+      const tiles = getTileCoordsUnderObject(this.tilemap, child);
+      tiles.forEach(({ x, y }) => {
+        occupiedTiles.add(`${x},${y}`);
+      });
+    });
+
+    return occupiedTiles;
+  }
+
+  /**
+   * Finds the closest unoccupied and walkable tile to the given tile position that is also reachable via pathfinding.
+   * Unoccupied means no actor sits on the tile (regardless of collider).
+   * Similar to randomTileInNavigableRadius but returns the closest reachable unoccupied tile instead of random.
+   */
+  public async getClosestUnoccupiedTile(
+    targetTile: Vector2Simple,
+    maxRadius: number = 10
+  ): Promise<Vector2Simple | undefined> {
+    const occupiedTiles = this.getOccupiedTilesByActors();
+
+    // First check if the target tile itself is unoccupied and walkable
+    if (
+      this.isWithinGridBounds(targetTile) &&
+      this.isTileWalkable(targetTile) &&
+      !occupiedTiles.has(`${targetTile.x},${targetTile.y}`)
+    ) {
+      return targetTile; // Target tile is perfect, return it immediately
+    }
+
+    // Start from radius 1 and expand outward since radius 0 (target tile) was already checked
+    for (let radius = 1; radius <= maxRadius; radius++) {
+      const candidateTiles: Vector2Simple[] = [];
+
+      // Get all tiles in current radius ring
+      for (let dx = -radius; dx <= radius; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+          // Only check tiles on the edge of the current radius (Manhattan distance)
+          if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
+
+          const candidate = { x: targetTile.x + dx, y: targetTile.y + dy };
+
+          // Check if tile is within bounds, walkable, and unoccupied
+          if (
+            this.isWithinGridBounds(candidate) &&
+            this.isTileWalkable(candidate) &&
+            !occupiedTiles.has(`${candidate.x},${candidate.y}`)
+          ) {
+            candidateTiles.push(candidate);
+          }
+        }
+      }
+
+      if (candidateTiles.length > 0) {
+        // Sort by Euclidean distance
+        candidateTiles.sort((a, b) => this.getTileDistance(a, targetTile) - this.getTileDistance(b, targetTile));
+
+        // Test each candidate tile for pathfinding reachability
+        for (const candidate of candidateTiles) {
+          try {
+            const path = await this.find(targetTile, candidate);
+
+            // Calculate actual path length to ensure it's within radius
+            const pathLength = path.reduce((sum, node, index) => {
+              const previousNode = index === 0 ? targetTile : path[index - 1];
+              const dx = Math.abs(node.x - previousNode.x);
+              const dy = Math.abs(node.y - previousNode.y);
+              // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
+              const diagonalCost = Math.sqrt(2);
+              const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
+              return sum + distance;
+            }, 0);
+
+            if (path.length > 0 && pathLength <= maxRadius) {
+              return candidate; // Found reachable unoccupied tile within radius
+            }
+          } catch (e) {
+            // Path not found to this candidate, continue to next
+            continue;
+          }
+        }
+      }
+    }
+
     return undefined;
   }
 }
