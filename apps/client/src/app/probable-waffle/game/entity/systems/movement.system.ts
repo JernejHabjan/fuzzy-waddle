@@ -516,6 +516,9 @@ export class MovementSystem {
   /**
    * Prevents units from clumping up in the same point.
    * It places units in a classic RTS game formation, arranging them in a grid around the target tile.
+   * Todo - this is not the most efficient way to do this:
+   * Todo - instead of finding tileVec3 here, we should rework "command.issued.move"
+   * Todo - to send the target tileVec3 for each actor
    */
   private async getTileVec3ByDynamicFlocking(
     tileVec3: Vector3Simple,
