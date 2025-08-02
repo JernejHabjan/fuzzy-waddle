@@ -85,10 +85,14 @@ export class GameObjectSelectionHandler {
             if (isLeftClick) {
               emitEventSelection(this.scene, "selection.cleared");
             } else if (isRightClick) {
+              const selectedActorObjectIds = this.getSelectedMovableActors().map(
+                (actor) => getActorComponent(actor, IdComponent)!.id
+              );
               emitEventIssueMoveCommandToSelectedActors(
                 this.scene,
                 data.terrainSelectedTileVec3!,
-                data.terrainSelectedWorldVec3!
+                data.terrainSelectedWorldVec3!,
+                selectedActorObjectIds
               );
             }
             break;
