@@ -67,7 +67,7 @@ export class GameObjectSelectionHandler {
                 this.playAudio(objectIds!);
               }
             } else if (isRightClick) {
-              emitEventIssueActorCommandToSelectedActors(this.scene, objectIds!);
+              emitEventIssueActorCommandToSelectedActors(this.scene, { objectIds: objectIds! });
             }
 
             break;

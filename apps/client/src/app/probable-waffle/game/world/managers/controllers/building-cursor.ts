@@ -583,7 +583,7 @@ export class BuildingCursor {
 
     // instruct the builder to start building
     const idComponent = getActorComponent(gameObject, IdComponent)!;
-    emitEventIssueActorCommandToSelectedActors(this.scene, [idComponent.id]);
+    emitEventIssueActorCommandToSelectedActors(this.scene, { objectIds: [idComponent.id] });
   }
 
   static spawnBuildingForPlayer(

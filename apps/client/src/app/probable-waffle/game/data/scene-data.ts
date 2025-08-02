@@ -183,15 +183,19 @@ export function emitEventIssueMoveCommandToSelectedActors(
   });
 }
 
-export function emitEventIssueActorCommandToSelectedActors(scene: Phaser.Scene, objectIds: string[]) {
+export function emitEventIssueActorCommandToSelectedActors(
+  scene: Phaser.Scene,
+  data: {
+    objectIds?: string[];
+    tileVec3?: Vector3Simple;
+  }
+) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({
     property: "command.issued.actor",
     data: {
       playerNumber: getPlayer(scene)?.playerNumber,
-      data: {
-        objectIds
-      }
+      data
     },
     gameInstanceId: scene.gameInstanceId,
     emitterUserId: scene.userId

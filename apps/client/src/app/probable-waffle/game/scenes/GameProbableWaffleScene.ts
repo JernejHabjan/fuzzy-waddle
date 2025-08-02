@@ -27,6 +27,7 @@ import { getSceneExternalComponent } from "./components/scene-component-helpers"
 import { AchievementService } from "../../services/achievement/achievement.service";
 import { AchievementType } from "../../services/achievement/achievement-type";
 import { environment } from "../../../../environments/environment";
+import { GameObjectActionAssigner } from "../world/managers/controllers/game-object-action-assigner";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -57,6 +58,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
     this.sceneGameData.components.push(new SingleSelectionHandler(this, hud, this.tilemap));
     new GameObjectSelectionHandler(this);
+    new GameObjectActionAssigner(this);
     new SaveGame(this);
     new RestartGame(this, hud);
     new GameModeConditionChecker(this);

@@ -7,7 +7,7 @@ export class OrderData {
     public orderType: OrderType,
     public data: {
       targetGameObject?: GameObject;
-      targetLocation?: Vector3Simple;
+      targetTileLocation?: Vector3Simple;
     } = {}
   ) {}
 }
