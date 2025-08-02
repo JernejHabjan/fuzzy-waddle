@@ -3,7 +3,11 @@ import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../../data/actor-component";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
-import { ProbableWaffleSelectionData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import {
+  ProbableWaffleDoubleSelectionData,
+  ProbableWaffleSelectionData,
+  Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import { getSelectableGameObject } from "../../../../data/game-object-helper";
 import { IsoHelper } from "../../../map/tile/iso-helper";
 import { getSceneComponent } from "../../../../scenes/components/scene-component-helpers";
@@ -12,6 +16,9 @@ import { BuildingCursor } from "../building-cursor";
 export class SingleSelectionHandler {
   private readonly debug = false;
   private multiSelecting: boolean = false;
+  private lastClickTime: number = 0;
+  private lastClickedObjectId?: string;
+  private readonly doubleClickThreshold: number = 300; // ms
   constructor(
     private readonly scene: ProbableWaffleScene,
     private readonly hudScene: ProbableWaffleScene,
@@ -62,6 +69,18 @@ export class SingleSelectionHandler {
         if (interactiveObjectIds.length > 0) {
           if (this.debug) {
             console.log("clicked on interactive objects", gameObjectsUnderCursor.length, interactiveObjectIds);
+          }
+          // Double-click detection for interactive objects
+          const now = Date.now();
+          const objectId = interactiveObjectIds[0];
+          const isDoubleClick =
+            now - this.lastClickTime < this.doubleClickThreshold && this.lastClickedObjectId === objectId;
+          this.lastClickTime = now;
+          this.lastClickedObjectId = objectId;
+
+          if (isDoubleClick) {
+            this.sendDoubleClick(objectId);
+            return;
           }
           // if we clicked on top of terrain object, then emit terrain selection -- todo wall
           const clickedOnTopOfTerrain = false;
@@ -126,6 +145,15 @@ export class SingleSelectionHandler {
         shiftKey,
         ctrlKey
       } satisfies ProbableWaffleSelectionData
+    });
+  }
+
+  public sendDoubleClick(objectId: string) {
+    this.scene.communicator.allScenes!.emit({
+      name: "selection.doubleSelect",
+      data: {
+        objectId
+      } satisfies ProbableWaffleDoubleSelectionData
     });
   }
 

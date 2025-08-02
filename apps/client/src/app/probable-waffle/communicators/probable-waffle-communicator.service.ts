@@ -45,6 +45,7 @@ export class ProbableWaffleCommunicatorService
       | "restart-game"
       | "selection.deselect"
       | "selection.singleSelect"
+      | "selection.doubleSelect"
       | "selection.multiSelect"
       | "selection.multiSelectPreview"
       | "selection.terrainSelect";

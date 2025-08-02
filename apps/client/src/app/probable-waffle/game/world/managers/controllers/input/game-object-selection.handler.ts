@@ -14,12 +14,17 @@ import {
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
 import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
-import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
+import {
+  ObjectNames,
+  ProbableWaffleDoubleSelectionData,
+  ProbableWaffleSelectionData
+} from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
 import { AudioActorComponent, SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { pwActorDefinitions } from "../../../../data/actor-definitions";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;
@@ -65,6 +70,15 @@ export class GameObjectSelectionHandler {
               emitEventIssueActorCommandToSelectedActors(this.scene, objectIds!);
             }
 
+            break;
+          case "selection.doubleSelect":
+            const doubleSelectData = selection.data as ProbableWaffleDoubleSelectionData;
+            const objectId = doubleSelectData.objectId;
+            if (this.debug) console.log("doubleSelect", objectId);
+            const actors = this.getSameTypeActorsInViewportById(objectId);
+            const actorIds = actors.map((actor) => getActorComponent(actor, IdComponent)!.id);
+            emitEventSelection(this.scene, "selection.set", actorIds);
+            this.playAudio(actorIds);
             break;
           case "selection.terrainSelect":
             if (this.debug) console.log("terrainSelect", data!.terrainSelectedTileVec3, data!.terrainSelectedWorldVec3);
@@ -220,5 +234,56 @@ export class GameObjectSelectionHandler {
     const currentPlayerNr = getCurrentPlayerNumber(actor.scene);
     const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
     return actorPlayerNr === currentPlayerNr;
+  }
+
+  /**
+   * Gets game objects in current users viewport by the same actor name.
+   * Used when double-clicking on an actor to select same actors on screen by type
+   */
+  private getSameTypeActorsInViewportById(objectId: string): GameObject[] {
+    const selectableChildren = this.getSelectableChildren();
+
+    // Find the original actor to get its type/name
+    const originalActor = selectableChildren.find((actor) => getActorComponent(actor, IdComponent)!.id === objectId);
+
+    if (!originalActor) return [];
+
+    // Get the actor's name as the type identifier
+    let actorType = originalActor.name;
+    const parentType = this.getParentType(actorType as ObjectNames);
+    if (parentType) actorType = parentType;
+
+    // Get current viewport bounds in world coordinates
+    const camera = this.scene.cameras.main;
+    const worldView = camera.worldView;
+
+    // Filter actors by same type and within viewport
+    return selectableChildren.filter((actor) => {
+      let thisActorType = actor.name;
+      const thisParentType = this.getParentType(thisActorType as ObjectNames);
+      if (thisParentType) thisActorType = thisParentType;
+
+      if (thisParentType !== actorType) return false;
+
+      // Check if actor is within viewport
+      const bounds = getGameObjectBounds(actor);
+      if (!bounds) return false;
+
+      const actorBounds = new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+      return Phaser.Geom.Rectangle.Overlaps(worldView, actorBounds);
+    });
+  }
+
+  /**
+   * Find parent type - for example TivaraWorkerFemale has parent type TivaraWorker
+   */
+  private getParentType(actorName: ObjectNames): ObjectNames | undefined {
+    for (const key in pwActorDefinitions) {
+      const actorDefinition = pwActorDefinitions[key as ObjectNames];
+      if (actorDefinition.meta?.randomOfType?.includes(actorName as ObjectNames)) {
+        return key as ObjectNames;
+      }
+    }
+    return undefined;
   }
 }
