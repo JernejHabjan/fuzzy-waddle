@@ -54,7 +54,7 @@ export class NavigationService {
   private easyStarNavigationGrid: number[][] = [];
   private tilemapGrid: number[][] = [];
   private heightMapGrid: HeightMapCell[][] = [];
-  private readonly DEBUG = true;
+  private readonly DEBUG = false;
   private readonly DEBUG_DEMO = false;
   private readonly DEBUG_CLICK_INFO = true; // Enable debug click info
   private directionalConditions: Map<string, Direction[]> = new Map();
