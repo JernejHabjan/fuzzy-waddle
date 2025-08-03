@@ -34,9 +34,11 @@ import { AudioSprites } from "../../../sfx/AudioSprites";
 import { UiFeedbackSfx } from "../../../sfx/UiFeedbackSfx";
 import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
-import { getActorSystem } from "../../../data/actor-system";
-import { getRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
 import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { PlayerActionsHandler } from "../../../world/managers/controllers/PlayerActionsHandler";
+import { OrderType } from "../../../entity/character/ai/order-type";
+import { HealingComponent } from "../../../entity/combat/components/healing-component";
+import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -162,6 +164,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     /* START-USER-CTR-CODE */
     this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
     this.audioService = getSceneService(this.mainSceneWithActors, AudioService)!;
+    this.playerActionsHandler = getSceneService(this.mainSceneWithActors, PlayerActionsHandler)!;
     this.subscribeToPlayerSelection();
     this.hideAllActions();
     /* END-USER-CTR-CODE */
@@ -175,6 +178,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private actorConstructionSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
   private readonly audioService: AudioService;
+  private readonly playerActionsHandler: PlayerActionsHandler;
   /**
    * If true, building icons are displayed with back button
    */
@@ -237,13 +241,53 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       },
       visible: true,
       action: () => {
-        console.log("Attack"); // todo attack move with all actors
+        this.playerActionsHandler.startOrderCommand(OrderType.Attack, actors);
       },
       tooltipInfo: {
         title: "Attack",
         description: "Attack an enemy or start attack-move to certain location",
         iconKey: "gui",
         iconFrame: "actor_info_icons/sword.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      }
+    }) satisfies ActorActionSetup;
+
+  private readonly healAction = (actors: Phaser.GameObjects.GameObject[]) =>
+    ({
+      icon: {
+        key: "gui",
+        frame: "actor_info_icons/element.png", // todo
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: () => {
+        this.playerActionsHandler.startOrderCommand(OrderType.Heal, actors);
+      },
+      tooltipInfo: {
+        title: "Heal",
+        description: "Heal an ally",
+        iconKey: "gui",
+        iconFrame: "actor_info_icons/element.png", // todo
+        iconOrigin: { x: 0.5, y: 0.5 }
+      }
+    }) satisfies ActorActionSetup;
+
+  private readonly gatherAction = (actors: Phaser.GameObjects.GameObject[]) =>
+    ({
+      icon: {
+        key: "gui",
+        frame: "action_icons/element.png", // todo
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: () => {
+        this.playerActionsHandler.startOrderCommand(OrderType.Gather, actors);
+      },
+      tooltipInfo: {
+        title: "Gather",
+        description: "Gather resources from a resource node",
+        iconKey: "gui",
+        iconFrame: "action_icons/element.png", // todo
         iconOrigin: { x: 0.5, y: 0.5 }
       }
     }) satisfies ActorActionSetup;
@@ -281,19 +325,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       },
       visible: true,
       action: () => {
-        actors.forEach((actor) => {
-          setTimeout(async () => {
-            const movementSystem = getActorSystem(actor, MovementSystem);
-            if (!movementSystem) return;
-            const tileXY = await getRandomTileInNavigableRadius(actor, 10);
-            if (!tileXY) return;
-            await movementSystem.moveToLocationByFollowingStaticPath({
-              x: tileXY.x,
-              y: tileXY.y,
-              z: 0
-            }); // todo initiate action differently
-          });
-        });
+        this.playerActionsHandler.startOrderCommand(OrderType.Move, actors);
       },
       tooltipInfo: {
         title: "Move",
@@ -341,6 +373,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     } else {
       index = this.showAttackIcons(actor, allActors, index);
       index = this.showMoveIcons(actor, allActors, index);
+      index = this.showHealIcons(actor, allActors, index);
+      index = this.showGatherIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, index);
       this.showBuilderIcons(actor, allActors, index);
     }
@@ -375,6 +409,32 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       this.actor_actions[index].setup(this.moveAction(allActors));
       index++;
       this.actor_actions[index].setup(this.stopAction(allActors));
+      index++;
+    }
+    return index;
+  }
+
+  private showHealIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const healingComponent = getActorComponent(actor, HealingComponent);
+    if (healingComponent) {
+      this.actor_actions[index].setup(this.healAction(allActors));
+      index++;
+    }
+    return index;
+  }
+
+  private showGatherIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const gathererComponent = getActorComponent(actor, GathererComponent);
+    if (gathererComponent) {
+      this.actor_actions[index].setup(this.gatherAction(allActors));
       index++;
     }
     return index;

@@ -28,6 +28,7 @@ import { AchievementService } from "../../services/achievement/achievement.servi
 import { AchievementType } from "../../services/achievement/achievement-type";
 import { environment } from "../../../../environments/environment";
 import { GameObjectActionAssigner } from "../world/managers/controllers/game-object-action-assigner";
+import { PlayerActionsHandler } from "../world/managers/controllers/PlayerActionsHandler";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -64,6 +65,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameModeConditionChecker(this);
     const creator = new SceneActorCreator(this);
     const audioService = new AudioService(this);
+    const playerActionsHandler = new PlayerActionsHandler(this, hud);
 
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
@@ -73,6 +75,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.services.push(
       new NavigationService(this, this.tilemap),
       audioService,
+      playerActionsHandler,
       creator,
       new DebuggingService(),
       new CrossSceneCommunicationService()

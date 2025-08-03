@@ -63,30 +63,47 @@ export class ActionSystem {
 
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
+
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (!payerPawnAiController) return;
 
-        const objectIds = payload.data.data!["objectIds"] as string[] | undefined;
-        let action;
+        const { objectIds, orderType, tileVec3 } = payload.data.data as {
+          objectIds?: string[];
+          orderType?: OrderType;
+          tileVec3?: Vector3Simple;
+        };
+
+        let action: OrderData | null = null;
+        let targetGameObject: Phaser.GameObjects.GameObject | undefined;
+
         if (objectIds) {
           const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
             objectIds.includes(getActorComponent(go, IdComponent)?.id ?? "")
           );
-
-          if (clickedGameObjects.length === 0) return;
-          const clickedGameObject = clickedGameObjects[0];
-          action = this.findAction(clickedGameObject);
+          if (clickedGameObjects.length > 0) {
+            targetGameObject = clickedGameObjects[0];
+          }
         }
 
-        const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple | undefined;
-        if (tileVec3) {
+        if (orderType) {
+          action = new OrderData(orderType, {
+            targetGameObject,
+            targetTileLocation: tileVec3
+          });
+        } else if (targetGameObject) {
+          action = this.findAction(targetGameObject);
+        } else if (tileVec3) {
           action = new OrderData(OrderType.Move, {
             targetTileLocation: tileVec3
           });
         }
 
         if (!action) return;
-        if (this.displayDebugInfo && !environment.production) console.log("ActionSystem: action", action);
+
+        if (this.displayDebugInfo && !environment.production) {
+          console.log("ActionSystem: action", action);
+        }
+
         if (this.shiftKey?.isDown) {
           payerPawnAiController.blackboard.addOrder(action);
         } else {

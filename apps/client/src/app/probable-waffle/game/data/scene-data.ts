@@ -23,6 +23,7 @@ import { GathererComponent } from "../entity/actor/components/gatherer-component
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import { VisionComponent } from "../entity/actor/components/vision-component";
+import { OrderType } from "../entity/character/ai/order-type";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
@@ -188,6 +189,7 @@ export function emitEventIssueActorCommandToSelectedActors(
   data: {
     objectIds?: string[];
     tileVec3?: Vector3Simple;
+    orderType?: OrderType;
   }
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
