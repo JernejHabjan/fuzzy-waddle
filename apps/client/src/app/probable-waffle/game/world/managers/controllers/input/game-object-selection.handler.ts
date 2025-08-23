@@ -25,6 +25,8 @@ import { AudioActorComponent, SoundType } from "../../../../entity/actor/compone
 import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { pwActorDefinitions } from "../../../../data/actor-definitions";
+import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
+import { PlayerActionsHandler } from "../PlayerActionsHandler";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;
@@ -118,6 +120,9 @@ export class GameObjectSelectionHandler {
             break;
         }
       });
+
+    // ESC clears selection if no actions are being handled
+    this.scene.input.keyboard?.on("keydown", this.onKeyDown, this);
   }
 
   private getActorsByIds(ids: string[]): GameObject[] {
@@ -218,6 +223,17 @@ export class GameObjectSelectionHandler {
 
   private destroy() {
     this.sub.unsubscribe();
+    this.scene.input.keyboard?.off("keydown", this.onKeyDown, this);
+  }
+
+  private onKeyDown(e: KeyboardEvent) {
+    if (e.code !== "Escape") return;
+    const actions = getSceneService(this.scene, PlayerActionsHandler);
+    // If PlayerActionsHandler doesn't have any ongoing actions, then ESC key will cancel the current selection
+    if (!actions?.isHandlingActions() && !actions?.buildingModeActive) {
+      emitEventSelection(this.scene, "selection.cleared");
+      e.preventDefault();
+    }
   }
 
   private playAudio(actorIds: string[]) {
