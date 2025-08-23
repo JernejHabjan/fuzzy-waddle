@@ -14,6 +14,11 @@ import { BuildingCursor } from "../../../world/managers/controllers/building-cur
 import { ProductionComponent } from "../../../entity/building/production/production-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import GameObject = Phaser.GameObjects.GameObject;
+// Capability components per order type
+import { AttackComponent } from "../../../entity/combat/components/attack-component";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
+import { HealingComponent } from "../../../entity/combat/components/healing-component";
 
 export class PlayerActionsHandler {
   private handlingActions?: {
@@ -140,7 +145,16 @@ export class PlayerActionsHandler {
         break;
       case "KeyB":
         // Toggle building mode
-        this.setBuildingMode(!this.buildingModeActive);
+        if (this.buildingModeActive) {
+          this.setBuildingMode(false);
+        } else {
+          // build mode can only be entered if primary selection has builder component
+          const actor = this.primarySelectedActor;
+          const hasBuilder = !!(actor && getActorComponent(actor, BuilderComponent));
+          if (hasBuilder) {
+            this.setBuildingMode(true);
+          }
+        }
         e.preventDefault();
         break;
       case "Escape":
@@ -188,7 +202,38 @@ export class PlayerActionsHandler {
     return !!this.handlingActions;
   }
 
+  // Check whether any of the provided actors can perform the requested order
+  private selectionSupportsOrder(orderType: OrderType, actors: GameObject[]): boolean {
+    return actors.some((actor) => {
+      switch (orderType) {
+        case OrderType.Attack:
+          return !!getActorComponent(actor, AttackComponent);
+        case OrderType.Move:
+        case OrderType.EnterContainer:
+          return !!getActorComponent(actor, ActorTranslateComponent);
+        case OrderType.Gather:
+        case OrderType.ReturnResources:
+          return !!getActorComponent(actor, GathererComponent);
+        case OrderType.Heal:
+          return !!getActorComponent(actor, HealingComponent);
+        case OrderType.Repair:
+        case OrderType.Build:
+          return !!getActorComponent(actor, BuilderComponent);
+        case OrderType.Stop:
+        default:
+          // Stop and unknown types don't need capability gating here
+          return true;
+      }
+    });
+  }
+
   startOrderCommand(orderType: OrderType, actors: GameObject[]) {
+    // Only start the order if at least one actor supports it
+    if (!this.selectionSupportsOrder(orderType, actors)) {
+      // silently ignore if no capable actor is selected
+      return;
+    }
+
     this.handlingActions = {
       orderType
     };
