@@ -23,7 +23,7 @@ export class PlayerActionsHandler {
   private selectionChangedSubscription?: Subscription;
   private currentSelectedActors: GameObject[] = [];
   private primarySelectedActor?: GameObject;
-  private buildingModeActive: boolean = false;
+  buildingModeActive: boolean = false;
 
   // Letter hotkeys for lists (production/buildings)
   private readonly HOTKEYS: string[] = ["q", "w", "e", "r", "t", "y", "u", "i", "o"];
