@@ -102,10 +102,11 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private ensureShortcutText() {
     if (!this.shortcutText) {
       // Bottom-left corner
-      const txt = this.scene.add.text(-16, 8, "", {
-        fontSize: "10px",
-        fontFamily: "monospace",
-        color: "#222222"
+      const txt = this.scene.add.text(-16, 0, "", {
+        fontSize: "12px",
+        fontFamily: "disposabledroid",
+        color: "#222222",
+        resolution: 10
       });
       txt.setOrigin(0, 1);
       txt.setDepth(10);
