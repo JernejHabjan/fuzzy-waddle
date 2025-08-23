@@ -8,7 +8,12 @@ import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
-import { getGameObjectDepth, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectDepth,
+  getGameObjectVisibility,
+  onObjectReady
+} from "../../../data/game-object-helper";
 import { environment } from "../../../../../../environments/environment";
 import { SelectableComponent } from "../../actor/components/selectable-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
@@ -70,7 +75,11 @@ export class HealthComponent {
     },
     hooks: {
       health: (value: number, previousValue: number) => {
-        this.reactToDamage();
+        if (value < previousValue) {
+          this.reactToDamage();
+        } else {
+          this.reactToHeal();
+        }
 
         if (value <= 0) {
           this.killActor(); // Custom logic when health reaches zero
@@ -413,5 +422,23 @@ export class HealthComponent {
 
   get healthIsFull() {
     return this.healthComponentData.health === this.healthDefinition.maxHealth;
+  }
+
+  private reactToHeal() {
+    if (!this.actorTranslateComponent) return;
+    const renderedTransform = this.actorTranslateComponent.renderedTransform;
+    const bounds = getGameObjectBounds(this.gameObject)!;
+    const effect = EffectsAnims.createAndPlayEffectAnimation(
+      this.gameObject.scene,
+      EffectsAnims.ANIM_IMPACT_16,
+      renderedTransform.x,
+      bounds.top
+    );
+    effect.setScale(0.5);
+    effect.setTint(0x00ff00);
+    const gameObjectDepth = getGameObjectDepth(this.gameObject);
+    if (gameObjectDepth) {
+      effect.setDepth(gameObjectDepth + 1);
+    }
   }
 }

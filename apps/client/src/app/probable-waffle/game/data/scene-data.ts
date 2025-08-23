@@ -23,6 +23,7 @@ import { GathererComponent } from "../entity/actor/components/gatherer-component
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import { VisionComponent } from "../entity/actor/components/vision-component";
+import { GameObjectActionAssignerConfig } from "../world/managers/controllers/game-object-action-assigner";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
@@ -183,13 +184,7 @@ export function emitEventIssueMoveCommandToSelectedActors(
   });
 }
 
-export function emitEventIssueActorCommandToSelectedActors(
-  scene: Phaser.Scene,
-  data: {
-    objectIds?: string[];
-    tileVec3?: Vector3Simple;
-  }
-) {
+export function emitEventIssueActorCommandToSelectedActors(scene: Phaser.Scene, data: GameObjectActionAssignerConfig) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({
     property: "command.issued.actor",

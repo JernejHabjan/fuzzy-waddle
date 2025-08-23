@@ -25,7 +25,7 @@ import { ContainableComponent } from "../actor/components/containable-component"
 import { AudioActorComponent } from "../actor/components/audio-actor-component";
 import { WalkableComponent } from "../actor/components/walkable-component";
 import { FlightComponent } from "../actor/components/flight-component";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
@@ -63,30 +63,43 @@ export class ActionSystem {
 
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
+
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (!payerPawnAiController) return;
 
-        const objectIds = payload.data.data!["objectIds"] as string[] | undefined;
-        let action;
+        const { objectIds, orderType, tileVec3 } = payload.data.data as GameObjectActionAssignerConfig;
+
+        let action: OrderData | null = null;
+        let targetGameObject: Phaser.GameObjects.GameObject | undefined;
+
         if (objectIds) {
           const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
             objectIds.includes(getActorComponent(go, IdComponent)?.id ?? "")
           );
-
-          if (clickedGameObjects.length === 0) return;
-          const clickedGameObject = clickedGameObjects[0];
-          action = this.findAction(clickedGameObject);
+          if (clickedGameObjects.length > 0) {
+            targetGameObject = clickedGameObjects[0];
+          }
         }
 
-        const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple | undefined;
-        if (tileVec3) {
+        if (orderType) {
+          action = new OrderData(orderType, {
+            targetGameObject,
+            targetTileLocation: tileVec3
+          });
+        } else if (targetGameObject) {
+          action = this.findAction(targetGameObject);
+        } else if (tileVec3) {
           action = new OrderData(OrderType.Move, {
             targetTileLocation: tileVec3
           });
         }
 
         if (!action) return;
-        if (this.displayDebugInfo && !environment.production) console.log("ActionSystem: action", action);
+
+        if (this.displayDebugInfo && !environment.production) {
+          console.log("ActionSystem: action", action);
+        }
+
         if (this.shiftKey?.isDown) {
           payerPawnAiController.blackboard.addOrder(action);
         } else {

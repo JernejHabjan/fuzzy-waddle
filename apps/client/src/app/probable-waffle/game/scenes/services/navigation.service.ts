@@ -57,7 +57,7 @@ export class NavigationService {
   private heightMapGrid: HeightMapCell[][] = [];
   private readonly DEBUG = false;
   private readonly DEBUG_DEMO = false;
-  private readonly DEBUG_CLICK_INFO = true; // Enable debug click info
+  private readonly DEBUG_CLICK_INFO = false;
   private directionalConditions: Map<string, Direction[]> = new Map();
 
   constructor(
