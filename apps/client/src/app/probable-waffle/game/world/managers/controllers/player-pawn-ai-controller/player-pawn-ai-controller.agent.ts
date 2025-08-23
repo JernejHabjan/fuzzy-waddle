@@ -185,7 +185,25 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
     try {
-      const success = await movementSystem.moveToLocationByFollowingStaticPath(location);
+      // Attack-move support: while moving to location during an Attack order (without a target yet),
+      // acquire the first visible enemy and cancel movement so the tree can proceed to attack.
+      const isAttackMove = currentOrder.orderType === OrderType.Attack && !currentOrder.data.targetGameObject;
+      let success: boolean;
+      if (isAttackMove) {
+        success = await movementSystem.moveToLocationByFollowingStaticPath(location, {
+          onUpdateThrottled: () => {
+            const vision = getActorComponent(this.gameObject, VisionComponent);
+            if (!vision) return;
+            const enemy = vision.getClosestVisibleEnemy();
+            if (enemy) {
+              currentOrder.data.targetGameObject = enemy;
+              movementSystem.cancelMovement();
+            }
+          }
+        } satisfies Partial<PathMoveConfig>);
+      } else {
+        success = await movementSystem.moveToLocationByFollowingStaticPath(location);
+      }
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       // console.error("Error in MoveToLocation", e);
@@ -245,6 +263,18 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, 
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent) return false;
     return visionComponent.getVisibleEnemies().length > 0;
+  }
+
+  // Assign closest visible enemy to the CURRENT order (used for attack-move).
+  AssignVisibleEnemyToCurrentOrder(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const vision = getActorComponent(this.gameObject, VisionComponent);
+    if (!vision) return State.FAILED;
+    const enemy = vision.getClosestVisibleEnemy();
+    if (!enemy) return State.FAILED;
+    currentOrder.data.targetGameObject = enemy;
+    return State.SUCCEEDED;
   }
 
   private async CanMoveToTarget(range: number): Promise<boolean> {

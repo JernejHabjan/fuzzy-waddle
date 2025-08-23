@@ -86,10 +86,10 @@ root [Attack] {
         /* ensure that action succeeds - we don't want to seek another action as current action is attack */
         succeed {
             selector { /* executes until first succeeds */
-                /* if no target, stop */
+                /* if no target or location, stop */
                 sequence {
                     flip {
-                        condition [TargetExists]
+                        condition [TargetOrLocationExists]
                     }
                     action [Stop]
                 }
@@ -102,12 +102,22 @@ root [Attack] {
                     action [Stop]
                 }
 
-                /* if target is not alive, stop */
+                /* if target exists but is not alive, stop */
                 sequence {
+                    condition [TargetExists]
                     flip {
                         condition [TargetIsAlive]
                     }
                     action [Stop]
+                }
+
+                /* try to acquire visible enemy for current attack (attack-move) */
+                sequence {
+                    flip {
+                        condition [TargetExists]
+                    }
+                    condition [AnyEnemyVisible]
+                    action [AssignVisibleEnemyToCurrentOrder]
                 }
 
                 /* exit current container */
@@ -115,12 +125,12 @@ root [Attack] {
                     action [LeaveConstructionSiteOrCurrentContainer]
                 }
 
-                /* if target not in range, move to target */
+                /* if not in range, move to target or location */
                 sequence {
                     flip {
                       action [InRange, "attack"]
                     }
-                    action [MoveToTarget, "attack"]
+                    action [MoveToTargetOrLocation, "attack"]
                 }
 
                 sequence {
