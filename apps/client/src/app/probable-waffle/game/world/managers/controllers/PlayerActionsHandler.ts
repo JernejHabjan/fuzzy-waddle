@@ -71,12 +71,17 @@ export class PlayerActionsHandler {
     return this.HOTKEYS;
   }
 
-  private onKeyDown(e: KeyboardEvent) {
-    const key = e.key?.toLowerCase();
-    if (!key) return;
+  // Translate display hotkey (e.g., "q") to KeyboardEvent.code (e.g., "KeyQ")
+  private mapKeyToCode(k: string): string {
+    return k.length === 1 ? `Key${k.toUpperCase()}` : k;
+  }
 
-    // Handle list hotkeys (Q..O)
-    const listIndex = this.HOTKEYS.indexOf(key);
+  private onKeyDown(e: KeyboardEvent) {
+    const code = e.code;
+    if (!code) return;
+
+    // Handle list hotkeys using KeyboardEvent.code
+    const listIndex = this.HOTKEYS.findIndex((h) => this.mapKeyToCode(h) === code);
     if (listIndex !== -1) {
       if (this.buildingModeActive) {
         // Building selection
@@ -107,24 +112,24 @@ export class PlayerActionsHandler {
       // fall through if not handled
     }
 
-    switch (key) {
-      case "a":
+    switch (code) {
+      case "KeyA":
         if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Attack, this.currentSelectedActors);
         e.preventDefault();
         break;
-      case "m":
+      case "KeyM":
         if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Move, this.currentSelectedActors);
         e.preventDefault();
         break;
-      case "g":
+      case "KeyG":
         if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Gather, this.currentSelectedActors);
         e.preventDefault();
         break;
-      case "h":
+      case "KeyH":
         if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Heal, this.currentSelectedActors);
         e.preventDefault();
         break;
-      case "s":
+      case "KeyS":
         // Stop current orders immediately
         this.currentSelectedActors.forEach((actor) => {
           const pawnAiController = getActorComponent(actor, PawnAiController);
@@ -133,12 +138,12 @@ export class PlayerActionsHandler {
         this.stopOrderCommand();
         e.preventDefault();
         break;
-      case "b":
+      case "KeyB":
         // Toggle building mode
         this.setBuildingMode(!this.buildingModeActive);
         e.preventDefault();
         break;
-      case "escape":
+      case "Escape":
         // Cancel current cursor/orders and building placement
         this.stopOrderCommand();
         this.setBuildingMode(false);
