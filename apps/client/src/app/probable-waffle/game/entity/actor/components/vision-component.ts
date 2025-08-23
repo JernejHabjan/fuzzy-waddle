@@ -2,7 +2,8 @@ import GameObject = Phaser.GameObjects.GameObject;
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
-import { HealthComponent } from "../../combat/components/health-component";
+import { getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
 
 export interface VisionDefinition {
   range: number;
@@ -39,23 +40,13 @@ export class VisionComponent {
     const owner = currentActorOwnerComponent?.getOwner();
     if (!owner) return [];
 
-    // todo this is expensive
-    const tempEnemies = this.gameObject.scene.children.getChildren().filter((c) => {
-      const ownerComponent = getActorComponent(c, OwnerComponent);
-      if (!ownerComponent) return false; // No owner
-      const childOwner = ownerComponent.getOwner();
-      if (!childOwner) return false; // No owner
-      if (childOwner === owner) return false; // Same owner
-      const isSameTeam = ownerComponent.isSameTeamAsGameObject(this.gameObject);
-      if (isSameTeam) return false; // Same team
+    // Use indexed enemy candidates to avoid expensive scene scans
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    const candidates = actorIndex ? actorIndex.getEnemyCandidates(this.gameObject) : [];
 
-      const healthComponent = getActorComponent(c, HealthComponent);
-      if (!healthComponent || healthComponent.killed) return false; // Dead or no health
-
-      const actorVisible = this.isActorVisible(c as GameObject);
-      if (!actorVisible) return false; // Not visible
-
-      return true;
+    const tempEnemies = candidates.filter((c) => {
+      // within vision range
+      return this.isActorVisible(c as GameObject);
     });
 
     // todo apply vision radius check here

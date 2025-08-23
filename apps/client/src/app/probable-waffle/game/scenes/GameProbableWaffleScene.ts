@@ -29,6 +29,7 @@ import { AchievementType } from "../../services/achievement/achievement-type";
 import { environment } from "../../../../environments/environment";
 import { GameObjectActionAssigner } from "../world/managers/controllers/game-object-action-assigner";
 import { PlayerActionsHandler } from "../world/managers/controllers/PlayerActionsHandler";
+import { ActorIndexSystem } from "./services/ActorIndexSystem";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -66,6 +67,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const creator = new SceneActorCreator(this);
     const audioService = new AudioService(this);
     const playerActionsHandler = new PlayerActionsHandler(this, hud);
+    const actorIndex = new ActorIndexSystem(this);
 
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
@@ -78,12 +80,15 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       playerActionsHandler,
       creator,
       new DebuggingService(),
-      new CrossSceneCommunicationService()
+      new CrossSceneCommunicationService(),
+      actorIndex
     );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
     this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
 
     creator.initInitialActors();
+    // Populate the index after initial actors are in place
+    actorIndex.scanExistingActors();
 
     super.create();
 

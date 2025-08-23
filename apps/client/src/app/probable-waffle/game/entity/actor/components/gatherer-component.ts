@@ -22,6 +22,7 @@ import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -173,24 +174,19 @@ export class GathererComponent {
 
     const gatherer = this.gameObject;
     const gatherOwnerComponent = getActorComponent(gatherer, OwnerComponent);
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
 
-    const gameObjects = this.gameObject.scene.children.list as GameObject[]; // todo this is expensive
-    for (const resourceDrain of gameObjects) {
-      // check if found resource drain
-      const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);
-      if (!resourceDrainComponent) continue;
+    // Use indexed drains if available, otherwise nothing
+    const drains = actorIndex ? actorIndex.getResourceDrainsFiltered(undefined, this.carriedResourceType) : [];
 
-      // check owner
+    for (const resourceDrain of drains) {
+      // check owner / team
       if (!gatherOwnerComponent || !gatherOwnerComponent.isSameTeamAsGameObject(resourceDrain)) continue;
 
-      // check resource type
-      if (!resourceDrainComponent.getResourceTypes().includes(this.carriedResourceType)) continue;
-
-      // check if ready to use - e.g. building finished
+      // check ready to use
       if (!GathererComponent.isReadyToUse(resourceDrain)) continue;
 
-      // check distance
-      // todo here we may need to check navigatable path?
+      // distance (todo: pathing)
       const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(gatherer, resourceDrain);
       if (distance && (!closestResourceDrain || distance < closestResourceDrainDistance)) {
         closestResourceDrain = resourceDrain;
@@ -230,18 +226,18 @@ export class GathererComponent {
     let closestResourceSource: GameObject | undefined = undefined;
     let closestResourceSourceDistance = 0;
 
-    // todo get all gameObjects in the world and check the closest
-    const gameObjects = this.gameObject.scene.children.list as GameObject[]; // todo this is expensive
-    for (const gameObject of gameObjects) {
-      // get resourceSourceComponent
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    const sources = actorIndex ? actorIndex.getResourceSourcesFiltered(resourceType ?? undefined) : [];
+
+    for (const gameObject of sources) {
       const resourceSourceComponent = getActorComponent(gameObject, ResourceSourceComponent);
       if (!resourceSourceComponent) continue;
       // if not correct resource type
       if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) continue;
       // check amount of resources
       if (resourceSourceComponent.getCurrentResources() <= 0) continue;
-      // check distance
-      const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, gameObject); // todo here we may need to check navigatable path?
+      // distance (todo: pathing)
+      const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, gameObject);
       if (distance === null) continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
       if (!closestResourceSource || distance < closestResourceSourceDistance) {
