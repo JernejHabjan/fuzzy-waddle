@@ -250,7 +250,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         iconKey: "gui",
         iconFrame: "actor_info_icons/sword.png",
         iconOrigin: { x: 0.5, y: 0.5 }
-      }
+      },
+      shortcut: "a"
     }) satisfies ActorActionSetup;
 
   private readonly healAction = (actors: Phaser.GameObjects.GameObject[]) =>
@@ -270,7 +271,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         iconKey: "gui",
         iconFrame: "actor_info_icons/element.png", // todo
         iconOrigin: { x: 0.5, y: 0.5 }
-      }
+      },
+      shortcut: "h"
     }) satisfies ActorActionSetup;
 
   private readonly gatherAction = (actors: Phaser.GameObjects.GameObject[]) =>
@@ -290,7 +292,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         iconKey: "gui",
         iconFrame: "action_icons/element.png", // todo
         iconOrigin: { x: 0.5, y: 0.5 }
-      }
+      },
+      shortcut: "g"
     }) satisfies ActorActionSetup;
 
   private readonly stopAction = (actors: Phaser.GameObjects.GameObject[]) =>
@@ -314,7 +317,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         iconKey: "gui",
         iconFrame: "action_icons/hand.png",
         iconOrigin: { x: 0.5, y: 0.5 }
-      }
+      },
+      shortcut: "s"
     }) satisfies ActorActionSetup;
 
   private readonly moveAction = (actors: Phaser.GameObjects.GameObject[]) =>
@@ -334,7 +338,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         iconKey: "gui",
         iconFrame: "action_icons/arrow.png",
         iconOrigin: { x: 0.5, y: 0.5 }
-      }
+      },
+      shortcut: "m"
     }) satisfies ActorActionSetup;
 
   private showActorActions(actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) {
@@ -364,7 +369,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: "gui",
           iconFrame: "action_icons/hand.png",
           iconOrigin: { x: 0.5, y: 0.5 }
-        }
+        },
+        shortcut: "escape"
       });
       return;
     }
@@ -507,7 +513,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
             description: info.description
-          }
+          },
+          shortcut: index + 1 <= 9 ? `${index + 1}` : undefined
         });
         index++;
       });
@@ -539,7 +546,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: "gui",
           iconFrame: "action_icons/hammer.png",
           iconOrigin: { x: 0.5, y: 0.5 }
-        }
+        },
+        shortcut: "b"
       });
       index++;
     }
@@ -589,7 +597,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
           description: info.description
-        }
+        },
+        shortcut: index + 1 <= 9 ? `${index + 1}` : undefined
       });
       index++;
     }
@@ -622,7 +631,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         iconKey: "gui",
         iconFrame: "action_icons/back.png",
         iconOrigin: { x: 0.5, y: 0.5 }
-      }
+      },
+      shortcut: "escape"
     });
 
     return index;
