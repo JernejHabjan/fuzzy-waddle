@@ -1,6 +1,5 @@
 import { getTilesAroundGameObjectsOfShape } from "../../data/tile-map-helpers";
 import { NavigationService } from "../services/navigation.service";
-import { OwnerComponent } from "../../entity/actor/components/owner-component";
 import { throttle } from "../../library/throttle";
 import { VisionComponent } from "../../entity/actor/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
@@ -10,6 +9,8 @@ import { getGameObjectBounds, getGameObjectVisibility } from "../../data/game-ob
 import { IsoHelper } from "../../world/map/tile/iso-helper";
 import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
 import { HealthComponent } from "../../entity/combat/components/health-component";
+import { getSceneService } from "../components/scene-component-helpers";
+import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export enum FogOfWarMode {
@@ -35,6 +36,8 @@ export class FogOfWarComponent {
   // Track actors with ID components for visibility management
   private playerActors: Map<string, GameObject> = new Map();
 
+  private actorIndex!: ActorIndexSystem;
+
   // Colors for different FOW states
   private readonly COLOR_UNEXPLORED = 0x333333;
   private readonly COLOR_EXPLORED = 0x777777;
@@ -58,6 +61,7 @@ export class FogOfWarComponent {
     this.fowLayer.setDepth(FogOfWarComponent.depth);
 
     // Initialize actor tracking
+    this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
     this.scanForPlayerActors();
 
     // Subscribe to navigation updates
@@ -70,7 +74,10 @@ export class FogOfWarComponent {
   }
 
   private scanForPlayerActors(): void {
-    this.scene.children.getChildren().forEach(this.registerActors, this);
+    // Use indexed id-actors instead of scanning all children
+    this.playerActors.clear();
+    const list = this.actorIndex.getAllIdActors();
+    list.forEach(this.registerActors, this);
   }
 
   private registerActors(obj: GameObject): void {
@@ -112,17 +119,12 @@ export class FogOfWarComponent {
     const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
 
     if (currentPlayerNumber !== undefined) {
-      this.scene.children.getChildren().forEach((child) => {
-        const ownerComponent = getActorComponent(child, OwnerComponent);
-        if (ownerComponent) {
-          const owner = ownerComponent.getOwner();
-          if (owner !== undefined && owner === currentPlayerNumber) {
-            const healthComponent = getActorComponent(child, HealthComponent);
-            if (healthComponent && healthComponent.killed) return; // Skip dead actors
-
-            playerOwnedObjects.push(child);
-          }
-        }
+      const index = this.actorIndex;
+      const owned = index ? index.getOwnedActors(currentPlayerNumber) : [];
+      owned.forEach((child) => {
+        const healthComponent = getActorComponent(child, HealthComponent);
+        if (healthComponent && healthComponent.killed) return; // Skip dead actors
+        playerOwnedObjects.push(child);
       });
     }
 

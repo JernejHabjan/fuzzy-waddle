@@ -19,6 +19,8 @@ import { setFullActorDataFromName } from "../../data/actor-data";
 import { pwActorDefinitions } from "../../data/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/actor/components/id-component";
+import { getSceneService } from "../components/scene-component-helpers";
+import { ActorIndexSystem } from "../services/ActorIndexSystem";
 
 export class SceneActorCreator {
   constructor(private readonly scene: Phaser.Scene) {
@@ -37,6 +39,8 @@ export class SceneActorCreator {
   private spawnFromSpawnList() {
     const list = this.scene.children.getChildren();
     const toDestroy: Phaser.GameObjects.GameObject[] = [];
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+
     list.forEach((gameObject: Phaser.GameObjects.GameObject) => {
       if (gameObject instanceof Spawn) {
         this.spawnActorsFromSpawnList(gameObject);
@@ -56,6 +60,11 @@ export class SceneActorCreator {
             owner: ownerId ? parseInt(ownerId) : undefined
           } satisfies ActorDefinition;
           setFullActorDataFromName(gameObject, actorDefinition);
+          // Register in the actor index after init
+          actorIndex?.registerActor(gameObject);
+        } else {
+          // Already initialized - ensure it's indexed
+          actorIndex?.registerActor(gameObject);
         }
       }
     });
@@ -66,6 +75,9 @@ export class SceneActorCreator {
     if (!actorDefinition.name) return undefined;
     const actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     const gameObject = this.scene.add.existing(actor);
+    // Register new actor in the index
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    actorIndex?.registerActor(actor);
     this.saveActorToGameState(actor);
     return gameObject;
   }
