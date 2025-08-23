@@ -35,8 +35,16 @@ export class SceneActorCreator {
    * All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
    */
   public initInitialActors() {
-    this.spawnFromSpawnList();
-    this.loadGame.loadActorsFromSaveGame();
+    // After scene is created, store every actor in the game state.
+    // All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
+    const isStartupLoad = this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad();
+    if (isStartupLoad) {
+      // If loading, the initialActors should not be populated again in scene
+      this.loadGame.loadActorsFromSaveGame();
+      this.removeSpawnsAfterLoad();
+    } else {
+      this.spawnFromSpawnList();
+    }
     this.saveAllKnownActorsToGameState();
   }
 
@@ -75,6 +83,17 @@ export class SceneActorCreator {
     toDestroy.forEach((gameObject) => gameObject.destroy());
   }
 
+  private removeSpawnsAfterLoad() {
+    const list = this.scene.children.getChildren();
+    const toDestroy: Phaser.GameObjects.GameObject[] = [];
+    list.forEach((gameObject: Phaser.GameObjects.GameObject) => {
+      if (gameObject instanceof Spawn) {
+        toDestroy.push(gameObject);
+      }
+    });
+    toDestroy.forEach((gameObject) => gameObject.destroy());
+  }
+
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
     if (!actorDefinition.name) return undefined;
     const actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
@@ -90,7 +109,12 @@ export class SceneActorCreator {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
     gameScene.baseGameData.gameInstance.gameState!.data.actors = [];
-    gameScene.children.each((child) => {
+
+    // Prefer indexed actors to avoid scanning non-actors
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    const iterable = actorIndex?.getAllIdActors() ?? gameScene.children.getChildren();
+
+    iterable.forEach((child) => {
       this.saveActorToGameState(child);
     });
 
