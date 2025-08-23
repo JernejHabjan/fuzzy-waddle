@@ -3,7 +3,11 @@ import { OrderType } from "../../../entity/character/ai/order-type";
 import { CursorHandler, CursorType } from "./input/cursor.handler";
 import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { emitEventIssueActorCommandToSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
+import {
+  emitEventIssueActorCommandToSelectedActors,
+  emitEventIssueMoveCommandToSelectedActors,
+  listenToSelectionEvents
+} from "../../../data/scene-data";
 import { SingleSelectionHandler } from "./input/single-selection.handler";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
@@ -13,12 +17,11 @@ import { BuilderComponent } from "../../../entity/actor/components/builder-compo
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
 import { ProductionComponent } from "../../../entity/building/production/production-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
-import GameObject = Phaser.GameObjects.GameObject;
-// Capability components per order type
 import { AttackComponent } from "../../../entity/combat/components/attack-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
 import { HealingComponent } from "../../../entity/combat/components/healing-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
   private handlingActions?: {
@@ -126,6 +129,18 @@ export class PlayerActionsHandler {
         if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Move, this.currentSelectedActors);
         e.preventDefault();
         break;
+      case "KeyV":
+        if (this.currentSelectedActors.length) {
+          // if production component, then place rally point
+          const primary = this.primarySelectedActor;
+          const hasProduction = !!(primary && getActorComponent(primary, ProductionComponent));
+          if (hasProduction) {
+            // Start a two-step Move command; ProductionComponent listens for move to set rally point
+            this.startOrderCommand(OrderType.Move, this.currentSelectedActors);
+          }
+        }
+        e.preventDefault();
+        break;
       case "KeyG":
         if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Gather, this.currentSelectedActors);
         e.preventDefault();
@@ -181,10 +196,11 @@ export class PlayerActionsHandler {
       pointer,
       gameObjectsUnderCursor
     );
+    const clickedWorldVec2 = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
 
     const objectId = interactiveObjectIds.length > 0 ? interactiveObjectIds[0] : undefined;
 
-    this.initiateCommand(clickedTileXY, objectId);
+    this.initiateCommand(clickedTileXY, clickedWorldVec2, objectId);
 
     // reset handling actions after all macro events are handled (all other pointer up events)
     setTimeout(() => {
@@ -209,6 +225,7 @@ export class PlayerActionsHandler {
         case OrderType.Attack:
           return !!getActorComponent(actor, AttackComponent);
         case OrderType.Move:
+          return !!getActorComponent(actor, ActorTranslateComponent) || !!getActorComponent(actor, ProductionComponent);
         case OrderType.EnterContainer:
           return !!getActorComponent(actor, ActorTranslateComponent);
         case OrderType.Gather:
@@ -275,23 +292,42 @@ export class PlayerActionsHandler {
     cursorHandler.setCursor(cursorType);
   }
 
-  private initiateCommand(tileVec2?: Vector2Simple, targetGameObjectId?: string) {
+  private initiateCommand(
+    clickedTileXY?: Vector2Simple,
+    clickedWorldVec2?: Vector2Simple,
+    targetGameObjectId?: string
+  ) {
     if (!this.handlingActions) return;
     const { orderType } = this.handlingActions;
 
-    const tileVec3 = tileVec2
+    const tileVec3 = clickedTileXY
       ? {
-          x: tileVec2.x,
-          y: tileVec2.y,
+          x: clickedTileXY.x,
+          y: clickedTileXY.y,
+          z: 0
+        }
+      : undefined;
+    const worldVec3 = clickedWorldVec2
+      ? {
+          x: clickedWorldVec2.x,
+          y: clickedWorldVec2.y,
           z: 0
         }
       : undefined;
 
-    emitEventIssueActorCommandToSelectedActors(this.scene, {
-      orderType,
-      objectIds: targetGameObjectId ? [targetGameObjectId] : undefined,
-      tileVec3
-    });
+    const hasProductionRallyPointOrder =
+      orderType === OrderType.Move &&
+      this.primarySelectedActor &&
+      getActorComponent(this.primarySelectedActor, ProductionComponent);
+    if (hasProductionRallyPointOrder && !!tileVec3 && !!worldVec3) {
+      emitEventIssueMoveCommandToSelectedActors(this.scene, tileVec3, worldVec3, []);
+    } else {
+      emitEventIssueActorCommandToSelectedActors(this.scene, {
+        orderType,
+        objectIds: targetGameObjectId ? [targetGameObjectId] : undefined,
+        tileVec3
+      });
+    }
   }
 
   stopOrderCommand() {
