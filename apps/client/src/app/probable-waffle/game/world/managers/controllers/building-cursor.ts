@@ -4,7 +4,6 @@ import { ActorManager } from "../../../data/actor-manager";
 import {
   getGameObjectBounds,
   getGameObjectLogicalTransform,
-  getGameObjectRenderedTransform,
   onSceneInitialized
 } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
@@ -51,6 +50,14 @@ export class BuildingCursor {
   private canBeDragPlaced: boolean = false;
   private canConstructBuildingAt: boolean = false;
   private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
+
+  // Helper: stable key based on snapped logical position (avoids z-offset and float drift)
+  private getSnappedLogicalKey(go: GameObjects.GameObject): string | undefined {
+    const t = getGameObjectLogicalTransform(go);
+    if (!t) return undefined;
+    const snapped = this.snapToGrid(new Vector2(t.x, t.y));
+    return `${snapped.x},${snapped.y}`;
+  }
 
   constructor(private scene: GameProbableWaffleScene) {
     this.startPlacingSubscription = this.startPlacingBuilding.subscribe((name) => this.spawn(name));
@@ -164,14 +171,11 @@ export class BuildingCursor {
 
       // Check each spawned object individually and track which ones can't be placed
       for (const gameObject of this.spawnedCursorGameObjects) {
-        const transform = getGameObjectRenderedTransform(gameObject);
-        if (!transform) continue;
-
         const canPlace = this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!]);
 
         if (!canPlace) {
-          // Track this position as invalid
-          this.invalidCursorPositions.add(`${transform.x},${transform.y}`);
+          const key = this.getSnappedLogicalKey(gameObject);
+          if (key) this.invalidCursorPositions.add(key);
         }
 
         // Apply visual treatment to each object based on whether it can be placed
@@ -403,6 +407,7 @@ export class BuildingCursor {
       }
     }
 
+    // Filter out any objects at invalid positions when in drag mode
     const shiftKeyDown = this.shiftKey?.isDown || false;
 
     if (!this.canBeDragPlaced && shiftKeyDown) {
@@ -427,10 +432,11 @@ export class BuildingCursor {
     const endY = snappedPointer.y;
 
     // Convert to isometric coordinates using the same 2:1 ratio as the grid
-    const isoStartX = startX / (this.tileSize / 2) - startY / (this.tileSize / 4);
-    const isoStartY = startX / (this.tileSize / 2) + startY / (this.tileSize / 4);
-    const isoEndX = endX / (this.tileSize / 2) - endY / (this.tileSize / 4);
-    const isoEndY = endX / (this.tileSize / 2) + endY / (this.tileSize / 4);
+    // Note: keep conversions consistent with snapToGrid (divide by 2)
+    const isoStartX = (startX / (this.tileSize / 2) - startY / (this.tileSize / 4)) / 2;
+    const isoStartY = (startX / (this.tileSize / 2) + startY / (this.tileSize / 4)) / 2;
+    const isoEndX = (endX / (this.tileSize / 2) - endY / (this.tileSize / 4)) / 2;
+    const isoEndY = (endX / (this.tileSize / 2) + endY / (this.tileSize / 4)) / 2;
 
     let midpointX, midpointY;
 
@@ -445,20 +451,20 @@ export class BuildingCursor {
       const isoMidY = isoStartY;
 
       // Convert back to screen coordinates
-      midpointX = ((isoMidX + isoMidY) * (this.tileSize / 2)) / 2;
-      midpointY = ((isoMidY - isoMidX) * (this.tileSize / 4)) / 2;
+      midpointX = (isoMidX + isoMidY) * (this.tileSize / 2);
+      midpointY = (isoMidY - isoMidX) * (this.tileSize / 4);
     } else {
       // Move along isometric Y axis first
       const isoMidX = isoStartX;
       const isoMidY = isoEndY;
 
       // Convert back to screen coordinates
-      midpointX = ((isoMidX + isoMidY) * (this.tileSize / 2)) / 2;
-      midpointY = ((isoMidY - isoMidX) * (this.tileSize / 4)) / 2;
+      midpointX = (isoMidX + isoMidY) * (this.tileSize / 2);
+      midpointY = (isoMidY - isoMidX) * (this.tileSize / 4);
     }
 
     // Ensure midpoint is snapped to the isometric grid
-    const snappedMidpoint = new Vector2(midpointX, midpointY);
+    const snappedMidpoint = this.snapToGrid(new Vector2(midpointX, midpointY));
     midpointX = snappedMidpoint.x;
     midpointY = snappedMidpoint.y;
 
@@ -467,30 +473,28 @@ export class BuildingCursor {
       const points: Vector2[] = [];
 
       // Convert screen coordinates to isometric coordinates
-      const fromIsoX = from.x / (this.tileSize / 2) - from.y / (this.tileSize / 4);
-      const fromIsoY = from.x / (this.tileSize / 2) + from.y / (this.tileSize / 4);
-      const toIsoX = to.x / (this.tileSize / 2) - to.y / (this.tileSize / 4);
-      const toIsoY = to.x / (this.tileSize / 2) + to.y / (this.tileSize / 4);
+      const fromIsoX = (from.x / (this.tileSize / 2) - from.y / (this.tileSize / 4)) / 2;
+      const fromIsoY = (from.x / (this.tileSize / 2) + from.y / (this.tileSize / 4)) / 2;
+      const toIsoX = (to.x / (this.tileSize / 2) - to.y / (this.tileSize / 4)) / 2;
+      const toIsoY = (to.x / (this.tileSize / 2) + to.y / (this.tileSize / 4)) / 2;
 
       // Calculate differences in isometric space
       const dx = toIsoX - fromIsoX;
       const dy = toIsoY - fromIsoY;
 
-      // Calculate number of steps needed (using Manhattan distance in iso space)
-      const steps = Math.max(Math.abs(dx), Math.abs(dy)) / 2;
+      // Number of steps using Manhattan distance in iso space
+      const steps = Math.max(Math.abs(dx), Math.abs(dy));
 
       for (let i = 0; i <= steps; i++) {
-        const t = i / steps;
+        const t = steps === 0 ? 1 : i / steps;
         // Interpolate in isometric space
         const isoX = fromIsoX + dx * t;
         const isoY = fromIsoY + dy * t;
 
-        // Convert back to screen coordinates
-        const screenX = ((isoX + isoY) * (this.tileSize / 2)) / 2;
-        const screenY = ((isoY - isoX) * (this.tileSize / 4)) / 2;
-
-        // Snap to grid and add point
-        const snappedPoint = new Vector2(screenX, screenY);
+        // Convert back to screen coordinates and snap to grid
+        const screenX = (isoX + isoY) * (this.tileSize / 2);
+        const screenY = (isoY - isoX) * (this.tileSize / 4);
+        const snappedPoint = this.snapToGrid(new Vector2(screenX, screenY));
         points.push(snappedPoint);
       }
 
@@ -499,7 +503,6 @@ export class BuildingCursor {
 
     // Generate points for both segments
     const firstSegmentPoints = generatePoints(new Vector2(startX, startY), new Vector2(midpointX, midpointY));
-
     const secondSegmentPoints = generatePoints(new Vector2(midpointX, midpointY), new Vector2(endX, endY));
 
     // Combine points and remove duplicates
@@ -511,7 +514,7 @@ export class BuildingCursor {
       }
     }
 
-    // Spawn buildings at each point
+    // Spawn buildings at each point (points are already snapped)
     for (const point of allPoints) {
       // if point 0,0, then skip it
       if (point.x === 0 && point.y === 0) continue;
@@ -524,7 +527,13 @@ export class BuildingCursor {
   }
 
   private spawnCursorGameObjectAt(x: number, y: number) {
-    const actor = ActorManager.createActorCore(this.scene, this.building!.name as ObjectNames, { x, y, z: 0 });
+    const actor = ActorManager.createActorCore(
+      this.scene,
+      this.building!.name as ObjectNames,
+      {
+        logicalWorldTransform: { x, y, z: 0 }
+      } as ActorDefinition
+    );
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
     DepthHelper.setActorDepth(gameObject);
@@ -547,8 +556,8 @@ export class BuildingCursor {
     // Filter out any objects at invalid positions when in drag mode
     const objectsToPlace = this.isDragging
       ? this.spawnedCursorGameObjects.filter((obj) => {
-          const renderedTransform = getGameObjectRenderedTransform(obj);
-          return renderedTransform && !this.invalidCursorPositions.has(`${renderedTransform.x},${renderedTransform.y}`);
+          const key = this.getSnappedLogicalKey(obj);
+          return key !== undefined && !this.invalidCursorPositions.has(key);
         })
       : [];
 
