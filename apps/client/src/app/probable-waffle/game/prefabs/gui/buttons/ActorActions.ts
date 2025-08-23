@@ -186,13 +186,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
-      const selectedActors = getSelectedActors(this.mainSceneWithActors);
+      // deterministically pick the primary actor
+      const { selectedActors, actorsByPriority, primaryActor } = getPrimarySelectedActor(this.mainSceneWithActors);
       if (selectedActors.length === 0) {
         this.hideAllActions();
         return;
       } else {
-        const actorsByPriority = sortActorsByPriority(selectedActors);
-        const actor = actorsByPriority[0];
+        const actor = primaryActor!;
         this.buildingMode = false;
         this.showActorActions(actor, actorsByPriority);
         this.subscribeToActorKillEvent(actor);
