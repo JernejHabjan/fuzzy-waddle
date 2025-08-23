@@ -5,12 +5,7 @@
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import ActorAction, { ActorActionSetup } from "./ActorAction";
-import {
-  getCurrentPlayerNumber,
-  getSelectedActors,
-  listenToSelectionEvents,
-  sortActorsByPriority
-} from "../../../data/scene-data";
+import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -185,6 +180,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
    */
   private buildingMode: boolean = false;
 
+  private get HOTKEYS(): readonly string[] {
+    return this.playerActionsHandler.getListHotkeys();
+  }
+
+  // keep UI in sync with handler
+  private buildingModeSubscription?: Subscription;
+
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
       // deterministically pick the primary actor
@@ -194,12 +196,28 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         return;
       } else {
         const actor = primaryActor!;
+        // local fallback; will be overridden by handler stream
         this.buildingMode = false;
         this.showActorActions(actor, actorsByPriority);
         this.subscribeToActorKillEvent(actor);
         this.subscribeToActorConstructionEvent(actor, actorsByPriority);
       }
     });
+
+    // sync HUD with handler build mode toggles (e.g. keyboard 'B' / 'Esc')
+    this.buildingModeSubscription = this.playerActionsHandler.buildingMode$?.subscribe((active) => {
+      this.buildingMode = active;
+      this.refreshForCurrentSelection();
+    });
+  }
+
+  private refreshForCurrentSelection() {
+    const { selectedActors, actorsByPriority, primaryActor } = getPrimarySelectedActor(this.mainSceneWithActors);
+    if (!selectedActors.length || !primaryActor) {
+      this.hideAllActions();
+      return;
+    }
+    this.showActorActions(primaryActor, actorsByPriority);
   }
 
   private hideAllActions() {
@@ -370,7 +388,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconFrame: "action_icons/hand.png",
           iconOrigin: { x: 0.5, y: 0.5 }
         },
-        shortcut: "escape"
+        shortcut: "esc"
       });
       return;
     }
@@ -451,7 +469,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
-      availableToProduce.forEach((product) => {
+      availableToProduce.forEach((product, localIndex) => {
         const actorDefinition = pwActorDefinitions[product];
         const info = actorDefinition.components?.info;
         if (!info || !info.smallImage) {
@@ -514,7 +532,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
             description: info.description
           },
-          shortcut: index + 1 <= 9 ? `${index + 1}` : undefined
+          // Use letter shortcuts from handler (Q..O)
+          shortcut: this.HOTKEYS[localIndex]
         });
         index++;
       });
@@ -537,8 +556,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         },
         visible: true,
         action: () => {
-          this.buildingMode = true;
-          this.showActorActions(actor, allActors);
+          // toggle build mode via handler so HUD and input stay in sync
+          this.playerActionsHandler.setBuildingMode(true);
         },
         tooltipInfo: {
           title: "Build",
@@ -569,10 +588,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     if (!builderComponent) throw new Error("BuilderComponent not found");
     const buildable: ObjectNames[] = builderComponent.constructableBuildings;
 
-    for (const building of buildable) {
+    buildable.forEach((building, localIndex) => {
       if (index >= this.actor_actions.length) {
         console.error("Not enough slots for building icons");
-        return index;
+        return;
       }
       const actorDefinition = pwActorDefinitions[building];
       const info = actorDefinition.components?.info;
@@ -598,10 +617,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
           description: info.description
         },
-        shortcut: index + 1 <= 9 ? `${index + 1}` : undefined
+        // Use letter shortcuts from handler (Q..O)
+        shortcut: this.HOTKEYS[localIndex]
       });
       index++;
-    }
+    });
 
     // increase index until it's at least 6 or higher, as we want back icon in the last row
     const toSkip = Math.max(6 - index, 0);
@@ -620,10 +640,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       },
       visible: true,
       action: () => {
-        this.buildingMode = false;
-        this.showActorActions(actor, allActors);
-        const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
-        buildingCursor?.stopPlacingBuilding.emit();
+        // turn off via handler to sync with input system and cursor
+        this.playerActionsHandler.setBuildingMode(false);
       },
       tooltipInfo: {
         title: "Stop Building",
@@ -632,7 +650,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         iconFrame: "action_icons/back.png",
         iconOrigin: { x: 0.5, y: 0.5 }
       },
-      shortcut: "escape"
+      shortcut: "esc"
     });
 
     return index;
@@ -643,6 +661,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();
     this.actorConstructionSubscription?.unsubscribe();
+    this.buildingModeSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */

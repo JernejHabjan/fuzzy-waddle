@@ -3,14 +3,35 @@ import { OrderType } from "../../../entity/character/ai/order-type";
 import { CursorHandler, CursorType } from "./input/cursor.handler";
 import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { emitEventIssueActorCommandToSelectedActors } from "../../../data/scene-data";
+import { emitEventIssueActorCommandToSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
 import { SingleSelectionHandler } from "./input/single-selection.handler";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { getPrimarySelectedActor } from "../../../data/selection-helpers";
+import { getActorComponent } from "../../../data/actor-component";
+import { PawnAiController } from "./player-pawn-ai-controller/pawn-ai-controller";
+import { BuilderComponent } from "../../../entity/actor/components/builder-component";
+import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
+import { ProductionComponent } from "../../../entity/building/production/production-component";
+import { pwActorDefinitions } from "../../../data/actor-definitions";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
   private handlingActions?: {
     orderType: OrderType;
   };
+
+  private selectionChangedSubscription?: Subscription;
+  private currentSelectedActors: GameObject[] = [];
+  private primarySelectedActor?: GameObject;
+  private buildingModeActive: boolean = false;
+
+  // Letter hotkeys for lists (production/buildings)
+  private readonly HOTKEYS: string[] = ["q", "w", "e", "r", "t", "y", "u", "i", "o"];
+
+  // Broadcast build mode changes to HUD/UI
+  private readonly buildingModeSubject = new BehaviorSubject<boolean>(false);
+  public readonly buildingMode$ = this.buildingModeSubject.asObservable();
+
   constructor(
     private readonly scene: ProbableWaffleScene,
     private readonly hudScene: ProbableWaffleScene
@@ -21,6 +42,111 @@ export class PlayerActionsHandler {
 
   private bindSceneInput() {
     this.scene.input.on(Phaser.Input.Events.POINTER_UP, this.pointerHandler, this);
+
+    // Listen to selection changes to track primary selection deterministically
+    this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
+      const { selectedActors, actorsByPriority, primaryActor } = getPrimarySelectedActor(this.scene);
+      this.currentSelectedActors = actorsByPriority.length ? actorsByPriority : selectedActors;
+      this.primarySelectedActor = primaryActor;
+      // reset on selection change
+      this.setBuildingMode(false);
+    });
+
+    // Global keyboard shortcuts
+    this.hudScene.input.keyboard?.on("keydown", this.onKeyDown, this);
+  }
+
+  // External API for HUD to toggle build mode
+  public setBuildingMode(active: boolean) {
+    this.buildingModeActive = active;
+    this.buildingModeSubject.next(active);
+    if (!active) {
+      const buildingCursor = getSceneComponent(this.scene, BuildingCursor);
+      buildingCursor?.stopPlacingBuilding.emit();
+    }
+  }
+
+  // Allow UI to reuse the same list of hotkeys
+  public getListHotkeys(): readonly string[] {
+    return this.HOTKEYS;
+  }
+
+  private onKeyDown(e: KeyboardEvent) {
+    const key = e.key?.toLowerCase();
+    if (!key) return;
+
+    // Handle list hotkeys (Q..O)
+    const listIndex = this.HOTKEYS.indexOf(key);
+    if (listIndex !== -1) {
+      if (this.buildingModeActive) {
+        // Building selection
+        const actor = this.primarySelectedActor;
+        const builder = actor ? getActorComponent(actor, BuilderComponent) : undefined;
+        const building = builder?.constructableBuildings[listIndex];
+        if (building) {
+          const buildingCursor = getSceneComponent(this.scene, BuildingCursor);
+          buildingCursor?.startPlacingBuilding.emit(building);
+          e.preventDefault();
+          return;
+        }
+      } else {
+        // Production selection
+        const actor = this.primarySelectedActor;
+        const production = actor ? getActorComponent(actor, ProductionComponent) : undefined;
+        const product = production?.productionDefinition.availableProduceActors[listIndex];
+        if (production && production.isFinished && product) {
+          const def = pwActorDefinitions[product];
+          const cost = def.components?.productionCost;
+          if (cost) {
+            production.startProduction({ actorName: product, costData: cost });
+            e.preventDefault();
+            return;
+          }
+        }
+      }
+      // fall through if not handled
+    }
+
+    switch (key) {
+      case "a":
+        if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Attack, this.currentSelectedActors);
+        e.preventDefault();
+        break;
+      case "m":
+        if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Move, this.currentSelectedActors);
+        e.preventDefault();
+        break;
+      case "g":
+        if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Gather, this.currentSelectedActors);
+        e.preventDefault();
+        break;
+      case "h":
+        if (this.currentSelectedActors.length) this.startOrderCommand(OrderType.Heal, this.currentSelectedActors);
+        e.preventDefault();
+        break;
+      case "s":
+        // Stop current orders immediately
+        this.currentSelectedActors.forEach((actor) => {
+          const pawnAiController = getActorComponent(actor, PawnAiController);
+          pawnAiController?.blackboard.resetCurrentOrder();
+        });
+        this.stopOrderCommand();
+        e.preventDefault();
+        break;
+      case "b":
+        // Toggle building mode
+        this.setBuildingMode(!this.buildingModeActive);
+        e.preventDefault();
+        break;
+      case "escape":
+        // Cancel current cursor/orders and building placement
+        this.stopOrderCommand();
+        this.setBuildingMode(false);
+        e.preventDefault();
+        break;
+      default:
+        break;
+    }
   }
 
   private pointerHandler(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {
@@ -49,6 +175,8 @@ export class PlayerActionsHandler {
 
   private destroy() {
     this.scene.input.off(Phaser.Input.Events.POINTER_UP, this.pointerHandler, this);
+    this.hudScene.input.keyboard?.off("keydown", this.onKeyDown, this);
+    this.selectionChangedSubscription?.unsubscribe();
   }
 
   isHandlingActions(): boolean {
