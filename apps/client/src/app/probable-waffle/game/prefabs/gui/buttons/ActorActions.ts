@@ -360,6 +360,27 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       shortcut: "m"
     }) satisfies ActorActionSetup;
 
+  private readonly rallyAction = (actors: Phaser.GameObjects.GameObject[]) =>
+    ({
+      icon: {
+        key: "gui",
+        frame: "action_icons/element.png", // todo
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: () => {
+        this.playerActionsHandler.startOrderCommand(OrderType.Move, actors);
+      },
+      tooltipInfo: {
+        title: "Rally point",
+        description: "Set rally point for this building",
+        iconKey: "gui",
+        iconFrame: "action_icons/element.png", // todo
+        iconOrigin: { x: 0.5, y: 0.5 }
+      },
+      shortcut: "v"
+    }) satisfies ActorActionSetup;
+
   private showActorActions(actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) {
     this.hideAllIcons();
     let index = 0;
@@ -398,6 +419,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     } else {
       index = this.showAttackIcons(actor, allActors, index);
       index = this.showMoveIcons(actor, allActors, index);
+      index = this.showRallyPointIcon(actor, allActors, index);
       index = this.showHealIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, index);
@@ -434,6 +456,19 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       this.actor_actions[index].setup(this.moveAction(allActors));
       index++;
       this.actor_actions[index].setup(this.stopAction(allActors));
+      index++;
+    }
+    return index;
+  }
+
+  private showRallyPointIcon(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const productionComponent = getActorComponent(actor, ProductionComponent);
+    if (productionComponent) {
+      this.actor_actions[index].setup(this.rallyAction(allActors));
       index++;
     }
     return index;
