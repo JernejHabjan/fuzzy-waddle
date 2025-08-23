@@ -5,9 +5,9 @@
 import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getSceneComponent } from "../../scenes/components/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../scenes/components/scene-component-helpers";
 import { TilemapComponent } from "../../scenes/components/tilemap.component";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../data/actor-component";
 import { ObjectDescriptorComponent } from "../../entity/actor/components/object-descriptor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
@@ -18,6 +18,9 @@ import { NavigationService } from "../../scenes/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { FogOfWarComponent, FogOfWarMode } from "../../scenes/components/fog-of-war.component";
 import { VisionComponent } from "../../entity/actor/components/vision-component";
+import { PlayerActionsHandler } from "../../world/managers/controllers/PlayerActionsHandler";
+import { GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
+import { OrderType } from "../../entity/character/ai/order-type";
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {
@@ -82,11 +85,13 @@ export default class Minimap extends Phaser.GameObjects.Container {
   private probableWaffleScene?: ProbableWaffleScene;
   private hudProbableWaffle?: HudProbableWaffle;
   private fogOfWarComponent?: FogOfWarComponent;
+  private playerActionsHandler?: PlayerActionsHandler;
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, hudProbableWaffle: HudProbableWaffle) {
     this.probableWaffleScene = probableWaffleScene;
     this.hudProbableWaffle = hudProbableWaffle;
     this.fogOfWarComponent = getSceneComponent(probableWaffleScene, FogOfWarComponent);
+    this.playerActionsHandler = getSceneService(probableWaffleScene, PlayerActionsHandler);
     this.redrawMinimap();
     this.probableWaffleScene.events.on(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
     this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimap, this); // TODO FOR SOME REASON UpdateNavigationEvent doesnt get triggered
@@ -207,6 +212,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
         // Pointer over is needed for continuous camera movement while dragging
         diamond.on(Phaser.Input.Events.POINTER_OVER, (pointer: Phaser.Input.Pointer) => {
+          if (this.playerActionsHandler?.isHandlingActions()) return;
           if (multiSelectionHandler?.multiSelecting) return;
           if (pointer.leftButtonDown()) {
             this.moveCameraToTileCoordinates({ x: i, y: j });
@@ -215,11 +221,15 @@ export default class Minimap extends Phaser.GameObjects.Container {
         // pointer down is needed for single minimap click to move camera or assign action
         diamond.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
           if (multiSelectionHandler?.multiSelecting) return;
-          if (pointer.rightButtonDown()) {
-            this.assignActorActionToTileCoordinates({ x: j, y: i });
+          const isHandlingPlayerAction = this.playerActionsHandler?.isHandlingActions() === true;
+          if (pointer.rightButtonDown() || isHandlingPlayerAction) {
+            const tileVec3 = { x: j, y: i, z: 0 };
+            const orderType = this.playerActionsHandler?.getCurrentOrderType() ?? OrderType.Move;
+            this.assignActorActionToTileCoordinates(tileVec3, orderType);
           } else if (pointer.leftButtonDown()) {
             this.moveCameraToTileCoordinates({ x: i, y: j });
           }
+          this.playerActionsHandler?.stopOrderCommand();
         });
         this.minimapDiamonds.push(diamond);
       }
@@ -251,10 +261,13 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.probableWaffleScene.cameras.main.pan(isoX, isoY, 50, Phaser.Math.Easing.Quadratic.InOut);
   }
 
-  private assignActorActionToTileCoordinates(tileXY: Vector2Simple) {
+  private assignActorActionToTileCoordinates(tileVec3: Vector3Simple, orderType: OrderType) {
     if (!this.probableWaffleScene) throw new Error("Parent scene not set");
-    console.log("Assigning action to tile coordinates", tileXY);
-    this.probableWaffleScene.events.emit(Minimap.assignActorActionToTileCoordinatesEvent, tileXY);
+    // console.log("Assigning action to tile coordinates", tileVec3, "with order type", orderType);
+    this.probableWaffleScene.events.emit(Minimap.assignActorActionToTileCoordinatesEvent, {
+      tileVec3,
+      orderType
+    } satisfies GameObjectActionAssignerConfig);
   }
 
   private shouldShowActorOnMinimap(actor: Phaser.GameObjects.GameObject): boolean {

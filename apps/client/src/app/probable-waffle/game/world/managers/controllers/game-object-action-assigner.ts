@@ -1,7 +1,14 @@
 import Minimap from "../../../prefabs/gui/Minimap";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { emitEventIssueActorCommandToSelectedActors } from "../../../data/scene-data";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { OrderType } from "../../../entity/character/ai/order-type";
+
+export interface GameObjectActionAssignerConfig {
+  objectIds?: string[];
+  tileVec3?: Vector3Simple;
+  orderType?: OrderType;
+}
 
 export class GameObjectActionAssigner {
   constructor(private readonly scene: ProbableWaffleScene) {
@@ -13,14 +20,8 @@ export class GameObjectActionAssigner {
     this.scene.events.on(Minimap.assignActorActionToTileCoordinatesEvent, this.assignActionToTileCoordinates, this);
   }
 
-  private assignActionToTileCoordinates(tileXY: Vector2Simple) {
-    emitEventIssueActorCommandToSelectedActors(this.scene, {
-      tileVec3: {
-        x: tileXY.x,
-        y: tileXY.y,
-        z: 0
-      }
-    });
+  private assignActionToTileCoordinates(data: GameObjectActionAssignerConfig) {
+    emitEventIssueActorCommandToSelectedActors(this.scene, data);
   }
 
   private destroy() {

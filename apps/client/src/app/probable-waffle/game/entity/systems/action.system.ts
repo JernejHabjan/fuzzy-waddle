@@ -25,7 +25,7 @@ import { ContainableComponent } from "../actor/components/containable-component"
 import { AudioActorComponent } from "../actor/components/audio-actor-component";
 import { WalkableComponent } from "../actor/components/walkable-component";
 import { FlightComponent } from "../actor/components/flight-component";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
@@ -67,11 +67,7 @@ export class ActionSystem {
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (!payerPawnAiController) return;
 
-        const { objectIds, orderType, tileVec3 } = payload.data.data as {
-          objectIds?: string[];
-          orderType?: OrderType;
-          tileVec3?: Vector3Simple;
-        };
+        const { objectIds, orderType, tileVec3 } = payload.data.data as GameObjectActionAssignerConfig;
 
         let action: OrderData | null = null;
         let targetGameObject: Phaser.GameObjects.GameObject | undefined;

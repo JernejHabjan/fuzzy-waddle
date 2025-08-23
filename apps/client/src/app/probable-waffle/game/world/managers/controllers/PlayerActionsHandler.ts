@@ -115,4 +115,16 @@ export class PlayerActionsHandler {
       tileVec3
     });
   }
+
+  stopOrderCommand() {
+    this.handlingActions = undefined;
+    const cursorHandler = getSceneComponent(this.hudScene, CursorHandler);
+    if (cursorHandler) {
+      cursorHandler.setCursor(CursorType.Default);
+    }
+  }
+
+  getCurrentOrderType() {
+    return this.handlingActions?.orderType;
+  }
 }
