@@ -26,6 +26,10 @@ import { VisionComponent } from "../entity/actor/components/vision-component";
 import { GameObjectActionAssignerConfig } from "../world/managers/controllers/game-object-action-assigner";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
+  if (!scene) {
+    console.error("Scene is undefined");
+    return undefined;
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   if (playerNumber === undefined) {
     playerNumber = scene.baseGameData.user.playerNumber!;
@@ -34,6 +38,10 @@ export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePl
 }
 
 export function getAllPlayers(scene: Scene): ProbableWafflePlayer[] {
+  if (!scene) {
+    console.error("Scene is undefined");
+    return [];
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   return scene.baseGameData.gameInstance.players;
 }
@@ -44,11 +52,18 @@ export function getAllPlayers(scene: Scene): ProbableWafflePlayer[] {
  * @returns {number | undefined}
  */
 export function getCurrentPlayerNumber(scene: Scene): number | undefined {
+  if (!scene) {
+    console.error("Scene is undefined");
+    return undefined;
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   return scene.player.playerNumber;
 }
 
 export function getCommunicator(scene: Scene): ProbableWaffleCommunicatorService {
+  if (!scene) {
+    console.error("Scene is undefined");
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
 
   return scene.baseGameData.communicator;

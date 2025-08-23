@@ -58,6 +58,7 @@ export class ActionSystem {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.actor") // todo it's actually blackboard that should replicate
       .subscribe((payload) => {
+        if (!this.gameObject.active) return;
         const canIssueCommand = this.canIssueCommand();
         if (!canIssueCommand) return;
 

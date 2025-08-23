@@ -21,10 +21,13 @@ import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/actor/components/id-component";
 import { getSceneService } from "../components/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
+import { LoadGame } from "../../data/load-game";
 
 export class SceneActorCreator {
-  constructor(private readonly scene: Phaser.Scene) {
+  private readonly loadGame: LoadGame;
+  constructor(private readonly scene: GameProbableWaffleScene) {
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.loadGame = new LoadGame(scene as GameProbableWaffleScene);
   }
 
   /**
@@ -33,6 +36,7 @@ export class SceneActorCreator {
    */
   public initInitialActors() {
     this.spawnFromSpawnList();
+    this.loadGame.loadActorsFromSaveGame();
     this.saveAllKnownActorsToGameState();
   }
 
