@@ -39,6 +39,7 @@ import { PlayerActionsHandler } from "../../../world/managers/controllers/Player
 import { OrderType } from "../../../entity/character/ai/order-type";
 import { HealingComponent } from "../../../entity/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
+import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
