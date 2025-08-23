@@ -84,6 +84,10 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private tooltipInfo?: TooltipInfo;
   private action: (() => void) | undefined;
   private tooltipTimeoutId?: number;
+
+  // Small shortcut label rendered on top of the button
+  private shortcutText?: Phaser.GameObjects.Text;
+
   setup(setup: ActorActionSetup) {
     if (setup.icon) {
       this.setIcon(setup.icon.key, setup.icon.frame, setup.icon.origin);
@@ -92,6 +96,38 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.setVisible(setup.visible);
     this.tooltipInfo = setup.tooltipInfo;
     this.action = setup.action;
+    this.setShortcutLabel(setup.shortcut);
+  }
+
+  private ensureShortcutText() {
+    if (!this.shortcutText) {
+      // Bottom-left corner
+      const txt = this.scene.add.text(-16, 8, "", {
+        fontSize: "10px",
+        fontFamily: "monospace",
+        color: "#222222"
+      });
+      txt.setOrigin(0, 1);
+      txt.setDepth(10);
+      // subtle shadow for readability
+      txt.setShadow(1, 1, "#ffffff", 0, true, true);
+      this.add(txt);
+      this.shortcutText = txt;
+    }
+  }
+
+  private setShortcutLabel(shortcut?: string) {
+    this.ensureShortcutText();
+    if (!this.shortcutText) return;
+    if (shortcut && shortcut.trim().length > 0) {
+      this.shortcutText.setText(shortcut.toUpperCase());
+      this.shortcutText.setVisible(true);
+    } else {
+      this.shortcutText.setVisible(false);
+      this.shortcutText.setText("");
+    }
+    // reflect disabled state visually
+    this.shortcutText.setAlpha(this.disabled ? 0.5 : 1);
   }
 
   private setIcon(key: string, frame: string, origin?: { x: number; y: number }) {
@@ -111,6 +147,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private recolorDisabled() {
     this.game_action_bg.setTint(this.disabled ? 0x666666 : 0xffffff);
     this.game_action_icon.setTint(this.disabled ? 0x666666 : 0xffffff);
+    // adjust shortcut alpha too
+    this.shortcutText?.setAlpha(this.disabled ? 0.5 : 1);
   }
 
   private onPointerOver = () => {
@@ -188,6 +226,8 @@ export type ActorActionSetup = {
   visible: boolean;
   action?: () => void;
   tooltipInfo?: TooltipInfo;
+  // Optional shortcut label (e.g., "A", "M", "1")
+  shortcut?: string;
 };
 
 // You can write more code here
