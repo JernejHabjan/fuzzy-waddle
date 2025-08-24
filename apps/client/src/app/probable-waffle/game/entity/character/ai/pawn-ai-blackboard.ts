@@ -90,8 +90,8 @@ export class PawnAiBlackboard extends Blackboard {
 
   getData(): Record<string, any> {
     return {
-      orderQueue: this.orderQueue,
-      currentOrder: this.currentOrder,
+      orderQueue: this.orderQueue.map((order) => OrderData.mapFromOrderDataClassToRecord(order)),
+      currentOrder: this.currentOrder ? OrderData.mapFromOrderDataClassToRecord(this.currentOrder) : undefined,
       memory: Array.from(this.memory.entries()).reduce(
         (obj, [key, value]) => {
           obj[key] = value;
@@ -100,15 +100,17 @@ export class PawnAiBlackboard extends Blackboard {
         {} as Record<string, any>
       ),
       status: this.status,
-      failedOrders: this.failedOrders
+      failedOrders: this.failedOrders.map((order) => OrderData.mapFromOrderDataClassToRecord(order))
     };
   }
-  setData(data: Partial<Record<string, any>>): void {
+  setData(data: Partial<Record<string, any>>, scene: Phaser.Scene): void {
     if (data.orderQueue) {
-      this.orderQueue = data.orderQueue;
+      this.orderQueue = data.orderQueue.map((order: Record<string, any>) =>
+        OrderData.mapFromRecordToOrderDataClass(order, scene)
+      );
     }
     if (data.currentOrder) {
-      this.currentOrder = data.currentOrder;
+      this.currentOrder = OrderData.mapFromRecordToOrderDataClass(data.currentOrder, scene);
     }
     if (data.memory) {
       this.memory = new Map(Object.entries(data.memory));
@@ -117,7 +119,9 @@ export class PawnAiBlackboard extends Blackboard {
       this.status = data.status;
     }
     if (data.failedOrders) {
-      this.failedOrders = data.failedOrders;
+      this.failedOrders = data.failedOrders.map((order: Record<string, any>) =>
+        OrderData.mapFromRecordToOrderDataClass(order, scene)
+      );
     }
   }
 }

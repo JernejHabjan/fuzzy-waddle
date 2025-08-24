@@ -117,7 +117,7 @@ export class PawnAiController {
 
   public setData(data: Partial<BackboardComponentData>) {
     if (data.blackboard) {
-      this.blackboard.setData(data.blackboard);
+      this.blackboard.setData(data.blackboard, this.gameObject.scene);
     }
   }
 
