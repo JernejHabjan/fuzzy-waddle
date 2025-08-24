@@ -169,10 +169,10 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     if (data.tileVec3 && data.worldVec3) {
       this.setLocation(data.tileVec3, data.worldVec3);
     } else if (data.actorId) {
-      const actorIndex = getSceneService(this.scene, ActorIndexSystem) as any;
+      const actorIndex = getSceneService(this.scene, ActorIndexSystem);
       const actor = actorIndex?.getActorById(data.actorId);
       if (actor) {
-        this.setActor(actor);
+        this.setActor(actor as any);
       }
     } else {
       this.tileVec3 = undefined;
