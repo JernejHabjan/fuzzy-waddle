@@ -8,20 +8,12 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/combat/components/health-component";
 
 export class ActorIndexSystem {
-  // Scene event names IdComponent should emit
-  static readonly RegisterActorEvent = "actor-index:register";
-  static readonly UnregisterActorEvent = "actor-index:unregister";
-
   private readonly idActors = new Set<GameObject>();
   private readonly ownedActors = new Map<number, Set<GameObject>>();
   private readonly resourceSources = new Set<GameObject>();
   private readonly resourceDrains = new Set<GameObject>();
 
   constructor(private readonly scene: Phaser.Scene) {
-    // Listen for IdComponent broadcasts (to be added in IdComponent init/destroy)
-    scene.events.on(ActorIndexSystem.RegisterActorEvent, this.registerActor, this);
-    scene.events.on(ActorIndexSystem.UnregisterActorEvent, this.unregisterActor, this);
-
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
@@ -168,9 +160,6 @@ export class ActorIndexSystem {
   }
 
   private destroy() {
-    this.scene?.events.off(ActorIndexSystem.RegisterActorEvent, this.registerActor, this);
-    this.scene?.events.off(ActorIndexSystem.UnregisterActorEvent, this.unregisterActor, this);
-
     this.idActors.clear();
     this.ownedActors.clear();
     this.resourceSources.clear();
