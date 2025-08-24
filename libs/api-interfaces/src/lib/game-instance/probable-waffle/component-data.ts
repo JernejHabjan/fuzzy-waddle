@@ -43,7 +43,14 @@ export interface ResourceSourceComponentData {
 export interface ProductionComponentData {
   queue?: ObjectNames[];
   isProducing?: boolean;
-  progress?: number; // 0..1 or ms
+  progress?: number;
+  rallyPoint?: RallyPointComponentData;
+}
+
+export interface RallyPointComponentData {
+  tileVec3?: Vector3Simple;
+  worldVec3?: Vector3Simple;
+  actorId?: string;
 }
 
 export interface ActorTranslateComponentData {

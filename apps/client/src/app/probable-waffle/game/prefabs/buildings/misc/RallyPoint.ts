@@ -7,7 +7,7 @@
 
 import { getActorSystem } from "../../../data/actor-system";
 import { MovementSystem } from "../../../entity/systems/movement.system";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { RallyPointComponentData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
@@ -16,6 +16,8 @@ import { getGameObjectRenderedTransform } from "../../../data/game-object-helper
 import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
+import { IdComponent } from "../../../entity/actor/components/id-component";
+import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export default class RallyPoint extends Phaser.GameObjects.Image {
@@ -35,10 +37,10 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
   private lineGraphics?: Phaser.GameObjects.Graphics;
   private owner: GameObject | null = null;
   // Location to send new actors to
-  public tileVec3?: Vector3Simple | null = null;
-  public worldVec3?: Vector3Simple | null = null;
+  public tileVec3?: Vector3Simple = undefined;
+  public worldVec3?: Vector3Simple = undefined;
   // Actor to send new actors to
-  public actor?: GameObject | null = null;
+  public actor?: GameObject = undefined;
 
   private selectionChangedSubscription?: Subscription;
   private selectionComponent: SelectableComponent | undefined;
@@ -87,7 +89,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
   setLocation(tileVec3: Vector3Simple, worldVec3: Vector3Simple) {
     this.tileVec3 = tileVec3;
     this.worldVec3 = worldVec3;
-    this.actor = null;
+    this.actor = undefined;
     this.x = worldVec3.x;
     this.y = worldVec3.y;
     this.z = worldVec3.z;
@@ -97,8 +99,8 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
 
   setActor(gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform) {
     this.actor = gameObject;
-    this.tileVec3 = null;
-    this.worldVec3 = null;
+    this.tileVec3 = undefined;
+    this.worldVec3 = undefined;
     this.x = gameObject.x;
     this.y = gameObject.y;
     this.z = gameObject.z;
@@ -153,6 +155,32 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     if (!this.audioService) return;
     const sound = SharedActorActionsRallyPointSound;
     this.audioService.playSpatialAudioSprite(this, sound.key, sound.spriteName);
+  }
+
+  getRallyData() {
+    return {
+      tileVec3: this.tileVec3,
+      worldVec3: this.worldVec3,
+      actorId: this.actor ? getActorComponent(this.actor, IdComponent)!.id : undefined
+    } satisfies RallyPointComponentData;
+  }
+
+  setRallyData(data: Partial<RallyPointComponentData>) {
+    if (data.tileVec3 && data.worldVec3) {
+      this.setLocation(data.tileVec3, data.worldVec3);
+    } else if (data.actorId) {
+      const actorIndex = getSceneService(this.scene, ActorIndexSystem) as any;
+      const actor = actorIndex?.getActorById(data.actorId);
+      if (actor) {
+        this.setActor(actor);
+      }
+    } else {
+      this.tileVec3 = undefined;
+      this.worldVec3 = undefined;
+      this.actor = undefined;
+      this.visible = false;
+      this.lineGraphics?.setVisible(false);
+    }
   }
 
   destroy(fromScene?: boolean) {

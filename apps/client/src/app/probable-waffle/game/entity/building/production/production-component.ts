@@ -25,8 +25,8 @@ import { SelectableComponent } from "../../actor/components/selectable-component
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { pwActorDefinitions } from "../../../data/actor-definitions";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ProductionQueueItem = {
   actorName: ObjectNames;
@@ -61,19 +61,23 @@ export class ProductionComponent {
     private readonly gameObject: GameObject,
     public readonly productionDefinition: ProductionDefinition
   ) {
+    this.init();
     this.listenToMoveEvents();
-    onObjectReady(gameObject, this.init, this);
+    onObjectReady(gameObject, this.initOnObjectReady, this);
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
   init() {
-    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
     // setup queues
     for (let i = 0; i < this.productionDefinition.queueCount; i++) {
       this.productionQueues.push(new ProductionQueue(this.productionDefinition.capacityPerQueue));
     }
+  }
+
+  initOnObjectReady() {
+    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
     this.rallyPoint.init(this.gameObject);
   }
 
@@ -447,7 +451,8 @@ export class ProductionComponent {
     return {
       queue: queueNames,
       isProducing: this.isProducing,
-      progress: this.getCurrentProgress() ?? 0
+      progress: this.getCurrentProgress() ?? 0,
+      rallyPoint: this.rallyPoint.getRallyData()
     } satisfies ProductionComponentData;
   }
 
@@ -482,6 +487,8 @@ export class ProductionComponent {
         this.resetQueue(queue);
       });
     }
+
+    if (data.rallyPoint) this.rallyPoint.setRallyData(data.rallyPoint);
   }
 }
 
