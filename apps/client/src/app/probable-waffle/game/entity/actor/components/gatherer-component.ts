@@ -23,6 +23,7 @@ import { ActorTranslateComponent } from "./actor-translate-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
+import { GathererComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -465,5 +466,26 @@ export class GathererComponent {
         return SoundType.Mine;
     }
     return null;
+  }
+
+  setData(data: Partial<GathererComponentData>) {
+    if (data.carriedResourceAmount !== undefined) {
+      this.carriedResourceAmount = data.carriedResourceAmount;
+      if (this.carriedResourceAmount <= 0 && data.carriedResourceType === undefined) {
+        this.carriedResourceType = null;
+      }
+    }
+    if (data.carriedResourceType !== undefined) {
+      this.carriedResourceType = data.carriedResourceType;
+    }
+    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+  }
+
+  getData(): GathererComponentData {
+    return {
+      carriedResourceAmount: this.carriedResourceAmount,
+      carriedResourceType: this.carriedResourceType as any,
+      remainingCooldown: this.remainingCooldown
+    } satisfies GathererComponentData;
   }
 }

@@ -103,7 +103,9 @@ export class BuildingCursor {
     } as Vector3Simple;
 
     const actor = ActorManager.createActorCore(this.scene, name, {
-      logicalWorldTransform: spawnLogicalLocation
+      representable: {
+        logicalWorldTransform: spawnLogicalLocation
+      }
     } satisfies ActorDefinition);
 
     this.building = this.scene.add.existing(actor);
@@ -584,7 +586,11 @@ export class BuildingCursor {
   private spawnConstructionSite(gameObject: GameObjects.GameObject) {
     const currentPlayer = getCurrentPlayerNumber(this.scene);
     const actorDefinition = {
-      ...(currentPlayer && { owner: currentPlayer })
+      ...(currentPlayer && {
+        owner: {
+          ownerId: currentPlayer
+        }
+      })
     } satisfies ActorDefinition;
 
     upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
@@ -602,8 +608,14 @@ export class BuildingCursor {
     playerNumber?: number
   ) {
     const actorDefinition = {
-      ...(playerNumber && { owner: playerNumber }),
-      logicalWorldTransform: logicalTransform
+      ...(playerNumber && {
+        owner: {
+          ownerId: playerNumber
+        }
+      }),
+      representable: {
+        logicalWorldTransform: logicalTransform
+      }
     } satisfies ActorDefinition;
 
     const actor = ActorManager.createActorConstructing(scene, name, actorDefinition);

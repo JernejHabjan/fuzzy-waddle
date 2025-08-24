@@ -1,4 +1,4 @@
-import { PlayerStateResources, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { PlayerStateResources, ResourceDrainComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
@@ -78,5 +78,15 @@ export class ResourceDrainComponent {
 
   getDropOffRange(): number {
     return 1;
+  }
+
+  setData(data: Partial<ResourceDrainComponentData>) {
+    if (data.currentCapacity !== undefined) this.currentCapacity = data.currentCapacity;
+  }
+
+  getData(): ResourceDrainComponentData {
+    return {
+      currentCapacity: this.currentCapacity
+    } satisfies ResourceDrainComponentData;
   }
 }

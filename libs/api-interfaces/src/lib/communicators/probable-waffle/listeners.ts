@@ -208,7 +208,9 @@ export class ProbableWaffleListeners {
           // get selected actors and issue move command to them
           const selectedActors = player.getSelection();
           // find actors in game state by id
-          const actors = gameInstance.gameState!.data.actors.filter((a) => a.id && selectedActors.includes(a.id));
+          const actors = gameInstance.gameState!.data.actors.filter(
+            (a) => a.id?.id && selectedActors.includes(a.id.id)
+          );
           actors.forEach((actor) => {
             // todo handle storing to game state
             ProbableWaffleListeners.logDebugInfo(

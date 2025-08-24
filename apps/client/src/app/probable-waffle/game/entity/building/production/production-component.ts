@@ -8,6 +8,7 @@ import {
   ActorDefinition,
   ConstructionStateEnum,
   ObjectNames,
+  ProductionComponentData,
   ResourceType,
   Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
@@ -17,7 +18,6 @@ import { SceneActorCreator } from "../../../scenes/components/scene-actor-creato
 import {
   getGameObjectBounds,
   getGameObjectLogicalTransform,
-  getGameObjectRenderedTransform,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../data/game-object-helper";
@@ -26,6 +26,7 @@ import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { pwActorDefinitions } from "../../../data/actor-definitions";
 
 export type ProductionQueueItem = {
   actorName: ObjectNames;
@@ -277,8 +278,14 @@ export class ProductionComponent {
 
     const actorDefinition = {
       name: actorName,
-      logicalWorldTransform: spawnPosition,
-      ...(originalOwner && { owner: originalOwner }),
+      representable: {
+        logicalWorldTransform: spawnPosition
+      },
+      ...(originalOwner && {
+        owner: {
+          ownerId: originalOwner
+        }
+      }),
       constructionSite: {
         state: ConstructionStateEnum.Finished
       }
@@ -432,6 +439,49 @@ export class ProductionComponent {
     const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
     const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
     return actorPlayerNr === currentPlayerNr;
+  }
+
+  getData(): ProductionComponentData {
+    // Flatten all queues into a simple list of product names for save
+    const queueNames = this.itemsFromAllQueues.map((i) => i.actorName);
+    return {
+      queue: queueNames,
+      isProducing: this.isProducing,
+      progress: this.getCurrentProgress() ?? 0
+    } satisfies ProductionComponentData;
+  }
+
+  setData(data: Partial<ProductionComponentData>) {
+    if (data.queue) {
+      // Clear existing queues
+      this.productionQueues.forEach((queue) => {
+        queue.queuedItems = [];
+        queue.remainingProductionTime = 0;
+      });
+
+      // Rebuild queues from names
+      data.queue.forEach((actorName) => {
+        const def = pwActorDefinitions[actorName];
+        const cost = def.components?.productionCost;
+        if (!cost) {
+          console.warn(`No production cost found for ${actorName}, skipping...`);
+          return;
+        }
+        const dummyItem: ProductionQueueItem = {
+          actorName,
+          costData: cost
+        };
+        const queue = this.findQueueForProduct();
+        if (queue) {
+          queue.queuedItems.push(dummyItem);
+        }
+      });
+
+      // Reset production timers for all queues
+      this.productionQueues.forEach((queue) => {
+        this.resetQueue(queue);
+      });
+    }
   }
 }
 

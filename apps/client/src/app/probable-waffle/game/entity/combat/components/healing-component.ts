@@ -4,6 +4,7 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { AudioService } from "../../../scenes/services/audio.service";
 import { SharedActorActionsSfxHealSounds } from "../../../sfx/SharedActorActionsSfx";
+import { HealingComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export type HealingDefinition = {
   healPerCooldown: number;
@@ -61,5 +62,15 @@ export class HealingComponent {
 
   private destroy() {
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+  }
+
+  setData(data: Partial<HealingComponentData>) {
+    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+  }
+
+  getData(): HealingComponentData {
+    return {
+      remainingCooldown: this.remainingCooldown
+    } satisfies HealingComponentData;
   }
 }

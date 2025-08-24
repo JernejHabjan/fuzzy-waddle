@@ -49,4 +49,11 @@ export class PlayerAiBlackboard extends Blackboard {
     }
     return null;
   }
+
+  getData(): Record<string, any> {
+    throw new Error("Method not implemented.");
+  }
+  setData(data: Partial<Record<string, any>>): void {
+    throw new Error("Method not implemented.");
+  }
 }

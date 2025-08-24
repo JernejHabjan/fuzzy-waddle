@@ -29,10 +29,9 @@ import { HealingComponent } from "../entity/combat/components/healing-component"
 import { AudioActorComponent } from "../entity/actor/components/audio-actor-component";
 import { AnimationActorComponent } from "../entity/actor/components/animation-actor-component";
 import { RepresentableComponent } from "../entity/actor/components/representable-component";
-import GameObject = Phaser.GameObjects.GameObject;
-import Transform = Phaser.GameObjects.Components.Transform;
 import { FlightComponent } from "../entity/actor/components/flight-component";
 import { WalkableComponent } from "../entity/actor/components/walkable-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -67,19 +66,27 @@ export function setActorData(
 
 function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
-  if (actorDefinition.logicalWorldTransform) {
-    const representableComponent = getActorComponent(actor, RepresentableComponent);
-    if (representableComponent) {
-      representableComponent.logicalWorldTransform = actorDefinition.logicalWorldTransform;
-    }
-  }
-  if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setOwner(actorDefinition.owner);
-  if (actorDefinition.selectable)
-    getActorComponent(actor, SelectableComponent)?.setSelected(actorDefinition.selectable);
-  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setId(actorDefinition.id);
+  if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setData(actorDefinition.owner);
+  if (actorDefinition.selected) getActorComponent(actor, SelectableComponent)?.setData(actorDefinition.selected);
+  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.constructionSite)
     getActorComponent(actor, ConstructionSiteComponent)?.setData(actorDefinition.constructionSite);
   if (actorDefinition.health) getActorComponent(actor, HealthComponent)?.setData(actorDefinition.health);
+  if (actorDefinition.vision) getActorComponent(actor, VisionComponent)?.setData(actorDefinition.vision);
+  if (actorDefinition.attack) getActorComponent(actor, AttackComponent)?.setData(actorDefinition.attack);
+  if (actorDefinition.healing) getActorComponent(actor, HealingComponent)?.setData(actorDefinition.healing);
+  if (actorDefinition.builder) getActorComponent(actor, BuilderComponent)?.setData(actorDefinition.builder);
+  if (actorDefinition.gatherer) getActorComponent(actor, GathererComponent)?.setData(actorDefinition.gatherer);
+  if (actorDefinition.container) getActorComponent(actor, ContainerComponent)?.setData(actorDefinition.container);
+  if (actorDefinition.resourceDrain)
+    getActorComponent(actor, ResourceDrainComponent)?.setData(actorDefinition.resourceDrain);
+  if (actorDefinition.resourceSource)
+    getActorComponent(actor, ResourceSourceComponent)?.setData(actorDefinition.resourceSource);
+  if (actorDefinition.production) getActorComponent(actor, ProductionComponent)?.setData(actorDefinition.production);
+  if (actorDefinition.representable)
+    getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
+  if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);
+
   DepthHelper.setActorDepth(actor);
 }
 

@@ -69,7 +69,9 @@ export class SceneActorCreator {
             constructionSite: {
               state: ConstructionStateEnum.Finished
             },
-            owner: ownerId ? parseInt(ownerId) : undefined
+            owner: {
+              ownerId: ownerId ? parseInt(ownerId) : undefined
+            }
           } satisfies ActorDefinition;
           setFullActorDataFromName(gameObject, actorDefinition);
           // Register in the actor index after init
@@ -193,7 +195,7 @@ export class SceneActorCreator {
   }
 
   private createInitialActors(
-    actorName: string,
+    actorName: ObjectNames,
     logicalSpawnPoint: Vector3Simple,
     owner_id: number,
     index: number,
@@ -214,8 +216,12 @@ export class SceneActorCreator {
     } satisfies Vector3Simple;
     const actorDefinition = {
       name: actorName,
-      logicalWorldTransform: newLogicalSpawnPoint,
-      owner: owner_id,
+      representable: {
+        logicalWorldTransform: newLogicalSpawnPoint
+      },
+      owner: {
+        ownerId: owner_id
+      },
       constructionSite: {
         state: ConstructionStateEnum.Finished
       }

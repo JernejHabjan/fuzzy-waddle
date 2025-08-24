@@ -86,6 +86,30 @@ export class ActorIndexSystem {
     return Array.from(this.idActors);
   }
 
+  getActorById(id: string): GameObject | null {
+    for (const obj of this.idActors) {
+      const idComp = getActorComponent(obj, IdComponent);
+      if (idComp?.id === id) {
+        return obj;
+      }
+    }
+    return null;
+  }
+
+  getActorsByIds(ids: string[]): GameObject[] {
+    const result: GameObject[] = [];
+    const idSet = new Set(ids);
+    for (const obj of this.idActors) {
+      const idComp = getActorComponent(obj, IdComponent);
+      if (idComp && idSet.has(idComp.id)) {
+        result.push(obj);
+        idSet.delete(idComp.id);
+        if (idSet.size === 0) break; // all found
+      }
+    }
+    return result;
+  }
+
   getOwnedActors(ownerNumber?: number): GameObject[] {
     if (ownerNumber === undefined) return [];
     const set = this.ownedActors.get(ownerNumber);

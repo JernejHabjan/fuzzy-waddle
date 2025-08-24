@@ -87,4 +87,37 @@ export class PawnAiBlackboard extends Blackboard {
   popCurrentOrderFromQueue() {
     this.pullNextPlayerOrder();
   }
+
+  getData(): Record<string, any> {
+    return {
+      orderQueue: this.orderQueue,
+      currentOrder: this.currentOrder,
+      memory: Array.from(this.memory.entries()).reduce(
+        (obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        },
+        {} as Record<string, any>
+      ),
+      status: this.status,
+      failedOrders: this.failedOrders
+    };
+  }
+  setData(data: Partial<Record<string, any>>): void {
+    if (data.orderQueue) {
+      this.orderQueue = data.orderQueue;
+    }
+    if (data.currentOrder) {
+      this.currentOrder = data.currentOrder;
+    }
+    if (data.memory) {
+      this.memory = new Map(Object.entries(data.memory));
+    }
+    if (data.status) {
+      this.status = data.status;
+    }
+    if (data.failedOrders) {
+      this.failedOrders = data.failedOrders;
+    }
+  }
 }

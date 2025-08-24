@@ -10,6 +10,7 @@ export * from "./lib/game-instance/probable-waffle/player";
 export * from "./lib/game-instance/probable-waffle/game-instance-medatada";
 export * from "./lib/game-instance/probable-waffle/spectator";
 export * from "./lib/game-instance/probable-waffle/object-names";
+export * from "./lib/game-instance/probable-waffle/component-data";
 export * from "./lib/probable-waffle/probable-waffle";
 export * from "./lib/probable-waffle/probable-waffle-game-mode-lobby";
 export * from "./lib/probable-waffle/probable-waffle-player-state-action";

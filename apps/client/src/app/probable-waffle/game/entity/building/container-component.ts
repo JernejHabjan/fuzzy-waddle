@@ -4,6 +4,10 @@ import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../data/actor-component";
 import { VisionComponent } from "../actor/components/vision-component";
 import { getGameObjectVisibility } from "../../data/game-object-helper";
+import { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
+import { IdComponent } from "../actor/components/id-component";
+import { getSceneService } from "../../scenes/components/scene-component-helpers";
+import { ActorIndexSystem } from "../../scenes/services/ActorIndexSystem";
 
 export type ContainerDefinition = {
   capacity: number;
@@ -70,5 +74,27 @@ export class ContainerComponent {
     const visibilityComponent = getGameObjectVisibility(gameObject);
     if (visibilityComponent) visibilityComponent.setVisible(visible);
     gameObject.emit(ContainerComponent.GameObjectVisibilityChanged, visible);
+  }
+
+  setData(data: Partial<ContainerComponentData>) {
+    if (data.containedIds !== undefined) {
+      const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+      const actors = actorIndex?.getActorsByIds(data.containedIds) ?? [];
+      this.containedGameObjects.clear();
+      actors.forEach((actor) => {
+        this.loadGameObject(actor);
+      });
+    }
+  }
+
+  getData(): ContainerComponentData {
+    const containedIds: string[] = [];
+    this.containedGameObjects.forEach((go) => {
+      const id = getActorComponent(go, IdComponent)?.id;
+      if (id) containedIds.push(id);
+    });
+    return {
+      containedIds
+    } satisfies ContainerComponentData;
   }
 }

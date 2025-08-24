@@ -4,6 +4,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { getSceneService } from "../../../scenes/components/scene-component-helpers";
 import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
+import { VisionComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export interface VisionDefinition {
   range: number;
@@ -65,5 +66,15 @@ export class VisionComponent {
       return distanceA - distanceB;
     });
     return visibleEnemies[0];
+  }
+
+  setData(data: Partial<VisionComponentData>) {
+    if (data.visibilityByCurrentPlayer !== undefined) this.visibilityByCurrentPlayer = data.visibilityByCurrentPlayer;
+  }
+
+  getData(): VisionComponentData {
+    return {
+      visibilityByCurrentPlayer: this.visibilityByCurrentPlayer
+    } satisfies VisionComponentData;
   }
 }

@@ -1,7 +1,7 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
 import { Plugins } from "../../../world/const/Plugins";
-import { GameSetupHelpers, Guid } from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, Guid, OwnerComponentData } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
@@ -218,6 +218,18 @@ export class OwnerComponent {
     this.ownerUiElement.x = x - this.borderSize;
     this.ownerUiElement.y = y - this.borderSize;
     this.ownerUiElement.setDepth(this.barDepth);
+  }
+
+  setData(data: OwnerComponentData) {
+    if (data.ownerId !== undefined) {
+      this.setOwner(data.ownerId);
+    }
+  }
+
+  getData(): OwnerComponentData {
+    return {
+      ownerId: this.owner
+    } satisfies OwnerComponentData;
   }
 
   private destroy() {

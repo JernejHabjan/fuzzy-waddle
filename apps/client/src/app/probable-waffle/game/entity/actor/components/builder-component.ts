@@ -17,6 +17,9 @@ import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import GameObject = Phaser.GameObjects.GameObject;
+import { BuilderComponentData } from "@fuzzy-waddle/api-interfaces";
+import { IdComponent } from "./id-component";
+import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce
@@ -254,5 +257,31 @@ export class BuilderComponent {
     const tileSize = 64;
     const worldRange = rangeInTiles * tileSize;
     return distance <= worldRange ? closestConstructionSite : null;
+  }
+
+  setData(data: Partial<BuilderComponentData>) {
+    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.enterConstructionSite !== undefined)
+      this.builderComponentDefinition.enterConstructionSite = data.enterConstructionSite;
+    if (data.constructionSiteOffset !== undefined)
+      this.builderComponentDefinition.constructionSiteOffset = data.constructionSiteOffset;
+    if (data.assignedConstructionSiteId) {
+      const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+      const actorById = actorIndex?.getActorById(data.assignedConstructionSiteId);
+      if (actorById) {
+        this.assignedConstructionSite = actorById;
+      }
+    }
+  }
+
+  getData(): BuilderComponentData {
+    return {
+      remainingCooldown: this.remainingCooldown,
+      enterConstructionSite: this.builderComponentDefinition.enterConstructionSite,
+      constructionSiteOffset: this.builderComponentDefinition.constructionSiteOffset,
+      assignedConstructionSiteId: this.assignedConstructionSite
+        ? getActorComponent(this.assignedConstructionSite, IdComponent)?.id
+        : undefined
+    };
   }
 }
