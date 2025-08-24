@@ -12,6 +12,7 @@ import { getSceneService } from "../../../../scenes/components/scene-component-h
 import { DebuggingService } from "../../../../scenes/services/DebuggingService";
 import { Subscription } from "rxjs";
 import { BehaviourTreeOptions } from "mistreevous/dist/BehaviourTreeOptions";
+import { BackboardComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export interface PawnAiDefinition {
   type: AiType;
@@ -106,6 +107,18 @@ export class PawnAiController {
     }
 
     this.nodeDebugger.updateText(text);
+  }
+
+  public getData(): BackboardComponentData {
+    return {
+      blackboard: this.blackboard.getData()
+    } satisfies BackboardComponentData;
+  }
+
+  public setData(data: Partial<BackboardComponentData>) {
+    if (data.blackboard) {
+      this.blackboard.setData(data.blackboard, this.gameObject.scene);
+    }
   }
 
   private onShutdown() {

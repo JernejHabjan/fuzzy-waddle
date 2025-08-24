@@ -17,8 +17,9 @@
 ## Changes
 - Added JWT-based authentication to the login endpoint.
 - Implemented user registration with email verification.
-## Motivation
-This feature allows users to securely log in and register, enhancing the overall security of the application.
+## Reason
+- To enhance security and user management.
+- To comply with new security policies.
 ```
 
 ## Types

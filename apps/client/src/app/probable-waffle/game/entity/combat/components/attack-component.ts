@@ -19,9 +19,10 @@ import FireBall from "../../../prefabs/weapons/FireBall";
 import FrostBolt from "../../../prefabs/weapons/FrostBolt";
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { EffectsAnims } from "../../../animations/effects";
-import GameObject = Phaser.GameObjects.GameObject;
 import SkaduweeOwlFurball from "../../../prefabs/weapons/SkaduweeOwlFurball";
 import { FlightComponent } from "../../actor/components/flight-component";
+import { AttackComponentData } from "@fuzzy-waddle/api-interfaces";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type AttackDefinition = {
   attacks: AttackData[];
@@ -384,5 +385,27 @@ export class AttackComponent {
 
     // Return the range of the best attack
     return availableAttacks[0].range;
+  }
+
+  setData(data: Partial<AttackComponentData>) {
+    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.currentAttackIndex !== undefined) {
+      const idx = data.currentAttackIndex;
+      if (idx === null || idx === undefined) {
+        this.currentAttack = null;
+      } else if (idx >= 0 && idx < this.attackDefinition.attacks.length) {
+        this.currentAttack = this.attackDefinition.attacks[idx];
+      }
+    }
+  }
+
+  getData(): AttackComponentData {
+    const currentAttackIndex = this.currentAttack
+      ? this.attackDefinition.attacks.indexOf(this.currentAttack)
+      : undefined;
+    return {
+      remainingCooldown: this.remainingCooldown,
+      currentAttackIndex
+    };
   }
 }

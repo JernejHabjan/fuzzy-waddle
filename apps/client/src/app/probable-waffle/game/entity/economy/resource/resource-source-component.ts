@@ -1,4 +1,4 @@
-import { ResourceType, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ResourceSourceComponentData, ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
@@ -142,6 +142,19 @@ export class ResourceSourceComponent {
 
   getCurrentResources(): number {
     return this.currentResources;
+  }
+
+  setData(data: Partial<ResourceSourceComponentData>) {
+    if (data.currentResources !== undefined) {
+      const max = this.resourceSourceDefinition.maximumResources;
+      this.currentResources = Phaser.Math.Clamp(data.currentResources, 0, Math.max(0, max));
+    }
+  }
+
+  getData(): ResourceSourceComponentData {
+    return {
+      currentResources: this.currentResources
+    } satisfies ResourceSourceComponentData;
   }
 
   private destroy() {

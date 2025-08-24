@@ -8,6 +8,7 @@ import {
 import { getActorComponent } from "../../../data/actor-component";
 import { FlightComponent } from "./flight-component";
 import { DepthHelper } from "../../../world/map/depth.helper";
+import { RepresentableComponentData } from "@fuzzy-waddle/api-interfaces";
 export interface RepresentableDefinition {
   width: number;
   height: number;
@@ -147,5 +148,19 @@ export class RepresentableComponent {
       }
     }
     return this._visible;
+  }
+
+  setData(data: Partial<RepresentableComponentData>) {
+    if (data.logicalWorldTransform) {
+      this.logicalWorldTransform = data.logicalWorldTransform;
+    }
+
+    this.refreshBounds();
+  }
+
+  getData(): RepresentableComponentData {
+    return {
+      logicalWorldTransform: this.logicalWorldTransform
+    } satisfies RepresentableComponentData;
   }
 }

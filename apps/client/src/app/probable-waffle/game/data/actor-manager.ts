@@ -44,7 +44,19 @@ import { SkaduweeWorker } from "../prefabs/characters/skaduwee/SkaduweeWorker";
 import { TivaraWorker } from "../prefabs/characters/tivara/TivaraWorker";
 import { pwActorDefinitions } from "./actor-definitions";
 import { RepresentableComponent } from "../entity/actor/components/representable-component";
+import { VisionComponent } from "../entity/actor/components/vision-component";
+import { AttackComponent } from "../entity/combat/components/attack-component";
+import { HealingComponent } from "../entity/combat/components/healing-component";
+import { BuilderComponent } from "../entity/actor/components/builder-component";
+import { GathererComponent } from "../entity/actor/components/gatherer-component";
+import { ContainerComponent } from "../entity/building/container-component";
+import { ResourceDrainComponent } from "../entity/economy/resource/resource-drain-component";
+import { ResourceSourceComponent } from "../entity/economy/resource/resource-source-component";
+import { ProductionComponent } from "../entity/building/production/production-component";
+import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
+import { getSceneService } from "../scenes/components/scene-component-helpers";
+import { SceneActorCreator } from "../scenes/components/scene-actor-creator";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -128,29 +140,31 @@ export class ActorManager {
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
-    const actorName = actor.name;
+    const actorName = actor.name as ObjectNames;
     if (!this.actorMap[actorName]) {
       // console.error(`Actor ${actorName} not found`);
       return undefined;
     }
+    // noinspection UnnecessaryLocalVariableJS
     const actorDefinition: ActorDefinition = {
-      name: actorName
+      name: actorName,
+      owner: getActorComponent(actor, OwnerComponent)?.getData(),
+      selected: getActorComponent(actor, SelectableComponent)?.getData(),
+      id: getActorComponent(actor, IdComponent)?.getData(),
+      constructionSite: getActorComponent(actor, ConstructionSiteComponent)?.getData(),
+      health: getActorComponent(actor, HealthComponent)?.getData(),
+      vision: getActorComponent(actor, VisionComponent)?.getData(),
+      attack: getActorComponent(actor, AttackComponent)?.getData(),
+      healing: getActorComponent(actor, HealingComponent)?.getData(),
+      builder: getActorComponent(actor, BuilderComponent)?.getData(),
+      gatherer: getActorComponent(actor, GathererComponent)?.getData(),
+      container: getActorComponent(actor, ContainerComponent)?.getData(),
+      resourceDrain: getActorComponent(actor, ResourceDrainComponent)?.getData(),
+      resourceSource: getActorComponent(actor, ResourceSourceComponent)?.getData(),
+      production: getActorComponent(actor, ProductionComponent)?.getData(),
+      representable: getActorComponent(actor, RepresentableComponent)?.getData(),
+      blackboard: getActorComponent(actor, PawnAiController)?.getData()
     };
-
-    const representableComponent = getActorComponent(actor, RepresentableComponent);
-    if (representableComponent) actorDefinition.logicalWorldTransform = representableComponent?.logicalWorldTransform;
-    const ownerComponent = getActorComponent(actor, OwnerComponent);
-    if (ownerComponent) actorDefinition.owner = ownerComponent.getOwner();
-    const selectableComponent = getActorComponent(actor, SelectableComponent);
-    if (selectableComponent) actorDefinition.selectable = selectableComponent.getSelected();
-    const idComponent = getActorComponent(actor, IdComponent);
-    if (idComponent) actorDefinition.id = idComponent.id;
-    const healthComponent = getActorComponent(actor, HealthComponent);
-    if (healthComponent) actorDefinition.health = healthComponent.getData();
-    const constructionSiteComponent = getActorComponent(actor, ConstructionSiteComponent);
-    if (constructionSiteComponent) actorDefinition.constructionSite = constructionSiteComponent.getData();
-
-    // todo blackboard - create a blackboard component that can be added to actors
 
     return actorDefinition;
   }
@@ -196,6 +210,11 @@ export class ActorManager {
     }
     actor = new actorConstructor(scene);
     setCoreActorDataFromName(actor, actorDefinition);
+    const sceneActorCreator = getSceneService(scene, SceneActorCreator);
+    if (!sceneActorCreator) {
+      throw new Error("SceneActorCreator not found in scene");
+    }
+    sceneActorCreator.registerAndSaveNewActor(actor);
     return actor;
   }
 

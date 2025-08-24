@@ -14,6 +14,7 @@ import { ActorTranslateComponent } from "./actor-translate-component";
 import { HealthComponent } from "../../combat/components/health-component";
 import { ContainerComponent } from "../../building/container-component";
 import { VisionComponent } from "./vision-component";
+import { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export type SelectableDefinition = {
   offsetY?: number;
@@ -116,6 +117,16 @@ export class SelectableComponent {
           break;
       }
     });
+  }
+
+  setData(data: Partial<SelectableComponentData>) {
+    if (data.selected !== undefined) this.setSelected(data.selected);
+  }
+
+  getData(): SelectableComponentData {
+    return {
+      selected: this.getSelected()
+    } satisfies SelectableComponentData;
   }
 
   private gameObjectVisibilityChanged(visible: boolean) {

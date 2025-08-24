@@ -38,7 +38,7 @@ export class PlayerActionsHandler {
 
   // Broadcast build mode changes to HUD/UI
   private readonly buildingModeSubject = new BehaviorSubject<boolean>(false);
-  public readonly buildingMode$ = this.buildingModeSubject.asObservable();
+  public readonly buildingModeObservable = this.buildingModeSubject.asObservable();
 
   constructor(
     private readonly scene: ProbableWaffleScene,

@@ -205,7 +205,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     });
 
     // sync HUD with handler build mode toggles (e.g. keyboard 'B' / 'Esc')
-    this.buildingModeSubscription = this.playerActionsHandler.buildingMode$?.subscribe((active) => {
+    this.buildingModeSubscription = this.playerActionsHandler.buildingModeObservable?.subscribe((active) => {
       this.buildingMode = active;
       this.refreshForCurrentSelection();
     });

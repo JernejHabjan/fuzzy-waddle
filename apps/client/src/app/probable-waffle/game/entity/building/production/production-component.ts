@@ -8,6 +8,7 @@ import {
   ActorDefinition,
   ConstructionStateEnum,
   ObjectNames,
+  ProductionComponentData,
   ResourceType,
   Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
@@ -17,7 +18,6 @@ import { SceneActorCreator } from "../../../scenes/components/scene-actor-creato
 import {
   getGameObjectBounds,
   getGameObjectLogicalTransform,
-  getGameObjectRenderedTransform,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../data/game-object-helper";
@@ -25,6 +25,7 @@ import { SelectableComponent } from "../../actor/components/selectable-component
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
+import { pwActorDefinitions } from "../../../data/actor-definitions";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ProductionQueueItem = {
@@ -60,19 +61,23 @@ export class ProductionComponent {
     private readonly gameObject: GameObject,
     public readonly productionDefinition: ProductionDefinition
   ) {
+    this.init();
     this.listenToMoveEvents();
-    onObjectReady(gameObject, this.init, this);
+    onObjectReady(gameObject, this.initOnObjectReady, this);
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
 
   init() {
-    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
     // setup queues
     for (let i = 0; i < this.productionDefinition.queueCount; i++) {
       this.productionQueues.push(new ProductionQueue(this.productionDefinition.capacityPerQueue));
     }
+  }
+
+  initOnObjectReady() {
+    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
     this.rallyPoint.init(this.gameObject);
   }
 
@@ -277,8 +282,14 @@ export class ProductionComponent {
 
     const actorDefinition = {
       name: actorName,
-      logicalWorldTransform: spawnPosition,
-      ...(originalOwner && { owner: originalOwner }),
+      representable: {
+        logicalWorldTransform: spawnPosition
+      },
+      ...(originalOwner && {
+        owner: {
+          ownerId: originalOwner
+        }
+      }),
       constructionSite: {
         state: ConstructionStateEnum.Finished
       }
@@ -432,6 +443,52 @@ export class ProductionComponent {
     const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
     const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
     return actorPlayerNr === currentPlayerNr;
+  }
+
+  getData(): ProductionComponentData {
+    // Flatten all queues into a simple list of product names for save
+    const queueNames = this.itemsFromAllQueues.map((i) => i.actorName);
+    return {
+      queue: queueNames,
+      isProducing: this.isProducing,
+      progress: this.getCurrentProgress() ?? 0,
+      rallyPoint: this.rallyPoint.getRallyData()
+    } satisfies ProductionComponentData;
+  }
+
+  setData(data: Partial<ProductionComponentData>) {
+    if (data.queue) {
+      // Clear existing queues
+      this.productionQueues.forEach((queue) => {
+        queue.queuedItems = [];
+        queue.remainingProductionTime = 0;
+      });
+
+      // Rebuild queues from names
+      data.queue.forEach((actorName) => {
+        const def = pwActorDefinitions[actorName];
+        const cost = def.components?.productionCost;
+        if (!cost) {
+          console.warn(`No production cost found for ${actorName}, skipping...`);
+          return;
+        }
+        const dummyItem: ProductionQueueItem = {
+          actorName,
+          costData: cost
+        };
+        const queue = this.findQueueForProduct();
+        if (queue) {
+          queue.queuedItems.push(dummyItem);
+        }
+      });
+
+      // Reset production timers for all queues
+      this.productionQueues.forEach((queue) => {
+        this.resetQueue(queue);
+      });
+    }
+
+    if (data.rallyPoint) this.rallyPoint.setRallyData(data.rallyPoint);
   }
 }
 

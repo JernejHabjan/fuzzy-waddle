@@ -21,10 +21,13 @@ import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/actor/components/id-component";
 import { getSceneService } from "../components/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
+import { LoadGame } from "../../data/load-game";
 
 export class SceneActorCreator {
-  constructor(private readonly scene: Phaser.Scene) {
+  private readonly loadGame: LoadGame;
+  constructor(private readonly scene: GameProbableWaffleScene) {
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.loadGame = new LoadGame(scene as GameProbableWaffleScene);
   }
 
   /**
@@ -32,7 +35,16 @@ export class SceneActorCreator {
    * All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
    */
   public initInitialActors() {
-    this.spawnFromSpawnList();
+    // After scene is created, store every actor in the game state.
+    // All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
+    const isStartupLoad = this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad();
+    if (isStartupLoad) {
+      // If loading, the initialActors should not be populated again in scene
+      this.loadGame.loadActorsFromSaveGame();
+      this.removeSpawnsAfterLoad();
+    } else {
+      this.spawnFromSpawnList();
+    }
     this.saveAllKnownActorsToGameState();
   }
 
@@ -57,7 +69,9 @@ export class SceneActorCreator {
             constructionSite: {
               state: ConstructionStateEnum.Finished
             },
-            owner: ownerId ? parseInt(ownerId) : undefined
+            owner: {
+              ownerId: ownerId ? parseInt(ownerId) : undefined
+            }
           } satisfies ActorDefinition;
           setFullActorDataFromName(gameObject, actorDefinition);
           // Register in the actor index after init
@@ -71,22 +85,41 @@ export class SceneActorCreator {
     toDestroy.forEach((gameObject) => gameObject.destroy());
   }
 
+  private removeSpawnsAfterLoad() {
+    const list = this.scene.children.getChildren();
+    const toDestroy: Phaser.GameObjects.GameObject[] = [];
+    list.forEach((gameObject: Phaser.GameObjects.GameObject) => {
+      if (gameObject instanceof Spawn) {
+        toDestroy.push(gameObject);
+      }
+    });
+    toDestroy.forEach((gameObject) => gameObject.destroy());
+  }
+
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
     if (!actorDefinition.name) return undefined;
     const actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     const gameObject = this.scene.add.existing(actor);
-    // Register new actor in the index
+    this.registerAndSaveNewActor(gameObject);
+    return gameObject;
+  }
+
+  public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject) {
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     actorIndex?.registerActor(actor);
     this.saveActorToGameState(actor);
-    return gameObject;
   }
 
   public saveAllKnownActorsToGameState() {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
     gameScene.baseGameData.gameInstance.gameState!.data.actors = [];
-    gameScene.children.each((child) => {
+
+    // Prefer indexed actors to avoid scanning non-actors
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    const iterable = actorIndex?.getAllIdActors() ?? gameScene.children.getChildren();
+
+    iterable.forEach((child) => {
       this.saveActorToGameState(child);
     });
 
@@ -165,7 +198,7 @@ export class SceneActorCreator {
   }
 
   private createInitialActors(
-    actorName: string,
+    actorName: ObjectNames,
     logicalSpawnPoint: Vector3Simple,
     owner_id: number,
     index: number,
@@ -186,8 +219,12 @@ export class SceneActorCreator {
     } satisfies Vector3Simple;
     const actorDefinition = {
       name: actorName,
-      logicalWorldTransform: newLogicalSpawnPoint,
-      owner: owner_id,
+      representable: {
+        logicalWorldTransform: newLogicalSpawnPoint
+      },
+      owner: {
+        ownerId: owner_id
+      },
       constructionSite: {
         state: ConstructionStateEnum.Finished
       }
