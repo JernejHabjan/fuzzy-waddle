@@ -100,11 +100,14 @@ export class SceneActorCreator {
     if (!actorDefinition.name) return undefined;
     const actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     const gameObject = this.scene.add.existing(actor);
-    // Register new actor in the index
+    this.registerAndSaveNewActor(gameObject);
+    return gameObject;
+  }
+
+  public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject) {
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     actorIndex?.registerActor(actor);
     this.saveActorToGameState(actor);
-    return gameObject;
   }
 
   public saveAllKnownActorsToGameState() {
