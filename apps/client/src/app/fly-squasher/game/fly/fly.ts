@@ -1,6 +1,6 @@
 import { Subject, Subscription } from "rxjs";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import { Actor } from "../../../probable-waffle/game/entity/actor/actor";
+import { FlyBase } from "./FlyBase";
 import { FlySoundComponent } from "./components/fly-sound-component";
 import { FlyMovementComponent, WorldSpeedState } from "./components/fly-movement-component";
 import { FlyHealthSystem } from "./components/fly-health.system";
@@ -11,7 +11,7 @@ import { FlySquasherAudio } from "../audio";
 export type FlyOptions = {
   type: "normal" | "boss" | "large-boss";
 };
-export class Fly extends Actor {
+export class Fly extends FlyBase {
   override despawnTime = 4;
 
   readonly onFlyHit: Subject<Fly> = new Subject<Fly>();

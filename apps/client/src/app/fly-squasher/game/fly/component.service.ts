@@ -1,6 +1,6 @@
 export type Constructor<T extends Record<string, any> = object> = new (...args: any[]) => T;
 
-export interface IComponent {
+export interface IFlyBase {
   init?: () => void;
   // on start, you can access other components
   start?: () => void;
@@ -9,18 +9,18 @@ export interface IComponent {
 }
 
 export class ComponentService {
-  private componentsByGameObject: Map<string, IComponent[]> = new Map(); // key is gameObjectName
+  private componentsByGameObject: Map<string, IFlyBase[]> = new Map(); // key is gameObjectName
 
   constructor(private gameObjectName: string) {}
 
-  addComponent<T extends IComponent>(component: T): T {
+  addComponent<T extends IFlyBase>(component: T): T {
     // make sure we have a list of components for this gameObject
     if (!this.componentsByGameObject.has(this.gameObjectName)) {
       this.componentsByGameObject.set(this.gameObjectName, []);
     }
 
     // add new component to this list
-    const list = this.componentsByGameObject.get(this.gameObjectName) as IComponent[];
+    const list = this.componentsByGameObject.get(this.gameObjectName) as IFlyBase[];
     list.push(component);
 
     // call lifecycle hooks
@@ -49,7 +49,7 @@ export class ComponentService {
     }
   }
 
-  findComponent<T extends IComponent>(component: Constructor<T>): T {
+  findComponent<T extends IFlyBase>(component: Constructor<T>): T {
     const comp = this.findComponentOrNull(component);
     if (!comp) {
       throw new Error(`Component ${component.name} not found`);
@@ -57,8 +57,8 @@ export class ComponentService {
     return comp;
   }
 
-  findComponentOrNull<T extends IComponent>(component: Constructor<T>): T | null {
-    const components = this.componentsByGameObject.get(this.gameObjectName) as IComponent[];
+  findComponentOrNull<T extends IFlyBase>(component: Constructor<T>): T | null {
+    const components = this.componentsByGameObject.get(this.gameObjectName) as IFlyBase[];
     const comp = components.find((c) => c instanceof component);
     if (!comp) {
       return null;

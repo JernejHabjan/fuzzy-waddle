@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import { FlyHealthComponent } from "./fly-health-component";
-import { IComponent } from "../../../../probable-waffle/game/core/component.service";
-import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
+import { IFlyBase } from "../component.service";
+import { FlyBase } from "../FlyBase";
 
 export type FlyHealthBarOptions = {
   spriteDepth: number;
@@ -11,7 +11,7 @@ export type FlyHealthBarOptions = {
   spriteObjectCenterY: number;
 };
 
-export class FlyHealthUiComponent implements IComponent {
+export class FlyHealthUiComponent implements IFlyBase {
   private healthComponent!: FlyHealthComponent;
   private bar!: GameObjects.Graphics;
   private barWidth = 25;
@@ -23,7 +23,7 @@ export class FlyHealthUiComponent implements IComponent {
   private yellowThreshold = 0.7;
 
   constructor(
-    private readonly actor: Actor,
+    private readonly actor: FlyBase,
     private readonly scene: Phaser.Scene,
     private readonly barOptions: () => FlyHealthBarOptions
   ) {}

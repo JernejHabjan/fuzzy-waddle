@@ -1,8 +1,8 @@
 import { Utils } from "phaser";
-import { ComponentService, IComponent } from "../../core/component.service";
-import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
+import { ComponentService, IFlyBase } from "./component.service";
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 
-export abstract class Actor implements IComponent {
+export abstract class FlyBase implements IFlyBase {
   components: ComponentService;
   /**
    * unique name

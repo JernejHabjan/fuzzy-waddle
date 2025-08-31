@@ -1,4 +1,4 @@
-import { Actor } from "../../actor/actor";
+import { FlyBase } from "../../../../../fly-squasher/game/fly/FlyBase";
 import { ProjectileData } from "./projectile-data";
 import { RepresentableActor_old } from "../../actor/representable-actor_old";
 import { Scene } from "phaser";
@@ -6,7 +6,7 @@ import { TransformComponent } from "../../actor/components/transformable-compone
 
 export abstract class Projectile extends RepresentableActor_old {
   public abstract projectileData: ProjectileData;
-  private targetActor: Actor | null = null;
+  private targetActor: FlyBase | null = null;
   private targetLocation: Phaser.Math.Vector3 | null = null;
 
   protected constructor(
@@ -17,7 +17,7 @@ export abstract class Projectile extends RepresentableActor_old {
     super(scene, tilePlacementData);
   }
 
-  fireAtActor(targetActor: Actor) {
+  fireAtActor(targetActor: FlyBase) {
     this.targetActor = targetActor;
     this.targetLocation = null;
   }

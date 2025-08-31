@@ -1,4 +1,4 @@
-import { IComponent } from "../../../../probable-waffle/game/core/component.service";
+import { IFlyBase } from "../component.service";
 import { FlyRepresentableComponent } from "./fly-representable-component";
 import { Subject, Subscription } from "rxjs";
 import { FlyMovementComponent } from "./fly-movement-component";
@@ -6,7 +6,7 @@ import { FlySoundComponent } from "./fly-sound-component";
 import { FlyHealthComponent } from "./fly-health-component";
 import { Fly } from "../fly";
 
-export class FlyHealthSystem implements IComponent {
+export class FlyHealthSystem implements IFlyBase {
   private flyPrefabPointerHitSubscription!: Subscription;
   readonly onFlyHit: Subject<Fly> = new Subject<Fly>();
   private flyRepresentableComponent!: FlyRepresentableComponent;

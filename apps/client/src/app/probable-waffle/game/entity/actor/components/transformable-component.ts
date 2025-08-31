@@ -1,11 +1,11 @@
 import { TilePlacementData_old } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 import { SpriteHelper_old, SpriteWorldPlacementInfo_old } from "../sprite-helper_old";
-import { IComponent } from "../../../core/component.service";
+import { IFlyBase } from "../../../../../fly-squasher/game/fly/component.service";
 import { EventEmitter } from "@angular/core";
 
 export type TransformChange = [TilePlacementData_old, SpriteWorldPlacementInfo_old];
 
-export class TransformComponent implements IComponent {
+export class TransformComponent implements IFlyBase {
   readonly onTransformChanged: EventEmitter<TransformChange> = new EventEmitter<TransformChange>();
   tilePlacementData: TilePlacementData_old;
   worldPlacementInfo: SpriteWorldPlacementInfo_old;

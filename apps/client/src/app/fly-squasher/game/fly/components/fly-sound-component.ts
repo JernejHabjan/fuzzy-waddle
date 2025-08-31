@@ -1,11 +1,11 @@
-import { IComponent } from "../../../../probable-waffle/game/core/component.service";
+import { IFlyBase } from "../component.service";
 import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
-import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
+import { FlyBase } from "../FlyBase";
 import { FlySquasherAudio } from "../../audio";
 
-export class FlySoundComponent implements IComponent {
+export class FlySoundComponent implements IFlyBase {
   constructor(
-    private readonly fly: Actor,
+    private readonly fly: FlyBase,
     private readonly scene: BaseScene,
     private readonly audio: FlySquasherAudio
   ) {}
