@@ -7,8 +7,8 @@ import Spawn from "../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../editor-components/EditorOwner";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
 import ChristmasTree from "../prefabs/outside/foliage/trees/resources/special/ChristmasTree";
-import Sheep from "../prefabs/animals/Sheep";
-import Hedgehog from "../prefabs/animals/Hedgehog";
+import Sheep from "../prefabs/animals/sheep/Sheep";
+import Hedgehog from "../prefabs/animals/hedgehog/Hedgehog";
 import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
@@ -71,17 +71,16 @@ import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
 import FenceRightCorner from "../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../prefabs/outside/architecture/obstruction/FenceLeftCorner";
-import ToxicFrog from "../prefabs/animals/ToxicFrog";
-import TreeBird from "../prefabs/animals/TreeBird";
-import Wolf from "../prefabs/animals/Wolf";
-import Stag from "../prefabs/animals/Stag";
-import Boar from "../prefabs/animals/Boar";
-import Badger from "../prefabs/animals/Badger";
+import ToxicFrog from "../prefabs/animals/toxic-frog/ToxicFrog";
+import TreeBird from "../prefabs/animals/tree-bird/TreeBird";
+import Wolf from "../prefabs/animals/wolf/Wolf";
+import Stag from "../prefabs/animals/stag/Stag";
+import Boar from "../prefabs/animals/boar/Boar";
+import Badger from "../prefabs/animals/badger/Badger";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -91,14 +90,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);

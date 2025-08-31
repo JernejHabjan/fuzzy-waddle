@@ -169,12 +169,12 @@ import { ANIM_SKADUWEE_OWL_DEFINITION } from "../prefabs/units/skaduwee/Skaduwee
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 import { FlightDefinition } from "../entity/actor/components/flight-component";
 import { WalkableDefinition } from "../entity/actor/components/walkable-component";
-import { ANIM_HEDGEHOG_DEFINITION } from "../prefabs/animals/anims/anims-hedgehog";
-import { ANIM_SHEEP_DEFINITION } from "../prefabs/animals/anims/anims-sheep";
-import { ANIM_BADGER_DEFINITION } from "../prefabs/animals/anims/anims-badger";
-import { ANIM_BOAR_DEFINITION } from "../prefabs/animals/anims/anims-boar";
-import { ANIM_STAG_DEFINITION } from "../prefabs/animals/anims/anims-stag";
-import { ANIM_WOLF_DEFINITION } from "../prefabs/animals/anims/anims-wolf";
+import { ANIM_HEDGEHOG_DEFINITION } from "../prefabs/animals/hedgehog/anims-hedgehog";
+import { ANIM_SHEEP_DEFINITION } from "../prefabs/animals/sheep/anims-sheep";
+import { ANIM_BADGER_DEFINITION } from "../prefabs/animals/badger/anims-badger";
+import { ANIM_BOAR_DEFINITION } from "../prefabs/animals/boar/anims-boar";
+import { ANIM_STAG_DEFINITION } from "../prefabs/animals/stag/anims-stag";
+import { ANIM_WOLF_DEFINITION } from "../prefabs/animals/wolf/anims-wolf";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,

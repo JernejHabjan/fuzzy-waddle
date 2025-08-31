@@ -3,14 +3,14 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../entity/systems/movement.system";
-import { onObjectReady } from "../../data/game-object-helper";
-import { getActorSystem } from "../../data/actor-system";
+import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { getActorSystem } from "../../../data/actor-system";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { getActorComponent } from "../../data/actor-component";
-import { AudioActorComponent, SoundType } from "../../entity/actor/components/audio-actor-component";
-import { AnimationActorComponent } from "../../entity/actor/components/animation-actor-component";
-import { OrderType } from "../../entity/character/ai/order-type";
+import { getActorComponent } from "../../../data/actor-component";
+import { AudioActorComponent, SoundType } from "../../../entity/actor/components/audio-actor-component";
+import { AnimationActorComponent } from "../../../entity/actor/components/animation-actor-component";
+import { OrderType } from "../../../entity/character/ai/order-type";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {

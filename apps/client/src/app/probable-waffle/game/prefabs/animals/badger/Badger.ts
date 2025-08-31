@@ -4,18 +4,18 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { AnimationActorComponent, AnimationOptions } from "../../entity/actor/components/animation-actor-component";
-import { getActorComponent } from "../../data/actor-component";
+import { AnimationActorComponent, AnimationOptions } from "../../../entity/actor/components/animation-actor-component";
+import { getActorComponent } from "../../../data/actor-component";
 import {
   getRandomTileInNavigableRadius,
   moveGameObjectToRandomTileInNavigableRadius,
   MovementSystem,
   PathMoveConfig
-} from "../../entity/systems/movement.system";
-import { getActorSystem } from "../../data/actor-system";
-import { onObjectReady } from "../../data/game-object-helper";
-import { ActorTranslateComponent } from "../../entity/actor/components/actor-translate-component";
-import { OrderType } from "../../entity/character/ai/order-type";
+} from "../../../entity/systems/movement.system";
+import { getActorSystem } from "../../../data/actor-system";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { OrderType } from "../../../entity/character/ai/order-type";
 /* END-USER-IMPORTS */
 
 export default class Badger extends Phaser.GameObjects.Sprite {

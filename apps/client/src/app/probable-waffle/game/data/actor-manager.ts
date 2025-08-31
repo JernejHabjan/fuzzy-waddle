@@ -1,5 +1,5 @@
-import Hedgehog from "../prefabs/animals/Hedgehog";
-import Sheep from "../prefabs/animals/Sheep";
+import Hedgehog from "../prefabs/animals/hedgehog/Hedgehog";
+import Sheep from "../prefabs/animals/sheep/Sheep";
 import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
 import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
