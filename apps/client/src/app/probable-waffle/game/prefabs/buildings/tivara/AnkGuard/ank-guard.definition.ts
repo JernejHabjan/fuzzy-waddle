@@ -5,7 +5,7 @@ import {
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
-import { PrefabDefinition } from "../../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 
 export const ankGuardDefinition = {

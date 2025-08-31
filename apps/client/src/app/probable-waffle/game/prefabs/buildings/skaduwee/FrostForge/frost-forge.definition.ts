@@ -1,4 +1,4 @@
-import { PrefabDefinition } from "../../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE } from "../../../gui/icon-animations";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";

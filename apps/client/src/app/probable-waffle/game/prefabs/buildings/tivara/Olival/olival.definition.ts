@@ -1,4 +1,4 @@
-import { PrefabDefinition } from "../../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import { TivaraOlivalSfxSelectionSounds } from "../../../../sfx/TivaraOlivalSfx";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";

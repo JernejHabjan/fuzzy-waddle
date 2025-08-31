@@ -13,7 +13,7 @@ import { AchievementService } from "../../services/achievement/achievement.servi
 import { AchievementType } from "../../services/achievement/achievement-type";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from "@ng-bootstrap/ng-bootstrap";
-import { AchievementDto } from "@fuzzy-waddle/api-interfaces";
+import type { AchievementDto } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../environments/environment";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { faShare, faArrowLeft, faLock } from "@fortawesome/free-solid-svg-icons";

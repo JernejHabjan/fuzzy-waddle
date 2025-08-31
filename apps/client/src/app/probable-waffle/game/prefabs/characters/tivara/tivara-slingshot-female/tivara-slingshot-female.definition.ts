@@ -1,4 +1,4 @@
-import { PrefabDefinition } from "../../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import {
   TivaraSlingshotSfxAttackSounds,
   TivaraSlingshotSfxDamageSounds,

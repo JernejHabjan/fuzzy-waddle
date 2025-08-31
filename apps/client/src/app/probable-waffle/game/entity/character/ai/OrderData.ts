@@ -1,5 +1,5 @@
 import { OrderType } from "./order-type";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "../../actor/components/id-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";

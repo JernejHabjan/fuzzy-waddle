@@ -10,12 +10,12 @@ import {
 } from "@angular/core";
 import {
   GameSetupHelpers,
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition,
+  type PlayerLobbyDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleLevels,
-  ProbableWaffleMapData,
+  type ProbableWaffleMapData,
   ProbableWafflePlayer,
-  ProbableWafflePlayerDataChangeEventProperty
+  type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
 import {
   ProbableWaffleCommunicators,

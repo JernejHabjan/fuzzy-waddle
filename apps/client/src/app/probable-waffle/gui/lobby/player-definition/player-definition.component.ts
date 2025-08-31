@@ -7,9 +7,9 @@ import {
   ProbableWaffleAiDifficulty,
   ProbableWaffleGameInstanceType,
   ProbableWaffleLevels,
-  ProbableWaffleMapData,
+  type ProbableWaffleMapData,
   ProbableWafflePlayer,
-  ProbableWafflePlayerDataChangeEventProperty,
+  type ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";

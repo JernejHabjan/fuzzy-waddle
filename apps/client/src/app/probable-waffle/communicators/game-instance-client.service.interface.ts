@@ -1,4 +1,4 @@
-import {
+import type {
   PositionPlayerDefinition,
   ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameFoundEvent,

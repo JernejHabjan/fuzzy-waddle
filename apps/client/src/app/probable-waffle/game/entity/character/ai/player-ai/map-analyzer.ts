@@ -1,4 +1,4 @@
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 import { NavigationService } from "../../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";

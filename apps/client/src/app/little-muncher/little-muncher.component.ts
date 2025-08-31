@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { GameSessionState, LittleMuncherGameCreate } from "@fuzzy-waddle/api-interfaces";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { SpectateService } from "./home/spectate/spectate.service";

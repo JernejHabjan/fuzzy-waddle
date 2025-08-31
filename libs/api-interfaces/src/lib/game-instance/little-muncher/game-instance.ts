@@ -1,15 +1,18 @@
-import { GameInstance, GameInstanceData } from "../game-instance";
-import { LittleMuncherGameInstanceMetadata, LittleMuncherGameInstanceMetadataData } from "./game-instance-medatada";
-import { LittleMuncherGameMode, LittleMuncherGameModeData } from "./game-mode";
-import { LittleMuncherGameState, LittleMuncherGameStateData } from "./game-state";
+import { GameInstance, type GameInstanceData } from "../game-instance";
+import {
+  LittleMuncherGameInstanceMetadata,
+  type LittleMuncherGameInstanceMetadataData
+} from "./game-instance-medatada";
+import { LittleMuncherGameMode, type LittleMuncherGameModeData } from "./game-mode";
+import { LittleMuncherGameState, type LittleMuncherGameStateData } from "./game-state";
 import {
   LittleMuncherPlayer,
   LittleMuncherPlayerController,
-  LittleMuncherPlayerControllerData,
+  type LittleMuncherPlayerControllerData,
   LittleMuncherPlayerState,
-  LittleMuncherPlayerStateData
+  type LittleMuncherPlayerStateData
 } from "./player";
-import { LittleMuncherSpectator, LittleMuncherSpectatorData } from "./spectator";
+import { LittleMuncherSpectator, type LittleMuncherSpectatorData } from "./spectator";
 import { GameSessionState } from "../session";
 
 export type LittleMuncherGameInstanceData = GameInstanceData<

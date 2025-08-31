@@ -1,11 +1,11 @@
-import { Injectable, OnDestroy } from "@angular/core";
-import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
-import {
+import type { Injectable, OnDestroy } from "@angular/core";
+import type { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
+import type {
   FlySquasherCommunicatorScoreEvent,
   FlySquasherGatewayEvent,
   LittleMuncherCommunicatorType
 } from "@fuzzy-waddle/api-interfaces";
-import { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
+import type { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
 
 export const flySquasherCommunicatorServiceStub = {
   startCommunication: () => {},

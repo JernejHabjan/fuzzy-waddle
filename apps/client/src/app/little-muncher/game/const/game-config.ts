@@ -1,4 +1,4 @@
-import { Types } from "phaser";
+import type { Types } from "phaser";
 import { LittleMuncherScene } from "../little-muncher-scene";
 import { baseGameConfig } from "../../../shared/game/base-game.config";
 import { LittleMuncherUiScene } from "../little-muncher-ui-scene";

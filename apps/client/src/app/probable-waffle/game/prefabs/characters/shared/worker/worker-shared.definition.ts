@@ -1,5 +1,5 @@
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PrefabDefinition } from "../../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { weaponDefinitions } from "../../../../entity/combat/attack-data";
 import { PaymentType } from "../../../../entity/building/payment-type";

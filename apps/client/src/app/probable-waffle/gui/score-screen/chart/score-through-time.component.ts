@@ -1,13 +1,13 @@
-import { Component, inject, Input, OnInit } from "@angular/core";
+import { Component, inject, Input, type OnInit } from "@angular/core";
 
 import {
   GameSetupHelpers,
-  PlayerStateAction,
+  type PlayerStateAction,
   PlayerStateActionType,
   ProbableWafflePlayer
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { ChartConfiguration, ChartData, ChartTypeRegistry, DefaultDataPoint } from "chart.js";
+import { ChartConfiguration, type ChartData, type ChartTypeRegistry, type DefaultDataPoint } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
 
 @Component({

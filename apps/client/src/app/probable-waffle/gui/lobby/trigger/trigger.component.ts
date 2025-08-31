@@ -4,10 +4,10 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { AuthService } from "../../../../auth/auth.service";
 import { ToastService } from "../../../../shared/services/toast.service";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import {
+import type {
   PositionPlayerDefinition,
-  ProbableWaffleGameInstanceType,
-  ProbableWafflePlayerDataChangeEventProperty,
+  type ProbableWaffleGameInstanceType,
+  type ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";

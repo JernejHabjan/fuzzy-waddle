@@ -7,7 +7,7 @@ import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-bas
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSceneComponent, getSceneService } from "../../world/components/scene-component-helpers";
 import { TilemapComponent } from "../../world/components/tilemap.component";
-import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../data/actor-component";
 import { ObjectDescriptorComponent } from "../../entity/actor/components/object-descriptor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";

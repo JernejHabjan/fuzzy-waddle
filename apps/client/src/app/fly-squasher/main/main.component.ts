@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, Input, type OnDestroy, type OnInit } from "@angular/core";
 import { flySquasherGameConfig } from "../game/consts/game-config";
 import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../auth/auth.service";

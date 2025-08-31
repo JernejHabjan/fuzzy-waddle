@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from "@angular/core";
-import { ModalConfig } from "../../../shared/components/modal/modal-config";
-import { Subscription } from "rxjs";
+import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit } from "@angular/core";
+import type { ModalConfig } from "../../../shared/components/modal/modal-config";
+import type { Subscription } from "rxjs";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../auth/auth.service";
 import { LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/api-interfaces";
@@ -8,7 +8,6 @@ import { PreventNavigateBack } from "../../../shared/handlers/prevent-navigate-b
 import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 import { LittleMuncherCommunicatorService } from "../communicators/little-muncher-communicator.service";
-
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
 import { LeaveButtonComponent } from "../../../shared/components/leave-button/leave-button.component";

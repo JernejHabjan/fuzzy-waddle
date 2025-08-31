@@ -1,4 +1,14 @@
-import { Component, effect, EventEmitter, inject, input, model, OnDestroy, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  effect,
+  EventEmitter,
+  inject,
+  input,
+  model,
+  type OnDestroy,
+  type OnInit,
+  Output
+} from "@angular/core";
 
 import { ProbableWaffleLevels, ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../environments/environment";

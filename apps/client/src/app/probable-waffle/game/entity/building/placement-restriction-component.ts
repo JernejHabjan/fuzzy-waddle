@@ -1,4 +1,4 @@
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
 // makes sure that the gameObject can only be placed on a certain class (on minerals)

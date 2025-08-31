@@ -2,7 +2,7 @@ import { State } from "mistreevous";
 import { IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
 import { Agent } from "mistreevous/dist/Agent";
 import { PlayerAiBlackboard } from "../../../../entity/character/ai/player-ai/player-ai-blackboard";
-import { ObjectNames, ProbableWafflePlayer, ResourceType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ProbableWafflePlayer, ResourceType, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../../../environments/environment";
 import { getSceneService } from "../../../components/scene-component-helpers";
 import { DebuggingService } from "../../../services/DebuggingService";

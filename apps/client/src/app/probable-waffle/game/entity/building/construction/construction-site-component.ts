@@ -1,6 +1,6 @@
 import { PaymentType } from "../payment-type";
 import {
-  ConstructionSiteComponentData,
+  type ConstructionSiteComponentData,
   ConstructionStateEnum,
   ObjectNames,
   ResourceType
@@ -10,7 +10,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
-import { ProductionCostDefinition } from "../production/production-cost-component";
+import type { ProductionCostDefinition } from "../production/production-cost-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";

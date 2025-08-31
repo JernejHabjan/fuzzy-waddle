@@ -1,5 +1,5 @@
 import { State } from "mistreevous";
-import {
+import type {
   IPlayerPawnControllerAgent,
   PlayerPawnCooldownType,
   PlayerPawnRangeType
@@ -19,7 +19,7 @@ import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackb
 import { Agent } from "mistreevous/dist/Agent";
 import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
 import { ResourceSourceComponent } from "../../../../entity/economy/resource/resource-source-component";
-import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import { ContainableComponent } from "../../../../entity/actor/components/containable-component";
 import { ResourceDrainComponent } from "../../../../entity/economy/resource/resource-drain-component";

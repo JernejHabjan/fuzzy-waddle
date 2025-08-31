@@ -1,5 +1,5 @@
 import { getGameObjectCurrentTile } from "../data/game-object-helper";
-import { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class GameplayLibrary {

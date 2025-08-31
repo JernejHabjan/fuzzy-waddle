@@ -1,22 +1,50 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
+    /* Output & Language Features */
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "Bundler",              // Faster & better for modern bundlers (Vite, Webpack, etc.)
+    "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
+
+    /* Interop & Imports */
+    "esModuleInterop": true,                    // Ensures smooth default import compatibility
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noResolve": false,
+
+    /* Decorators */
     "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2017", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
+    "emitDecoratorMetadata": true,              // Still needed for Angular/NestJS
+
+    /* Paths & Aliases */
     "baseUrl": ".",
     "paths": {
       "@fuzzy-waddle/api-interfaces": ["libs/api-interfaces/src/index.ts"]
-    }
+    },
+
+    /* Type Checking & Strictness */
+    "strict": true,                             // Enables all strict checks
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Build Optimizations */
+    "skipLibCheck": true,                       // Faster builds
+    "skipDefaultLibCheck": true,
+    "isolatedModules": true,                    // Better for modern bundlers
+    "importsNotUsedAsValues": "remove",         // Helps tree-shaking
+    "verbatimModuleSyntax": true,               // Avoids unwanted transpilation of ESM/CJS
+
+    /* Source Maps & Declarations */
+    "sourceMap": true,
+    "declaration": false,
+    "incremental": true,                        // Enables faster builds via .tsbuildinfo cache
+    "tsBuildInfoFile": "./tmp/tsconfig.tsbuildinfo"
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "dist"]
 }

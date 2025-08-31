@@ -1,5 +1,10 @@
 import { GameObjects, Input } from "phaser";
-import { ActorDefinition, ObjectNames, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import {
+  type ActorDefinition,
+  ObjectNames,
+  type Vector2Simple,
+  type Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../../data/actor-manager";
 import {
   getGameObjectBounds,

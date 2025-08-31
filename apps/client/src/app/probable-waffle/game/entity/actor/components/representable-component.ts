@@ -1,4 +1,4 @@
-import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   getGameObjectBoundsRaw,
   getGameObjectRenderedTransformRaw,
@@ -8,7 +8,7 @@ import {
 import { getActorComponent } from "../../../data/actor-component";
 import { FlightComponent } from "./flight-component";
 import { DepthHelper } from "../../../world/map/depth.helper";
-import { RepresentableComponentData } from "@fuzzy-waddle/api-interfaces";
+import type { RepresentableComponentData } from "@fuzzy-waddle/api-interfaces";
 export interface RepresentableDefinition {
   width: number;
   height: number;

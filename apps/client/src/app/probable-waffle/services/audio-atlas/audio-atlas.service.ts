@@ -1,8 +1,8 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { firstValueFrom } from "rxjs";
-import { Howl, SoundSpriteDefinitions } from "howler";
-import { AudioAtlasServiceInterface } from "./audio-atlas.service.interface";
+import { Howl, type SoundSpriteDefinitions } from "howler";
+import type { AudioAtlasServiceInterface } from "./audio-atlas.service.interface";
 
 interface AudioAtlasData {
   resources: string[];

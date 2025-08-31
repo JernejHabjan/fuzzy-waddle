@@ -1,10 +1,10 @@
 import {
-  ActorDefinition,
+  type ActorDefinition,
   ConstructionStateEnum,
   FactionType,
   ObjectNames,
-  ProbableWaffleGameStateDataPayload,
-  Vector3Simple
+  type ProbableWaffleGameStateDataPayload,
+  type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";

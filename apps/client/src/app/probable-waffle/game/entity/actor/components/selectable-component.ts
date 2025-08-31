@@ -14,7 +14,7 @@ import { ActorTranslateComponent } from "./actor-translate-component";
 import { HealthComponent } from "../../combat/components/health-component";
 import { ContainerComponent } from "../../building/container-component";
 import { VisionComponent } from "./vision-component";
-import { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
+import type { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export type SelectableDefinition = {
   offsetY?: number;

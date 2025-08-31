@@ -1,4 +1,4 @@
-import { Cameras, Geom, Input, Types } from "phaser";
+import { Cameras, Geom, Input, type Types } from "phaser";
 import GameProbableWaffleScene from "../../../../scenes/GameProbableWaffleScene";
 
 export class CameraMovementHandler {

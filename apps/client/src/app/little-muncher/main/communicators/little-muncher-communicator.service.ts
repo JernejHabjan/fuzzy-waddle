@@ -10,7 +10,7 @@ import {
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
 import { TwoWayCommunicator } from "../../../shared/game/communicators/two-way-communicator";
-import { CommunicatorService } from "../../../shared/game/communicators/CommunicatorService";
+import type { CommunicatorService } from "../../../shared/game/communicators/CommunicatorService";
 
 @Injectable({
   providedIn: "root"

@@ -3,44 +3,44 @@ import { filter, firstValueFrom, Observable, Subject, Subscription } from "rxjs"
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
-  DifficultyModifiers,
-  GameSessionState,
+  type DifficultyModifiers,
+  type GameSessionState,
   GameSetupHelpers,
   getRandomFactionType,
-  MapTuning,
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition,
+  type MapTuning,
+  type PlayerLobbyDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
-  ProbableWaffleDataChangeEventProperty,
-  ProbableWaffleGameFoundEvent,
+  type ProbableWaffleDataChangeEventProperty,
+  type ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceEvent,
-  ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameInstanceSaveData,
+  type ProbableWaffleGameInstanceMetadataData,
+  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData,
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData,
   ProbableWaffleListeners,
-  ProbableWafflePlayerDataChangeEventPayload,
-  ProbableWafflePlayerDataChangeEventProperty,
+  type ProbableWafflePlayerDataChangeEventPayload,
+  type ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType,
-  ProbableWaffleSpectatorData,
-  ProbableWaffleSpectatorDataChangeEventProperty,
-  RequestGameSearchForMatchMakingDto
+  type ProbableWaffleSpectatorData,
+  type ProbableWaffleSpectatorDataChangeEventProperty,
+  type RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
-import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { type ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { AuthService } from "../../auth/auth.service";
-import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
-import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
+import { type MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
-import { SaveGamePayload } from "../game/data/save-game";
+import { type SaveGamePayload } from "../game/data/save-game";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";

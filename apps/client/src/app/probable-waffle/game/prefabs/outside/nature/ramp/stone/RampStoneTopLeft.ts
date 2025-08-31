@@ -7,7 +7,7 @@ import { setActorData } from "../../../../../data/actor-data";
 import { ColliderComponent } from "../../../../../entity/actor/components/collider-component";
 import {
   ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
+  type ObjectDescriptorDefinition
 } from "../../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 

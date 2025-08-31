@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { HighScoreService } from "./high-score.service";
 import { FlySquasherLevelEnum, FlySquasherLevels, ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { faExclamationTriangle, faSpinner } from "@fortawesome/free-solid-svg-icons";

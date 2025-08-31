@@ -1,4 +1,4 @@
-import { PrefabDefinition } from "../../../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../../../data/actor-definitions";
 import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "./skaduwee_worker_male_anims";
 import { skaduweeWorkerDefinition } from "../skaduwee-worker.definition";
 import { SoundType } from "../../../../../entity/actor/components/audio-actor-component";

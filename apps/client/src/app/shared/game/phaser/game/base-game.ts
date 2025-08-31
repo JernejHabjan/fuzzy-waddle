@@ -1,5 +1,5 @@
 import { Game } from "phaser";
-import { BaseGameData } from "./base-game-data";
+import type { BaseGameData } from "./base-game-data";
 
 export class BaseGame<TGameData extends BaseGameData = BaseGameData> extends Game {
   constructor(gameConfig?: Phaser.Types.Core.GameConfig, data?: TGameData) {

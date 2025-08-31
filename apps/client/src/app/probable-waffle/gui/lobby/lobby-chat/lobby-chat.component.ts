@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";

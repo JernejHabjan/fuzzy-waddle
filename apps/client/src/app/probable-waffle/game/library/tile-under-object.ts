@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds, getGameObjectLogicalTransform } from "../data/game-object-helper";
 import { environment } from "../../../../environments/environment";
 import { drawDebugPoint } from "../debug/debug-point";

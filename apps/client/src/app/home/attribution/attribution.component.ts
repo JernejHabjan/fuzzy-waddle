@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { map, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";

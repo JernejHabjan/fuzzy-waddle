@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
 
 @Pipe({
   name: "gameLength",

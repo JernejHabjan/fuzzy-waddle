@@ -1,5 +1,5 @@
 import { environment } from "../../../../../environments/environment";
-import { Types } from "phaser";
+import type { Types } from "phaser";
 import { baseGameConfig } from "../../../../shared/game/base-game.config";
 import MapRiverCrossing from "../../scenes/game-maps/MapRiverCrossing";
 import PreloadProbableWaffle from "../../scenes/preload-scenes/PreloadProbableWaffle";

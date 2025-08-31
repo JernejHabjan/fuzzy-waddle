@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { SpectateService } from "./spectate.service";
 import { LittleMuncherRoom } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../../shared/services/server-health.service";

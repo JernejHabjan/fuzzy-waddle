@@ -1,4 +1,4 @@
-import { PrefabDefinition } from "../../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";

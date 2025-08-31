@@ -1,7 +1,7 @@
 import { SoundType } from "../../../entity/actor/components/audio-actor-component";
 import { ActorsSheepSfxBleatSounds, ActorsSheepSfxScissorsSounds, ActorsSheepSfxWoolBombSounds } from "./sfx-sheep";
 import { ANIM_SHEEP_DEFINITION } from "./anims-sheep";
-import { PrefabDefinition } from "../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../data/actor-definitions";
 
 export const sheepDefinition = {
   components: {

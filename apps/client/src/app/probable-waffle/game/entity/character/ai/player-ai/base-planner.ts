@@ -1,5 +1,5 @@
-import { MapAnalyzer, MapAnalysis } from "./map-analyzer";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { MapAnalyzer, type MapAnalysis } from "./map-analyzer";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 /**
  * BasePlanner (phase 2)

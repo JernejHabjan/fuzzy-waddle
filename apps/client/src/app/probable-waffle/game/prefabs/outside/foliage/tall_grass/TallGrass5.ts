@@ -6,7 +6,7 @@
 import { setActorData } from "../../../../data/actor-data";
 import {
   ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
+  type ObjectDescriptorDefinition
 } from "../../../../entity/actor/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 

@@ -1,4 +1,4 @@
-import { PrefabDefinition } from "../../../data/actor-definitions";
+import type { PrefabDefinition } from "../../../data/actor-definitions";
 import { ANIM_BADGER_DEFINITION } from "./anims-badger";
 
 export const badgerDefinition = {

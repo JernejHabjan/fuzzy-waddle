@@ -10,7 +10,7 @@ import {
   TOP_LEFT,
   TOP_RIGHT
 } from "easystarjs";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
 import {

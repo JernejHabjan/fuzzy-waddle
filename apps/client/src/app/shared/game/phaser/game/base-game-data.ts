@@ -1,5 +1,5 @@
 import { BaseUserInfo, GameInstance } from "@fuzzy-waddle/api-interfaces";
-import { CommunicatorService } from "../../communicators/CommunicatorService";
+import type { CommunicatorService } from "../../communicators/CommunicatorService";
 
 export interface BaseGameData<
   TCommunicator extends CommunicatorService = CommunicatorService,

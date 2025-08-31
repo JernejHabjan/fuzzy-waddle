@@ -6,12 +6,12 @@ import {
 } from "../../../../../shared/game/phaser/scene/base.scene";
 import {
   GameSessionState,
-  LoseConditions,
+  type LoseConditions,
   ProbableWaffleGameMode,
   ProbableWafflePlayer,
   ProbableWafflePlayerType,
-  TieConditions,
-  WinConditions
+  type TieConditions,
+  type WinConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { throttle } from "../../../library/throttle";
 import { ProbableWaffleGameData } from "../../../core/probable-waffle-game-data";

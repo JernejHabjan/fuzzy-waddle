@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import Phaser from "phaser";
 import TivaraMacemanMale from "../../../game/prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
 import { baseGameConfig } from "../../../../shared/game/base-game.config";

@@ -4,7 +4,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../data/actor-component";
 import { VisionComponent } from "../actor/components/vision-component";
 import { getGameObjectVisibility } from "../../data/game-object-helper";
-import { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
+import type { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../actor/components/id-component";
 import { getSceneService } from "../../world/components/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";

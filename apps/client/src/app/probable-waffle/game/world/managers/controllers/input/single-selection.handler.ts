@@ -3,7 +3,7 @@ import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../../data/actor-component";
 import { IdComponent } from "../../../../entity/actor/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
-import {
+import type {
   ProbableWaffleDoubleSelectionData,
   ProbableWaffleSelectionData,
   Vector3Simple

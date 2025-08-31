@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { UserInstanceService } from "../../../home/profile/user-instance.service";
 import { RouterOutlet } from "@angular/router";

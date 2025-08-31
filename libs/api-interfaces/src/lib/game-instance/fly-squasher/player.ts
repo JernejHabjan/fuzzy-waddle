@@ -1,6 +1,6 @@
 import { BasePlayer } from "../player/player";
-import { BaseData } from "../data";
-import { BasePlayerController, BasePlayerControllerData } from "../player/player-controller";
+import type { BaseData } from "../data";
+import { BasePlayerController, type BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
 
 export class FlySquasherPlayer extends BasePlayer<

@@ -1,6 +1,6 @@
 import { Subscription } from "rxjs";
 import { BaseScene } from "../scene/base.scene";
-import { UpdateEventData } from "../scene/update-event-data";
+import type { UpdateEventData } from "../scene/update-event-data";
 
 const { Between } = Phaser.Math;
 const { GetRandom } = Phaser.Utils.Array;

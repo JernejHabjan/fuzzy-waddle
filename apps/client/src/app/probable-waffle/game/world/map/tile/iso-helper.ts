@@ -1,4 +1,4 @@
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "../../components/scene-component-helpers";
 import { TilemapComponent } from "../../components/tilemap.component";
 

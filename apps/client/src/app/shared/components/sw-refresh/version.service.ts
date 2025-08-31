@@ -1,4 +1,4 @@
-import { inject, Injectable, OnDestroy } from "@angular/core";
+import { inject, Injectable, type OnDestroy } from "@angular/core";
 import { VersionServiceInterface } from "./version.service.interface";
 import { SwUpdate } from "@angular/service-worker";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
