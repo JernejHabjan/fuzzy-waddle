@@ -1,38 +1,21 @@
 import { AnimationDefinitionMap, AnimationType } from "../entity/actor/components/animation-actor-component";
-// The constants with the animation keys.
 
 const ANIM_TIVARA_WORKER_FEMALE_HURT = "tivara_worker_female_hurt";
-
 const ANIM_TIVARA_WORKER_FEMALE_IDLE_UP = "tivara_worker_female_idle_up";
-
 const ANIM_TIVARA_WORKER_FEMALE_IDLE_LEFT = "tivara_worker_female_idle_left";
-
 const ANIM_TIVARA_WORKER_FEMALE_IDLE_DOWN = "tivara_worker_female_idle_down";
-
 const ANIM_TIVARA_WORKER_FEMALE_IDLE_RIGHT = "tivara_worker_female_idle_right";
-
 const ANIM_TIVARA_WORKER_FEMALE_SLASH_UP = "tivara_worker_female_slash_up";
-
 const ANIM_TIVARA_WORKER_FEMALE_SLASH_LEFT = "tivara_worker_female_slash_left";
-
 const ANIM_TIVARA_WORKER_FEMALE_SLASH_DOWN = "tivara_worker_female_slash_down";
-
 const ANIM_TIVARA_WORKER_FEMALE_SLASH_RIGHT = "tivara_worker_female_slash_right";
-
 const ANIM_TIVARA_WORKER_FEMALE_THRUST_UP = "tivara_worker_female_thrust_up";
-
 const ANIM_TIVARA_WORKER_FEMALE_THRUST_LEFT = "tivara_worker_female_thrust_left";
-
 const ANIM_TIVARA_WORKER_FEMALE_THRUST_DOWN = "tivara_worker_female_thrust_down";
-
 const ANIM_TIVARA_WORKER_FEMALE_THRUST_RIGHT = "tivara_worker_female_thrust_right";
-
 const ANIM_TIVARA_WORKER_FEMALE_WALK_UP = "tivara_worker_female_walk_up";
-
 const ANIM_TIVARA_WORKER_FEMALE_WALK_LEFT = "tivara_worker_female_walk_left";
-
 const ANIM_TIVARA_WORKER_FEMALE_WALK_DOWN = "tivara_worker_female_walk_down";
-
 const ANIM_TIVARA_WORKER_FEMALE_WALK_RIGHT = "tivara_worker_female_walk_right";
 
 export const ANIM_TIVARA_WORKER_FEMALE_DEFINITION: AnimationDefinitionMap = {
